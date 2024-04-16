@@ -8,3 +8,7 @@ public struct Spawner : IComponentData
     public float NextSpawnTime;
     public float SpawnRate;
 }
+
+public struct Character : IComponentData
+{
+}

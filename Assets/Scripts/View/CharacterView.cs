@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class CharacterView : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Move(Direction8 direction)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        GetComponent<Transform>().transform.position += (Vector3Int)direction.Vector();
     }
 }

@@ -1,7 +1,6 @@
 using Scripts.Model;
-using Sirenix.OdinInspector.Editor;
-using System.Collections;
-using System.Collections.Generic;
+using Scripts.Utilities;
+using Scripts.View;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

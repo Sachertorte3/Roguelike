@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System.Collections.ObjectModel;
+using UniRx;
 
 namespace Scripts.Model
 {
@@ -9,6 +10,9 @@ namespace Scripts.Model
         private ReactiveCollection<Character> _characters = new ReactiveCollection<Character>();
         public IReadOnlyReactiveCollection<Character> Characters => _characters;
         private readonly CharacterFactory _factory = new CharacterFactory();
+        public CharacterManager()
+        {
+        }
         public Character SpawnPlayer()
         {
             _player = _factory.CreateCharacter();

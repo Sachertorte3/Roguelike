@@ -26,5 +26,6 @@ public class Spawner: MonoBehaviour
                 player.Move(direction);
             })
             .AddTo(this);
+        new TurnController(characterManager);
     }
 }

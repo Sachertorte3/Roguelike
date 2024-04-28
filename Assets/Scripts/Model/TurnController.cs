@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniRx;
+using Unity.Logging;
 using UnityEngine;
 
 namespace Scripts.Model
@@ -24,7 +25,7 @@ namespace Scripts.Model
         {
             while (true)
             {
-                Debug.Log($"INFO: Start turn {_turn}");
+                Log.Debug($"Start turn {_turn}");
                 IEnumerable<Character> characterList = _characterManager.Characters.Where(character => character.CanAct);
                 characterList.ForEach(character => character.State = CharacterState.Think);
                 await characterList.Select(character => character.DoNextAction());

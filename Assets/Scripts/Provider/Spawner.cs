@@ -4,14 +4,19 @@ using Scripts.Model.Characters.Behavior;
 using Scripts.Utilities;
 using Scripts.View;
 using UniRx;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Unity.Logging;
+using Unity.Logging.Sinks;
+using UnityEngine;
+using Logger = Unity.Logging.Logger;
 
 public class Spawner: MonoBehaviour
 {
     [SerializeField] InputReceiver receiver;
     public void Start()
     {
+        LoggerInit();
+
         CharacterManager characterManager = new CharacterManager();
         characterManager.Characters.ObserveAdd().Subscribe(character =>
         {
@@ -30,5 +35,13 @@ public class Spawner: MonoBehaviour
         characterManager.SpawnPlayer(actionReceiver);
         characterManager.SpawnCharacter();
         new TurnController(characterManager);
+    }
+    private void LoggerInit()
+    {
+        Log.Logger = new Logger(new LoggerConfig()
+            .MinimumLevel.Debug()
+            .OutputTemplate("[{Timestamp}] {Level} | {Message}{NewLine}{Stacktrace}")
+            .WriteTo.UnityDebugLog());
+        Log.Debug("Init Logger");
     }
 }

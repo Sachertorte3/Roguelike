@@ -1,4 +1,5 @@
-﻿using Scripts.Model.Characters.Behavior;
+﻿#nullable enable
+using Scripts.Model.Characters.Behavior;
 using System.Collections.ObjectModel;
 using UniRx;
 

@@ -12,17 +12,9 @@ public class Spawner: MonoBehaviour
     {
         GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
         GameObject view = Instantiate(prefab);
-        receiver
-            .MoveDirection
-            .Subscribe(
-            x => 
-            view.
-            GetComponent<CharacterView>().
-            Move(
-                DirectionMethods
-                .FromVector(
-                    x)))
-            .AddTo(
-            this);
+        receiver.MoveDirection
+            .Where(x => x != Vector2.zero)
+            .Subscribe(x => view.GetComponent<CharacterView>().Move(DirectionMethods.FromVector(x)))
+            .AddTo(this);
     }
 }

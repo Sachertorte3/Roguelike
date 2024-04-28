@@ -1,7 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using Scripts.Model.Characters.Behavior;
+using System.Collections.ObjectModel;
 using UniRx;
 
-namespace Scripts.Model
+namespace Scripts.Model.Characters
 {
     public sealed class CharacterManager
     {
@@ -13,22 +14,21 @@ namespace Scripts.Model
         public CharacterManager()
         {
         }
-        public Character SpawnPlayer()
+        public void SpawnPlayer(ActionReceiver actionReceiver)
         {
-            _player = _factory.CreateCharacter();
+            _player = _factory.CreateCharacter(new PlayerBehavior(actionReceiver));
             _characters.Add(_player);
-            return _player;
         }
         public void SpawnCharacter()
         {
-            _characters.Add(_factory.CreateCharacter());
+            _characters.Add(_factory.CreateCharacter(new EnemyBehavior()));
         }
     }
     internal sealed class CharacterFactory
     {
-        public Character CreateCharacter()
+        public Character CreateCharacter(ICharacterBehavior behavior)
         {
-            return new Character();
+            return new Character(behavior);
         }
     }
 }

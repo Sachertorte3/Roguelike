@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Scripts.Model.Characters;
 using Sirenix.Utilities;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Scripts.Model
                 Debug.Log($"INFO: Start turn {_turn}");
                 IEnumerable<Character> characterList = _characterManager.Characters.Where(character => character.CanAct);
                 characterList.ForEach(character => character.State = CharacterState.Think);
+                await characterList.Select(character => character.DoNextAction());
                 await characterList.Select(character => UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
             }

@@ -36,4 +36,9 @@ public class DirectionTest
     {
         Assert.AreEqual(direction.Angle(), new Angle(Vector2.SignedAngle(Vector2.right, direction.Vector())));
     }
+    [TestCaseSource(nameof(Directions))]
+    public void VectorTest2(Direction8 direction)
+    {
+        Assert.AreEqual(direction, DirectionMethods.FromVector(direction.Vector()));
+    }
 }

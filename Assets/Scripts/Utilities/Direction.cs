@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -85,6 +86,21 @@ public static class DirectionMethods
             Direction8.Left => new Vector2Int(-1, 0),
             Direction8.UpLeft => new Vector2Int(-1, 1),
             _ => throw new InvalidEnumArgumentException(),
+        };
+    }
+    public static Direction8 FromVector(Vector2 vector)
+    {
+        return vector switch
+        {
+            { x: 0, y: > 0 } => Direction8.Up,
+            { x: > 0, y: > 0 } => Direction8.UpRight,
+            { x:  > 0, y: 0 } => Direction8.Right,
+            { x: > 0, y: < 0 } => Direction8.DownRight,
+            { x: 0, y: < 0 } => Direction8.Down,
+            { x: < 0, y: < 0 } => Direction8.DownLeft,
+            { x: < 0, y: 0 } => Direction8.Left,
+            { x: < 0, y: > 0 } => Direction8.UpLeft,
+            _ => throw new ArgumentException(),
         };
     }
     public static Direction8 RotateClockwise(this Direction8 direction, Angle angle)

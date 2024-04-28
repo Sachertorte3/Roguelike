@@ -1,12 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Scripts.Utilities;
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour
+namespace Scripts.View
 {
-    public void Move(Direction8 direction)
+    public class CharacterView : MonoBehaviour
     {
-        GetComponent<Transform>().transform.position += (Vector3Int)direction.Vector();
+        public void Move(Direction8 direction)
+        {
+            GetComponent<Transform>().transform.position += (Vector3Int)direction.Vector();
+        }
     }
 }

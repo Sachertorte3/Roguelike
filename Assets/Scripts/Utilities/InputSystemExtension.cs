@@ -2,19 +2,22 @@
 using UniRx;
 using UnityEngine.InputSystem;
 
-public static class UnityInputSystemExtensions
-
+namespace Scripts.Utilities
 {
-    public static IObservable<InputAction.CallbackContext> AsObservable(this InputAction action)
+    public static class UnityInputSystemExtensions
+
     {
-        return Observable.FromEvent<InputAction.CallbackContext>(
-            h => action.performed += h,
-            h => action.performed -= h);
-    }
-    public static ReadOnlyReactiveProperty<T> AsReactiveProperty<T>(this InputAction action) where T : struct
-    {
-        return Observable.FromEvent<InputAction.CallbackContext>(
-            h => { action.performed += h; action.canceled += h; },
-            h => { action.performed -= h; action.canceled += h; }).Select(context => context.ReadValue<T>()).ToReadOnlyReactiveProperty();
+        public static IObservable<InputAction.CallbackContext> AsObservable(this InputAction action)
+        {
+            return Observable.FromEvent<InputAction.CallbackContext>(
+                h => action.performed += h,
+                h => action.performed -= h);
+        }
+        public static ReadOnlyReactiveProperty<T> AsReactiveProperty<T>(this InputAction action) where T : struct
+        {
+            return Observable.FromEvent<InputAction.CallbackContext>(
+                h => { action.performed += h; action.canceled += h; },
+                h => { action.performed -= h; action.canceled += h; }).Select(context => context.ReadValue<T>()).ToReadOnlyReactiveProperty();
+        }
     }
 }

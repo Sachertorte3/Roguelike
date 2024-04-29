@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using Scripts.Model.Characters.Behavior;
-using System.Collections.ObjectModel;
 using UniRx;
 using UnityEngine;
 

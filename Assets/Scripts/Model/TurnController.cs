@@ -1,14 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters;
 using Sirenix.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniRx;
 using Unity.Logging;
-using UnityEngine;
 
 namespace Scripts.Model
 {

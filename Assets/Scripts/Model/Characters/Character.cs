@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    public sealed class Character: IActor
+    public sealed class Character : IActor
     {
         public IReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;

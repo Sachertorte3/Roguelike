@@ -7,7 +7,7 @@ namespace Scripts.Model.Map.Tests
 {
     internal class MapTest
     {
-        static IEnumerable<TestCaseData> IndexTestCases
+        private static IEnumerable<TestCaseData> IndexTestCases
         {
             get
             {
@@ -20,9 +20,10 @@ namespace Scripts.Model.Map.Tests
         public void IndexTest1(int width, int height, Vector2Int position)
         {
             Map map = new Map(width, height);
-            Assert.AreEqual(new TileData(TileType.Blank), map.Get(position));
+            Assert.AreEqual(new TileData(TileCategory.Blank), map.Get(position));
         }
-        static IEnumerable<TestCaseData> IndexTest2Cases
+
+        private static IEnumerable<TestCaseData> IndexTest2Cases
         {
             get
             {

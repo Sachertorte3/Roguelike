@@ -9,10 +9,12 @@ using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
 using Logger = Unity.Logging.Logger;
+using Scripts.Model.Map;
 
 public class Spawner: MonoBehaviour
 {
     [SerializeField] InputReceiver receiver;
+    [SerializeField] TileViewContriller tileView;
     public void Start()
     {
         LoggerInit();
@@ -35,6 +37,20 @@ public class Spawner: MonoBehaviour
         characterManager.SpawnPlayer(actionReceiver);
         characterManager.SpawnCharacter();
         new TurnController(characterManager);
+        Map map = new Map(10, 10);
+        map.OnChangeTile.Subscribe(context =>
+        {
+            switch (context.tile.TileType)
+            {
+                case TileType.Wall:
+                    tileView.SetWall(context.position);
+                    break;
+                case TileType.Floor:
+                    tileView.SetFloor(context.position);
+                    break;
+            }
+        });
+        map.SetTest();
     }
     private void LoggerInit()
     {

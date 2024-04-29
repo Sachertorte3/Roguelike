@@ -1,5 +1,5 @@
 {
-    "name": "ECS.Provider",
+    "name": "Provider",
     "rootNamespace": "",
     "references": [
         "GUID:ba6d9961455566247be48e262575975e",

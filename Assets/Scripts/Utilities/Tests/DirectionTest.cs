@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scripts.Utilities.Tests
 {
-    public class DirectionTest
+    internal class DirectionTest
     {
         static IEnumerable<Direction8> Directions = DirectionMethods.AllDirections;
 

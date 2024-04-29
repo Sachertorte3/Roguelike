@@ -11,15 +11,16 @@ namespace Scripts.Model.Characters
     public sealed class Character: IActor
     {
         private IReadOnlyReactiveProperty<Vector2Int> Position => _position;
-        public ReactiveProperty<Vector2Int> _position = new ReactiveProperty<Vector2Int>();
+        public readonly ReactiveProperty<Vector2Int> _position;
         public IObservable<Direction8> MoveSubject => _moveSubject;
         private readonly Subject<Direction8> _moveSubject = new Subject<Direction8>();
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior => _behavior;
         private ICharacterBehavior _behavior;
-        internal Character(ICharacterBehavior behavior)
+        internal Character(Vector2Int position, ICharacterBehavior behavior)
         {
+            _position = new ReactiveProperty<Vector2Int>(position);
             _behavior = behavior;
         }
         public async UniTask DoNextAction()

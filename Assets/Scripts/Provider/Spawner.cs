@@ -10,14 +10,44 @@ using Unity.Logging.Sinks;
 using UnityEngine;
 using Logger = Unity.Logging.Logger;
 using Scripts.Model.Map;
+using RandomDungeonWithBluePrint;
+using Sirenix.Utilities;
+using System;
 
 public class Spawner: MonoBehaviour
 {
     [SerializeField] InputReceiver receiver;
     [SerializeField] TileViewContriller tileView;
+    [SerializeField] FieldBluePrint bluePrint;
     public void Start()
     {
         LoggerInit();
+
+        Map map = new Map(bluePrint);
+        map.OnChangeTile.Subscribe(context =>
+        {
+            switch (context.tile.TileType)
+            {
+                case TileType.Wall:
+                    tileView.SetWall(context.position);
+                    break;
+                case TileType.Floor:
+                    tileView.SetFloor(context.position);
+                    break;
+            }
+        });
+        foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
+        {
+            switch (tileData.TileType)
+            {
+                case TileType.Wall:
+                    tileView.SetWall(position);
+                    break;
+                case TileType.Floor:
+                    tileView.SetFloor(position);
+                    break;
+            }
+        }
 
         CharacterManager characterManager = new CharacterManager();
         characterManager.Characters.ObserveAdd().Subscribe(character =>
@@ -34,23 +64,9 @@ public class Spawner: MonoBehaviour
                 actionReceiver.SetMoveAction(direction);
             })
             .AddTo(this);
-        characterManager.SpawnPlayer(actionReceiver);
-        characterManager.SpawnCharacter();
+        characterManager.SpawnPlayer(Vector2Int.zero, actionReceiver);
+        characterManager.SpawnCharacter(Vector2Int.zero);
         new TurnController(characterManager);
-        Map map = new Map(10, 10);
-        map.OnChangeTile.Subscribe(context =>
-        {
-            switch (context.tile.TileType)
-            {
-                case TileType.Wall:
-                    tileView.SetWall(context.position);
-                    break;
-                case TileType.Floor:
-                    tileView.SetFloor(context.position);
-                    break;
-            }
-        });
-        map.SetTest();
     }
     private void LoggerInit()
     {

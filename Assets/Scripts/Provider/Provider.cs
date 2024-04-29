@@ -1,3 +1,4 @@
+#nullable enable
 using RandomDungeonWithBluePrint;
 using Scripts.Model;
 using Scripts.Model.Characters;
@@ -5,6 +6,8 @@ using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using Scripts.View;
+using System.Collections.Generic;
+using UI;
 using UniRx;
 using Unity.Logging;
 using Unity.Logging.Sinks;
@@ -17,6 +20,8 @@ public class Provider : MonoBehaviour
     [SerializeField] private InputReceiver receiver;
     [SerializeField] private TileViewContriller tileView;
     [SerializeField] private FieldBluePrint bluePrint;
+    [SerializeField] private CameraFollowTarget _camera;
+    private Dictionary<Character, CharacterView> characterViewDict = new Dictionary<Character, CharacterView>();
     public void Start()
     {
         LoggerInit();
@@ -54,6 +59,7 @@ public class Provider : MonoBehaviour
             CharacterView view = Instantiate(prefab).GetComponent<CharacterView>();
             view.transform.position = (Vector3Int)character.Value.Position.Value;
             character.Value.OnMove.Subscribe(direction => view.Move(direction)).AddTo(view);
+            characterViewDict[character.Value] = view;
         }).AddTo(this);
         ActionReceiver actionReceiver = new ActionReceiver();
         receiver.MoveDirection
@@ -66,6 +72,12 @@ public class Provider : MonoBehaviour
             .AddTo(this);
         characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver);
         characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
+        _camera
+            .SetTarget(
+            characterViewDict
+            [characterManager
+            .Player]
+            .gameObject);
         new TurnController(characterManager);
     }
     private void LoggerInit()

@@ -2,6 +2,7 @@
 using Scripts.Model.Characters.Behavior;
 using System.Collections.ObjectModel;
 using UniRx;
+using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
@@ -15,21 +16,21 @@ namespace Scripts.Model.Characters
         public CharacterManager()
         {
         }
-        public void SpawnPlayer(ActionReceiver actionReceiver)
+        public void SpawnPlayer(Vector2Int spawnPosition, ActionReceiver actionReceiver)
         {
-            _player = _factory.CreateCharacter(new PlayerBehavior(actionReceiver));
+            _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver));
             _characters.Add(_player);
         }
-        public void SpawnCharacter()
+        public void SpawnCharacter(Vector2Int spawnPosition)
         {
-            _characters.Add(_factory.CreateCharacter(new EnemyBehavior()));
+            _characters.Add(_factory.CreateCharacter(spawnPosition, new EnemyBehavior()));
         }
     }
     internal sealed class CharacterFactory
     {
-        public Character CreateCharacter(ICharacterBehavior behavior)
+        public Character CreateCharacter(Vector2Int spawnPosition, ICharacterBehavior behavior)
         {
-            return new Character(behavior);
+            return new Character(spawnPosition, behavior);
         }
     }
 }

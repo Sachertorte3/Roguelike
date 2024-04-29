@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RandomDungeonWithBluePrint;
+using Scripts.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +8,8 @@ using System.Threading.Tasks;
 using UniRx;
 using Unity.Logging;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
 {
@@ -13,46 +17,47 @@ namespace Scripts.Model.Map
     {
         public IObservable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
-        private readonly ReactiveCollection<TileData> _tiles;
+        private readonly ReactiveDictionary<Vector2Int, TileData> _tiles;
         public readonly int Width;
         public readonly int Height;
+        public Map(FieldBluePrint bluePrint)
+        {
+            Field field = FieldBuilder.Build(bluePrint);
+            Width = field.Grid.Size.x;
+            Height = field.Grid.Size.y;
+            _tiles = new ReactiveDictionary<Vector2Int, TileData>(
+                new RectInt(0, 0, Width, Height)
+                    .RectRange().ToDictionary(
+                        position => position,
+                        position =>
+                        {
+                            int mapChipType = field.Grid[position.x, position.y];
+                            TileType tileType = mapChipType == (int)MapChipType.Wall ? TileType.Wall : TileType.Floor;
+                            return new TileData(tileType);
+                        }
+                    )
+            );
+            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
+        }
         public Map(int width, int height)
         {
             Width = width;
             Height = height;
-            _tiles = new ReactiveCollection<TileData>(Enumerable.Repeat(new TileData(TileType.Blank), width*height));
-            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((IndexToVector(context.Index), context.NewValue)));
+            _tiles = new ReactiveDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileType.Blank)));
+            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
         }
-        public void SetTest()
+        public TileData Get(Vector2Int position)
         {
-            for (int x = 0; x < Width; x++)
+            if (position.x < 0 || position.x >= Width || position.y < 0 || position.y >= Height)
             {
-                for (int y = 0; y < Height; y++)
-                {
-                    if (x == 0 || x == Width-1 || y == 0 || y == Height-1)
-                    {
-                        _tiles[x + y * Width] = new TileData(TileType.Wall);
-                    }
-                    else
-                    {
-                        _tiles[x + y * Width] = new TileData(TileType.Floor);
-                    }
-                }
+                Log.Fatal($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
+                throw new ArgumentOutOfRangeException($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
             }
+            return _tiles[position];
         }
-        public Vector2Int IndexToVector(int index)
+        public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
         {
-            if (index < 0)
-            {
-                Log.Fatal($"index {index} is out of range (< 0)");
-                throw new ArgumentOutOfRangeException($"index {index} is out of range (< 0)");
-            }
-            else if (index >= Width * Height)
-            {
-                Log.Fatal($"index {index} is out of range (>= {Width * Height})");
-                throw new ArgumentOutOfRangeException($"index {index} is out of range (>= {Width * Height})");
-            }
-            return new Vector2Int(index % Width, index / Width);
+            return _tiles.Select(pair => (pair.Key, pair.Value));
         }
     }
     public record TileData(TileType TileType);

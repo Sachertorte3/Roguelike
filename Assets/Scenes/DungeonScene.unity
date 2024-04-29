@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   receiver: {fileID: 288730750}
   tileView: {fileID: 986205758}
+  bluePrint: {fileID: 11400000, guid: 4dcbc3b4d2b3c4beeb5bea52285e145f, type: 2}
 --- !u!4 &357612508
 Transform:
   m_ObjectHideFlags: 0
@@ -306,8 +307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 986205760}
   _tiles:
-    Wall: {fileID: 11400000, guid: 9fa9bcd095aa66b4d889eb774d6027fd, type: 2}
-    Floor: {fileID: 11400000, guid: fde7b9586aeee2640b439c693924d136, type: 2}
+    Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
+    Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
   m_ObjectHideFlags: 0

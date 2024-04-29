@@ -19,7 +19,7 @@ namespace Scripts.Model.Map.Tests
         [TestCaseSource(nameof(IndexTestCases))]
         public void IndexTest1(int width, int height, Vector2Int position)
         {
-            Map map = new Map(width, height);
+            Tilemap map = new Tilemap(width, height);
             Assert.AreEqual(new TileData(TileCategory.Blank), map.Get(position));
         }
 
@@ -33,7 +33,7 @@ namespace Scripts.Model.Map.Tests
         [TestCaseSource(nameof(IndexTest2Cases))]
         public void IndexTest2(int width, int height, Vector2Int position)
         {
-            Map map = new Map(width, height);
+            Tilemap map = new Tilemap(width, height);
             Assert.That(() => map.Get(position), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
     }

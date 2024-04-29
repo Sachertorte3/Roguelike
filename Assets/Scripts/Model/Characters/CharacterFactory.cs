@@ -6,9 +6,9 @@ namespace Scripts.Model.Characters
 {
     internal sealed class CharacterFactory
     {
-        public Character CreateCharacter(Vector2Int spawnPosition, ICharacterBehavior behavior)
+        public Character CreateCharacter(Vector2Int spawnPosition, ICharacterBehavior behavior, World world)
         {
-            return new Character(spawnPosition, behavior);
+            return new Character(spawnPosition, behavior, world);
         }
     }
 }

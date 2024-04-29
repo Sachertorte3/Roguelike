@@ -10,14 +10,14 @@ using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
 {
-    public class Map
+    public class Tilemap
     {
         public IObservable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
         private readonly ReactiveDictionary<Vector2Int, TileData> _tiles;
         public readonly int Width;
         public readonly int Height;
-        public Map(FieldBluePrint bluePrint)
+        public Tilemap(FieldBluePrint bluePrint)
         {
             Field field = FieldBuilder.Build(bluePrint);
             Width = field.Grid.Size.x;
@@ -36,7 +36,7 @@ namespace Scripts.Model.Map
             );
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
         }
-        public Map(int width, int height)
+        public Tilemap(int width, int height)
         {
             Width = width;
             Height = height;

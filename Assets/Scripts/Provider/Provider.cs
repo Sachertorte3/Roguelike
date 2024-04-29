@@ -1,22 +1,22 @@
+using RandomDungeonWithBluePrint;
 using Scripts.Model;
 using Scripts.Model.Characters;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Map;
 using Scripts.Utilities;
 using Scripts.View;
 using UniRx;
-using UnityEngine.AddressableAssets;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Logger = Unity.Logging.Logger;
-using Scripts.Model.Map;
-using RandomDungeonWithBluePrint;
 
-public class Provider: MonoBehaviour
+public class Provider : MonoBehaviour
 {
-    [SerializeField] InputReceiver receiver;
-    [SerializeField] TileViewContriller tileView;
-    [SerializeField] FieldBluePrint bluePrint;
+    [SerializeField] private InputReceiver receiver;
+    [SerializeField] private TileViewContriller tileView;
+    [SerializeField] private FieldBluePrint bluePrint;
     public void Start()
     {
         LoggerInit();
@@ -26,10 +26,10 @@ public class Provider: MonoBehaviour
         {
             switch (context.tile.TileType)
             {
-                case TileType.Wall:
+                case TileCategory.Wall:
                     tileView.SetWall(context.position);
                     break;
-                case TileType.Floor:
+                case TileCategory.Floor:
                     tileView.SetFloor(context.position);
                     break;
             }
@@ -38,10 +38,10 @@ public class Provider: MonoBehaviour
         {
             switch (tileData.TileType)
             {
-                case TileType.Wall:
+                case TileCategory.Wall:
                     tileView.SetWall(position);
                     break;
-                case TileType.Floor:
+                case TileCategory.Floor:
                     tileView.SetFloor(position);
                     break;
             }
@@ -58,7 +58,8 @@ public class Provider: MonoBehaviour
         ActionReceiver actionReceiver = new ActionReceiver();
         receiver.MoveDirection
             .Where(x => x != Vector2.zero)
-            .Subscribe(x => {
+            .Subscribe(x =>
+            {
                 Direction8 direction = DirectionMethods.FromVector(x);
                 actionReceiver.SetMoveAction(direction);
             })

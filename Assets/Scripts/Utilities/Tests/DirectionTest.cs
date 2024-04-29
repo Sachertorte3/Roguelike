@@ -6,7 +6,7 @@ namespace Scripts.Utilities.Tests
 {
     internal class DirectionTest
     {
-        static IEnumerable<Direction8> Directions = DirectionMethods.AllDirections;
+        private static IEnumerable<Direction8> Directions = DirectionMethods.AllDirections;
 
         [TestCaseSource(nameof(Directions))]
         public void AngleTest1(Direction8 direction)

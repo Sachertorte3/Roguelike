@@ -3,19 +3,17 @@ using Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Utilities.Tests
 {
     internal class EnumerableTest
     {
-        static RectInt rect1 = new RectInt(0, 0, 3, 3);
-        static RectInt rect2 = new RectInt(1, 2, 3, 5);
-        static RectInt rect3 = new RectInt(1, 2, 10, 0);
+        private static RectInt rect1 = new RectInt(0, 0, 3, 3);
+        private static RectInt rect2 = new RectInt(1, 2, 3, 5);
+        private static RectInt rect3 = new RectInt(1, 2, 10, 0);
 
-        static IEnumerable<TestCaseData> CountTestCases
+        private static IEnumerable<TestCaseData> CountTestCases
         {
             get
             {
@@ -29,7 +27,8 @@ namespace Assets.Scripts.Utilities.Tests
         {
             Assert.AreEqual(expectedCount, rect.RectRange().Count());
         }
-        static IEnumerable<TestCaseData> EnumerateTestCases
+
+        private static IEnumerable<TestCaseData> EnumerateTestCases
         {
             get
             {
@@ -53,11 +52,13 @@ namespace Assets.Scripts.Utilities.Tests
             IEnumerable<Vector2Int> set = expected.Except(rect.RectRange());
             Assert.AreEqual(0, set.Count());
         }
-        static Func<int, int> TestRandom(int result)
+
+        private static Func<int, int> TestRandom(int result)
         {
-            return max => Math.Min(result, max-1);
+            return max => Math.Min(result, max - 1);
         }
-        static IEnumerable<TestCaseData> GetRandomTest1Case
+
+        private static IEnumerable<TestCaseData> GetRandomTest1Case
         {
             get
             {
@@ -71,7 +72,8 @@ namespace Assets.Scripts.Utilities.Tests
         {
             Assert.AreEqual(expected, list.GetAtRandom(1, random)[0]);
         }
-        static IEnumerable<TestCaseData> GetRandomTest2Case
+
+        private static IEnumerable<TestCaseData> GetRandomTest2Case
         {
             get
             {

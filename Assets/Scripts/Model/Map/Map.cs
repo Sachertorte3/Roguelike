@@ -2,7 +2,6 @@
 using Scripts.Utilities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using UniRx;
 using Unity.Logging;
@@ -30,7 +29,7 @@ namespace Scripts.Model.Map
                         position =>
                         {
                             int mapChipType = field.Grid[position.x, position.y];
-                            TileType tileType = mapChipType == (int)MapChipType.Wall ? TileType.Wall : TileType.Floor;
+                            TileCategory tileType = mapChipType == (int)MapChipType.Wall ? TileCategory.Wall : TileCategory.Floor;
                             return new TileData(tileType);
                         }
                     )
@@ -41,7 +40,7 @@ namespace Scripts.Model.Map
         {
             Width = width;
             Height = height;
-            _tiles = new ReactiveDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileType.Blank)));
+            _tiles = new ReactiveDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
         }
         public bool IsPositionInsideMap(Vector2Int position)
@@ -69,24 +68,5 @@ namespace Scripts.Model.Map
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
         }
-    }
-    public record TileData(TileType TileType)
-    {
-        public bool IsPassable()
-        {
-            return TileType switch
-            {
-                TileType.Floor => true,
-                TileType.Wall => false,
-                TileType.Blank => false,
-                _ => throw new InvalidEnumArgumentException(),
-            };
-        }
-    }
-    public enum TileType
-    {
-        Floor,
-        Wall,
-        Blank,
     }
 }

@@ -1,12 +1,12 @@
+using Scripts.Utilities;
 using UniRx;
 using UnityEngine;
-using Scripts.Utilities;
 
 namespace Scripts.View
 {
     public class InputReceiver : MonoBehaviour
     {
-        MyInputAction _actions;
+        private MyInputAction _actions;
         public ReadOnlyReactiveProperty<Vector2> MoveDirection => _actions.Field.Move.AsReactiveProperty<Vector2>();
         private void Start()
         {

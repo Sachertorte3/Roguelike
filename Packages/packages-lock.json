@@ -7,6 +7,12 @@
       "dependencies": {},
       "hash": "2e225fb8414e023df2aa3acae2ef225471981316"
     },
+    "com.ruccho.fang-auto-tile": {
+      "version": "file:com.ruccho.fang-auto-tile",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.2d.animation": {
       "version": "9.0.3",
       "depth": 1,

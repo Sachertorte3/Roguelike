@@ -2,13 +2,11 @@
 using Scripts.Utilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniRx;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
@@ -46,9 +44,13 @@ namespace Scripts.Model.Map
             _tiles = new ReactiveDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileType.Blank)));
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
         }
+        public bool IsPositionInsideMap(Vector2Int position)
+        {
+            return position.x < 0 || position.x >= Width || position.y < 0 || position.y >= Height;
+        }
         public TileData Get(Vector2Int position)
         {
-            if (position.x < 0 || position.x >= Width || position.y < 0 || position.y >= Height)
+            if (IsPositionInsideMap(position))
             {
                 Log.Fatal($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
                 throw new ArgumentOutOfRangeException($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
@@ -59,8 +61,28 @@ namespace Scripts.Model.Map
         {
             return _tiles.Select(pair => (pair.Key, pair.Value));
         }
+        public bool IsPassable(Vector2Int position)
+        {
+            return Get(position).IsPassable();
+        }
+        public IEnumerable<Vector2Int> GetAllPassablePositions()
+        {
+            return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
+        }
     }
-    public record TileData(TileType TileType);
+    public record TileData(TileType TileType)
+    {
+        public bool IsPassable()
+        {
+            return TileType switch
+            {
+                TileType.Floor => true,
+                TileType.Wall => false,
+                TileType.Blank => false,
+                _ => throw new InvalidEnumArgumentException(),
+            };
+        }
+    }
     public enum TileType
     {
         Floor,

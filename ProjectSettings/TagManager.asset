@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Floor
+    uniqueID: 1541394923
+    locked: 0
+  - name: EntityBottom
+    uniqueID: 3564074131
+    locked: 0
+  - name: Entity
+    uniqueID: 2968041625
+    locked: 0
+  - name: EntityTop
+    uniqueID: 394765379
+    locked: 0
+  - name: UI
+    uniqueID: 2441958805
+    locked: 0

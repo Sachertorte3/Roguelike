@@ -11,9 +11,12 @@ namespace Scripts.Model.Characters.Behavior
         {
             _actionReceiver = actionReceiver;
         }
-        public UniTask<IAction> GenerateNextAction()
+        public async UniTask<IAction> GenerateNextAction()
         {
-            return _actionReceiver.ReceivedAction.WaitAsync();
+            _actionReceiver.waiting = true;
+            IAction action = await _actionReceiver.ReceivedAction.WaitAsync();
+            _actionReceiver.waiting = false;
+            return action;
         }
     }
     internal sealed class EnemyBehavior : ICharacterBehavior
@@ -21,15 +24,6 @@ namespace Scripts.Model.Characters.Behavior
         public UniTask<IAction> GenerateNextAction()
         {
             return UniTask.FromResult<IAction>(new Move(Direction8.Right));
-        }
-    }
-    public class ActionReceiver
-    {
-        internal IReadOnlyAsyncReactiveProperty<IAction> ReceivedAction => _receivedAction;
-        private AsyncReactiveProperty<IAction> _receivedAction = new AsyncReactiveProperty<IAction>(null);
-        public void SetMoveAction(Direction8 direction)
-        {
-            _receivedAction.Value = new Move(direction);
         }
     }
 }

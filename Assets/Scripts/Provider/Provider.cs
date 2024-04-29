@@ -9,6 +9,7 @@ using Scripts.View;
 using System.Collections.Generic;
 using UI;
 using UniRx;
+using UniRx.Triggers;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
@@ -65,11 +66,13 @@ public class Provider : MonoBehaviour
             characterViewDict[character.Value] = view;
         }).AddTo(this);
         ActionReceiver actionReceiver = new ActionReceiver();
-        receiver.MoveDirection
-            .Where(x => x != Vector2.zero)
-            .Subscribe(x =>
+        this.UpdateAsObservable()
+            .Where(_ => actionReceiver.waiting)
+            .Select(_ => receiver.MoveDirection)
+            .Where(vector => vector != Vector2.zero)
+            .Subscribe(vector =>
             {
-                Direction8 direction = DirectionMethods.FromVector(x);
+                Direction8 direction = DirectionMethods.FromVector(vector);
                 actionReceiver.SetMoveAction(direction);
             })
             .AddTo(this);

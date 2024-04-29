@@ -18,25 +18,31 @@ namespace Scripts.Model.Characters
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior => _behavior;
         private ICharacterBehavior _behavior;
-        internal Character(Vector2Int position, ICharacterBehavior behavior)
+        private World _world;
+        internal Character(Vector2Int position, ICharacterBehavior behavior, World world)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             _behavior = behavior;
+            _world = world;
         }
         public async UniTask DoNextAction()
         {
             IAction action = await _behavior.GenerateNextAction();
             await action.Do(this);
         }
+        public bool CanMove(Direction8 direction)
+        {
+            return _world.IsPassable(Position.Value + direction.Vector());
+        }
         public void Move(Direction8 direction)
         {
-            if (State != CharacterState.Think)
+            State = CharacterState.Wait;
+            if (!CanMove(direction))
             {
                 return;
             }
             _onMove.OnNext(direction);
             _position.Value += direction.Vector();
-            State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)
         {

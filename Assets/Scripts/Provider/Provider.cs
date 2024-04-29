@@ -26,7 +26,7 @@ public class Provider : MonoBehaviour
     {
         LoggerInit();
 
-        Map map = new Map(bluePrint);
+        Tilemap map = new Tilemap(bluePrint);
         map.OnChangeTile.Subscribe(context =>
         {
             switch (context.tile.TileType)
@@ -53,6 +53,9 @@ public class Provider : MonoBehaviour
         }
 
         CharacterManager characterManager = new CharacterManager();
+
+        World world = new World(map, characterManager);
+
         characterManager.Characters.ObserveAdd().Subscribe(character =>
         {
             GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
@@ -70,14 +73,10 @@ public class Provider : MonoBehaviour
                 actionReceiver.SetMoveAction(direction);
             })
             .AddTo(this);
-        characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver);
-        characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
-        _camera
-            .SetTarget(
-            characterViewDict
-            [characterManager
-            .Player]
-            .gameObject);
+        characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver, world);
+        characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom(), world);
+        _camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
+
         new TurnController(characterManager);
     }
     private void LoggerInit()

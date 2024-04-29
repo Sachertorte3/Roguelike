@@ -11,11 +11,10 @@ namespace Scripts.Model.Characters.Behavior
         {
             _actionReceiver = actionReceiver;
         }
-        public async UniTask<IAction> GenerateNextAction()
+        public UniTask<IAction> GenerateNextAction()
         {
-            _actionReceiver.waiting = true;
-            IAction action = await _actionReceiver.ReceivedAction.WaitAsync();
-            _actionReceiver.waiting = false;
+            UniTask<IAction> action = _actionReceiver.ReceivedAction.WaitAsync();
+            _actionReceiver.ReadInput();
             return action;
         }
     }

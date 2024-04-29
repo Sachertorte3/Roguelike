@@ -66,9 +66,10 @@ public class Provider : MonoBehaviour
             characterViewDict[character.Value] = view;
         }).AddTo(this);
         ActionReceiver actionReceiver = new ActionReceiver();
-        this.UpdateAsObservable()
-            .Where(_ => actionReceiver.waiting)
-            .Select(_ => receiver.MoveDirection)
+        Observable.Merge(
+            receiver.OnMovePerformed,
+            actionReceiver.OnWait.Select(_ => receiver.MoveVector)
+        )
             .Where(vector => vector != Vector2.zero)
             .Subscribe(vector =>
             {

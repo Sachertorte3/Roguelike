@@ -10,10 +10,10 @@ namespace Scripts.Model.Characters
 {
     public sealed class Character: IActor
     {
-        private IReadOnlyReactiveProperty<Vector2Int> Position => _position;
-        public readonly ReactiveProperty<Vector2Int> _position;
-        public IObservable<Direction8> MoveSubject => _moveSubject;
-        private readonly Subject<Direction8> _moveSubject = new Subject<Direction8>();
+        public IReadOnlyReactiveProperty<Vector2Int> Position => _position;
+        private readonly ReactiveProperty<Vector2Int> _position;
+        public IObservable<Direction8> OnMove => _onMove;
+        private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior => _behavior;
@@ -34,7 +34,7 @@ namespace Scripts.Model.Characters
             {
                 return;
             }
-            _moveSubject.OnNext(direction);
+            _onMove.OnNext(direction);
             _position.Value += direction.Vector();
             State = CharacterState.Wait;
         }

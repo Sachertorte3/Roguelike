@@ -11,10 +11,8 @@ using UnityEngine;
 using Logger = Unity.Logging.Logger;
 using Scripts.Model.Map;
 using RandomDungeonWithBluePrint;
-using Sirenix.Utilities;
-using System;
 
-public class Spawner: MonoBehaviour
+public class Provider: MonoBehaviour
 {
     [SerializeField] InputReceiver receiver;
     [SerializeField] TileViewContriller tileView;
@@ -35,7 +33,7 @@ public class Spawner: MonoBehaviour
                     tileView.SetFloor(context.position);
                     break;
             }
-        });
+        }).AddTo(this);
         foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
         {
             switch (tileData.TileType)
@@ -53,8 +51,9 @@ public class Spawner: MonoBehaviour
         characterManager.Characters.ObserveAdd().Subscribe(character =>
         {
             GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-            GameObject view = Instantiate(prefab);
-            character.Value.MoveSubject.Subscribe(direction => view.GetComponent<CharacterView>().Move(direction));
+            CharacterView view = Instantiate(prefab).GetComponent<CharacterView>();
+            view.transform.position = (Vector3Int)character.Value.Position.Value;
+            character.Value.OnMove.Subscribe(direction => view.Move(direction)).AddTo(view);
         }).AddTo(this);
         ActionReceiver actionReceiver = new ActionReceiver();
         receiver.MoveDirection
@@ -64,8 +63,8 @@ public class Spawner: MonoBehaviour
                 actionReceiver.SetMoveAction(direction);
             })
             .AddTo(this);
-        characterManager.SpawnPlayer(Vector2Int.zero, actionReceiver);
-        characterManager.SpawnCharacter(Vector2Int.zero);
+        characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver);
+        characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
         new TurnController(characterManager);
     }
     private void LoggerInit()

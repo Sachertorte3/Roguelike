@@ -53,5 +53,37 @@ namespace Assets.Scripts.Utilities.Tests
             IEnumerable<Vector2Int> set = expected.Except(rect.RectRange());
             Assert.AreEqual(0, set.Count());
         }
+        static Func<int, int> TestRandom(int result)
+        {
+            return max => Math.Min(result, max-1);
+        }
+        static IEnumerable<TestCaseData> GetRandomTest1Case
+        {
+            get
+            {
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, TestRandom(0), 0);
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, TestRandom(1), 2);
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, TestRandom(2), 4);
+            }
+        }
+        [TestCaseSource(nameof(GetRandomTest1Case))]
+        public void GetRandomTest1(List<int> list, Func<int, int> random, int expected)
+        {
+            Assert.AreEqual(expected, list.GetAtRandom(1, random)[0]);
+        }
+        static IEnumerable<TestCaseData> GetRandomTest2Case
+        {
+            get
+            {
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, 1, TestRandom(0), new List<int> { 0 });
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, 3, TestRandom(1), new List<int> { 2, 8, 6 });
+                yield return new TestCaseData(new List<int> { 0, 2, 4, 6, 8 }, 5, TestRandom(2), new List<int> { 4, 8, 6, 2, 0 });
+            }
+        }
+        [TestCaseSource(nameof(GetRandomTest2Case))]
+        public void GetRandomTest2(List<int> list, int n, Func<int, int> random, List<int> expected)
+        {
+            Assert.AreEqual(expected, list.GetAtRandom(n, random));
+        }
     }
 }

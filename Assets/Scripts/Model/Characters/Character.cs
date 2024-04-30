@@ -1,3 +1,4 @@
+using Assets.Scripts.Model;
 using Cysharp.Threading.Tasks;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
@@ -34,15 +35,18 @@ namespace Scripts.Model.Characters
         {
             return _world.IsPassable(Position.Value + direction.Vector());
         }
-        public void Move(Direction8 direction)
+        public async UniTask Move(Direction8 direction)
         {
-            State = CharacterState.Wait;
+            State = CharacterState.Act;
             if (!CanMove(direction))
             {
+                State = CharacterState.Wait;
                 return;
             }
-            _onMove.OnNext(direction);
             _position.Value += direction.Vector();
+            _onMove.OnNext(direction);
+            await UniTask.Delay(Config.MoveMilliseconds);
+            State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)
         {

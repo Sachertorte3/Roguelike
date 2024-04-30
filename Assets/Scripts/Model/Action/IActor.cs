@@ -1,9 +1,10 @@
-﻿using Scripts.Utilities;
+﻿using Cysharp.Threading.Tasks;
+using Scripts.Utilities;
 
 namespace Scripts.Model.Action
 {
     public interface IActor
     {
-        public void Move(Direction8 direction);
+        public UniTask Move(Direction8 direction);
     }
 }

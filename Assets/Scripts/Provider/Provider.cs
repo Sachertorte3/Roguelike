@@ -62,7 +62,7 @@ public class Provider : MonoBehaviour
             GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
             CharacterView view = Instantiate(prefab).GetComponent<CharacterView>();
             view.transform.position = (Vector3Int)character.Value.Position.Value;
-            character.Value.OnMove.Subscribe(direction => view.Move(direction)).AddTo(view);
+            character.Value.OnMove.Subscribe(direction => view.OnMove.OnNext((character.Value.Position.Value, direction))).AddTo(view);
             characterViewDict[character.Value] = view;
         }).AddTo(this);
         ActionReceiver actionReceiver = new ActionReceiver();

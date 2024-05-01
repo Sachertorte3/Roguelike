@@ -5,14 +5,13 @@ using UnityEngine;
 
 namespace Scripts.View
 {
-    public class InputReceiver : MonoBehaviour
+    public class InputReceiver
     {
-        private MyInputAction _actions;
+        private MyInputAction _actions = new MyInputAction();
         public IObservable<Vector2> OnMovePerformed => _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
         public Vector2 MoveVector => _actions.Field.Move.ReadValue<Vector2>();
-        private void Start()
+        public InputReceiver()
         {
-            _actions = new MyInputAction();
             _actions.Enable();
         }
     }

@@ -17,7 +17,7 @@ namespace Scripts.View
             {
                 Vector3Int position = (Vector3Int)onMove.destination - (Vector3Int)onMove.direction.Vector();
                 Vector3Int destination = (Vector3Int)onMove.destination;
-                Observable.Interval(TimeSpan.FromSeconds(moveMilliseconds * (3f / 4) / frame))
+                Observable.Interval(TimeSpan.FromSeconds(moveMilliseconds / 1000f * 0.75f / frame))
                 .Take(frame)
                 .Subscribe(l =>
                 {

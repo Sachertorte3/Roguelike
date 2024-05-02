@@ -1,7 +1,7 @@
-using Assets.Scripts.Model;
 using Cysharp.Threading.Tasks;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Setting;
 using Scripts.Utilities;
 using System;
 using UniRx;
@@ -45,7 +45,7 @@ namespace Scripts.Model.Characters
             }
             _position.Value += direction.Vector();
             _onMove.OnNext(direction);
-            await UniTask.Delay(Config.MoveMilliseconds);
+            await UniTask.Delay(Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)

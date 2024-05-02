@@ -970,7 +970,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 868416784}
   m_HandleRect: {fileID: 868416783}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1156,6 +1156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _content: {fileID: 1988786866}
   _sliderItem: {fileID: 7470744900631456004, guid: b724d21110cd17b4bbdff3bce84b3153, type: 3}
+  _checkBoxItem: {fileID: 7463223302507720833, guid: c2caa3f473f8622489843bf339e46e2c, type: 3}
 --- !u!1 &1988786865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,7 +1191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0006826317}
+  m_AnchoredPosition: {x: 0, y: -0.000019669533}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1988786867

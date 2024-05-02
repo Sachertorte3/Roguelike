@@ -19,7 +19,10 @@ namespace Scripts.Provider
                 switch (option)
                 {
                     case Slider slider:
-                        settingWindow.AddValueItem(slider.Name, slider.Min, slider.Max, slider.Value).Subscribe(value => slider.SetValue(value));
+                        settingWindow.AddIntOption(slider.Name, slider.Min, slider.Max, slider.Value).Subscribe(value => slider.SetValue(value));
+                        break;
+                    case CheckBox checkbox:
+                        settingWindow.AddBoolOption(checkbox.Name, checkbox.Value).Subscribe(value => checkbox.SetValue(value));
                         break;
                     default:
                         throw new ArgumentException();

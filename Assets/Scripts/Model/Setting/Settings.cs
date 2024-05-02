@@ -13,14 +13,14 @@ namespace Scripts.Model.Setting
         private static readonly Slider _SEVolume = new Slider("SE音量", 0, 100, 50);
         public static ReactiveProperty<int> MoveMilliseconds => _moveMilliseconds.OnValueChanged;
         private static readonly Slider _moveMilliseconds = new Slider("移動時間[ms]", 10, 1000, 100);
+        public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
+        private static readonly CheckBox _ignoreWall = new CheckBox("壁貫通", false);
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new List<IOptionInput>();
             foreach (FieldInfo field in typeof(Settings).GetFields(BindingFlags.NonPublic|BindingFlags.Static))
             {
                 object value = field.GetValue(typeof(Settings));
-                Debug.Log(nameof(value));
-                Debug.Log(value);
                 if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))
                 {
                     setters.Add((IOptionInput)value);
@@ -30,7 +30,7 @@ namespace Scripts.Model.Setting
         }
     }
     public interface IOptionInput { }
-    public record Slider: IOptionInput
+    public record Slider : IOptionInput
     {
         public readonly string Name;
         public readonly int Min;
@@ -47,6 +47,21 @@ namespace Scripts.Model.Setting
         public void SetValue(int value)
         {
             OnValueChanged.Value = Mathf.Clamp(value, Min, Max);
+        }
+    }
+    public record CheckBox : IOptionInput
+    {
+        public readonly string Name;
+        public bool Value => OnValueChanged.Value;
+        public ReactiveProperty<bool> OnValueChanged { get; private set; }
+        public CheckBox(string name, bool defaultValue)
+        {
+            Name = name;
+            OnValueChanged = new ReactiveProperty<bool>(defaultValue);
+        }
+        public void SetValue(bool value)
+        {
+            OnValueChanged.Value = value;
         }
     }
 }

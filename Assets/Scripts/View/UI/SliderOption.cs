@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Scripts.View.UI
 {
-    internal class SliderItem: MonoBehaviour
+    internal class SliderOption : MonoBehaviour
     {
         [SerializeField] TMP_Text _text;
         [SerializeField] Slider _slider;

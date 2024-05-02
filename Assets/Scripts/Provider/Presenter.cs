@@ -4,6 +4,7 @@ using Scripts.Model;
 using Scripts.Model.Characters;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
+using Scripts.Model.Setting;
 using Scripts.Utilities;
 using Scripts.View;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using VContainer;
 using VContainer.Unity;
 using Logger = Unity.Logging.Logger;
 
@@ -25,6 +27,7 @@ namespace Scripts.Provider
         private readonly FieldBluePrint bluePrint;
         private readonly CameraFollowTarget _camera;
         private Dictionary<Character, CharacterView> characterViewDict = new Dictionary<Character, CharacterView>();
+        [Inject]
         public Presenter(InputReceiver receiver, TileViewContriller tileView, FieldBluePrint bluePrint, CameraFollowTarget camera)
         {
             this.receiver = receiver;
@@ -35,8 +38,6 @@ namespace Scripts.Provider
         public void PostInitialize()
         {
             LoggerInit();
-
-            Debug.Log(receiver);
 
             Tilemap map = new Tilemap(bluePrint);
             map.OnChangeTile.Subscribe(context =>
@@ -74,6 +75,7 @@ namespace Scripts.Provider
                 CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
                 view.transform.position = (Vector3Int)character.Value.Position.Value;
                 character.Value.OnMove.Subscribe(direction => view.OnMove.OnNext((character.Value.Position.Value, direction))).AddTo(view);
+                Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
                 characterViewDict[character.Value] = view;
             });
             ActionReceiver actionReceiver = new ActionReceiver();

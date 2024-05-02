@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +10,7 @@ namespace Scripts.View.UI
     {
         [SerializeField] TMP_Text _text;
         [SerializeField] Slider _slider;
+        public IObservable<int> OnValueChanged => _slider.onValueChanged.AsObservable().Select(value => (int)value);
         public void SetData(string itemName, int min, int max, int value)
         {
             _text.SetText(itemName);

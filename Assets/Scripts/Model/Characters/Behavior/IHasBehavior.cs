@@ -1,9 +1,9 @@
-﻿using Scripts.Utilities;
+﻿using Scripts.Model.Action;
+using Scripts.Utilities;
 
 namespace Scripts.Model.Characters.Behavior
 {
-    internal interface IHasBehavior
+    internal interface IHasBehavior: IActor
     {
-        public bool CanMove(Direction8 direction);
     }
 }

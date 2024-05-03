@@ -2,37 +2,37 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Characters.Effect;
 using Scripts.Model.Characters.Stats;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    public sealed class Character : IActor, IHasBehavior
+    public sealed class Character : IActor, IHasBehavior, ITarget
     {
+        public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;
         public Observable<Direction8> OnMove => _onMove;
         private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
-        internal ICharacterBehavior Behavior => _behavior;
-        private ICharacterBehavior _behavior;
-        private CharacterStats _status;
-        private World _world;
+        internal ICharacterBehavior Behavior { get; init; }
+        public CharacterStats Stats { get; init; }
         private bool _canIgnoreWall;
-        internal Character(Vector2Int position, ICharacterBehavior behavior, World world, ReactiveProperty<bool> canIgnoreWall)
+        internal Character(Vector2Int position, ICharacterBehavior behavior, ReactiveProperty<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
-            _behavior = behavior;
-            _status = new CharacterStats(10, 2);
-            _world = world;
+            Behavior = behavior;
+            Stats = new CharacterStats(10, 2);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()
         {
-            IAction action = await _behavior.GenerateNextAction(this);
+            IAction action = await Behavior.GenerateNextAction(this);
             await action.Do(this);
         }
         /// <summary>
@@ -41,7 +41,7 @@ namespace Scripts.Model.Characters
         /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return _canIgnoreWall ? _world.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) : _world.IsPassable(Position.CurrentValue + direction.Vector());
+            return _canIgnoreWall ? GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) : GameManager.World.IsPassable(Position.CurrentValue + direction.Vector());
         }
         public async UniTask Move(Direction8 direction)
         {
@@ -59,6 +59,11 @@ namespace Scripts.Model.Characters
         public void Teleport(Vector2Int position)
         {
 
+        }
+        public async UniTask UseSkill(Skill skill)
+        {
+            await new WorldEffect(new HashSet<Vector2Int> { CurrentPosition }, skill).Spawn(this);
+            State = CharacterState.Wait;
         }
     }
 }

@@ -2,10 +2,11 @@
 using StatSystem;
 using UnityEngine;
 using Scripts.Utilities;
+using Unity.Logging;
 
 namespace Scripts.Model.Characters.Stats
 {
-    internal class Resource
+    public class Resource
     {
         public readonly ReadOnlyReactiveProperty<int> Max;
         public readonly Stat _max;
@@ -30,6 +31,7 @@ namespace Scripts.Model.Characters.Stats
                 return;
             }
             _value.Value -= Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
+            Log.Debug($"Lose {value} HP");
         }
         public void Gain(int value)
         {

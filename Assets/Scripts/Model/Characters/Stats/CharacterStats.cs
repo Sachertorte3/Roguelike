@@ -4,7 +4,7 @@ using StatSystem;
 
 namespace Scripts.Model.Characters.Stats
 {
-    internal class CharacterStats
+    public class CharacterStats
     {
         public readonly Resource Hp;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.Max;

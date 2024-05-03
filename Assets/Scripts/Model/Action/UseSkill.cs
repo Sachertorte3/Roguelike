@@ -1,19 +1,20 @@
 ﻿using Cysharp.Threading.Tasks;
-using Scripts.Utilities;
+using Scripts.Model.Characters.Effect;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Scripts.Model.Action
 {
-    internal record Move(Direction8 Direction) : IAction
+    internal record UseSkill(Skill Skill) : IAction
     {
         private float score;
         public bool Doable(IActor actor)
         {
-            return actor.CanMove(Direction);
+            return true;
         }
-        public UniTask Do(IActor actor)
+        public async UniTask Do(IActor actor)
         {
-            actor.Move(Direction);
-            return UniTask.CompletedTask;
+            actor.UseSkill(Skill);
         }
         public float Evaluate(IActor actor)
         {

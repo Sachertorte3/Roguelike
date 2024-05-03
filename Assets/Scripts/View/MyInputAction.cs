@@ -44,6 +44,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5ca3a7d-44d4-4fa6-8822-9c1437b2702f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -167,6 +176,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""OpenMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""021397a2-8502-45e6-a2b9-dae6d7221493"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -205,6 +225,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field = asset.FindActionMap("Field", throwIfNotFound: true);
         m_Field_Move = m_Field.FindAction("Move", throwIfNotFound: true);
         m_Field_OpenMenu = m_Field.FindAction("OpenMenu", throwIfNotFound: true);
+        m_Field_Attack = m_Field.FindAction("Attack", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -271,12 +292,14 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private List<IFieldActions> m_FieldActionsCallbackInterfaces = new List<IFieldActions>();
     private readonly InputAction m_Field_Move;
     private readonly InputAction m_Field_OpenMenu;
+    private readonly InputAction m_Field_Attack;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
         public FieldActions(@MyInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Field_Move;
         public InputAction @OpenMenu => m_Wrapper.m_Field_OpenMenu;
+        public InputAction @Attack => m_Wrapper.m_Field_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -292,6 +315,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @OpenMenu.started += instance.OnOpenMenu;
             @OpenMenu.performed += instance.OnOpenMenu;
             @OpenMenu.canceled += instance.OnOpenMenu;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -302,6 +328,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @OpenMenu.started -= instance.OnOpenMenu;
             @OpenMenu.performed -= instance.OnOpenMenu;
             @OpenMenu.canceled -= instance.OnOpenMenu;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -369,6 +398,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

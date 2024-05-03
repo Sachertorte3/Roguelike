@@ -1,9 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
+using R3;
 using Scripts.Model.Characters;
 using Sirenix.Utilities;
 using System.Collections.Generic;
 using System.Linq;
-using UniRx;
 using Unity.Logging;
 
 namespace Scripts.Model

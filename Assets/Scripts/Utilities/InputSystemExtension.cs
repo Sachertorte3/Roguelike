@@ -1,5 +1,4 @@
-﻿using System;
-using UniRx;
+﻿using R3;
 using UnityEngine.InputSystem;
 
 namespace Scripts.Utilities
@@ -7,7 +6,7 @@ namespace Scripts.Utilities
     public static class UnityInputSystemExtensions
 
     {
-        public static IObservable<InputAction.CallbackContext> AsObservable(this InputAction action)
+        public static Observable<InputAction.CallbackContext> AsObservable(this InputAction action)
         {
             return Observable.FromEvent<InputAction.CallbackContext>(
                 h => action.performed += h,

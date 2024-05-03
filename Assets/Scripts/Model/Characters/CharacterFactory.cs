@@ -1,6 +1,6 @@
 ﻿#nullable enable
+using R3;
 using Scripts.Model.Characters.Behavior;
-using UniRx;
 using UnityEngine;
 
 namespace Scripts.Model.Characters

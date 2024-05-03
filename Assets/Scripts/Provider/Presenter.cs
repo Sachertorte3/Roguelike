@@ -1,4 +1,5 @@
 #nullable enable
+using R3;
 using RandomDungeonWithBluePrint;
 using Scripts.Model;
 using Scripts.Model.Characters;
@@ -9,7 +10,6 @@ using Scripts.Utilities;
 using Scripts.View;
 using System.Collections.Generic;
 using UI;
-using UniRx;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
@@ -69,14 +69,14 @@ namespace Scripts.Provider
 
             World world = new World(map, characterManager);
 
-            characterManager.Characters.ObserveAdd().Subscribe(character =>
+            characterManager.OnCharacterAdded.Subscribe(character =>
             {
                 GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
                 CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
-                view.transform.position = (Vector3Int)character.Value.Position.Value;
-                character.Value.OnMove.Subscribe(direction => view.OnMove.OnNext((character.Value.Position.Value, direction))).AddTo(view);
+                view.transform.position = (Vector3Int)character.Position.CurrentValue;
+                character.OnMove.Subscribe(direction => view.Move(character.Position.CurrentValue, direction));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
-                characterViewDict[character.Value] = view;
+                characterViewDict[character] = view;
             });
             ActionReceiver actionReceiver = new ActionReceiver();
             Observable.Merge(

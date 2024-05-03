@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Scripts.Model.Characters.Behavior
 {
-    internal sealed class RandomWalk: IWanderBehavior
+    internal sealed class RandomWalk : IWanderBehavior
     {
         public IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character)
         {

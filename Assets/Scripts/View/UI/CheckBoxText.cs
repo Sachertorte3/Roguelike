@@ -1,5 +1,5 @@
-﻿using TMPro;
-using UniRx;
+﻿using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +7,8 @@ namespace Scripts.View.UI
 {
     internal class CheckBoxText : MonoBehaviour
     {
-        [SerializeField] Toggle _checkBox;
-        [SerializeField] TMP_Text _text;
+        [SerializeField] private Toggle _checkBox;
+        [SerializeField] private TMP_Text _text;
         private string GetText(bool value) => value ? "有効" : "無効";
         private void Start()
         {

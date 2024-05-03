@@ -42,7 +42,7 @@ namespace Scripts.Utilities
     }
     public static class DirectionMethods
     {
-        public static readonly IEnumerable<Direction8> AllDirections = (IEnumerable<Direction8>)System.Enum.GetValues(typeof(Direction8));
+        public static readonly IEnumerable<Direction8> AllDirections = (IEnumerable<Direction8>)Enum.GetValues(typeof(Direction8));
         public static Angle Angle(this Direction8 direction)
         {
             return direction switch

@@ -10,7 +10,7 @@ namespace Scripts.Model.Characters.Behavior
         {
             _actionReceiver = actionReceiver;
         }
-        public UniTask<IAction> GenerateNextAction()
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
             UniTask<IAction> action = _actionReceiver.ReceivedAction.WaitAsync();
             _actionReceiver.ReadInput();

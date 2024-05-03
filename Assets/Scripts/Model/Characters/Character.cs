@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    public sealed class Character : IActor
+    public sealed class Character : IActor, IHasBehavior
     {
         public IReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;
@@ -28,12 +28,16 @@ namespace Scripts.Model.Characters
         }
         public async UniTask DoNextAction()
         {
-            IAction action = await _behavior.GenerateNextAction();
+            IAction action = await _behavior.GenerateNextAction(this);
             await action.Do(this);
         }
+        /// <summary>
+        /// Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even if the destination is impassable.
+        /// If you want to check whether the destination is passable, please use World.IsPassable.
+        /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return Settings.IgnoreWall.Value || _world.IsPassable(Position.Value + direction.Vector());
+            return Settings.IgnoreWall.Value? _world.IsPassableIgnoreWall(Position.Value + direction.Vector()): _world.IsPassable(Position.Value + direction.Vector());
         }
         public async UniTask Move(Direction8 direction)
         {

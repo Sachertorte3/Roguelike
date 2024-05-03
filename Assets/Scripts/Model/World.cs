@@ -22,5 +22,9 @@ namespace Scripts.Model
         {
             return _map.IsPassable(position) && !_characterManager.GetAllCharacterPositions().Contains(position);
         }
+        public bool IsPassableIgnoreWall(Vector2Int position)
+        {
+            return !_characterManager.GetAllCharacterPositions().Contains(position);
+        }
     }
 }

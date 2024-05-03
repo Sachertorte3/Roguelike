@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Characters.Stats;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using UnityEngine;
@@ -18,12 +19,14 @@ namespace Scripts.Model.Characters
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior => _behavior;
         private ICharacterBehavior _behavior;
+        private CharacterStats _status;
         private World _world;
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, World world, ReactiveProperty<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             _behavior = behavior;
+            _status = new CharacterStats(10, 2);
             _world = world;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }

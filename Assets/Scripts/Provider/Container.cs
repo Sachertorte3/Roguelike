@@ -11,6 +11,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using Scripts.View.UI;
+using Assets.Scripts.View;
 
 namespace Scripts.Provider
 {
@@ -24,6 +25,7 @@ namespace Scripts.Provider
             builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
+            builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterEntryPoint<Presenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<SettingPresenter>(Lifetime.Scoped);
         }

@@ -68,6 +68,7 @@ namespace Scripts.Provider
             CharacterManager characterManager = new CharacterManager();
 
             World world = new World(map, characterManager);
+            GameManager.World = world;
 
             characterManager.OnCharacterAdded.Subscribe(character =>
             {
@@ -89,8 +90,12 @@ namespace Scripts.Provider
                     Direction8 direction = DirectionMethods.FromVector(vector);
                     actionReceiver.SetMoveAction(direction);
                 });
-            characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver, world);
-            characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom(), world);
+            receiver.OnAttackPerformed.Subscribe(_ =>
+            {
+                actionReceiver.SetAttackAction();
+            });
+            characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver);
+            characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
             _camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
 
             new TurnController(characterManager);

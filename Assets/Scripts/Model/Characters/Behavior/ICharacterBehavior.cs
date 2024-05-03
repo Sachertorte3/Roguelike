@@ -5,6 +5,6 @@ namespace Scripts.Model.Characters.Behavior
 {
     internal interface ICharacterBehavior
     {
-        public UniTask<IAction> GenerateNextAction();
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character);
     }
 }

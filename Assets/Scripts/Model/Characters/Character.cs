@@ -1,19 +1,18 @@
 using Cysharp.Threading.Tasks;
+using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
-using System;
-using UniRx;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
     public sealed class Character : IActor, IHasBehavior
     {
-        public IReadOnlyReactiveProperty<Vector2Int> Position => _position;
+        public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;
-        public IObservable<Direction8> OnMove => _onMove;
+        public Observable<Direction8> OnMove => _onMove;
         private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
@@ -39,7 +38,7 @@ namespace Scripts.Model.Characters
         /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return _canIgnoreWall ? _world.IsPassableIgnoreWall(Position.Value + direction.Vector()): _world.IsPassable(Position.Value + direction.Vector());
+            return _canIgnoreWall ? _world.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) : _world.IsPassable(Position.CurrentValue + direction.Vector());
         }
         public async UniTask Move(Direction8 direction)
         {

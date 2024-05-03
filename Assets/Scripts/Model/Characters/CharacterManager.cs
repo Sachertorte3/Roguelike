@@ -1,9 +1,11 @@
 ﻿#nullable enable
+using ObservableCollections;
+using R3;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Setting;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using UniRx;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
@@ -12,8 +14,9 @@ namespace Scripts.Model.Characters
     {
         public Character? Player => _player;
         private Character? _player = null;
-        private ReactiveCollection<Character> _characters = new ReactiveCollection<Character>();
-        public IReadOnlyReactiveCollection<Character> Characters => _characters;
+        private ObservableList<Character> _characters = new ObservableList<Character>();
+        public ReadOnlyCollection<Character> Characters => new ReadOnlyCollection<Character>(_characters);
+        public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
         private readonly CharacterFactory _factory = new CharacterFactory();
         public CharacterManager()
         {
@@ -35,7 +38,7 @@ namespace Scripts.Model.Characters
         private HashSet<Vector2Int> _allCharacterPositions = new HashSet<Vector2Int>();
         private void SetAllCharacterPosition()
         {
-            _allCharacterPositions = Characters.Select(character => character.Position.Value).ToHashSet();
+            _allCharacterPositions = Characters.Select(character => character.Position.CurrentValue).ToHashSet();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using RandomDungeonWithBluePrint;
+﻿using ObservableCollections;
+using R3;
+using RandomDungeonWithBluePrint;
 using Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UniRx;
 using Unity.Logging;
 using UnityEngine;
 using static RandomDungeonWithBluePrint.Constants;
@@ -12,9 +13,9 @@ namespace Scripts.Model.Map
 {
     public class Tilemap
     {
-        public IObservable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
+        public Observable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
-        private readonly ReactiveDictionary<Vector2Int, TileData> _tiles;
+        private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Width;
         public readonly int Height;
         public Tilemap(FieldBluePrint bluePrint)
@@ -22,7 +23,7 @@ namespace Scripts.Model.Map
             Field field = FieldBuilder.Build(bluePrint);
             Width = field.Grid.Size.x;
             Height = field.Grid.Size.y;
-            _tiles = new ReactiveDictionary<Vector2Int, TileData>(
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(
                 new RectInt(0, 0, Width, Height)
                     .RectRange().ToDictionary(
                         position => position,
@@ -34,14 +35,14 @@ namespace Scripts.Model.Map
                         }
                     )
             );
-            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
+            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
         public Tilemap(int width, int height)
         {
             Width = width;
             Height = height;
-            _tiles = new ReactiveDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
-            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.Key, context.NewValue)));
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
+            _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
         public bool IsPositionInsideMap(Vector2Int position)
         {

@@ -1,18 +1,13 @@
-﻿using Scripts.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using R3;
+using Scripts.View;
 using UnityEngine;
 using VContainer;
-using UniRx;
 
 namespace Assets.Scripts.View
 {
-    public class MenuController: MonoBehaviour
+    public class MenuController : MonoBehaviour
     {
-        [SerializeField] GameObject _menu;
+        [SerializeField] private GameObject _menu;
         [Inject]
         public void Construct(InputReceiver inputReceiver)
         {

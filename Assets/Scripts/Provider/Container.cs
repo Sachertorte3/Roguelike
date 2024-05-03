@@ -1,21 +1,15 @@
-﻿using RandomDungeonWithBluePrint;
-using Scripts.Model.Setting;
+﻿using Assets.Scripts.View;
+using RandomDungeonWithBluePrint;
 using Scripts.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Scripts.View.UI;
 using UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using Scripts.View.UI;
-using Assets.Scripts.View;
 
 namespace Scripts.Provider
 {
-    internal class Container: LifetimeScope
+    internal class Container : LifetimeScope
     {
         [SerializeField] private FieldBluePrint _bluePrint;
         protected override void Configure(IContainerBuilder builder)

@@ -1,20 +1,20 @@
-﻿using Scripts.Model.Setting;
+﻿using R3;
+using Scripts.Model.Setting;
 using Scripts.View.UI;
 using System;
-using UniRx;
 using Unity.Logging;
 using VContainer;
 using VContainer.Unity;
 
 namespace Scripts.Provider
 {
-    internal class SettingPresenter: IInitializable
+    internal class SettingPresenter : IInitializable
     {
         [Inject]
         public SettingPresenter(SettingWindow settingWindow)
         {
             Log.Debug("Set options");
-            foreach (var option in Settings.GetOptions())
+            foreach (IOptionInput option in Settings.GetOptions())
             {
                 switch (option)
                 {

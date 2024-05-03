@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using R3;
+using System.Collections.Generic;
 using System.Reflection;
-using UniRx;
 using UnityEngine;
 
 namespace Scripts.Model.Setting
@@ -18,7 +18,7 @@ namespace Scripts.Model.Setting
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new List<IOptionInput>();
-            foreach (FieldInfo field in typeof(Settings).GetFields(BindingFlags.NonPublic|BindingFlags.Static))
+            foreach (FieldInfo field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
             {
                 object value = field.GetValue(typeof(Settings));
                 if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))

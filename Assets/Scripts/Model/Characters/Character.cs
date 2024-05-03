@@ -33,7 +33,7 @@ namespace Scripts.Model.Characters
         }
         public bool CanMove(Direction8 direction)
         {
-            return _world.IsPassable(Position.Value + direction.Vector());
+            return Settings.IgnoreWall.Value || _world.IsPassable(Position.Value + direction.Vector());
         }
         public async UniTask Move(Direction8 direction)
         {

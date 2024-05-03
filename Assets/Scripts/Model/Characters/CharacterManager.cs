@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Setting;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -23,12 +24,12 @@ namespace Scripts.Model.Characters
         }
         public void SpawnPlayer(Vector2Int spawnPosition, ActionReceiver actionReceiver, World world)
         {
-            _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver), world);
+            _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver), world, Settings.IgnoreWall);
             _characters.Add(_player);
         }
         public void SpawnCharacter(Vector2Int spawnPosition, World world)
         {
-            _characters.Add(_factory.CreateCharacter(spawnPosition, new EnemyBehavior(), world));
+            _characters.Add(_factory.CreateCharacter(spawnPosition, new EnemyBehavior(), world, new ReactiveProperty<bool>(false)));
         }
         public HashSet<Vector2Int> GetAllCharacterPositions() => _allCharacterPositions;
         private HashSet<Vector2Int> _allCharacterPositions = new HashSet<Vector2Int>();

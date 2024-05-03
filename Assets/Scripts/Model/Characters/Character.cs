@@ -20,11 +20,13 @@ namespace Scripts.Model.Characters
         internal ICharacterBehavior Behavior => _behavior;
         private ICharacterBehavior _behavior;
         private World _world;
-        internal Character(Vector2Int position, ICharacterBehavior behavior, World world)
+        private bool _canIgnoreWall;
+        internal Character(Vector2Int position, ICharacterBehavior behavior, World world, ReactiveProperty<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             _behavior = behavior;
             _world = world;
+            canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()
         {
@@ -37,7 +39,7 @@ namespace Scripts.Model.Characters
         /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return Settings.IgnoreWall.Value? _world.IsPassableIgnoreWall(Position.Value + direction.Vector()): _world.IsPassable(Position.Value + direction.Vector());
+            return _canIgnoreWall ? _world.IsPassableIgnoreWall(Position.Value + direction.Vector()): _world.IsPassable(Position.Value + direction.Vector());
         }
         public async UniTask Move(Direction8 direction)
         {

@@ -5,6 +5,7 @@ namespace Scripts.Model.Action
 {
     public interface IActor
     {
+        public bool CanMove(Direction8 direction);
         public UniTask Move(Direction8 direction);
     }
 }

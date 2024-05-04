@@ -23,16 +23,21 @@ namespace Scripts.Model
         {
             return !_characterManager.GetAllCharacterPositions().Contains(position);
         }
-        public IEnumerable<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        /// <summary>
+        /// Generates and returns a list of characters currently located within the given positions.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
         {
-            return _characterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue));
+            return _characterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue)).ToHashSet();
         }
     }
     public interface IWorldViewer
     {
         public bool IsPassable(Vector2Int position);
         public bool IsPassableIgnoreWall(Vector2Int position);
-        public IEnumerable<Character> GetCharactersInArea(HashSet<Vector2Int> area);
+        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);
     }
     public static class GameManager
     {

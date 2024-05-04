@@ -19,6 +19,7 @@ namespace Scripts.Model.Characters
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
+        public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).Select(_ => Unit.Default);
         public Direction8 CurrentDirection { get; private set; }
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;

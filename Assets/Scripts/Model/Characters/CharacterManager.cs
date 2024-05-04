@@ -25,14 +25,19 @@ namespace Scripts.Model.Characters
                 character.Value.Position.Subscribe(_ => SetAllCharacterPosition());
             });
         }
+        private void AddCharacter(Character character)
+        {
+            _characters.Add(character);
+            character.OnDead.Subscribe(_ => _characters.Remove(character));
+        }
         public void SpawnPlayer(Vector2Int spawnPosition, ActionReceiver actionReceiver)
         {
             _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
-            _characters.Add(_player);
+            AddCharacter(_player);
         }
         public void SpawnCharacter(Vector2Int spawnPosition)
         {
-            _characters.Add(_factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
+            AddCharacter(_factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
         }
         public HashSet<Vector2Int> GetAllCharacterPositions() => _allCharacterPositions;
         private HashSet<Vector2Int> _allCharacterPositions = new HashSet<Vector2Int>();

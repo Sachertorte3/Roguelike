@@ -18,6 +18,7 @@ namespace Scripts.Model.Characters
         private readonly ReactiveProperty<Vector2Int> _position;
         public Observable<Direction8> OnMove => _onMove;
         private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
+        public Direction8 CurrentDirection { get; private set; }
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
@@ -52,6 +53,7 @@ namespace Scripts.Model.Characters
                 return;
             }
             _position.Value += direction.Vector();
+            CurrentDirection = direction;
             _onMove.OnNext(direction);
             await UniTask.Delay(Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
@@ -62,7 +64,7 @@ namespace Scripts.Model.Characters
         }
         public async UniTask UseSkill(Skill skill)
         {
-            await new WorldEffect(new HashSet<Vector2Int> { CurrentPosition }, skill).Spawn(this);
+            await skill.Use(this);
             State = CharacterState.Wait;
         }
     }

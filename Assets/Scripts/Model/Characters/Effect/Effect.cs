@@ -1,22 +1,16 @@
 ﻿using Cysharp.Threading.Tasks;
+using Scripts.Data;
 using Scripts.Model.Action;
-using System.Collections.Generic;
-using UnityEngine;
+using Sirenix.Utilities;
 
 namespace Scripts.Model.Characters.Effect
 {
-    internal record WorldEffect(HashSet<Vector2Int> Area, Skill Skill)
-    {
-        public async UniTask Spawn(IActor actor)
-        {
-            await GameManager.World.GetCharactersInArea(Area).Select(character => Skill.Use(actor, character));
-        }
-    }
     public record Skill(int power)
     {
-        public UniTask Use(IActor actor, ITarget target)
+        public LineArea AreaData = new LineArea(1);
+        public UniTask Use(IActor actor)
         {
-            target.Stats.Hp.Lose(Formula.Calc(actor, power));
+            GameManager.World.GetCharactersInArea(AreaData.Get(actor.CurrentPosition, actor.CurrentDirection)).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, power)));
             return UniTask.CompletedTask;
         }
     }

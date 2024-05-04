@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using R3;
-using Scripts.Data;
+using Scripts.Data.Area;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
 using Scripts.Utilities;

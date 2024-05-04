@@ -1,15 +1,10 @@
-﻿using Scripts.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Scripts.View
 {
-    public class EffectViewer
+    public class EffectViewSpawner
     {
         public void Spawn(IEnumerable<Vector2Int> area, int effectDisplayMilliseconds)
         {

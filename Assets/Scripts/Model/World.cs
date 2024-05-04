@@ -1,14 +1,12 @@
-﻿using Codice.Client.BaseCommands;
-using Scripts.Model.Characters;
+﻿using Scripts.Model.Characters;
 using Scripts.Model.Map;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Scripts.Model
 {
-    public class World: IWorldViewer
+    public class World : IWorldViewer
     {
         private Tilemap _map;
         private readonly CharacterManager _characterManager;

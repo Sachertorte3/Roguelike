@@ -1,7 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters.Effect;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Scripts.Model.Action
 {

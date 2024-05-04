@@ -1,9 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters.Effect;
+using Scripts.Utilities;
 
 namespace Scripts.Model.Action
 {
-    internal record UseSkill(Skill Skill) : IAction
+    internal record UseSkill(Skill Skill, Direction8 Direction) : IAction
     {
         private float score;
         public bool Doable(IActor actor)
@@ -12,11 +13,11 @@ namespace Scripts.Model.Action
         }
         public async UniTask Do(IActor actor)
         {
-            actor.UseSkill(Skill);
+            await actor.UseSkill(Skill, Direction);
         }
         public float Evaluate(IActor actor)
         {
-            score = 1;
+            score = Skill.Evaluate(actor, Direction);
             return score;
         }
     }

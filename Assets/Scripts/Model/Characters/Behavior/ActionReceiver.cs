@@ -19,7 +19,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public void SetAttackAction()
         {
-            _receivedAction.Value = new UseSkill(new Skill(10, new LineArea(1)));
+            _receivedAction.Value = new UseSkill(new Skill(10, new LineArea(1)), Direction8.Up);
         }
         internal void ReadInput()
         {

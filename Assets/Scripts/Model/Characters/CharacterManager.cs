@@ -17,6 +17,7 @@ namespace Scripts.Model.Characters
         private ObservableList<Character> _characters = new ObservableList<Character>();
         public ReadOnlyCollection<Character> Characters => new ReadOnlyCollection<Character>(_characters);
         public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
+        public Observable<Character> OnCharacterRemoved => _characters.ObserveRemove().Select(character => character.Value);
         private readonly CharacterFactory _factory = new CharacterFactory();
         public CharacterManager()
         {

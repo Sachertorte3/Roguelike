@@ -1,4 +1,5 @@
-﻿using Scripts.Model.Characters;
+﻿using R3;
+using Scripts.Model.Characters;
 using Scripts.Model.Map;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Scripts.Model
     public class World : IWorldViewer
     {
         private Tilemap _map;
+        public ITilemapViewer Map => _map;
         private readonly CharacterManager _characterManager;
         public World(Tilemap map, CharacterManager characterManager)
         {
@@ -35,6 +37,7 @@ namespace Scripts.Model
     }
     public interface IWorldViewer
     {
+        public ITilemapViewer Map { get; }
         public bool IsPassable(Vector2Int position);
         public bool IsPassableIgnoreWall(Vector2Int position);
         public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);

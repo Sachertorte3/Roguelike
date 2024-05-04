@@ -11,7 +11,7 @@ using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
 {
-    public class Tilemap
+    public class Tilemap: ITilemapViewer
     {
         public Observable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
@@ -69,5 +69,10 @@ namespace Scripts.Model.Map
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
         }
+    }
+    public interface ITilemapViewer
+    {
+        public Observable<(Vector2Int position, TileData tile)> OnChangeTile { get; }
+        public IEnumerable<Vector2Int> GetAllPassablePositions();
     }
 }

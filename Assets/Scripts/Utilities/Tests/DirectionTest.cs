@@ -43,5 +43,10 @@ namespace Scripts.Utilities.Tests
         {
             Assert.AreEqual(direction, DirectionMethods.FromVector(direction.Vector()));
         }
+        [TestCaseSource(nameof(Directions))]
+        public void VectorTest3(Direction8 direction)
+        {
+            Assert.AreEqual(direction, DirectionMethods.NearestDirectionFromVector(direction.Vector()));
+        }
     }
 }

@@ -5,6 +5,7 @@ using Scripts.Model.Characters.Effect;
 using Scripts.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Scripts.Model.Characters.Behavior
 {
@@ -21,13 +22,14 @@ namespace Scripts.Model.Characters.Behavior
     }
     internal sealed class Chase : IDiscoveredTargetBehavior
     {
-        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character)
+        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition)
         {
-            return GenerateMoveActionsDoable(character).Cast<IAction>().Concat(GenerateUseSkillActionsDoable(character));
+            return GenerateMoveActionsDoable(character, targetPosition).Cast<IAction>().Concat(GenerateUseSkillActionsDoable(character));
         }
-        private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character)
+        private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition)
         {
-            return DirectionMethods.AllDirections.Select(direction => new Move(direction)).Where(move => move.Doable(character));
+            List<Direction8> directions = DirectionMethods.NearDirectionFromVectors(targetPosition - character.CurrentPosition);
+            return new List<Move> { new Move(directions[0], 0.1f), new Move(directions[0], 0.05f), new Move(directions[0], 0) }.Where(move => move.Doable(character));
         }
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character)
         {

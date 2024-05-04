@@ -7,17 +7,21 @@ namespace Scripts.Data
 {
     public record LineArea(int Length): IDirectionalArea
     {
-        public HashSet<Vector2Int> Get(Vector2Int position, Direction8 direction)
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
         {
-            return Enumerable.Range(1, Length).Select(i => position + direction.Vector() * i).ToHashSet();
+            return Enumerable.Range(1, Length).Select(i => position + direction.Vector() * i);
         }
     }
-    public interface IDirectionalArea
+    public interface IDirectionalArea: IArea
     {
-        public HashSet<Vector2Int> Get(Vector2Int position, Direction8 direction);
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction);
     }
-    public interface INotDirectionalArea
+    public interface INotDirectionalArea: IArea
     {
-        public HashSet<Vector2Int> Get(Vector2Int position);
+        public IEnumerable<Vector2Int> Get(Vector2Int position);
+    }
+    public interface IArea
+    {
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction);
     }
 }

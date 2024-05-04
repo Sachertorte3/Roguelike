@@ -2,15 +2,18 @@
 using Scripts.Data;
 using Scripts.Model.Action;
 using Sirenix.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Scripts.Model.Characters.Effect
 {
-    public record Skill(int power)
+    public record Skill(int Power, IArea Area)
     {
-        public LineArea AreaData = new LineArea(1);
         public UniTask Use(IActor actor)
         {
-            GameManager.World.GetCharactersInArea(AreaData.Get(actor.CurrentPosition, actor.CurrentDirection)).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, power)));
+            IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, actor.CurrentDirection);
+            GameManager.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, Power)));
             return UniTask.CompletedTask;
         }
     }

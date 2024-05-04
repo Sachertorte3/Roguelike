@@ -29,7 +29,7 @@ namespace Scripts.Model.Characters.Behavior
         private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition)
         {
             List<Direction8> directions = DirectionMethods.NearDirectionFromVectors(targetPosition - character.CurrentPosition);
-            return new List<Move> { new Move(directions[0], 0.1f), new Move(directions[0], 0.05f), new Move(directions[0], 0) }.Where(move => move.Doable(character));
+            return new List<Move> { new Move(directions[0], 0.1f), new Move(directions[1], 0.05f), new Move(directions[2], 0.01f) }.Where(move => move.Doable(character));
         }
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character)
         {

@@ -73,6 +73,7 @@ namespace Scripts.Model.Map
     public interface ITilemapViewer
     {
         public Observable<(Vector2Int position, TileData tile)> OnChangeTile { get; }
+        public bool IsPassable(Vector2Int position);
         public IEnumerable<Vector2Int> GetAllPassablePositions();
     }
 }

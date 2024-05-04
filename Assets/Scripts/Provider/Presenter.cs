@@ -77,7 +77,7 @@ namespace Scripts.Provider
                 CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
                 view.transform.position = (Vector3Int)character.Position.CurrentValue;
                 character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
-                character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.CurrentValue));
+                character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
                 characterViewDict[character] = view;
             });

@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using R3;
+using Scripts.Data;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
 using Scripts.Utilities;
@@ -18,7 +19,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public void SetAttackAction()
         {
-            _receivedAction.Value = new UseSkill(new Skill(10));
+            _receivedAction.Value = new UseSkill(new Skill(10, new LineArea(1)));
         }
         internal void ReadInput()
         {

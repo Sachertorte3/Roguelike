@@ -18,6 +18,8 @@ namespace Scripts.Model.Characters
         private readonly ReactiveProperty<Vector2Int> _position;
         public Observable<Direction8> OnMove => _onMove;
         private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
+        public Observable<(Skill, Vector2Int, Direction8)> OnUseSkill => _onUseSkill;
+        private readonly Subject<(Skill, Vector2Int, Direction8)> _onUseSkill = new Subject<(Skill, Vector2Int, Direction8)>();
         public Direction8 CurrentDirection { get; private set; }
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
@@ -64,6 +66,7 @@ namespace Scripts.Model.Characters
         }
         public async UniTask UseSkill(Skill skill)
         {
+            _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
             await skill.Use(this);
             State = CharacterState.Wait;
         }

@@ -13,7 +13,7 @@ namespace Scripts.Model.Setting
         private static readonly Slider _SEVolume = new Slider("SE音量", 0, 100, 50);
         public static ReactiveProperty<int> MoveMilliseconds => _moveMilliseconds.OnValueChanged;
         private static readonly Slider _moveMilliseconds = new Slider("移動時間[ms]", 10, 1000, 100);
-        public static ReactiveProperty<int> EffectDisplayTime => _moveMilliseconds.OnValueChanged;
+        public static ReactiveProperty<int> EffectDisplayTime => _effectDisplayTime.OnValueChanged;
         private static readonly Slider _effectDisplayTime = new Slider("エフェクト表示時間[ms]", 10, 1000, 100);
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
         private static readonly CheckBox _ignoreWall = new CheckBox("壁貫通", false);

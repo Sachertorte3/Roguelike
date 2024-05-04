@@ -80,6 +80,7 @@ namespace Scripts.Provider
                 character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
                 characterViewDict[character] = view;
+                character.OnDead.Subscribe(_ => { GameObject.Destroy(view.gameObject); characterViewDict.Remove(character); });
             });
             ActionReceiver actionReceiver = new ActionReceiver();
             Observable.Merge(

@@ -30,8 +30,8 @@ namespace Scripts.Model.Characters.Stats
                 Gain(-value);
                 return;
             }
-            _value.Value -= Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
-            Log.Debug($"Lose {value} HP");
+            _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
+            Log.Debug($"Lose {value}, current value {_value.Value}");
         }
         public void Gain(int value)
         {
@@ -40,7 +40,7 @@ namespace Scripts.Model.Characters.Stats
                 Lose(-value);
                 return;
             }
-            _value.Value += Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
+            _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
         }
     }
 }

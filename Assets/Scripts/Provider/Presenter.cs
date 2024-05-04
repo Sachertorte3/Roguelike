@@ -69,15 +69,15 @@ namespace Scripts.Provider
 
             World world = new World(map, characterManager);
             GameManager.World = world;
-            EffectViewer effectViewer = new EffectViewer();
+            EffectViewSpawner effectViewer = new EffectViewSpawner();
 
             characterManager.OnCharacterAdded.Subscribe(character =>
             {
                 GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
                 CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
                 view.transform.position = (Vector3Int)character.Position.CurrentValue;
-                character.OnMove.Subscribe(direction => view.Move(character.Position.CurrentValue, direction));
-                character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.Item1.Area.Get(useSkill.Item2, useSkill.Item3), Settings.EffectDisplayTime.CurrentValue));
+                character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
+                character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.CurrentValue));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
                 characterViewDict[character] = view;
             });

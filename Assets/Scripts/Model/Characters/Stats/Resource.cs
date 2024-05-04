@@ -1,8 +1,8 @@
 ﻿using R3;
-using StatSystem;
-using UnityEngine;
 using Scripts.Utilities;
+using StatSystem;
 using Unity.Logging;
+using UnityEngine;
 
 namespace Scripts.Model.Characters.Stats
 {

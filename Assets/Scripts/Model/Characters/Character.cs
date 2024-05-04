@@ -6,7 +6,6 @@ using Scripts.Model.Characters.Effect;
 using Scripts.Model.Characters.Stats;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
@@ -16,10 +15,10 @@ namespace Scripts.Model.Characters
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;
-        public Observable<Direction8> OnMove => _onMove;
-        private readonly Subject<Direction8> _onMove = new Subject<Direction8>();
-        public Observable<(Skill, Vector2Int, Direction8)> OnUseSkill => _onUseSkill;
-        private readonly Subject<(Skill, Vector2Int, Direction8)> _onUseSkill = new Subject<(Skill, Vector2Int, Direction8)>();
+        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
+        private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
+        public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
+        private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
         public Direction8 CurrentDirection { get; private set; }
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
@@ -56,7 +55,7 @@ namespace Scripts.Model.Characters
             }
             _position.Value += direction.Vector();
             CurrentDirection = direction;
-            _onMove.OnNext(direction);
+            _onMove.OnNext((direction, CurrentPosition));
             await UniTask.Delay(Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }

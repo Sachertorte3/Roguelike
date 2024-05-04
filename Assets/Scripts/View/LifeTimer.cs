@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Scripts.View
 {
-    internal class LifeTimer: MonoBehaviour
+    internal class LifeTimer : MonoBehaviour
     {
         public int LifeTimeMilliseconds = 1000;
         private async void Start()

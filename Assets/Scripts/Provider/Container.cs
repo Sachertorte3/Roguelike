@@ -20,8 +20,9 @@ namespace Scripts.Provider
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
-            builder.RegisterEntryPoint<Presenter>(Lifetime.Scoped);
-            builder.RegisterEntryPoint<SettingPresenter>(Lifetime.Scoped);
+
+            builder.RegisterPlainEntryPoint<Presenter>();
+            builder.RegisterPlainEntryPoint<SettingPresenter>();
         }
     }
 }

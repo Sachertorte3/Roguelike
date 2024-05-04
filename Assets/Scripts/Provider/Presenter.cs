@@ -1,4 +1,5 @@
 #nullable enable
+using Codice.Client.BaseCommands;
 using R3;
 using RandomDungeonWithBluePrint;
 using Scripts.Model;
@@ -15,77 +16,44 @@ using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
-using VContainer.Unity;
 using Logger = Unity.Logging.Logger;
 
 namespace Scripts.Provider
 {
-    public class Presenter : IPostInitializable
+    public class Presenter
     {
-        private readonly InputReceiver receiver;
-        private readonly TileViewContriller tileView;
-        private readonly FieldBluePrint bluePrint;
-        private readonly CameraFollowTarget _camera;
         private Dictionary<Character, CharacterView> characterViewDict = new Dictionary<Character, CharacterView>();
         [Inject]
         public Presenter(InputReceiver receiver, TileViewContriller tileView, FieldBluePrint bluePrint, CameraFollowTarget camera)
         {
-            this.receiver = receiver;
-            this.tileView = tileView;
-            this.bluePrint = bluePrint;
-            this._camera = camera;
-        }
-        public void PostInitialize()
-        {
             LoggerInit();
 
-            Tilemap map = new Tilemap(bluePrint);
-            map.OnChangeTile.Subscribe(context =>
-            {
-                switch (context.tile.TileType)
-                {
-                    case TileCategory.Wall:
-                        tileView.SetWall(context.position);
-                        break;
-                    case TileCategory.Floor:
-                        tileView.SetFloor(context.position);
-                        break;
-                }
-            });
-            foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
-            {
-                switch (tileData.TileType)
-                {
-                    case TileCategory.Wall:
-                        tileView.SetWall(position);
-                        break;
-                    case TileCategory.Floor:
-                        tileView.SetFloor(position);
-                        break;
-                }
-            }
+            Tilemap map = CreateTilemap(bluePrint, tileView);
+            SetTilemapView(tileView, map);
 
-            CharacterManager characterManager = new CharacterManager();
-
-            World world = new World(map, characterManager);
-            GameManager.World = world;
             EffectViewSpawner effectViewer = new EffectViewSpawner();
 
-            characterManager.OnCharacterAdded.Subscribe(character =>
-            {
-                GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-                CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
-                view.transform.position = (Vector3Int)character.Position.CurrentValue;
-                character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
-                character.OnUseSkill.Subscribe(useSkill => effectViewer.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
-                Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
-                characterViewDict[character] = view;
-            });
-            characterManager.OnCharacterRemoved.Subscribe(character =>
-            {
-                GameObject.Destroy(characterViewDict[character].gameObject);
-                characterViewDict.Remove(character);
-            });
+            CharacterManager characterManager = CreateCharacterManager(effectViewer);
+
+            CreateWorld(map, characterManager);
+
+            characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
+            characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
+
+            camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
+
+            new TurnController(characterManager);
+        }
+        private void LoggerInit()
+        {
+            Log.Logger = new Logger(new LoggerConfig()
+                .MinimumLevel.Debug()
+                .OutputTemplate("[{Timestamp}] {Level} | {Message}{NewLine}{Stacktrace}")
+                .WriteTo.UnityDebugLog());
+            Log.Debug("Init Logger");
+        }
+        private ActionReceiver CreateActionReceiver(InputReceiver receiver)
+        {
             ActionReceiver actionReceiver = new ActionReceiver();
             Observable.Merge(
                 receiver.OnMovePerformed,
@@ -101,19 +69,66 @@ namespace Scripts.Provider
             {
                 actionReceiver.SetAttackAction();
             });
-            characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), actionReceiver);
-            characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
-            _camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
-
-            new TurnController(characterManager);
+            return actionReceiver;
         }
-        private void LoggerInit()
+        private Tilemap CreateTilemap(FieldBluePrint bluePrint, TileViewContriller tileView)
         {
-            Log.Logger = new Logger(new LoggerConfig()
-                .MinimumLevel.Debug()
-                .OutputTemplate("[{Timestamp}] {Level} | {Message}{NewLine}{Stacktrace}")
-                .WriteTo.UnityDebugLog());
-            Log.Debug("Init Logger");
+            Tilemap map = new Tilemap(bluePrint);
+            map.OnChangeTile.Subscribe(context =>
+            {
+                switch (context.tile.TileType)
+                {
+                    case TileCategory.Wall:
+                        tileView.SetWall(context.position);
+                        break;
+                    case TileCategory.Floor:
+                        tileView.SetFloor(context.position);
+                        break;
+                }
+            });
+            return map;
+        }
+        private void SetTilemapView(TileViewContriller tileView, Tilemap map)
+        {
+            foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
+            {
+                switch (tileData.TileType)
+                {
+                    case TileCategory.Wall:
+                        tileView.SetWall(position);
+                        break;
+                    case TileCategory.Floor:
+                        tileView.SetFloor(position);
+                        break;
+                }
+            }
+        }
+        private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner)
+        {
+            CharacterManager characterManager = new CharacterManager();
+
+            characterManager.OnCharacterAdded.Subscribe(character =>
+            {
+                GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
+                CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
+                view.transform.position = (Vector3Int)character.Position.CurrentValue;
+                character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
+                character.OnUseSkill.Subscribe(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
+                Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
+                characterViewDict[character] = view;
+            });
+            characterManager.OnCharacterRemoved.Subscribe(character =>
+            {
+                GameObject.Destroy(characterViewDict[character].gameObject);
+                characterViewDict.Remove(character);
+            });
+
+            return characterManager;
+        }
+        private void CreateWorld(Tilemap map, CharacterManager characterManager)
+        {
+            World world = new World(map, characterManager);
+            GameManager.World = world;
         }
     }
 }

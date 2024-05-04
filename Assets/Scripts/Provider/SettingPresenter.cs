@@ -4,11 +4,10 @@ using Scripts.View.UI;
 using System;
 using Unity.Logging;
 using VContainer;
-using VContainer.Unity;
 
 namespace Scripts.Provider
 {
-    internal class SettingPresenter : IInitializable
+    internal class SettingPresenter
     {
         [Inject]
         public SettingPresenter(SettingWindow settingWindow)
@@ -28,10 +27,6 @@ namespace Scripts.Provider
                         throw new ArgumentException();
                 }
             }
-        }
-        public void Initialize()
-        {
-
         }
     }
 }

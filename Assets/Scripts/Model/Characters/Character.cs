@@ -25,12 +25,14 @@ namespace Scripts.Model.Characters
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
         public CharacterStats Stats { get; init; }
+        public VisibleArea Area { get; init; }
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, ReactiveProperty<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             Behavior = behavior;
             Stats = new CharacterStats(10, 2);
+            Area = new VisibleArea(_position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()

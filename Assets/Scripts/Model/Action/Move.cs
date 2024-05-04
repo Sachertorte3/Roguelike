@@ -3,9 +3,8 @@ using Scripts.Utilities;
 
 namespace Scripts.Model.Action
 {
-    internal record Move(Direction8 Direction) : IAction
+    internal record Move(Direction8 Direction, float Score=0) : IAction
     {
-        private float score;
         public bool Doable(IActor actor)
         {
             return actor.CanMove(Direction);
@@ -17,8 +16,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = 0;
-            return score;
+            return Score;
         }
     }
 }

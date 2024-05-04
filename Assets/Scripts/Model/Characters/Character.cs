@@ -64,10 +64,11 @@ namespace Scripts.Model.Characters
         {
 
         }
-        public async UniTask UseSkill(Skill skill)
+        public async UniTask UseSkill(Skill skill, Direction8 direction)
         {
+            CurrentDirection = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
-            await UniTask.WhenAll(skill.Use(this), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             State = CharacterState.Wait;
         }
     }

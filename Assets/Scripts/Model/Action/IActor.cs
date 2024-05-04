@@ -11,6 +11,6 @@ namespace Scripts.Model.Action
         public Direction8 CurrentDirection { get; }
         public bool CanMove(Direction8 direction);
         public UniTask Move(Direction8 direction);
-        public UniTask UseSkill(Skill skill);
+        public UniTask UseSkill(Skill skill, Direction8 direction);
     }
 }

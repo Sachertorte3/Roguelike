@@ -17,7 +17,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = 1;
+            score = 0;
             return score;
         }
     }

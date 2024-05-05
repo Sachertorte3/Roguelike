@@ -1,6 +1,7 @@
 ﻿using R3;
 using Scripts.Model.Characters;
 using Scripts.Model.Map;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -45,5 +46,7 @@ namespace Scripts.Model
     public static class GameManager
     {
         public static IWorldViewer? World;
+        public static Observable<Unit>? OnDashPerformed;
+        public static Func<bool>? IsDash;
     }
 }

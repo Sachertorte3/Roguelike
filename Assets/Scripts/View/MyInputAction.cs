@@ -53,6 +53,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""362aed77-c1ca-49b8-9c51-48109e449881"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -187,6 +196,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""240c120b-f425-417f-8bcb-d73cfc01ccc3"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -226,6 +246,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_Move = m_Field.FindAction("Move", throwIfNotFound: true);
         m_Field_OpenMenu = m_Field.FindAction("OpenMenu", throwIfNotFound: true);
         m_Field_Attack = m_Field.FindAction("Attack", throwIfNotFound: true);
+        m_Field_Dash = m_Field.FindAction("Dash", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -293,6 +314,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_Move;
     private readonly InputAction m_Field_OpenMenu;
     private readonly InputAction m_Field_Attack;
+    private readonly InputAction m_Field_Dash;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
@@ -300,6 +322,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Field_Move;
         public InputAction @OpenMenu => m_Wrapper.m_Field_OpenMenu;
         public InputAction @Attack => m_Wrapper.m_Field_Attack;
+        public InputAction @Dash => m_Wrapper.m_Field_Dash;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -318,6 +341,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @Dash.started += instance.OnDash;
+            @Dash.performed += instance.OnDash;
+            @Dash.canceled += instance.OnDash;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -331,6 +357,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @Dash.started -= instance.OnDash;
+            @Dash.performed -= instance.OnDash;
+            @Dash.canceled -= instance.OnDash;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -399,6 +428,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

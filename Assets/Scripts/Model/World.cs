@@ -1,4 +1,5 @@
-﻿using R3;
+﻿#nullable enable
+using R3;
 using Scripts.Model.Characters;
 using Scripts.Model.Map;
 using System;
@@ -46,7 +47,7 @@ namespace Scripts.Model
     public static class GameManager
     {
         public static IWorldViewer? World;
-        public static Observable<Unit>? OnDashPerformed;
         public static Func<bool>? IsDash;
+        public static Func<bool>? IsNoMove;
     }
 }

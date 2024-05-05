@@ -10,11 +10,19 @@ namespace Scripts.Model.Characters.Behavior
         {
             _actionReceiver = actionReceiver;
         }
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
-            UniTask<IAction> action = _actionReceiver.ReceivedAction.WaitAsync();
+            UniTask<IAction> actionTask = _actionReceiver.ReceivedAction.WaitAsync();
             _actionReceiver.ReadInput();
-            return action;
+            while (true)
+            {
+                IAction action = await actionTask;
+                if (action.Doable(character))
+                {
+                    return action;
+                }
+                actionTask = _actionReceiver.ReceivedAction.WaitAsync();
+            }
         }
     }
 }

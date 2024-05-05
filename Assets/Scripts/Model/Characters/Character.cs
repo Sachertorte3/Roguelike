@@ -46,8 +46,8 @@ namespace Scripts.Model.Characters
         /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return _canIgnoreWall?
-                GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()): 
+            return _canIgnoreWall ?
+                GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) :
                 (GameManager.World.IsPassable(Position.CurrentValue + direction.Vector())
                 && (!direction.IsDiagonal() || (GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
         }
@@ -62,7 +62,7 @@ namespace Scripts.Model.Characters
             _position.Value += direction.Vector();
             CurrentDirection = direction;
             _onMove.OnNext((direction, CurrentPosition));
-            await UniTask.Delay(GameManager.IsDash()? Settings.DashMilliseconds.Value: Settings.MoveMilliseconds.Value);
+            await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)

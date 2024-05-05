@@ -17,6 +17,10 @@ namespace Scripts.Model.Setting
         private static readonly Slider _effectDisplayTime = new Slider("エフェクト表示時間[ms]", 10, 1000, 100);
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
         private static readonly CheckBox _ignoreWall = new CheckBox("壁貫通", false);
+        public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;
+        private static readonly CheckBox _intelligentDash = new CheckBox("スマートダッシュ", true);
+        public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
+        private static readonly Slider _dashPauseMilliseconds = new Slider("分岐一時停止時間[ms]", 100, 1000, 250);
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new List<IOptionInput>();

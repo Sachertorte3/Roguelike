@@ -2,6 +2,7 @@
 using Scripts.Model.Action;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
+using UnityEngine;
 
 namespace Scripts.Model.Characters.Behavior
 {
@@ -15,6 +16,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
+            await _intelligentDashController.Wait(character);
             UniTask<IAction> actionTask = _actionReceiver.ReceivedAction.WaitAsync();
             _actionReceiver.ReadInput();
             while (true)
@@ -24,7 +26,7 @@ namespace Scripts.Model.Characters.Behavior
                 {
                     return action switch
                     {
-                        Move move => await _intelligentDashController.Filter(move, character),
+                        Move move => Settings.IntelligentDash.Value? await _intelligentDashController.Filter(move, character): move,
                         _ => action
                     };
                 }
@@ -34,17 +36,20 @@ namespace Scripts.Model.Characters.Behavior
     }
     internal sealed class IntelligentDashController
     {
-        public async UniTask<Move> Filter(Move move, IHasBehavior character)
+        public async UniTask Wait(IHasBehavior character)
         {
-            if (character.CanMove(move.Direction.Reverse()) &&
+            if (character.CanMove(character.CurrentDirection.Reverse()) &&
                 (
-                    (character.CanMove(move.Direction.Rotate90Clockwise()) && !character.CanMove(move.Direction.Reverse().Rotate45AntiClockwise()))
-                    || (character.CanMove(move.Direction.Rotate90AntiClockwise()) && !character.CanMove(move.Direction.Reverse().Rotate45Clockwise()))
+                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise()) && !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise()))
+                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise()) && !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise()))
                 )
             )
             {
-                await UniTask.Delay(Settings.MoveMilliseconds.Value);
+                await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
             }
+        }
+        public async UniTask<Move> Filter(Move move, IHasBehavior character)
+        {
             return move;
         }
     }

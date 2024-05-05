@@ -21,9 +21,13 @@ namespace Scripts.Model.Characters
         private readonly CharacterFactory _factory = new CharacterFactory();
         public CharacterManager()
         {
-            _characters.ObserveAdd().Subscribe(character =>
+            Observable.Merge(
+                _characters.ObserveAdd().Select(character => character.Value),
+                _characters.ObserveRemove().Select(character => character.Value)
+            )
+                .Subscribe(character =>
             {
-                character.Value.Position.Subscribe(_ => SetAllCharacterPosition());
+                character.Position.Subscribe(_ => SetAllCharacterPosition());
             });
         }
         private void AddCharacter(Character character)

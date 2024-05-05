@@ -40,8 +40,8 @@ namespace Scripts.Provider
             characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
             characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
 
-            GameManager.OnDashPerformed = receiver.OnDashPerformed;
             GameManager.IsDash = () => receiver.IsDash;
+            GameManager.IsNoMove = () => receiver.IsNoMove;
 
             camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
 

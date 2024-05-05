@@ -39,6 +39,7 @@ namespace Scripts.Model.Characters
         {
             IAction action = await Behavior.GenerateNextAction(this);
             await action.Do(this);
+            State = CharacterState.Wait;
         }
         /// <summary>
         /// Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even if the destination is impassable.
@@ -56,14 +57,16 @@ namespace Scripts.Model.Characters
             State = CharacterState.Act;
             if (!CanMove(direction))
             {
-                State = CharacterState.Wait;
                 return;
             }
             _position.Value += direction.Vector();
             CurrentDirection = direction;
             _onMove.OnNext((direction, CurrentPosition));
             await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
-            State = CharacterState.Wait;
+        }
+        public void Turn(Direction8 direction)
+        {
+            CurrentDirection = direction;
         }
         public void Teleport(Vector2Int position)
         {
@@ -74,7 +77,6 @@ namespace Scripts.Model.Characters
             CurrentDirection = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
             await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-            State = CharacterState.Wait;
         }
     }
 }

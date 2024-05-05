@@ -30,18 +30,25 @@ namespace Scripts.Model.Characters.Behavior
             while (true)
             {
                 (IAction action, bool started) = await actionTask;
-                if (Settings.IntelligentDash.Value && IsDashingStraight(started, action))
+                if (action is Move move && GameManager.IsNoMove())
                 {
-                    action = _intelligentDashController.Filter((Move)action, character);
+                    character.Turn(move.Direction);
                 }
                 else
                 {
-                    _intelligentDashController.Reset();
-                }
+                    if (Settings.IntelligentDash.Value && IsDashingStraight(started, action))
+                    {
+                        action = _intelligentDashController.Filter((Move)action, character);
+                    }
+                    else
+                    {
+                        _intelligentDashController.Reset();
+                    }
 
-                if (action.Doable(character))
-                {
-                    return action;
+                    if (action.Doable(character))
+                    {
+                        return action;
+                    }
                 }
                 actionTask = _actionReceiver.ReceivedAction.WaitAsync();
             }

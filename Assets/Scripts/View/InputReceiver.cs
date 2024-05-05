@@ -9,8 +9,8 @@ namespace Scripts.View
         private MyInputAction _actions = new MyInputAction();
         public Observable<Vector2> OnMovePerformed => _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
         public Vector2 MoveVector => _actions.Field.Move.ReadValue<Vector2>();
-        public Observable<Unit> OnDashPerformed => _actions.Field.Dash.AsObservable().Select(context => Unit.Default);
         public bool IsDash => _actions.Field.Dash.IsPressed();
+        public bool IsNoMove => _actions.Field.TurnOnly.IsPressed();
         public Observable<Unit> OnAttackPerformed => _actions.Field.Attack.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);

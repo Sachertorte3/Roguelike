@@ -123,6 +123,7 @@ namespace Scripts.Provider
                 character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
                 character.OnUseSkill.Subscribe(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
+                Settings.DashMilliseconds.Subscribe(value => view.DashMilliseconds = value);
                 characterViewDict[character] = view;
             });
             characterManager.OnCharacterRemoved.Subscribe(character =>

@@ -33,12 +33,15 @@ namespace Scripts.Provider
 
             EffectViewSpawner effectViewer = new EffectViewSpawner();
 
-            CharacterManager characterManager = CreateCharacterManager(effectViewer);
+            CharacterManager characterManager = CreateCharacterManager(effectViewer, receiver);
 
             CreateWorld(map, characterManager);
 
             characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
             characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
+
+            GameManager.OnDashPerformed = receiver.OnDashPerformed;
+            GameManager.IsDash = () => receiver.IsDash;
 
             camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
 
@@ -103,7 +106,7 @@ namespace Scripts.Provider
                 }
             }
         }
-        private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner)
+        private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner, InputReceiver receiver)
         {
             CharacterManager characterManager = new CharacterManager();
 
@@ -111,6 +114,7 @@ namespace Scripts.Provider
             {
                 GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
                 CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
+                view.Construct(receiver);
                 view.transform.position = (Vector3Int)character.Position.CurrentValue;
                 character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
                 character.OnUseSkill.Subscribe(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));

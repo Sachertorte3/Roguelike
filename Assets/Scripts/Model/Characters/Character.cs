@@ -59,7 +59,10 @@ namespace Scripts.Model.Characters
             _position.Value += direction.Vector();
             CurrentDirection = direction;
             _onMove.OnNext((direction, CurrentPosition));
-            await UniTask.Delay(Settings.MoveMilliseconds.Value);
+            if (!GameManager.IsDash())
+            {
+                await UniTask.Delay(Settings.MoveMilliseconds.Value);
+            }
             State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)

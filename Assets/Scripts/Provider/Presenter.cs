@@ -58,15 +58,19 @@ namespace Scripts.Provider
         private ActionReceiver CreateActionReceiver(InputReceiver receiver)
         {
             ActionReceiver actionReceiver = new ActionReceiver();
-            Observable.Merge(
-                receiver.OnMovePerformed,
-                actionReceiver.OnWait.Select(_ => receiver.MoveVector)
-            )
+            receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
                 .Subscribe(vector =>
                 {
                     Direction8 direction = DirectionMethods.FromVector(vector);
-                    actionReceiver.SetMoveAction(direction);
+                    actionReceiver.SetMoveAction(direction, true);
+                });
+            actionReceiver.OnActionRead.Select(_ => receiver.MoveVector)
+                .Where(vector => vector != Vector2.zero)
+                .Subscribe(vector =>
+                {
+                    Direction8 direction = DirectionMethods.FromVector(vector);
+                    actionReceiver.SetMoveAction(direction, false);
                 });
             receiver.OnAttackPerformed.Subscribe(_ =>
             {

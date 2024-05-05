@@ -19,7 +19,7 @@ namespace Scripts.Model.Characters
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
-        public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).Select(_ => Unit.Default);
+        public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).AsUnitObservable();
         public Direction8 CurrentDirection { get; private set; }
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
@@ -46,7 +46,10 @@ namespace Scripts.Model.Characters
         /// </summary>
         public bool CanMove(Direction8 direction)
         {
-            return _canIgnoreWall ? GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) : GameManager.World.IsPassable(Position.CurrentValue + direction.Vector());
+            return _canIgnoreWall?
+                GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()): 
+                (GameManager.World.IsPassable(Position.CurrentValue + direction.Vector())
+                && (!direction.IsDiagonal() || (GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
         }
         public async UniTask Move(Direction8 direction)
         {

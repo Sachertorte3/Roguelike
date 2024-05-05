@@ -9,21 +9,21 @@ namespace Scripts.Model.Characters.Behavior
 {
     public class ActionReceiver
     {
-        internal IReadOnlyAsyncReactiveProperty<IAction> ReceivedAction => _receivedAction;
-        private AsyncReactiveProperty<IAction> _receivedAction = new AsyncReactiveProperty<IAction>(null);
-        public Observable<Unit> OnWait => _onWait;
-        private Subject<Unit> _onWait = new Subject<Unit>();
-        public void SetMoveAction(Direction8 direction)
+        internal IReadOnlyAsyncReactiveProperty<(IAction action, bool isStarted)> ReceivedAction => _receivedAction;
+        private AsyncReactiveProperty<(IAction action, bool isStarted)> _receivedAction = new AsyncReactiveProperty<(IAction action, bool isStarted)>((null, false));
+        public Observable<Unit> OnActionRead => _onActionRead;
+        private Subject<Unit> _onActionRead = new Subject<Unit>();
+        public void SetMoveAction(Direction8 direction, bool isStarted)
         {
-            _receivedAction.Value = new Move(direction);
+            _receivedAction.Value = (new Move(direction), isStarted);
         }
         public void SetAttackAction()
         {
-            _receivedAction.Value = new UseSkill(new Skill(10, new LineArea(1)), Direction8.Up);
+            _receivedAction.Value = (new UseSkill(new Skill(10, new LineArea(1)), Direction8.Up), true);
         }
         internal void ReadInput()
         {
-            _onWait.OnNext(Unit.Default);
+            _onActionRead.OnNext(Unit.Default);
         }
     }
 }

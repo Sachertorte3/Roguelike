@@ -32,11 +32,7 @@ namespace Scripts.Model.Characters.Behavior
                 (IAction action, bool started) = await actionTask;
                 if (Settings.IntelligentDash.Value && IsDashingStraight(started, action))
                 {
-                    Move? newMove = await _intelligentDashController.Filter((Move)action, character);
-                    if (newMove != null)
-                    {
-                        action = newMove;
-                    }
+                    action = _intelligentDashController.Filter((Move)action, character);
                 }
                 else
                 {
@@ -66,7 +62,7 @@ namespace Scripts.Model.Characters.Behavior
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
             }
         }
-        public async UniTask<Move?> Filter(Move move, IHasBehavior character)
+        public Move Filter(Move move, IHasBehavior character)
         {
             HashSet < Direction8 > canMoveDirections = DirectionMethods.AllDirections.Where(direction => character.CanMove(direction)).ToHashSet();
             _inStraightway = canMoveDirections.Count() == 2;

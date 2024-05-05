@@ -43,7 +43,12 @@ namespace Scripts.Provider
             GameManager.IsDash = () => receiver.IsDash;
             GameManager.IsNoMove = () => receiver.IsNoMove;
 
-            camera.SetTarget(characterViewDict[characterManager.Player].gameObject);
+            CharacterView playerView = characterViewDict[characterManager.Player];
+
+            GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
+            GameObject arrow =  GameObject.Instantiate(arrowPrefab, playerView.transform);
+            arrow.GetComponent<CharacterArrow>().Constract(characterManager.Player.Direction);
+            camera.SetTarget(playerView.gameObject);
 
             new TurnController(characterManager);
         }

@@ -26,7 +26,10 @@ namespace Scripts.Model.Characters.Behavior
         }
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
-            await _intelligentDashController.Wait(character);
+            if (GameManager.IsDash())
+            {
+                await _intelligentDashController.Wait(character);
+            }
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             UniTask<Skill> skillTask = _receiver.OnSkillActionReceived.WaitAsync();
@@ -58,6 +61,10 @@ namespace Scripts.Model.Characters.Behavior
                             if (move.Doable(character))
                             {
                                 return move;
+                            }
+                            else
+                            {
+                                character.Turn(move.Direction);
                             }
                         }
                         break;

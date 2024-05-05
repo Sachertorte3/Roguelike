@@ -20,7 +20,9 @@ namespace Scripts.Model.Characters
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
         public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).AsUnitObservable();
-        public Direction8 CurrentDirection { get; private set; }
+        public Direction8 CurrentDirection => Direction.CurrentValue;
+        public ReactiveProperty<Direction8> Direction => _direction;
+        private ReactiveProperty<Direction8> _direction = new ReactiveProperty<Direction8>(Direction8.Down);
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
@@ -60,13 +62,13 @@ namespace Scripts.Model.Characters
                 return;
             }
             _position.Value += direction.Vector();
-            CurrentDirection = direction;
+            _direction.Value = direction;
             _onMove.OnNext((direction, CurrentPosition));
             await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
         }
         public void Turn(Direction8 direction)
         {
-            CurrentDirection = direction;
+            _direction.Value = direction;
         }
         public void Teleport(Vector2Int position)
         {
@@ -74,7 +76,7 @@ namespace Scripts.Model.Characters
         }
         public async UniTask UseSkill(Skill skill, Direction8 direction)
         {
-            CurrentDirection = direction;
+            _direction.Value = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
             await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
         }

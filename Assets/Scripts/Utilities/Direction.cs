@@ -144,6 +144,21 @@ namespace Scripts.Utilities
                 _ => throw new ArgumentException(),
             };
         }
+        public static bool IsDiagonal(this Direction8 direction)
+        {
+            return direction switch
+            {
+                Direction8.Up => false,
+                Direction8.UpRight => true,
+                Direction8.Right => false,
+                Direction8.DownRight => true,
+                Direction8.Down => false,
+                Direction8.DownLeft => true,
+                Direction8.Left => false,
+                Direction8.UpLeft => true,
+                _ => throw new InvalidEnumArgumentException(),
+            };
+        }
         public static Direction8 RotateClockwise(this Direction8 direction, Angle angle)
         {
             return FromAngle(direction.Angle().RotateClockwise(angle.Value));

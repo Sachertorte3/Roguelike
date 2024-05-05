@@ -55,26 +55,26 @@ namespace Scripts.Provider
                 .WriteTo.UnityDebugLog());
             Log.Debug("Init Logger");
         }
-        private ActionReceiver CreateActionReceiver(InputReceiver receiver)
+        private CharacterControllInputReceiver CreateActionReceiver(InputReceiver receiver)
         {
-            ActionReceiver actionReceiver = new ActionReceiver();
+            CharacterControllInputReceiver actionReceiver = new CharacterControllInputReceiver();
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
                 .Subscribe(vector =>
                 {
                     Direction8 direction = DirectionMethods.FromVector(vector);
-                    actionReceiver.SetMoveAction(direction, true);
+                    actionReceiver.SetMoveInput(direction, true);
                 });
             actionReceiver.OnActionRead.Select(_ => receiver.MoveVector)
                 .Where(vector => vector != Vector2.zero)
                 .Subscribe(vector =>
                 {
                     Direction8 direction = DirectionMethods.FromVector(vector);
-                    actionReceiver.SetMoveAction(direction, false);
+                    actionReceiver.SetMoveInput(direction, false);
                 });
             receiver.OnAttackPerformed.Subscribe(_ =>
             {
-                actionReceiver.SetAttackAction();
+                actionReceiver.SetAttackInput();
             });
             return actionReceiver;
         }

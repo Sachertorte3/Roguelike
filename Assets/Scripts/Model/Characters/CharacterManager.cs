@@ -35,7 +35,7 @@ namespace Scripts.Model.Characters
             _characters.Add(character);
             character.OnDead.Subscribe(_ => _characters.Remove(character));
         }
-        public void SpawnPlayer(Vector2Int spawnPosition, ActionReceiver actionReceiver)
+        public void SpawnPlayer(Vector2Int spawnPosition, CharacterControllInputReceiver actionReceiver)
         {
             _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
             AddCharacter(_player);

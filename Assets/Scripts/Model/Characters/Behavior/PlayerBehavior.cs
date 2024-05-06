@@ -20,10 +20,6 @@ namespace Scripts.Model.Characters.Behavior
         {
             _receiver = receiver;
         }
-        public bool IsDashingStraight(bool started, IAction action)
-        {
-            return GameManager.IsDash() && !started && action is Move;
-        }
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
             if (GameManager.IsDash())
@@ -49,13 +45,9 @@ namespace Scripts.Model.Characters.Behavior
                         }
                         else
                         {
-                            if (Settings.IntelligentDash.Value && IsDashingStraight(started, move))
+                            if (Settings.IntelligentDash.Value)
                             {
-                                move = _intelligentDashController.Filter(move, character);
-                            }
-                            else
-                            {
-                                _intelligentDashController.Reset();
+                                move = _intelligentDashController.Filter(move, character, started);
                             }
 
                             if (move.Doable(character))
@@ -71,8 +63,6 @@ namespace Scripts.Model.Characters.Behavior
                     case 1:
                         Skill skill = firstCompletedTask.result2;
                         IAction action = new UseSkill(skill, character.CurrentDirection);
-
-                        _intelligentDashController.Reset();
 
                         if (action.Doable(character))
                         {
@@ -91,7 +81,6 @@ namespace Scripts.Model.Characters.Behavior
     }
     internal sealed class IntelligentDashController
     {
-        private bool _inStraightway = false;
         public async UniTask Wait(IHasBehavior character)
         {
             if (character.CanMove(character.CurrentDirection) && character.CanMove(character.CurrentDirection.Reverse()) &&
@@ -104,11 +93,40 @@ namespace Scripts.Model.Characters.Behavior
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
             }
         }
-        public Move Filter(Move move, IHasBehavior character)
+        public Move Filter(Move move, IHasBehavior character, bool started)
         {
+            move = MoveFilter(move, character);
+            move = DashFilter(move, character, started);
+            return move;
+        }
+        private Move MoveFilter(Move move, IHasBehavior character)
+        {
+            if (!character.CanMove(move.Direction))
+            {
+                Direction8 directionRotateClockwise = move.Direction.Rotate45Clockwise();
+                bool canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise);
+                Direction8 directionRotateAntiClockwise = move.Direction.Rotate45AntiClockwise();
+                bool canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise);
+                if (canMoveDirectionRotateClockwise && !canMoveDirectionRotateAntiClockwise)
+                {
+                    return new Move(directionRotateClockwise);
+                }
+                else if (!canMoveDirectionRotateClockwise && canMoveDirectionRotateAntiClockwise)
+                {
+                    return new Move(directionRotateAntiClockwise);
+                }
+            }
+            return move;
+        }
+        private Move DashFilter(Move move, IHasBehavior character, bool started)
+        {
+            if (!IsDashingStraight(started))
+            {
+                return move;
+            }
             HashSet<Direction8> canMoveDirections = DirectionMethods.AllDirections.Where(direction => character.CanMove(direction)).ToHashSet();
-            _inStraightway = canMoveDirections.Count() == 2;
-            if (_inStraightway)
+            bool inStraightway = canMoveDirections.Count() == 2;
+            if (inStraightway)
             {
                 Direction8 lastMoveDirection = character.CurrentDirection;
                 if (!canMoveDirections.Remove(lastMoveDirection.Reverse()))
@@ -120,9 +138,9 @@ namespace Scripts.Model.Characters.Behavior
             }
             return move;
         }
-        public void Reset()
+        public bool IsDashingStraight(bool started)
         {
-            _inStraightway = false;
+            return GameManager.IsDash() && !started;
         }
     }
 }

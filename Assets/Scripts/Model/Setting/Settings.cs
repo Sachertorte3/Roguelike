@@ -14,7 +14,7 @@ namespace Scripts.Model.Setting
         public static ReactiveProperty<int> MoveMilliseconds => _moveMilliseconds.OnValueChanged;
         private static readonly Slider _moveMilliseconds = new Slider("移動時間[ms]", 1, 1000, 100);
         public static ReactiveProperty<int> DashMilliseconds => _dashMilliseconds.OnValueChanged;
-        private static readonly Slider _dashMilliseconds = new Slider("ダッシュ時移動時間[ms]", 1, 1000, 5);
+        private static readonly Slider _dashMilliseconds = new Slider("ダッシュ時移動時間[ms]", 1, 1000, 20);
         public static ReactiveProperty<int> EffectDisplayTime => _effectDisplayTime.OnValueChanged;
         private static readonly Slider _effectDisplayTime = new Slider("エフェクト表示時間[ms]", 10, 1000, 100);
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;

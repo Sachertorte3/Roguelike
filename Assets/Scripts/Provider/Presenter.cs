@@ -47,7 +47,23 @@ namespace Scripts.Provider
 
             CharacterView playerView = characterViewDict[characterManager.Player];
 
-            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => tileMask.Visible(area));
+            characterManager.Player.Area.OnVisibleAreaChanged.Pairwise().Subscribe(area =>
+            {
+                area.Previous.ExceptWith(area.Current);
+                area.Current.ExceptWith(area.Previous);
+                tileMask.SetTilesTranslucent(area.Previous);
+                tileMask.SetTilesVisible(area.Current);
+                IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
+                IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
+                previousVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.GetComponent<SpriteRenderer>().enabled = false);
+                currentVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.GetComponent<SpriteRenderer>().enabled = true);
+            });
+            characterManager.OnCharacterAdded.Subscribe(character =>
+            {
+                characterViewDict[character].GetComponent<SpriteRenderer>().enabled = characterManager.Player.Area.Get().Contains(character.CurrentPosition);
+            });
+
+            characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow =  GameObject.Instantiate(arrowPrefab, playerView.transform);

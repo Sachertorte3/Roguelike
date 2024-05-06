@@ -1,5 +1,4 @@
 #nullable enable
-using Codice.Client.BaseCommands;
 using R3;
 using RandomDungeonWithBluePrint;
 using Scripts.Model;
@@ -9,12 +8,14 @@ using Scripts.Model.Map;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using Scripts.View;
+using Sirenix.Utilities;
 using System.Collections.Generic;
 using UI;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UIElements;
 using VContainer;
 using Logger = Unity.Logging.Logger;
 
@@ -24,12 +25,12 @@ namespace Scripts.Provider
     {
         private Dictionary<Character, CharacterView> characterViewDict = new Dictionary<Character, CharacterView>();
         [Inject]
-        public Presenter(InputReceiver receiver, TileViewContriller tileView, FieldBluePrint bluePrint, CameraFollowTarget camera)
+        public Presenter(InputReceiver receiver, TileViewController tileView, TileMaskController tileMask, FieldBluePrint bluePrint, CameraFollowTarget camera)
         {
             LoggerInit();
 
-            Tilemap map = CreateTilemap(bluePrint, tileView);
-            SetTilemapView(tileView, map);
+            Tilemap map = CreateTilemap(bluePrint, tileView, tileMask);
+            SetTilemapView(tileView, tileMask, map);
 
             EffectViewSpawner effectViewer = new EffectViewSpawner();
 
@@ -45,8 +46,11 @@ namespace Scripts.Provider
 
             CharacterView playerView = characterViewDict[characterManager.Player];
 
+            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => area.ForEach(position => tileMask.RemoveMask(position)));
+
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow =  GameObject.Instantiate(arrowPrefab, playerView.transform);
+
             arrow.GetComponent<CharacterArrow>().Constract(characterManager.Player.Direction);
             camera.SetTarget(playerView.gameObject);
 
@@ -83,7 +87,7 @@ namespace Scripts.Provider
             });
             return actionReceiver;
         }
-        private Tilemap CreateTilemap(FieldBluePrint bluePrint, TileViewContriller tileView)
+        private Tilemap CreateTilemap(FieldBluePrint bluePrint, TileViewController tileView, TileMaskController tileMask)
         {
             Tilemap map = new Tilemap(bluePrint);
             map.OnChangeTile.Subscribe(context =>
@@ -100,7 +104,7 @@ namespace Scripts.Provider
             });
             return map;
         }
-        private void SetTilemapView(TileViewContriller tileView, Tilemap map)
+        private void SetTilemapView(TileViewController tileView, TileMaskController tileMask, Tilemap map)
         {
             foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
             {
@@ -113,6 +117,10 @@ namespace Scripts.Provider
                         tileView.SetFloor(position);
                         break;
                 }
+            }
+            foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
+            {
+                tileMask.SetMask(position);
             }
         }
         private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner, InputReceiver receiver)

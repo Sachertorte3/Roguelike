@@ -15,7 +15,8 @@ namespace Scripts.Provider
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<InputReceiver>(Lifetime.Singleton);
-            builder.RegisterComponentInHierarchy<TileViewContriller>();
+            builder.RegisterComponentInHierarchy<TileViewController>();
+            builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();

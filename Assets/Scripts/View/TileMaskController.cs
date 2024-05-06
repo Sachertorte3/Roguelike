@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Scripts.Utilities;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,34 +9,38 @@ namespace Scripts.View
     public class TileMaskController : MonoBehaviour
     {
         [SerializeField] private Tilemap _tilemap;
-        private HashSet<Vector2Int> _lastVisibleArea = new HashSet<Vector2Int>();
+        private IEnumerable<Vector2Int> _lastVisibleArea = new List<Vector2Int>();
         public void SetTileColor(Vector2Int position, Color color)
         {
             _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, 0), TileFlags.None);
             _tilemap.SetColor(new Vector3Int(position.x, position.y, 0), color);
         }
-        public void SetTilesTransparent(HashSet<Vector2Int> positions)
+        public void SetTilesTransparent(IEnumerable<Vector2Int> positions)
         {
             foreach (Vector2Int position in positions)
             {
                 SetTileColor(position, Color.clear);
             }
         }
-        public void SetTilesTranslucent(HashSet<Vector2Int> positions)
+        public void SetTilesTranslucent(IEnumerable<Vector2Int> positions)
         {
             foreach (Vector2Int position in positions)
             {
                 SetTileColor(position, new Color(1f, 1f, 1f, 0.5f));
             }
         }
-        public void SetTilesVisible(HashSet<Vector2Int> positions)
+        public void SetTilesVisible(IEnumerable<Vector2Int> positions)
         {
             foreach (Vector2Int position in positions)
             {
                 SetTileColor(position, Color.white);
             }
         }
-        public void Visible(HashSet<Vector2Int> positions)
+        public void ResetMask(Vector2Int position)
+        {
+            SetTilesTransparent(new RectInt(position - new Vector2Int(1, 1), new Vector2Int(3, 3)).RectRange());
+        }
+        public void Visible(IEnumerable<Vector2Int> positions)
         {
             SetTilesTranslucent(_lastVisibleArea);
             SetTilesVisible(positions);

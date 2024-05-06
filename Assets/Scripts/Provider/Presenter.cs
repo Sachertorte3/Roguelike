@@ -40,7 +40,10 @@ namespace Scripts.Provider
             CreateWorld(map, characterManager);
 
             characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
-            characterManager.SpawnCharacter(map.GetAllPassablePositions().GetAtRandom());
+            foreach (Vector2Int position in map.GetAllPassablePositions().GetAtRandom(10))
+            {
+                characterManager.SpawnCharacter(position);
+            }
 
             GameManager.IsDash = () => receiver.IsDash;
             GameManager.IsNoMove = () => receiver.IsNoMove;
@@ -55,8 +58,10 @@ namespace Scripts.Provider
                 tileMask.SetTilesVisible(area.Current);
                 IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
                 IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
-                previousVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.GetComponent<SpriteRenderer>().enabled = false);
-                currentVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.GetComponent<SpriteRenderer>().enabled = true);
+                previousVisibleCharacter.ForEach(character => character.VisibleByPlayer = false);
+                currentVisibleCharacter.ForEach(character => character.VisibleByPlayer = true);
+                previousVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.SetVisibility(false));
+                currentVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.SetVisibility(true));
             });
             characterManager.OnCharacterAdded.Subscribe(character =>
             {

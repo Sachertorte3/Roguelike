@@ -19,11 +19,13 @@ namespace Scripts.Model.Characters
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
+        public bool IsDead => Stats.Hp.Value.CurrentValue <= 0;
         public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).AsUnitObservable();
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public ReactiveProperty<Direction8> Direction => _direction;
         private ReactiveProperty<Direction8> _direction = new ReactiveProperty<Direction8>(Direction8.Down);
         internal bool CanAct = true;
+        public bool VisibleByPlayer = false;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
         public CharacterStats Stats { get; init; }
@@ -41,7 +43,6 @@ namespace Scripts.Model.Characters
         {
             IAction action = await Behavior.GenerateNextAction(this);
             await action.Do(this);
-            State = CharacterState.Wait;
         }
         /// <summary>
         /// Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even if the destination is impassable.
@@ -64,7 +65,11 @@ namespace Scripts.Model.Characters
             _position.Value += direction.Vector();
             _direction.Value = direction;
             _onMove.OnNext((direction, CurrentPosition));
-            await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+            if (VisibleByPlayer)
+            {
+                await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+            }
+            State = CharacterState.Wait;
         }
         public void Turn(Direction8 direction)
         {
@@ -73,12 +78,17 @@ namespace Scripts.Model.Characters
         public void Teleport(Vector2Int position)
         {
 
+            State = CharacterState.Wait;
         }
         public async UniTask UseSkill(Skill skill, Direction8 direction)
         {
             _direction.Value = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
-            await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            if (VisibleByPlayer)
+            {
+                await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            }
+            State = CharacterState.Wait;
         }
     }
 }

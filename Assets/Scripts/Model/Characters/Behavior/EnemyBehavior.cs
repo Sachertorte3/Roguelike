@@ -29,7 +29,6 @@ namespace Scripts.Model.Characters.Behavior
             }
             if (_lastTargetPosition.HasValue)
             {
-                Debug.Log(_lastTargetPosition);
                 IEnumerable<IAction> actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value);
                 return UniTask.FromResult(actions.MaxBy(action => action.Evaluate(character) + Random.Range(0, behavioralRandomness)));
             }

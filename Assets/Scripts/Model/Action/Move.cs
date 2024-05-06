@@ -9,9 +9,10 @@ namespace Scripts.Model.Action
         {
             return actor.CanMove(Direction);
         }
-        public async UniTask Do(IActor actor)
+        public UniTask Do(IActor actor)
         {
-            await actor.Move(Direction);
+            var _ = actor.Move(Direction);
+            return UniTask.CompletedTask;
         }
         public float Evaluate(IActor actor)
         {

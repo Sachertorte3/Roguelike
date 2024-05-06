@@ -11,20 +11,33 @@ namespace Scripts.View
         public int DashMilliseconds = 1000;
         private const int frame = 16;
         private Func<bool> _isDash;
+        private bool _isVisible;
         public void Construct(InputReceiver receiver)
         {
             _isDash = () => receiver.IsDash;
         }
+        public void SetVisibility(bool visible)
+        {
+            _isVisible = visible;
+            GetComponent<SpriteRenderer>().enabled = visible;
+        }
         public void Move(Vector2Int destination, Direction8 direction)
         {
-            Vector3Int position = (Vector3Int)destination - (Vector3Int)direction.Vector();
-            Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f * 0.75f / frame))
-            .Take(frame)
-            .Index()
-            .Subscribe(l =>
+            if (_isVisible)
             {
-                transform.position = Vector3.Lerp(position, (Vector3Int)destination, (l + 1) / (float)frame);
-            }).AddTo(this);
+                Vector3Int position = (Vector3Int)destination - (Vector3Int)direction.Vector();
+                Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f * 0.75f / frame))
+                .Take(frame)
+                .Index()
+                .Subscribe(l =>
+                {
+                    transform.position = Vector3.Lerp(position, (Vector3Int)destination, (l + 1) / (float)frame);
+                }).AddTo(this);
+            }
+            else
+            {
+                transform.position = (Vector3Int)destination;
+            }
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Scripts.Model.Map
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Width;
         public readonly int Height;
+        public Vector2Int Size => new Vector2Int(Width, Height);
+        public RectInt Rect => new RectInt(Vector2Int.zero, Size);
         public Tilemap(FieldBluePrint bluePrint)
         {
             Field field = FieldBuilder.Build(bluePrint);
@@ -41,7 +43,7 @@ namespace Scripts.Model.Map
         {
             Width = width;
             Height = height;
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(new RectInt(0, 0, Width, Height).RectRange().ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange().ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
         public bool IsPositionInsideMap(Vector2Int position)

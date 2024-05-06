@@ -102,6 +102,7 @@ namespace Scripts.Provider
                         tileView.SetFloor(context.position);
                         break;
                 }
+                tileMask.ResetMask(context.position);
             });
             return map;
         }

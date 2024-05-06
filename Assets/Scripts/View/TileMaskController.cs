@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 namespace Scripts.View
 {
     public class TileMaskController : MonoBehaviour
     {
         [SerializeField] private Tilemap _tilemap;
-        private IEnumerable<Vector2Int> _lastVisibleArea = new List<Vector2Int>();
         public void SetTileColor(Vector2Int position, Color color)
         {
             _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, 0), TileFlags.None);
@@ -39,12 +39,6 @@ namespace Scripts.View
         public void ResetMask(Vector2Int position)
         {
             SetTilesTransparent(new RectInt(position - new Vector2Int(1, 1), new Vector2Int(3, 3)).RectRange());
-        }
-        public void Visible(IEnumerable<Vector2Int> positions)
-        {
-            SetTilesTranslucent(_lastVisibleArea);
-            SetTilesVisible(positions);
-            _lastVisibleArea = positions;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Scripts.Model.Characters
 {
@@ -13,6 +14,10 @@ namespace Scripts.Model.Characters
         {
             position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));
             GameManager.World.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));
+        }
+        public void Refrash(Vector2Int position)
+        {
+            _visibleAreaCache.Value = Calc(position);
         }
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {

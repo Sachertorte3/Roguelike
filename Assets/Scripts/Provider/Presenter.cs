@@ -10,6 +10,7 @@ using Scripts.Utilities;
 using Scripts.View;
 using Sirenix.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using UI;
 using Unity.Logging;
 using Unity.Logging.Sinks;
@@ -46,7 +47,7 @@ namespace Scripts.Provider
 
             CharacterView playerView = characterViewDict[characterManager.Player];
 
-            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => area.ForEach(position => tileMask.RemoveMask(position)));
+            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => tileMask.Visible(area));
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow =  GameObject.Instantiate(arrowPrefab, playerView.transform);
@@ -118,10 +119,7 @@ namespace Scripts.Provider
                         break;
                 }
             }
-            foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
-            {
-                tileMask.SetMask(position);
-            }
+            tileMask.SetTilesTransparent(map.Rect.RectRange().ToHashSet());
         }
         private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner, InputReceiver receiver)
         {

@@ -1,4 +1,5 @@
 #nullable enable
+using BidirectionalMap;
 using R3;
 using RandomDungeonWithBluePrint;
 using Scripts.Model;
@@ -16,7 +17,6 @@ using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.UIElements;
 using VContainer;
 using Logger = Unity.Logging.Logger;
 
@@ -24,7 +24,7 @@ namespace Scripts.Provider
 {
     public class Presenter
     {
-        private Dictionary<Character, CharacterView> characterViewDict = new Dictionary<Character, CharacterView>();
+        private BiMap<Character, CharacterView> characterViewDict = new BiMap<Character, CharacterView>();
         [Inject]
         public Presenter(InputReceiver receiver, TileViewController tileView, TileMaskController tileMask, FieldBluePrint bluePrint, CameraFollowTarget camera)
         {
@@ -37,6 +37,17 @@ namespace Scripts.Provider
 
             CharacterManager characterManager = CreateCharacterManager(effectViewer, receiver);
 
+            characterManager.OnCharacterAdded.Subscribe(character =>
+            {
+                CharacterView characterView = characterViewDict.Forward[character];
+                SpriteView view = characterView.GetComponent<SpriteView>();
+                view.SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
+                characterView.OnMoveFinished.Subscribe(_ =>
+                {
+                    view.SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
+                });
+            });
+
             CreateWorld(map, characterManager);
 
             characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
@@ -48,7 +59,7 @@ namespace Scripts.Provider
             GameManager.IsDash = () => receiver.IsDash;
             GameManager.IsNoMove = () => receiver.IsNoMove;
 
-            CharacterView playerView = characterViewDict[characterManager.Player];
+            CharacterView playerView = characterViewDict.Forward[characterManager.Player];
 
             characterManager.Player.Area.OnVisibleAreaChanged.Pairwise().Subscribe(area =>
             {
@@ -56,23 +67,19 @@ namespace Scripts.Provider
                 area.Current.ExceptWith(area.Previous);
                 tileMask.SetTilesTranslucent(area.Previous);
                 tileMask.SetTilesVisible(area.Current);
-                IEnumerable<SpriteView> views = GameObject.FindObjectsOfType<SpriteView>();
                 IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
                 IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
                 previousVisibleCharacter.ForEach(character => character.VisibleByPlayer = false);
                 currentVisibleCharacter.ForEach(character => character.VisibleByPlayer = true);
-                views.Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
-                views.Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
+                ObjectManager.GetObjectsByType<SpriteView>().Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
+                ObjectManager.GetObjectsByType<SpriteView>().Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
             });
-            characterManager.OnCharacterAdded.Subscribe(character =>
-            {
-                characterViewDict[character].GetComponent<SpriteView>().SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
-            });
+            ObjectManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(characterManager.Player.Area.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
 
             characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
-            GameObject arrow =  GameObject.Instantiate(arrowPrefab, playerView.transform);
+            GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
 
             arrow.GetComponent<CharacterArrow>().Constract(characterManager.Player.Direction);
             camera.SetTarget(playerView.gameObject);
@@ -148,21 +155,22 @@ namespace Scripts.Provider
         {
             CharacterManager characterManager = new CharacterManager();
 
-            characterManager.OnCharacterAdded.Subscribe(character =>
+            characterManager.OnCharacterAdded.Subscribe((character =>
             {
                 GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-                CharacterView view = Object.Instantiate(prefab).GetComponent<CharacterView>();
+                CharacterView view = GameObject.Instantiate<GameObject>(prefab).GetComponent<CharacterView>();
+                ObjectManager.RegisterComponent<SpriteView>(view.GetComponent<SpriteView>());
                 view.Construct(receiver);
                 view.transform.position = (Vector3Int)character.Position.CurrentValue;
                 character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
-                character.OnUseSkill.Subscribe(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
+                character.OnUseSkill.Subscribe<(Model.Characters.Effect.Skill skill, Vector2Int position, Direction8 direction)>(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
                 Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
                 Settings.DashMilliseconds.Subscribe(value => view.DashMilliseconds = value);
-                characterViewDict[character] = view;
-            });
+                characterViewDict.Add(character, view);
+            }));
             characterManager.OnCharacterRemoved.Subscribe(character =>
             {
-                GameObject.Destroy(characterViewDict[character].gameObject);
+                GameObject.Destroy(characterViewDict.Forward[character].gameObject);
                 characterViewDict.Remove(character);
             });
 

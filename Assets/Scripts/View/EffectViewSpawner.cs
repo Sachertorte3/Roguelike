@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Scripts.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -14,6 +15,7 @@ namespace Scripts.View
             {
                 GameObject spawnedEffect = GameObject.Instantiate(effect);
                 spawnedEffect.transform.position = (Vector3Int)position;
+                spawnedEffect.GetComponent<SpriteView>().RegisterComponent();
             };
         }
     }

@@ -13,6 +13,8 @@ namespace Scripts.View
         private const int frame = 16;
         private Func<bool> _isDash;
         private SpriteView _view;
+        public Observable<Unit> OnMoveFinished => _onMoveFinished;
+        private Subject<Unit> _onMoveFinished = new();
         private bool _isVisible => _view.GetVisibility();
         public void Construct(InputReceiver receiver)
         {
@@ -30,7 +32,8 @@ namespace Scripts.View
                 .Subscribe(l =>
                 {
                     transform.position = Vector3.Lerp(position, (Vector3Int)destination, (l + 1) / (float)frame);
-                }).AddTo(this);
+                },
+                _ => _onMoveFinished.OnNext(Unit.Default)).AddTo(this);
             }
             else
             {

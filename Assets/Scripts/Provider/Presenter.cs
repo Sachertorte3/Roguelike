@@ -56,16 +56,17 @@ namespace Scripts.Provider
                 area.Current.ExceptWith(area.Previous);
                 tileMask.SetTilesTranslucent(area.Previous);
                 tileMask.SetTilesVisible(area.Current);
+                IEnumerable<SpriteView> views = GameObject.FindObjectsOfType<SpriteView>();
                 IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
                 IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
                 previousVisibleCharacter.ForEach(character => character.VisibleByPlayer = false);
                 currentVisibleCharacter.ForEach(character => character.VisibleByPlayer = true);
-                previousVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.SetVisibility(false));
-                currentVisibleCharacter.Select(character => characterViewDict[character]).ForEach(view => view.SetVisibility(true));
+                views.Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
+                views.Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
             });
             characterManager.OnCharacterAdded.Subscribe(character =>
             {
-                characterViewDict[character].GetComponent<SpriteRenderer>().enabled = characterManager.Player.Area.Get().Contains(character.CurrentPosition);
+                characterViewDict[character].GetComponent<SpriteView>().SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
             });
 
             characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);

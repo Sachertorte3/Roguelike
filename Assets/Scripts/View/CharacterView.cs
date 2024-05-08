@@ -5,21 +5,19 @@ using UnityEngine;
 
 namespace Scripts.View
 {
+    [RequireComponent(typeof(SpriteView))]
     public class CharacterView : MonoBehaviour
     {
         public int MoveMilliseconds = 1000;
         public int DashMilliseconds = 1000;
         private const int frame = 16;
         private Func<bool> _isDash;
-        private bool _isVisible;
+        private SpriteView _view;
+        private bool _isVisible => _view.GetVisibility();
         public void Construct(InputReceiver receiver)
         {
             _isDash = () => receiver.IsDash;
-        }
-        public void SetVisibility(bool visible)
-        {
-            _isVisible = visible;
-            GetComponent<SpriteRenderer>().enabled = visible;
+            _view = GetComponent<SpriteView>();
         }
         public void Move(Vector2Int destination, Direction8 direction)
         {

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VContainer;
 
 namespace Scripts.Model
 {
@@ -14,10 +15,12 @@ namespace Scripts.Model
         private Tilemap _map;
         public ITilemapViewer Map => _map;
         private readonly CharacterManager _characterManager;
+        [Inject]
         public World(Tilemap map, CharacterManager characterManager)
         {
             _map = map;
             _characterManager = characterManager;
+            Globals.World = this;
         }
         public bool IsPassable(Vector2Int position)
         {

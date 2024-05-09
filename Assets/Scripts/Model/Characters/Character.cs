@@ -31,7 +31,7 @@ namespace Scripts.Model.Characters
         public CharacterStats Stats { get; init; }
         public VisionRange Area { get; init; }
         private bool _canIgnoreWall;
-        internal Character(Vector2Int position, ICharacterBehavior behavior, ReactiveProperty<bool> canIgnoreWall)
+        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             Behavior = behavior;

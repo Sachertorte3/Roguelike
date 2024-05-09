@@ -8,6 +8,7 @@ using Scripts.Model.Characters.Stats;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Scripts.Model.Characters
 {
@@ -35,7 +36,7 @@ namespace Scripts.Model.Characters
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
         {
-            CharacterType = new Bat(BatType.A);
+            CharacterType = new Human(Addressables.LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
             _position = new ReactiveProperty<Vector2Int>(position);
             Behavior = behavior;
             Stats = new CharacterStats(10, 2);

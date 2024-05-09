@@ -29,14 +29,14 @@ namespace Scripts.Model.Characters
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
         public CharacterStats Stats { get; init; }
-        public VisibleArea Area { get; init; }
+        public VisionRange Area { get; init; }
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, ReactiveProperty<bool> canIgnoreWall)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
             Behavior = behavior;
             Stats = new CharacterStats(10, 2);
-            Area = new VisibleArea(_position);
+            Area = new VisionRange(_position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()
@@ -51,9 +51,13 @@ namespace Scripts.Model.Characters
         public bool CanMove(Direction8 direction)
         {
             return _canIgnoreWall ?
-                GameManager.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) :
-                (GameManager.World.IsPassable(Position.CurrentValue + direction.Vector())
-                && (!direction.IsDiagonal() || (GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && GameManager.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
+                Globals.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector()) :
+                (Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
+                && (!direction.IsDiagonal() || (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
+        }
+        public void Turn(Direction8 direction)
+        {
+            _direction.Value = direction;
         }
         public async UniTask Move(Direction8 direction)
         {
@@ -62,18 +66,14 @@ namespace Scripts.Model.Characters
             {
                 return;
             }
+            Turn(direction);
             _position.Value += direction.Vector();
-            _direction.Value = direction;
             _onMove.OnNext((direction, CurrentPosition));
             if (VisibleByPlayer)
             {
-                await UniTask.Delay(GameManager.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                await UniTask.Delay(Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
             }
             State = CharacterState.Wait;
-        }
-        public void Turn(Direction8 direction)
-        {
-            _direction.Value = direction;
         }
         public void Teleport(Vector2Int position)
         {

@@ -21,6 +21,7 @@ namespace Scripts.Provider
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
+            builder.Register<VisibleArea>(Lifetime.Singleton);
 
             builder.RegisterPlainEntryPoint<Presenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();

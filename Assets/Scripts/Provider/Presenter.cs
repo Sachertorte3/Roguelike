@@ -24,67 +24,62 @@ namespace Scripts.Provider
 {
     public class Presenter
     {
-        private BiMap<Character, CharacterView> characterViewDict = new BiMap<Character, CharacterView>();
         [Inject]
-        public Presenter(InputReceiver receiver, TileViewController tileView, TileMaskController tileMask, FieldBluePrint bluePrint, CameraFollowTarget camera)
+        public Presenter(InputReceiver receiver, TileViewController tileView, TileMaskController tileMask, FieldBluePrint bluePrint, CameraFollowTarget camera, VisibleArea visibleArea)
         {
             LoggerInit();
 
-            Tilemap map = CreateTilemap(bluePrint, tileView, tileMask);
-            SetTilemapView(tileView, tileMask, map);
+            GameManager gameManager = new GameManager(bluePrint);
+
+            CreateTilemap(gameManager.World.Map, tileView, tileMask);
+            SetTilemapView(tileView, tileMask, gameManager.World.Map);
 
             EffectViewSpawner effectViewer = new EffectViewSpawner();
 
-            CharacterManager characterManager = CreateCharacterManager(effectViewer, receiver);
+            SynchronizedCharacterView characters = new(effectViewer, receiver, visibleArea);
 
-            characterManager.OnCharacterAdded.Subscribe(character =>
+            gameManager.CharacterManager.OnCharacterAdded.Subscribe((character =>
             {
-                CharacterView characterView = characterViewDict.Forward[character];
-                SpriteView view = characterView.GetComponent<SpriteView>();
-                view.SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
-                characterView.OnMoveFinished.Subscribe(_ =>
-                {
-                    view.SetVisibility(characterManager.Player.Area.Get().Contains(character.CurrentPosition));
-                });
+                characters.Add(character);
+            }));
+            gameManager.CharacterManager.OnCharacterRemoved.Subscribe(character =>
+            {
+                characters.Remove(character);
             });
 
-            CreateWorld(map, characterManager);
+            gameManager.Spawn(CreateActionReceiver(receiver));
 
-            characterManager.SpawnPlayer(map.GetAllPassablePositions().GetAtRandom(), CreateActionReceiver(receiver));
-            foreach (Vector2Int position in map.GetAllPassablePositions().GetAtRandom(10))
-            {
-                characterManager.SpawnCharacter(position);
-            }
+            Globals.IsDash = () => receiver.IsDash;
+            Globals.IsNoMove = () => receiver.IsNoMove;
 
-            GameManager.IsDash = () => receiver.IsDash;
-            GameManager.IsNoMove = () => receiver.IsNoMove;
+            CharacterView playerView = characters.Get(gameManager.CharacterManager.Player);
 
-            CharacterView playerView = characterViewDict.Forward[characterManager.Player];
+            gameManager.CharacterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => visibleArea.UpdateArea(area));
 
-            characterManager.Player.Area.OnVisibleAreaChanged.Pairwise().Subscribe(area =>
+            visibleArea.OnVisibleAreaChanged.Pairwise().Subscribe(area =>
             {
                 area.Previous.ExceptWith(area.Current);
                 area.Current.ExceptWith(area.Previous);
                 tileMask.SetTilesTranslucent(area.Previous);
                 tileMask.SetTilesVisible(area.Current);
-                IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
-                IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
+                IEnumerable<Character> previousVisibleCharacter = gameManager.CharacterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
+                IEnumerable<Character> currentVisibleCharacter = gameManager.CharacterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
                 previousVisibleCharacter.ForEach(character => character.VisibleByPlayer = false);
                 currentVisibleCharacter.ForEach(character => character.VisibleByPlayer = true);
-                ObjectManager.GetObjectsByType<SpriteView>().Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
-                ObjectManager.GetObjectsByType<SpriteView>().Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
+                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
+                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
             });
-            ObjectManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(characterManager.Player.Area.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
+            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(visibleArea.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
 
-            characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
+            gameManager.CharacterManager.Player.Area.Refrash(gameManager.CharacterManager.Player.CurrentPosition);
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
+            arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
-            arrow.GetComponent<CharacterArrow>().Constract(characterManager.Player.Direction);
             camera.SetTarget(playerView.gameObject);
 
-            new TurnController(characterManager);
+            gameManager.Run();
         }
         private void LoggerInit()
         {
@@ -117,9 +112,8 @@ namespace Scripts.Provider
             });
             return actionReceiver;
         }
-        private Tilemap CreateTilemap(FieldBluePrint bluePrint, TileViewController tileView, TileMaskController tileMask)
+        private void CreateTilemap(ITilemapViewer map, TileViewController tileView, TileMaskController tileMask)
         {
-            Tilemap map = new Tilemap(bluePrint);
             map.OnChangeTile.Subscribe(context =>
             {
                 switch (context.tile.TileType)
@@ -133,9 +127,8 @@ namespace Scripts.Provider
                 }
                 tileMask.ResetMask(context.position);
             });
-            return map;
         }
-        private void SetTilemapView(TileViewController tileView, TileMaskController tileMask, Tilemap map)
+        private void SetTilemapView(TileViewController tileView, TileMaskController tileMask, ITilemapViewer map)
         {
             foreach ((Vector2Int position, TileData tileData) in map.GetAllTiles())
             {
@@ -151,35 +144,46 @@ namespace Scripts.Provider
             }
             tileMask.SetTilesTransparent(map.Rect.RectRange().ToHashSet());
         }
-        private CharacterManager CreateCharacterManager(EffectViewSpawner effectViewSpawner, InputReceiver receiver)
+    }
+    public class SynchronizedCharacterView
+    {
+        private BiMap<Character, CharacterView> characterViewDict = new BiMap<Character, CharacterView>();
+        private EffectViewSpawner _effectViewSpawner;
+        private InputReceiver _inputReceiver;
+        private VisibleArea _visibleArea;
+        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, VisibleArea area)
         {
-            CharacterManager characterManager = new CharacterManager();
-
-            characterManager.OnCharacterAdded.Subscribe((character =>
+            _effectViewSpawner = effectViewSpawner;
+            _inputReceiver = receiver;
+            _visibleArea = area;
+        }
+        public void Add(Character character)
+        {
+            GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
+            CharacterView characterView = GameObject.Instantiate<GameObject>(prefab).GetComponent<CharacterView>();
+            ObjectsManager.RegisterComponent<SpriteView>(characterView.GetComponent<SpriteView>());
+            characterView.Construct(_inputReceiver);
+            characterView.transform.position = (Vector3Int)character.Position.CurrentValue;
+            character.Direction.Subscribe(direction => characterView.Turn(direction));
+            character.OnMove.Subscribe(move => characterView.Move(move.destination, move.direction));
+            character.OnUseSkill.Subscribe<(Model.Characters.Effect.Skill skill, Vector2Int position, Direction8 direction)>(useSkill => _effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
+            Settings.MoveMilliseconds.Subscribe(value => characterView.MoveMilliseconds = value);
+            Settings.DashMilliseconds.Subscribe(value => characterView.DashMilliseconds = value);
+            SpriteView view = characterView.GetComponent<SpriteView>();
+            Debug.Log(_visibleArea.Get());
+            view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
+            characterView.OnMoveFinished.Subscribe(_ =>
             {
-                GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-                CharacterView view = GameObject.Instantiate<GameObject>(prefab).GetComponent<CharacterView>();
-                ObjectManager.RegisterComponent<SpriteView>(view.GetComponent<SpriteView>());
-                view.Construct(receiver);
-                view.transform.position = (Vector3Int)character.Position.CurrentValue;
-                character.OnMove.Subscribe(move => view.Move(move.destination, move.direction));
-                character.OnUseSkill.Subscribe<(Model.Characters.Effect.Skill skill, Vector2Int position, Direction8 direction)>(useSkill => effectViewSpawner.Spawn(useSkill.skill.Area.Get(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
-                Settings.MoveMilliseconds.Subscribe(value => view.MoveMilliseconds = value);
-                Settings.DashMilliseconds.Subscribe(value => view.DashMilliseconds = value);
-                characterViewDict.Add(character, view);
-            }));
-            characterManager.OnCharacterRemoved.Subscribe(character =>
-            {
-                GameObject.Destroy(characterViewDict.Forward[character].gameObject);
-                characterViewDict.Remove(character);
+                view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
             });
-
-            return characterManager;
+            characterViewDict.Add(character, characterView);
         }
-        private void CreateWorld(Tilemap map, CharacterManager characterManager)
+        public void Remove(Character character)
         {
-            World world = new World(map, characterManager);
-            GameManager.World = world;
+            GameObject.Destroy(characterViewDict.Forward[character].gameObject);
+            characterViewDict.Remove(character);
         }
+        public Character Get(CharacterView characterView) => characterViewDict.Reverse[characterView];
+        public CharacterView Get(Character character) => characterViewDict.Forward[character];
     }
 }

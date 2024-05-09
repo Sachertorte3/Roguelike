@@ -13,7 +13,7 @@ namespace Scripts.Model.Characters
         public VisionRange(ReactiveProperty<Vector2Int> position)
         {
             position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));
-            Globals.World.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));
+            Globals.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));
         }
         public void Refrash(Vector2Int position)
         {
@@ -21,7 +21,7 @@ namespace Scripts.Model.Characters
         }
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
-            return ViewCalculator.ComputeCircle(Globals.World.Map.GetAllPassablePositions().ToHashSet(), position, 10f);
+            return ViewCalculator.ComputeCircle(Globals.Map.GetAllPassablePositions().ToHashSet(), position, 10f);
         }
         public HashSet<Vector2Int> Get()
         {

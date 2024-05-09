@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Logging;
 using UnityEngine;
+using VContainer;
 using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
@@ -20,6 +21,7 @@ namespace Scripts.Model.Map
         public readonly int Height;
         public Vector2Int Size => new Vector2Int(Width, Height);
         public RectInt Rect => new RectInt(Vector2Int.zero, Size);
+        [Inject]
         public Tilemap(FieldBluePrint bluePrint)
         {
             Field field = FieldBuilder.Build(bluePrint);
@@ -38,6 +40,7 @@ namespace Scripts.Model.Map
                     )
             );
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
+            Globals.Map = this;
         }
         public Tilemap(int width, int height)
         {

@@ -2,24 +2,28 @@
 using ObservableCollections;
 using R3;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Map;
 using Scripts.Model.Setting;
+using Scripts.Utilities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
+using VContainer;
 
 namespace Scripts.Model.Characters
 {
     public sealed class CharacterManager
     {
-        public Character? Player => _player;
-        private Character? _player = null;
+        public Character Player => _player;
+        private Character _player;
         private ObservableList<Character> _characters = new ObservableList<Character>();
         public ReadOnlyCollection<Character> Characters => new ReadOnlyCollection<Character>(_characters);
         public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
         public Observable<Character> OnCharacterRemoved => _characters.ObserveRemove().Select(character => character.Value);
         private readonly CharacterFactory _factory = new CharacterFactory();
-        public CharacterManager()
+        [Inject]
+        public CharacterManager(Tilemap tilemap, CharacterControllInputReceiver actionReceiver)
         {
             Observable.Merge(
                 _characters.ObserveAdd().Select(character => character.Value),
@@ -29,16 +33,14 @@ namespace Scripts.Model.Characters
             {
                 character.Position.Subscribe(_ => SetAllCharacterPosition());
             });
+
+            _player = _factory.CreateCharacter(tilemap.GetAllPassablePositions().GetAtRandom(), new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
+            AddCharacter(_player);
         }
         private void AddCharacter(Character character)
         {
             _characters.Add(character);
             character.OnDead.Subscribe(_ => _characters.Remove(character));
-        }
-        public void SpawnPlayer(Vector2Int spawnPosition, CharacterControllInputReceiver actionReceiver)
-        {
-            _player = _factory.CreateCharacter(spawnPosition, new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
-            AddCharacter(_player);
         }
         public void SpawnCharacter(Vector2Int spawnPosition)
         {

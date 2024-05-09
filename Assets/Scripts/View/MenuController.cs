@@ -1,9 +1,8 @@
 ﻿using R3;
-using Scripts.View;
 using UnityEngine;
 using VContainer;
 
-namespace Assets.Scripts.View
+namespace Scripts.View
 {
     public class MenuController : MonoBehaviour
     {

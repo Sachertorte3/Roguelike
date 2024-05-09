@@ -1,44 +1,37 @@
 ﻿#nullable enable
-using RandomDungeonWithBluePrint;
 using Scripts.Model.Characters;
-using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
+using Scripts.Utilities;
 using System;
 using UnityEngine;
-using Scripts.Utilities;
+using VContainer;
 
 namespace Scripts.Model
 {
     public class GameManager
     {
-        public World World;
-        public CharacterManager CharacterManager;
-        public TurnController TurnController;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
-        public GameManager(FieldBluePrint bluePrint)
+        [Inject]
+        public GameManager(World world)
         {
-            Tilemap tilemap = new Tilemap(bluePrint);
-            CharacterManager = new CharacterManager();
-            World = new World(tilemap, CharacterManager);
-            Globals.World = World;
         }
-        public void Spawn(CharacterControllInputReceiver receiver)
+        public void Spawn(Tilemap tilemap, CharacterManager characterManager)
         {
-            CharacterManager.SpawnPlayer(World.Map.GetAllPassablePositions().GetAtRandom(), receiver);
-            foreach (Vector2Int position in World.Map.GetAllPassablePositions().GetAtRandom(10))
+            foreach (Vector2Int position in tilemap.GetAllPassablePositions().GetAtRandom(10))
             {
-                CharacterManager.SpawnCharacter(position);
+                characterManager.SpawnCharacter(position);
             }
         }
-        public void Run()
+        public void Run(CharacterManager characterManager)
         {
-            TurnController = new TurnController(CharacterManager);
+            new TurnController(characterManager);
         }
     }
     public static class Globals
     {
         public static IWorldViewer? World { get; set; }
+        public static ITilemapViewer? Map { get; set; }
         public static Func<bool>? IsDash { get; set; }
         public static Func<bool>? IsNoMove { get; set; }
     }

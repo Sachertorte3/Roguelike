@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#nullable enable
+using R3;
+using Scripts.Model.Characters;
+using Scripts.View;
+using UI;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using VContainer;
 
-namespace Assets.Scripts.Provider
+namespace Scripts.Provider
 {
-    internal class PlayerPresenter
+    public class PlayerPresenter
     {
+        [Inject]
+        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, CameraFollowTarget camera, VisibleArea visibleArea)
+        {
+            CharacterView playerView = characters.Get(characterManager.Player);
+
+            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => visibleArea.UpdateArea(area));
+
+            GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
+            GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
+            arrow.GetComponent<CharacterArrow>().Constract(playerView);
+
+            camera.SetTarget(playerView.gameObject);
+        }
     }
 }

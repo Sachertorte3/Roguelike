@@ -2,11 +2,12 @@ using R3;
 using Scripts.Utilities;
 using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Scripts.View
 {
-    [RequireComponent(typeof(SpriteView))]
-    public class CharacterView : MonoBehaviour
+    [RequireComponent(typeof(SpriteView), typeof(Animator))]
+    public class CharacterView : MonoBehaviour, IDirectional
     {
         public int MoveMilliseconds = 1000;
         public int DashMilliseconds = 1000;
@@ -17,11 +18,16 @@ namespace Scripts.View
         private Subject<Unit> _onMoveFinished = new();
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         private ReactiveProperty<Direction8> _direction = new();
+        public Direction8 GetDirection() => Direction.CurrentValue;
         private bool _isVisible => _view.GetVisibility();
-        public void Construct(InputReceiver receiver)
+        public void Construct(InputReceiver receiver, string characterTypeName)
         {
             _isDash = () => receiver.IsDash;
             _view = GetComponent<SpriteView>();
+            RuntimeAnimatorController animation = Addressables
+                .LoadAssetAsync<RuntimeAnimatorController>($"Assets/Animations/{characterTypeName}.controller")
+                .WaitForCompletion();
+            GetComponent<Animator>().runtimeAnimatorController = Instantiate(animation);
         }
         public void Turn(Direction8 direction)
         {

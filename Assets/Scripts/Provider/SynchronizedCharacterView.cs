@@ -39,7 +39,8 @@ namespace Scripts.Provider
             GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
             CharacterView characterView = GameObject.Instantiate<GameObject>(prefab).GetComponent<CharacterView>();
             ObjectsManager.RegisterComponent<SpriteView>(characterView.GetComponent<SpriteView>());
-            characterView.Construct(_inputReceiver);
+            characterView.Construct(_inputReceiver, character.CharacterType.TypeName());
+            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(), character.CharacterType.SubtypeName());
             characterView.transform.position = (Vector3Int)character.Position.CurrentValue;
             character.Direction.Subscribe(direction => characterView.Turn(direction));
             character.OnMove.Subscribe(move => characterView.Move(move.destination, move.direction));

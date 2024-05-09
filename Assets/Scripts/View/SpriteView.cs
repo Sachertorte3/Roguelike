@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Scripts.View
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class SpriteView: MonoBehaviour
     {
         private bool _isVisible = false;

@@ -1,0 +1,26 @@
+namespace Database.Characters.Type
+{
+    public enum BatType
+    {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+    }
+}

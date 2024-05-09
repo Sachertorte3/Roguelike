@@ -1,8 +1,6 @@
 ﻿using R3;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Scripts.Model.Characters
 {
@@ -21,7 +19,7 @@ namespace Scripts.Model.Characters
         }
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
-            return ViewCalculator.ComputeCircle(Globals.Map.GetAllPassablePositions().ToHashSet(), position, 10f);
+            return ViewCalculator.ComputeCircle(Globals.Map.GetAllPassablePositions(), position, 10f);
         }
         public HashSet<Vector2Int> Get()
         {

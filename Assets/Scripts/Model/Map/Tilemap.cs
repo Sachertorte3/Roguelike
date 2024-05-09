@@ -40,6 +40,18 @@ namespace Scripts.Model.Map
                     )
             );
             _tiles.ObserveReplace().Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
+            _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
+            OnChangeTile.Subscribe(changeTile =>
+            {
+                if (changeTile.tile.IsPassable())
+                {
+                    _allPassablePositionsSet.Add(changeTile.position);
+                }
+                else
+                {
+                    _allPassablePositionsSet.Remove(changeTile.position);
+                }    
+            });
             Globals.Map = this;
         }
         public Tilemap(int width, int height)
@@ -70,9 +82,14 @@ namespace Scripts.Model.Map
         {
             return Get(position).IsPassable();
         }
-        public IEnumerable<Vector2Int> GetAllPassablePositions()
+        private IEnumerable<Vector2Int> FindAllPassablePositions()
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
+        }
+        private HashSet<Vector2Int> _allPassablePositionsSet;
+        public HashSet<Vector2Int> GetAllPassablePositions()
+        {
+            return _allPassablePositionsSet;
         }
     }
     public interface ITilemapViewer
@@ -81,6 +98,6 @@ namespace Scripts.Model.Map
         public RectInt Rect { get; }
         public bool IsPassable(Vector2Int position);
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles();
-        public IEnumerable<Vector2Int> GetAllPassablePositions();
+        public HashSet<Vector2Int> GetAllPassablePositions();
     }
 }

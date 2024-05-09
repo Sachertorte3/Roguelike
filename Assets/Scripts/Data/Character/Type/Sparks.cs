@@ -5,7 +5,7 @@ namespace Database.Characters.Type
     [Serializable]
     public record Sparks : ICharacterType
     {
-        public SparksType Type; public string Name() => "Sparks";
-        public string TypeName() => $"{Name()}{Type}"; public Sparks(SparksType type) { Type = type; }
+        public SparksType Type; public string TypeName() => "Sparks";
+        public string SubtypeName() => $"{TypeName()}{Type}"; public Sparks(SparksType type) { Type = type; }
     }
 }

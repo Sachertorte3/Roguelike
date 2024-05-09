@@ -7,7 +7,7 @@ namespace Database.Characters.Type
     public record Human : ICharacterType
     {
         public Texture texture;
-        public string Name() => "Human";
-        public string TypeName() => texture.name;
+        public string TypeName() => "Human";
+        public string SubtypeName() => texture.name;
     }
 }

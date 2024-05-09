@@ -5,7 +5,7 @@ namespace Database.Characters.Type
     [Serializable]
     public record Pyramid : ICharacterType
     {
-        public PyramidType Type; public string Name() => "Pyramid";
-        public string TypeName() => $"{Name()}{Type}"; public Pyramid(PyramidType type) { Type = type; }
+        public PyramidType Type; public string TypeName() => "Pyramid";
+        public string SubtypeName() => $"{TypeName()}{Type}"; public Pyramid(PyramidType type) { Type = type; }
     }
 }

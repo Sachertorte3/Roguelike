@@ -5,7 +5,7 @@ namespace Database.Characters.Type
     [Serializable]
     public record Disc : ICharacterType
     {
-        public DiscType Type; public string Name() => "Disc";
-        public string TypeName() => $"{Name()}{Type}"; public Disc(DiscType type) { Type = type; }
+        public DiscType Type; public string TypeName() => "Disc";
+        public string SubtypeName() => $"{TypeName()}{Type}"; public Disc(DiscType type) { Type = type; }
     }
 }

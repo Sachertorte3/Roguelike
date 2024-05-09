@@ -5,7 +5,7 @@ namespace Database.Characters.Type
     [Serializable]
     public record Skeleton : ICharacterType
     {
-        public SkeletonType Type; public string Name() => "Skeleton";
-        public string TypeName() => $"{Name()}{Type}"; public Skeleton(SkeletonType type) { Type = type; }
+        public SkeletonType Type; public string TypeName() => "Skeleton";
+        public string SubtypeName() => $"{TypeName()}{Type}"; public Skeleton(SkeletonType type) { Type = type; }
     }
 }

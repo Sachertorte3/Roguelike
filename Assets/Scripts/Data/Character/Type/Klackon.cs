@@ -5,7 +5,7 @@ namespace Database.Characters.Type
     [Serializable]
     public record Klackon : ICharacterType
     {
-        public KlackonType Type; public string Name() => "Klackon";
-        public string TypeName() => $"{Name()}{Type}"; public Klackon(KlackonType type) { Type = type; }
+        public KlackonType Type; public string TypeName() => "Klackon";
+        public string SubtypeName() => $"{TypeName()}{Type}"; public Klackon(KlackonType type) { Type = type; }
     }
 }

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Database.Characters.Type;
 using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
@@ -12,6 +13,7 @@ namespace Scripts.Model.Characters
 {
     public sealed class Character : IActor, IHasBehavior, ITarget
     {
+        public ICharacterType CharacterType { get; init; }
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;
@@ -33,6 +35,7 @@ namespace Scripts.Model.Characters
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
         {
+            CharacterType = new Bat(BatType.A);
             _position = new ReactiveProperty<Vector2Int>(position);
             Behavior = behavior;
             Stats = new CharacterStats(10, 2);

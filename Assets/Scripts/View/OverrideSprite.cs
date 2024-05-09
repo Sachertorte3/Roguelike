@@ -10,19 +10,20 @@ namespace Scripts.View
     {
         private SpriteRenderer sr;
         private IDirectional character;
-        private bool _isDirectionalTexture;
         private string _textureSubtypeName;
         private string _textureTypeName;
+        private bool _isDirectionalTexture;
 
         private void Start()
         {
             sr = GetComponent<SpriteRenderer>();
             character = GetComponent<CharacterView>();
         }
-        public void SetTexture(string textureTypeName, string textureSubtypeName)
+        public void SetTexture(string textureTypeName, string textureSubtypeName, bool isDirectionalTexture)
         {
             _textureTypeName = textureTypeName;
             _textureSubtypeName = textureSubtypeName;
+            _isDirectionalTexture = isDirectionalTexture;
         }
         private void LateUpdate()
         {

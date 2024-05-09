@@ -14,13 +14,13 @@ namespace Scripts.Model.Characters.Effect
         public UniTask Use(IActor actor, Direction8 direction)
         {
             IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);
-            GameManager.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, Power)));
+            Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, Power)));
             return UniTask.CompletedTask;
         }
         public float Evaluate(IActor actor, Direction8 direction)
         {
             IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);
-            HashSet<Character> characters = GameManager.World.GetCharactersInArea(area.ToHashSet());
+            HashSet<Character> characters = Globals.World.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
             {
                 return characters.Sum(character => (float)Formula.Calc(actor, Power) / character.Stats.MaxHp.CurrentValue);

@@ -17,13 +17,13 @@ namespace Scripts.Model.Characters.Behavior
         {
             HashSet<Vector2Int> visibleArea = character.Area.Get();
             visibleArea.Remove(character.CurrentPosition);
-            HashSet<Character> visibleCharacters = GameManager.World.GetCharactersInArea(visibleArea);
+            HashSet<Character> visibleCharacters = Globals.World.GetCharactersInArea(visibleArea);
             if (visibleCharacters.Any())
             {
                 _lastTargetPosition = visibleCharacters.First().CurrentPosition;
             }
             else if (_lastTargetPosition.HasValue && (character.CurrentPosition == _lastTargetPosition
-                || (!GameManager.World.Map.IsPassable(_lastTargetPosition.Value) && (character.CurrentPosition - _lastTargetPosition).Value.sqrMagnitude <= 2)))
+                || (!Globals.World.Map.IsPassable(_lastTargetPosition.Value) && (character.CurrentPosition - _lastTargetPosition).Value.sqrMagnitude <= 2)))
             {
                 _lastTargetPosition = null;
             }

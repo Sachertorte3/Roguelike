@@ -37,17 +37,4 @@ namespace Scripts.Model
             return _characterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue)).ToHashSet();
         }
     }
-    public interface IWorldViewer
-    {
-        public ITilemapViewer Map { get; }
-        public bool IsPassable(Vector2Int position);
-        public bool IsPassableIgnoreWall(Vector2Int position);
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);
-    }
-    public static class GameManager
-    {
-        public static IWorldViewer? World;
-        public static Func<bool>? IsDash;
-        public static Func<bool>? IsNoMove;
-    }
 }

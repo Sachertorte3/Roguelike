@@ -22,7 +22,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
-            if (GameManager.IsDash())
+            if (Globals.IsDash())
             {
                 await _intelligentDashController.Wait(character);
             }
@@ -39,7 +39,7 @@ namespace Scripts.Model.Characters.Behavior
                 {
                     case 0:
                         (Move move, bool started) = firstCompletedTask.result1;
-                        if (GameManager.IsNoMove())
+                        if (Globals.IsNoMove())
                         {
                             character.Turn(move.Direction);
                         }
@@ -140,7 +140,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public bool IsDashingStraight(bool started)
         {
-            return GameManager.IsDash() && !started;
+            return Globals.IsDash() && !started;
         }
     }
 }

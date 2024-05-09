@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Scripts.Utilities
 {
-    public static class ObjectManager
+    public static class ObjectsManager
     {
         private static Dictionary<Type, ObservableHashSet<object>> _caches = new();
         public static HashSet<object> _objects = new();

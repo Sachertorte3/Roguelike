@@ -15,11 +15,17 @@ namespace Scripts.View
         private SpriteView _view;
         public Observable<Unit> OnMoveFinished => _onMoveFinished;
         private Subject<Unit> _onMoveFinished = new();
+        public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
+        private ReactiveProperty<Direction8> _direction = new();
         private bool _isVisible => _view.GetVisibility();
         public void Construct(InputReceiver receiver)
         {
             _isDash = () => receiver.IsDash;
             _view = GetComponent<SpriteView>();
+        }
+        public void Turn(Direction8 direction)
+        {
+            _direction.OnNext(direction);
         }
         public void Move(Vector2Int destination, Direction8 direction)
         {

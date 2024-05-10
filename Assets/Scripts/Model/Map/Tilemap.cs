@@ -12,7 +12,7 @@ using static RandomDungeonWithBluePrint.Constants;
 
 namespace Scripts.Model.Map
 {
-    public class Tilemap: ITilemapViewer
+    public class Tilemap : ITilemapViewer
     {
         public Observable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
@@ -50,7 +50,7 @@ namespace Scripts.Model.Map
                 else
                 {
                     _allPassablePositionsSet.Remove(changeTile.position);
-                }    
+                }
             });
             Globals.Map = this;
         }

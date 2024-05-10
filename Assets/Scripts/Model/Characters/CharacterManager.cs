@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using ObservableCollections;
 using R3;
-using Scripts.Data.Area;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
 using Scripts.Model.Setting;
@@ -11,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using VContainer;
-using System.Linq;
 
 namespace Scripts.Model.Characters
 {

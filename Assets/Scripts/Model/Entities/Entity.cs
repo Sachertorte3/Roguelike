@@ -1,12 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using R3;
-using Scripts.Model.Characters;
+﻿using R3;
 using Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Scripts.Model.Entities

@@ -18,6 +18,7 @@ namespace Scripts.Provider
         private EffectViewSpawner _effectViewSpawner;
         private InputReceiver _inputReceiver;
         private VisibleArea _visibleArea;
+        private GameObject _characterViewPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, VisibleArea area, CharacterManager characterManager)
         {
             _effectViewSpawner = effectViewSpawner;
@@ -37,20 +38,21 @@ namespace Scripts.Provider
         }
         public void Add(Character character)
         {
-            GameObject prefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-            CharacterView characterView = GameObject.Instantiate<GameObject>(prefab).GetComponent<CharacterView>();
+            CharacterView characterView = GameObject.Instantiate<GameObject>(_characterViewPrefab).GetComponent<CharacterView>();
+            EntityView entityView = characterView.GetComponent<EntityView>();
             ObjectsManager.RegisterComponent(characterView.GetComponent<SpriteView>());
-            characterView.Construct(_inputReceiver, character.TypeName());
+            characterView.Construct(character.TypeName());
+            entityView.Construct(_inputReceiver);
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(), character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.Position.CurrentValue;
             character.Direction.Subscribe(direction => characterView.Turn(direction));
-            character.OnMove.Subscribe(move => characterView.Move(move.destination, move.direction));
+            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             character.OnUseSkill.Subscribe<(Skill skill, Vector2Int position, Direction8 direction)>(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
-            Settings.MoveMilliseconds.Subscribe(value => characterView.MoveMilliseconds = value);
-            Settings.DashMilliseconds.Subscribe(value => characterView.DashMilliseconds = value);
+            Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
+            Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
             SpriteView view = characterView.GetComponent<SpriteView>();
             view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
-            characterView.OnMoveFinished.Subscribe(_ =>
+            entityView.OnMoveFinished.Subscribe(_ =>
             {
                 view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
             });

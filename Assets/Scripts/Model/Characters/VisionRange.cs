@@ -8,7 +8,7 @@ namespace Scripts.Model.Characters
     {
         public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged => _visibleAreaCache;
         private ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new ReactiveProperty<HashSet<Vector2Int>>();
-        public VisionRange(ReactiveProperty<Vector2Int> position)
+        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
             position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));
             Globals.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));

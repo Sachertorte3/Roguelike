@@ -5,6 +5,7 @@ using Scripts.Model.Action;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Characters.Effect;
 using Scripts.Model.Characters.Stats;
+using Scripts.Model.Entities;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using UnityEngine;
@@ -17,9 +18,9 @@ namespace Scripts.Model.Characters
         public ICharacterType CharacterType { get; init; }
         public string TypeName() => CharacterType.TypeName();
         public string SubtypeName() => CharacterType.SubtypeName();
-        public Vector2Int CurrentPosition => Position.CurrentValue;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
-        private readonly ReactiveProperty<Vector2Int> _position;
+        private Entity _entity;
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
+        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
@@ -39,10 +40,10 @@ namespace Scripts.Model.Characters
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
         {
             CharacterType = new Human(Addressables.LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
-            _position = new ReactiveProperty<Vector2Int>(position);
+            _entity = new Entity(position);
             Behavior = behavior;
             Stats = new CharacterStats(10, 2);
-            Area = new VisionRange(_position);
+            Area = new VisionRange(_entity.Position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()
@@ -73,8 +74,8 @@ namespace Scripts.Model.Characters
                 return;
             }
             Turn(direction);
-            _position.Value += direction.Vector();
-            _onMove.OnNext((direction, CurrentPosition));
+            _entity.Move(direction);
+            _onMove.OnNext((direction, _entity.CurrentPosition));
             if (VisibleByPlayer)
             {
                 await UniTask.Delay(Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);

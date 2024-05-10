@@ -15,6 +15,8 @@ namespace Scripts.Model.Characters
     public sealed class Character : IActor, IHasBehavior, ITarget
     {
         public ICharacterType CharacterType { get; init; }
+        public string TypeName() => CharacterType.TypeName();
+        public string SubtypeName() => CharacterType.SubtypeName();
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         private readonly ReactiveProperty<Vector2Int> _position;

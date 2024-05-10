@@ -11,6 +11,7 @@ namespace Scripts.Model.Characters.Effect
 {
     public record Skill(int Power, IArea Area)
     {
+        public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction) => Area.Get(position, direction);
         public UniTask Use(IActor actor, Direction8 direction)
         {
             IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);

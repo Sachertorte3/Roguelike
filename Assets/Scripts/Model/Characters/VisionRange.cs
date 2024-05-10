@@ -4,9 +4,15 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    public class VisionRange
+    internal class VisionRange: IVisionRange
     {
-        public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged => _visibleAreaCache;
+        public Observable<VisibleAreaChangedMessage> OnVisibleAreaChanged => _visibleAreaCache.Pairwise().Select(area =>
+        {
+            HashSet<Vector2Int> newArea = new HashSet<Vector2Int>(area.Current);
+            area.Previous.ExceptWith(area.Current);
+            area.Current.ExceptWith(area.Previous);
+            return new VisibleAreaChangedMessage(newArea, area.Previous, area.Current);
+        });
         private ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new ReactiveProperty<HashSet<Vector2Int>>();
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
@@ -26,4 +32,5 @@ namespace Scripts.Model.Characters
             return _visibleAreaCache.CurrentValue;
         }
     }
+    public record VisibleAreaChangedMessage(HashSet<Vector2Int> NewArea, HashSet<Vector2Int> AreaExited, HashSet<Vector2Int> AreaEntered);
 }

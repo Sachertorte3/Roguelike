@@ -4,11 +4,12 @@ using StatSystem;
 
 namespace Scripts.Model.Characters.Stats
 {
-    public class CharacterStats
+    internal class CharacterStats: IStats
     {
-        public readonly Resource Hp;
+        public Resource Hp { get; init; }
+        public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.Max;
-        public readonly ReadOnlyReactiveProperty<int> Strength;
+        public ReadOnlyReactiveProperty<int> Strength { get; init; }
         private readonly Stat _strength;
         public CharacterStats(int maxHp, int strength)
         {
@@ -16,5 +17,11 @@ namespace Scripts.Model.Characters.Stats
             _strength = new Stat(strength);
             Strength = _strength.ToReactiveProperty();
         }
+    }
+    public interface IStats
+    {
+        public ReadOnlyReactiveProperty<int> HpValue { get; }
+        public ReadOnlyReactiveProperty<int> MaxHp { get; }
+        public ReadOnlyReactiveProperty<int> Strength { get; }
     }
 }

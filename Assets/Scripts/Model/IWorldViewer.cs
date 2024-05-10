@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Scripts.Model
 {
-    public interface IWorldViewer
+    internal interface IWorldViewer
     {
         public ITilemapViewer Map { get; }
         public bool IsPassable(Vector2Int position);

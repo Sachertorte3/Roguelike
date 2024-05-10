@@ -30,7 +30,6 @@ namespace Scripts.Provider
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
-            builder.Register<VisibleArea>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
 
             builder.RegisterPlainEntryPoint<InputPresenter>();

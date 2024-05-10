@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using R3;
 using Scripts.Model.Characters;
 using Scripts.View;
 using UI;
@@ -12,11 +11,9 @@ namespace Scripts.Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, CameraFollowTarget camera, VisibleArea visibleArea)
+        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, CameraFollowTarget camera)
         {
             CharacterView playerView = characters.Get(characterManager.Player);
-
-            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area => visibleArea.UpdateArea(area));
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);

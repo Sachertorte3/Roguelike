@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    internal class VisionRange: IVisionRange
+    internal class VisionRange : IVisionRange
     {
         public Observable<VisibleAreaChangedMessage> OnVisibleAreaChanged => _visibleAreaCache.Pairwise().Select(area =>
         {

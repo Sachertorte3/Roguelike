@@ -4,15 +4,15 @@ namespace UI
 {
     public class CameraFollowTarget : MonoBehaviour
     {
-        [SerializeField] GameObject target;
-        [SerializeField] Vector3 relative;
+        [SerializeField] private GameObject target;
+        [SerializeField] private Vector3 relative;
 
         public void SetTarget(GameObject obj)
         {
             target = obj;
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
             if (target != null)
             {

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scripts.View
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class SpriteView: MonoBehaviour
+    public class SpriteView : MonoBehaviour
     {
         private bool _isVisible = false;
         public Vector3 Position() => transform.position;

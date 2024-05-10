@@ -2,7 +2,6 @@
 using R3;
 using Scripts.Model.Characters;
 using Scripts.Model.Map;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

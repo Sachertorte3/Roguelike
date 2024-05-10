@@ -1,9 +1,7 @@
 ﻿using Scripts.Utilities;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 namespace Scripts.View
 {

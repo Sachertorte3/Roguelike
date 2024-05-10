@@ -1,5 +1,4 @@
 ﻿using Scripts.Model.Action;
-using Scripts.Model.Characters.Effect;
 using System.Collections.Generic;
 using UnityEngine;
 

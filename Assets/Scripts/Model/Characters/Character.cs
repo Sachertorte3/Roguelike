@@ -25,25 +25,27 @@ namespace Scripts.Model.Characters
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
-        public bool IsDead => Stats.Hp.Value.CurrentValue <= 0;
-        public Observable<Unit> OnDead => Stats.Hp.Value.Where(value => value <= 0).AsUnitObservable();
+        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
+        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public ReactiveProperty<Direction8> Direction => _direction;
         private ReactiveProperty<Direction8> _direction = new ReactiveProperty<Direction8>(Direction8.Down);
         internal bool CanAct = true;
-        public bool VisibleByPlayer = false;
+        internal bool VisibleByPlayer = false;
         internal CharacterState State = CharacterState.Think;
         internal ICharacterBehavior Behavior { get; init; }
-        public CharacterStats Stats { get; init; }
-        public VisionRange Area { get; init; }
+        public IStats Stats => _stats;
+        private readonly CharacterStats _stats;
+        public IVisionRange Area => _area;
+        private readonly VisionRange _area;
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
         {
             CharacterType = new Human(Addressables.LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
             _entity = new Entity(position);
             Behavior = behavior;
-            Stats = new CharacterStats(10, 2);
-            Area = new VisionRange(_entity.Position);
+            _stats = new CharacterStats(10, 2);
+            _area = new VisionRange(_entity.Position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
         public async UniTask DoNextAction()
@@ -96,6 +98,11 @@ namespace Scripts.Model.Characters
                 await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
             State = CharacterState.Wait;
+        }
+        public UniTask LoseHp(int value)
+        {
+            _stats.Hp.Lose(value);
+            return UniTask.CompletedTask;
         }
     }
 }

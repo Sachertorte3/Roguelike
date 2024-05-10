@@ -1,14 +1,11 @@
 #nullable enable
-using Codice.Client.BaseCommands;
 using R3;
-using RandomDungeonWithBluePrint;
 using Scripts.Model;
 using Scripts.Model.Characters;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using Scripts.View;
 using Sirenix.Utilities;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Logging;
 using Unity.Logging.Sinks;
@@ -21,26 +18,20 @@ namespace Scripts.Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap, CharacterManager characterManager, VisibleArea visibleArea)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap, CharacterManager characterManager)
         {
             LoggerInit();
 
             gameManager.Spawn(tilemap, characterManager);
 
-            visibleArea.OnVisibleAreaChanged.Pairwise().Subscribe(area =>
+            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area =>
             {
-                area.Previous.ExceptWith(area.Current);
-                area.Current.ExceptWith(area.Previous);
-                tileMask.SetTilesTranslucent(area.Previous);
-                tileMask.SetTilesVisible(area.Current);
-                IEnumerable<Character> previousVisibleCharacter = characterManager.Characters.Where(character => area.Previous.Contains(character.CurrentPosition));
-                IEnumerable<Character> currentVisibleCharacter = characterManager.Characters.Where(character => area.Current.Contains(character.CurrentPosition));
-                previousVisibleCharacter.ForEach(character => character.VisibleByPlayer = false);
-                currentVisibleCharacter.ForEach(character => character.VisibleByPlayer = true);
-                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.Previous.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
-                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.Current.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
+                tileMask.SetTilesTranslucent(area.AreaExited);
+                tileMask.SetTilesVisible(area.AreaEntered);
+                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.AreaExited.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
+                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
             });
-            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(visibleArea.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
+            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(characterManager.Player.Area.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
 
             characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using ObservableCollections;
 using R3;
+using Scripts.Data.Area;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
 using Scripts.Model.Setting;
@@ -10,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using VContainer;
+using System.Linq;
 
 namespace Scripts.Model.Characters
 {
@@ -36,6 +38,20 @@ namespace Scripts.Model.Characters
 
             _player = _factory.CreateCharacter(tilemap.GetAllPassablePositions().GetAtRandom(), new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
             AddCharacter(_player);
+            _player.Area.OnVisibleAreaChanged.Subscribe(areaChanged =>
+            {
+                foreach (var character in _characters)
+                {
+                    if (areaChanged.AreaExited.Contains(character.CurrentPosition))
+                    {
+                        character.VisibleByPlayer = false;
+                    }
+                    else if (areaChanged.AreaEntered.Contains(character.CurrentPosition))
+                    {
+                        character.VisibleByPlayer = true;
+                    }
+                }
+            });
         }
         private void AddCharacter(Character character)
         {

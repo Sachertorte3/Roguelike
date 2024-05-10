@@ -4,6 +4,6 @@ namespace Scripts.Model.Characters.Effect
 {
     public interface ITarget
     {
-        public CharacterStats Stats { get; }
+        public IStats Stats { get; }
     }
 }

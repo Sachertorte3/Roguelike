@@ -1,12 +1,13 @@
 ﻿#nullable enable
 using BidirectionalMap;
 using R3;
-using Scripts.Model;
 using Scripts.Model.Characters;
 using Scripts.Model.Characters.Effect;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using Scripts.View;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -17,13 +18,13 @@ namespace Scripts.Provider
         private BiMap<Character, CharacterView> characterViewDict = new BiMap<Character, CharacterView>();
         private EffectViewSpawner _effectViewSpawner;
         private InputReceiver _inputReceiver;
-        private VisibleArea _visibleArea;
+        private Func<HashSet<Vector2Int>> _getVisibleArea;
         private GameObject _characterViewPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, VisibleArea area, CharacterManager characterManager)
+        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, CharacterManager characterManager)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
-            _visibleArea = area;
+            _getVisibleArea = characterManager.Player.Area.Get;
 
             Add(characterManager.Player);
 
@@ -51,10 +52,10 @@ namespace Scripts.Provider
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
             SpriteView view = characterView.GetComponent<SpriteView>();
-            view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
+            view.SetVisibility(_getVisibleArea().Contains(character.CurrentPosition));
             entityView.OnMoveFinished.Subscribe(_ =>
             {
-                view.SetVisibility(_visibleArea.Get().Contains(character.CurrentPosition));
+                view.SetVisibility(_getVisibleArea().Contains(character.CurrentPosition));
             });
             characterViewDict.Add(character, characterView);
         }

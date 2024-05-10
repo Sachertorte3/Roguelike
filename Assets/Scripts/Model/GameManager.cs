@@ -13,8 +13,9 @@ namespace Scripts.Model
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         [Inject]
-        public GameManager(World world)
+        public GameManager(Tilemap tilemap, CharacterManager characterManager)
         {
+            new World(tilemap, characterManager);
         }
         public void Spawn(Tilemap tilemap, CharacterManager characterManager)
         {
@@ -30,8 +31,8 @@ namespace Scripts.Model
     }
     public static class Globals
     {
-        public static IWorldViewer? World { get; set; }
-        public static ITilemapViewer? Map { get; set; }
+        internal static IWorldViewer? World { get; set; }
+        internal static ITilemapViewer? Map { get; set; }
         public static Func<bool>? IsDash { get; set; }
         public static Func<bool>? IsNoMove { get; set; }
     }

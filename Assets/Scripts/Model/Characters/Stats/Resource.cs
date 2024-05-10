@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters.Stats
 {
-    public class Resource
+    internal class Resource
     {
         public readonly ReadOnlyReactiveProperty<int> Max;
         public readonly Stat _max;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    public static class ViewCalculator
+    internal static class ViewCalculator
     {
         private class OctantTransform
         {

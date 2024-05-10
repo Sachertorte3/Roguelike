@@ -5,6 +5,6 @@ namespace Scripts.Model.Characters.Behavior
 {
     internal interface IHasBehavior : IActor
     {
-        public VisionRange Area { get; }
+        public IVisionRange Area { get; }
     }
 }

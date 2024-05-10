@@ -15,7 +15,7 @@ namespace Scripts.Model.Characters.Effect
         public UniTask Use(IActor actor, Direction8 direction)
         {
             IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);
-            Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.Stats.Hp.Lose(Formula.Calc(actor, Power)));
+            Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.LoseHp(Formula.Calc(actor, Power)));
             return UniTask.CompletedTask;
         }
         public float Evaluate(IActor actor, Direction8 direction)

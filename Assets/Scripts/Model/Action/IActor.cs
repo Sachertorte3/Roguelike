@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters.Effect;
+using Scripts.Model.Items;
 using Scripts.Utilities;
 using UnityEngine;
 
@@ -13,5 +14,6 @@ namespace Scripts.Model.Action
         public UniTask Move(Direction8 direction);
         public void Turn(Direction8 direction);
         public UniTask UseSkill(Skill skill, Direction8 direction);
+        public UniTask UseItem(Item item, Direction8 direction);
     }
 }

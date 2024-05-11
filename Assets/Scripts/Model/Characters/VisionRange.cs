@@ -7,7 +7,7 @@ namespace Scripts.Model.Characters
     internal class VisionRange : IVisionRange
     {
         public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged => _visibleAreaCache;
-        private ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new ReactiveProperty<HashSet<Vector2Int>>();
+        private ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new();
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
             position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));

@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Assets.Scripts.Model.Items
 {
-    internal class Inventory: IInventory
+    internal class Inventory : IInventory
     {
-        const int MaxItems = 10;
-        public ReadOnlyCollection<Item?> Items => new (_items);
+        private const int MaxItems = 10;
+        public ReadOnlyCollection<Item?> Items => new(_items);
         public Observable<CollectionReplaceEvent<Item?>> OnChangeItem => _items.ObserveReplace();
         private ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public Item? Replace(Item? item, int index)
@@ -19,10 +19,5 @@ namespace Assets.Scripts.Model.Items
             _items[index] = item;
             return removed;
         }
-    }
-    public interface IInventory
-    {
-        public ReadOnlyCollection<Item?> Items { get; }
-        public Observable<CollectionReplaceEvent<Item?>> OnChangeItem { get; }
     }
 }

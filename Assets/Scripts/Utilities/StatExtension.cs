@@ -12,7 +12,7 @@ namespace Scripts.Utilities
         }
         public static ReactiveProperty<int> ToReactiveProperty(this Stat stat)
         {
-            ReactiveProperty<int> property = new ReactiveProperty<int>(Mathf.RoundToInt(stat.Value));
+            ReactiveProperty<int> property = new(Mathf.RoundToInt(stat.Value));
             stat.OnValueChanged().Subscribe(value => property.Value = value);
             return property;
         }

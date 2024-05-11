@@ -45,7 +45,7 @@ namespace Scripts.Model.Characters
 
         public static HashSet<Vector2Int> ComputeSquare(HashSet<Vector2Int> passables, Vector2Int position, float radius)
         {
-            HashSet<Vector2Int> viewArea = new HashSet<Vector2Int> { position };
+            HashSet<Vector2Int> viewArea = new() { position };
             for (int txidx = 0; txidx < s_octantTransform.Length; txidx++)
             {
                 viewArea.AddRange(CastLight(passables, position, radius, 1, 1.0f, 0.0f, s_octantTransform[txidx]));
@@ -57,7 +57,7 @@ namespace Scripts.Model.Characters
         private static HashSet<Vector2Int> CastLight(HashSet<Vector2Int> passables, Vector2Int origin, float viewRadius,
             int startColumn, float leftViewSlope, float rightViewSlope, OctantTransform txfrm)
         {
-            HashSet<Vector2Int> viewArea = new HashSet<Vector2Int>();
+            HashSet<Vector2Int> viewArea = new();
 
             int viewCeiling = (int)Math.Ceiling(viewRadius);
             bool prevWasBlocked = false;
@@ -68,7 +68,7 @@ namespace Scripts.Model.Characters
                 int xc = currentCol;
                 for (int yc = currentCol; yc >= 0; yc--)
                 {
-                    Vector2Int pos = new Vector2Int(origin.x + (xc * txfrm.xx) + (yc * txfrm.xy),
+                    Vector2Int pos = new(origin.x + (xc * txfrm.xx) + (yc * txfrm.xy),
                         origin.y + (xc * txfrm.yx) + (yc * txfrm.yy));
 
                     float leftBlockSlope = (yc + 0.5f) / (xc - 0.5f);

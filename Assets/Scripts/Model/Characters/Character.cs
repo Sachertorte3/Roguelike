@@ -25,8 +25,7 @@ namespace Scripts.Model.Characters
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public IInventory Inventory => _inventory;
         private readonly Inventory _inventory = new();
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
-        private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
+        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
@@ -81,7 +80,6 @@ namespace Scripts.Model.Characters
             }
             Turn(direction);
             _entity.Move(direction);
-            _onMove.OnNext((direction, _entity.CurrentPosition));
             if (VisibleByPlayer)
             {
                 await UniTask.Delay(Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -117,6 +115,10 @@ namespace Scripts.Model.Characters
         {
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;
+        }
+        internal void PickUp(Item item)
+        {
+            _inventory.Replace(item, 0);
         }
     }
 }

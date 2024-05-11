@@ -4,8 +4,10 @@ using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using System;
+using System.Linq;
 using UnityEngine;
 using VContainer;
+using R3;
 
 namespace Scripts.Model
 {
@@ -14,9 +16,17 @@ namespace Scripts.Model
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         [Inject]
-        public GameManager(Tilemap tilemap, CharacterManager characterManager)
+        public GameManager(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {
             new World(tilemap, characterManager);
+            characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
+            {
+                ItemEntity? item = itemManager.TryPickUp(move.Position);
+                if (item != null)
+                {
+                    move.Character.PickUp(item.Item);
+                }
+            });
         }
         public void Spawn(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {

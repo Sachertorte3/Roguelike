@@ -25,7 +25,7 @@ namespace Scripts.Provider
 
             gameManager.Spawn(tilemap, characterManager, itemManager);
 
-            characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area =>
+            characterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
             {
                 tileMask.SetTilesTranslucent(area.AreaExited);
                 tileMask.SetTilesVisible(area.AreaEntered);

@@ -2,6 +2,7 @@
 using R3;
 using Scripts.Model;
 using Scripts.Model.Characters;
+using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using Scripts.View;
@@ -18,11 +19,11 @@ namespace Scripts.Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap, CharacterManager characterManager)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {
             LoggerInit();
 
-            gameManager.Spawn(tilemap, characterManager);
+            gameManager.Spawn(tilemap, characterManager, itemManager);
 
             characterManager.Player.Area.OnVisibleAreaChanged.Subscribe(area =>
             {

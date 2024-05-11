@@ -2,6 +2,7 @@
 using Scripts.Model;
 using Scripts.Model.Characters;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.View;
 using Scripts.View.UI;
@@ -19,6 +20,7 @@ namespace Scripts.Provider
         {
             builder.Register<GameManager>(Lifetime.Singleton);
             builder.Register<Tilemap>(Lifetime.Singleton);
+            builder.Register<ItemManager>(Lifetime.Singleton);
             builder.Register<CharacterManager>(Lifetime.Singleton);
             builder.Register<World>(Lifetime.Singleton);
             builder.Register<InputReceiver>(Lifetime.Singleton);
@@ -30,6 +32,7 @@ namespace Scripts.Provider
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
+            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
 
             builder.RegisterPlainEntryPoint<InputPresenter>();

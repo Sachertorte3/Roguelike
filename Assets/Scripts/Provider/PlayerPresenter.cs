@@ -11,7 +11,7 @@ namespace Scripts.Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, CameraFollowTarget camera)
+        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, SynchronizedItemView _, CameraFollowTarget camera)
         {
             CharacterView playerView = characters.Get(characterManager.Player);
 

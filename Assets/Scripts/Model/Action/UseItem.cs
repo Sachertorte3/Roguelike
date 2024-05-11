@@ -18,7 +18,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = Item.Skill.Evaluate(actor, Direction);
+            score = Item.Evaluate(actor, Direction);
             return score;
         }
     }

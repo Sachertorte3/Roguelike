@@ -1,3 +1,4 @@
+using Assets.Scripts.Model.Items;
 using Cysharp.Threading.Tasks;
 using Database.Characters.Type;
 using R3;
@@ -22,6 +23,8 @@ namespace Scripts.Model.Characters
         private Entity _entity;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public IInventory Inventory => _inventory;
+        private Inventory _inventory = new();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;

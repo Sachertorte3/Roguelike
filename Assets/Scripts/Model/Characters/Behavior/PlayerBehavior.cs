@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using R3;
+using Scripts.Data.Area;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
 using Scripts.Model.Items;
@@ -29,7 +30,7 @@ namespace Scripts.Model.Characters.Behavior
             }
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            UniTask<Item> itemTask = _receiver.OnItemActionReceived.WaitAsync();
+            UniTask<int> itemTask = _receiver.OnItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
@@ -62,8 +63,16 @@ namespace Scripts.Model.Characters.Behavior
                         }
                         break;
                     case 1:
-                        Item item = firstCompletedTask.result2;
-                        IAction action = new UseItem(item, character.CurrentDirection);
+                        Item? item = character.Inventory.Items[firstCompletedTask.result2];
+                        IAction action;
+                        if (item == null)
+                        {
+                            action = new UseSkill(new Skill(10, new LineArea(1)), character.CurrentDirection);
+                        }
+                        else
+                        {
+                            action = new UseItem(item, character.CurrentDirection);
+                        }
 
                         if (action.Doable(character))
                         {

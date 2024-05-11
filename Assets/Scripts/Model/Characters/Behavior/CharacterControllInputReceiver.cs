@@ -12,8 +12,8 @@ namespace Scripts.Model.Characters.Behavior
     {
         internal IReadOnlyAsyncReactiveProperty<(Move action, bool isStarted)> OnMoveInputReceived => _onMoveInputReceived;
         private AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
-        internal IReadOnlyAsyncReactiveProperty<Item> OnItemActionReceived => _onSkillActionReceived;
-        private AsyncReactiveProperty<Item> _onSkillActionReceived = new(null);
+        internal IReadOnlyAsyncReactiveProperty<int> OnItemActionReceived => _onSkillActionReceived;
+        private AsyncReactiveProperty<int> _onSkillActionReceived = new(0);
         public Observable<Unit> OnActionRead => _onActionRead;
         private Subject<Unit> _onActionRead = new Subject<Unit>();
         public void SetMoveInput(Direction8 direction, bool isStarted)
@@ -22,7 +22,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         public void SetAttackInput()
         {
-            _onSkillActionReceived.Value = new Item(new Skill(10, new LineArea(1)), 1);
+            _onSkillActionReceived.Value = 0;
         }
         internal void ReadInput()
         {

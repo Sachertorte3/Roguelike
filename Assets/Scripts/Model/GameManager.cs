@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Scripts.Model.Characters;
+using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using System;
@@ -17,11 +18,15 @@ namespace Scripts.Model
         {
             new World(tilemap, characterManager);
         }
-        public void Spawn(Tilemap tilemap, CharacterManager characterManager)
+        public void Spawn(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {
             foreach (Vector2Int position in tilemap.GetAllPassablePositions().GetAtRandom(10))
             {
                 characterManager.SpawnCharacter(position);
+            }
+            foreach (Vector2Int position in tilemap.GetAllPassablePositions().GetAtRandom(10))
+            {
+                itemManager.SpawnItem(position);
             }
         }
         public void Run(CharacterManager characterManager)

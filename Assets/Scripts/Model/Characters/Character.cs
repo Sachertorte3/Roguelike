@@ -20,11 +20,11 @@ namespace Scripts.Model.Characters
         public ICharacterType CharacterType { get; init; }
         public string TypeName() => CharacterType.TypeName();
         public string SubtypeName() => CharacterType.SubtypeName();
-        private Entity _entity;
+        private readonly Entity _entity;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public IInventory Inventory => _inventory;
-        private Inventory _inventory = new();
+        private readonly Inventory _inventory = new();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
@@ -33,11 +33,11 @@ namespace Scripts.Model.Characters
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public ReactiveProperty<Direction8> Direction => _direction;
-        private ReactiveProperty<Direction8> _direction = new ReactiveProperty<Direction8>(Direction8.Down);
+        private readonly ReactiveProperty<Direction8> _direction = new ReactiveProperty<Direction8>(Direction8.Down);
         internal bool CanAct = true;
         internal bool VisibleByPlayer = false;
         internal CharacterState State = CharacterState.Think;
-        internal ICharacterBehavior Behavior { get; init; }
+        private ICharacterBehavior Behavior { get; init; }
         public IStats Stats => _stats;
         private readonly CharacterStats _stats;
         public IVisionRange Area => _area;

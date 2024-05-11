@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
+using Scripts.Model.Items;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using System;
@@ -28,11 +29,11 @@ namespace Scripts.Model.Characters.Behavior
             }
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            UniTask<Skill> skillTask = _receiver.OnSkillActionReceived.WaitAsync();
+            UniTask<Item> itemTask = _receiver.OnItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, skillTask);
+            var firstCompletedTask = await UniTask.WhenAny(moveTask, itemTask);
             while (true)
             {
                 switch (firstCompletedTask.winArgumentIndex)
@@ -61,8 +62,8 @@ namespace Scripts.Model.Characters.Behavior
                         }
                         break;
                     case 1:
-                        Skill skill = firstCompletedTask.result2;
-                        IAction action = new UseSkill(skill, character.CurrentDirection);
+                        Item item = firstCompletedTask.result2;
+                        IAction action = new UseItem(item, character.CurrentDirection);
 
                         if (action.Doable(character))
                         {
@@ -74,8 +75,8 @@ namespace Scripts.Model.Characters.Behavior
                 }
 
                 moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-                skillTask = _receiver.OnSkillActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, skillTask);
+                itemTask = _receiver.OnItemActionReceived.WaitAsync();
+                firstCompletedTask = await UniTask.WhenAny(moveTask, itemTask);
             }
         }
     }

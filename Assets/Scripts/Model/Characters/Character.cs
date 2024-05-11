@@ -6,6 +6,7 @@ using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Characters.Effect;
 using Scripts.Model.Characters.Stats;
 using Scripts.Model.Entities;
+using Scripts.Model.Items;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
 using UnityEngine;
@@ -99,7 +100,17 @@ namespace Scripts.Model.Characters
             }
             State = CharacterState.Wait;
         }
-        public UniTask LoseHp(int value)
+        public async UniTask UseItem(Item item, Direction8 direction)
+        {
+            _direction.Value = direction;
+            _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
+            if (VisibleByPlayer)
+            {
+                await UniTask.WhenAll(item.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            }
+            State = CharacterState.Wait;
+        }
+        internal UniTask LoseHp(int value)
         {
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;

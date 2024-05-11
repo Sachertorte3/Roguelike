@@ -36,7 +36,7 @@ namespace Scripts.Utilities
             {
                 throw new Exception("The number of elements to be retrieved is greater than the number of elements in IEnumerable");
             }
-            List<T> result = new List<T>();
+            List<T> result = new();
 
             T[] remaining = ie.ToArray(); // 残っている要素のリスト
             int remainingCount = remaining.Count();

@@ -1,9 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using R3;
-using Scripts.Data.Area;
 using Scripts.Model.Action;
-using Scripts.Model.Characters.Effect;
-using Scripts.Model.Items;
 using Scripts.Utilities;
 
 namespace Scripts.Model.Characters.Behavior
@@ -15,7 +12,7 @@ namespace Scripts.Model.Characters.Behavior
         internal IReadOnlyAsyncReactiveProperty<int> OnItemActionReceived => _onSkillActionReceived;
         private AsyncReactiveProperty<int> _onSkillActionReceived = new(0);
         public Observable<Unit> OnActionRead => _onActionRead;
-        private Subject<Unit> _onActionRead = new Subject<Unit>();
+        private Subject<Unit> _onActionRead = new();
         public void SetMoveInput(Direction8 direction, bool isStarted)
         {
             _onMoveInputReceived.Value = (new Move(direction), isStarted);

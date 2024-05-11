@@ -1,13 +1,12 @@
 ﻿#nullable enable
+using R3;
 using Scripts.Model.Characters;
 using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using System;
-using System.Linq;
 using UnityEngine;
 using VContainer;
-using R3;
 
 namespace Scripts.Model
 {
@@ -43,12 +42,5 @@ namespace Scripts.Model
         {
             new TurnController(characterManager);
         }
-    }
-    public static class Globals
-    {
-        internal static IWorldViewer? World { get; set; }
-        internal static ITilemapViewer? Map { get; set; }
-        public static Func<bool>? IsDash { get; set; }
-        public static Func<bool>? IsNoMove { get; set; }
     }
 }

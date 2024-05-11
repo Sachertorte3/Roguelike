@@ -15,12 +15,12 @@ namespace Scripts.Model.Map
     public class Tilemap : ITilemapViewer
     {
         public Observable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
-        private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new Subject<(Vector2Int, TileData)>();
+        private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Width;
         public readonly int Height;
-        public Vector2Int Size => new Vector2Int(Width, Height);
-        public RectInt Rect => new RectInt(Vector2Int.zero, Size);
+        public Vector2Int Size => new(Width, Height);
+        public RectInt Rect => new(Vector2Int.zero, Size);
         [Inject]
         public Tilemap(FieldBluePrint bluePrint)
         {

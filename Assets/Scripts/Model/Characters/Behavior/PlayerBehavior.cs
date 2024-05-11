@@ -17,7 +17,7 @@ namespace Scripts.Model.Characters.Behavior
     internal sealed class PlayerBehavior : ICharacterBehavior
     {
         private CharacterControllInputReceiver _receiver;
-        private IntelligentDashController _intelligentDashController = new IntelligentDashController();
+        private IntelligentDashController _intelligentDashController = new();
         public PlayerBehavior(CharacterControllInputReceiver receiver)
         {
             _receiver = receiver;

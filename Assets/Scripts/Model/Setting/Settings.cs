@@ -8,24 +8,24 @@ namespace Scripts.Model.Setting
     public static class Settings
     {
         public static ReactiveProperty<int> BGMVolume => _BGMVolume.OnValueChanged;
-        private static readonly Slider _BGMVolume = new Slider("BGM音量", 0, 100, 50);
+        private static readonly Slider _BGMVolume = new("BGM音量", 0, 100, 50);
         public static ReactiveProperty<int> SEVolume => _SEVolume.OnValueChanged;
-        private static readonly Slider _SEVolume = new Slider("SE音量", 0, 100, 50);
+        private static readonly Slider _SEVolume = new("SE音量", 0, 100, 50);
         public static ReactiveProperty<int> MoveMilliseconds => _moveMilliseconds.OnValueChanged;
-        private static readonly Slider _moveMilliseconds = new Slider("移動時間[ms]", 1, 1000, 100);
+        private static readonly Slider _moveMilliseconds = new("移動時間[ms]", 1, 1000, 100);
         public static ReactiveProperty<int> DashMilliseconds => _dashMilliseconds.OnValueChanged;
-        private static readonly Slider _dashMilliseconds = new Slider("ダッシュ時移動時間[ms]", 1, 1000, 20);
+        private static readonly Slider _dashMilliseconds = new("ダッシュ時移動時間[ms]", 1, 1000, 20);
         public static ReactiveProperty<int> EffectDisplayTime => _effectDisplayTime.OnValueChanged;
-        private static readonly Slider _effectDisplayTime = new Slider("エフェクト表示時間[ms]", 10, 1000, 100);
+        private static readonly Slider _effectDisplayTime = new("エフェクト表示時間[ms]", 10, 1000, 100);
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
-        private static readonly CheckBox _ignoreWall = new CheckBox("壁貫通", false);
+        private static readonly CheckBox _ignoreWall = new("壁貫通", false);
         public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;
-        private static readonly CheckBox _intelligentDash = new CheckBox("スマートダッシュ", true);
+        private static readonly CheckBox _intelligentDash = new("スマートダッシュ", true);
         public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
-        private static readonly Slider _dashPauseMilliseconds = new Slider("分岐一時停止時間[ms]", 100, 1000, 250);
+        private static readonly Slider _dashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
         public static List<IOptionInput> GetOptions()
         {
-            List<IOptionInput> setters = new List<IOptionInput>();
+            List<IOptionInput> setters = new();
             foreach (FieldInfo field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
             {
                 object value = field.GetValue(typeof(Settings));

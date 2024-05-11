@@ -6,7 +6,7 @@ namespace Scripts.View
 {
     public class InputReceiver
     {
-        private MyInputAction _actions = new MyInputAction();
+        private MyInputAction _actions = new();
         public Observable<Vector2> OnMovePerformed => _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
         public Vector2 MoveVector => _actions.Field.Move.ReadValue<Vector2>();
         public bool IsDash => _actions.Field.Dash.IsPressed();

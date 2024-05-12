@@ -104,7 +104,7 @@ namespace Scripts.Model.Characters
         public async UniTask UseItem(Item item, Direction8 direction)
         {
             _direction.Value = direction;
-            _onUseSkill.OnNext((new Skill(item.Data.Skill), CurrentPosition, CurrentDirection));
+            _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
             if (VisibleByPlayer)
             {
                 await UniTask.WhenAll(item.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

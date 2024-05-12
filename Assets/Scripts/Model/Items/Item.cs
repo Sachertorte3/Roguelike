@@ -8,16 +8,22 @@ using UnityEngine;
 
 namespace Scripts.Model.Items
 {
-    public record Item(ItemData Data)
+    public class Item
     {
-        public Sprite Icon => Data.Sprite;
+        public readonly Sprite Icon;
+        public readonly Skill Skill;
+        public Item(ItemData data)
+        {
+            Icon = data.Sprite;
+            Skill = new Skill(data.Skill);
+        }
         public async UniTask Use(IActor actor, Direction8 direction)
         {
-            await new Skill(Data.Skill).Use(actor, direction);
+            await Skill.Use(actor, direction);
         }
         public float Evaluate(IActor actor, Direction8 direction)
         {
-            return new Skill(Data.Skill).Evaluate(actor, direction);
+            return Skill.Evaluate(actor, direction);
         }
     }
 }

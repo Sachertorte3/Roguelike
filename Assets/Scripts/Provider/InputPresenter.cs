@@ -4,6 +4,7 @@ using Scripts.Model;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Utilities;
 using Scripts.View;
+using Scripts.View.UI;
 using System.Linq;
 using UnityEngine;
 using VContainer;
@@ -13,7 +14,7 @@ namespace Scripts.Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver)
+        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -32,6 +33,10 @@ namespace Scripts.Provider
             receiver.OnAttackPerformed.Subscribe(_ =>
             {
                 actionReceiver.SetAttackInput();
+            });
+            inventoryView.OnFocusChanged.Subscribe(index =>
+            {
+                actionReceiver.SetInventoryIndex(index);
             });
 
             Globals.IsDash = () => receiver.IsDash;

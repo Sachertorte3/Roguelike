@@ -2,6 +2,7 @@
 using ObservableCollections;
 using R3;
 using Scripts.Model.Items;
+using Sirenix.OdinInspector;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -32,6 +33,14 @@ namespace Assets.Scripts.Model.Items
             Item? removed = _items[index];
             _items[index] = item;
             return removed;
+        }
+    }
+    public class InventoryIndexReceiver
+    {
+        public int Index { get; private set; } = -1;
+        public void SetIndex(int index)
+        {
+            Index = index;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Assets.Scripts.Model.Items;
+using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Action;
 using Scripts.Utilities;
@@ -13,13 +14,18 @@ namespace Scripts.Model.Characters.Behavior
         private AsyncReactiveProperty<int> _onSkillActionReceived = new(0);
         public Observable<Unit> OnActionRead => _onActionRead;
         private Subject<Unit> _onActionRead = new();
+        private InventoryIndexReceiver _inventoryIndexReceiver = new();
         public void SetMoveInput(Direction8 direction, bool isStarted)
         {
             _onMoveInputReceived.Value = (new Move(direction), isStarted);
         }
         public void SetAttackInput()
         {
-            _onSkillActionReceived.Value = 0;
+            _onSkillActionReceived.Value = _inventoryIndexReceiver.Index;
+        }
+        public void SetInventoryIndex(int index)
+        {
+            _inventoryIndexReceiver.SetIndex(index);
         }
         internal void ReadInput()
         {

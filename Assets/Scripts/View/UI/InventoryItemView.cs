@@ -1,25 +1,26 @@
 ﻿#nullable enable
+using R3;
+using R3.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Scripts.View.UI
 {
-    [RequireComponent(typeof(Image))]
-    internal class InventoryItemView : MonoBehaviour
+    [RequireComponent(typeof(Image), typeof(Selectable))]
+    internal class InventoryItemView : Selectable, ISelectHandler
     {
         [SerializeField] private Image _icon;
-        private bool _isFocused = false;
+        public Observable<Unit> OnFocus => _onFocus;
+        private Subject<Unit> _onFocus = new();
         public void SetIcon(Sprite? icon)
         {
             _icon.sprite = icon;
         }
-        public void Focus()
+        public override void OnSelect(BaseEventData eventData)
         {
-            _isFocused = true;
-        }
-        public void Unfocus()
-        {
-            _isFocused = false;
+            _onFocus.OnNext(Unit.Default);
+            base.OnSelect(eventData);
         }
     }
 }

@@ -399,6 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62afb7a9a0a1014b9eecc35924fc978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ui: {fileID: 757562773}
   _menu: {fileID: 67670921}
 --- !u!4 &485765855
 Transform:
@@ -415,6 +416,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &757562773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 757562774}
+  m_Layer: 5
+  m_Name: UIPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &757562774
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757562773}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1975510415}
+  m_Father: {fileID: 1164036036}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &868416782
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,7 +713,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1975510415}
+  - {fileID: 757562774}
   - {fileID: 1751046493}
   m_Father: {fileID: 228260750}
   m_RootOrder: -1
@@ -749,17 +787,17 @@ MonoBehaviour:
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_PointAction: {fileID: -7989457068064801114, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_MoveAction: {fileID: -4151817134333268539, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_SubmitAction: {fileID: 6396224126896934572, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_CancelAction: {fileID: 7025117370119188548, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_LeftClickAction: {fileID: 4474414710419998062, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_MiddleClickAction: {fileID: 4737225063186731715, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_RightClickAction: {fileID: -3975495568824156761, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_ScrollWheelAction: {fileID: -7509155130773961222, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 4277544244535807569, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: -7761413507273188827, guid: b8ac9e681da54b84481b9e17bdeb51a0, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
@@ -1310,7 +1348,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1164036036}
+    m_TransformParent: {fileID: 757562774}
     m_Modifications:
     - target: {fileID: 615100321150736510, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
       propertyPath: m_Pivot.x

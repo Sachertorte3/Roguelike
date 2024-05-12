@@ -2,7 +2,6 @@
 using ObservableCollections;
 using R3;
 using Scripts.Model.Items;
-using Sirenix.OdinInspector;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -15,6 +14,20 @@ namespace Assets.Scripts.Model.Items
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
         private ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
+        public Inventory()
+        {
+
+            OnItemChanged.Subscribe(itemChanged =>
+            {
+                itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
+                    {
+                        if (remainingUses <= 0)
+                        {
+                            Replace(null, _items.IndexOf(itemChanged.NewValue));
+                        }
+                    });
+            });
+        }
         public bool TryAdd(Item item)
         {
             int index = _items.IndexOf(null);

@@ -99,6 +99,10 @@ namespace Scripts.Model.Characters
             {
                 await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
+            else
+            {
+                await skill.Use(this, direction);
+            }
             State = CharacterState.Wait;
         }
         public async UniTask UseItem(Item item, Direction8 direction)
@@ -108,6 +112,10 @@ namespace Scripts.Model.Characters
             if (VisibleByPlayer)
             {
                 await UniTask.WhenAll(item.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            }
+            else
+            {
+                await item.Use(this, direction);
             }
             State = CharacterState.Wait;
         }

@@ -17,6 +17,7 @@ MonoBehaviour:
     Power: 10
     Area:
       rid: 6064254405786206208
+  UsageLimit: 1
   references:
     version: 2
     RefIds:

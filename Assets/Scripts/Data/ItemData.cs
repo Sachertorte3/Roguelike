@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using UnityEngine;
 
 namespace Scripts.Data
@@ -8,5 +9,6 @@ namespace Scripts.Data
     {
         public Sprite Icon;
         public SkillData Skill;
+        public int UsageLimit;
     }
 }

@@ -21,7 +21,7 @@ namespace Scripts.Provider
             GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
-            characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged => inventoryView.Replace(arrowPrefab.GetComponent<SpriteRenderer>().sprite, itemChanged.Index));
+            characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged => inventoryView.Replace(itemChanged.NewValue?.Icon, itemChanged.Index));
 
             camera.SetTarget(playerView.gameObject);
         }

@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Scripts.Data;
 using Scripts.Data.Area;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
@@ -33,7 +34,7 @@ namespace Scripts.Model.Characters.Behavior
         }
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character)
         {
-            return DirectionMethods.AllDirections.Select(direction => new UseSkill(new Skill(1, new LineArea(1)), direction)).Where(move => move.Doable(character));
+            return DirectionMethods.AllDirections.Select(direction => new UseSkill(new Skill(new SkillData(1, new LineArea(1))), direction)).Where(move => move.Doable(character));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#nullable enable
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Scripts.View.UI
@@ -8,7 +9,7 @@ namespace Scripts.View.UI
     {
         [SerializeField] private Image _icon;
         private bool _isFocused = false;
-        public void SetIcon(Sprite icon)
+        public void SetIcon(Sprite? icon)
         {
             _icon.sprite = icon;
         }

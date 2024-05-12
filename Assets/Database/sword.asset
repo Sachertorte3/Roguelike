@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: Data
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Name: sword
+  Icon: {fileID: -85647645, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Skill:
     Power: 10
     Area:
       rid: 6064254405786206208
-  UsageLimit: 1
+  UsageLimit: 30
   references:
     version: 2
     RefIds:
     - rid: 6064254405786206208
       type: {class: LineArea, ns: Scripts.Data.Area, asm: Data}
       data:
-        Length: 3
+        Length: 1

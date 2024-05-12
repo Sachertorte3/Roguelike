@@ -1,11 +1,13 @@
 ﻿#nullable enable
 using R3;
+using Scripts.Data;
 using Scripts.Model.Characters;
 using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
 using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using VContainer;
 
 namespace Scripts.Model
@@ -36,9 +38,10 @@ namespace Scripts.Model
             {
                 characterManager.SpawnCharacter(position);
             }
-            foreach (Vector2Int position in tilemap.GetAllPassablePositions().GetAtRandom(10))
+            DungeonData data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
+            foreach (Vector2Int position in tilemap.GetAllPassablePositions().GetAtRandom(30))
             {
-                itemManager.SpawnItem(position);
+                itemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
             }
         }
         public void Run(CharacterManager characterManager)

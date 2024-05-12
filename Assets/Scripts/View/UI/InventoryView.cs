@@ -22,9 +22,17 @@ namespace Scripts.View.UI
             itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _onFocusChanged.OnNext(index)));
             itemViews[0].Select();
         }
-        public void Replace(Sprite? icon, int index)
+        public void Replace(Sprite icon, int count, int index)
         {
-            itemViews[index].SetIcon(icon);
+            itemViews[index].SetIcon(icon, count);
+        }
+        public void Remove(int index)
+        {
+            itemViews[index].Remove();
+        }
+        public void UpdateCount(int count, int index)
+        {
+            itemViews[index].SetCount(count);
         }
     }
 }

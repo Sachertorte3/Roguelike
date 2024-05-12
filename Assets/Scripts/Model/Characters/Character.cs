@@ -116,9 +116,10 @@ namespace Scripts.Model.Characters
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;
         }
-        internal void PickUp(Item item)
+        internal bool HasEmptySpaceInInventory() => Inventory.HasEmptySpace();
+        internal bool TryPickUp(Item item)
         {
-            _inventory.Replace(item, 0);
+            return _inventory.TryAdd(item);
         }
     }
 }

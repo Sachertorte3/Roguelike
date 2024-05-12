@@ -11,7 +11,7 @@ namespace Assets.Scripts.Model.Items
     {
         private const int MaxItems = 10;
         public ReadOnlyCollection<Item?> Items => new(_items);
-        public Observable<CollectionReplaceEvent<Item?>> OnChangeItem => _items.ObserveReplace();
+        public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
         private ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public Item? Replace(Item? item, int index)
         {

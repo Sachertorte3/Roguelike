@@ -9,6 +9,6 @@ namespace Assets.Scripts.Model.Items
     public interface IInventory
     {
         public ReadOnlyCollection<Item?> Items { get; }
-        public Observable<CollectionReplaceEvent<Item?>> OnChangeItem { get; }
+        public Observable<CollectionReplaceEvent<Item?>> OnItemChanged { get; }
     }
 }

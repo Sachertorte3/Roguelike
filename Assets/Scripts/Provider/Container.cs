@@ -28,6 +28,7 @@ namespace Scripts.Provider
             builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
+            builder.RegisterComponentInHierarchy<InventoryView>();
             builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();

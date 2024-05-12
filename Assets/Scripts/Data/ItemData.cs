@@ -3,5 +3,10 @@ using UnityEngine;
 
 namespace Scripts.Data
 {
-    public record ItemData(Sprite Sprite, SkillData Skill);
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
+    public class ItemData : ScriptableObject
+    {
+        public Sprite Icon;
+        public SkillData Skill;
+    }
 }

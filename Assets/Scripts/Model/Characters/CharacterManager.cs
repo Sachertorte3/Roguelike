@@ -27,6 +27,7 @@ namespace Scripts.Model.Characters
         [Inject]
         public CharacterManager(Tilemap tilemap, CharacterControllInputReceiver actionReceiver)
         {
+            _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
 

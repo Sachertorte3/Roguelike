@@ -23,6 +23,7 @@ namespace Scripts.Model.Items
         public ItemEntityEvents EntityEvents = new();
         public ItemManager()
         {
+            _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             EntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
         }
         public void AddItem(ItemEntity item)
@@ -32,8 +33,8 @@ namespace Scripts.Model.Items
         }
         public void SpawnItem(Vector2Int spawnPosition)
         {
-            Sprite sprite = Addressables.LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_0]").WaitForCompletion();
-            AddItem(_factory.CreateItem(spawnPosition, new Item(new ItemData(sprite, new SkillData(10, new LineArea(2))))));
+            ItemData item = Addressables.LoadAssetAsync<ItemData>("Assets/Database/Data.asset").WaitForCompletion();
+            AddItem(_factory.CreateItem(spawnPosition, new Item(item)));
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

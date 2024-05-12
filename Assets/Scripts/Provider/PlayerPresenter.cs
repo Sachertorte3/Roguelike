@@ -1,23 +1,27 @@
 ﻿#nullable enable
 using Scripts.Model.Characters;
 using Scripts.View;
+using Scripts.View.UI;
 using UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using R3;
 
 namespace Scripts.Provider
 {
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, SynchronizedItemView _, CameraFollowTarget camera)
+        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, SynchronizedItemView _, InventoryView inventoryView, CameraFollowTarget camera)
         {
             CharacterView playerView = characters.Get(characterManager.Player);
 
             GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
             GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
+
+            characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged => inventoryView.Replace(arrowPrefab.GetComponent<SpriteRenderer>().sprite, itemChanged.Index));
 
             camera.SetTarget(playerView.gameObject);
         }

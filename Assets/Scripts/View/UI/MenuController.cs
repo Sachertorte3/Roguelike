@@ -2,7 +2,7 @@
 using UnityEngine;
 using VContainer;
 
-namespace Scripts.View
+namespace Scripts.View.UI
 {
     public class MenuController : MonoBehaviour
     {

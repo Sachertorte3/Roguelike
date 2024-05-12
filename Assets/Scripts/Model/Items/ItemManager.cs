@@ -2,12 +2,14 @@
 using Cysharp.Threading.Tasks;
 using ObservableCollections;
 using R3;
+using Scripts.Data;
 using Scripts.Data.Area;
 using Scripts.Model.Characters.Effect;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Scripts.Model.Items
 {
@@ -30,7 +32,8 @@ namespace Scripts.Model.Items
         }
         public void SpawnItem(Vector2Int spawnPosition)
         {
-            AddItem(_factory.CreateItem(spawnPosition, new Item(new Skill(10, new LineArea(2)))));
+            Sprite sprite = Addressables.LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_0]").WaitForCompletion();
+            AddItem(_factory.CreateItem(spawnPosition, new Item(new ItemData(sprite, new SkillData(10, new LineArea(2))))));
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

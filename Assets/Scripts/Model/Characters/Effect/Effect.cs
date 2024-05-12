@@ -1,5 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
-using Scripts.Data.Area;
+using Scripts.Data;
 using Scripts.Model.Action;
 using Scripts.Utilities;
 using Sirenix.Utilities;
@@ -9,22 +9,22 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters.Effect
 {
-    public record Skill(int Power, IArea Area)
+    public record Skill(SkillData Data)
     {
-        public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction) => Area.Get(position, direction);
+        public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction) => Data.Area.Get(position, direction);
         public UniTask Use(IActor actor, Direction8 direction)
         {
-            IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);
-            Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.LoseHp(Formula.Calc(actor, Power)));
+            IEnumerable<Vector2Int> area = Data.Area.Get(actor.CurrentPosition, direction);
+            Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.LoseHp(Formula.Calc(actor, Data.Power)));
             return UniTask.CompletedTask;
         }
         public float Evaluate(IActor actor, Direction8 direction)
         {
-            IEnumerable<Vector2Int> area = Area.Get(actor.CurrentPosition, direction);
+            IEnumerable<Vector2Int> area = Data.Area.Get(actor.CurrentPosition, direction);
             HashSet<Character> characters = Globals.World.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
             {
-                return characters.Sum(character => (float)Formula.Calc(actor, Power) / character.Stats.MaxHp.CurrentValue);
+                return characters.Sum(character => (float)Formula.Calc(actor, Data.Power) / character.Stats.MaxHp.CurrentValue);
             }
             else
             {

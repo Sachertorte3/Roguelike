@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using R3;
+using Scripts.Data;
 using Scripts.Data.Area;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
@@ -67,7 +68,7 @@ namespace Scripts.Model.Characters.Behavior
                         IAction action;
                         if (item == null)
                         {
-                            action = new UseSkill(new Skill(10, new LineArea(1)), character.CurrentDirection);
+                            action = new UseSkill(new Skill(new SkillData(10, new LineArea(1))), character.CurrentDirection);
                         }
                         else
                         {

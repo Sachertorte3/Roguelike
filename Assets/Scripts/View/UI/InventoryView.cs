@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#nullable enable
+using UnityEngine;
 
 namespace Scripts.View.UI
 {
@@ -13,7 +14,7 @@ namespace Scripts.View.UI
                 itemViews[i] = Instantiate(itemViewPrefab, transform);
             }
         }
-        public void Replace(Sprite icon, int index)
+        public void Replace(Sprite? icon, int index)
         {
             itemViews[index].SetIcon(icon);
         }

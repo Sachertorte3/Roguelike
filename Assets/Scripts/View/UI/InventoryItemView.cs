@@ -16,6 +16,7 @@ namespace Scripts.View.UI
         public void SetIcon(Sprite? icon)
         {
             _icon.sprite = icon;
+            _icon.enabled = icon != null;
         }
         public override void OnSelect(BaseEventData eventData)
         {

@@ -14,7 +14,7 @@ namespace Scripts.Model.Items
         public readonly Skill Skill;
         public Item(ItemData data)
         {
-            Icon = data.Sprite;
+            Icon = data.Icon;
             Skill = new Skill(data.Skill);
         }
         public async UniTask Use(IActor actor, Direction8 direction)

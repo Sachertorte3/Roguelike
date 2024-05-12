@@ -35,6 +35,7 @@ namespace Scripts.Provider
             SpriteView spriteView = GameObject.Instantiate<GameObject>(_itemViewPrefab).GetComponent<SpriteView>();
             ObjectsManager.RegisterComponent(spriteView.GetComponent<SpriteView>());
             spriteView.transform.position = (Vector3Int)item.CurrentPosition;
+            spriteView.GetComponent<SpriteRenderer>().sprite = item.Item.Icon;
             spriteView.SetVisibility(_getVisibleArea().Contains(item.CurrentPosition));
             itemViewDict.Add(item, spriteView);
         }

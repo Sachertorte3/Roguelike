@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
 using R3;
+using Scripts.Model.Items;
+using System;
 
 namespace Scripts.Provider
 {

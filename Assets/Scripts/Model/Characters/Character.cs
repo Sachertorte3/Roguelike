@@ -125,9 +125,13 @@ namespace Scripts.Model.Characters
             return UniTask.CompletedTask;
         }
         internal bool HasEmptySpaceInInventory() => Inventory.HasEmptySpace();
-        internal bool TryPickUp(Item item)
+        public bool TryPickUp(Item item)
         {
             return _inventory.TryAdd(item);
+        }
+        public Item? ReplaceInventory(Item? item, int index)
+        {
+            return _inventory.Replace(item, index);
         }
     }
 }

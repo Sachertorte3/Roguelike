@@ -5,6 +5,7 @@ using R3;
 using Scripts.Data;
 using Scripts.Data.Area;
 using Scripts.Model.Characters.Effect;
+using Scripts.Utilities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -31,10 +32,9 @@ namespace Scripts.Model.Items
             _items.Add(item);
             EntityEvents.Add(item);
         }
-        public void SpawnItem(Vector2Int spawnPosition)
+        public void SpawnItem(Item item, Vector2Int spawnPosition)
         {
-            ItemData item = Addressables.LoadAssetAsync<ItemData>("Assets/Database/Data.asset").WaitForCompletion();
-            AddItem(_factory.CreateItem(spawnPosition, new Item(item)));
+            AddItem(_factory.CreateItem(spawnPosition, item));
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

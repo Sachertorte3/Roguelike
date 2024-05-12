@@ -1,14 +1,54 @@
 ﻿#nullable enable
-using System;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace Scripts.Data
 {
+    using System.IO;
+#if UNITY_EDITOR
+    using UnityEditor;
+
+    [CustomEditor(typeof(ItemData))]
+    public class ExampleEditor : Editor
+    {
+        public override Texture2D RenderStaticPreview
+        (
+            string assetPath,
+            Object[] subAssets,
+            int width,
+            int height
+        )
+        {
+            var obj = target as ItemData;
+            var icon = obj.Icon;
+
+            if (icon == null)
+            {
+                return base.RenderStaticPreview(assetPath, subAssets, width, height);
+            }
+
+            var preview = AssetPreview.GetAssetPreview(icon);
+            var final = new Texture2D(width, height);
+
+            EditorUtility.CopySerialized(preview, final);
+
+            return final;
+        }
+    }
+
+#endif
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject
     {
+        [ReadOnly] public string Name = "";
         public Sprite Icon;
         public SkillData Skill;
-        public int UsageLimit;
+        [MinValue(1)] public int UsageLimit;
+        private void OnValidate()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
+            Name = Path.GetFileNameWithoutExtension(assetPath);
+            AssetDatabase.SaveAssets();
+        }
     }
 }

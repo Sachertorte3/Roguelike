@@ -11,15 +11,16 @@ namespace Scripts.View.UI
     {
         private InventoryItemView[] itemViews = new InventoryItemView[10];
         [SerializeField] private InventoryItemView itemViewPrefab;
-        public Observable<int> OnFocusChanged => _onFocusChanged;
-        private Subject<int> _onFocusChanged = new Subject<int>();
+        public int CurrentFocus => _focusIndex.CurrentValue;
+        public Observable<int> OnFocusChanged => _focusIndex;
+        private ReactiveProperty<int> _focusIndex = new();
         private void Awake()
         {
             for (int i = 0; i < itemViews.Length; i++)
             {
                 itemViews[i] = Instantiate(itemViewPrefab, transform);
             }
-            itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _onFocusChanged.OnNext(index)));
+            itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
             itemViews[0].Select();
         }
         public void Replace(Sprite icon, int count, int index)

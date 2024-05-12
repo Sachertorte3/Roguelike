@@ -12,6 +12,7 @@ namespace Scripts.View
         public bool IsDash => _actions.Field.Dash.IsPressed();
         public bool IsNoMove => _actions.Field.TurnOnly.IsPressed();
         public Observable<Unit> OnAttackPerformed => _actions.Field.Attack.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnDropPerformed => _actions.Field.Drop.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
         public InputReceiver()

@@ -18,7 +18,6 @@ namespace Assets.Scripts.Model.Items
         private Subject<OnItemUpdated> _onItemUpdated = new();
         public Inventory()
         {
-
             OnItemChanged.Subscribe(itemChanged =>
             {
                 itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>

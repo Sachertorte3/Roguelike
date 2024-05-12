@@ -20,10 +20,13 @@ namespace Scripts.Model
             new World(tilemap, characterManager);
             characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
             {
-                ItemEntity? item = itemManager.TryPickUp(move.Position);
-                if (item != null)
+                if (move.Character.HasEmptySpaceInInventory())
                 {
-                    move.Character.PickUp(item.Item);
+                    ItemEntity? item = itemManager.TryPickUp(move.Position);
+                    if (item != null)
+                    {
+                        move.Character.TryPickUp(item.Item);
+                    }
                 }
             });
         }

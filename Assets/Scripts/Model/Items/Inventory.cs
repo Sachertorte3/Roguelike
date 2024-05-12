@@ -13,6 +13,20 @@ namespace Assets.Scripts.Model.Items
         public ReadOnlyCollection<Item?> Items => new(_items);
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
         private ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
+        public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
+        public bool TryAdd(Item item)
+        {
+            int index = _items.IndexOf(null);
+            if (index >= 0)
+            {
+                Replace(item, index);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public Item? Replace(Item? item, int index)
         {
             Item? removed = _items[index];

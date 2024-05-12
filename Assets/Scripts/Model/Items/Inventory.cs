@@ -14,18 +14,24 @@ namespace Assets.Scripts.Model.Items
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
         private ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
+        public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
+        private Subject<OnItemUpdated> _onItemUpdated = new();
         public Inventory()
         {
 
             OnItemChanged.Subscribe(itemChanged =>
             {
                 itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
+                {
+                    if (remainingUses <= 0)
                     {
-                        if (remainingUses <= 0)
-                        {
-                            Replace(null, _items.IndexOf(itemChanged.NewValue));
-                        }
-                    });
+                        Replace(null, _items.IndexOf(itemChanged.NewValue));
+                    }
+                    else
+                    {
+                        _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
+                    }
+                });
             });
         }
         public bool TryAdd(Item item)
@@ -56,4 +62,5 @@ namespace Assets.Scripts.Model.Items
             Index = index;
         }
     }
+    public record OnItemUpdated(Item Item, int Index);
 }

@@ -25,18 +25,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4975359864739898962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2498096411086652254}
+  m_Father: {fileID: 4965566580593340212}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 5.8}
-  m_SizeDelta: {x: 0, y: 11.6}
+  m_AnchoredPosition: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5887544790346257049
 CanvasRenderer:
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -164,15 +164,14 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6595968420886778959}
+  m_Children: []
   m_Father: {fileID: 4965566580593340212}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 36, y: 36}
+  m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1860964518848229341
 CanvasRenderer:
@@ -254,11 +253,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 48
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 48
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -314,6 +313,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2498096411086652254}
+    - targetCorrespondingSourceObject: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6595968420886778959}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3302183159522404520, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}
       insertIndex: -1

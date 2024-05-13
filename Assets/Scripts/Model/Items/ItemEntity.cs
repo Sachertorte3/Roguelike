@@ -16,6 +16,7 @@ namespace Scripts.Model.Items
         private readonly Entity _entity;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
@@ -34,6 +35,7 @@ namespace Scripts.Model.Items
             _entity.Dispose();
             _onUseSkill.Dispose();
         }
+        public void SetVisiblity(bool visiblity) => _entity.SetVisibility(visiblity);
         public async UniTask Throw(IActor actor, Direction8 direction)
         {
             while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))

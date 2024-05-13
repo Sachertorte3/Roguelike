@@ -40,23 +40,21 @@ namespace Scripts.Provider
         public void Add(Character character)
         {
             CharacterView characterView = GameObject.Instantiate<GameObject>(_characterViewPrefab).GetComponent<CharacterView>();
-            EntityView entityView = characterView.GetComponent<EntityView>();
-            ObjectsManager.RegisterComponent(characterView.GetComponent<SpriteView>());
             characterView.Construct(character.TypeName());
-            entityView.Construct(_inputReceiver);
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(), character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction));
+
+            EntityView entityView = characterView.GetComponent<EntityView>();
+            entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             character.OnUseSkill.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
-            SpriteView view = characterView.GetComponent<SpriteView>();
-            view.SetVisibility(_getVisibleArea().Contains(character.CurrentPosition));
-            entityView.OnMoveFinished.Subscribe(_ =>
-            {
-                view.SetVisibility(_getVisibleArea().Contains(character.CurrentPosition));
-            });
+
+            SpriteView spriteView = characterView.GetComponent<SpriteView>();
+            ObjectsManager.RegisterComponent(spriteView);
+            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
             characterViewDict.Add(character, characterView);
         }
         public void Remove(Character character)

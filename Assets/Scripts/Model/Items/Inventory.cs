@@ -18,7 +18,7 @@ namespace Assets.Scripts.Model.Items
         public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
         private Subject<OnItemUpdated> _onItemUpdated = new();
-        private List<SerialDisposable> disposables = new(Enumerable.Repeat(new SerialDisposable(), MaxItems));
+        private List<SerialDisposable> disposables = new(Enumerable.Range(0, MaxItems).Select(_ => new SerialDisposable()));
         public Inventory()
         {
             OnItemChanged.Subscribe(itemChanged =>

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using R3;
 using Scripts.Model.Characters;
+using Scripts.Model.Items;
 using Scripts.Model.Map;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +14,36 @@ namespace Scripts.Model
     {
         private Tilemap _map;
         public ITilemapViewer Map => _map;
-        private readonly CharacterManager _characterManager;
+        public CharacterManager CharacterManager { get; init; }
+        public ItemManager ItemManager { get; init; }
         [Inject]
-        public World(Tilemap map, CharacterManager characterManager)
+        public World(Tilemap map, CharacterManager characterManager, ItemManager itemManager)
         {
             _map = map;
-            _characterManager = characterManager;
+            CharacterManager = characterManager;
+            ItemManager = itemManager;
+
+            characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
+            {
+                if (move.Character.HasEmptySpaceInInventory())
+                {
+                    ItemEntity? item = itemManager.TryPickUp(move.Position);
+                    if (item != null)
+                    {
+                        move.Character.TryPickUp(item.Item);
+                    }
+                }
+            });
+
             Globals.World = this;
         }
         public bool IsPassable(Vector2Int position)
         {
-            return _map.IsPassable(position) && !_characterManager.GetAllCharacterPositions().Contains(position);
+            return _map.IsPassable(position) && !CharacterManager.GetAllCharacterPositions().Contains(position);
         }
         public bool IsPassableIgnoreWall(Vector2Int position)
         {
-            return !_characterManager.GetAllCharacterPositions().Contains(position);
+            return !CharacterManager.GetAllCharacterPositions().Contains(position);
         }
         /// <summary>
         /// Generates and returns a list of characters currently located within the given positions.
@@ -36,7 +52,7 @@ namespace Scripts.Model
         /// <returns></returns>
         public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
         {
-            return _characterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue)).ToHashSet();
+            return CharacterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue)).ToHashSet();
         }
     }
 }

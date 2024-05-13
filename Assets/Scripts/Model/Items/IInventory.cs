@@ -12,5 +12,6 @@ namespace Assets.Scripts.Model.Items
         public ReadOnlyCollection<Item?> Items { get; }
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged { get; }
         public Observable<OnItemUpdated> OnItemUpdated { get; }
+        public Item? GetItem(int index);
     }
 }

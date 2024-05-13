@@ -32,9 +32,11 @@ namespace Scripts.Model.Items
             _items.Add(item);
             EntityEvents.Add(item);
         }
-        public void SpawnItem(Item item, Vector2Int spawnPosition)
+        public ItemEntity SpawnItem(Item item, Vector2Int spawnPosition)
         {
-            AddItem(_factory.CreateItem(spawnPosition, item));
+            ItemEntity itemEntity = _factory.CreateItem(spawnPosition, item);
+            AddItem(itemEntity);
+            return itemEntity;
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

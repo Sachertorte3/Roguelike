@@ -5,7 +5,7 @@ using Scripts.Utilities;
 
 namespace Scripts.Model.Action
 {
-    internal record UseItem(Item Item, Direction8 Direction) : IAction
+    internal record UseItem(int ItemIndex, Direction8 Direction) : IAction
     {
         private float score;
         public bool Doable(IActor actor)
@@ -14,11 +14,28 @@ namespace Scripts.Model.Action
         }
         public async UniTask Do(IActor actor)
         {
-            await actor.UseItem(Item, Direction);
+            await actor.UseItem(ItemIndex, Direction);
         }
         public float Evaluate(IActor actor)
         {
-            score = Item.Evaluate(actor, Direction);
+            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, Direction);
+            return score;
+        }
+    }
+    internal record ThrowItem(int ItemIndex, Direction8 Direction) : IAction
+    {
+        private float score;
+        public bool Doable(IActor actor)
+        {
+            return true;
+        }
+        public async UniTask Do(IActor actor)
+        {
+            await actor.ThrowItem(ItemIndex, Direction);
+        }
+        public float Evaluate(IActor actor)
+        {
+            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, Direction);
             return score;
         }
     }

@@ -34,7 +34,10 @@ namespace Scripts.Provider
                     inventoryView.Remove(itemChanged.Index);
                 }
             });
-            characterManager.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated => inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index));
+            characterManager.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
+            {
+                inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
+            });
 
             camera.SetTarget(playerView.gameObject);
         }

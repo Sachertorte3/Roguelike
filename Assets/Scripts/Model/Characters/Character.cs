@@ -10,6 +10,7 @@ using Scripts.Model.Entities;
 using Scripts.Model.Items;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
+using Unity.Plastic.Newtonsoft.Json.Bson;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -34,7 +35,6 @@ namespace Scripts.Model.Characters
         public ReactiveProperty<Direction8> Direction => _direction;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         internal bool CanAct = true;
-        internal bool VisibleByPlayer = false;
         internal CharacterState State = CharacterState.Think;
         private ICharacterBehavior Behavior { get; init; }
         public IStats Stats => _stats;
@@ -67,6 +67,10 @@ namespace Scripts.Model.Characters
                 (Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
                 && (!direction.IsDiagonal() || (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
         }
+        public void SetVisiblity(bool visiblity)
+        {
+            _entity.VisibleByPlayer = visiblity;
+        }
         public void Turn(Direction8 direction)
         {
             _direction.Value = direction;
@@ -79,11 +83,7 @@ namespace Scripts.Model.Characters
                 return;
             }
             Turn(direction);
-            _entity.Move(direction);
-            if (VisibleByPlayer)
-            {
-                await UniTask.Delay(Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
-            }
+            await _entity.Move(direction);
             State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)
@@ -95,7 +95,7 @@ namespace Scripts.Model.Characters
         {
             _direction.Value = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
-            if (VisibleByPlayer)
+            if (_entity.VisibleByPlayer)
             {
                 await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
@@ -109,7 +109,7 @@ namespace Scripts.Model.Characters
         {
             _direction.Value = direction;
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
-            if (VisibleByPlayer)
+            if (_entity.VisibleByPlayer)
             {
                 await UniTask.WhenAll(item.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
@@ -118,6 +118,10 @@ namespace Scripts.Model.Characters
                 await item.Use(this, direction);
             }
             State = CharacterState.Wait;
+        }
+        public async UniTask ThrowItem(Item item, Direction8 direction)
+        {
+
         }
         internal UniTask LoseHp(int value)
         {

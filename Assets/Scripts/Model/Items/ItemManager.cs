@@ -16,16 +16,16 @@ namespace Scripts.Model.Items
         public Observable<ItemEntity> OnItemAdded => _items.ObserveAdd().Select(item => item.Value);
         public Observable<ItemEntity> OnItemRemoved => _items.ObserveRemove().Select(item => item.Value);
         private ItemFactory _factory = new();
-        public ItemEntityEvents EntityEvents = new();
+        public ItemEntityEvents ItemEntityEvents = new();
         public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            EntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
+            ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
         }
         public void AddItem(ItemEntity item)
         {
             _items.Add(item);
-            EntityEvents.Add(item);
+            ItemEntityEvents.Add(item);
         }
         public ItemEntity SpawnItem(Item item, Vector2Int spawnPosition)
         {

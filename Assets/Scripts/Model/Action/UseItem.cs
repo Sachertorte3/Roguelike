@@ -17,7 +17,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, Direction);
+            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction);
             return score;
         }
     }
@@ -34,7 +34,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, Direction);
+            score = 0;
             return score;
         }
     }
@@ -51,7 +51,7 @@ namespace Scripts.Model.Action
         }
         public float Evaluate(IActor actor)
         {
-            score = Skill.Evaluate(actor, Direction);
+            score = Skill.Evaluate(actor, actor.CurrentPosition, Direction);
             return score;
         }
     }

@@ -16,11 +16,13 @@ namespace Scripts.Provider
     public class SynchronizedItemView
     {
         private BiMap<ItemEntity, EntityView> itemViewDict = new();
+        private EffectViewSpawner _effectViewSpawner;
         private InputReceiver _inputReceiver;
         private Func<HashSet<Vector2Int>> _getVisibleArea;
         private GameObject _itemViewPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
-        public SynchronizedItemView(InputReceiver inputReceiver, ItemManager itemManager, CharacterManager characterManager)
+        public SynchronizedItemView(EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver, ItemManager itemManager, CharacterManager characterManager)
         {
+            _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
             _getVisibleArea = characterManager.Player.Area.Get;
 
@@ -40,6 +42,7 @@ namespace Scripts.Provider
             ObjectsManager.RegisterComponent(spriteView.GetComponent<SpriteView>());
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
+            item.OnUseSkill.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
             spriteView.transform.position = (Vector3Int)item.CurrentPosition;

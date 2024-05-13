@@ -96,7 +96,7 @@ namespace Scripts.Model.Characters
                 return;
             }
             Turn(direction);
-            await _entity.Move(direction);
+            await _entity.Move(direction, Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }
         public void Teleport(Vector2Int position)

@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Entities
 {
-    public class Entity
+    public class Entity: IDisposable
     {
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
@@ -17,6 +18,11 @@ namespace Scripts.Model.Entities
         public Entity(Vector2Int position)
         {
             _position = new ReactiveProperty<Vector2Int>(position);
+        }
+        public void Dispose()
+        {
+            _position.Dispose();
+            _onMove.Dispose();
         }
         public async UniTask Move(Direction8 direction)
         {

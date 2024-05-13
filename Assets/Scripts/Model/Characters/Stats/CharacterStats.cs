@@ -1,10 +1,11 @@
-﻿using R3;
+﻿using System;
+using R3;
 using Scripts.Utilities;
 using StatSystem;
 
 namespace Scripts.Model.Characters.Stats
 {
-    internal class CharacterStats : IStats
+    internal class CharacterStats: IDisposable, IStats
     {
         public Resource Hp { get; init; }
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
@@ -16,6 +17,10 @@ namespace Scripts.Model.Characters.Stats
             Hp = new Resource(maxHp);
             _strength = new Stat(strength);
             Strength = _strength.ToReactiveProperty();
+        }
+        public void Dispose()
+        {
+            Hp.Dispose();
         }
     }
     public interface IStats

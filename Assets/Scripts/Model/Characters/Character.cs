@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using Assets.Scripts.Model.Items;
 using Cysharp.Threading.Tasks;
 using Database.Characters.Type;
@@ -17,7 +18,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Scripts.Model.Characters
 {
-    public sealed class Character : IActor, IHasBehavior, ITarget
+    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget
     {
         public ICharacterType CharacterType { get; init; }
         public string TypeName() => CharacterType.TypeName();
@@ -51,6 +52,15 @@ namespace Scripts.Model.Characters
             _stats = new CharacterStats(10, 2);
             _area = new VisionRange(_entity.Position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
+        }
+        public void Dispose()
+        {
+            _entity.Dispose();
+            _inventory.Dispose();
+            _onUseSkill.Dispose();
+            _direction.Dispose();
+            _stats.Dispose();
+            _area.Dispose();
         }
         public async UniTask DoNextAction()
         {
@@ -109,7 +119,11 @@ namespace Scripts.Model.Characters
         public async UniTask UseItem(int itemIndex, Direction8 direction)
         {
             Turn(direction);
-            Item item = _inventory.GetItem(itemIndex);
+            Item? item = _inventory.GetItem(itemIndex);
+            if (item == null)
+            {
+                throw new System.Exception("item is null");
+            }
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer)
             {

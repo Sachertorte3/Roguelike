@@ -18,13 +18,12 @@ namespace Assets.Scripts.Model.Items
         public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
         private Subject<OnItemUpdated> _onItemUpdated = new();
-        private List<IDisposable?> disposables = new(Enumerable.Repeat<IDisposable?>(null, MaxItems));
+        private List<SerialDisposable> disposables = new(Enumerable.Repeat(new SerialDisposable(), MaxItems));
         public Inventory()
         {
             OnItemChanged.Subscribe(itemChanged =>
             {
-                disposables[itemChanged.Index]?.Dispose();
-                disposables[itemChanged.Index] = itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
+                disposables[itemChanged.Index].Disposable = itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
                 {
                     if (remainingUses <= 0)
                     {

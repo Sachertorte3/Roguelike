@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System;
+using R3;
 using Scripts.Utilities;
 using StatSystem;
 using Unity.Logging;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Characters.Stats
 {
-    internal class Resource
+    internal class Resource: IDisposable
     {
         public readonly ReadOnlyReactiveProperty<int> Max;
         public readonly Stat _max;
@@ -18,6 +19,10 @@ namespace Scripts.Model.Characters.Stats
             Max = _max.ToReactiveProperty();
             _value = new ReactiveProperty<int>(maxValue);
             Max.Subscribe(_ => clampCurrentValue());
+        }
+        public void Dispose()
+        {
+            _value.Dispose();
         }
         private void clampCurrentValue()
         {

@@ -1,10 +1,11 @@
 ﻿using R3;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
 {
-    internal class VisionRange : IVisionRange
+    internal class VisionRange: IDisposable, IVisionRange
     {
         public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged => _visibleAreaCache;
         private ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new();
@@ -12,6 +13,10 @@ namespace Scripts.Model.Characters
         {
             position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));
             Globals.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));
+        }
+        public void Dispose()
+        {
+            _visibleAreaCache.Dispose();
         }
         public void Refrash(Vector2Int position)
         {

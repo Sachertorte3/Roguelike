@@ -26,6 +26,7 @@ namespace Scripts.Model.Items
             {
                 await _entity.Move(direction);
             }
+            await Item.Use(actor, direction);
         }
     }
 }

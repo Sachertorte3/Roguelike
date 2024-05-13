@@ -1,3 +1,4 @@
+#nullable enable
 using Assets.Scripts.Model.Items;
 using Cysharp.Threading.Tasks;
 using Database.Characters.Type;
@@ -105,9 +106,10 @@ namespace Scripts.Model.Characters
             }
             State = CharacterState.Wait;
         }
-        public async UniTask UseItem(Item item, Direction8 direction)
+        public async UniTask UseItem(int itemIndex, Direction8 direction)
         {
-            _direction.Value = direction;
+            Turn(direction);
+            Item item = _inventory.GetItem(itemIndex);
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer)
             {
@@ -119,9 +121,25 @@ namespace Scripts.Model.Characters
             }
             State = CharacterState.Wait;
         }
-        public async UniTask ThrowItem(Item item, Direction8 direction)
+        public async UniTask ThrowItem(int itemIndex, Direction8 direction)
         {
-
+            Turn(direction);
+            Item? item = _inventory.Remove(itemIndex);
+            if (item == null)
+            {
+                throw new System.Exception("item is null");
+            }
+            ItemEntity itemEntity = Globals.World.ItemManager.SpawnItem(item, CurrentPosition);
+            _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));//TODO: Make it run after movement and before skills
+            if (_entity.VisibleByPlayer)
+            {
+                await UniTask.WhenAll(itemEntity.Throw(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+            }
+            else
+            {
+                await itemEntity.Throw(this, direction);
+            }
+            State = CharacterState.Wait;
         }
         internal UniTask LoseHp(int value)
         {

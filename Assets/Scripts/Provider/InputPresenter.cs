@@ -37,6 +37,10 @@ namespace Scripts.Provider
             {
                 actionReceiver.SetAttackInput();
             });
+            receiver.OnThrowPerformed.Subscribe(_ =>
+            {
+                actionReceiver.SetThrowInput();
+            });
             receiver.OnDropPerformed.Subscribe(_ =>
             {
                 Item? item = characterManager.Player.Inventory.Items[inventoryView.CurrentFocus];

@@ -17,20 +17,9 @@ namespace Scripts.Model
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         [Inject]
-        public GameManager(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
+        public GameManager(World world)
         {
-            new World(tilemap, characterManager);
-            characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
-            {
-                if (move.Character.HasEmptySpaceInInventory())
-                {
-                    ItemEntity? item = itemManager.TryPickUp(move.Position);
-                    if (item != null)
-                    {
-                        move.Character.TryPickUp(item.Item);
-                    }
-                }
-            });
+            
         }
         public void Spawn(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {

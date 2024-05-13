@@ -2,12 +2,14 @@
 using ObservableCollections;
 using R3;
 using Scripts.Model.Items;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Assets.Scripts.Model.Items
 {
-    internal class Inventory : IInventory
+    internal class Inventory : IInventory, IDisposable
     {
         private const int MaxItems = 10;
         public ReadOnlyCollection<Item?> Items => new(_items);
@@ -16,22 +18,35 @@ namespace Assets.Scripts.Model.Items
         public bool HasEmptySpace() => _items.IndexOf(null) >= 0;
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
         private Subject<OnItemUpdated> _onItemUpdated = new();
+        private List<IDisposable?> disposables = new(Enumerable.Repeat<IDisposable?>(null, MaxItems));
         public Inventory()
         {
             OnItemChanged.Subscribe(itemChanged =>
             {
-                itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
+                disposables[itemChanged.Index]?.Dispose();
+                disposables[itemChanged.Index] = itemChanged.NewValue?.RemainingUses.Subscribe(remainingUses =>
                 {
                     if (remainingUses <= 0)
                     {
                         Replace(null, _items.IndexOf(itemChanged.NewValue));
                     }
-                    else
+                    else if (itemChanged.NewValue != null)
                     {
                         _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
                     }
                 });
             });
+        }
+        public void Dispose()
+        {
+            foreach (var item in disposables)
+            {
+                item?.Dispose();
+            }
+        }
+        public Item? GetItem(int index)
+        {
+            return Items[index];
         }
         public bool TryAdd(Item item)
         {
@@ -51,6 +66,10 @@ namespace Assets.Scripts.Model.Items
             Item? removed = _items[index];
             _items[index] = item;
             return removed;
+        }
+        public Item? Remove(int index)
+        {
+            return Replace(null, index);
         }
     }
     public class InventoryIndexReceiver

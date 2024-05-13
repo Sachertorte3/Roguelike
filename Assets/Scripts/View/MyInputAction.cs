@@ -80,6 +80,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8a4d533-af0c-449f-bb5e-77871a7ccac4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -190,6 +199,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Drop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7032731-dc12-42ab-a1a2-4a75421f7098"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -706,6 +726,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_Dash = m_Field.FindAction("Dash", throwIfNotFound: true);
         m_Field_TurnOnly = m_Field.FindAction("TurnOnly", throwIfNotFound: true);
         m_Field_Drop = m_Field.FindAction("Drop", throwIfNotFound: true);
+        m_Field_Throw = m_Field.FindAction("Throw", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -788,6 +809,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_Dash;
     private readonly InputAction m_Field_TurnOnly;
     private readonly InputAction m_Field_Drop;
+    private readonly InputAction m_Field_Throw;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
@@ -798,6 +820,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Field_Dash;
         public InputAction @TurnOnly => m_Wrapper.m_Field_TurnOnly;
         public InputAction @Drop => m_Wrapper.m_Field_Drop;
+        public InputAction @Throw => m_Wrapper.m_Field_Throw;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -825,6 +848,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Drop.started += instance.OnDrop;
             @Drop.performed += instance.OnDrop;
             @Drop.canceled += instance.OnDrop;
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -847,6 +873,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Drop.started -= instance.OnDrop;
             @Drop.performed -= instance.OnDrop;
             @Drop.canceled -= instance.OnDrop;
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -1036,6 +1065,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnTurnOnly(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
+        void OnThrow(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

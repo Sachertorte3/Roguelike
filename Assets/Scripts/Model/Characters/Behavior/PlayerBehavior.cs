@@ -31,11 +31,12 @@ namespace Scripts.Model.Characters.Behavior
             }
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            UniTask<int> itemTask = _receiver.OnItemActionReceived.WaitAsync();
+            UniTask<int> useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
+            UniTask<int> throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, itemTask);
+            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             while (true)
             {
                 switch (firstCompletedTask.winArgumentIndex)
@@ -64,7 +65,8 @@ namespace Scripts.Model.Characters.Behavior
                         }
                         break;
                     case 1:
-                        Item? item = character.Inventory.Items[firstCompletedTask.result2];
+                        int itemIndex = firstCompletedTask.result2;
+                        Item? item = character.Inventory.GetItem(itemIndex);
                         IAction action;
                         if (item == null)
                         {
@@ -72,7 +74,7 @@ namespace Scripts.Model.Characters.Behavior
                         }
                         else
                         {
-                            action = new UseItem(item, character.CurrentDirection);
+                            action = new UseItem(itemIndex, character.CurrentDirection);
                         }
 
                         if (action.Doable(character))
@@ -80,13 +82,25 @@ namespace Scripts.Model.Characters.Behavior
                             return action;
                         }
                         break;
+                    case 2:
+                        itemIndex = firstCompletedTask.result3;
+                        if (character.Inventory.GetItem(itemIndex) != null)
+                        {
+                            action = new ThrowItem(itemIndex, character.CurrentDirection);
+                            if (action.Doable(character))
+                            {
+                                return action;
+                            }
+                        }
+                        break;
                     default:
                         throw new IndexOutOfRangeException();
                 }
 
                 moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-                itemTask = _receiver.OnItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, itemTask);
+                useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
+                throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
+                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             }
         }
     }

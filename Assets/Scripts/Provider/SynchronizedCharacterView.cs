@@ -48,7 +48,7 @@ namespace Scripts.Provider
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction));
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            character.OnUseSkill.Subscribe<(Skill skill, Vector2Int position, Direction8 direction)>(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
+            character.OnUseSkill.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
             SpriteView view = characterView.GetComponent<SpriteView>();

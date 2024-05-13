@@ -18,6 +18,20 @@ namespace Scripts.Utilities
                 }
             }
         }
+        public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
+        {
+            for (int x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
+            {
+                for (int y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                {
+                    if (x * x + y * y <= radius*radius)
+                    {
+                        yield return new Vector2Int(x, y) + center;
+                    }
+                }
+            }
+
+        }
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
         {
             return GetAtRandom(ie, 1, max => Random.Range(0, max))[0];

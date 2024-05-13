@@ -4,6 +4,7 @@ using R3;
 using Scripts.Model.Action;
 using Scripts.Model.Characters.Effect;
 using Scripts.Model.Entities;
+using Scripts.Model.Setting;
 using Scripts.Utilities;
 using System;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace Scripts.Model.Items
         {
             while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))
             {
-                await _entity.Move(direction);
+                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
             _onUseSkill.OnNext((Item.Skill, CurrentPosition, direction));
             await Item.Use(actor, CurrentPosition, direction);

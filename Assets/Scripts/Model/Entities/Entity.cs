@@ -29,13 +29,13 @@ namespace Scripts.Model.Entities
         {
             _visibleByPlayer.Value = visible;
         }
-        public async UniTask Move(Direction8 direction)
+        public async UniTask Move(Direction8 direction, int moveMilliseconds)
         {
             _position.Value += direction.Vector();
             _onMove.OnNext((direction, CurrentPosition));
             if (VisibleByPlayer.CurrentValue)
             {
-                await UniTask.Delay(Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                await UniTask.Delay(moveMilliseconds);
             }
         }
     }

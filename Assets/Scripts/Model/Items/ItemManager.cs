@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using ObservableCollections;
 using R3;
+using Scripts.Model.Characters;
 using UnityEngine;
 
 namespace Scripts.Model.Items
@@ -21,6 +22,7 @@ namespace Scripts.Model.Items
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
+            ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
         public void AddItem(ItemEntity item)
         {

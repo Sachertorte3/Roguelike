@@ -19,6 +19,7 @@ namespace Scripts.Model.Items
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
         private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
+        public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
         public ItemEntity(Vector2Int spawnPosition, Item item)
         {
             Item = item;

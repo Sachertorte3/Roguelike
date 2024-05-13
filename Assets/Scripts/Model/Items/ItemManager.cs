@@ -7,6 +7,7 @@ using ObservableCollections;
 using R3;
 using Scripts.Model.Characters;
 using UnityEngine;
+using VContainer;
 
 namespace Scripts.Model.Items
 {
@@ -18,11 +19,31 @@ namespace Scripts.Model.Items
         public Observable<ItemEntity> OnItemRemoved => _items.ObserveRemove().Select(item => item.Value);
         private ItemFactory _factory = new();
         public ItemEntityEvents ItemEntityEvents = new();
-        public ItemManager()
+        [Inject]
+        public ItemManager(CharacterManager characterManager)
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
+            ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
+            {
+                SetAllItemPosition();
+                positionChanged.Item.SetVisiblity(characterManager.Player.Area.Get().Contains(positionChanged.Position));
+            });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
+
+            characterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
+            {
+                foreach (var item in _items)
+                {
+                    if (areaChanged.AreaExited.Contains(item.CurrentPosition))
+                    {
+                        item.SetVisiblity(false);
+                    }
+                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition))
+                    {
+                        item.SetVisiblity(true);
+                    }
+                }
+            });
         }
         public void AddItem(ItemEntity item)
         {

@@ -38,16 +38,17 @@ namespace Scripts.Provider
         public void Add(ItemEntity item)
         {
             EntityView entityView = GameObject.Instantiate<GameObject>(_itemViewPrefab).GetComponent<EntityView>();
-            SpriteView spriteView = entityView.GetComponent<SpriteView>();
-            ObjectsManager.RegisterComponent(spriteView.GetComponent<SpriteView>());
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             item.OnUseSkill.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
+
+            SpriteView spriteView = entityView.GetComponent<SpriteView>();
+            ObjectsManager.RegisterComponent(spriteView.GetComponent<SpriteView>());
             spriteView.transform.position = (Vector3Int)item.CurrentPosition;
             spriteView.GetComponent<SpriteRenderer>().sprite = item.Item.Icon;
-            spriteView.SetVisibility(_getVisibleArea().Contains(item.CurrentPosition));
+            item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
             itemViewDict.Add(item, entityView);
         }
         public void Remove(ItemEntity item)

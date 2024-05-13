@@ -5,6 +5,7 @@ using System.Linq;
 using ObservableCollections;
 using R3;
 using Scripts.Model.Characters.Behavior;
+using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
@@ -28,7 +29,11 @@ namespace Scripts.Model.Characters
         public CharacterManager(Tilemap tilemap, CharacterControllInputReceiver actionReceiver)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
+            CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
+            {
+                SetAllCharacterPosition();
+                positionChanged.Character.SetVisiblity(Player.Area.Get().Contains(positionChanged.Position));
+            });
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
 
             _player = _factory.CreateCharacter(tilemap.GetAllPassablePositions().GetAtRandom(), new PlayerBehavior(actionReceiver), Settings.IgnoreWall);

@@ -52,6 +52,7 @@ namespace Scripts.Model.Characters
         }
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
+        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
@@ -82,10 +83,7 @@ namespace Scripts.Model.Characters
                 (Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
                 && (!direction.IsDiagonal() || (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) && Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector()))));
         }
-        public void SetVisiblity(bool visiblity)
-        {
-            _entity.VisibleByPlayer = visiblity;
-        }
+        public void SetVisiblity(bool visiblity) => _entity.SetVisibility(visiblity);
         public void Turn(Direction8 direction)
         {
             _direction.Value = direction;
@@ -110,7 +108,7 @@ namespace Scripts.Model.Characters
         {
             _direction.Value = direction;
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
-            if (_entity.VisibleByPlayer)
+            if (_entity.VisibleByPlayer.CurrentValue)
             {
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
@@ -129,7 +127,7 @@ namespace Scripts.Model.Characters
                 throw new Exception("item is null");
             }
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
-            if (_entity.VisibleByPlayer)
+            if (_entity.VisibleByPlayer.CurrentValue)
             {
                 await UniTask.WhenAll(item.Use(this, CurrentPosition, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
@@ -148,7 +146,7 @@ namespace Scripts.Model.Characters
                 throw new Exception("item is null");
             }
             ItemEntity itemEntity = Globals.World.ItemManager.SpawnItem(item, CurrentPosition);
-            if (_entity.VisibleByPlayer)
+            if (_entity.VisibleByPlayer.CurrentValue)
             {
                 await UniTask.WhenAll(itemEntity.Throw(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }

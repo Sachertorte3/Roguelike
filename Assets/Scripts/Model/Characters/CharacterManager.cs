@@ -40,11 +40,11 @@ namespace Scripts.Model.Characters
                 {
                     if (areaChanged.AreaExited.Contains(character.CurrentPosition))
                     {
-                        character.VisibleByPlayer = false;
+                        character.SetVisiblity(false);
                     }
                     else if (areaChanged.AreaEntered.Contains(character.CurrentPosition))
                     {
-                        character.VisibleByPlayer = true;
+                        character.SetVisiblity(true);
                     }
                 }
             });

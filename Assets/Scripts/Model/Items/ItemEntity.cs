@@ -1,5 +1,7 @@
 ﻿#nullable enable
+using Cysharp.Threading.Tasks;
 using R3;
+using Scripts.Model.Action;
 using Scripts.Model.Entities;
 using Scripts.Utilities;
 using UnityEngine;
@@ -17,6 +19,13 @@ namespace Scripts.Model.Items
         {
             Item = item;
             _entity = new Entity(spawnPosition);
+        }
+        public async UniTask Throw(IActor actor, Direction8 direction)
+        {
+            while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))
+            {
+                await _entity.Move(direction);
+            }
         }
     }
 }

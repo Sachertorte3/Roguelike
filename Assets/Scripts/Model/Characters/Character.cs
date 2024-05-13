@@ -12,7 +12,6 @@ using Scripts.Model.Entities;
 using Scripts.Model.Items;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
-using Unity.Plastic.Newtonsoft.Json.Bson;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -20,28 +19,13 @@ namespace Scripts.Model.Characters
 {
     public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget
     {
-        public ICharacterType CharacterType { get; init; }
-        public string TypeName() => CharacterType.TypeName();
-        public string SubtypeName() => CharacterType.SubtypeName();
         private readonly Entity _entity;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public IInventory Inventory => _inventory;
         private readonly Inventory _inventory = new();
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
-        public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
-        private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
-        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
-        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
-        public Direction8 CurrentDirection => Direction.CurrentValue;
-        public ReactiveProperty<Direction8> Direction => _direction;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
+        private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
-        private ICharacterBehavior Behavior { get; init; }
-        public IStats Stats => _stats;
         private readonly CharacterStats _stats;
-        public IVisionRange Area => _area;
         private readonly VisionRange _area;
         private bool _canIgnoreWall;
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
@@ -53,6 +37,10 @@ namespace Scripts.Model.Characters
             _area = new VisionRange(_entity.Position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
+        ~Character()
+        {
+            Dispose();
+        }
         public void Dispose()
         {
             _entity.Dispose();
@@ -62,6 +50,22 @@ namespace Scripts.Model.Characters
             _stats.Dispose();
             _area.Dispose();
         }
+        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
+        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
+        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
+
+        public ICharacterType CharacterType { get; init; }
+        public string TypeName() => CharacterType.TypeName();
+        public string SubtypeName() => CharacterType.SubtypeName();
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
+        public Direction8 CurrentDirection => Direction.CurrentValue;
+        public IInventory Inventory => _inventory;
+        private ICharacterBehavior Behavior { get; init; }
+        public IStats Stats => _stats;
+        public IVisionRange Area => _area;
+        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public async UniTask DoNextAction()
         {
             IAction action = await Behavior.GenerateNextAction(this);
@@ -122,7 +126,7 @@ namespace Scripts.Model.Characters
             Item? item = _inventory.GetItem(itemIndex);
             if (item == null)
             {
-                throw new System.Exception("item is null");
+                throw new Exception("item is null");
             }
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer)
@@ -141,7 +145,7 @@ namespace Scripts.Model.Characters
             Item? item = _inventory.Remove(itemIndex);
             if (item == null)
             {
-                throw new System.Exception("item is null");
+                throw new Exception("item is null");
             }
             ItemEntity itemEntity = Globals.World.ItemManager.SpawnItem(item, CurrentPosition);
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));//TODO: Make it run after movement and before skills
@@ -160,7 +164,6 @@ namespace Scripts.Model.Characters
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;
         }
-        internal bool HasEmptySpaceInInventory() => Inventory.HasEmptySpace();
         public bool TryPickUp(Item item)
         {
             return _inventory.TryAdd(item);

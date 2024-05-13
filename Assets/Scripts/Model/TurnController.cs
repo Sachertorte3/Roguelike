@@ -1,8 +1,8 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Model.Characters;
-using System.Collections.Generic;
-using System.Linq;
 using Unity.Logging;
 
 namespace Scripts.Model

@@ -1,5 +1,5 @@
-﻿using Scripts.Model.Action;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Scripts.Model.Action;
 using UnityEngine;
 
 namespace Scripts.Model.Characters.Behavior

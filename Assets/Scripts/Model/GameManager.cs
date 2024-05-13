@@ -1,11 +1,10 @@
 ﻿#nullable enable
-using R3;
+using System;
 using Scripts.Data;
 using Scripts.Model.Characters;
 using Scripts.Model.Items;
 using Scripts.Model.Map;
 using Scripts.Utilities;
-using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
@@ -19,7 +18,7 @@ namespace Scripts.Model
         [Inject]
         public GameManager(World world)
         {
-            
+
         }
         public void Spawn(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
         {

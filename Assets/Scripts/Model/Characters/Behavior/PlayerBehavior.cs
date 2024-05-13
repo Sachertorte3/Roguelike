@@ -1,4 +1,7 @@
 ﻿#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using R3;
 using Scripts.Data;
@@ -8,9 +11,6 @@ using Scripts.Model.Characters.Effect;
 using Scripts.Model.Items;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Unity.Logging;
 
 namespace Scripts.Model.Characters.Behavior

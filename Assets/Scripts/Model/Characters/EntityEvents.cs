@@ -1,7 +1,7 @@
 ﻿#nullable enable
+using System.Linq;
 using R3;
 using Scripts.Utilities;
-using System.Linq;
 using UnityEngine;
 
 namespace Scripts.Model.Entities

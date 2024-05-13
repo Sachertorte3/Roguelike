@@ -1,6 +1,6 @@
-﻿using R3;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
+using R3;
 using UnityEngine;
 
 namespace Scripts.Model.Setting

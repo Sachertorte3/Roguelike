@@ -1,11 +1,11 @@
 ﻿#nullable enable
-using ObservableCollections;
-using R3;
-using Scripts.Model.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ObservableCollections;
+using R3;
+using Scripts.Model.Items;
 
 namespace Assets.Scripts.Model.Items
 {

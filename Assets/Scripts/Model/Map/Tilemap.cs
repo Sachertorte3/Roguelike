@@ -1,10 +1,10 @@
-﻿using ObservableCollections;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
 using Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Unity.Logging;
 using UnityEngine;
 using VContainer;

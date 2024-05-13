@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Model.Items;
 using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters.Effect;
-using Scripts.Model.Items;
 using Scripts.Utilities;
 using UnityEngine;
 

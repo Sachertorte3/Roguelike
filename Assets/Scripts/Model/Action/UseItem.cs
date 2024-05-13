@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Scripts.Model.Characters.Effect;
-using Scripts.Model.Items;
 using Scripts.Utilities;
 
 namespace Scripts.Model.Action

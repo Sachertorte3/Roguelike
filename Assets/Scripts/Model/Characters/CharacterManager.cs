@@ -1,13 +1,13 @@
 ﻿#nullable enable
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using ObservableCollections;
 using R3;
 using Scripts.Model.Characters.Behavior;
 using Scripts.Model.Map;
 using Scripts.Model.Setting;
 using Scripts.Utilities;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using UnityEngine;
 using VContainer;
 

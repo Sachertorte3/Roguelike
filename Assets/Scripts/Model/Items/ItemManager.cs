@@ -1,16 +1,11 @@
 ﻿#nullable enable
-using Cysharp.Threading.Tasks;
-using ObservableCollections;
-using R3;
-using Scripts.Data;
-using Scripts.Data.Area;
-using Scripts.Model.Characters.Effect;
-using Scripts.Utilities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Cysharp.Threading.Tasks;
+using ObservableCollections;
+using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Scripts.Model.Items
 {

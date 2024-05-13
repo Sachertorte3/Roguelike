@@ -1,6 +1,6 @@
 ﻿#nullable enable
-using Scripts.Model.Map;
 using System;
+using Scripts.Model.Map;
 
 namespace Scripts.Model
 {

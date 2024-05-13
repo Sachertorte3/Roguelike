@@ -1,8 +1,8 @@
 ﻿#nullable enable
+using System.Collections.ObjectModel;
 using ObservableCollections;
 using R3;
 using Scripts.Model.Items;
-using System.Collections.ObjectModel;
 
 namespace Assets.Scripts.Model.Items
 {

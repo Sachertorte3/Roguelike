@@ -5,7 +5,7 @@ using StatSystem;
 
 namespace Scripts.Model.Characters.Stats
 {
-    internal class CharacterStats: IDisposable, IStats
+    internal class CharacterStats : IDisposable, IStats
     {
         public Resource Hp { get; init; }
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;

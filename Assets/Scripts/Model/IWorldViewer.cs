@@ -1,8 +1,8 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using Scripts.Model.Characters;
 using Scripts.Model.Items;
 using Scripts.Model.Map;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.Model

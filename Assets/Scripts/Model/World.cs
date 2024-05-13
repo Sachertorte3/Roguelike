@@ -1,10 +1,10 @@
 ﻿#nullable enable
+using System.Collections.Generic;
+using System.Linq;
 using R3;
 using Scripts.Model.Characters;
 using Scripts.Model.Items;
 using Scripts.Model.Map;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using VContainer;
 
@@ -25,7 +25,7 @@ namespace Scripts.Model
 
             characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
             {
-                if (move.Character.HasEmptySpaceInInventory())
+                if (move.Character.Inventory.HasEmptySpace())
                 {
                     ItemEntity? item = itemManager.TryPickUp(move.Position);
                     if (item != null)

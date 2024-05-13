@@ -1,8 +1,8 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using R3;
 using Scripts.Model.Characters.Effect;
 using Scripts.Utilities;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.Model.Characters

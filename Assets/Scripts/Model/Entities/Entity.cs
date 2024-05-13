@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Scripts.Model.Entities
 {
-    public class Entity: IDisposable
+    public class Entity : IDisposable
     {
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;

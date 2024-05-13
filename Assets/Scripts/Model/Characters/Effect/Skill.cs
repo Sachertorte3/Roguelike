@@ -1,11 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using Scripts.Data;
 using Scripts.Data.Area;
 using Scripts.Model.Action;
 using Scripts.Utilities;
 using Sirenix.Utilities;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Scripts.Model.Characters.Effect

@@ -1,7 +1,7 @@
-﻿using Sirenix.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Scripts.Model.Characters
@@ -26,14 +26,14 @@ namespace Scripts.Model.Characters
 
         private static OctantTransform[] s_octantTransform =
         {
-            new OctantTransform(1, 0, 0, 1), // 0 E-NE
-            new OctantTransform(0, 1, 1, 0), // 1 NE-N
-            new OctantTransform(0, -1, 1, 0), // 2 N-NW
-            new OctantTransform(-1, 0, 0, 1), // 3 NW-W
-            new OctantTransform(-1, 0, 0, -1), // 4 W-SW
-            new OctantTransform(0, -1, -1, 0), // 5 SW-S
-            new OctantTransform(0, 1, -1, 0), // 6 S-SE
-            new OctantTransform(1, 0, 0, -1), // 7 SE-E
+            new(1, 0, 0, 1), // 0 E-NE
+            new(0, 1, 1, 0), // 1 NE-N
+            new(0, -1, 1, 0), // 2 N-NW
+            new(-1, 0, 0, 1), // 3 NW-W
+            new(-1, 0, 0, -1), // 4 W-SW
+            new(0, -1, -1, 0), // 5 SW-S
+            new(0, 1, -1, 0), // 6 S-SE
+            new(1, 0, 0, -1), // 7 SE-E
         };
 
         public static HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position, float radius)

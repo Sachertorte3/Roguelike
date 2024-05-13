@@ -12,17 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: Star
   m_EditorClassIdentifier: 
-  Name: star
+  Name: Star
   Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Skill:
     Power: 10
     Area:
-      rid: 6064254405786206208
+      rid: 6064254436379983872
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254405786206208
-      type: {class: LineArea, ns: Scripts.Data.Area, asm: Data}
+    - rid: 6064254436379983872
+      type: {class: CircleArea, ns: Scripts.Data.Area, asm: Data}
       data:
-        Length: 3
+        Radius: 2
+        ContainsSelf: 0

@@ -4,12 +4,13 @@ using Sirenix.OdinInspector;
 
 namespace Scripts.Data
 {
-    using System.IO;
 #if UNITY_EDITOR
+    using Sirenix.OdinInspector.Editor;
+    using System.IO;
     using UnityEditor;
 
     [CustomEditor(typeof(ItemData))]
-    public class ExampleEditor : Editor
+    public class ExampleEditor : OdinEditor
     {
         public override Texture2D RenderStaticPreview
         (

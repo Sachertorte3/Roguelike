@@ -22,14 +22,14 @@ namespace Scripts.Model.Items
             Skill = new Skill(data.Skill);
             _remainingUses = new(data.UsageLimit);
         }
-        public async UniTask Use(IActor actor, Direction8 direction)
+        public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction)
         {
             _remainingUses.Value -= 1;
-            await Skill.Use(actor, direction);
+            await Skill.Use(actor, position, direction);
         }
-        public float Evaluate(IActor actor, Direction8 direction)
+        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction)
         {
-            return Skill.Evaluate(actor, direction);
+            return Skill.Evaluate(actor, position, direction);
         }
     }
 }

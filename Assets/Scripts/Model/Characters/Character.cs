@@ -112,11 +112,11 @@ namespace Scripts.Model.Characters
             _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer)
             {
-                await UniTask.WhenAll(skill.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
             else
             {
-                await skill.Use(this, direction);
+                await skill.Use(this, CurrentPosition, direction);
             }
             State = CharacterState.Wait;
         }
@@ -131,11 +131,11 @@ namespace Scripts.Model.Characters
             _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer)
             {
-                await UniTask.WhenAll(item.Use(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+                await UniTask.WhenAll(item.Use(this, CurrentPosition, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             }
             else
             {
-                await item.Use(this, direction);
+                await item.Use(this, CurrentPosition, direction);
             }
             State = CharacterState.Wait;
         }
@@ -148,7 +148,6 @@ namespace Scripts.Model.Characters
                 throw new Exception("item is null");
             }
             ItemEntity itemEntity = Globals.World.ItemManager.SpawnItem(item, CurrentPosition);
-            _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));//TODO: Make it run after movement and before skills
             if (_entity.VisibleByPlayer)
             {
                 await UniTask.WhenAll(itemEntity.Throw(this, direction), UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

@@ -20,15 +20,15 @@ namespace Scripts.Model.Characters.Effect
             Power = data.Power;
             _area = data.Area;
         }
-        public UniTask Use(IActor actor, Direction8 direction)
+        public UniTask Use(IActor actor, Vector2Int position, Direction8 direction)
         {
-            IEnumerable<Vector2Int> area = GetArea(actor.CurrentPosition, direction);
+            IEnumerable<Vector2Int> area = GetArea(position, direction);
             Globals.World.GetCharactersInArea(area.ToHashSet()).ForEach(character => character.LoseHp(Formula.Calc(actor, Power)));
             return UniTask.CompletedTask;
         }
-        public float Evaluate(IActor actor, Direction8 direction)
+        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction)
         {
-            IEnumerable<Vector2Int> area = GetArea(actor.CurrentPosition, direction);
+            IEnumerable<Vector2Int> area = GetArea(position, direction);
             HashSet<Character> characters = Globals.World.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
             {

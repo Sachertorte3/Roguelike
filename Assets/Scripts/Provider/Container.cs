@@ -30,6 +30,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
+            builder.RegisterComponentInHierarchy<StatLine>();
             builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();

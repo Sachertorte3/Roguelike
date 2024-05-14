@@ -14,7 +14,7 @@ namespace Provider
     {
         [Inject]
         public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters,
-            SynchronizedItemView _, InventoryView inventoryView, CameraFollowTarget camera)
+            SynchronizedItemView _, InventoryView inventoryView, StatLine statLine, CameraFollowTarget camera)
         {
             var playerView = characters.Get(characterManager.Player);
 
@@ -35,6 +35,9 @@ namespace Provider
             {
                 inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
             });
+
+            Observable.Merge(characterManager.Player.Stats.HpValue, characterManager.Player.Stats.MaxHp)
+                .Subscribe(_ => statLine.SetValue(characterManager.Player.Stats.MaxHp.CurrentValue, characterManager.Player.Stats.HpValue.CurrentValue));
 
             camera.SetTarget(playerView.gameObject);
         }

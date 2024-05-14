@@ -8,6 +8,10 @@ namespace Utilities
 {
     public static class EnumerableExtension
     {
+        public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
+        {
+            foreach (var item in ie) { action(item); }
+        }
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)

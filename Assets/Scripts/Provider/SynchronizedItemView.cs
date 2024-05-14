@@ -41,9 +41,8 @@ namespace Provider
             var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            item.OnUseSkill.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction),
-                    Settings.EffectDisplayTime.Value));
+            item.OnSpawnEffect.Subscribe(useSkill =>
+                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
             Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
 

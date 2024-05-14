@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Data;
+using Data.Area;
 using Model.Action;
 using Model.Characters.Effect;
 using R3;
@@ -19,7 +20,7 @@ namespace Model.Items
         public Item(ItemData data)
         {
             Icon = data.Icon;
-            Skill = new Skill(data.Skill);
+            Skill = new Skill(new SkillData(data.Area, data.Effect));
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
             Info = data.Info();
         }

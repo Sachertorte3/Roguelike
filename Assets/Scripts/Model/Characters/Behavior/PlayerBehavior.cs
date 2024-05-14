@@ -59,7 +59,7 @@ namespace Model.Characters.Behavior
                         var item = character.Inventory.GetItem(itemIndex);
                         IAction action;
                         if (item == null)
-                            action = new UseSkill(new Skill(new SkillData(1, new LineArea(1, false))),
+                            action = new UseSkill(new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))),
                                 character.CurrentDirection);
                         else
                             action = new UseItem(itemIndex, character.CurrentDirection);

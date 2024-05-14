@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
 using Data.Area;
-using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 
 namespace Data
@@ -8,18 +8,32 @@ namespace Data
     [Serializable]
     public record SkillData : IHasInfo
     {
-        [MinValue(1)] public int Power;
+        [SerializeReference] public IEffect Effect;
         [SerializeReference] public IArea Area;
 
-        public SkillData(int power, IArea area)
+        public SkillData(IArea area, IEffect effect)
         {
-            Power = power;
             Area = area;
+            Effect = effect;
         }
 
         public string Info()
         {
-            return $"威力: {Power}\n範囲: {Area.Info()}";
+            return $"効果: {Effect.Info()}\n範囲: {Area.Info()}";
         }
+    }
+    public interface IEffect : IHasInfo
+    {
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target);
+        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
+    }
+    public interface IActorOfEffect
+    {
+
+    }
+    public interface ITargetOfEffect
+    {
+        public int MaxHp { get; }
+        public UniTask LoseHp(int value);
     }
 }

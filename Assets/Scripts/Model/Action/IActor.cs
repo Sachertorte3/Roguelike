@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Data;
 using Model.Characters.Effect;
 using Model.Items;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Utilities;
 
 namespace Model.Action
 {
-    public interface IActor
+    public interface IActor : IActorOfEffect
     {
         public Vector2Int CurrentPosition { get; }
         public Direction8 CurrentDirection { get; }

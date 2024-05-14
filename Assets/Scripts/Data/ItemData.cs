@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.IO;
+using Data.Area;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -14,7 +15,8 @@ namespace Data
     {
         [ReadOnly] public string Name = "";
         public Sprite Icon;
-        public SkillData Skill;
+        [SerializeReference] public IEffect Effect;
+        [SerializeReference] public IArea Area;
         [MinValue(1)] public int UsageLimit;
 #if UNITY_EDITOR
         private void OnValidate()
@@ -26,7 +28,7 @@ namespace Data
 #endif
         public string Info()
         {
-            return $"{Name}\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
+            return $"{Name}\n効果: {Effect.Info()}\n範囲: {Area.Info()}\n使用可能回数: {UsageLimit}";
         }
     }
 }

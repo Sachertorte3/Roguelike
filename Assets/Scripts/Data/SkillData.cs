@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Scripts.Data
 {
     [Serializable]
-    public record SkillData
+    public record SkillData: IHasInfo
     {
         public int Power;
         [SerializeReference] public IArea Area;
@@ -14,5 +14,6 @@ namespace Scripts.Data
             Power = power;
             Area = area;
         }
+        public string Info() => $"威力: {Power}\n範囲: {Area.Info()}";
     }
 }

@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum CatType
     {
@@ -7,6 +7,6 @@ namespace Database.Characters.Type
         C,
         D,
         E,
-        F,
+        F
     }
 }

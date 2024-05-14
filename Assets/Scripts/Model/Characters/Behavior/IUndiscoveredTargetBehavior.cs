@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Scripts.Model.Action;
+using Model.Action;
 
-namespace Scripts.Model.Characters.Behavior
+namespace Model.Characters.Behavior
 {
     internal interface IUndiscoveredTargetBehavior
     {

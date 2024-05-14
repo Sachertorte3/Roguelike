@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum MonolithType
     {
@@ -13,6 +13,6 @@ namespace Database.Characters.Type
         I,
         J,
         K,
-        L,
+        L
     }
 }

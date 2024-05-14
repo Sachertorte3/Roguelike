@@ -1,10 +1,10 @@
-﻿using Scripts.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Data.Area
+namespace Data.Area
 {
-    public interface IArea: IHasInfo
+    public interface IArea : IHasInfo
     {
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction);
     }

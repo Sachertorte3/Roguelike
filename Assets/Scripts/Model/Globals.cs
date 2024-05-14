@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using System;
-using Scripts.Model.Map;
+using Model.Map;
 
-namespace Scripts.Model
+namespace Model
 {
     public static class Globals
     {

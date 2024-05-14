@@ -1,23 +1,20 @@
 ﻿using UnityEngine;
 
-namespace UI
+namespace Utilities
 {
     public class CameraFollowTarget : MonoBehaviour
     {
         [SerializeField] private GameObject target;
         [SerializeField] private Vector3 relative;
 
+        private void LateUpdate()
+        {
+            if (target != null) gameObject.transform.position = target.transform.position + relative;
+        }
+
         public void SetTarget(GameObject obj)
         {
             target = obj;
-        }
-
-        private void LateUpdate()
-        {
-            if (target != null)
-            {
-                gameObject.transform.position = target.transform.position + relative;
-            }
         }
     }
 }

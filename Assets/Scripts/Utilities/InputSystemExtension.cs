@@ -1,7 +1,7 @@
 ﻿using R3;
 using UnityEngine.InputSystem;
 
-namespace Scripts.Utilities
+namespace Utilities
 {
     public static class UnityInputSystemExtensions
 
@@ -12,11 +12,20 @@ namespace Scripts.Utilities
                 h => action.performed += h,
                 h => action.performed -= h);
         }
+
         public static ReadOnlyReactiveProperty<T> AsReactiveProperty<T>(this InputAction action) where T : struct
         {
             return Observable.FromEvent<InputAction.CallbackContext>(
-                h => { action.performed += h; action.canceled += h; },
-                h => { action.performed -= h; action.canceled += h; }).Select(context => context.ReadValue<T>()).ToReadOnlyReactiveProperty();
+                h =>
+                {
+                    action.performed += h;
+                    action.canceled += h;
+                },
+                h =>
+                {
+                    action.performed -= h;
+                    action.canceled += h;
+                }).Select(context => context.ReadValue<T>()).ToReadOnlyReactiveProperty();
         }
     }
 }

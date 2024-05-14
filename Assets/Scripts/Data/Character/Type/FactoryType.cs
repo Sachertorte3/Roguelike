@@ -1,8 +1,8 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum FactoryType
     {
         A,
-        B,
+        B
     }
 }

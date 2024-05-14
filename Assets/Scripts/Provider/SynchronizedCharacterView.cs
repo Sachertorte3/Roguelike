@@ -1,26 +1,30 @@
 ﻿#nullable enable
-using BidirectionalMap;
-using R3;
-using Scripts.Model.Characters;
-using Scripts.Model.Characters.Effect;
-using Scripts.Model.Setting;
-using Scripts.Utilities;
-using Scripts.View;
 using System;
 using System.Collections.Generic;
+using BidirectionalMap;
+using Model.Characters;
+using Model.Setting;
+using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities.ObjectsManager;
+using View;
+using Object = UnityEngine.Object;
 
-namespace Scripts.Provider
+namespace Provider
 {
     public class SynchronizedCharacterView
     {
-        private BiMap<Character, CharacterView> characterViewDict = new();
-        private EffectViewSpawner _effectViewSpawner;
-        private InputReceiver _inputReceiver;
+        private readonly GameObject _characterViewPrefab = Addressables
+            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
+
+        private readonly EffectViewSpawner _effectViewSpawner;
         private Func<HashSet<Vector2Int>> _getVisibleArea;
-        private GameObject _characterViewPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, CharacterManager characterManager)
+        private readonly InputReceiver _inputReceiver;
+        private readonly BiMap<Character, CharacterView> characterViewDict = new();
+
+        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver,
+            CharacterManager characterManager)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
@@ -28,41 +32,48 @@ namespace Scripts.Provider
 
             Add(characterManager.Player);
 
-            characterManager.OnCharacterAdded.Subscribe(character =>
-            {
-                Add(character);
-            });
-            characterManager.OnCharacterRemoved.Subscribe(character =>
-            {
-                Remove(character);
-            });
+            characterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
+            characterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
         }
+
         public void Add(Character character)
         {
-            CharacterView characterView = GameObject.Instantiate<GameObject>(_characterViewPrefab).GetComponent<CharacterView>();
+            var characterView = Object.Instantiate(_characterViewPrefab).GetComponent<CharacterView>();
             characterView.Construct(character.TypeName());
-            characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(), character.TypeName() == "Human");
+            characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
+                character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction));
 
-            EntityView entityView = characterView.GetComponent<EntityView>();
+            var entityView = characterView.GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            character.OnUseSkill.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction), Settings.EffectDisplayTime.Value));
+            character.OnUseSkill.Subscribe(useSkill =>
+                _effectViewSpawner.Spawn(useSkill.skill.GetArea(useSkill.position, useSkill.direction),
+                    Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
 
-            SpriteView spriteView = characterView.GetComponent<SpriteView>();
-            ObjectsManager.RegisterComponent(spriteView);
+            var spriteView = characterView.GetComponent<SpriteView>();
+            spriteView.RegisterComponent();
             character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
             characterViewDict.Add(character, characterView);
         }
+
         public void Remove(Character character)
         {
-            GameObject.Destroy(characterViewDict.Forward[character].gameObject);
+            Object.Destroy(characterViewDict.Forward[character].gameObject);
             characterViewDict.Remove(character);
         }
-        public Character Get(CharacterView characterView) => characterViewDict.Reverse[characterView];
-        public CharacterView Get(Character character) => characterViewDict.Forward[character];
+
+        public Character Get(CharacterView characterView)
+        {
+            return characterViewDict.Reverse[characterView];
+        }
+
+        public CharacterView Get(Character character)
+        {
+            return characterViewDict.Forward[character];
+        }
     }
 }

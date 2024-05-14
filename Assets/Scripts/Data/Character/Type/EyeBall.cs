@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record EyeBall : ICharacterType
     {
-        public EyeBallType Type; public string TypeName() => "EyeBall";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public EyeBall(EyeBallType type) { Type = type; }
+        public EyeBallType Type;
+
+        public EyeBall(EyeBallType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "EyeBall";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

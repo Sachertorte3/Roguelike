@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum BatType
     {
@@ -21,6 +21,6 @@ namespace Database.Characters.Type
         Q,
         R,
         S,
-        T,
+        T
     }
 }

@@ -1,21 +1,19 @@
 ﻿#nullable enable
-using R3;
-using Scripts.Model.Map;
-using Scripts.Utilities;
-using Scripts.View;
 using System.Linq;
-using UnityEngine;
+using Model.Map;
+using R3;
+using Utilities;
 using VContainer;
+using View;
 
-namespace Scripts.Provider
+namespace Provider
 {
     public class TilemapPresenter
     {
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, Tilemap tilemap)
         {
-            foreach ((Vector2Int position, TileData tileData) in tilemap.GetAllTiles())
-            {
+            foreach ((var position, var tileData) in tilemap.GetAllTiles())
                 switch (tileData.TileType)
                 {
                     case TileCategory.Wall:
@@ -25,7 +23,6 @@ namespace Scripts.Provider
                         tileView.SetFloor(position);
                         break;
                 }
-            }
 
             tileMask.SetTilesTransparent(tilemap.Rect.RectRange().ToHashSet());
 
@@ -40,6 +37,7 @@ namespace Scripts.Provider
                         tileView.SetFloor(context.position);
                         break;
                 }
+
                 tileMask.ResetMask(context.position);
             });
         }

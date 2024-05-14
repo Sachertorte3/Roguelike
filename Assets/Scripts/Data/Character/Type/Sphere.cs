@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Sphere : ICharacterType
     {
-        public SphereType Type; public string TypeName() => "Sphere";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Sphere(SphereType type) { Type = type; }
+        public SphereType Type;
+
+        public Sphere(SphereType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Sphere";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

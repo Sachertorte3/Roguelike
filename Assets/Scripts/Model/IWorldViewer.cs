@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using Scripts.Model.Characters;
-using Scripts.Model.Items;
-using Scripts.Model.Map;
+using Model.Characters;
+using Model.Items;
+using Model.Map;
 using UnityEngine;
 
-namespace Scripts.Model
+namespace Model
 {
     internal interface IWorldViewer
     {

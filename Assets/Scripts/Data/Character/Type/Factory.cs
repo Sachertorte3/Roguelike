@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Factory : ICharacterType
     {
-        public FactoryType Type; public string TypeName() => "Factory";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Factory(FactoryType type) { Type = type; }
+        public FactoryType Type;
+
+        public Factory(FactoryType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Factory";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

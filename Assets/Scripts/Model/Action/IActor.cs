@@ -1,10 +1,10 @@
-﻿using Assets.Scripts.Model.Items;
-using Cysharp.Threading.Tasks;
-using Scripts.Model.Characters.Effect;
-using Scripts.Utilities;
+﻿using Cysharp.Threading.Tasks;
+using Model.Characters.Effect;
+using Model.Items;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Model.Action
+namespace Model.Action
 {
     public interface IActor
     {

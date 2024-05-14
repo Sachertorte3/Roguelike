@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Cloud : ICharacterType
     {
-        public CloudType Type; public string TypeName() => "Cloud";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Cloud(CloudType type) { Type = type; }
+        public CloudType Type;
+
+        public Cloud(CloudType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Cloud";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

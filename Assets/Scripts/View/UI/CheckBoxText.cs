@@ -3,20 +3,22 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.View.UI
+namespace View.UI
 {
     internal class CheckBoxText : MonoBehaviour
     {
         [SerializeField] private Toggle _checkBox;
         [SerializeField] private TMP_Text _text;
-        private string GetText(bool value) => value ? "有効" : "無効";
+
         private void Start()
         {
             _text.SetText(GetText(_checkBox.isOn));
-            _checkBox.onValueChanged.AsObservable().Subscribe(value =>
-            {
-                _text.SetText(GetText(value));
-            });
+            _checkBox.onValueChanged.AsObservable().Subscribe(value => { _text.SetText(GetText(value)); });
+        }
+
+        private string GetText(bool value)
+        {
+            return value ? "有効" : "無効";
         }
     }
 }

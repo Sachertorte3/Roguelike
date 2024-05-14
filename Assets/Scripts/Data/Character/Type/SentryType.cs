@@ -1,9 +1,9 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum SentryType
     {
         A,
         B,
-        C,
+        C
     }
 }

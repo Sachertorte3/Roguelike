@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record SlimeSquare : ICharacterType
     {
-        public SlimeSquareType Type; public string TypeName() => "SlimeSquare";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public SlimeSquare(SlimeSquareType type) { Type = type; }
+        public SlimeSquareType Type;
+
+        public SlimeSquare(SlimeSquareType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "SlimeSquare";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

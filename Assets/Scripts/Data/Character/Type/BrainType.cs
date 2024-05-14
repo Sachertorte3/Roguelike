@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum BrainType
     {
@@ -6,6 +6,6 @@ namespace Database.Characters.Type
         B,
         C,
         D,
-        E,
+        E
     }
 }

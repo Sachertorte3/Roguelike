@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record ElementalOrb : ICharacterType
     {
-        public ElementalOrbType Type; public string TypeName() => "ElementalOrb";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public ElementalOrb(ElementalOrbType type) { Type = type; }
+        public ElementalOrbType Type;
+
+        public ElementalOrb(ElementalOrbType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "ElementalOrb";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

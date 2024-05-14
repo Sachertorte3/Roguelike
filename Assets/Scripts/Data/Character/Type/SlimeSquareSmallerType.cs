@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum SlimeSquareSmallerType
     {
@@ -11,6 +11,6 @@ namespace Database.Characters.Type
         G,
         H,
         I,
-        J,
+        J
     }
 }

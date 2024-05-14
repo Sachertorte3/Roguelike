@@ -1,21 +1,22 @@
-﻿using RandomDungeonWithBluePrint;
-using Scripts.Model;
-using Scripts.Model.Characters;
-using Scripts.Model.Characters.Behavior;
-using Scripts.Model.Items;
-using Scripts.Model.Map;
-using Scripts.View;
-using Scripts.View.UI;
-using UI;
+﻿using Model;
+using Model.Characters;
+using Model.Characters.Behavior;
+using Model.Items;
+using Model.Map;
+using RandomDungeonWithBluePrint;
 using UnityEngine;
+using Utilities;
 using VContainer;
 using VContainer.Unity;
+using View;
+using View.UI;
 
-namespace Scripts.Provider
+namespace Provider
 {
     internal class Container : LifetimeScope
     {
         [SerializeField] private FieldBluePrint _bluePrint;
+
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<GameManager>(Lifetime.Singleton);

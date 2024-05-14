@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Scripts.Model.Action;
+using Model.Action;
 using UnityEngine;
 
-namespace Scripts.Model.Characters.Behavior
+namespace Model.Characters.Behavior
 {
     internal interface IDiscoveredTargetBehavior
     {

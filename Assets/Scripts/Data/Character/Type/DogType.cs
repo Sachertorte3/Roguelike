@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum DogType
     {
@@ -8,6 +8,6 @@ namespace Database.Characters.Type
         D,
         E,
         F,
-        G,
+        G
     }
 }

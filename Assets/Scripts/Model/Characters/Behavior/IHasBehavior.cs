@@ -1,7 +1,7 @@
-﻿using Assets.Scripts.Model.Items;
-using Scripts.Model.Action;
+﻿using Model.Action;
+using Model.Items;
 
-namespace Scripts.Model.Characters.Behavior
+namespace Model.Characters.Behavior
 {
     internal interface IHasBehavior : IActor
     {

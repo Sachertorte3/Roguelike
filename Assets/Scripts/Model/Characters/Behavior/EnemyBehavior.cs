@@ -1,41 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Cysharp.Threading.Tasks;
-using Scripts.Model.Action;
-using Scripts.Utilities;
+using Model.Action;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Model.Characters.Behavior
+namespace Model.Characters.Behavior
 {
     internal sealed class EnemyBehavior : ICharacterBehavior
     {
-        private float behavioralRandomness = 0.02f;
-        private IUndiscoveredTargetBehavior _wander = new RandomWalk();
-        private IDiscoveredTargetBehavior _chase = new Chase();
-        private Vector2Int? _lastTargetPosition = null;
+        private readonly IDiscoveredTargetBehavior _chase = new Chase();
+        private Vector2Int? _lastTargetPosition;
+        private readonly IUndiscoveredTargetBehavior _wander = new RandomWalk();
+        private readonly float behavioralRandomness = 0.02f;
+
         public UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
-            HashSet<Vector2Int> visibleArea = character.Area.Get();
+            var visibleArea = character.Area.Get();
             visibleArea.Remove(character.CurrentPosition);
-            HashSet<Character> visibleCharacters = Globals.World.GetCharactersInArea(visibleArea);
+            var visibleCharacters = Globals.World.GetCharactersInArea(visibleArea);
             if (visibleCharacters.Any())
-            {
                 _lastTargetPosition = visibleCharacters.First().CurrentPosition;
-            }
             else if (_lastTargetPosition.HasValue && (character.CurrentPosition == _lastTargetPosition
-                || (!Globals.World.Map.IsPassable(_lastTargetPosition.Value) && (character.CurrentPosition - _lastTargetPosition).Value.sqrMagnitude <= 2)))
-            {
+                                                      || (!Globals.World.Map.IsPassable(_lastTargetPosition.Value) &&
+                                                          (character.CurrentPosition - _lastTargetPosition).Value
+                                                          .sqrMagnitude <= 2)))
                 _lastTargetPosition = null;
-            }
             if (_lastTargetPosition.HasValue)
             {
-                IEnumerable<IAction> actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value);
-                return UniTask.FromResult(actions.MaxBy(action => action.Evaluate(character) + Random.Range(0, behavioralRandomness)));
+                var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value);
+                return UniTask.FromResult(actions.MaxBy(action =>
+                    action.Evaluate(character) + Random.Range(0, behavioralRandomness)));
             }
             else
             {
-                IEnumerable<IAction> actions = _wander.GenerateActionsDoable(character);
-                return UniTask.FromResult(actions.MaxBy(action => action.Evaluate(character) + Random.Range(0, behavioralRandomness)));
+                var actions = _wander.GenerateActionsDoable(character);
+                return UniTask.FromResult(actions.MaxBy(action =>
+                    action.Evaluate(character) + Random.Range(0, behavioralRandomness)));
             }
         }
     }

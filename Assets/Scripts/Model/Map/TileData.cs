@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Scripts.Model.Map
+namespace Model.Map
 {
     public record TileData(TileCategory TileType)
     {
@@ -11,7 +11,7 @@ namespace Scripts.Model.Map
                 TileCategory.Floor => true,
                 TileCategory.Wall => false,
                 TileCategory.Blank => false,
-                _ => throw new InvalidEnumArgumentException(),
+                _ => throw new InvalidEnumArgumentException()
             };
         }
     }

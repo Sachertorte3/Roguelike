@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Space : ICharacterType
     {
-        public SpaceType Type; public string TypeName() => "Space";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Space(SpaceType type) { Type = type; }
+        public SpaceType Type;
+
+        public Space(SpaceType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Space";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

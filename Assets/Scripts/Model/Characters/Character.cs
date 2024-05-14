@@ -1,6 +1,9 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Data;
 using Data.Character.Type;
 using Model.Action;
 using Model.Characters.Behavior;
@@ -16,13 +19,13 @@ using Utilities;
 
 namespace Model.Characters
 {
-    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget
+    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect
     {
         private readonly VisionRange _area;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly Inventory _inventory = new();
-        private readonly Subject<(Skill skill, Vector2Int position, Direction8 direction)> _onUseSkill = new();
+        private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStats _stats;
         private bool _canIgnoreWall;
         internal bool CanAct = true;
@@ -44,7 +47,7 @@ namespace Model.Characters
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
-        public Observable<(Skill skill, Vector2Int position, Direction8 direction)> OnUseSkill => _onUseSkill;
+        public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
 
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
@@ -52,6 +55,7 @@ namespace Model.Characters
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
+        public int MaxHp => _stats.MaxHp.CurrentValue;
 
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
@@ -86,7 +90,7 @@ namespace Model.Characters
         public async UniTask UseSkill(Skill skill, Direction8 direction)
         {
             _direction.Value = direction;
-            _onUseSkill.OnNext((skill, CurrentPosition, CurrentDirection));
+            _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -100,7 +104,7 @@ namespace Model.Characters
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
             if (item == null) throw new Exception("item is null");
-            _onUseSkill.OnNext((item.Skill, CurrentPosition, CurrentDirection));
+            _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(item.Use(this, CurrentPosition, direction),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -127,7 +131,7 @@ namespace Model.Characters
         {
             _entity.Dispose();
             _inventory.Dispose();
-            _onUseSkill.Dispose();
+            _onSpawnEffect.Dispose();
             _direction.Dispose();
             _stats.Dispose();
             _area.Dispose();
@@ -167,7 +171,7 @@ namespace Model.Characters
             State = CharacterState.Wait;
         }
 
-        internal UniTask LoseHp(int value)
+        public UniTask LoseHp(int value)
         {
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;

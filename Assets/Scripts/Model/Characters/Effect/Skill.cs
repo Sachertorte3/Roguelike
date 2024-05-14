@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
 using Model.Action;
-using Sirenix.Utilities;
 using UnityEngine;
 using Utilities;
 
@@ -13,34 +12,33 @@ namespace Model.Characters.Effect
     public class Skill
     {
         private readonly IArea _area;
-        public readonly int Power;
+        private readonly IEffect _effect;
 
         public Skill(SkillData data)
         {
-            Power = data.Power;
             _area = data.Area;
+            _effect = data.Effect;
         }
 
         public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction)
         {
             return _area.Get(position, direction);
         }
-
-        public UniTask Use(IActor actor, Vector2Int position, Direction8 direction)
+        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction)
         {
-            var area = GetArea(position, direction);
+            var area = _area.Get(position, direction);
             Globals.World.GetCharactersInArea(area.ToHashSet())
-                .ForEach(character => character.LoseHp(Formula.Calc(actor, Power)));
+                .ForEach(target => _effect.Apply(actor, target));
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction)
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction)
         {
-            var area = GetArea(position, direction);
+            var area = _area.Get(position, direction);
             var characters = Globals.World.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
-                return characters.Sum(character =>
-                    (float)Formula.Calc(actor, Power) / character.Stats.MaxHp.CurrentValue);
+                return characters.Sum(target =>
+                    _effect.Evaluate(actor, target));
             return -1;
         }
     }

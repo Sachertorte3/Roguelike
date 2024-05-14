@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using Model.Characters.Effect;
 using R3;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
 
@@ -23,8 +25,8 @@ namespace Model.Items
                 _onPositionChanged.OnNext(new OnPositionChangedMessage(item, positionChanged)));
             item.OnDisabled.Subscribe(disabled => _onDisabled.OnNext(new OnDisabledMessage(item)));
             item.OnMove.Subscribe(move => _onMove.OnNext(new OnMoveMessage(item, move.direction, move.destination)));
-            item.OnUseSkill.Subscribe(useSkill =>
-                _onUseSkill.OnNext(new OnUseSkillMessage(item, useSkill.skill, useSkill.position, useSkill.direction)));
+            item.OnSpawnEffect.Subscribe(useSkill =>
+                _onUseSkill.OnNext(new OnUseSkillMessage(item, useSkill)));
         }
     }
 
@@ -34,5 +36,5 @@ namespace Model.Items
 
     public record OnPositionChangedMessage(ItemEntity Item, Vector2Int Position);
 
-    public record OnUseSkillMessage(ItemEntity Item, Skill Skill, Vector2Int Position, Direction8 Direction);
+    public record OnUseSkillMessage(ItemEntity Item, IEnumerable<Vector2Int> Area);
 }

@@ -14,15 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Star
   Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  Skill:
-    Power: 10
-    Area:
-      rid: 6064254436379983873
+  Effect:
+    rid: 6064254436379983875
+  Area:
+    rid: 6064254436379983876
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983873
+    - rid: 6064254436379983875
+      type: {class: AttackEffect, ns: Data, asm: Model}
+      data:
+        Power: 1
+    - rid: 6064254436379983876
       type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0

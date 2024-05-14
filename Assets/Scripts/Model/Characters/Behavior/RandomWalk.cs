@@ -40,7 +40,7 @@ namespace Model.Characters.Behavior
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character)
         {
             return DirectionMethods.AllDirections
-                .Select(direction => new UseSkill(new Skill(new SkillData(1, new LineArea(1, false))), direction))
+                .Select(direction => new UseSkill(new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))), direction))
                 .Where(move => move.Doable(character));
         }
     }

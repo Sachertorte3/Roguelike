@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Scripts.Data.Area
+namespace Data.Area
 {
     public interface INotDirectionalArea : IArea
     {

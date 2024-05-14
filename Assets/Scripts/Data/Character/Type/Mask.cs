@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Mask : ICharacterType
     {
-        public MaskType Type; public string TypeName() => "Mask";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Mask(MaskType type) { Type = type; }
+        public MaskType Type;
+
+        public Mask(MaskType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Mask";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

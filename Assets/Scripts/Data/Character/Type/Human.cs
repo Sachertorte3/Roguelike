@@ -1,17 +1,26 @@
 using System;
 using UnityEngine;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Human : ICharacterType
     {
         public Texture Texture;
-        public string TypeName() => "Human";
-        public string SubtypeName() => Texture.name;
+
         public Human(Texture texture)
         {
             Texture = texture;
+        }
+
+        public string TypeName()
+        {
+            return "Human";
+        }
+
+        public string SubtypeName()
+        {
+            return Texture.name;
         }
     }
 }

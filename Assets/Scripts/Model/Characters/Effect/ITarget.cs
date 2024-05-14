@@ -1,6 +1,6 @@
-﻿using Scripts.Model.Characters.Stats;
+﻿using Model.Characters.Stats;
 
-namespace Scripts.Model.Characters.Effect
+namespace Model.Characters.Effect
 {
     public interface ITarget
     {

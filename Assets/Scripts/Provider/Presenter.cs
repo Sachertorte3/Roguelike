@@ -1,25 +1,26 @@
 #nullable enable
-using R3;
-using Scripts.Model;
-using Scripts.Model.Characters;
-using Scripts.Model.Items;
-using Scripts.Model.Map;
-using Scripts.Utilities;
-using Scripts.View;
-using Sirenix.Utilities;
 using System.Linq;
+using Model;
+using Model.Characters;
+using Model.Items;
+using Model.Map;
+using R3;
+using Sirenix.Utilities;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
+using Utilities.ObjectsManager;
 using VContainer;
+using View;
 using Logger = Unity.Logging.Logger;
 
-namespace Scripts.Provider
+namespace Provider
 {
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap,
+            CharacterManager characterManager, ItemManager itemManager)
         {
             LoggerInit();
 
@@ -29,15 +30,22 @@ namespace Scripts.Provider
             {
                 tileMask.SetTilesTranslucent(area.AreaExited);
                 tileMask.SetTilesVisible(area.AreaEntered);
-                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.AreaExited.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(false));
-                ObjectsManager.GetObjectsByType<SpriteView>().Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position()))).ForEach(view => view.SetVisibility(true));
+                ObjectsManager.GetObjectsByType<SpriteView>()
+                    .Where(view => area.AreaExited.Contains(Vector2Int.RoundToInt(view.Position())))
+                    .ForEach(view => view.SetVisibility(false));
+                ObjectsManager.GetObjectsByType<SpriteView>()
+                    .Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position())))
+                    .ForEach(view => view.SetVisibility(true));
             });
-            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view => view.SetVisibility(characterManager.Player.Area.Get().Contains(Vector2Int.RoundToInt(view.Position()))));
+            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view =>
+                view.SetVisibility(characterManager.Player.Area.Get()
+                    .Contains(Vector2Int.RoundToInt(view.Position()))));
 
             characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
 
             gameManager.Run(characterManager);
         }
+
         private void LoggerInit()
         {
             Log.Logger = new Logger(new LoggerConfig()

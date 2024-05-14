@@ -2,29 +2,25 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Model.Characters.Behavior;
+using Model.Map;
+using Model.Setting;
 using ObservableCollections;
 using R3;
-using Scripts.Model.Characters.Behavior;
-using Scripts.Model.Items;
-using Scripts.Model.Map;
-using Scripts.Model.Setting;
-using Scripts.Utilities;
 using UnityEngine;
+using Utilities;
 using VContainer;
 
-namespace Scripts.Model.Characters
+namespace Model.Characters
 {
     public sealed class CharacterManager
     {
-        public Character Player => _player;
-        private Character _player;
-        private ObservableList<Character> _characters = new();
-        public ReadOnlyCollection<Character> Characters => new(_characters);
-        public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
-        public Observable<Character> OnCharacterRemoved => _characters.ObserveRemove().Select(character => character.Value);
         private readonly CharacterFactory _factory = new();
-        public readonly CharacterEvents PlayerEvents = new();
         public readonly CharacterEvents CharacterEvents = new();
+        public readonly CharacterEvents PlayerEvents = new();
+        private HashSet<Vector2Int> _allCharacterPositions = new();
+        private readonly ObservableList<Character> _characters = new();
+
         [Inject]
         public CharacterManager(Tilemap tilemap, CharacterControllInputReceiver actionReceiver)
         {
@@ -36,35 +32,44 @@ namespace Scripts.Model.Characters
             });
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
 
-            _player = _factory.CreateCharacter(tilemap.GetAllPassablePositions().GetAtRandom(), new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
-            AddCharacter(_player);
-            PlayerEvents.Add(_player);
+            Player = _factory.CreateCharacter(tilemap.GetAllPassablePositions().GetAtRandom(),
+                new PlayerBehavior(actionReceiver), Settings.IgnoreWall);
+            AddCharacter(Player);
+            PlayerEvents.Add(Player);
             PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 foreach (var character in _characters)
-                {
                     if (areaChanged.AreaExited.Contains(character.CurrentPosition))
-                    {
                         character.SetVisiblity(false);
-                    }
-                    else if (areaChanged.AreaEntered.Contains(character.CurrentPosition))
-                    {
-                        character.SetVisiblity(true);
-                    }
-                }
+                    else if (areaChanged.AreaEntered.Contains(character.CurrentPosition)) character.SetVisiblity(true);
             });
         }
+
+        public Character Player { get; init; }
+
+        public ReadOnlyCollection<Character> Characters => new(_characters);
+        public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
+
+        public Observable<Character> OnCharacterRemoved =>
+            _characters.ObserveRemove().Select(character => character.Value);
+
         private void AddCharacter(Character character)
         {
             _characters.Add(character);
             CharacterEvents.Add(character);
         }
+
         public void SpawnCharacter(Vector2Int spawnPosition)
         {
-            AddCharacter(_factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
+            AddCharacter(
+                _factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
         }
-        public HashSet<Vector2Int> GetAllCharacterPositions() => _allCharacterPositions;
-        private HashSet<Vector2Int> _allCharacterPositions = new();
+
+        public HashSet<Vector2Int> GetAllCharacterPositions()
+        {
+            return _allCharacterPositions;
+        }
+
         private void SetAllCharacterPosition()
         {
             _allCharacterPositions = Characters.Select(character => character.Position.CurrentValue).ToHashSet();

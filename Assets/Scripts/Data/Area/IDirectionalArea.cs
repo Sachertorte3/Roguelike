@@ -1,8 +1,8 @@
-﻿using Scripts.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Data.Area
+namespace Data.Area
 {
     public interface IDirectionalArea : IArea
     {

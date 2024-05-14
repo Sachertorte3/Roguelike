@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Reaper : ICharacterType
     {
-        public ReaperType Type; public string TypeName() => "Reaper";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Reaper(ReaperType type) { Type = type; }
+        public ReaperType Type;
+
+        public Reaper(ReaperType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Reaper";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

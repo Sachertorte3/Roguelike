@@ -17,13 +17,13 @@ MonoBehaviour:
   Skill:
     Power: 10
     Area:
-      rid: 6064254436379983872
+      rid: 6064254436379983873
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983872
-      type: {class: CircleArea, ns: Scripts.Data.Area, asm: Data}
+    - rid: 6064254436379983873
+      type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
-        Radius: 2
         ContainsSelf: 0
+        Radius: 2

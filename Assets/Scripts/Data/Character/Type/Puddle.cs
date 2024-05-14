@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Puddle : ICharacterType
     {
-        public PuddleType Type; public string TypeName() => "Puddle";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Puddle(PuddleType type) { Type = type; }
+        public PuddleType Type;
+
+        public Puddle(PuddleType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Puddle";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

@@ -1,38 +1,35 @@
 ﻿#nullable enable
-using Scripts.Model.Characters;
-using Scripts.View;
-using Scripts.View.UI;
-using UI;
+using Model.Characters;
+using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using VContainer;
-using R3;
-using Scripts.Model.Items;
-using System;
+using View;
+using View.UI;
 
-namespace Scripts.Provider
+namespace Provider
 {
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters, SynchronizedItemView _, InventoryView inventoryView, CameraFollowTarget camera)
+        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters,
+            SynchronizedItemView _, InventoryView inventoryView, CameraFollowTarget camera)
         {
-            CharacterView playerView = characters.Get(characterManager.Player);
+            var playerView = characters.Get(characterManager.Player);
 
-            GameObject arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab").WaitForCompletion();
-            GameObject arrow = GameObject.Instantiate(arrowPrefab, playerView.transform);
+            var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
+                .WaitForCompletion();
+            var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
             characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
             {
                 if (itemChanged.NewValue != null)
-                {
-                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue, itemChanged.NewValue.Info, itemChanged.Index);
-                }
+                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue,
+                        itemChanged.NewValue.Info, itemChanged.Index);
                 else
-                {
                     inventoryView.Remove(itemChanged.Index);
-                }
             });
             characterManager.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
             {

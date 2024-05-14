@@ -1,9 +1,9 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum MouthType
     {
         A,
         B,
-        C,
+        C
     }
 }

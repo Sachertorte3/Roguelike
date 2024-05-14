@@ -2,19 +2,29 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Scripts.View
+namespace View
 {
     public sealed class TileViewController : MonoBehaviour
     {
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private Tiles _tiles;
-        public void SetWall(Vector2Int position) => SetTile(position, _tiles.Wall);
-        public void SetFloor(Vector2Int position) => SetTile(position, _tiles.Floor);
+
+        public void SetWall(Vector2Int position)
+        {
+            SetTile(position, _tiles.Wall);
+        }
+
+        public void SetFloor(Vector2Int position)
+        {
+            SetTile(position, _tiles.Floor);
+        }
+
         private void SetTile(Vector2Int position, TileBase tile)
         {
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
+
     [Serializable]
     internal struct Tiles
     {

@@ -1,9 +1,9 @@
-﻿namespace Scripts.Model.Characters
+﻿namespace Model.Characters
 {
     public enum CharacterState
     {
         Think,
         Act,
-        Wait,
+        Wait
     }
 }

@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Robot : ICharacterType
     {
-        public RobotType Type; public string TypeName() => "Robot";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Robot(RobotType type) { Type = type; }
+        public RobotType Type;
+
+        public Robot(RobotType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Robot";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Earth : ICharacterType
     {
-        public EarthType Type; public string TypeName() => "Earth";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Earth(EarthType type) { Type = type; }
+        public EarthType Type;
+
+        public Earth(EarthType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Earth";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

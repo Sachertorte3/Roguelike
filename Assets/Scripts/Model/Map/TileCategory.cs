@@ -1,9 +1,9 @@
-﻿namespace Scripts.Model.Map
+﻿namespace Model.Map
 {
     public enum TileCategory
     {
         Floor,
         Wall,
-        Blank,
+        Blank
     }
 }

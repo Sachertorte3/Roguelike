@@ -1,4 +1,4 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum WormType
     {
@@ -9,6 +9,6 @@ namespace Database.Characters.Type
         E,
         F,
         G,
-        H,
+        H
     }
 }

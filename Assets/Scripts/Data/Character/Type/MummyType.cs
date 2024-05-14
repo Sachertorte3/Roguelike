@@ -1,9 +1,9 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum MummyType
     {
         A,
         B,
-        C,
+        C
     }
 }

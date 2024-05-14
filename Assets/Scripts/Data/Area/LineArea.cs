@@ -1,27 +1,31 @@
-using Scripts.Utilities;
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Data.Area
+namespace Data.Area
 {
     public class LineArea : IDirectionalArea
     {
-        [MinValue(1)] public int Length;
         public bool ContainsSelf;
+        [MinValue(1)] public int Length;
+
         public LineArea(int length, bool containsSelf)
         {
             Length = length;
             ContainsSelf = containsSelf;
         }
+
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
         {
-            return (ContainsSelf?
-                Enumerable.Range(0, Length+1):
-                Enumerable.Range(1, Length))
+            return (ContainsSelf ? Enumerable.Range(0, Length + 1) : Enumerable.Range(1, Length))
                 .Select(i => position + direction.Vector() * i);
         }
-        public string Info() => $"’¼ü@’·‚³{Length}ƒ}ƒX{(ContainsSelf ? "(Œ´“_ŠÜ‚Ş)" : "")}";
+
+        public string Info()
+        {
+            return $"ç›´ç·šã€€é•·ã•{Length}ãƒã‚¹{(ContainsSelf ? "(åŸç‚¹å«ã‚€)" : "")}";
+        }
     }
 }

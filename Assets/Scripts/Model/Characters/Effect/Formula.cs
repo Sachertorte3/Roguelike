@@ -1,6 +1,6 @@
-﻿using Scripts.Model.Action;
+﻿using Model.Action;
 
-namespace Scripts.Model.Characters.Effect
+namespace Model.Characters.Effect
 {
     internal static class Formula
     {

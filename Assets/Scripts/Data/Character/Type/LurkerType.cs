@@ -1,9 +1,9 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum LurkerType
     {
         A,
         B,
-        C,
+        C
     }
 }

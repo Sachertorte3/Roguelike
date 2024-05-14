@@ -1,18 +1,18 @@
 ﻿using System;
 using R3;
-using Scripts.Utilities;
 using StatSystem;
 using Unity.Logging;
 using UnityEngine;
+using Utilities;
 
-namespace Scripts.Model.Characters.Stats
+namespace Model.Characters.Stats
 {
     internal class Resource : IDisposable
     {
-        public readonly ReadOnlyReactiveProperty<int> Max;
         public readonly Stat _max;
-        public ReadOnlyReactiveProperty<int> Value => _value;
         private readonly ReactiveProperty<int> _value;
+        public readonly ReadOnlyReactiveProperty<int> Max;
+
         public Resource(int maxValue)
         {
             _max = new Stat(maxValue);
@@ -20,14 +20,19 @@ namespace Scripts.Model.Characters.Stats
             _value = new ReactiveProperty<int>(maxValue);
             Max.Subscribe(_ => clampCurrentValue());
         }
+
+        public ReadOnlyReactiveProperty<int> Value => _value;
+
         public void Dispose()
         {
             _value.Dispose();
         }
+
         private void clampCurrentValue()
         {
             _value.Value = Mathf.Clamp(Value.CurrentValue, 0, Max.CurrentValue);
         }
+
         public void Lose(int value)
         {
             if (value < 0)
@@ -35,9 +40,11 @@ namespace Scripts.Model.Characters.Stats
                 Gain(-value);
                 return;
             }
+
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
             Log.Debug($"Lose {value}, current value {_value.Value}");
         }
+
         public void Gain(int value)
         {
             if (value < 0)
@@ -45,6 +52,7 @@ namespace Scripts.Model.Characters.Stats
                 Lose(-value);
                 return;
             }
+
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
         }
     }

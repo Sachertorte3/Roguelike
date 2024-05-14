@@ -1,13 +1,14 @@
 ﻿#nullable enable
-using UnityEngine;
+using System.IO;
 using Sirenix.OdinInspector;
+using UnityEditor;
+using UnityEngine;
 
-namespace Scripts.Data
+namespace Data
 {
 #if UNITY_EDITOR
-    using System.IO;
-    using UnityEditor;
 #endif
+
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
@@ -18,11 +19,14 @@ namespace Scripts.Data
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            string assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
+            var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
             AssetDatabase.SaveAssets();
         }
 #endif
-        public string Info() => $"{Name}\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
+        public string Info()
+        {
+            return $"{Name}\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
+        }
     }
 }

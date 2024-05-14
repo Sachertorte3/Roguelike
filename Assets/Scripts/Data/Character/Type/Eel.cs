@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Eel : ICharacterType
     {
-        public EelType Type; public string TypeName() => "Eel";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Eel(EelType type) { Type = type; }
+        public EelType Type;
+
+        public Eel(EelType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Eel";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

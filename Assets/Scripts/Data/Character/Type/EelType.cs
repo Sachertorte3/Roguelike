@@ -1,10 +1,10 @@
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     public enum EelType
     {
         A,
         B,
         C,
-        D,
+        D
     }
 }

@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Sentry : ICharacterType
     {
-        public SentryType Type; public string TypeName() => "Sentry";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Sentry(SentryType type) { Type = type; }
+        public SentryType Type;
+
+        public Sentry(SentryType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Sentry";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

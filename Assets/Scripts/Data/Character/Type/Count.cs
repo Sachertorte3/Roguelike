@@ -1,11 +1,25 @@
 using System;
 
-namespace Database.Characters.Type
+namespace Data.Character.Type
 {
     [Serializable]
     public record Count : ICharacterType
     {
-        public CountType Type; public string TypeName() => "Count";
-        public string SubtypeName() => $"{TypeName()}{Type}"; public Count(CountType type) { Type = type; }
+        public CountType Type;
+
+        public Count(CountType type)
+        {
+            Type = type;
+        }
+
+        public string TypeName()
+        {
+            return "Count";
+        }
+
+        public string SubtypeName()
+        {
+            return $"{TypeName()}{Type}";
+        }
     }
 }

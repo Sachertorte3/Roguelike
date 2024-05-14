@@ -4,27 +4,11 @@ using System.Linq;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace Scripts.Model.Characters
+namespace Model.Characters
 {
     internal static class ViewCalculator
     {
-        private class OctantTransform
-        {
-            public int xx { get; private set; }
-            public int xy { get; private set; }
-            public int yx { get; private set; }
-            public int yy { get; private set; }
-
-            public OctantTransform(int xx, int xy, int yx, int yy)
-            {
-                this.xx = xx;
-                this.xy = xy;
-                this.yx = yx;
-                this.yy = yy;
-            }
-        }
-
-        private static OctantTransform[] s_octantTransform =
+        private static readonly OctantTransform[] s_octantTransform =
         {
             new(1, 0, 0, 1), // 0 E-NE
             new(0, 1, 1, 0), // 1 NE-N
@@ -33,23 +17,23 @@ namespace Scripts.Model.Characters
             new(-1, 0, 0, -1), // 4 W-SW
             new(0, -1, -1, 0), // 5 SW-S
             new(0, 1, -1, 0), // 6 S-SE
-            new(1, 0, 0, -1), // 7 SE-E
+            new(1, 0, 0, -1) // 7 SE-E
         };
 
-        public static HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position, float radius)
+        public static HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position,
+            float radius)
         {
-            float viewRadiusSq = radius * radius;
+            var viewRadiusSq = radius * radius;
             return ComputeSquare(passables, position, radius).Where(x => (x - position).sqrMagnitude <= viewRadiusSq)
                 .ToHashSet();
         }
 
-        public static HashSet<Vector2Int> ComputeSquare(HashSet<Vector2Int> passables, Vector2Int position, float radius)
+        public static HashSet<Vector2Int> ComputeSquare(HashSet<Vector2Int> passables, Vector2Int position,
+            float radius)
         {
             HashSet<Vector2Int> viewArea = new() { position };
-            for (int txidx = 0; txidx < s_octantTransform.Length; txidx++)
-            {
+            for (var txidx = 0; txidx < s_octantTransform.Length; txidx++)
                 viewArea.AddRange(CastLight(passables, position, radius, 1, 1.0f, 0.0f, s_octantTransform[txidx]));
-            }
 
             return viewArea;
         }
@@ -59,30 +43,25 @@ namespace Scripts.Model.Characters
         {
             HashSet<Vector2Int> viewArea = new();
 
-            int viewCeiling = (int)Math.Ceiling(viewRadius);
-            bool prevWasBlocked = false;
+            var viewCeiling = (int)Math.Ceiling(viewRadius);
+            var prevWasBlocked = false;
             float savedRightSlope = -1;
 
-            for (int currentCol = startColumn; currentCol <= viewCeiling; currentCol++)
+            for (var currentCol = startColumn; currentCol <= viewCeiling; currentCol++)
             {
-                int xc = currentCol;
-                for (int yc = currentCol; yc >= 0; yc--)
+                var xc = currentCol;
+                for (var yc = currentCol; yc >= 0; yc--)
                 {
-                    Vector2Int pos = new(origin.x + (xc * txfrm.xx) + (yc * txfrm.xy),
-                        origin.y + (xc * txfrm.yx) + (yc * txfrm.yy));
+                    Vector2Int pos = new(origin.x + xc * txfrm.xx + yc * txfrm.xy,
+                        origin.y + xc * txfrm.yx + yc * txfrm.yy);
 
-                    float leftBlockSlope = (yc + 0.5f) / (xc - 0.5f);
-                    float rightBlockSlope = (yc - 0.5f) / (xc + 0.5f);
+                    var leftBlockSlope = (yc + 0.5f) / (xc - 0.5f);
+                    var rightBlockSlope = (yc - 0.5f) / (xc + 0.5f);
                     if (rightBlockSlope > leftViewSlope)
-                    {
                         continue;
-                    }
-                    else if (leftBlockSlope < rightViewSlope)
-                    {
-                        break;
-                    }
+                    if (leftBlockSlope < rightViewSlope) break;
 
-                    bool curBlocked = !passables.Contains(pos);
+                    var curBlocked = !passables.Contains(pos);
                     viewArea.Add(pos);
 
                     if (prevWasBlocked)
@@ -107,13 +86,26 @@ namespace Scripts.Model.Characters
                     }
                 }
 
-                if (prevWasBlocked)
-                {
-                    break;
-                }
+                if (prevWasBlocked) break;
             }
 
             return viewArea;
+        }
+
+        private class OctantTransform
+        {
+            public OctantTransform(int xx, int xy, int yx, int yy)
+            {
+                this.xx = xx;
+                this.xy = xy;
+                this.yx = yx;
+                this.yy = yy;
+            }
+
+            public int xx { get; }
+            public int xy { get; }
+            public int yx { get; }
+            public int yy { get; }
         }
     }
 }

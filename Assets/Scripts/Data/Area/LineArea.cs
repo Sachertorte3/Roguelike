@@ -22,5 +22,6 @@ namespace Scripts.Data.Area
                 Enumerable.Range(1, Length))
                 .Select(i => position + direction.Vector() * i);
         }
+        public string Info() => $"直線　長さ{Length}マス{(ContainsSelf ? "(原点含む)" : "")}";
     }
 }

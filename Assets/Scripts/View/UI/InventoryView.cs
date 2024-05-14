@@ -3,37 +3,55 @@ using Assets.Scripts.View.UI;
 using R3;
 using Sirenix.Utilities;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace Scripts.View.UI
 {
     public class InventoryView : MonoBehaviour
     {
-        private InventoryItemView[] itemViews = new InventoryItemView[10];
-        [SerializeField] private InventoryItemView itemViewPrefab;
+        private InventoryItemView[] _itemViews = new InventoryItemView[10];
+        private string[] _info = new string[10];
+        [SerializeField] private InventoryItemView _itemViewPrefab;
+        [SerializeField] private TMP_Text _infoText;
         public int CurrentFocus => _focusIndex.CurrentValue;
         public Observable<int> OnFocusChanged => _focusIndex;
         private ReactiveProperty<int> _focusIndex = new();
         private void Awake()
         {
-            for (int i = 0; i < itemViews.Length; i++)
+            for (int i = 0; i < _itemViews.Length; i++)
             {
-                itemViews[i] = Instantiate(itemViewPrefab, transform);
+                _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             }
-            itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
-            itemViews[0].Select();
+            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
+            OnFocusChanged.Subscribe(index =>
+            {
+                _infoText.text = _info[index];
+            });
+            _itemViews[0].Select();
         }
-        public void Replace(Sprite icon, int count, int index)
+        public void Replace(Sprite icon, int count, string info, int index)
         {
-            itemViews[index].SetIcon(icon, count);
+            _itemViews[index].SetIcon(icon, count);
+            _info[index] = info;
+            UpdateInfo(info, index);
         }
         public void Remove(int index)
         {
-            itemViews[index].Remove();
+            _itemViews[index].Remove();
+            UpdateInfo("", index);
+        }
+        private void UpdateInfo(string info, int index)
+        {
+            _info[index] = info;
+            if (CurrentFocus == index)
+            {
+                _infoText.text = info;
+            }
         }
         public void UpdateCount(int count, int index)
         {
-            itemViews[index].SetCount(count);
+            _itemViews[index].SetCount(count);
         }
     }
 }

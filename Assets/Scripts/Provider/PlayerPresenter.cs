@@ -27,7 +27,7 @@ namespace Scripts.Provider
             {
                 if (itemChanged.NewValue != null)
                 {
-                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue, itemChanged.Index);
+                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue, itemChanged.NewValue.Info, itemChanged.Index);
                 }
                 else
                 {

@@ -20,5 +20,6 @@ namespace Scripts.Data.Area
             return EnumerableExtension.CircleRange(position, Radius+0.5f).Where(p => ContainsSelf || p != position);
         }
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction) => Get(position);
+        public string Info() => $"円　半径{Radius}マス{(ContainsSelf? "(原点含む)": "")}";
     }
 }

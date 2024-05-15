@@ -13,7 +13,7 @@ namespace View.UI
         private void Start()
         {
             _text.SetText(_slider.value.ToString());
-            _slider.onValueChanged.AsObservable().Subscribe(value => { _text.SetText(value.ToString()); });
+            _slider.onValueChanged.AsObservable().Subscribe(value => { _text.SetText(value.ToString()); }).AddTo(this);
         }
     }
 }

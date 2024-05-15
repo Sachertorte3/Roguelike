@@ -1,26 +1,37 @@
 using R3;
+using System;
 using UnityEngine;
 using Utilities;
 
 namespace View
 {
-    public class InputReceiver
+    public class InputReceiver : IDisposable
     {
         private readonly MyInputAction _actions = new();
+        private readonly CompositeDisposable _disposables = new();
 
         public InputReceiver()
         {
             _actions.Field.Enable();
-            OnMenuOpening.Subscribe(_ =>
+            _disposables.Add(OnMenuOpening.Subscribe(_ =>
             {
                 _actions.Field.Disable();
                 _actions.Menu.Enable();
-            });
-            OnMenuClosing.Subscribe(_ =>
+            }));
+            _disposables.Add(OnMenuClosing.Subscribe(_ =>
             {
                 _actions.Field.Enable();
                 _actions.Menu.Disable();
-            });
+            }));
+        }
+
+        ~InputReceiver()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
 
         public Observable<Vector2> OnMovePerformed =>

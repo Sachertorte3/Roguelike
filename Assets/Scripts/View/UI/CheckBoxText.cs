@@ -13,7 +13,7 @@ namespace View.UI
         private void Start()
         {
             _text.SetText(GetText(_checkBox.isOn));
-            _checkBox.onValueChanged.AsObservable().Subscribe(value => { _text.SetText(GetText(value)); });
+            _checkBox.onValueChanged.AsObservable().Subscribe(value => { _text.SetText(GetText(value)); }).AddTo(this);
         }
 
         private string GetText(bool value)

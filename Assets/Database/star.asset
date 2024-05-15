@@ -16,7 +16,7 @@ MonoBehaviour:
   Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Skill:
     Effect:
-      rid: 6064254436379983887
+      rid: 6064254436379983890
     Area:
       rid: 6064254436379983883
   UsageLimit: 1
@@ -28,7 +28,16 @@ MonoBehaviour:
       data:
         ContainsSelf: 0
         Radius: 2
-    - rid: 6064254436379983887
-      type: {class: AttackEffect, ns: Model.Effect, asm: Model}
+    - rid: 6064254436379983890
+      type: {class: AddConditionEffect, ns: Model.Effect, asm: Model}
       data:
-        Power: 10
+        Condition:
+          rid: 6064254436379983891
+        RemovalCondition:
+          RemoveByElapsedTurn: 1
+          Duration: 3
+          RemoveByDamage: 0
+          AcceptableDamage: 0
+          Probability: 0
+    - rid: 6064254436379983891
+      type: {class: Poison, ns: Model.Characters.Conditions, asm: Model}

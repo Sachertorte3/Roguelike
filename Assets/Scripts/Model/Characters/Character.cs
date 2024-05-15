@@ -16,17 +16,20 @@ using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Model.Characters.Conditions;
+using Data.Condition;
 
 namespace Model.Characters
 {
-    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect
+    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect, IHasCondition
     {
-        private readonly VisionRange _area;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly Inventory _inventory = new();
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStats _stats;
+        private readonly CharacterConditions _conditions;
+        private readonly VisionRange _area;
         private bool _canIgnoreWall;
         internal bool CanAct = true;
         internal CharacterState State = CharacterState.Think;
@@ -38,6 +41,7 @@ namespace Model.Characters
             _entity = new Entity(position);
             Behavior = behavior;
             _stats = new CharacterStats(10, 2);
+            _conditions = new CharacterConditions(this);
             _area = new VisionRange(_entity.Position);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
@@ -134,6 +138,7 @@ namespace Model.Characters
             _onSpawnEffect.Dispose();
             _direction.Dispose();
             _stats.Dispose();
+            _conditions.Dispose();
             _area.Dispose();
         }
 
@@ -180,6 +185,16 @@ namespace Model.Characters
         {
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;
+        }
+
+        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            _conditions.Add(condition, removalCondition);
+        }
+
+        public void UpdateTurn()
+        {
+            _conditions.UpdateTurn(this);
         }
 
         public bool TryPickUp(Item item)

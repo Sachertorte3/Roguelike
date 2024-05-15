@@ -24,12 +24,14 @@ namespace Model
                 Log.Debug($"Start turn {_turn}");
                 IEnumerable<Character> characterList = _characterManager.Characters;
                 foreach (var character in characterList.ToList())
+                {
+                    character.UpdateTurn();
                     if (character.CanAct && !character.IsDead)
                     {
                         character.State = CharacterState.Think;
                         await character.DoNextAction();
                     }
-
+                }
                 await characterList.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;

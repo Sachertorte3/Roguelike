@@ -1,16 +1,8 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using Data.Area;
-using Model.Action;
-using Model;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using Utilities;
-using System.Linq;
-using Utilities;
-using Model.Effect;
-using System.Collections.Generic;
+﻿using Cysharp.Threading.Tasks;
 using Data;
+using Sirenix.OdinInspector;
+using System;
+using UnityEngine;
 
 namespace Model.Effect
 {

@@ -8,10 +8,11 @@ using UnityEngine;
 using Utilities;
 using System.Linq;
 using Utilities;
-using Model.Characters.Effect;
+using Model.Effect;
 using System.Collections.Generic;
+using Data;
 
-namespace Data
+namespace Model.Effect
 {
     [Serializable]
     public class AttackEffect : IEffect

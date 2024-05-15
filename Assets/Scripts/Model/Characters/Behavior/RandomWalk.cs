@@ -3,7 +3,7 @@ using System.Linq;
 using Data;
 using Data.Area;
 using Model.Action;
-using Model.Characters.Effect;
+using Model.Effect;
 using UnityEngine;
 using Utilities;
 

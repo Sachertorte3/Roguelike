@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
 using Model.Action;
-using Model.Characters.Effect;
+using Model.Effect;
 using Model.Setting;
 using Unity.Logging;
 using Utilities;

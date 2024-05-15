@@ -7,7 +7,7 @@ using Data;
 using Data.Character.Type;
 using Model.Action;
 using Model.Characters.Behavior;
-using Model.Characters.Effect;
+using Model.Effect;
 using Model.Characters.Stats;
 using Model.Entities;
 using Model.Items;
@@ -171,6 +171,11 @@ namespace Model.Characters
             State = CharacterState.Wait;
         }
 
+        public UniTask GainHp(int value)
+        {
+            _stats.Hp.Gain(value);
+            return UniTask.CompletedTask;
+        }
         public UniTask LoseHp(int value)
         {
             _stats.Hp.Lose(value);

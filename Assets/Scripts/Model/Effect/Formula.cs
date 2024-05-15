@@ -1,7 +1,7 @@
 ﻿using Data;
 using Model.Action;
 
-namespace Model.Characters.Effect
+namespace Model.Effect
 {
     internal static class Formula
     {

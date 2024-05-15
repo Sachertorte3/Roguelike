@@ -13,10 +13,9 @@ namespace Data
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
-        [ReadOnly] public string Name = "";
-        public Sprite Icon;
-        [SerializeReference] public IEffect Effect;
-        [SerializeReference] public IArea Area;
+        [ReadOnly, Required] public string Name = "";
+        [Required] public Sprite Icon;
+        [Required] public SkillData Skill;
         [MinValue(1)] public int UsageLimit;
 #if UNITY_EDITOR
         private void OnValidate()
@@ -28,7 +27,7 @@ namespace Data
 #endif
         public string Info()
         {
-            return $"{Name}\n効果: {Effect.Info()}\n範囲: {Area.Info()}\n使用可能回数: {UsageLimit}";
+            return $"{Name}\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
         }
     }
 }

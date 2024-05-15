@@ -3,11 +3,10 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
-using Model.Action;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Characters.Effect
+namespace Model.Effect
 {
     public class Skill
     {

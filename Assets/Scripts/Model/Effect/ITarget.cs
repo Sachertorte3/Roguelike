@@ -1,6 +1,6 @@
 ﻿using Model.Characters.Stats;
 
-namespace Model.Characters.Effect
+namespace Model.Effect
 {
     public interface ITarget
     {

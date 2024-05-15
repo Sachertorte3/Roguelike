@@ -1,0 +1,10 @@
+﻿using Cysharp.Threading.Tasks;
+
+namespace Data
+{
+    public interface IEffect : IHasInfo
+    {
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target);
+        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
+    }
+}

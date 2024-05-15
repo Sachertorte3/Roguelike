@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Model.Action;
-using Model.Characters.Effect;
+using Model.Effect;
 using Model.Entities;
 using Model.Setting;
 using R3;

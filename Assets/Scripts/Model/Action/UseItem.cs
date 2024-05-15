@@ -1,5 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Characters.Effect;
+using Model.Effect;
 using Utilities;
 
 namespace Model.Action

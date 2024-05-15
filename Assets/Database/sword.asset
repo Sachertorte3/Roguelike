@@ -14,19 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Sword
   Icon: {fileID: -85647645, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  Effect:
-    rid: 6064254436379983877
-  Area:
-    rid: 6064254436379983878
+  Skill:
+    Effect:
+      rid: 6064254436379983884
+    Area:
+      rid: 6064254436379983885
   UsageLimit: 30
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983877
-      type: {class: AttackEffect, ns: Data, asm: Model}
+    - rid: 6064254436379983884
+      type: {class: AttackEffect, ns: Model.Effect, asm: Model}
       data:
         Power: 10
-    - rid: 6064254436379983878
+    - rid: 6064254436379983885
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0

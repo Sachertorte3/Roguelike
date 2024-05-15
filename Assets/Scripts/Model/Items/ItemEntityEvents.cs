@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using Model.Characters.Effect;
+using Model.Effect;
 using R3;
 using System.Collections;
 using System.Collections.Generic;

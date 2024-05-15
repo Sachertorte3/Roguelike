@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using Model.Characters.Effect;
+using Model.Effect;
 using R3;
 using UnityEngine;
 using Utilities;

@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
 using Model.Action;
-using Model.Characters.Effect;
+using Model.Effect;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -20,7 +20,7 @@ namespace Model.Items
         public Item(ItemData data)
         {
             Icon = data.Icon;
-            Skill = new Skill(new SkillData(data.Area, data.Effect));
+            Skill = new Skill(data.Skill);
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
             Info = data.Info();
         }

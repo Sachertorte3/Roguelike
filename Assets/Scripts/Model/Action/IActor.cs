@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Data;
-using Model.Characters.Effect;
+using Model.Effect;
 using Model.Items;
 using UnityEngine;
 using Utilities;

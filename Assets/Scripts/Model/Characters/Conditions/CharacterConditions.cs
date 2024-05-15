@@ -1,20 +1,22 @@
 ﻿using Data.Condition;
 using ObservableCollections;
-using Sirenix.Utilities;
 using System.Linq;
 using R3;
 using System;
+using Utilities;
 
 namespace Model.Characters.Conditions
 {
-    internal class CharacterConditions : IDisposable
+    internal class CharacterConditions : IDisposable, ICharacterConditions
     {
-        private readonly ObservableHashSet<Condition> Conditions = new();
+        public Observable<Condition> OnConditionAdded => _conditions.ObserveAdd().Select(add => add.Value);
+        public Observable<Condition> OnConditionRemoved => _conditions.ObserveRemove().Select(remove => remove.Value);
+        private readonly ObservableHashSet<Condition> _conditions = new();
         private readonly CompositeDisposable _disposables = new();
         public CharacterConditions(IHasCondition hasCondition)
         {
-            _disposables.Add(Conditions.ObserveAdd().Subscribe(add => add.Value.Inflict(hasCondition)));
-            _disposables.Add(Conditions.ObserveRemove().Subscribe(add => add.Value.Inflict(hasCondition)));
+            _disposables.Add(_conditions.ObserveAdd().Subscribe(add => add.Value.Inflict(hasCondition)));
+            _disposables.Add(_conditions.ObserveRemove().Subscribe(add => add.Value.Inflict(hasCondition)));
         }
         public void Dispose()
         {
@@ -22,18 +24,24 @@ namespace Model.Characters.Conditions
         }
         public void Add(IConditionData condition, RemovalConditionData removalCondition)
         {
-            Conditions.Add(new Condition(condition, removalCondition));
+            _conditions.Add(new Condition(condition, removalCondition));
         }
         public void UpdateTurn(IHasCondition hasCondition)
         {
-            Conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
-            Conditions.RemoveRange(Conditions.Where(condition => condition.ShouldDelete(0)).ToList());
+            _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
+            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(0)).ToList());
         }
+    }
+    public interface ICharacterConditions
+    {
+        public Observable<Condition> OnConditionAdded { get; }
+        public Observable<Condition> OnConditionRemoved { get; }
     }
     public class Condition
     {
         private int ElapsedTurn;
         private readonly IConditionData _condition;
+        public ParticleType ParticleType => _condition.ParticleType;
         private readonly RemovalConditionData _removalCondition;
         public Condition(IConditionData condition, RemovalConditionData removalCondition)
         {

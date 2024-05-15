@@ -59,6 +59,7 @@ namespace Model.Characters
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
+        public ICharacterConditions Condition => _conditions;
         public int MaxHp => _stats.MaxHp.CurrentValue;
 
         /// <summary>

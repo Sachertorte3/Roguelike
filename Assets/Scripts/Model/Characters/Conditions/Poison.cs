@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Utilities;
 
 namespace Model.Characters.Conditions
 {
     internal class Poison : IConditionData
     {
         public string Name => "毒";
+        public ParticleType ParticleType => ParticleType.PoisoningBubble;
 
         public void Inflict(IHasCondition hasCondition)
         {

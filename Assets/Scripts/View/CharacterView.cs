@@ -1,3 +1,4 @@
+using Assets.Scripts.View;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -5,7 +6,7 @@ using Utilities;
 
 namespace View
 {
-    [RequireComponent(typeof(EntityView), typeof(Animator))]
+    [RequireComponent(typeof(EntityView), typeof(Animator), typeof(ParticleController))]
     public class CharacterView : MonoBehaviour, IDirectional
     {
         private readonly ReactiveProperty<Direction8> _direction = new();

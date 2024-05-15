@@ -10,25 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: Star
+  m_Name: "\u85AC\u8349"
   m_EditorClassIdentifier: 
-  Name: Star
-  Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Name: "\u85AC\u8349"
+  Icon: {fileID: 1741613238, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Skill:
     Effect:
-      rid: 6064254436379983887
+      rid: 6064254436379983886
     Area:
-      rid: 6064254436379983883
+      rid: 6064254436379983888
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983883
-      type: {class: CircleArea, ns: Data.Area, asm: Data}
-      data:
-        ContainsSelf: 0
-        Radius: 2
-    - rid: 6064254436379983887
-      type: {class: AttackEffect, ns: Model.Effect, asm: Model}
+    - rid: 6064254436379983886
+      type: {class: HealEffect, ns: Model.Effect, asm: Model}
       data:
         Power: 10
+    - rid: 6064254436379983888
+      type: {class: SelfArea, ns: Data.Area, asm: Data}

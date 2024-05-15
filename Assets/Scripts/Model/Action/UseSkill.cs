@@ -1,9 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
+using Model.Effect;
 using Utilities;
 
 namespace Model.Action
 {
-    internal record UseItem(int ItemIndex, Direction8 Direction) : IAction
+    internal record UseSkill(Skill Skill, Direction8 Direction) : IAction
     {
         private float score;
 
@@ -14,12 +15,12 @@ namespace Model.Action
 
         public async UniTask Do(IActor actor)
         {
-            await actor.UseItem(ItemIndex, Direction);
+            await actor.UseSkill(Skill, Direction);
         }
 
         public float Evaluate(IActor actor)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction);
+            score = Skill.Evaluate(actor, actor.CurrentPosition, Direction);
             return score;
         }
     }

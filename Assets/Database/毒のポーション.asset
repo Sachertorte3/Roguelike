@@ -10,24 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: Star
+  m_Name: "\u6BD2\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
-  Name: Star
-  Icon: {fileID: 662769507, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Name: "\u6BD2\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
+  Icon: {fileID: -136529006, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Skill:
     Effect:
       rid: 6064254436379983890
     Area:
-      rid: 6064254436379983883
+      rid: 6064254436379983892
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983883
-      type: {class: CircleArea, ns: Data.Area, asm: Data}
-      data:
-        ContainsSelf: 0
-        Radius: 2
     - rid: 6064254436379983890
       type: {class: AddConditionEffect, ns: Model.Effect, asm: Model}
       data:
@@ -41,3 +36,5 @@ MonoBehaviour:
           Probability: 0
     - rid: 6064254436379983891
       type: {class: Poison, ns: Model.Characters.Conditions, asm: Model}
+    - rid: 6064254436379983892
+      type: {class: SelfArea, ns: Data.Area, asm: Data}

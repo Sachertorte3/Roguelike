@@ -3,7 +3,7 @@ using Utilities;
 
 namespace Model.Action
 {
-    internal record UseItem(int ItemIndex, Direction8 Direction) : IAction
+    internal record ThrowItem(int ItemIndex, Direction8 Direction) : IAction
     {
         private float score;
 
@@ -14,12 +14,12 @@ namespace Model.Action
 
         public async UniTask Do(IActor actor)
         {
-            await actor.UseItem(ItemIndex, Direction);
+            await actor.ThrowItem(ItemIndex, Direction);
         }
 
         public float Evaluate(IActor actor)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction);
+            score = 0;
             return score;
         }
     }

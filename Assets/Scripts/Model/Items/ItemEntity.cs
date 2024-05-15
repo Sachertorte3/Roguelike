@@ -1,13 +1,11 @@
 ﻿#nullable enable
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Model.Action;
-using Model.Effect;
 using Model.Entities;
 using Model.Setting;
 using R3;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
 
@@ -51,7 +49,13 @@ namespace Model.Items
         public async UniTask Throw(IActor actor, Direction8 direction)
         {
             while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))
+            {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+            }
+            if (Globals.World.Map.IsPassable(CurrentPosition + direction.Vector()))
+            {
+                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+            }
             _onSpawnEffect.OnNext(Item.Skill.GetArea(CurrentPosition, direction));
             await Item.Use(actor, CurrentPosition, direction);
         }

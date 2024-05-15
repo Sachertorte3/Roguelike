@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Assets.Scripts.View;
 using BidirectionalMap;
 using Model.Characters;
 using Model.Setting;
@@ -19,7 +20,6 @@ namespace Provider
             .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
 
         private readonly EffectViewSpawner _effectViewSpawner;
-        private Func<HashSet<Vector2Int>> _getVisibleArea;
         private readonly InputReceiver _inputReceiver;
         private readonly BiMap<Character, CharacterView> characterViewDict = new();
 
@@ -28,7 +28,6 @@ namespace Provider
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
-            _getVisibleArea = characterManager.Player.Area.Get;
 
             Add(characterManager.Player);
 
@@ -57,6 +56,10 @@ namespace Provider
             spriteView.RegisterComponent();
             character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
             characterViewDict.Add(character, characterView);
+
+            var particleController = characterView.GetComponent<ParticleController>();
+            character.Condition.OnConditionAdded.Subscribe(conditionAdded => particleController.Add(conditionAdded.ParticleType));
+            character.Condition.OnConditionRemoved.Subscribe(conditionAdded => particleController.Remove(conditionAdded.ParticleType));
         }
 
         public void Remove(Character character)

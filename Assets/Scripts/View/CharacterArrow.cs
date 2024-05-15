@@ -10,7 +10,7 @@ namespace View
         {
             var direction = view.Direction;
             Turn(direction.CurrentValue);
-            direction.Subscribe(direction => Turn(direction));
+            direction.Subscribe(direction => Turn(direction)).AddTo(this);
         }
 
         private void Turn(Direction8 direction)

@@ -20,7 +20,7 @@ namespace View.UI
         {
             for (var i = 0; i < _itemViews.Length; i++) _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
-            OnFocusChanged.Subscribe(index => { _infoText.text = _info[index]; });
+            OnFocusChanged.Subscribe(index => { _infoText.text = _info[index]; }).AddTo(this);
             _itemViews[0].Select();
         }
 

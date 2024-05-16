@@ -9,7 +9,7 @@ namespace Model.Action
 
         public bool Doable(IActor actor)
         {
-            return true;
+            return actor.Inventory.GetItem(ItemIndex).EffectsOnUse;
         }
 
         public async UniTask Do(IActor actor)

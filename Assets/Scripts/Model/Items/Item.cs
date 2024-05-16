@@ -13,13 +13,17 @@ namespace Model.Items
     public class Item
     {
         public readonly Sprite Icon;
-        public readonly string Info;
+        public readonly bool EffectsOnUse;
+        public readonly bool EffectsOnThrow;
         public readonly Skill Skill;
         private readonly ReactiveProperty<int> _remainingUses;
+        public readonly string Info;
 
         public Item(ItemData data)
         {
             Icon = data.Icon;
+            EffectsOnUse = data.EffectsOnUse;
+            EffectsOnThrow = data.EffectsOnThrow;
             Skill = new Skill(data.Skill);
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
             Info = data.Info();

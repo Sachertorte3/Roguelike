@@ -110,11 +110,15 @@ namespace Model.Characters
             var item = _inventory.GetItem(itemIndex);
             if (item == null) throw new Exception("item is null");
             _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
-            if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(item.Use(this, CurrentPosition, direction),
-                    UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-            else
-                await item.Use(this, CurrentPosition, direction);
+
+            if (item.EffectsOnUse)
+            {
+                if (_entity.VisibleByPlayer.CurrentValue)
+                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction),
+                        UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
+                else
+                    await item.Use(this, CurrentPosition, direction);
+            }
             State = CharacterState.Wait;
         }
 

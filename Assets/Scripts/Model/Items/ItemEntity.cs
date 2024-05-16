@@ -56,8 +56,11 @@ namespace Model.Items
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
-            _onSpawnEffect.OnNext(Item.Skill.GetArea(CurrentPosition, direction));
-            await Item.Use(actor, CurrentPosition, direction);
+            if (Item.EffectsOnThrow)
+            {
+                _onSpawnEffect.OnNext(Item.Skill.GetArea(CurrentPosition, direction));
+                await Item.Use(actor, CurrentPosition, direction);
+            }
         }
     }
 }

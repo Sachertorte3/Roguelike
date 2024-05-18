@@ -1,15 +1,15 @@
 ﻿#nullable enable
-using System.Collections.Generic;
 using Model.Characters;
 using Model.Items;
 using Model.Map;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model
 {
-    internal interface IWorldViewer
+    internal interface IMapViewer
     {
-        public ITilemapViewer Map { get; }
+        public ITilemapViewer Tilemap { get; }
         public CharacterManager CharacterManager { get; }
         public ItemManager ItemManager { get; }
         public bool IsPassable(Vector2Int position);

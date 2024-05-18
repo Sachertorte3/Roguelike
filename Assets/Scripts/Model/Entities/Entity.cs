@@ -9,6 +9,7 @@ namespace Model.Entities
     public class Entity : IDisposable
     {
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
+        private readonly Subject<Vector2Int> _onTeleport = new();
         private readonly ReactiveProperty<Vector2Int> _position;
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
 
@@ -20,6 +21,7 @@ namespace Model.Entities
         public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _onMove;
+        public Observable<Vector2Int> OnTeleport => _onTeleport;
         public ReadOnlyReactiveProperty<bool> VisibleByPlayer => _visibleByPlayer;
 
         public void Dispose()
@@ -31,6 +33,12 @@ namespace Model.Entities
         public void SetVisibility(bool visible)
         {
             _visibleByPlayer.Value = visible;
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            _position.Value = position;
+            _onTeleport.OnNext(position);
         }
 
         public async UniTask Move(Direction8 direction, int moveMilliseconds)

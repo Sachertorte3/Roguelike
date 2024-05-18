@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Linq;
+using Model;
 using Model.Map;
 using R3;
 using Utilities;
@@ -10,8 +11,19 @@ namespace Provider
 {
     public class TilemapPresenter
     {
+        private SerialDisposable _disposable = new();
         [Inject]
-        public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, Tilemap tilemap)
+        public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
+        {
+            world.OnMapLoaded.Subscribe(mapLoaded =>
+            {
+                tileView.Clear();
+
+                SetTilemap(tileView, tileMask, mapLoaded.Tilemap);
+            });
+            SetTilemap(tileView, tileMask, world.ActiveMap.Tilemap);
+        }
+        public void SetTilemap(TileViewController tileView, TileMaskController tileMask, ITilemapViewer tilemap)
         {
             foreach ((var position, var tileData) in tilemap.GetAllTiles())
                 switch (tileData.TileType)
@@ -26,7 +38,7 @@ namespace Provider
 
             tileMask.SetTilesTransparent(tilemap.Rect.RectRange().ToHashSet());
 
-            tilemap.OnChangeTile.Subscribe(context =>
+            _disposable.Disposable = tilemap.OnChangeTile.Subscribe(context =>
             {
                 switch (context.tile.TileType)
                 {

@@ -9,51 +9,44 @@ namespace Model.Characters
 {
     public class CharacterEvents
     {
-        private readonly Subject<OnDeadMessage> _onDead = new();
-        private readonly Subject<OnDirectionChangedMessage> _onDirectionChanged = new();
-        private readonly Subject<OnMoveMessage> _onMove = new();
-        private readonly Subject<OnPositionChangedMessage> _onPositionChanged = new();
-        private readonly Subject<OnSpawnEffect> _onUseSkill = new();
-        private readonly Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
-        public Observable<OnPositionChangedMessage> OnPositionChanged => _onPositionChanged;
-        public Observable<OnDirectionChangedMessage> OnDirectionChanged => _onDirectionChanged;
-        public Observable<OnDeadMessage> OnDead => _onDead;
-        public Observable<OnMoveMessage> OnMove => _onMove;
-        public Observable<OnSpawnEffect> OnUseSkill => _onUseSkill;
-        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
+        private readonly Subject<OnCharacterDeadMessage> _onDead = new();
+        private readonly Subject<OnCharacterDirectionChangedMessage> _onDirectionChanged = new();
+        private readonly Subject<OnCharacterMoveMessage> _onMove = new();
+        private readonly Subject<OnCharacterPositionChangedMessage> _onPositionChanged = new();
+        private readonly Subject<OnCharacterSpawnEffectMessage> _onUseSkill = new();
+        private readonly Subject<OnCharacterVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
+        public Observable<OnCharacterPositionChangedMessage> OnPositionChanged => _onPositionChanged;
+        public Observable<OnCharacterDirectionChangedMessage> OnDirectionChanged => _onDirectionChanged;
+        public Observable<OnCharacterDeadMessage> OnDead => _onDead;
+        public Observable<OnCharacterMoveMessage> OnMove => _onMove;
+        public Observable<OnCharacterSpawnEffectMessage> OnUseSkill => _onUseSkill;
+        public Observable<OnCharacterVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
         public void Add(Character character)
         {
             character.Position.Subscribe(positionChanged =>
-                _onPositionChanged.OnNext(new OnPositionChangedMessage(character, positionChanged)));
+                _onPositionChanged.OnNext(new OnCharacterPositionChangedMessage(character, positionChanged)));
             character.Direction.Subscribe(directionChanged =>
-                _onDirectionChanged.OnNext(new OnDirectionChangedMessage(character, directionChanged)));
-            character.OnDead.Subscribe(_ => _onDead.OnNext(new OnDeadMessage(character)));
+                _onDirectionChanged.OnNext(new OnCharacterDirectionChangedMessage(character, directionChanged)));
+            character.OnDead.Subscribe(_ => _onDead.OnNext(new OnCharacterDeadMessage(character)));
             character.OnMove.Subscribe(move =>
-                _onMove.OnNext(new OnMoveMessage(character, move.direction, move.destination)));
+                _onMove.OnNext(new OnCharacterMoveMessage(character, move.direction, move.destination)));
             character.OnSpawnEffect.Subscribe(useSkill =>
-                _onUseSkill.OnNext(new OnSpawnEffect(character, useSkill)));
-            character.Area.OnVisibleAreaChanged.Pairwise().Subscribe(visibleAreaChanged =>
-            {
-                HashSet<Vector2Int> newArea = new(visibleAreaChanged.Current);
-                visibleAreaChanged.Previous.ExceptWith(visibleAreaChanged.Current);
-                visibleAreaChanged.Current.ExceptWith(visibleAreaChanged.Previous);
-                _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(character, newArea,
-                    visibleAreaChanged.Previous, visibleAreaChanged.Current));
-            });
+                _onUseSkill.OnNext(new OnCharacterSpawnEffectMessage(character, useSkill)));
+            character.Area.OnVisibleAreaChanged.Subscribe(visibleAreaChanged => _onVisibleAreaChanged.OnNext(new OnCharacterVisibleAreaChangedMessage(character, visibleAreaChanged.NewArea, visibleAreaChanged.AreaExited, visibleAreaChanged.AreaEntered)));
         }
     }
 
-    public record OnPositionChangedMessage(Character Character, Vector2Int Position);
+    public record OnCharacterPositionChangedMessage(Character Character, Vector2Int Position);
 
-    public record OnDirectionChangedMessage(Character Character, Direction8 Direction);
+    public record OnCharacterDirectionChangedMessage(Character Character, Direction8 Direction);
 
-    public record OnDeadMessage(Character Character);
+    public record OnCharacterDeadMessage(Character Character);
 
-    public record OnMoveMessage(Character Character, Direction8 Direction, Vector2Int Destination);
+    public record OnCharacterMoveMessage(Character Character, Direction8 Direction, Vector2Int Destination);
 
-    public record OnSpawnEffect(Character Character, IEnumerable<Vector2Int> Area);
+    public record OnCharacterSpawnEffectMessage(Character Character, IEnumerable<Vector2Int> Area);
 
-    public record OnVisibleAreaChangedMessage(Character Character, HashSet<Vector2Int> NewArea,
+    public record OnCharacterVisibleAreaChangedMessage(Character Character, HashSet<Vector2Int> NewArea,
         HashSet<Vector2Int> AreaExited, HashSet<Vector2Int> AreaEntered);
 }

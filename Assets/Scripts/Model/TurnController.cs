@@ -8,12 +8,13 @@ namespace Model
 {
     public sealed class TurnController
     {
-        private readonly CharacterManager _characterManager;
+        private readonly World _world;
+        private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CharacterManager.Characters;
         private int _turn = 1;
 
-        public TurnController(CharacterManager characterManager)
+        public TurnController(World world)
         {
-            _characterManager = characterManager;
+            _world = world;
             Run();
         }
 
@@ -22,7 +23,7 @@ namespace Model
             while (true)
             {
                 Log.Debug($"Start turn {_turn}");
-                IEnumerable<Character> characterList = _characterManager.Characters;
+                IEnumerable<Character> characterList = GetCharacters();
                 foreach (var character in characterList.ToList())
                 {
                     character.UpdateTurn();

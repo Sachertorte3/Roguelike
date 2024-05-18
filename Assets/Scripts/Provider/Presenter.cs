@@ -19,14 +19,11 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap,
-            CharacterManager characterManager, ItemManager itemManager)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, World world)
         {
             LoggerInit();
 
-            gameManager.Spawn(tilemap, characterManager, itemManager);
-
-            characterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
+            world.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
             {
                 tileMask.SetTilesTranslucent(area.AreaExited);
                 tileMask.SetTilesVisible(area.AreaEntered);
@@ -37,13 +34,18 @@ namespace Provider
                     .Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position())))
                     .ForEach(view => view.SetVisibility(true));
             });
+
+            world.OnMapLoaded.Subscribe(mapLoaded =>
+            {
+                world.Player.Area.Refrash(world.Player.CurrentPosition);
+            });
+            world.Player.Area.Refrash(world.Player.CurrentPosition);
+
             ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view =>
-                view.SetVisibility(characterManager.Player.Area.Get()
+                view.SetVisibility(world.Player.Area.Get()
                     .Contains(Vector2Int.RoundToInt(view.Position()))));
 
-            characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
-
-            gameManager.Run(characterManager);
+            gameManager.Run();
         }
 
         private void LoggerInit()

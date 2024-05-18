@@ -1,14 +1,18 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BidirectionalMap;
+using Model;
 using Model.Characters;
 using Model.Items;
 using Model.Setting;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using Utilities.ObjectsManager;
+using VContainer;
 using View;
 using Object = UnityEngine.Object;
 
@@ -17,23 +21,29 @@ namespace Provider
     public class SynchronizedItemView
     {
         private readonly EffectViewSpawner _effectViewSpawner;
-        private Func<HashSet<Vector2Int>> _getVisibleArea;
         private readonly InputReceiver _inputReceiver;
 
         private readonly GameObject _itemViewPrefab =
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
 
         private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
+        private SerialDisposable[] _disposables = Enumerable.Range(0, 2).Select(_ => new SerialDisposable()).ToArray();
 
-        public SynchronizedItemView(EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver,
-            ItemManager itemManager, CharacterManager characterManager)
+        [Inject]
+        public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
-            _getVisibleArea = characterManager.Player.Area.Get;
 
-            itemManager.OnItemAdded.Subscribe(item => { Add(item); });
-            itemManager.OnItemRemoved.Subscribe(item => { Remove(item); });
+            world.OnMapLoaded.Subscribe(mapLoaded =>
+            {
+                _disposables[0].Disposable = mapLoaded.ItemManager.OnItemAdded.Subscribe(item => { Add(item); });
+                _disposables[1].Disposable = mapLoaded.ItemManager.OnItemRemoved.Subscribe(item => { Remove(item); });
+                mapLoaded.ItemManager.Items.ForEach(character => Add(character));
+            });
+            _disposables[0].Disposable = world.ActiveMap.ItemManager.OnItemAdded.Subscribe(item => { Add(item); });
+            _disposables[1].Disposable = world.ActiveMap.ItemManager.OnItemRemoved.Subscribe(item => { Remove(item); });
+            world.ActiveMap.ItemManager.Items.ForEach(character => Add(character));
         }
 
         public void Add(ItemEntity item)
@@ -41,6 +51,7 @@ namespace Provider
             var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
+            item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
             item.OnSpawnEffect.Subscribe(useSkill =>
                 _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
             Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);

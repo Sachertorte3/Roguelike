@@ -15,8 +15,7 @@ namespace Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver,
-            CharacterManager characterManager, ItemManager itemManager, InventoryView inventoryView)
+        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver, World world, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -36,12 +35,12 @@ namespace Provider
             receiver.OnThrowPerformed.Subscribe(_ => { actionReceiver.SetThrowInput(); });
             receiver.OnDropPerformed.Subscribe(_ =>
             {
-                var item = characterManager.Player.Inventory.GetItem(inventoryView.CurrentFocus);
+                var item = world.Player.Inventory.GetItem(inventoryView.CurrentFocus);
                 if (item != null)
                 {
-                    var itemEntity = itemManager.TryPickUp(characterManager.Player.CurrentPosition);
-                    characterManager.Player.ReplaceInventory(itemEntity?.Item, inventoryView.CurrentFocus);
-                    itemManager.SpawnItem(item, characterManager.Player.CurrentPosition);
+                    var itemEntity = world.ActiveMap.ItemManager.TryPickUp(world.Player.CurrentPosition);
+                    world.Player.ReplaceInventory(itemEntity?.Item, inventoryView.CurrentFocus);
+                    world.ActiveMap.ItemManager.SpawnItem(item, world.Player.CurrentPosition);
                 }
             });
             inventoryView.OnFocusChanged.Subscribe(index => { actionReceiver.SetInventoryIndex(index); });

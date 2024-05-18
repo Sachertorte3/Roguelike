@@ -51,6 +51,7 @@ namespace Model.Characters
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
 
         public ICharacterType CharacterType { get; init; }
@@ -70,11 +71,11 @@ namespace Model.Characters
         public bool CanMove(Direction8 direction)
         {
             return _canIgnoreWall
-                ? Globals.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
-                : Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
+                ? Globals.World.ActiveMap.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
+                : Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -85,7 +86,6 @@ namespace Model.Characters
         public async UniTask Move(Direction8 direction)
         {
             State = CharacterState.Act;
-            if (!CanMove(direction)) return;
             Turn(direction);
             await _entity.Move(direction,
                 Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -127,7 +127,7 @@ namespace Model.Characters
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
             if (item == null) throw new Exception("item is null");
-            var itemEntity = Globals.World.ItemManager.SpawnItem(item, CurrentPosition);
+            var itemEntity = Globals.World.ActiveMap.ItemManager.SpawnItem(item, CurrentPosition);
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -178,6 +178,7 @@ namespace Model.Characters
 
         public void Teleport(Vector2Int position)
         {
+            _entity.Teleport(position);
             State = CharacterState.Wait;
         }
 

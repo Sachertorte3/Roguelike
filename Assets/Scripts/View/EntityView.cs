@@ -23,6 +23,11 @@ namespace View
             _view = GetComponent<SpriteView>();
         }
 
+        public void Teleport(Vector2Int position)
+        {
+            transform.position = (Vector3Int)position;
+        }
+
         public void Move(Vector2Int destination, Direction8 direction)
         {
             if (_isVisible)

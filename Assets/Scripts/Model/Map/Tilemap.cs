@@ -4,6 +4,7 @@ using System.Linq;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
+using Sirenix.Utilities;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
@@ -50,7 +51,6 @@ namespace Model.Map
                 else
                     _allPassablePositionsSet.Remove(changeTile.position);
             });
-            Globals.Map = this;
         }
 
         public Tilemap(int width, int height)
@@ -79,7 +79,7 @@ namespace Model.Map
 
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
-            return _allPassablePositionsSet;
+            return new HashSet<Vector2Int>(_allPassablePositionsSet);
         }
 
         public bool IsPositionInsideMap(Vector2Int position)

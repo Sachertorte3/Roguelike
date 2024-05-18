@@ -18,18 +18,18 @@ namespace Model.Items
         public ItemEntityEvents ItemEntityEvents = new();
 
         [Inject]
-        public ItemManager(CharacterManager characterManager)
+        public ItemManager(Character player)
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
-                positionChanged.Item.SetVisiblity(characterManager.Player.Area.Get()
+                positionChanged.Item.SetVisiblity(player.Area.Get()
                     .Contains(positionChanged.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
 
-            characterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
+            player.Area.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 foreach (var item in _items)
                     if (areaChanged.AreaExited.Contains(item.CurrentPosition))

@@ -1,14 +1,18 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.View;
 using BidirectionalMap;
+using Model;
 using Model.Characters;
 using Model.Setting;
 using R3;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities.ObjectsManager;
+using VContainer;
 using View;
 using Object = UnityEngine.Object;
 
@@ -22,17 +26,22 @@ namespace Provider
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly BiMap<Character, CharacterView> characterViewDict = new();
-
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver,
-            CharacterManager characterManager)
+        private SerialDisposable[] _disposables = Enumerable.Range(0,2).Select(_ => new SerialDisposable()).ToArray();
+        [Inject]
+        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
 
-            Add(characterManager.Player);
-
-            characterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
-            characterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
+            world.OnMapLoaded.Subscribe(mapLoaded =>
+            {
+                _disposables[0].Disposable = mapLoaded.CharacterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
+                _disposables[1].Disposable = mapLoaded.CharacterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
+                mapLoaded.CharacterManager.Characters.ForEach(character => Add(character));
+            });
+            _disposables[0].Disposable = world.ActiveMap.CharacterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
+            _disposables[1].Disposable = world.ActiveMap.CharacterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
+            world.ActiveMap.CharacterManager.Characters.ForEach(character => Add(character));
         }
 
         public void Add(Character character)
@@ -47,6 +56,7 @@ namespace Provider
             var entityView = characterView.GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
+            character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
             character.OnSpawnEffect.Subscribe(useSkill =>
                 _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);

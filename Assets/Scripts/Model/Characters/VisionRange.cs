@@ -7,34 +7,53 @@ namespace Model.Characters
 {
     internal class VisionRange : IDisposable, IVisionRange
     {
-        private readonly ReactiveProperty<HashSet<Vector2Int>> _visibleAreaCache = new();
-
+        private readonly ReactiveProperty<HashSet<Vector2Int>> _visibleArea = new();
+        private readonly SerialDisposable _disposable = new();
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
-            position.Subscribe(currentPosition => _visibleAreaCache.Value = Calc(currentPosition));
-            Globals.Map.OnChangeTile.Subscribe(_ => _visibleAreaCache.Value = Calc(position.CurrentValue));
+            position.Subscribe(currentPosition => _visibleArea.Value = Calc(currentPosition));
+            Globals.World.OnMapLoaded.Subscribe(mapLoaded =>
+            {
+                _disposable.Disposable = mapLoaded.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
+            });
+            if (Globals.World.IsLoaded)
+            {
+                _disposable.Disposable = Globals.World.ActiveMap.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
+            }
         }
 
         public void Dispose()
         {
-            _visibleAreaCache.Dispose();
+            _visibleArea.Dispose();
         }
 
-        public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged => _visibleAreaCache;
+        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _visibleArea.Pairwise().Select(visibleAreaChanged =>
+        {
+            HashSet<Vector2Int> newArea = new(visibleAreaChanged.Current);
+            visibleAreaChanged.Previous.ExceptWith(visibleAreaChanged.Current);
+            visibleAreaChanged.Current.ExceptWith(visibleAreaChanged.Previous);
+            return new OnVisibleAreaChangedMessage(newArea, visibleAreaChanged.Previous, visibleAreaChanged.Current);
+        });
 
         public void Refrash(Vector2Int position)
         {
-            _visibleAreaCache.Value = Calc(position);
+            _visibleArea.Value = Calc(position);
         }
 
-        public HashSet<Vector2Int> Get()
+        public HashSet<Vector2Int> Get()//FIX: Changing the get value seems to affect the original value
         {
-            return _visibleAreaCache.CurrentValue;
+            return _visibleArea.CurrentValue;
         }
 
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
-            return ViewCalculator.ComputeCircle(Globals.Map.GetAllPassablePositions(), position, 10f);
+            if (Globals.World.IsLoaded)
+            {
+                return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.Tilemap.GetAllPassablePositions(), position, 10f);
+            }
+            else
+                return new HashSet<Vector2Int>();
         }
     }
+    public record OnVisibleAreaChangedMessage(HashSet<Vector2Int> NewArea, HashSet<Vector2Int> AreaExited, HashSet<Vector2Int> AreaEntered);
 }

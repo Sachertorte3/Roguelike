@@ -6,7 +6,7 @@ namespace Model.Characters
 {
     public interface IVisionRange
     {
-        public Observable<HashSet<Vector2Int>> OnVisibleAreaChanged { get; }
+        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged { get; }
         public void Refrash(Vector2Int position);
         public HashSet<Vector2Int> Get();
     }

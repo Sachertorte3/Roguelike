@@ -1,61 +1,49 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using System.Linq;
 using Model.Characters;
-using Model.Items;
-using Model.Map;
+using Model.Characters.Behavior;
+using Model.Setting;
 using R3;
+using RandomDungeonWithBluePrint;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Utilities;
 using VContainer;
 
 namespace Model
 {
-    public class World : IWorldViewer
+    public class World
     {
-        private readonly Tilemap _map;
+        public readonly Character Player;
+        public readonly List<MapManager> Maps = new();
+        public int ActiveMapIndex = 0;
+        public Observable<MapManager> OnMapLoaded => _onMapLoaded;
+        private Subject<MapManager> _onMapLoaded = new();
+        public readonly CharacterEvents PlayerEvents = new();
 
         [Inject]
-        public World(Tilemap map, CharacterManager characterManager, ItemManager itemManager)
+        public World(CharacterControllInputReceiver receiver)
         {
-            _map = map;
-            CharacterManager = characterManager;
-            ItemManager = itemManager;
-
-            characterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
-            {
-                if (move.Character.Inventory.HasEmptySpace())
-                {
-                    var item = itemManager.TryPickUp(move.Position);
-                    if (item != null) move.Character.TryPickUp(item.Item);
-                }
-            });
-
             Globals.World = this;
+            Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall);
+            PlayerEvents.Add(Player);
+            FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
+            GenerateMap(bluePrint);
+            IsLoaded = true;
         }
-
-        public ITilemapViewer Map => _map;
-        public CharacterManager CharacterManager { get; init; }
-        public ItemManager ItemManager { get; init; }
-
-        public bool IsPassable(Vector2Int position)
+        public void GenerateMap(FieldBluePrint bluePrint)
         {
-            return _map.IsPassable(position) && !CharacterManager.GetAllCharacterPositions().Contains(position);
+            MapManager map = new(bluePrint, Player);
+            Maps.Add(map);
+            LoadMap(Maps.Count - 1);
         }
-
-        public bool IsPassableIgnoreWall(Vector2Int position)
+        private void LoadMap(int index)
         {
-            return !CharacterManager.GetAllCharacterPositions().Contains(position);
+            ActiveMapIndex = index;
+            _onMapLoaded.OnNext(ActiveMap);
+            Player.Teleport(ActiveMap.GetAllPassablePositions().GetAtRandom());
         }
-
-        /// <summary>
-        ///     Generates and returns a list of characters currently located within the given positions.
-        /// </summary>
-        /// <param name="area"></param>
-        /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
-        {
-            return CharacterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue))
-                .ToHashSet();
-        }
+        public bool IsLoaded { get; private set; } = false;
+        public MapManager ActiveMap => Maps[ActiveMapIndex];
     }
 }

@@ -20,9 +20,6 @@ namespace Provider
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<GameManager>(Lifetime.Singleton);
-            builder.Register<Tilemap>(Lifetime.Singleton);
-            builder.Register<ItemManager>(Lifetime.Singleton);
-            builder.Register<CharacterManager>(Lifetime.Singleton);
             builder.Register<World>(Lifetime.Singleton);
             builder.Register<InputReceiver>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);

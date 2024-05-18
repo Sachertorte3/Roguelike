@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using Data;
 using Model.Characters;
 using Model.Items;
@@ -12,26 +13,24 @@ namespace Model
 {
     public class GameManager
     {
+        private readonly World _world;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
 
         [Inject]
         public GameManager(World world)
         {
+            _world = world;
+        }
+        
+        public void LoadMap()
+        {
+
         }
 
-        public void Spawn(Tilemap tilemap, CharacterManager characterManager, ItemManager itemManager)
+        public void Run()
         {
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
-                characterManager.SpawnCharacter(position);
-            var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(30))
-                itemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
-        }
-
-        public void Run(CharacterManager characterManager)
-        {
-            new TurnController(characterManager);
+            new TurnController(_world);
         }
     }
 }

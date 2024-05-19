@@ -8,7 +8,7 @@ namespace View
     {
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private Tiles _tiles;
-        
+
         public void Clear()
         {
             _tilemap.ClearAllTiles();

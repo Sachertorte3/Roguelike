@@ -1,9 +1,9 @@
 ﻿#nullable enable
-using System.Linq;
 using Assets.Scripts.Utilities;
 using Model;
 using Model.Map;
 using R3;
+using System.Linq;
 using Utilities;
 using VContainer;
 using View;

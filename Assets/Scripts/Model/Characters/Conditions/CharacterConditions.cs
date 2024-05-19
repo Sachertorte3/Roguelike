@@ -1,8 +1,8 @@
 ﻿using Data.Condition;
 using ObservableCollections;
-using System.Linq;
 using R3;
 using System;
+using System.Linq;
 using Utilities;
 
 namespace Model.Characters.Conditions

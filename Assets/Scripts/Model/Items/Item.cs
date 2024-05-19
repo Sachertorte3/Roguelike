@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Data;
-using Data.Area;
 using Model.Action;
 using Model.Effect;
 using R3;

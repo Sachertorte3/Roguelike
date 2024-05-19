@@ -1,10 +1,10 @@
 ﻿#nullable enable
-using System.Collections.Generic;
 using Model.Characters;
 using Model.Characters.Behavior;
 using Model.Setting;
 using R3;
 using RandomDungeonWithBluePrint;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;

@@ -1,11 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Data.Condition;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using Utilities;
 
 namespace Model.Characters.Conditions
@@ -17,7 +11,7 @@ namespace Model.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            
+
         }
 
         public UniTask Persist(IHasCondition hasCondition)

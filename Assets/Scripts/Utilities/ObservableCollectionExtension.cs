@@ -8,7 +8,7 @@ namespace Assets.Scripts.Utilities
 {
     public static class ObservableCollectionExtension
     {
-        public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction, Action<T> removeAction=null)
+        public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction, Action<T> removeAction = null)
         {
             foreach (var item in list)
             {
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Utilities
                     })
             };
         }
-        public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction, Action<T> removeAction=null)
+        public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction, Action<T> removeAction = null)
         {
             addAction(property.CurrentValue);
 

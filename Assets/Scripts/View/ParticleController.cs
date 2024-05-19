@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Assets.Scripts.View
 {
     public class ParticleController : MonoBehaviour
     {
-        Dictionary<ParticleType, GameObject> _particles = new();
-        Dictionary<ParticleType, int> _particleCounter = new();
+        private Dictionary<ParticleType, GameObject> _particles = new();
+        private Dictionary<ParticleType, int> _particleCounter = new();
 
         public void Add(ParticleType particleType)
         {

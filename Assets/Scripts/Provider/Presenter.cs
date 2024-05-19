@@ -1,11 +1,8 @@
 #nullable enable
-using System.Linq;
 using Model;
-using Model.Characters;
-using Model.Items;
-using Model.Map;
 using R3;
 using Sirenix.Utilities;
+using System.Linq;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;

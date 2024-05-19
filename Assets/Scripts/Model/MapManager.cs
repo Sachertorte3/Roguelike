@@ -1,12 +1,12 @@
 ﻿#nullable enable
-using System.Collections.Generic;
-using System.Linq;
 using Data;
 using Model.Characters;
 using Model.Items;
 using Model.Map;
 using R3;
 using RandomDungeonWithBluePrint;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -21,7 +21,7 @@ namespace Model
         public ItemManager ItemManager { get; init; }
         public MapManager(FieldBluePrint bluePrint, Character player)
         {
-            _tilemap = new (bluePrint);
+            _tilemap = new(bluePrint);
             CharacterManager = new(player);
             ItemManager = new(player);
 

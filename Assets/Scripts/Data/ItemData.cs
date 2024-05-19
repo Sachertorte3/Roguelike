@@ -1,6 +1,6 @@
 ﻿#nullable enable
-using System.IO;
 using Sirenix.OdinInspector;
+using System.IO;
 using UnityEngine;
 
 namespace Data

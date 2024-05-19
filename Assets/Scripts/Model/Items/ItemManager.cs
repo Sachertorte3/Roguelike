@@ -1,10 +1,9 @@
 ﻿#nullable enable
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Model.Characters;
 using ObservableCollections;
 using R3;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VContainer;
 

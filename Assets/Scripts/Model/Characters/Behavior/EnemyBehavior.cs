@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Model.Action;
+using System.Linq;
 using UnityEngine;
 using Utilities;
 

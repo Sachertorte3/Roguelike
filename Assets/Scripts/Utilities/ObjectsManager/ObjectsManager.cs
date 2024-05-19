@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ObservableCollections;
+﻿using ObservableCollections;
 using R3;
 using R3.Triggers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utilities.ObjectsManager

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Model.Action;
+﻿using Model.Action;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model.Characters.Behavior

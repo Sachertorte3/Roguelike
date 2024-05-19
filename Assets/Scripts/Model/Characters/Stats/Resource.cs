@@ -1,6 +1,6 @@
-﻿using System;
-using R3;
+﻿using R3;
 using StatSystem;
+using System;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;

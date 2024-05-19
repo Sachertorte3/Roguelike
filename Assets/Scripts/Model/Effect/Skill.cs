@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utilities;
 

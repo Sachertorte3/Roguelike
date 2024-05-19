@@ -1,5 +1,4 @@
 ﻿using Data;
-using Model.Action;
 
 namespace Model.Effect
 {

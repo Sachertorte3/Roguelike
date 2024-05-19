@@ -1,8 +1,5 @@
 ﻿using Model;
-using Model.Characters;
 using Model.Characters.Behavior;
-using Model.Items;
-using Model.Map;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;

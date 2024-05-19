@@ -1,17 +1,12 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Assets.Scripts.Utilities;
 using BidirectionalMap;
 using Model;
-using Model.Characters;
 using Model.Items;
 using Model.Setting;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
@@ -28,7 +23,7 @@ namespace Provider
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
 
         private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
-        private SerialDisposable _disposable = new ();
+        private SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)

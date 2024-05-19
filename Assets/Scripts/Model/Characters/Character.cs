@@ -1,23 +1,23 @@
 #nullable enable
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Character.Type;
+using Data.Condition;
 using Model.Action;
 using Model.Characters.Behavior;
-using Model.Effect;
+using Model.Characters.Conditions;
 using Model.Characters.Stats;
+using Model.Effect;
 using Model.Entities;
 using Model.Items;
 using Model.Setting;
 using R3;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Model.Characters.Conditions;
-using Data.Condition;
 
 namespace Model.Characters
 {

@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using Model;
-using Model.Characters;
 using Model.Characters.Behavior;
-using Model.Items;
 using R3;
 using UnityEngine;
 using Utilities;

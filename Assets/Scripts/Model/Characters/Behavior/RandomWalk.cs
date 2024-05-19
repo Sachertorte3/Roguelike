@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Data;
+﻿using Data;
 using Data.Area;
 using Model.Action;
 using Model.Effect;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utilities;
 

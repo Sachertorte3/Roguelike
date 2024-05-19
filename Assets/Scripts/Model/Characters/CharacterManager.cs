@@ -1,15 +1,10 @@
 ﻿#nullable enable
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Model.Characters.Behavior;
-using Model.Map;
-using Model.Setting;
 using ObservableCollections;
 using R3;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Utilities;
-using VContainer;
 
 namespace Model.Characters
 {

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using R3;
+using System.Collections.Generic;
 using System.Reflection;
-using R3;
 using UnityEngine;
 
 namespace Model.Setting

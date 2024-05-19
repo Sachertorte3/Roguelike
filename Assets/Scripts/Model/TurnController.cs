@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Model.Characters;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Logging;
 
 namespace Model

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.Utilities;
 using R3;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model.Characters

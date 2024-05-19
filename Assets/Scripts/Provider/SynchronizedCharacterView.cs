@@ -1,7 +1,4 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Assets.Scripts.Utilities;
 using Assets.Scripts.View;
 using BidirectionalMap;
@@ -9,7 +6,7 @@ using Model;
 using Model.Characters;
 using Model.Setting;
 using R3;
-using Sirenix.Utilities;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities.ObjectsManager;
@@ -27,7 +24,7 @@ namespace Provider
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly BiMap<Character, CharacterView> characterViewDict = new();
-        private SerialDisposable[] _disposables = Enumerable.Range(0,2).Select(_ => new SerialDisposable()).ToArray();
+        private SerialDisposable[] _disposables = Enumerable.Range(0, 2).Select(_ => new SerialDisposable()).ToArray();
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {

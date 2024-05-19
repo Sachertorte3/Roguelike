@@ -28,7 +28,7 @@ namespace Provider
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
 
         private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
-        private SerialDisposable[] _disposables = Enumerable.Range(0, 2).Select(_ => new SerialDisposable()).ToArray();
+        private SerialDisposable _disposable = new ();
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
@@ -38,9 +38,7 @@ namespace Provider
 
             world.ActiveMap.SubscribeToAll(mapLoaded =>
             {
-                _disposables[0].Disposable = mapLoaded.ItemManager.OnItemAdded.Subscribe(item => { Add(item); });
-                _disposables[1].Disposable = mapLoaded.ItemManager.OnItemRemoved.Subscribe(item => { Remove(item); });
-                mapLoaded.ItemManager.Items.ForEach(character => Add(character));
+                _disposable.Disposable = mapLoaded.ItemManager.Items.SubscribeToAll(Add, Remove);
             });
         }
 

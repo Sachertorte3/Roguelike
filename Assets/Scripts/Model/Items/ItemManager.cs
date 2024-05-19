@@ -38,9 +38,7 @@ namespace Model.Items
             });
         }
 
-        public ReadOnlyCollection<ItemEntity> Items => new(_items);
-        public Observable<ItemEntity> OnItemAdded => _items.ObserveAdd().Select(item => item.Value);
-        public Observable<ItemEntity> OnItemRemoved => _items.ObserveRemove().Select(item => item.Value);
+        public IObservableCollection<ItemEntity> Items => _items;
 
         public void AddItem(ItemEntity item)
         {

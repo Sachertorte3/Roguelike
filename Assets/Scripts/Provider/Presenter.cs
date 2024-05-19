@@ -35,7 +35,7 @@ namespace Provider
                     .ForEach(view => view.SetVisibility(true));
             });
 
-            world.OnMapLoaded.Subscribe(mapLoaded =>
+            world.ActiveMap.Subscribe(mapLoaded =>
             {
                 world.Player.Area.Refrash(world.Player.CurrentPosition);
             });

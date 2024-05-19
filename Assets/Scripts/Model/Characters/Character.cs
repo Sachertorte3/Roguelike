@@ -71,11 +71,11 @@ namespace Model.Characters
         public bool CanMove(Direction8 direction)
         {
             return _canIgnoreWall
-                ? Globals.World.ActiveMap.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
-                : Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Vector())
+                ? Globals.World.ActiveMap.CurrentValue.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
+                : Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       Globals.World.ActiveMap.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -127,7 +127,7 @@ namespace Model.Characters
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
             if (item == null) throw new Exception("item is null");
-            var itemEntity = Globals.World.ActiveMap.ItemManager.SpawnItem(item, CurrentPosition);
+            var itemEntity = Globals.World.ActiveMap.CurrentValue.ItemManager.SpawnItem(item, CurrentPosition);
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

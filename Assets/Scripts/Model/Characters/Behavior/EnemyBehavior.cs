@@ -17,11 +17,11 @@ namespace Model.Characters.Behavior
         {
             var visibleArea = character.Area.Get();
             visibleArea.Remove(character.CurrentPosition);
-            var visibleCharacters = Globals.World.ActiveMap.GetCharactersInArea(visibleArea);
+            var visibleCharacters = Globals.World.ActiveMap.CurrentValue.GetCharactersInArea(visibleArea);
             if (visibleCharacters.Any())
                 _lastTargetPosition = visibleCharacters.First().CurrentPosition;
             else if (_lastTargetPosition.HasValue && (character.CurrentPosition == _lastTargetPosition
-                                                      || (!Globals.World.ActiveMap.Tilemap.IsPassable(_lastTargetPosition.Value) &&
+                                                      || (!Globals.World.ActiveMap.CurrentValue.Tilemap.IsPassable(_lastTargetPosition.Value) &&
                                                           (character.CurrentPosition - _lastTargetPosition).Value
                                                           .sqrMagnitude <= 2)))
                 _lastTargetPosition = null;

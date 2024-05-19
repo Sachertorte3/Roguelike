@@ -17,8 +17,8 @@ namespace Model
         public readonly Character Player;
         public readonly List<MapManager> Maps = new();
         public int ActiveMapIndex = 0;
-        public Observable<MapManager> OnMapLoaded => _onMapLoaded;
-        private Subject<MapManager> _onMapLoaded = new();
+        public ReadOnlyReactiveProperty<MapManager> ActiveMap => _activeMap;
+        private ReactiveProperty<MapManager> _activeMap = new();
         public readonly CharacterEvents PlayerEvents = new();
 
         [Inject]
@@ -39,11 +39,9 @@ namespace Model
         }
         private void LoadMap(int index)
         {
-            ActiveMapIndex = index;
-            _onMapLoaded.OnNext(ActiveMap);
-            Player.Teleport(ActiveMap.GetAllPassablePositions().GetAtRandom());
+            _activeMap.Value = Maps[index];
+            Player.Teleport(ActiveMap.CurrentValue.GetAllPassablePositions().GetAtRandom());
         }
         public bool IsLoaded { get; private set; } = false;
-        public MapManager ActiveMap => Maps[ActiveMapIndex];
     }
 }

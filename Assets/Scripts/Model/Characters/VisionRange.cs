@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Utilities;
 using R3;
 using UnityEngine;
 
@@ -12,14 +13,14 @@ namespace Model.Characters
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
             position.Subscribe(currentPosition => _visibleArea.Value = Calc(currentPosition));
-            Globals.World.OnMapLoaded.Subscribe(mapLoaded =>
+            Globals.World.ActiveMap.SubscribeToAll(mapLoaded =>
             {
-                _disposable.Disposable = mapLoaded.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
+                if (Globals.World.IsLoaded)
+                {
+                    _disposable.Disposable =
+                    mapLoaded.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
+                }
             });
-            if (Globals.World.IsLoaded)
-            {
-                _disposable.Disposable = Globals.World.ActiveMap.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
-            }
         }
 
         public void Dispose()
@@ -49,7 +50,7 @@ namespace Model.Characters
         {
             if (Globals.World.IsLoaded)
             {
-                return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.Tilemap.GetAllPassablePositions(), position, 10f);
+                return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions(), position, 10f);
             }
             else
                 return new HashSet<Vector2Int>();

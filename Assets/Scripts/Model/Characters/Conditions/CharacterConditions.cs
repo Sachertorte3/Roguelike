@@ -9,8 +9,7 @@ namespace Model.Characters.Conditions
 {
     internal class CharacterConditions : IDisposable, ICharacterConditions
     {
-        public Observable<Condition> OnConditionAdded => _conditions.ObserveAdd().Select(add => add.Value);
-        public Observable<Condition> OnConditionRemoved => _conditions.ObserveRemove().Select(remove => remove.Value);
+        public IObservableCollection<Condition> Conditions => _conditions;
         private readonly ObservableHashSet<Condition> _conditions = new();
         private readonly CompositeDisposable _disposables = new();
         public CharacterConditions(IHasCondition hasCondition)
@@ -34,8 +33,7 @@ namespace Model.Characters.Conditions
     }
     public interface ICharacterConditions
     {
-        public Observable<Condition> OnConditionAdded { get; }
-        public Observable<Condition> OnConditionRemoved { get; }
+        public IObservableCollection<Condition> Conditions { get; }
     }
     public class Condition
     {

@@ -32,11 +32,7 @@ namespace Model.Characters
             AddCharacter(player);
         }
 
-        public ReadOnlyCollection<Character> Characters => new(_characters);
-        public Observable<Character> OnCharacterAdded => _characters.ObserveAdd().Select(character => character.Value);
-
-        public Observable<Character> OnCharacterRemoved =>
-            _characters.ObserveRemove().Select(character => character.Value);
+        public IObservableCollection<Character> Characters => _characters;
 
         public void AddCharacter(Character character)
         {

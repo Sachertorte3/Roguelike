@@ -36,9 +36,7 @@ namespace Provider
 
             world.ActiveMap.SubscribeToAll(mapLoaded =>
             {
-                _disposables[0].Disposable = mapLoaded.CharacterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
-                _disposables[1].Disposable = mapLoaded.CharacterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
-                mapLoaded.CharacterManager.Characters.ForEach(character => Add(character));
+                _disposables[0].Disposable = mapLoaded.CharacterManager.Characters.SubscribeToAll(Add, Remove);
             });
         }
 
@@ -66,8 +64,10 @@ namespace Provider
             characterViewDict.Add(character, characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
-            character.Condition.OnConditionAdded.Subscribe(conditionAdded => particleController.Add(conditionAdded.ParticleType));
-            character.Condition.OnConditionRemoved.Subscribe(conditionAdded => particleController.Remove(conditionAdded.ParticleType));
+            character.Condition.Conditions.SubscribeToAll(
+                conditionAdded => particleController.Add(conditionAdded.ParticleType),
+                conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
+            );
         }
 
         public void Remove(Character character)

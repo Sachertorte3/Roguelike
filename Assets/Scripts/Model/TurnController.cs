@@ -9,7 +9,7 @@ namespace Model
     public sealed class TurnController
     {
         private readonly World _world;
-        private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CharacterManager.Characters;
+        private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CurrentValue.CharacterManager.Characters;
         private int _turn = 1;
 
         public TurnController(World world)

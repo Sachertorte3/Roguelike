@@ -49,11 +49,11 @@ namespace Model.Items
 
         public async UniTask Throw(IActor actor, Direction8 direction)
         {
-            while (Globals.World.ActiveMap.IsPassable(CurrentPosition + direction.Vector()))
+            while (Globals.World.ActiveMap.CurrentValue.IsPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
-            if (Globals.World.ActiveMap.Tilemap.IsPassable(CurrentPosition + direction.Vector()))
+            if (Globals.World.ActiveMap.CurrentValue.Tilemap.IsPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }

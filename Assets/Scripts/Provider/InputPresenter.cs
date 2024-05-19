@@ -38,9 +38,9 @@ namespace Provider
                 var item = world.Player.Inventory.GetItem(inventoryView.CurrentFocus);
                 if (item != null)
                 {
-                    var itemEntity = world.ActiveMap.ItemManager.TryPickUp(world.Player.CurrentPosition);
+                    var itemEntity = world.ActiveMap.CurrentValue.ItemManager.TryPickUp(world.Player.CurrentPosition);
                     world.Player.ReplaceInventory(itemEntity?.Item, inventoryView.CurrentFocus);
-                    world.ActiveMap.ItemManager.SpawnItem(item, world.Player.CurrentPosition);
+                    world.ActiveMap.CurrentValue.ItemManager.SpawnItem(item, world.Player.CurrentPosition);
                 }
             });
             inventoryView.OnFocusChanged.Subscribe(index => { actionReceiver.SetInventoryIndex(index); });

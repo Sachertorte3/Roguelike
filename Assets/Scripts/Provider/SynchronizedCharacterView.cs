@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Utilities;
 using Assets.Scripts.View;
 using BidirectionalMap;
 using Model;
@@ -33,15 +34,12 @@ namespace Provider
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
 
-            world.OnMapLoaded.Subscribe(mapLoaded =>
+            world.ActiveMap.SubscribeToAll(mapLoaded =>
             {
                 _disposables[0].Disposable = mapLoaded.CharacterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
                 _disposables[1].Disposable = mapLoaded.CharacterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
                 mapLoaded.CharacterManager.Characters.ForEach(character => Add(character));
             });
-            _disposables[0].Disposable = world.ActiveMap.CharacterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
-            _disposables[1].Disposable = world.ActiveMap.CharacterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
-            world.ActiveMap.CharacterManager.Characters.ForEach(character => Add(character));
         }
 
         public void Add(Character character)

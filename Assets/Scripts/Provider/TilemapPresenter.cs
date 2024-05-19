@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Linq;
+using Assets.Scripts.Utilities;
 using Model;
 using Model.Map;
 using R3;
@@ -15,13 +16,12 @@ namespace Provider
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
         {
-            world.OnMapLoaded.Subscribe(mapLoaded =>
+            world.ActiveMap.SubscribeToAll(mapLoaded =>
             {
                 tileView.Clear();
 
                 SetTilemap(tileView, tileMask, mapLoaded.Tilemap);
             });
-            SetTilemap(tileView, tileMask, world.ActiveMap.Tilemap);
         }
         public void SetTilemap(TileViewController tileView, TileMaskController tileMask, ITilemapViewer tilemap)
         {

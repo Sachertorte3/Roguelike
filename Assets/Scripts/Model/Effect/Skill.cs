@@ -26,7 +26,7 @@ namespace Model.Effect
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction)
         {
             var area = _area.Get(position, direction);
-            Globals.World.ActiveMap.GetCharactersInArea(area.ToHashSet())
+            Globals.World.ActiveMap.CurrentValue.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target => _effect.Apply(actor, target));
             return UniTask.CompletedTask;
         }
@@ -34,7 +34,7 @@ namespace Model.Effect
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction)
         {
             var area = _area.Get(position, direction);
-            var characters = Globals.World.ActiveMap.GetCharactersInArea(area.ToHashSet());
+            var characters = Globals.World.ActiveMap.CurrentValue.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
                 return characters.Sum(target =>
                     _effect.Evaluate(actor, target));

@@ -37,7 +37,7 @@ namespace Provider
         {
             var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
-            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             item.OnSpawnEffect.Subscribe(useSkill =>
                 _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value)).AddTo(entityView);

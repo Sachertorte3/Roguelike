@@ -8,19 +8,11 @@ namespace Model.Characters
 {
     internal class VisionRange : IDisposable, IVisionRange
     {
-        private readonly ReactiveProperty<HashSet<Vector2Int>> _visibleArea = new();
+        private readonly ReactiveProperty<HashSet<Vector2Int>> _visibleArea = new(new());
         private readonly SerialDisposable _disposable = new();
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
             position.Subscribe(currentPosition => _visibleArea.Value = Calc(currentPosition));
-            Globals.World.ActiveMap.SubscribeToAll(mapLoaded =>
-            {
-                if (Globals.World.IsLoaded)
-                {
-                    _disposable.Disposable =
-                    mapLoaded.Tilemap.OnChangeTile.Subscribe(_ => _visibleArea.Value = Calc(position.CurrentValue));
-                }
-            });
         }
 
         public void Dispose()
@@ -48,12 +40,7 @@ namespace Model.Characters
 
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
-            if (Globals.World.IsLoaded)
-            {
-                return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions(), position, 10f);
-            }
-            else
-                return new HashSet<Vector2Int>();
+            return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions(), position, 10f);
         }
     }
     public record OnVisibleAreaChangedMessage(HashSet<Vector2Int> NewArea, HashSet<Vector2Int> AreaExited, HashSet<Vector2Int> AreaEntered);

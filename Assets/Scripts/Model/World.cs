@@ -32,6 +32,7 @@ namespace Model
         private HashSet<Vector2Int> _allItemPositions = new();
 
         private readonly SerialDisposable[] _disposables = Enumerable.Range(0,2).Select(_ => new SerialDisposable()).ToArray();
+
         [Inject]
         public World(CharacterControllInputReceiver receiver)
         {
@@ -60,6 +61,7 @@ namespace Model
             MapManager map = new(bluePrint, Player);
             Maps.Add(map);
             LoadMap(Maps.Count - 1);
+            map.Spawn();
         }
         private void LoadMap(int index)
         {
@@ -67,7 +69,9 @@ namespace Model
             {
                 CharacterEvents.Remove(ActiveMap.CurrentValue.CharacterManager.CharacterEvents);
             }
+
             _activeMap.Value = Maps[index];
+
             CharacterEvents.Add(ActiveMap.CurrentValue.CharacterManager.CharacterEvents);
 
             _disposables[0].Disposable = _characters.SynchronizeWith(ActiveMap.CurrentValue.CharacterManager.Characters);

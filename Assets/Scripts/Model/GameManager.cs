@@ -21,9 +21,9 @@ namespace Model
             Globals.GameManager = this;
         }
 
-        public void LoadMap()
+        public async void LoadMap()
         {
-            _turnController.Stop();
+            await _turnController.Stop();
             FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
             _world.GenerateMap(bluePrint);
             _turnController.Run();

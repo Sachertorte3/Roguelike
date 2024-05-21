@@ -23,8 +23,7 @@ namespace Model.Items
             ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
-                positionChanged.Item.SetVisiblity(player.Area.Get()
-                    .Contains(positionChanged.Position));
+                positionChanged.Item.SetVisiblity(player.Area.Get().Contains(positionChanged.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
 

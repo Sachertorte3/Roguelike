@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using Model.Characters;
+using R3;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.Logging;
 
 namespace Model
@@ -11,7 +13,9 @@ namespace Model
         private readonly World _world;
         private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CurrentValue.CharacterManager.Characters;
         private int _turn = 1;
-        private bool _running = false;
+        private bool _isRunning = false;
+        private CancellationTokenSource _cancellationTokenSource;
+        private UniTaskCompletionSource _runCompletionSource;
 
         public TurnController(World world)
         {
@@ -20,8 +24,11 @@ namespace Model
 
         public async void Run()
         {
-            _running = true;
-            while (true)
+            _isRunning = true;
+            _cancellationTokenSource = new();
+            _runCompletionSource = new();
+
+            while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 Log.Debug($"Start turn {_turn}");
                 IEnumerable<Character> characterList = GetCharacters();
@@ -33,9 +40,11 @@ namespace Model
                         character.State = CharacterState.Think;
                         await character.DoNextAction();
                     }
-                    if (!_running)
+                    if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
-                        return;
+                        _isRunning = false;
+                        _runCompletionSource.TrySetResult();
+                        break;
                     }
                 }
                 await characterList.Select(character =>
@@ -43,9 +52,11 @@ namespace Model
                 _turn++;
             }
         }
-        public void Stop()
+        public async UniTask Stop()
         {
-            _running = false;
+            if (!_isRunning) return;
+            _cancellationTokenSource.Cancel();
+            await _runCompletionSource.Task;
         }
     }
 }

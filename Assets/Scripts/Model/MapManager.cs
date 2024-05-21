@@ -24,7 +24,9 @@ namespace Model
             _tilemap = new(bluePrint);
             CharacterManager = new(player);
             ItemManager = new(player);
-
+        }
+        public void Spawn()
+        {
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
                 CharacterManager.SpawnCharacter(position);
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();

@@ -26,14 +26,6 @@ namespace Model.Items
                 positionChanged.Item.SetVisiblity(player.Area.Get().Contains(positionChanged.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
-
-            player.Area.OnVisibleAreaChanged.Subscribe(areaChanged =>
-            {
-                foreach (var item in _items)
-                    if (areaChanged.AreaExited.Contains(item.CurrentPosition))
-                        item.SetVisiblity(false);
-                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition)) item.SetVisiblity(true);
-            });
         }
 
         internal IObservableCollection<ItemEntity> Items => _items;

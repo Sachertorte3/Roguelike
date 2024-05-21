@@ -19,11 +19,11 @@ namespace Model
         private readonly Tilemap _tilemap;
         public CharacterManager CharacterManager { get; init; }
         public ItemManager ItemManager { get; init; }
-        public MapManager(FieldBluePrint bluePrint, Character player)
+        public MapManager(FieldBluePrint bluePrint, HashSet<Vector2Int> visibleArea)
         {
             _tilemap = new(bluePrint);
-            CharacterManager = new(player);
-            ItemManager = new(player);
+            CharacterManager = new(visibleArea);
+            ItemManager = new(visibleArea);
         }
         public void Spawn()
         {
@@ -40,32 +40,6 @@ namespace Model
         public void UnLoad()
         {
 
-        }
-        public bool IsPassable(Vector2Int position)
-        {
-            return Tilemap.IsPassable(position) && !CharacterManager.GetAllCharacterPositions().Contains(position);
-        }
-
-        public bool IsPassableIgnoreWall(Vector2Int position)
-        {
-            return !CharacterManager.GetAllCharacterPositions().Contains(position);
-        }
-
-        /// <summary>
-        ///     Generates and returns a list of characters currently located within the given positions.
-        /// </summary>
-        /// <param name="area"></param>
-        /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
-        {
-            return CharacterManager.Characters.Where(character => area.Contains(character.Position.CurrentValue))
-                .ToHashSet();
-        }
-        public HashSet<Vector2Int> GetAllPassablePositions()
-        {
-            var result = _tilemap.GetAllPassablePositions();
-            result.ExceptWith(CharacterManager.GetAllCharacterPositions());
-            return result;
         }
     }
 }

@@ -5,6 +5,7 @@ using Model;
 using Model.Characters;
 using Model.Setting;
 using R3;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -23,14 +24,17 @@ namespace Provider
 
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
+        private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
+
         private readonly BiMap<Character, CharacterView> characterViewDict = new();
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
+            _visibleArea = world.VisibleArea;
 
-            world.Characters.SubscribeToAll(Add, Remove);
+            world.Characters.Set.SubscribeToAll(Add, Remove);
         }
 
         public void Add(Character character)
@@ -46,8 +50,7 @@ namespace Provider
             entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
-            character.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
+            character.OnSpawnEffect.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.Intersect(_visibleArea), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
 

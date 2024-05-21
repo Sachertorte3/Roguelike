@@ -74,5 +74,21 @@ namespace Utilities
         {
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
+        public static void SynchronizeWith<T>(this ICollection<T> collectionA, IEnumerable<T> collectionB)
+        {
+            // コレクションAの要素のうち、コレクションBに存在しないものを削除する
+            var itemsToRemove = collectionA.Except(collectionB).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                collectionA.Remove(item);
+            }
+
+            // コレクションBの要素のうち、コレクションAに存在しないものを追加する
+            var itemsToAdd = collectionB.Except(collectionA).ToList();
+            foreach (var item in itemsToAdd)
+            {
+                collectionA.Add(item);
+            }
+        }
     }
 }

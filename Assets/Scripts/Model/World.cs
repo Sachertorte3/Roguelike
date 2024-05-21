@@ -6,6 +6,7 @@ using Model.Setting;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
+using Sirenix.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,32 +26,28 @@ namespace Model
         public readonly CharacterEvents PlayerEvents = new();
         public readonly CharacterEvents CharacterEvents = new();
 
-        public IObservableCollection<Character> Characters => _characters;
-        private readonly ObservableHashSet<Character> _characters = new();
-        public IObservableCollection<ItemEntity> Items => _items;
-        private readonly ObservableHashSet<ItemEntity> _items = new();
+        public readonly IntegratedSet<Character> Characters = new();
+        public readonly IntegratedSet<ItemEntity> Items = new();
         private HashSet<Vector2Int> _allItemPositions = new();
 
-        private readonly SerialDisposable[] _disposables = Enumerable.Range(0,2).Select(_ => new SerialDisposable()).ToArray();
+        public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
+        private readonly HashSet<Vector2Int> _visibleArea = new();
 
         [Inject]
         public World(CharacterControllInputReceiver receiver)
         {
             Globals.World = this;
 
-            _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-
-            Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall);
-            PlayerEvents.Add(Player);
-            FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-            GenerateMap(bluePrint);
+            Characters.Set.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
+            Items.Set.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
 
             PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
-                foreach (var item in _items)
+                foreach (var item in Items.Set)
                     if (areaChanged.AreaExited.Contains(item.CurrentPosition))
                         item.SetVisiblity(false);
-                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition)) item.SetVisiblity(true);
+                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition))
+                        item.SetVisiblity(true);
             });
 
             CharacterEvents.OnPositionChanged.Subscribe(move =>
@@ -62,11 +59,26 @@ namespace Model
                 }
             });
 
+            CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
+            {
+                SetAllCharacterPosition();
+                positionChanged.Character.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Position));
+            });
+
+            Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall);
+            Characters.Add(Player);
+            PlayerEvents.Add(Player);
+            CharacterEvents.Add(Player);
+            _visibleArea.LiveSynchronizeWith(Player.Area.VisibleArea);
+
+            FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
+            GenerateMap(bluePrint);
+
             IsLoaded = true;
         }
         public void GenerateMap(FieldBluePrint bluePrint)
         {
-            MapManager map = new(bluePrint, Player);
+            MapManager map = new(bluePrint, _visibleArea);
             Maps.Add(map);
             LoadMap(Maps.Count - 1);
             map.Spawn();
@@ -76,28 +88,21 @@ namespace Model
             if (IsLoaded)
             {
                 CharacterEvents.Remove(ActiveMap.CurrentValue.CharacterManager.CharacterEvents);
+
+                Characters.UnRegister(ActiveMap.CurrentValue.CharacterManager.Characters);
+                Items.UnRegister(ActiveMap.CurrentValue.ItemManager.Items);
             }
 
             _activeMap.Value = Maps[index];
 
             CharacterEvents.Add(ActiveMap.CurrentValue.CharacterManager.CharacterEvents);
 
-            _disposables[0].Disposable = _characters.SynchronizeWith(ActiveMap.CurrentValue.CharacterManager.Characters);
-            _disposables[1].Disposable = _items.SynchronizeWith(ActiveMap.CurrentValue.ItemManager.Items);
+            Characters.Register(ActiveMap.CurrentValue.CharacterManager.Characters);
+            Items.Register(ActiveMap.CurrentValue.ItemManager.Items);
 
-            Player.Teleport(ActiveMap.CurrentValue.GetAllPassablePositions().GetAtRandom());
+            Player.Teleport(GetAllPassablePositions().GetAtRandom());
         }
-        public ItemEntity? TryPickUp(Vector2Int position)
-        {
-            if (GetAllItemPositions().Contains(position))
-            {
-                var item = Items.First(item => item.CurrentPosition == position);
-                _items.Remove(item);
-                return item;
-            }
-
-            return null;
-        }
+        public ItemEntity? TryPickUp(Vector2Int position) => ActiveMap.CurrentValue.ItemManager.TryPickUp(position);
         public HashSet<Vector2Int> GetAllItemPositions()
         {
             return _allItemPositions;
@@ -105,7 +110,44 @@ namespace Model
 
         private void SetAllItemPosition()
         {
-            _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
+            _allItemPositions = Items.Set.Select(item => item.CurrentPosition).ToHashSet();
+        }
+        public bool IsPassable(Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.Tilemap.IsPassable(position) && !GetAllCharacterPositions().Contains(position);
+        }
+
+        public bool IsPassableIgnoreWall(Vector2Int position)
+        {
+            return !GetAllCharacterPositions().Contains(position);
+        }
+
+        /// <summary>
+        ///     Generates and returns a list of characters currently located within the given positions.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        {
+            return Characters.Set.Where(character => area.Contains(character.Position.CurrentValue))
+                .ToHashSet();
+        }
+        public HashSet<Vector2Int> GetAllPassablePositions()
+        {
+            var result = ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions();
+            result.ExceptWith(GetAllCharacterPositions());
+            return result;
+        }
+
+        private HashSet<Vector2Int> _allCharacterPositions = new();
+        public HashSet<Vector2Int> GetAllCharacterPositions()
+        {
+            return new HashSet<Vector2Int>(_allCharacterPositions);
+        }
+
+        private void SetAllCharacterPosition()
+        {
+            _allCharacterPositions = Characters.Set.Select(character => character.Position.CurrentValue).ToHashSet();
         }
         public bool IsLoaded { get; private set; } = false;
     }

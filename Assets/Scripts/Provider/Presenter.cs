@@ -26,7 +26,11 @@ namespace Provider
                 tileMask.SetTilesTranslucent(area.AreaExited);
                 tileMask.SetTilesVisible(area.AreaEntered);
             });
-            tileMask.SetTilesVisible(world.Player.Area.Get());
+            tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
+            foreach (var position in world.Player.Area.VisibleArea)
+            {
+                Debug.Log(position);
+            }
 
             gameManager.Run();
         }

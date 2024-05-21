@@ -17,13 +17,13 @@ namespace Model.Items
         public ItemEntityEvents ItemEntityEvents = new();
 
         [Inject]
-        public ItemManager(Character player)
+        public ItemManager(HashSet<Vector2Int> visibleArea)
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
-                positionChanged.Item.SetVisiblity(player.Area.Get().Contains(positionChanged.Position));
+                positionChanged.Item.SetVisiblity(visibleArea.Contains(positionChanged.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
@@ -51,6 +51,17 @@ namespace Model.Items
         private void SetAllItemPosition()
         {
             _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
+        }
+        public ItemEntity? TryPickUp(Vector2Int position)
+        {
+            if (GetAllItemPositions().Contains(position))
+            {
+                var item = _items.First(item => item.CurrentPosition == position);
+                _items.Remove(item);
+                return item;
+            }
+
+            return null;
         }
     }
 }

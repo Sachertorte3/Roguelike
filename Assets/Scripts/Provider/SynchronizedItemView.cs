@@ -4,6 +4,8 @@ using Model;
 using Model.Items;
 using Model.Setting;
 using R3;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -18,6 +20,7 @@ namespace Provider
     {
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
+        private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
 
         private readonly GameObject _itemViewPrefab =
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
@@ -29,8 +32,9 @@ namespace Provider
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
+            _visibleArea = world.VisibleArea;
 
-            world.Items.SubscribeToAll(Add, Remove);
+            world.Items.Set.SubscribeToAll(Add, Remove);
         }
 
         public void Add(ItemEntity item)
@@ -40,7 +44,7 @@ namespace Provider
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             item.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value)).AddTo(entityView);
+                _effectViewSpawner.Spawn(useSkill.Intersect(_visibleArea), Settings.EffectDisplayTime.Value)).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
 

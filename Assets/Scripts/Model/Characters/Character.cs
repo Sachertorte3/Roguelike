@@ -57,6 +57,7 @@ namespace Model.Characters
 
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
+        public Entity Entity => _entity;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Direction8 CurrentDirection => Direction.CurrentValue;

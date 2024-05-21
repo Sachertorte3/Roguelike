@@ -44,9 +44,9 @@ namespace Model
             PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 foreach (var item in Items.Set)
-                    if (areaChanged.AreaExited.Contains(item.CurrentPosition))
+                    if (areaChanged.Message.AreaExited.Contains(item.CurrentPosition))
                         item.SetVisiblity(false);
-                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition))
+                    else if (areaChanged.Message.AreaEntered.Contains(item.CurrentPosition))
                         item.SetVisiblity(true);
             });
 
@@ -54,7 +54,7 @@ namespace Model
             {
                 if (move.Character.Inventory.HasEmptySpace())
                 {
-                    var item = TryPickUp(move.Position);
+                    var item = TryPickUp(move.Message.Position);
                     if (item != null) move.Character.TryPickUp(item.Item);
                 }
             });
@@ -62,7 +62,7 @@ namespace Model
             CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllCharacterPosition();
-                positionChanged.Character.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Position));
+                positionChanged.Character.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             });
 
             Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall);

@@ -23,8 +23,8 @@ namespace Provider
 
             world.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
             {
-                tileMask.SetTilesTranslucent(area.AreaExited);
-                tileMask.SetTilesVisible(area.AreaEntered);
+                tileMask.SetTilesTranslucent(area.Message.AreaExited);
+                tileMask.SetTilesVisible(area.Message.AreaEntered);
             });
             tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
             foreach (var position in world.Player.Area.VisibleArea)

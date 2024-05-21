@@ -8,8 +8,12 @@ using System.Linq;
 
 namespace Utilities
 {
-    public static class ObservableCollectionExtension
+    public static class ObservableExtension
     {
+        public static IDisposable RelayTo<T>(this Observable<T> source, IObserver<T> target)
+        {
+            return source.Subscribe(item => target.OnNext(item));
+        }
         public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction, Action<T> removeAction = null)
         {
             foreach (var item in list)

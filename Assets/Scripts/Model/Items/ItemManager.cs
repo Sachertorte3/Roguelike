@@ -23,7 +23,7 @@ namespace Model.Items
             ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
-                positionChanged.Item.SetVisiblity(visibleArea.Contains(positionChanged.Position));
+                positionChanged.Item.SetVisiblity(visibleArea.Contains(positionChanged.Message.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }

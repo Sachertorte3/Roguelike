@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Model.Characters;
 using ObservableCollections;
 using R3;
 using System.Collections.Generic;

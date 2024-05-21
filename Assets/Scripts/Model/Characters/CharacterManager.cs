@@ -12,19 +12,11 @@ namespace Model.Characters
     {
         private readonly CharacterFactory _factory = new();
         public readonly CharacterEvents CharacterEvents = new();
-        private HashSet<Vector2Int> _allCharacterPositions = new();
         private readonly ObservableList<Character> _characters = new();
 
-        public CharacterManager(Character player)
+        public CharacterManager(HashSet<Vector2Int> visibleArea)
         {
-            _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
-            {
-                SetAllCharacterPosition();
-                positionChanged.Character.SetVisiblity(player.Area.Get().Contains(positionChanged.Position));
-            });
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
-            AddCharacter(player);
         }
 
         internal IObservableCollection<Character> Characters => _characters;
@@ -45,16 +37,6 @@ namespace Model.Characters
         {
             AddCharacter(
                 _factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
-        }
-
-        public HashSet<Vector2Int> GetAllCharacterPositions()
-        {
-            return new HashSet<Vector2Int>(_allCharacterPositions);
-        }
-
-        private void SetAllCharacterPosition()
-        {
-            _allCharacterPositions = Characters.Select(character => character.Position.CurrentValue).ToHashSet();
         }
     }
 }

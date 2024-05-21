@@ -43,7 +43,7 @@ namespace Utilities
                     removeAction?.Invoke(value.Previous);
                 });
         }
-        public static IDisposable SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IObservableCollection<T> collectionB)
+        public static void SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IEnumerable<T> collectionB) where T : notnull
         {
             // コレクションAの要素のうち、コレクションBに存在しないものを削除する
             var itemsToRemove = collectionA.Except(collectionB).ToList();
@@ -58,6 +58,16 @@ namespace Utilities
             {
                 collectionA.Add(item);
             }
+        }
+        public static IDisposable LiveSynchronizeWith<T>(this ObservableHashSet<T> collectionA, IObservableCollection<T> collectionB) where T : notnull
+        {
+            collectionA.SynchronizeWith(collectionB);
+
+            return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
+        }
+        public static IDisposable LiveSynchronizeWith<T>(this ICollection<T> collectionA, IObservableCollection<T> collectionB) where T : notnull
+        {
+            collectionA.SynchronizeWith(collectionB);
 
             return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
         }

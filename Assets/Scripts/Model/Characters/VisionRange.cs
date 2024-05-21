@@ -3,39 +3,37 @@ using R3;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.ObjectModel;
+using ObservableCollections;
+using System.Linq;
 
 namespace Model.Characters
 {
-    internal class VisionRange : IDisposable, IVisionRange
+    internal class VisionRange : IVisionRange
     {
-        private readonly ReactiveProperty<HashSet<Vector2Int>> _visibleArea = new(new());
-        private readonly SerialDisposable _disposable = new();
+        public IObservableCollection<Vector2Int> VisibleArea => _visibleArea;
+        private readonly ObservableHashSet<Vector2Int> _visibleArea = new();
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position)
         {
-            position.Subscribe(currentPosition => _visibleArea.Value = Calc(currentPosition));
+            position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition)));
         }
 
-        public void Dispose()
+        private void ChangeVisibleArea(HashSet<Vector2Int> area)
         {
-            _visibleArea.Dispose();
+            HashSet<Vector2Int> enterArea = new(area);
+            HashSet<Vector2Int> exitArea = VisibleArea.ToHashSet();
+            exitArea.ExceptWith(area);
+            enterArea.ExceptWith(VisibleArea);
+            _visibleArea.SynchronizeWith(area);
+            _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, exitArea, enterArea));
         }
 
-        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _visibleArea.Pairwise().Select(visibleAreaChanged =>
-        {
-            HashSet<Vector2Int> newArea = new(visibleAreaChanged.Current);
-            visibleAreaChanged.Previous.ExceptWith(visibleAreaChanged.Current);
-            visibleAreaChanged.Current.ExceptWith(visibleAreaChanged.Previous);
-            return new OnVisibleAreaChangedMessage(newArea, visibleAreaChanged.Previous, visibleAreaChanged.Current);
-        });
+        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
+        private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
         public void Refrash(Vector2Int position)
         {
-            _visibleArea.Value = Calc(position);
-        }
-
-        public HashSet<Vector2Int> Get()//FIX: Changing the get value seems to affect the original value
-        {
-            return _visibleArea.CurrentValue;
+            ChangeVisibleArea(Calc(position));
         }
 
         private HashSet<Vector2Int> Calc(Vector2Int position)

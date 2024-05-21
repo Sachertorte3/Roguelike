@@ -19,8 +19,6 @@ namespace View
                 spawnedEffect.transform.position = (Vector3Int)position;
                 spawnedEffect.GetComponent<SpriteView>().RegisterComponent();
             }
-
-            ;
         }
     }
 }

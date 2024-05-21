@@ -49,7 +49,7 @@ namespace Model.Items
 
         public async UniTask Throw(IActor actor, Direction8 direction)
         {
-            while (Globals.World.ActiveMap.CurrentValue.IsPassable(CurrentPosition + direction.Vector()))
+            while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }

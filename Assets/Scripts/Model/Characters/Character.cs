@@ -72,11 +72,11 @@ namespace Model.Characters
         public bool CanMove(Direction8 direction)
         {
             return _canIgnoreWall
-                ? Globals.World.ActiveMap.CurrentValue.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
-                : Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Vector())
+                ? Globals.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
+                : Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       Globals.World.ActiveMap.CurrentValue.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -146,7 +146,6 @@ namespace Model.Characters
             _direction.Dispose();
             _stats.Dispose();
             _conditions.Dispose();
-            _area.Dispose();
         }
 
         public IVisionRange Area => _area;

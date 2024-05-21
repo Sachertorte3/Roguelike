@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Model.Action;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utilities;
@@ -15,9 +16,9 @@ namespace Model.Characters.Behavior
 
         public UniTask<IAction> GenerateNextAction(IHasBehavior character)
         {
-            var visibleArea = character.Area.Get();
+            HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
-            var visibleCharacters = Globals.World.ActiveMap.CurrentValue.GetCharactersInArea(visibleArea);
+            var visibleCharacters = Globals.World.GetCharactersInArea(visibleArea);
             if (visibleCharacters.Any())
                 _lastTargetPosition = visibleCharacters.First().CurrentPosition;
             else if (_lastTargetPosition.HasValue && (character.CurrentPosition == _lastTargetPosition

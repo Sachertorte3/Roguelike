@@ -11,7 +11,7 @@ namespace Model
     public sealed class TurnController
     {
         private readonly World _world;
-        private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CurrentValue.CharacterManager.Characters;
+        private IEnumerable<Character> GetCharacters() => _world.Characters.Set;
         private int _turn = 1;
         private bool _isRunning = false;
         private CancellationTokenSource _cancellationTokenSource;

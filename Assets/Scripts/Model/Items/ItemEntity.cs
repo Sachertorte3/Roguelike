@@ -14,6 +14,7 @@ namespace Model.Items
     public class ItemEntity : IDisposable
     {
         private readonly Entity _entity;
+        public Entity Entity => _entity;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         public readonly Item Item;
 

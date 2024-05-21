@@ -1,13 +1,9 @@
 #nullable enable
 using Model;
-using Model.Characters;
 using R3;
-using System.Linq;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
-using Utilities;
-using Utilities.ObjectsManager;
 using VContainer;
 using View;
 using Logger = Unity.Logging.Logger;

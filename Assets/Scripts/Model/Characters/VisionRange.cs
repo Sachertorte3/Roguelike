@@ -1,11 +1,9 @@
-﻿using Utilities;
+﻿using ObservableCollections;
 using R3;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Collections.ObjectModel;
-using ObservableCollections;
 using System.Linq;
+using UnityEngine;
+using Utilities;
 
 namespace Model.Characters
 {

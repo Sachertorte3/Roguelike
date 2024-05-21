@@ -2,8 +2,6 @@
 using Model.Characters;
 using Model.Entities;
 using R3;
-using System.Collections.Generic;
-using UnityEngine;
 using Utilities.Messages;
 
 namespace Model.Items

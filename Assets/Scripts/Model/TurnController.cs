@@ -11,15 +11,16 @@ namespace Model
         private readonly World _world;
         private IEnumerable<Character> GetCharacters() => _world.ActiveMap.CurrentValue.CharacterManager.Characters;
         private int _turn = 1;
+        private bool _running = false;
 
         public TurnController(World world)
         {
             _world = world;
-            Run();
         }
 
         public async void Run()
         {
+            _running = true;
             while (true)
             {
                 Log.Debug($"Start turn {_turn}");
@@ -32,11 +33,19 @@ namespace Model
                         character.State = CharacterState.Think;
                         await character.DoNextAction();
                     }
+                    if (!_running)
+                    {
+                        return;
+                    }
                 }
                 await characterList.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
             }
+        }
+        public void Stop()
+        {
+            _running = false;
         }
     }
 }

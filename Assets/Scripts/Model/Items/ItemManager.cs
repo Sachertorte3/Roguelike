@@ -37,7 +37,7 @@ namespace Model.Items
             });
         }
 
-        public IObservableCollection<ItemEntity> Items => _items;
+        internal IObservableCollection<ItemEntity> Items => _items;
 
         public void AddItem(ItemEntity item)
         {
@@ -50,18 +50,6 @@ namespace Model.Items
             var itemEntity = _factory.CreateItem(spawnPosition, item);
             AddItem(itemEntity);
             return itemEntity;
-        }
-
-        public ItemEntity? TryPickUp(Vector2Int position)
-        {
-            if (GetAllItemPositions().Contains(position))
-            {
-                var item = Items.First(item => item.CurrentPosition == position);
-                _items.Remove(item);
-                return item;
-            }
-
-            return null;
         }
 
         public HashSet<Vector2Int> GetAllItemPositions()

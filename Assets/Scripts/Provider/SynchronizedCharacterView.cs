@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Assets.Scripts.Utilities;
 using Assets.Scripts.View;
 using BidirectionalMap;
 using Model;
@@ -9,6 +8,7 @@ using R3;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
@@ -24,17 +24,13 @@ namespace Provider
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly BiMap<Character, CharacterView> characterViewDict = new();
-        private SerialDisposable[] _disposables = Enumerable.Range(0, 2).Select(_ => new SerialDisposable()).ToArray();
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
 
-            world.ActiveMap.SubscribeToAll(mapLoaded =>
-            {
-                _disposables[0].Disposable = mapLoaded.CharacterManager.Characters.SubscribeToAll(Add, Remove);
-            });
+            world.Characters.SubscribeToAll(Add, Remove);
         }
 
         public void Add(Character character)

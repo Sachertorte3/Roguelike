@@ -20,19 +20,62 @@ namespace Model.Characters
         public Observable<OnCharacterMoveMessage> OnMove => _onMove;
         public Observable<OnCharacterSpawnEffectMessage> OnUseSkill => _onUseSkill;
         public Observable<OnCharacterVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
+        public Dictionary<object, CompositeDisposable> _disposable = new();
 
         public void Add(Character character)
         {
-            character.Position.Subscribe(positionChanged =>
-                _onPositionChanged.OnNext(new OnCharacterPositionChangedMessage(character, positionChanged)));
-            character.Direction.Subscribe(directionChanged =>
-                _onDirectionChanged.OnNext(new OnCharacterDirectionChangedMessage(character, directionChanged)));
-            character.OnDead.Subscribe(_ => _onDead.OnNext(new OnCharacterDeadMessage(character)));
-            character.OnMove.Subscribe(move =>
-                _onMove.OnNext(new OnCharacterMoveMessage(character, move.direction, move.destination)));
-            character.OnSpawnEffect.Subscribe(useSkill =>
-                _onUseSkill.OnNext(new OnCharacterSpawnEffectMessage(character, useSkill)));
-            character.Area.OnVisibleAreaChanged.Subscribe(visibleAreaChanged => _onVisibleAreaChanged.OnNext(new OnCharacterVisibleAreaChangedMessage(character, visibleAreaChanged.NewArea, visibleAreaChanged.AreaExited, visibleAreaChanged.AreaEntered)));
+            if (_disposable.ContainsKey(character))
+            {
+                _disposable[character].Dispose();
+            }
+            else
+            {
+                _disposable[character] = new CompositeDisposable();
+            }    
+            _disposable[character].Add(character.Position.Subscribe(positionChanged =>
+                _onPositionChanged.OnNext(new OnCharacterPositionChangedMessage(character, positionChanged))));
+            _disposable[character].Add(character.Direction.Subscribe(directionChanged =>
+                _onDirectionChanged.OnNext(new OnCharacterDirectionChangedMessage(character, directionChanged))));
+            _disposable[character].Add(character.OnDead.Subscribe(_ => _onDead.OnNext(new OnCharacterDeadMessage(character))));
+            _disposable[character].Add(character.OnMove.Subscribe(move =>
+                _onMove.OnNext(new OnCharacterMoveMessage(character, move.direction, move.destination))));
+            _disposable[character].Add(character.OnSpawnEffect.Subscribe(useSkill =>
+                _onUseSkill.OnNext(new OnCharacterSpawnEffectMessage(character, useSkill))));
+            _disposable[character].Add(character.Area.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
+            {
+                _onVisibleAreaChanged.OnNext(new OnCharacterVisibleAreaChangedMessage(character, visibleAreaChanged.NewArea, visibleAreaChanged.AreaExited, visibleAreaChanged.AreaEntered));
+            }));
+        }
+        public void Add(CharacterEvents characterEvents)
+        {
+            if (_disposable.ContainsKey(characterEvents))
+            {
+                _disposable[characterEvents].Dispose();
+            }
+            else
+            {
+                _disposable[characterEvents] = new CompositeDisposable();
+            }
+            _disposable[characterEvents].Add(characterEvents.OnPositionChanged.Subscribe(positionChanged =>
+                _onPositionChanged.OnNext(positionChanged)));
+            _disposable[characterEvents].Add(characterEvents.OnDirectionChanged.Subscribe(positionChanged =>
+                _onDirectionChanged.OnNext(positionChanged)));
+            _disposable[characterEvents].Add(characterEvents.OnDead.Subscribe(positionChanged =>
+                _onDead.OnNext(positionChanged)));
+            _disposable[characterEvents].Add(characterEvents.OnMove.Subscribe(positionChanged =>
+                _onMove.OnNext(positionChanged)));
+            _disposable[characterEvents].Add(characterEvents.OnUseSkill.Subscribe(positionChanged =>
+                _onUseSkill.OnNext(positionChanged)));
+            _disposable[characterEvents].Add(characterEvents.OnVisibleAreaChanged.Subscribe(positionChanged =>
+                _onVisibleAreaChanged.OnNext(positionChanged)));
+        }
+        public void Remove(Character character)
+        {
+            _disposable[character].Dispose();
+        }
+        public void Remove(CharacterEvents characterEvents)
+        {
+            _disposable[characterEvents].Dispose();
         }
     }
 

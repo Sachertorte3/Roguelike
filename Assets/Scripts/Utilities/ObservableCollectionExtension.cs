@@ -2,9 +2,11 @@
 using ObservableCollections;
 using R3;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Assets.Scripts.Utilities
+namespace Utilities
 {
     public static class ObservableCollectionExtension
     {
@@ -40,6 +42,24 @@ namespace Assets.Scripts.Utilities
                     addAction(value.Current);
                     removeAction?.Invoke(value.Previous);
                 });
+        }
+        public static IDisposable SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IObservableCollection<T> collectionB)
+        {
+            // コレクションAの要素のうち、コレクションBに存在しないものを削除する
+            var itemsToRemove = collectionA.Except(collectionB).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                collectionA.Remove(item);
+            }
+
+            // コレクションBの要素のうち、コレクションAに存在しないものを追加する
+            var itemsToAdd = collectionB.Except(collectionA).ToList();
+            foreach (var item in itemsToAdd)
+            {
+                collectionA.Add(item);
+            }
+
+            return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
         }
     }
 }

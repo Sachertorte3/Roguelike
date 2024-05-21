@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Assets.Scripts.Utilities;
 using BidirectionalMap;
 using Model;
 using Model.Items;
@@ -7,6 +6,7 @@ using Model.Setting;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
@@ -23,7 +23,6 @@ namespace Provider
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
 
         private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
-        private SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
@@ -31,28 +30,25 @@ namespace Provider
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
 
-            world.ActiveMap.SubscribeToAll(mapLoaded =>
-            {
-                _disposable.Disposable = mapLoaded.ItemManager.Items.SubscribeToAll(Add, Remove);
-            });
+            world.Items.SubscribeToAll(Add, Remove);
         }
 
         public void Add(ItemEntity item)
         {
             var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
-            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
+            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             item.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
+                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value)).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.GetComponent<SpriteView>().RegisterComponent();
             spriteView.transform.position = (Vector3Int)item.CurrentPosition;
             spriteView.GetComponent<SpriteRenderer>().sprite = item.Item.Icon;
-            item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
+            item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
             itemViewDict.Add(item, entityView);
         }
 

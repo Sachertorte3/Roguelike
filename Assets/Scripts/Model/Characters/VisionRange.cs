@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Utilities;
 using R3;
 using System;
 using System.Collections.Generic;

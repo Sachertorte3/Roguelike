@@ -27,12 +27,18 @@ namespace Model.Characters
             AddCharacter(player);
         }
 
-        public IObservableCollection<Character> Characters => _characters;
+        internal IObservableCollection<Character> Characters => _characters;
 
         public void AddCharacter(Character character)
         {
             _characters.Add(character);
             CharacterEvents.Add(character);
+        }
+
+        public void RemoveCharacter(Character character)
+        {
+            _characters.Remove(character);
+            CharacterEvents.Remove(character);
         }
 
         public void SpawnCharacter(Vector2Int spawnPosition)

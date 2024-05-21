@@ -25,15 +25,6 @@ namespace Model
             CharacterManager = new(player);
             ItemManager = new(player);
 
-            CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(move =>
-            {
-                if (move.Character.Inventory.HasEmptySpace())
-                {
-                    var item = ItemManager.TryPickUp(move.Position);
-                    if (item != null) move.Character.TryPickUp(item.Item);
-                }
-            });
-
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
                 CharacterManager.SpawnCharacter(position);
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();

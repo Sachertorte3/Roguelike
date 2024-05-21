@@ -1,5 +1,6 @@
 #nullable enable
 using Model;
+using Model.Characters;
 using R3;
 using System.Linq;
 using Unity.Logging;
@@ -24,17 +25,8 @@ namespace Provider
             {
                 tileMask.SetTilesTranslucent(area.AreaExited);
                 tileMask.SetTilesVisible(area.AreaEntered);
-                ObjectsManager.GetObjectsByType<SpriteView>()
-                    .Where(view => area.AreaExited.Contains(Vector2Int.RoundToInt(view.Position())))
-                    .ForEach(view => view.SetVisibility(false));
-                ObjectsManager.GetObjectsByType<SpriteView>()
-                    .Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position())))
-                    .ForEach(view => view.SetVisibility(true));
             });
-
-            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view =>
-                view.SetVisibility(world.Player.Area.Get()
-                    .Contains(Vector2Int.RoundToInt(view.Position()))));
+            tileMask.SetTilesVisible(world.Player.Area.Get());
 
             gameManager.Run();
         }

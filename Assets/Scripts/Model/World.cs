@@ -45,6 +45,14 @@ namespace Model
             FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
             GenerateMap(bluePrint);
 
+            PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
+            {
+                foreach (var item in _items)
+                    if (areaChanged.AreaExited.Contains(item.CurrentPosition))
+                        item.SetVisiblity(false);
+                    else if (areaChanged.AreaEntered.Contains(item.CurrentPosition)) item.SetVisiblity(true);
+            });
+
             CharacterEvents.OnPositionChanged.Subscribe(move =>
             {
                 if (move.Character.Inventory.HasEmptySpace())

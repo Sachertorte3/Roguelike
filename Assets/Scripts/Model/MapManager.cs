@@ -45,7 +45,7 @@ namespace Model
 
         }
     }
-    public class Stairs
+    public class Stairs : IEntity
     {
         public Vector2Int Position => _entity.CurrentPosition;
         private Entity _entity;
@@ -59,5 +59,9 @@ namespace Model
         {
             _entity.SetVisibility(visiblity);
         }
+    }
+    public class EventEntity
+    {
+        private readonly Entity _entity;
     }
 }

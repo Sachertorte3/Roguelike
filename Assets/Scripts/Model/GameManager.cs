@@ -22,7 +22,7 @@ namespace Model
             _turnController = new TurnController(_world);
             Globals.GameManager = this;
 
-            _world.CharacterEvents.OnPositionChanged.Subscribe(move =>
+            _world.PlayerEvents.OnPositionChanged.Subscribe(move =>
             {
                 if (move.Message.Position == _world.ActiveMap.CurrentValue.Stairs.CurrentPosition)
                 {

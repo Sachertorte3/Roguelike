@@ -138,6 +138,15 @@ namespace Model.Characters
             State = CharacterState.Wait;
         }
 
+        public void WasAttackedBy(IActorOfEffect actor)
+        {
+            var direction = DirectionMethods.NearestDirectionFromVector(actor.CurrentPosition - CurrentPosition);
+            if (direction.HasValue)
+            {
+                Turn(direction.Value);
+            }
+        }
+
         public void Dispose()
         {
             _entity.Dispose();

@@ -11,6 +11,7 @@ namespace Model.Effect
     public class AttackEffect : IEffect
     {
         [MinValue(1)] public int Power;
+        public bool IsHarmful => true;
 
         public AttackEffect(int power)
         {
@@ -36,6 +37,7 @@ namespace Model.Effect
     {
         [SerializeReference, Required] public IConditionData Condition;
         [Required] public RemovalConditionData RemovalCondition;
+        public bool IsHarmful => Condition.IsHarmful;
 
         public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
         {

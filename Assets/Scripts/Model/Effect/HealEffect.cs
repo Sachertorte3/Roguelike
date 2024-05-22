@@ -10,6 +10,7 @@ namespace Model.Effect
     public class HealEffect : IEffect
     {
         [MinValue(1)] public int Power;
+        public bool IsHarmful => false;
 
         public HealEffect(int power)
         {

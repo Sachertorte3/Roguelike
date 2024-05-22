@@ -8,6 +8,7 @@ namespace Model.Characters.Conditions
     {
         public string Name => "毒";
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
+        public bool IsHarmful => true;
 
         public void Inflict(IHasCondition hasCondition)
         {

@@ -32,7 +32,7 @@ namespace Model.Characters.Behavior
 
         private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition)
         {
-            var directions = DirectionMethods.NearDirectionFromVectors(targetPosition - character.CurrentPosition);
+            var directions = DirectionMethods.NearDirectionsFromVector(targetPosition - character.CurrentPosition);
             return new List<Move> { new(directions[0], 0.1f), new(directions[1], 0.05f), new(directions[2], 0.01f) }
                 .Where(move => move.Doable(character));
         }

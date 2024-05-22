@@ -21,14 +21,6 @@ namespace Model
             _world = world;
             _turnController = new TurnController(_world);
             Globals.GameManager = this;
-
-            _world.PlayerEvents.OnPositionChanged.Subscribe(move =>
-            {
-                if (move.Message.Position == _world.ActiveMap.CurrentValue.Stairs.CurrentPosition)
-                {
-                    LoadMap();
-                }
-            });
         }
 
         public async void LoadMap()

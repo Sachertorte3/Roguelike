@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using Assets.Scripts.View;
-using BidirectionalMap;
 using Model;
 using Model.Characters;
 using Model.Setting;
@@ -13,20 +12,17 @@ using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
-using Object = UnityEngine.Object;
 
 namespace Provider
 {
-    public class SynchronizedCharacterView
+    public class SynchronizedCharacterView : SynchronizedView<Character, CharacterView>
     {
-        private readonly GameObject _characterViewPrefab = Addressables
-            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
+        protected override CharacterView _viewPrefab => Addressables
+            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion().GetComponent<CharacterView>();
 
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
-
-        private readonly BiMap<Character, CharacterView> characterViewDict = new();
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
@@ -37,9 +33,8 @@ namespace Provider
             world.Characters.Set.SubscribeToAll(Add, Remove);
         }
 
-        public void Add(Character character)
+        protected override void InitializeView(Character character, CharacterView characterView)
         {
-            var characterView = Object.Instantiate(_characterViewPrefab).GetComponent<CharacterView>();
             characterView.Construct(character.TypeName());
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
                 character.TypeName() == "Human");
@@ -57,7 +52,6 @@ namespace Provider
             var spriteView = characterView.GetComponent<SpriteView>();
             spriteView.RegisterComponent();
             character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
-            characterViewDict.Add(character, characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             character.Condition.Conditions.SubscribeToAll(
@@ -66,20 +60,9 @@ namespace Provider
             );
         }
 
-        public void Remove(Character character)
+        protected override void CleanupView(Character character, CharacterView characterView)
         {
-            Object.Destroy(characterViewDict.Forward[character].gameObject);
-            characterViewDict.Remove(character);
-        }
 
-        public Character Get(CharacterView characterView)
-        {
-            return characterViewDict.Reverse[characterView];
-        }
-
-        public CharacterView Get(Character character)
-        {
-            return characterViewDict.Forward[character];
         }
     }
 }

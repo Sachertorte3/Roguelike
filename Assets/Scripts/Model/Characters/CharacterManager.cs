@@ -13,7 +13,7 @@ namespace Model.Characters
         public readonly CharacterEvents CharacterEvents = new();
         private readonly ObservableList<Character> _characters = new();
 
-        public CharacterManager(HashSet<Vector2Int> visibleArea)
+        public CharacterManager()
         {
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
         }

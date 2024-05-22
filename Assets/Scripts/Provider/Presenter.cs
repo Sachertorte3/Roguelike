@@ -15,6 +15,7 @@ namespace Provider
 {
     public class Presenter
     {
+        private SpriteView _stairs;
         [Inject]
         public Presenter(TileMaskController tileMask, GameManager gameManager, World world)
         {
@@ -30,11 +31,12 @@ namespace Provider
             world.ActiveMap.SubscribeToAll(map =>
             {
                 var stairsPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion();
-                var stairs = GameObject.Instantiate(stairsPrefab).GetComponent<SpriteView>();
-                stairs.RegisterComponent();
-                stairs.transform.position = (Vector3Int)map.Stairs.CurrentPosition;
-                map.Stairs.Visibility.SubscribeToAll(stairs.SetVisibility);
-            });
+                _stairs = GameObject.Instantiate(stairsPrefab).GetComponent<SpriteView>();
+                _stairs.RegisterComponent();
+                _stairs.transform.position = (Vector3Int)map.Stairs.CurrentPosition;
+                map.Stairs.Visibility.SubscribeToAll(_stairs.SetVisibility);
+            },
+            _ => GameObject.Destroy(_stairs?.gameObject));
 
             gameManager.Run();
         }

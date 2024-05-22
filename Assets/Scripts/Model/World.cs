@@ -48,9 +48,9 @@ namespace Model
                         item.SetVisiblity(false);
                     else if (areaChanged.Message.AreaEntered.Contains(item.CurrentPosition))
                         item.SetVisiblity(true);
-                if (areaChanged.Message.AreaExited.Contains(ActiveMap.CurrentValue.Stairs.Position))
+                if (areaChanged.Message.AreaExited.Contains(ActiveMap.CurrentValue.Stairs.CurrentPosition))
                     ActiveMap.CurrentValue.Stairs.SetVisiblity(false);
-                else if (areaChanged.Message.AreaEntered.Contains(ActiveMap.CurrentValue.Stairs.Position))
+                else if (areaChanged.Message.AreaEntered.Contains(ActiveMap.CurrentValue.Stairs.CurrentPosition))
                     ActiveMap.CurrentValue.Stairs.SetVisiblity(true);
             });
 

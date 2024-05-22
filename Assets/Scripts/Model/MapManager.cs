@@ -47,10 +47,14 @@ namespace Model
     }
     public class Stairs : IEntity
     {
-        public Vector2Int Position => _entity.CurrentPosition;
+        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         private Entity _entity;
         public Entity Entity => _entity;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
+
         public Stairs(Vector2Int position)
         {
             _entity = new(position);
@@ -59,9 +63,5 @@ namespace Model
         {
             _entity.SetVisibility(visiblity);
         }
-    }
-    public class EventEntity
-    {
-        private readonly Entity _entity;
     }
 }

@@ -1,8 +1,10 @@
 ﻿#nullable enable
+using Model.Characters;
 using RandomDungeonWithBluePrint;
 using System;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using R3;
 
 namespace Model
 {
@@ -19,6 +21,14 @@ namespace Model
             _world = world;
             _turnController = new TurnController(_world);
             Globals.GameManager = this;
+
+            _world.CharacterEvents.OnPositionChanged.Subscribe(move =>
+            {
+                if (move.Message.Position == _world.ActiveMap.CurrentValue.Stairs.Position)
+                {
+                    LoadMap();
+                }
+            });
         }
 
         public async void LoadMap()

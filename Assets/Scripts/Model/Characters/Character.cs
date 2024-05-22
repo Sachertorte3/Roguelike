@@ -134,7 +134,6 @@ namespace Model.Characters
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             else
                 await itemEntity.Throw(this, direction);
-            Globals.GameManager.LoadMap();
             State = CharacterState.Wait;
         }
 

@@ -48,6 +48,10 @@ namespace Model
                         item.SetVisiblity(false);
                     else if (areaChanged.Message.AreaEntered.Contains(item.CurrentPosition))
                         item.SetVisiblity(true);
+                if (areaChanged.Message.AreaExited.Contains(ActiveMap.CurrentValue.Stairs.Position))
+                    ActiveMap.CurrentValue.Stairs.SetVisiblity(false);
+                else if (areaChanged.Message.AreaEntered.Contains(ActiveMap.CurrentValue.Stairs.Position))
+                    ActiveMap.CurrentValue.Stairs.SetVisiblity(true);
             });
 
             CharacterEvents.OnPositionChanged.Subscribe(move =>

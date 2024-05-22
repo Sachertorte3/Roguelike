@@ -3,6 +3,10 @@ using Model;
 using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Utilities;
+using Utilities.ObjectsManager;
 using VContainer;
 using View;
 using Logger = Unity.Logging.Logger;
@@ -22,6 +26,15 @@ namespace Provider
                 tileMask.SetTilesVisible(area.Message.AreaEntered);
             });
             tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
+
+            world.ActiveMap.SubscribeToAll(map =>
+            {
+                var stairsPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion();
+                var stairs = GameObject.Instantiate(stairsPrefab).GetComponent<SpriteView>();
+                stairs.RegisterComponent();
+                stairs.transform.position = (Vector3Int)map.Stairs.Position;
+                map.Stairs.Visibility.SubscribeToAll(stairs.SetVisibility);
+            });
 
             gameManager.Run();
         }

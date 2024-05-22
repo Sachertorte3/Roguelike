@@ -27,7 +27,14 @@ namespace Model.Effect
         {
             var area = _area.Get(position, direction);
             Globals.World.GetCharactersInArea(area.ToHashSet())
-                .ForEach(target => _effect.Apply(actor, target));
+                .ForEach(target =>
+                {
+                    if (_effect.IsHarmful)
+                    {
+                        target.WasAttackedBy(actor);
+                    }
+                    _effect.Apply(actor, target);
+                });
             return UniTask.CompletedTask;
         }
 

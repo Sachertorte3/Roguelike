@@ -7,6 +7,7 @@ namespace Data.Condition
     {
         public string Name { get; }
         public ParticleType ParticleType { get; }
+        public bool IsHarmful { get; }
         public void Inflict(IHasCondition hasCondition);
         public UniTask Persist(IHasCondition hasCondition);
         public void Delete(IHasCondition hasCondition);

@@ -120,8 +120,12 @@ namespace Utilities
             };
         }
 
-        public static Direction8 NearestDirectionFromVector(Vector2 vector)
+        public static Direction8? NearestDirectionFromVector(Vector2 vector)
         {
+            if (vector == Vector2.zero)
+            {
+                return null;
+            }
             return new Angle(vector).Value switch
             {
                 < 0 + 45 / 2 => Direction8.Right,
@@ -137,8 +141,12 @@ namespace Utilities
             };
         }
 
-        public static List<Direction8> NearDirectionFromVectors(Vector2 vector)
+        public static List<Direction8>? NearDirectionsFromVector(Vector2 vector)
         {
+            if (vector == Vector2.zero)
+            {
+                return null;
+            }
             return new Angle(vector).Value switch
             {
                 < 0 + 45 / 2 => new List<Direction8> { Direction8.Right, Direction8.UpRight, Direction8.Up },

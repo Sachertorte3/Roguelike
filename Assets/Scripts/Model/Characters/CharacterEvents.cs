@@ -17,19 +17,19 @@ namespace Model.Characters
         private readonly MessageSubject<Character, OnPositionChangedMessage> _onPositionChanged = new();
         private readonly MessageSubject<Character, OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly MessageSubject<Character, OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
-        public Observable<(Character Character, OnPositionChangedMessage Message)> OnPositionChanged => _onPositionChanged.AsObservable();
-        public Observable<(Character Character, OnDirectionChangedMessage Message)> OnDirectionChanged => _onDirectionChanged.AsObservable();
-        public Observable<(Character Character, OnDeadMessage Message)> OnDead => _onDead.AsObservable();
-        public Observable<(Character Character, OnMoveMessage Message)> OnMove => _onMove.AsObservable();
-        public Observable<(Character Character, OnTeleportMessage Message)> OnTeleport => _onTeleport.AsObservable();
-        public Observable<(Character Character, OnEffectSpawnedMessage Message)> OnEffectSpawned => _onEffectSpawned.AsObservable();
-        public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged => _onVisibleAreaChanged.AsObservable();
+        public Observable<(Character Character, OnPositionChangedMessage Message)> OnPositionChanged => _onPositionChanged;
+        public Observable<(Character Character, OnDirectionChangedMessage Message)> OnDirectionChanged => _onDirectionChanged;
+        public Observable<(Character Character, OnDeadMessage Message)> OnDead => _onDead;
+        public Observable<(Character Character, OnMoveMessage Message)> OnMove => _onMove;
+        public Observable<(Character Character, OnTeleportMessage Message)> OnTeleport => _onTeleport;
+        public Observable<(Character Character, OnEffectSpawnedMessage Message)> OnEffectSpawned => _onEffectSpawned;
+        public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
-        Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged => _onPositionChanged.AsObservable(character => character.Entity);
+        Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged => _onPositionChanged.SelectSender(character => character.Entity);
 
-        Observable<(Entity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove => _onMove.AsObservable(character => character.Entity);
+        Observable<(Entity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove => _onMove.SelectSender(character => character.Entity);
 
-        Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport => _onTeleport.AsObservable(character => character.Entity);
+        Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport => _onTeleport.SelectSender(character => character.Entity);
 
         public Dictionary<object, CompositeDisposable> _disposable = new();
 

@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Model.Characters;
+using Model.Logs;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace Model
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 Log.Debug($"Start turn {_turn}");
+                GameLog.Add($"Start turn {_turn}");
                 IEnumerable<Character> characterList = GetCharacters();
                 foreach (var character in characterList.ToList())
                 {

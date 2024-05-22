@@ -29,6 +29,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
+            builder.RegisterComponentInHierarchy<LogView>();
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
 
@@ -36,6 +37,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
+            builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
         }
     }

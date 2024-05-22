@@ -32,7 +32,7 @@ namespace Provider
                 var stairsPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion();
                 var stairs = GameObject.Instantiate(stairsPrefab).GetComponent<SpriteView>();
                 stairs.RegisterComponent();
-                stairs.transform.position = (Vector3Int)map.Stairs.Position;
+                stairs.transform.position = (Vector3Int)map.Stairs.CurrentPosition;
                 map.Stairs.Visibility.SubscribeToAll(stairs.SetVisibility);
             });
 

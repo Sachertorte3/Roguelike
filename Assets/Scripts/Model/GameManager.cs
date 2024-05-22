@@ -24,7 +24,7 @@ namespace Model
 
             _world.CharacterEvents.OnPositionChanged.Subscribe(move =>
             {
-                if (move.Message.Position == _world.ActiveMap.CurrentValue.Stairs.Position)
+                if (move.Message.Position == _world.ActiveMap.CurrentValue.Stairs.CurrentPosition)
                 {
                     LoadMap();
                 }

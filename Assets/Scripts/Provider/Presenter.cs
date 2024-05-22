@@ -3,7 +3,6 @@ using Model;
 using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
-using UnityEngine;
 using VContainer;
 using View;
 using Logger = Unity.Logging.Logger;
@@ -23,10 +22,6 @@ namespace Provider
                 tileMask.SetTilesVisible(area.Message.AreaEntered);
             });
             tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
-            foreach (var position in world.Player.Area.VisibleArea)
-            {
-                Debug.Log(position);
-            }
 
             gameManager.Run();
         }

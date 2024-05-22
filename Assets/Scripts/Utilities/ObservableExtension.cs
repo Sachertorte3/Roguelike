@@ -9,7 +9,7 @@ namespace Utilities
 {
     public static class ObservableExtension
     {
-        public static IDisposable RelayTo<T>(this Observable<T> source, IObserver<T> target)
+        public static IDisposable RelayTo<T>(this Observable<T> source, Observer<T> target)
         {
             return source.Subscribe(item => target.OnNext(item));
         }

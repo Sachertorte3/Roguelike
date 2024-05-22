@@ -10,80 +10,48 @@ namespace Model.Characters
 {
     public class CharacterEvents : IEntityGroupEvents
     {
-        private readonly MessageSubject<Character, OnDeadMessage> _onDead = new();
-        private readonly MessageSubject<Character, OnDirectionChangedMessage> _onDirectionChanged = new();
-        private readonly MessageSubject<Character, OnMoveMessage> _onMove = new();
-        private readonly MessageSubject<Character, OnTeleportMessage> _onTeleport = new();
-        private readonly MessageSubject<Character, OnPositionChangedMessage> _onPositionChanged = new();
-        private readonly MessageSubject<Character, OnEffectSpawnedMessage> _onEffectSpawned = new();
-        private readonly MessageSubject<Character, OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
-        public Observable<(Character Character, OnPositionChangedMessage Message)> OnPositionChanged => _onPositionChanged;
-        public Observable<(Character Character, OnDirectionChangedMessage Message)> OnDirectionChanged => _onDirectionChanged;
-        public Observable<(Character Character, OnDeadMessage Message)> OnDead => _onDead;
-        public Observable<(Character Character, OnMoveMessage Message)> OnMove => _onMove;
-        public Observable<(Character Character, OnTeleportMessage Message)> OnTeleport => _onTeleport;
-        public Observable<(Character Character, OnEffectSpawnedMessage Message)> OnEffectSpawned => _onEffectSpawned;
-        public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged => _onVisibleAreaChanged;
+        private GroupEvents<Character> _events = new();
+        public Observable<(Character Character, OnPositionChangedMessage Message)> OnPositionChanged => _events.GetObservable<OnPositionChangedMessage>();
+        public Observable<(Character Character, OnDirectionChangedMessage Message)> OnDirectionChanged => _events.GetObservable<OnDirectionChangedMessage>();
+        public Observable<(Character Character, OnDeadMessage Message)> OnDead => _events.GetObservable<OnDeadMessage>();
+        public Observable<(Character Character, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
+        public Observable<(Character Character, OnTeleportMessage Message)> OnTeleport => _events.GetObservable<OnTeleportMessage>();
+        public Observable<(Character Character, OnEffectSpawnedMessage Message)> OnEffectSpawned => _events.GetObservable<OnEffectSpawnedMessage>();
+        public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged => _events.GetObservable<OnVisibleAreaChangedMessage>();
 
-        Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged => _onPositionChanged.SelectSender(character => character.Entity);
+        Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged => _events.GetSubject<OnPositionChangedMessage>().SelectSender(character => character.Entity);
 
-        Observable<(Entity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove => _onMove.SelectSender(character => character.Entity);
+        Observable<(Entity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove => _events.GetSubject<OnMoveMessage>().SelectSender(character => character.Entity);
 
-        Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport => _onTeleport.SelectSender(character => character.Entity);
-
-        public Dictionary<object, CompositeDisposable> _disposable = new();
+        Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport => _events.GetSubject<OnTeleportMessage>().SelectSender(character => character.Entity);
 
         public void Add(Character character)
         {
-            if (_disposable.ContainsKey(character))
-            {
-                return;
-            }
-            else
-            {
-                _disposable[character] = new CompositeDisposable();
-            }
-            _disposable[character].Add(character.Position.Subscribe(positionChanged =>
-                _onPositionChanged.OnNext(character, new OnPositionChangedMessage(positionChanged))));
-            _disposable[character].Add(character.Direction.Subscribe(directionChanged =>
-                _onDirectionChanged.OnNext(character, new OnDirectionChangedMessage(directionChanged))));
-            _disposable[character].Add(character.OnDead.Subscribe(_ => _onDead.OnNext(character, new OnDeadMessage())));
-            _disposable[character].Add(character.OnMove.Subscribe(move =>
-                _onMove.OnNext(character, new OnMoveMessage(move.direction, move.destination))));
-            _disposable[character].Add(character.OnSpawnEffect.Subscribe(useSkill =>
-                _onEffectSpawned.OnNext(character, new OnEffectSpawnedMessage(useSkill))));
-            _disposable[character].Add(character.Area.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
-            {
-                _onVisibleAreaChanged.OnNext(character, new OnVisibleAreaChangedMessage(visibleAreaChanged.NewArea, visibleAreaChanged.AreaExited, visibleAreaChanged.AreaEntered));
-            }));
+            _events.Add(character, character.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
+            _events.Add(character, character.Direction.Select(directionChanged => new OnDirectionChangedMessage(directionChanged)));
+            _events.Add(character, character.OnDead.Select(_ => new OnDeadMessage()));
+            _events.Add(character, character.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
+            _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
+            _events.Add(character, character.OnSpawnEffect.Select(useSkill =>new OnEffectSpawnedMessage(useSkill)));
+            _events.Add(character, character.Area.OnVisibleAreaChanged);
         }
         public void Add(CharacterEvents characterEvents)
         {
-            if (_disposable.ContainsKey(characterEvents))
-            {
-                return;
-            }
-            else
-            {
-                _disposable[characterEvents] = new CompositeDisposable();
-            }
-            _disposable[characterEvents].Add(characterEvents.OnPositionChanged.RelayTo(_onPositionChanged));
-            _disposable[characterEvents].Add(characterEvents.OnDirectionChanged.RelayTo(_onDirectionChanged));
-            _disposable[characterEvents].Add(characterEvents.OnDead.RelayTo(_onDead));
-            _disposable[characterEvents].Add(characterEvents.OnMove.RelayTo(_onMove));
-            _disposable[characterEvents].Add(characterEvents.OnTeleport.RelayTo(_onTeleport));
-            _disposable[characterEvents].Add(characterEvents.OnEffectSpawned.RelayTo(_onEffectSpawned));
-            _disposable[characterEvents].Add(characterEvents.OnVisibleAreaChanged.RelayTo(_onVisibleAreaChanged));
+            _events.Add(characterEvents, characterEvents.OnPositionChanged);
+            _events.Add(characterEvents, characterEvents.OnDirectionChanged);
+            _events.Add(characterEvents, characterEvents.OnDead);
+            _events.Add(characterEvents, characterEvents.OnMove);
+            _events.Add(characterEvents, characterEvents.OnTeleport);
+            _events.Add(characterEvents, characterEvents.OnEffectSpawned);
+            _events.Add(characterEvents, characterEvents.OnVisibleAreaChanged);
         }
         public void Remove(Character character)
         {
-            _disposable[character].Dispose();
-            _disposable.Remove(character);
+            _events.Remove(character);
         }
         public void Remove(CharacterEvents characterEvents)
         {
-            _disposable[characterEvents].Dispose();
-            _disposable.Remove(characterEvents);
+            _events.Remove(characterEvents);
         }
     }
 

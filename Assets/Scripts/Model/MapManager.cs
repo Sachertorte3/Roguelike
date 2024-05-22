@@ -20,7 +20,7 @@ namespace Model
         public MapManager(FieldBluePrint bluePrint, HashSet<Vector2Int> visibleArea)
         {
             _tilemap = new(bluePrint);
-            CharacterManager = new(visibleArea);
+            CharacterManager = new();
             ItemManager = new(visibleArea);
         }
         public void Spawn()

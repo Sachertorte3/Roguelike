@@ -2,6 +2,7 @@
 using R3;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Utilities.Messages
 {
@@ -11,11 +12,7 @@ namespace Utilities.Messages
         private Dictionary<object, CompositeDisposable> _disposable = new();
         public void Add<TMessage>(TSender sender, Observable<TMessage> observable)
         {
-            if (_disposable.ContainsKey(sender))
-            {
-                return;
-            }
-            else
+            if (!_disposable.ContainsKey(sender))
             {
                 _disposable[sender] = new CompositeDisposable();
             }
@@ -23,11 +20,7 @@ namespace Utilities.Messages
         }
         public void Add<TMessage>(object obj, Observable<(TSender, TMessage)> observable)
         {
-            if (_disposable.ContainsKey(obj))
-            {
-                return;
-            }
-            else
+            if (!_disposable.ContainsKey(obj))
             {
                 _disposable[obj] = new CompositeDisposable();
             }

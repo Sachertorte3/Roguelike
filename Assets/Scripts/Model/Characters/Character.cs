@@ -21,7 +21,7 @@ using Utilities;
 
 namespace Model.Characters
 {
-    public sealed class Character : IDisposable, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect, IHasCondition
+    public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect, IHasCondition
     {
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;

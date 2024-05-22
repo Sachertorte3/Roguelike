@@ -11,7 +11,7 @@ using Utilities;
 
 namespace Model.Items
 {
-    public class ItemEntity : IDisposable
+    public class ItemEntity : IDisposable, IEntity
     {
         private readonly Entity _entity;
         public Entity Entity => _entity;

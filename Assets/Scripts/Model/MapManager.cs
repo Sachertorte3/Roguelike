@@ -1,8 +1,10 @@
 ﻿#nullable enable
 using Data;
 using Model.Characters;
+using Model.Entities;
 using Model.Items;
 using Model.Map;
+using R3;
 using RandomDungeonWithBluePrint;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,11 +19,14 @@ namespace Model
         private readonly Tilemap _tilemap;
         public CharacterManager CharacterManager { get; init; }
         public ItemManager ItemManager { get; init; }
+        public Stairs Stairs { get; init; }
         public MapManager(FieldBluePrint bluePrint, HashSet<Vector2Int> visibleArea)
         {
             _tilemap = new(bluePrint);
             CharacterManager = new();
             ItemManager = new(visibleArea);
+
+            Stairs = new Stairs(_tilemap.GetAllPassablePositions().GetAtRandom());
         }
         public void Spawn()
         {
@@ -38,6 +43,21 @@ namespace Model
         public void UnLoad()
         {
 
+        }
+    }
+    public class Stairs
+    {
+        public Vector2Int Position => _entity.CurrentPosition;
+        private Entity _entity;
+        public Entity Entity => _entity;
+        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public Stairs(Vector2Int position)
+        {
+            _entity = new(position);
+        }
+        public void SetVisiblity(bool visiblity)
+        {
+            _entity.SetVisibility(visiblity);
         }
     }
 }

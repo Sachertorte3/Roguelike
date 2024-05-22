@@ -32,6 +32,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<LogView>();
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
+            builder.Register<SynchronizedEventEntityView>(Lifetime.Singleton);
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();

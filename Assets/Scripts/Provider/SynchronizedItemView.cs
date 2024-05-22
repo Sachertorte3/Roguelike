@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using BidirectionalMap;
 using Model;
 using Model.Items;
 using Model.Setting;
@@ -12,20 +11,17 @@ using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
-using Object = UnityEngine.Object;
 
 namespace Provider
 {
-    public class SynchronizedItemView
+    public class SynchronizedItemView : SynchronizedView<ItemEntity, EntityView>
     {
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion().GetComponent<EntityView>();
+
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
-
-        private readonly GameObject _itemViewPrefab =
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
-
-        private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
@@ -37,9 +33,8 @@ namespace Provider
             world.Items.Set.SubscribeToAll(Add, Remove);
         }
 
-        public void Add(ItemEntity item)
+        protected override void InitializeView(ItemEntity item, EntityView entityView)
         {
-            var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
@@ -49,27 +44,14 @@ namespace Provider
             Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.GetComponent<SpriteView>().RegisterComponent();
+            spriteView.RegisterComponent();
             spriteView.transform.position = (Vector3Int)item.CurrentPosition;
-            spriteView.GetComponent<SpriteRenderer>().sprite = item.Item.Icon;
+            spriteView.GetComponent<SpriteRenderer>().sprite = item.Icon;
             item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
-            itemViewDict.Add(item, entityView);
         }
 
-        public void Remove(ItemEntity item)
+        protected override void CleanupView(ItemEntity item, EntityView view)
         {
-            Object.Destroy(itemViewDict.Forward[item].gameObject);
-            itemViewDict.Remove(item);
-        }
-
-        public ItemEntity Get(EntityView view)
-        {
-            return itemViewDict.Reverse[view];
-        }
-
-        public EntityView Get(ItemEntity item)
-        {
-            return itemViewDict.Forward[item];
         }
     }
 }

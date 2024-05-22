@@ -28,6 +28,7 @@ namespace Model
 
         public readonly IntegratedSet<Character> Characters = new();
         public readonly IntegratedSet<ItemEntity> Items = new();
+        public readonly IntegratedSet<IEventEntity> EventEntities = new();
         private HashSet<Vector2Int> _allItemPositions = new();
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
@@ -48,10 +49,22 @@ namespace Model
                         item.SetVisiblity(false);
                     else if (areaChanged.Message.AreaEntered.Contains(item.CurrentPosition))
                         item.SetVisiblity(true);
-                if (areaChanged.Message.AreaExited.Contains(ActiveMap.CurrentValue.Stairs.CurrentPosition))
-                    ActiveMap.CurrentValue.Stairs.SetVisiblity(false);
-                else if (areaChanged.Message.AreaEntered.Contains(ActiveMap.CurrentValue.Stairs.CurrentPosition))
-                    ActiveMap.CurrentValue.Stairs.SetVisiblity(true);
+                foreach (var eventEntity in EventEntities.Set)
+                    if (areaChanged.Message.AreaExited.Contains(eventEntity.CurrentPosition))
+                        eventEntity.SetVisiblity(false);
+                    else if (areaChanged.Message.AreaEntered.Contains(eventEntity.CurrentPosition))
+                        eventEntity.SetVisiblity(true);
+            });
+
+            PlayerEvents.OnPositionChanged.Subscribe(move =>
+            {
+                foreach (var eventEntity in ActiveMap.CurrentValue.EventEntities)
+                {
+                    if (move.Message.Position == eventEntity.CurrentPosition)
+                    {
+                        eventEntity.DoEvent();
+                    }
+                }
             });
 
             CharacterEvents.OnPositionChanged.Subscribe(move =>
@@ -95,6 +108,7 @@ namespace Model
 
                 Characters.UnRegister(ActiveMap.CurrentValue.CharacterManager.Characters);
                 Items.UnRegister(ActiveMap.CurrentValue.ItemManager.Items);
+                EventEntities.UnRegister(ActiveMap.CurrentValue.EventEntities);
             }
 
             _activeMap.Value = Maps[index];
@@ -103,6 +117,7 @@ namespace Model
 
             Characters.Register(ActiveMap.CurrentValue.CharacterManager.Characters);
             Items.Register(ActiveMap.CurrentValue.ItemManager.Items);
+            EventEntities.Register(ActiveMap.CurrentValue.EventEntities);
 
             Player.Teleport(GetAllPassablePositions().GetAtRandom());
         }

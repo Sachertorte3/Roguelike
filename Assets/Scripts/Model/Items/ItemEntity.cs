@@ -17,6 +17,7 @@ namespace Model.Items
         public Entity Entity => _entity;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         public readonly Item Item;
+        public Sprite Icon => Item.Icon;
 
         public ItemEntity(Vector2Int spawnPosition, Item item)
         {

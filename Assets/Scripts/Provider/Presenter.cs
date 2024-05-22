@@ -3,10 +3,6 @@ using Model;
 using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using Utilities;
-using Utilities.ObjectsManager;
 using VContainer;
 using View;
 using Logger = Unity.Logging.Logger;
@@ -15,9 +11,8 @@ namespace Provider
 {
     public class Presenter
     {
-        private SpriteView _stairs;
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, World world)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, World world, SynchronizedEventEntityView _)
         {
             LoggerInit();
 
@@ -27,16 +22,6 @@ namespace Provider
                 tileMask.SetTilesVisible(area.Message.AreaEntered);
             });
             tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
-
-            world.ActiveMap.SubscribeToAll(map =>
-            {
-                var stairsPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion();
-                _stairs = GameObject.Instantiate(stairsPrefab).GetComponent<SpriteView>();
-                _stairs.RegisterComponent();
-                _stairs.transform.position = (Vector3Int)map.Stairs.CurrentPosition;
-                map.Stairs.Visibility.SubscribeToAll(_stairs.SetVisibility);
-            },
-            _ => GameObject.Destroy(_stairs?.gameObject));
 
             gameManager.Run();
         }

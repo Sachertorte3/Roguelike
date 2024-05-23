@@ -36,7 +36,14 @@ namespace Model.Characters
 
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
-            return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions(), position, 10f);
+            if (Globals.World.IsLoaded)
+            {
+                return ViewCalculator.ComputeCircle(Globals.World.ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions(), position, 10f);
+            }
+            else
+            {
+                return new();
+            }
         }
     }
 }

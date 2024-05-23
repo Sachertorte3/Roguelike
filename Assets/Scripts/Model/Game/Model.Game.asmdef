@@ -1,0 +1,16 @@
+{
+    "name": "Model.Game",
+    "rootNamespace": "",
+    "references": [
+        "GUID:110953f10b9584c49aec8118717b2be0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

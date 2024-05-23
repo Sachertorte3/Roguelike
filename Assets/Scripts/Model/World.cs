@@ -91,7 +91,7 @@ namespace Model
             FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
             GenerateMap(bluePrint);
 
-            IsLoaded = true;
+            IsInitialized = true;
         }
         public void GenerateMap(FieldBluePrint bluePrint)
         {
@@ -102,7 +102,8 @@ namespace Model
         }
         private void LoadMap(int index)
         {
-            if (IsLoaded)
+            IsLoaded = false;
+            if (IsInitialized)
             {
                 CharacterEvents.Remove(ActiveMap.CurrentValue.CharacterManager.CharacterEvents);
 
@@ -120,6 +121,8 @@ namespace Model
             EventEntities.Register(ActiveMap.CurrentValue.EventEntities);
 
             Player.Teleport(GetAllPassablePositions().GetAtRandom());
+
+            IsLoaded = true;
         }
         public ItemEntity? TryPickUp(Vector2Int position) => ActiveMap.CurrentValue.ItemManager.TryPickUp(position);
         public HashSet<Vector2Int> GetAllItemPositions()
@@ -168,6 +171,7 @@ namespace Model
         {
             _allCharacterPositions = Characters.Set.Select(character => character.Position.CurrentValue).ToHashSet();
         }
+        public bool IsInitialized { get; private set; } = false;
         public bool IsLoaded { get; private set; } = false;
     }
 }

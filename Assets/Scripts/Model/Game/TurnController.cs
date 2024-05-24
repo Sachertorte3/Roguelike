@@ -40,7 +40,7 @@ namespace Model
                     if (character.CanAct && !character.IsDead)
                     {
                         character.State = CharacterState.Think;
-                        await character.DoNextAction();
+                        await character.DoNextAction(_world);
                     }
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {

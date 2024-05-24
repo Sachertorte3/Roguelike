@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Model.Characters.Behavior;
+using Model.Domain;
 using ObservableCollections;
 using R3;
 using System.Collections.Generic;
@@ -32,10 +33,10 @@ namespace Model.Characters
             CharacterEvents.Remove(character);
         }
 
-        public void SpawnCharacter(Vector2Int spawnPosition)
+        public void SpawnCharacter(Vector2Int spawnPosition, IWorld world)
         {
             AddCharacter(
-                _factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false)));
+                _factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
         }
     }
 }

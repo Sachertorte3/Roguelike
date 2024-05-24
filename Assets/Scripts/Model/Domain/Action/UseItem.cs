@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Model.Domain;
 using Utilities;
 
 namespace Model.Action
@@ -7,19 +8,19 @@ namespace Model.Action
     {
         private float score;
 
-        public bool Doable(IActor actor)
+        public bool Doable(IActor actor, IWorld world)
         {
             return actor.Inventory.GetItem(ItemIndex).EffectsOnUse;
         }
 
-        public async UniTask Do(IActor actor)
+        public async UniTask Do(IActor actor, IWorld world)
         {
-            await actor.UseItem(ItemIndex, Direction);
+            await actor.UseItem(ItemIndex, Direction, world);
         }
 
-        public float Evaluate(IActor actor)
+        public float Evaluate(IActor actor, IWorld world)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction);
+            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction, world);
             return score;
         }
     }

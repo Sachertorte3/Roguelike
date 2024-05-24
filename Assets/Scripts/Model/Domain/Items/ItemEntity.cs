@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Model.Action;
+using Model.Domain;
 using Model.Entities;
 using Model.Setting;
 using R3;
@@ -49,20 +50,20 @@ namespace Model.Items
             _entity.SetVisibility(visiblity);
         }
 
-        public async UniTask Throw(IActor actor, Direction8 direction)
+        public async UniTask Throw(IActor actor, Direction8 direction, IWorld world)
         {
-            while (Globals.World.IsPassable(CurrentPosition + direction.Vector()))
+            while (world.IsPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
-            if (Globals.World.ActiveMap.CurrentValue.Tilemap.IsPassable(CurrentPosition + direction.Vector()))
+            if (world.IsMapPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
             if (Item.EffectsOnThrow)
             {
                 _onSpawnEffect.OnNext(Item.Skill.GetArea(CurrentPosition, direction));
-                await Item.Use(actor, CurrentPosition, direction);
+                await Item.Use(actor, CurrentPosition, direction, world);
             }
         }
     }

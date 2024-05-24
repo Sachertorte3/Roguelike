@@ -1,11 +1,12 @@
 ﻿using Cysharp.Threading.Tasks;
+using Model.Domain;
 
 namespace Model.Action
 {
-    internal interface IAction
+    public interface IAction
     {
-        public bool Doable(IActor actor);
-        public UniTask Do(IActor actor);
+        public bool Doable(IActor actor, IWorld world);
+        public UniTask Do(IActor actor, IWorld world);
 
         /// <summary>
         ///     Calculates the expected profit for the Actor when doing the action.
@@ -13,6 +14,7 @@ namespace Model.Action
         /// </summary>
         /// <param name="actor">The actor of this action.</param>
         /// <returns></returns>
-        public float Evaluate(IActor actor);
+        public float Evaluate(IActor actor, IWorld world);
     }
 }
+

@@ -7,6 +7,7 @@ using Model.Action;
 using Model.Characters.Behavior;
 using Model.Characters.Conditions;
 using Model.Characters.Stats;
+using Model.Domain;
 using Model.Effect;
 using Model.Entities;
 using Model.Items;
@@ -31,10 +32,10 @@ namespace Model.Characters
         private readonly CharacterConditions _conditions;
         private readonly VisionRange _area;
         private bool _canIgnoreWall;
-        internal bool CanAct = true;
-        internal CharacterState State = CharacterState.Think;
+        public bool CanAct = true;
+        public CharacterState State = CharacterState.Think;
 
-        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall)
+        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world)
         {
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
@@ -42,7 +43,7 @@ namespace Model.Characters
             Behavior = behavior;
             _stats = new CharacterStats(10, 2);
             _conditions = new CharacterConditions(this);
-            _area = new VisionRange(_entity.Position);
+            _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
 
@@ -66,17 +67,17 @@ namespace Model.Characters
 
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
-        ///     if the destination is impassable.
+        ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction)
+        public bool CanMove(Direction8 direction, IWorld world)
         {
             return _canIgnoreWall
-                ? Globals.World.IsPassableIgnoreWall(Position.CurrentValue + direction.Vector())
-                : Globals.World.IsPassable(Position.CurrentValue + direction.Vector())
+                ? world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                : world.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       Globals.World.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (world.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -84,28 +85,28 @@ namespace Model.Characters
             _direction.Value = direction;
         }
 
-        public async UniTask Move(Direction8 direction)
+        public async UniTask Move(Direction8 direction, IWorld world)
         {
             State = CharacterState.Act;
             Turn(direction);
             await _entity.Move(direction,
-                Globals.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                world.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction)
+        public async UniTask UseSkill(Skill skill, Direction8 direction, IWorld world)
         {
             _direction.Value = direction;
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction),
+                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             else
-                await skill.Use(this, CurrentPosition, direction);
+                await skill.Use(this, CurrentPosition, direction, world);
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseItem(int itemIndex, Direction8 direction)
+        public async UniTask UseItem(int itemIndex, Direction8 direction, IWorld world)
         {
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
@@ -115,25 +116,25 @@ namespace Model.Characters
             if (item.EffectsOnUse)
             {
                 if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction),
+                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
                 else
-                    await item.Use(this, CurrentPosition, direction);
+                    await item.Use(this, CurrentPosition, direction, world);
             }
             State = CharacterState.Wait;
         }
 
-        public async UniTask ThrowItem(int itemIndex, Direction8 direction)
+        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world)
         {
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
             if (item == null) throw new Exception("item is null");
-            var itemEntity = Globals.World.ActiveMap.CurrentValue.ItemManager.SpawnItem(item, CurrentPosition);
+            var itemEntity = world.SpawnItem(item, CurrentPosition);
             if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(itemEntity.Throw(this, direction),
+                await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             else
-                await itemEntity.Throw(this, direction);
+                await itemEntity.Throw(this, direction, world);
             State = CharacterState.Wait;
         }
 
@@ -174,10 +175,10 @@ namespace Model.Characters
             return CharacterType.SubtypeName();
         }
 
-        public async UniTask DoNextAction()
+        public async UniTask DoNextAction(IWorld world)
         {
-            var action = await Behavior.GenerateNextAction(this);
-            await action.Do(this);
+            var action = await Behavior.GenerateNextAction(this, world);
+            await action.Do(this, world);
         }
 
         public void SetVisiblity(bool visiblity)

@@ -1,10 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using Model.Action;
+using Model.Domain;
 
 namespace Model.Characters.Behavior
 {
-    internal interface ICharacterBehavior
+    public interface ICharacterBehavior
     {
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character);
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world);
     }
 }

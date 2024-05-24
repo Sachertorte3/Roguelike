@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Model.Characters;
 using Model.Characters.Behavior;
+using Model.Domain;
 using Model.Items;
 using Model.Setting;
 using ObservableCollections;
@@ -16,7 +17,7 @@ using VContainer;
 
 namespace Model
 {
-    public class World
+    public class World : IWorld
     {
         public readonly Character Player;
         public readonly List<MapManager> Maps = new();
@@ -58,6 +59,7 @@ namespace Model
 
             PlayerEvents.OnPositionChanged.Subscribe(move =>
             {
+                if (!IsLoaded) return;
                 foreach (var eventEntity in ActiveMap.CurrentValue.EventEntities)
                 {
                     if (move.Message.Position == eventEntity.CurrentPosition)
@@ -82,7 +84,7 @@ namespace Model
                 positionChanged.Character.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             });
 
-            Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall);
+            Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall, this);
             Characters.Add(Player);
             PlayerEvents.Add(Player);
             CharacterEvents.Add(Player);
@@ -98,7 +100,7 @@ namespace Model
             MapManager map = new(bluePrint, _visibleArea);
             Maps.Add(map);
             LoadMap(Maps.Count - 1);
-            map.Spawn();
+            map.Spawn(this);
         }
         private void LoadMap(int index)
         {
@@ -136,7 +138,7 @@ namespace Model
         }
         public bool IsPassable(Vector2Int position)
         {
-            return ActiveMap.CurrentValue.Tilemap.IsPassable(position) && !GetAllCharacterPositions().Contains(position);
+            return IsMapPassable(position) && !GetAllCharacterPositions().Contains(position);
         }
 
         public bool IsPassableIgnoreWall(Vector2Int position)
@@ -160,6 +162,10 @@ namespace Model
             result.ExceptWith(GetAllCharacterPositions());
             return result;
         }
+        public HashSet<Vector2Int> GetAllLightPassablePositions()
+        {
+            return ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions();
+        }
 
         private HashSet<Vector2Int> _allCharacterPositions = new();
         public HashSet<Vector2Int> GetAllCharacterPositions()
@@ -171,6 +177,25 @@ namespace Model
         {
             _allCharacterPositions = Characters.Set.Select(character => character.Position.CurrentValue).ToHashSet();
         }
+
+        public bool IsMapPassable(Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.Tilemap.IsPassable(position);
+        }
+
+        public bool IsReachable(Vector2Int from, Vector2Int to)
+        {
+            return IsPassable(to);//TODO: A*で実装
+        }
+
+        public bool IsDash() => Globals.IsDash();
+        public bool IsNoMove() => Globals.IsNoMove();
+
+        public ItemEntity SpawnItem(Item item, Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.ItemManager.SpawnItem(item, position);
+        }
+
         public bool IsInitialized { get; private set; } = false;
         public bool IsLoaded { get; private set; } = false;
     }

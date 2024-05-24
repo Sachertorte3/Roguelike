@@ -13,8 +13,7 @@ namespace Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(World world, SynchronizedCharacterView characters,
-            SynchronizedItemView _, InventoryView inventoryView, StatLine statLine, CameraFollowTarget camera)
+        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _, StatLine statLine)
         {
             var playerView = characters.Get(world.Player);
 
@@ -23,6 +22,15 @@ namespace Provider
             var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
+            Observable.Merge(world.Player.Stats.HpValue, world.Player.Stats.MaxHp)
+                .Subscribe(_ => statLine.SetValue(world.Player.Stats.MaxHp.CurrentValue, world.Player.Stats.HpValue.CurrentValue));
+        }
+    }
+    public class PlayerInventoryPresenter
+    {
+        [Inject]
+        public PlayerInventoryPresenter(World world, InventoryView inventoryView)
+        {
             world.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
             {
                 if (itemChanged.NewValue != null)
@@ -35,9 +43,14 @@ namespace Provider
             {
                 inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
             });
-
-            Observable.Merge(world.Player.Stats.HpValue, world.Player.Stats.MaxHp)
-                .Subscribe(_ => statLine.SetValue(world.Player.Stats.MaxHp.CurrentValue, world.Player.Stats.HpValue.CurrentValue));
+        }
+    }
+    public class PlayerCameraController
+    {
+        [Inject]
+        public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget camera)
+        {
+            var playerView = characters.Get(world.Player);
 
             camera.SetTarget(playerView.gameObject);
         }

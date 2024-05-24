@@ -37,6 +37,8 @@ namespace Provider
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
+            builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
+            builder.RegisterPlainEntryPoint<PlayerCameraController>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();

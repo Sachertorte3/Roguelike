@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Data;
 using Model.Characters;
+using Model.Domain;
 using Model.Entities;
 using Model.Items;
 using Model.Map;
@@ -29,10 +30,10 @@ namespace Model
 
             EventEntities = new ObservableHashSet<IEventEntity> { new Stairs(_tilemap.GetAllPassablePositions().GetAtRandom()) };
         }
-        public void Spawn()
+        public void Spawn(IWorld world)
         {
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                CharacterManager.SpawnCharacter(position);
+                CharacterManager.SpawnCharacter(position, world);
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
                 ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);

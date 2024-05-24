@@ -18,19 +18,19 @@ MonoBehaviour:
   EffectsOnThrow: 1
   Skill:
     Effect:
-      rid: 6064254436379983893
+      rid: 6064254680659132416
     Area:
       rid: 6064254436379983894
   UsageLimit: 30
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983893
-      type: {class: AttackEffect, ns: Model.Effect, asm: Model}
-      data:
-        Power: 10
     - rid: 6064254436379983894
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0
         Length: 2
+    - rid: 6064254680659132416
+      type: {class: AttackEffect, ns: Model.Effect, asm: Model.Domain}
+      data:
+        Power: 10

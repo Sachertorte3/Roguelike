@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
 using Model.Action;
+using Model.Domain;
 using Model.Effect;
 using Model.Setting;
 using System;
@@ -12,7 +13,7 @@ using Utilities;
 
 namespace Model.Characters.Behavior
 {
-    internal sealed class PlayerBehavior : ICharacterBehavior
+    public sealed class PlayerBehavior : ICharacterBehavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControllInputReceiver _receiver;
@@ -22,9 +23,9 @@ namespace Model.Characters.Behavior
             _receiver = receiver;
         }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world)
         {
-            if (Globals.IsDash()) await _intelligentDashController.Wait(character);
+            if (world.IsDash()) await _intelligentDashController.Wait(character, world);
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
@@ -39,16 +40,16 @@ namespace Model.Characters.Behavior
                 {
                     case 0:
                         (var move, var started) = firstCompletedTask.result1;
-                        if (Globals.IsNoMove())
+                        if (world.IsNoMove())
                         {
                             character.Turn(move.Direction);
                         }
                         else
                         {
                             if (Settings.IntelligentDash.Value)
-                                move = _intelligentDashController.Filter(move, character, started);
+                                move = _intelligentDashController.Filter(move, character, started, world);
 
-                            if (move.Doable(character))
+                            if (move.Doable(character, world))
                                 return move;
                             character.Turn(move.Direction);
                         }
@@ -64,14 +65,14 @@ namespace Model.Characters.Behavior
                         else
                             action = new UseItem(itemIndex, character.CurrentDirection);
 
-                        if (action.Doable(character)) return action;
+                        if (action.Doable(character, world)) return action;
                         break;
                     case 2:
                         itemIndex = firstCompletedTask.result3;
                         if (character.Inventory.GetItem(itemIndex) != null)
                         {
                             action = new ThrowItem(itemIndex, character.CurrentDirection);
-                            if (action.Doable(character)) return action;
+                            if (action.Doable(character, world)) return action;
                         }
 
                         break;
@@ -89,35 +90,35 @@ namespace Model.Characters.Behavior
 
     internal sealed class IntelligentDashController
     {
-        public async UniTask Wait(IHasBehavior character)
+        public async UniTask Wait(IHasBehavior character, IWorld world)
         {
-            if (character.CanMove(character.CurrentDirection) &&
-                character.CanMove(character.CurrentDirection.Reverse()) &&
+            if (character.CanMove(character.CurrentDirection, world) &&
+                character.CanMove(character.CurrentDirection.Reverse(), world) &&
                 (
-                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise()) &&
-                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise()))
-                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise()) &&
-                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise()))
+                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise(), world) &&
+                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise(), world))
+                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise(), world) &&
+                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise(), world))
                 )
                )
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
         }
 
-        public Move Filter(Move move, IHasBehavior character, bool started)
+        public Move Filter(Move move, IHasBehavior character, bool started, IWorld world)
         {
-            move = MoveFilter(move, character);
-            move = DashFilter(move, character, started);
+            move = MoveFilter(move, character, world);
+            move = DashFilter(move, character, started, world);
             return move;
         }
 
-        private Move MoveFilter(Move move, IHasBehavior character)
+        private Move MoveFilter(Move move, IHasBehavior character, IWorld world)
         {
-            if (!character.CanMove(move.Direction))
+            if (!character.CanMove(move.Direction, world))
             {
                 var directionRotateClockwise = move.Direction.Rotate45Clockwise();
-                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise);
+                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, world);
                 var directionRotateAntiClockwise = move.Direction.Rotate45AntiClockwise();
-                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise);
+                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise, world);
                 if (canMoveDirectionRotateClockwise && !canMoveDirectionRotateAntiClockwise)
                     return new Move(directionRotateClockwise);
                 if (!canMoveDirectionRotateClockwise && canMoveDirectionRotateAntiClockwise)
@@ -127,10 +128,10 @@ namespace Model.Characters.Behavior
             return move;
         }
 
-        private Move DashFilter(Move move, IHasBehavior character, bool started)
+        private Move DashFilter(Move move, IHasBehavior character, bool started, IWorld world)
         {
-            if (!IsDashingStraight(started)) return move;
-            var canMoveDirections = DirectionMethods.AllDirections.Where(direction => character.CanMove(direction))
+            if (!IsDashingStraight(started, world)) return move;
+            var canMoveDirections = DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, world))
                 .ToHashSet();
             var inStraightway = canMoveDirections.Count() == 2;
             if (inStraightway)
@@ -149,9 +150,9 @@ namespace Model.Characters.Behavior
             return move;
         }
 
-        public bool IsDashingStraight(bool started)
+        public bool IsDashingStraight(bool started, IWorld world)
         {
-            return Globals.IsDash() && !started;
+            return world.IsDash() && !started;
         }
     }
 }

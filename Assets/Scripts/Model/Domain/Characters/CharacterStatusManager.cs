@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Data.Condition;
 using Model.Characters.Conditions;
 using Model.Characters.Stats;
+using Model.Logs;
 using ObservableCollections;
 using R3;
 using System;

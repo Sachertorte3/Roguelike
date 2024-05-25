@@ -35,7 +35,6 @@ namespace Model
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 Log.Debug($"Start turn {_turn}");
-                GameLog.Add($"Start turn {_turn}");
                 IEnumerable<Character> characterList = GetCharacters();
                 foreach (var character in characterList.ToList())
                 {

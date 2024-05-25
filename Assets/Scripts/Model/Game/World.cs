@@ -188,9 +188,6 @@ namespace Model
             return IsPassable(to);//TODO: A*で実装
         }
 
-        public bool IsDash() => Globals.IsDash();
-        public bool IsNoMove() => Globals.IsNoMove();
-
         public ItemEntity SpawnItem(Item item, Vector2Int position)
         {
             return ActiveMap.CurrentValue.ItemManager.SpawnItem(item, position);

@@ -18,9 +18,11 @@ namespace Model.Domain
         public bool IsPassable(Vector2Int position);
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
+        public ItemEntity SpawnItem(Item item, Vector2Int position);
+    }
+    public interface IInput
+    {
         public bool IsDash();
         public bool IsNoMove();
-
-        public ItemEntity SpawnItem(Item item, Vector2Int position);
     }
 }

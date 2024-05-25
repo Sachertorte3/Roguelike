@@ -11,9 +11,9 @@ namespace Model.Action
             return actor.CanMove(Direction, world);
         }
 
-        public UniTask Do(IActor actor, IWorld world)
+        public UniTask Do(IActor actor, IWorld world, IInput input)
         {
-            var _ = actor.Move(Direction, world);
+            var _ = actor.Move(Direction, input);
             return UniTask.CompletedTask;
         }
 

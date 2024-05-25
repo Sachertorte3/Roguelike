@@ -209,6 +209,15 @@
         "com.unity.2d.aseprite": "1.0.0"
       }
     },
+    "com.unity.ide.cursor": {
+      "version": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.9"
+      },
+      "hash": "d6c936c606b6da2b38ee72a83a9bb36193d50742"
+    },
     "com.unity.ide.rider": {
       "version": "3.0.28",
       "depth": 0,
@@ -344,7 +353,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.8",
+      "version": "3.0.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {

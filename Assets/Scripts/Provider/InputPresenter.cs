@@ -30,22 +30,14 @@ namespace Provider
                     var direction = DirectionMethods.FromVector(vector);
                     actionReceiver.SetMoveInput(direction, false);
                 });
-            receiver.OnAttackPerformed.Subscribe(_ => { actionReceiver.SetAttackInput(); });
-            receiver.OnThrowPerformed.Subscribe(_ => { actionReceiver.SetThrowInput(); });
-            receiver.OnDropPerformed.Subscribe(_ =>
-            {
-                var item = world.Player.Inventory.GetItem(inventoryView.CurrentFocus);
-                if (item != null)
-                {
-                    var itemEntity = world.TryPickUp(world.Player.CurrentPosition);
-                    world.Player.ReplaceInventory(itemEntity?.Item, inventoryView.CurrentFocus);
-                    world.ActiveMap.CurrentValue.ItemManager.SpawnItem(item, world.Player.CurrentPosition);
-                }
-            });
-            inventoryView.OnFocusChanged.Subscribe(index => { actionReceiver.SetInventoryIndex(index); });
+            receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
+            receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
+            receiver.OnDropPerformed.Subscribe(_ => world.HandleItemDrop(inventoryView.CurrentFocus));
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
+
+            inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
         }
     }
 }

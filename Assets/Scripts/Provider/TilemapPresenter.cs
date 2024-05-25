@@ -15,41 +15,36 @@ namespace Provider
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
         {
-            world.ActiveMap.SubscribeToAll(mapLoaded =>
+            _disposable.Disposable = world.ActiveMap.SubscribeToAll(mapLoaded =>
             {
                 tileView.Clear();
+                foreach ((var position, var tileData) in mapLoaded.Tilemap.GetAllTiles())
+                    switch (tileData.TileType)
+                    {
+                        case TileCategory.Wall:
+                            tileView.SetWall(position);
+                            break;
+                        case TileCategory.Floor:
+                            tileView.SetFloor(position);
+                            break;
+                    }
 
-                SetTilemap(tileView, tileMask, mapLoaded.Tilemap);
-            });
-        }
-        public void SetTilemap(TileViewController tileView, TileMaskController tileMask, ITilemapViewer tilemap)
-        {
-            foreach ((var position, var tileData) in tilemap.GetAllTiles())
-                switch (tileData.TileType)
+                tileMask.SetTilesTransparent(mapLoaded.Tilemap.Rect.RectRange().ToHashSet());
+
+                _disposable.Disposable = mapLoaded.Tilemap.OnChangeTile.Subscribe(context =>
                 {
-                    case TileCategory.Wall:
-                        tileView.SetWall(position);
-                        break;
-                    case TileCategory.Floor:
-                        tileView.SetFloor(position);
-                        break;
-                }
+                    switch (context.tile.TileType)
+                    {
+                        case TileCategory.Wall:
+                            tileView.SetWall(context.position);
+                            break;
+                        case TileCategory.Floor:
+                            tileView.SetFloor(context.position);
+                            break;
+                    }
 
-            tileMask.SetTilesTransparent(tilemap.Rect.RectRange().ToHashSet());
-
-            _disposable.Disposable = tilemap.OnChangeTile.Subscribe(context =>
-            {
-                switch (context.tile.TileType)
-                {
-                    case TileCategory.Wall:
-                        tileView.SetWall(context.position);
-                        break;
-                    case TileCategory.Floor:
-                        tileView.SetFloor(context.position);
-                        break;
-                }
-
-                tileMask.ResetMask(context.position);
+                    tileMask.ResetMask(context.position);
+                });
             });
         }
     }

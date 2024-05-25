@@ -40,7 +40,7 @@ namespace Model
                 foreach (var character in characterList.ToList())
                 {
                     character.UpdateTurn();
-                    if (character.CanAct && !character.IsDead)
+                    if (character.CanAct && !character.StatusManager.IsDead)
                     {
                         character.State = CharacterState.Think;
                         await character.DoNextAction(_world, _input);

@@ -193,6 +193,17 @@ namespace Model
             return ActiveMap.CurrentValue.ItemManager.SpawnItem(item, position);
         }
 
+        public void HandleItemDrop(int inventoryIndex)
+        {
+            var item = Player.Inventory.GetItem(inventoryIndex);
+            if (item != null)
+            {
+                var itemEntity = TryPickUp(Player.CurrentPosition);
+                Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
+                ActiveMap.CurrentValue.ItemManager.SpawnItem(item, Player.CurrentPosition);
+            }
+        }
+
         public bool IsInitialized { get; private set; } = false;
         public bool IsLoaded { get; private set; } = false;
     }

@@ -20,21 +20,21 @@ namespace Provider
             builder.Register<GameManager>(Lifetime.Singleton);
             builder.Register<World>(Lifetime.Singleton);
             builder.Register<InputReceiver>(Lifetime.Singleton);
+            builder.Register<GameInput>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
             builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
-            builder.Register<GameInput>(Lifetime.Singleton);
+            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
+            builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
+            builder.Register<SynchronizedEventEntityView>(Lifetime.Singleton);
+            builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
             builder.RegisterComponentInHierarchy<StatLine>();
-            builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
-            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
-            builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
-            builder.Register<SynchronizedEventEntityView>(Lifetime.Singleton);
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();

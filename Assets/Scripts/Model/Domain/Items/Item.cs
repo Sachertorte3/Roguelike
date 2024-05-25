@@ -12,6 +12,7 @@ namespace Model.Items
 {
     public class Item
     {
+        public readonly string Name;
         public readonly Sprite Icon;
         public readonly bool EffectsOnUse;
         public readonly bool EffectsOnThrow;
@@ -21,6 +22,7 @@ namespace Model.Items
 
         public Item(ItemData data)
         {
+            Name = data.Name;
             Icon = data.Icon;
             EffectsOnUse = data.EffectsOnUse;
             EffectsOnThrow = data.EffectsOnThrow;

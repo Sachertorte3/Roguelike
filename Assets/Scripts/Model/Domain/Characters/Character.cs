@@ -8,6 +8,7 @@ using Model.Domain;
 using Model.Effect;
 using Model.Entities;
 using Model.Items;
+using Model.Logs;
 using Model.Setting;
 using R3;
 using System;
@@ -20,6 +21,7 @@ namespace Model.Characters
 {
     public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, IActorOfEffect
     {
+        private readonly string _name = "Character";
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly CharacterStatusManager _statusManager;
@@ -88,6 +90,7 @@ namespace Model.Characters
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IWorld world)
         {
+            State = CharacterState.Act;
             _direction.Value = direction;
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
@@ -100,13 +103,15 @@ namespace Model.Characters
 
         public async UniTask UseItem(int itemIndex, Direction8 direction, IWorld world)
         {
+            State = CharacterState.Act;
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
             if (item == null) throw new Exception("item is null");
-            _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
 
             if (item.EffectsOnUse)
             {
+                GameLog.Add($"{_name}:{item.Name}を使った");
+                _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
                 if (_entity.VisibleByPlayer.CurrentValue)
                     await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -118,10 +123,12 @@ namespace Model.Characters
 
         public async UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world)
         {
+            State = CharacterState.Act;
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
             if (item == null) throw new Exception("item is null");
             var itemEntity = world.SpawnItem(item, CurrentPosition);
+            GameLog.Add($"{_name}:{item.Name}を投げた");
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

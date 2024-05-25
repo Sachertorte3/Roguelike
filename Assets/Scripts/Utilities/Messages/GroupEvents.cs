@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Utilities.Messages
 {
-    public class GroupEvents<TSender>
+    public class GroupEvents<TSender> where TSender : notnull
     {
         private Dictionary<Type, object> _events = new();
         private Dictionary<object, CompositeDisposable> _disposable = new();
-        public void Add<TMessage>(TSender sender, Observable<TMessage> observable)
+        public void Add<TMessage>(TSender sender, Observable<TMessage> observable) where TMessage : notnull
         {
             if (!_disposable.ContainsKey(sender))
             {

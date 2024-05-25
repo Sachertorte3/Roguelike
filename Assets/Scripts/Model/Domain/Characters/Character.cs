@@ -2,21 +2,16 @@
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Character.Type;
-using Data.Condition;
 using Model.Action;
 using Model.Characters.Behavior;
-using Model.Characters.Conditions;
-using Model.Characters.Stats;
 using Model.Domain;
 using Model.Effect;
 using Model.Entities;
 using Model.Items;
 using Model.Setting;
-using ObservableCollections;
 using R3;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -198,53 +193,6 @@ namespace Model.Characters
         public void UpdateTurn()
         {
             _statusManager.UpdateTurn();
-        }
-    }
-    public interface IStatusManager : IHasCondition, ITarget, ITargetOfEffect
-    {
-        public int CurrentHp { get; }
-        public bool IsDead { get; }
-        public IObservableCollection<Condition> Conditions { get; }
-        public void UpdateTurn();
-    }
-    public class CharacterStatusManager : IDisposable, IStatusManager
-    {
-        private readonly CharacterStats _stats;
-        private readonly CharacterConditions _conditions;
-        public CharacterStatusManager()
-        {
-            _stats = new CharacterStats(10, 2);
-            _conditions = new CharacterConditions(this);
-        }
-        public void Dispose()
-        {
-            _stats.Dispose();
-            _conditions.Dispose();
-        }
-        public IStats Stats => _stats;
-        public IObservableCollection<Condition> Conditions => _conditions.Conditions;
-        public int MaxHp => _stats.MaxHp.CurrentValue;
-        public int CurrentHp => _stats.Hp.Value.CurrentValue;
-        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
-        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
-        public UniTask GainHp(int value)
-        {
-            _stats.Hp.Gain(value);
-            return UniTask.CompletedTask;
-        }
-        public UniTask LoseHp(int value)
-        {
-            _stats.Hp.Lose(value);
-            return UniTask.CompletedTask;
-        }
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            _conditions.Add(condition, removalCondition);
-        }
-
-        public void UpdateTurn()
-        {
-            _conditions.UpdateTurn(this);
         }
     }
 }

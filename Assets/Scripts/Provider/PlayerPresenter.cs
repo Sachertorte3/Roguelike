@@ -3,7 +3,6 @@ using Model;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities;
 using VContainer;
 using View;
 using View.UI;
@@ -24,35 +23,6 @@ namespace Provider
 
             Observable.Merge(world.Player.StatusManager.Stats.HpValue, world.Player.StatusManager.Stats.MaxHp)
                 .Subscribe(_ => statLine.SetValue(world.Player.StatusManager.MaxHp, world.Player.StatusManager.CurrentHp));
-        }
-    }
-    public class PlayerInventoryPresenter
-    {
-        [Inject]
-        public PlayerInventoryPresenter(World world, InventoryView inventoryView)
-        {
-            world.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
-            {
-                if (itemChanged.NewValue != null)
-                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue,
-                        itemChanged.NewValue.Info, itemChanged.Index);
-                else
-                    inventoryView.Remove(itemChanged.Index);
-            });
-            world.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
-            {
-                inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
-            });
-        }
-    }
-    public class PlayerCameraController
-    {
-        [Inject]
-        public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget camera)
-        {
-            var playerView = characters.Get(world.Player);
-
-            camera.SetTarget(playerView.gameObject);
         }
     }
 }

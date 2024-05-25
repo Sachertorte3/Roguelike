@@ -19,7 +19,7 @@ namespace View
 
         public void Construct(InputReceiver receiver)
         {
-            _isDash = () => receiver.IsDash;
+            _isDash = () => receiver.IsDash.CurrentValue;
             _view = GetComponent<SpriteView>();
         }
 

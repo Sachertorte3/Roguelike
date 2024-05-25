@@ -14,10 +14,11 @@ namespace Model.Action
         public Direction8 CurrentDirection { get; }
         public IInventory Inventory { get; }
         public bool CanMove(Direction8 direction, IWorld world);
-        public UniTask Move(Direction8 direction, IWorld world);
+        public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
         public UniTask UseSkill(Skill skill, Direction8 direction, IWorld world);
         public UniTask UseItem(int itemIndex, Direction8 direction, IWorld world);
         public UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world);
     }
 }
+

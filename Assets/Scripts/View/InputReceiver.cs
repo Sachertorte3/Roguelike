@@ -38,9 +38,8 @@ namespace View
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
 
         public Vector2 MoveVector => _actions.Field.Move.ReadValue<Vector2>();
-        public bool IsDash => _actions.Field.Dash.IsPressed();
-        public bool IsNoMove => _actions.Field.TurnOnly.IsPressed();
-
+        public ReadOnlyReactiveProperty<bool> IsDash => _actions.Field.Dash.AsPressedReactiveProperty();
+        public ReadOnlyReactiveProperty<bool> IsNoMove => _actions.Field.TurnOnly.AsPressedReactiveProperty();
         public Observable<Unit> OnAttackPerformed =>
             _actions.Field.Attack.AsObservable().Select(context => Unit.Default);
 

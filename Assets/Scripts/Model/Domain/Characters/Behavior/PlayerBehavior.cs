@@ -23,9 +23,9 @@ namespace Model.Characters.Behavior
             _receiver = receiver;
         }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input)
         {
-            if (world.IsDash()) await _intelligentDashController.Wait(character, world);
+            if (input.IsDash()) await _intelligentDashController.Wait(character, world);
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
@@ -40,14 +40,14 @@ namespace Model.Characters.Behavior
                 {
                     case 0:
                         (var move, var started) = firstCompletedTask.result1;
-                        if (world.IsNoMove())
+                        if (input.IsNoMove())
                         {
                             character.Turn(move.Direction);
                         }
                         else
                         {
                             if (Settings.IntelligentDash.Value)
-                                move = _intelligentDashController.Filter(move, character, started, world);
+                                move = _intelligentDashController.Filter(move, character, started, world, input);
 
                             if (move.Doable(character, world))
                                 return move;
@@ -104,10 +104,10 @@ namespace Model.Characters.Behavior
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
         }
 
-        public Move Filter(Move move, IHasBehavior character, bool started, IWorld world)
+        public Move Filter(Move move, IHasBehavior character, bool started, IWorld world, IInput input)
         {
             move = MoveFilter(move, character, world);
-            move = DashFilter(move, character, started, world);
+            move = DashFilter(move, character, started, world, input);
             return move;
         }
 
@@ -128,9 +128,9 @@ namespace Model.Characters.Behavior
             return move;
         }
 
-        private Move DashFilter(Move move, IHasBehavior character, bool started, IWorld world)
+        private Move DashFilter(Move move, IHasBehavior character, bool started, IWorld world, IInput input)
         {
-            if (!IsDashingStraight(started, world)) return move;
+            if (!IsDashingStraight(started, input)) return move;
             var canMoveDirections = DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, world))
                 .ToHashSet();
             var inStraightway = canMoveDirections.Count() == 2;
@@ -150,9 +150,9 @@ namespace Model.Characters.Behavior
             return move;
         }
 
-        public bool IsDashingStraight(bool started, IWorld world)
+        public bool IsDashingStraight(bool started, IInput input)
         {
-            return world.IsDash() && !started;
+            return input.IsDash() && !started;
         }
     }
 }

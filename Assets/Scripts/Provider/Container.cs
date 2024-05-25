@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Characters.Behavior;
+using Model.Game;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
@@ -21,6 +22,7 @@ namespace Provider
             builder.Register<InputReceiver>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
             builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
+            builder.Register<GameInput>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();

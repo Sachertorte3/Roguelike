@@ -85,12 +85,12 @@ namespace Model.Characters
             _direction.Value = direction;
         }
 
-        public async UniTask Move(Direction8 direction, IWorld world)
+        public async UniTask Move(Direction8 direction, IInput input)
         {
             State = CharacterState.Act;
             Turn(direction);
             await _entity.Move(direction,
-                world.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
             State = CharacterState.Wait;
         }
 
@@ -175,10 +175,10 @@ namespace Model.Characters
             return CharacterType.SubtypeName();
         }
 
-        public async UniTask DoNextAction(IWorld world)
+        public async UniTask DoNextAction(IWorld world, IInput input)
         {
-            var action = await Behavior.GenerateNextAction(this, world);
-            await action.Do(this, world);
+            var action = await Behavior.GenerateNextAction(this, world, input);
+            await action.Do(this, world, input);
         }
 
         public void SetVisiblity(bool visiblity)

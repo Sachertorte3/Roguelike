@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Model;
 using Model.Characters.Behavior;
+using Model.Game;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -13,7 +14,7 @@ namespace Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver, World world, InventoryView inventoryView)
+        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControllInputReceiver actionReceiver, World world, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -43,8 +44,8 @@ namespace Provider
             });
             inventoryView.OnFocusChanged.Subscribe(index => { actionReceiver.SetInventoryIndex(index); });
 
-            Globals.IsDash = () => receiver.IsDash;
-            Globals.IsNoMove = () => receiver.IsNoMove;
+            receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
+            receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Model.Action
             return actor.Inventory.GetItem(ItemIndex).EffectsOnUse;
         }
 
-        public async UniTask Do(IActor actor, IWorld world)
+        public async UniTask Do(IActor actor, IWorld world, IInput input)
         {
             await actor.UseItem(ItemIndex, Direction, world);
         }

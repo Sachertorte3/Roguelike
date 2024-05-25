@@ -27,5 +27,21 @@ namespace Utilities
                     action.canceled += h;
                 }).Select(context => context.ReadValue<T>()).ToReadOnlyReactiveProperty();
         }
+        public static ReadOnlyReactiveProperty<bool> AsPressedReactiveProperty(this InputAction action)
+        {
+            return Observable.FromEvent<InputAction.CallbackContext>(
+                h =>
+                {
+                    action.performed += h;
+                    action.canceled += h;
+                },
+                h =>
+                {
+                    action.performed -= h;
+                    action.canceled += h;
+                }).Select(_ => action.IsPressed())
+                .ToReadOnlyReactiveProperty();
+        }
     }
 }
+

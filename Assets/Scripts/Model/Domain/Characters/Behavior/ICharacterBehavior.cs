@@ -6,6 +6,6 @@ namespace Model.Characters.Behavior
 {
     public interface ICharacterBehavior
     {
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world);
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input);
     }
 }

@@ -6,7 +6,7 @@ namespace Model.Action
     public interface IAction
     {
         public bool Doable(IActor actor, IWorld world);
-        public UniTask Do(IActor actor, IWorld world);
+        public UniTask Do(IActor actor, IWorld world, IInput input);
 
         /// <summary>
         ///     Calculates the expected profit for the Actor when doing the action.

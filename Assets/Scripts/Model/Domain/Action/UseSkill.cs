@@ -14,7 +14,7 @@ namespace Model.Action
             return true;
         }
 
-        public async UniTask Do(IActor actor, IWorld world)
+        public async UniTask Do(IActor actor, IWorld world, IInput input)
         {
             await actor.UseSkill(Skill, Direction, world);
         }

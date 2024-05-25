@@ -12,6 +12,7 @@ using Model.Effect;
 using Model.Entities;
 using Model.Items;
 using Model.Setting;
+using ObservableCollections;
 using R3;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,13 @@ using Utilities;
 
 namespace Model.Characters
 {
-    public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, ITarget, IActorOfEffect, ITargetOfEffect, IHasCondition
+    public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, IActorOfEffect
     {
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
+        private readonly CharacterStatusManager _statusManager;
         private readonly Inventory _inventory = new();
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
-        private readonly CharacterStats _stats;
-        private readonly CharacterConditions _conditions;
         private readonly VisionRange _area;
         private bool _canIgnoreWall;
         public bool CanAct = true;
@@ -39,10 +39,9 @@ namespace Model.Characters
         {
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
-            _entity = new Entity(position);
+            _entity = new(position);
+            _statusManager = new();
             Behavior = behavior;
-            _stats = new CharacterStats(10, 2);
-            _conditions = new CharacterConditions(this);
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
         }
@@ -50,20 +49,18 @@ namespace Model.Characters
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
+        public Observable<Unit> OnDead => _statusManager.OnDead;
 
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
         public Entity Entity => _entity;
-        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
+        public IStatusManager StatusManager => _statusManager;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
-        public ICharacterConditions Condition => _conditions;
-        public int MaxHp => _stats.MaxHp.CurrentValue;
 
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
@@ -153,12 +150,9 @@ namespace Model.Characters
             _inventory.Dispose();
             _onSpawnEffect.Dispose();
             _direction.Dispose();
-            _stats.Dispose();
-            _conditions.Dispose();
         }
 
         public IVisionRange Area => _area;
-        public IStats Stats => _stats;
 
         ~Character()
         {
@@ -192,6 +186,47 @@ namespace Model.Characters
             State = CharacterState.Wait;
         }
 
+        public bool TryPickUp(Item item)
+        {
+            return _inventory.TryAdd(item);
+        }
+
+        public Item? ReplaceInventory(Item? item, int index)
+        {
+            return _inventory.Replace(item, index);
+        }
+        public void UpdateTurn()
+        {
+            _statusManager.UpdateTurn();
+        }
+    }
+    public interface IStatusManager : IHasCondition, ITarget, ITargetOfEffect
+    {
+        public int CurrentHp { get; }
+        public bool IsDead { get; }
+        public IObservableCollection<Condition> Conditions { get; }
+        public void UpdateTurn();
+    }
+    public class CharacterStatusManager : IDisposable, IStatusManager
+    {
+        private readonly CharacterStats _stats;
+        private readonly CharacterConditions _conditions;
+        public CharacterStatusManager()
+        {
+            _stats = new CharacterStats(10, 2);
+            _conditions = new CharacterConditions(this);
+        }
+        public void Dispose()
+        {
+            _stats.Dispose();
+            _conditions.Dispose();
+        }
+        public IStats Stats => _stats;
+        public IObservableCollection<Condition> Conditions => _conditions.Conditions;
+        public int MaxHp => _stats.MaxHp.CurrentValue;
+        public int CurrentHp => _stats.Hp.Value.CurrentValue;
+        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
+        public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public UniTask GainHp(int value)
         {
             _stats.Hp.Gain(value);
@@ -202,7 +237,6 @@ namespace Model.Characters
             _stats.Hp.Lose(value);
             return UniTask.CompletedTask;
         }
-
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {
             _conditions.Add(condition, removalCondition);
@@ -211,16 +245,6 @@ namespace Model.Characters
         public void UpdateTurn()
         {
             _conditions.UpdateTurn(this);
-        }
-
-        public bool TryPickUp(Item item)
-        {
-            return _inventory.TryAdd(item);
-        }
-
-        public Item? ReplaceInventory(Item? item, int index)
-        {
-            return _inventory.Replace(item, index);
         }
     }
 }

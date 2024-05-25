@@ -22,8 +22,8 @@ namespace Provider
             var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
-            Observable.Merge(world.Player.Stats.HpValue, world.Player.Stats.MaxHp)
-                .Subscribe(_ => statLine.SetValue(world.Player.Stats.MaxHp.CurrentValue, world.Player.Stats.HpValue.CurrentValue));
+            Observable.Merge(world.Player.StatusManager.Stats.HpValue, world.Player.StatusManager.Stats.MaxHp)
+                .Subscribe(_ => statLine.SetValue(world.Player.StatusManager.MaxHp, world.Player.StatusManager.CurrentHp));
         }
     }
     public class PlayerInventoryPresenter

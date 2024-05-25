@@ -54,7 +54,7 @@ namespace Provider
             character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
 
             var particleController = characterView.GetComponent<ParticleController>();
-            character.Condition.Conditions.SubscribeToAll(
+            character.StatusManager.Conditions.SubscribeToAll(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             );

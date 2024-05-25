@@ -7,7 +7,7 @@ using Utilities;
 
 namespace Model.Characters.Conditions
 {
-    internal class CharacterConditions : IDisposable, ICharacterConditions
+    internal class CharacterConditions : IDisposable
     {
         public IObservableCollection<Condition> Conditions => _conditions;
         private readonly ObservableHashSet<Condition> _conditions = new();
@@ -30,10 +30,6 @@ namespace Model.Characters.Conditions
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
             _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(0)).ToList());
         }
-    }
-    public interface ICharacterConditions
-    {
-        public IObservableCollection<Condition> Conditions { get; }
     }
     public class Condition
     {

@@ -34,7 +34,7 @@ namespace Model.Effect
                     {
                         target.WasAttackedBy(actor);
                     }
-                    _effect.Apply(actor, target);
+                    _effect.Apply(actor, target.StatusManager);
                 });
             return UniTask.CompletedTask;
         }
@@ -45,7 +45,7 @@ namespace Model.Effect
             var characters = world.GetCharactersInArea(area.ToHashSet());
             if (characters.Any())
                 return characters.Sum(target =>
-                    _effect.Evaluate(actor, target));
+                    _effect.Evaluate(actor, target.StatusManager));
             return -1;
         }
     }

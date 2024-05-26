@@ -37,7 +37,16 @@ namespace Model.Characters
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
             _entity = new(position);
-            _statusManager = new();
+            _statusManager = new(10, 2);
+            Behavior = behavior;
+            _area = new VisionRange(_entity.Position, world);
+            canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
+        }
+        internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world)
+        {
+            CharacterType = data.CharacterType;
+            _entity = new(position);
+            _statusManager = new(data.Hp, data.Strength);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);

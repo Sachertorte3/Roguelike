@@ -33,10 +33,10 @@ namespace Model.Characters
             CharacterEvents.Remove(character);
         }
 
-        public void SpawnCharacter(Vector2Int spawnPosition, IWorld world)
+        public void SpawnCharacter(EnemyData data, Vector2Int spawnPosition, IWorld world)
         {
             AddCharacter(
-                _factory.CreateCharacter(spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
+                _factory.CreateCharacter(data, spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
         }
     }
 }

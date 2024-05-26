@@ -32,9 +32,9 @@ namespace Model
         }
         public void Spawn(IWorld world)
         {
-            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                CharacterManager.SpawnCharacter(position, world);
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
+            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
+                CharacterManager.SpawnCharacter(data.Enemies.GetAtRandom(), position, world);
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
                 ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
         }

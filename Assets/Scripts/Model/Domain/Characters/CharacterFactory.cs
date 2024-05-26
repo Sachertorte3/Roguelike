@@ -12,10 +12,10 @@ namespace Model.Characters
         {
             return new Character(spawnPosition, new PlayerBehavior(receiver), canIgnoreWall, world);
         }
-        public Character CreateCharacter(Vector2Int spawnPosition, ICharacterBehavior behavior,
+        public Character CreateCharacter(EnemyData data, Vector2Int spawnPosition, ICharacterBehavior behavior,
             ReactiveProperty<bool> canIgnoreWall, IWorld world)
         {
-            return new Character(spawnPosition, behavior, canIgnoreWall, world);
+            return new Character(data, spawnPosition, behavior, canIgnoreWall, world);
         }
     }
 }

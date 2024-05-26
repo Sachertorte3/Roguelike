@@ -7,5 +7,7 @@ namespace Data
     public class DungeonData : ScriptableObject
     {
         public List<ItemData> Items;
+        public List<EnemyData> Enemies;
     }
 }
+

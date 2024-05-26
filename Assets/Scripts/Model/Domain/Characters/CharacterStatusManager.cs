@@ -15,9 +15,9 @@ namespace Model.Characters
     {
         private readonly CharacterStats _stats;
         private readonly CharacterConditions _conditions;
-        public CharacterStatusManager()
+        public CharacterStatusManager(int maxHp, int strength)
         {
-            _stats = new CharacterStats(10, 2);
+            _stats = new CharacterStats(maxHp, strength);
             _conditions = new CharacterConditions(this);
         }
         public void Dispose()

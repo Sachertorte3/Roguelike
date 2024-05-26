@@ -5,6 +5,7 @@ using Data.Character.Type;
 using Model.Action;
 using Model.Characters.Behavior;
 using Model.Domain;
+using Model.Domain.Characters;
 using Model.Effect;
 using Model.Entities;
 using Model.Items;
@@ -31,8 +32,10 @@ namespace Model.Characters
         private bool _canIgnoreWall;
         public bool CanAct = true;
         public CharacterState State = CharacterState.Think;
+        private readonly CharacterAffiliationManager _affiliationManager;
+        public IAffiliation Affiliation => _affiliationManager;
 
-        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world)
+        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world, CharacterGroup group)
         {
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
@@ -41,8 +44,9 @@ namespace Model.Characters
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
+            _affiliationManager = new CharacterAffiliationManager(group);
         }
-        internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world)
+        internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IWorld world, CharacterGroup group)
         {
             CharacterType = data.CharacterType;
             _entity = new(position);
@@ -50,6 +54,7 @@ namespace Model.Characters
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
+            _affiliationManager = new CharacterAffiliationManager(group);
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;

@@ -13,7 +13,7 @@ namespace Model.Characters.Behavior
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
         private Vector2Int? _lastTargetPosition;
         private readonly IUndiscoveredTargetBehavior _wander = new RandomWalk();
-        private readonly float behavioralRandomness = 0.02f;
+        private readonly float behavioralRandomness = 0.01f;
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);

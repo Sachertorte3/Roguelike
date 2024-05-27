@@ -1,11 +1,8 @@
 #nullable enable
-using Model;
 using Model.Game;
-using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using VContainer;
-using View;
 using Logger = Unity.Logging.Logger;
 
 namespace Provider
@@ -13,18 +10,9 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, World world,
-            SynchronizedEventEntityView _)
+        public Presenter(GameManager gameManager, SynchronizedEventEntityView _)
         {
             LoggerInit();
-
-            world.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
-            {
-                tileMask.SetTilesTranslucent(area.Message.AreaExited);
-                tileMask.SetTilesVisible(area.Message.AreaEntered);
-            });
-            tileMask.SetTilesVisible(world.Player.Area.VisibleArea);
-
             gameManager.Run();
         }
 

@@ -1,12 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
-using Data;
-using Model.Domain;
-using Model.Effect;
-using Model.Items;
+using Data.Effect;
+using Model.Domain.Effect;
+using Model.Domain.Items;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Action
+namespace Model.Domain.Action
 {
     public interface IActor : IActorOfEffect
     {
@@ -21,4 +20,3 @@ namespace Model.Action
         public UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world);
     }
 }
-

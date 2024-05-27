@@ -2,7 +2,7 @@
 using ObservableCollections;
 using R3;
 
-namespace Model.Items
+namespace Model.Domain.Items
 {
     public interface IInventory
     {

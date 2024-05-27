@@ -1,11 +1,11 @@
-﻿using R3;
+﻿using System;
+using R3;
 using StatSystem;
-using System;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Characters.Stats
+namespace Model.Domain.Characters.Stats
 {
     internal class Resource : IDisposable
     {

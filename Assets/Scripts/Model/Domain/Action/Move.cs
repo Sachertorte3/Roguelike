@@ -1,8 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Domain;
 using Utilities;
 
-namespace Model.Action
+namespace Model.Domain.Action
 {
     internal record Move(Direction8 Direction, float Score = 0) : IAction
     {

@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Data.Effect;
 using Utilities;
 
 namespace Data.Condition
@@ -11,9 +12,5 @@ namespace Data.Condition
         public void Inflict(IHasCondition hasCondition);
         public UniTask Persist(IHasCondition hasCondition);
         public void Delete(IHasCondition hasCondition);
-    }
-    public interface IHasCondition
-    {
-        public UniTask LoseHp(int value);
     }
 }

@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
-namespace Model.Map.Tests
+namespace Model.Domain.Map.Tests
 {
     internal class MapTest
     {

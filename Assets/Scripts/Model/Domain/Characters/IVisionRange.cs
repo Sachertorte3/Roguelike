@@ -1,9 +1,8 @@
-﻿using Model.Domain;
-using ObservableCollections;
+﻿using ObservableCollections;
 using R3;
 using UnityEngine;
 
-namespace Model.Characters
+namespace Model.Domain.Characters
 {
     public interface IVisionRange
     {
@@ -12,4 +11,3 @@ namespace Model.Characters
         public void Refrash(Vector2Int position, IWorld world);
     }
 }
-

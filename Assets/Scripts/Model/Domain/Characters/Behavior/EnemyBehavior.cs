@@ -1,19 +1,19 @@
-﻿using Cysharp.Threading.Tasks;
-using Model.Action;
-using Model.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
+using Model.Domain.Action;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Characters.Behavior
+namespace Model.Domain.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
-        private Vector2Int? _lastTargetPosition;
         private readonly IUndiscoveredTargetBehavior _wander = new RandomWalk();
         private readonly float behavioralRandomness = 0.01f;
+        private Vector2Int? _lastTargetPosition;
+
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
@@ -22,7 +22,8 @@ namespace Model.Characters.Behavior
             if (visibleCharacters.Any())
                 _lastTargetPosition = visibleCharacters.First().CurrentPosition;
             else if (_lastTargetPosition.HasValue && (character.CurrentPosition == _lastTargetPosition
-                                                      || !world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value)))
+                                                      || !world.IsReachable(character.CurrentPosition,
+                                                          _lastTargetPosition.Value)))
                 _lastTargetPosition = null;
             if (_lastTargetPosition.HasValue)
             {

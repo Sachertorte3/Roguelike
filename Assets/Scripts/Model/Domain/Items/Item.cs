@@ -1,24 +1,23 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Data;
-using Model.Action;
-using Model.Domain;
-using Model.Effect;
+using Model.Domain.Action;
+using Model.Domain.Effect;
 using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Items
+namespace Model.Domain.Items
 {
     public class Item
     {
-        public readonly string Name;
-        public readonly Sprite Icon;
-        public readonly bool EffectsOnUse;
-        public readonly bool EffectsOnThrow;
-        public readonly Skill Skill;
         private readonly ReactiveProperty<int> _remainingUses;
+        public readonly bool EffectsOnThrow;
+        public readonly bool EffectsOnUse;
+        public readonly Sprite Icon;
         public readonly string Info;
+        public readonly string Name;
+        public readonly Skill Skill;
 
         public Item(ItemData data)
         {

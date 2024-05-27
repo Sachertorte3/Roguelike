@@ -1,11 +1,11 @@
 #nullable enable
-using Data;
 using Data.Condition;
-using Model.Characters.Conditions;
-using Model.Effect;
+using Data.Effect;
+using Model.Domain.Characters.Conditions;
+using Model.Domain.Effect;
 using ObservableCollections;
 
-namespace Model.Characters
+namespace Model.Domain.Characters
 {
     public interface IStatusManager : IHasCondition, ITarget, ITargetOfEffect
     {

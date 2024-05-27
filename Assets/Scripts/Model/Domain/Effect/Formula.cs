@@ -1,6 +1,6 @@
-﻿using Data;
+﻿using Data.Effect;
 
-namespace Model.Effect
+namespace Model.Domain.Effect
 {
     internal static class Formula
     {

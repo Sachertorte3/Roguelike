@@ -1,56 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
 namespace Utilities
 {
-    public record Angle
-    {
-        public Angle(float value)
-        {
-            Value = (value % 360 + 360) % 360;
-        }
-
-        public Angle(Vector2 vector) : this(Vector2.SignedAngle(Vector2.right, vector))
-        {
-        }
-
-        public float Value { get; init; }
-
-        public Angle RotateClockwise(float value)
-        {
-            return new Angle(Value - value);
-        }
-
-        public Angle RotateAntiClockwise(float value)
-        {
-            return new Angle(Value + value);
-        }
-
-        public static Angle operator +(Angle left, Angle right)
-        {
-            return new Angle(left.Value + right.Value);
-        }
-
-        public static Angle operator -(Angle left, Angle right)
-        {
-            return new Angle(left.Value - right.Value);
-        }
-    }
-
-    public enum Direction8
-    {
-        Up,
-        UpRight,
-        Right,
-        DownRight,
-        Down,
-        DownLeft,
-        Left,
-        UpLeft
-    }
-
     public static class DirectionMethods
     {
         public static readonly IEnumerable<Direction8> AllDirections =
@@ -126,6 +80,7 @@ namespace Utilities
             {
                 return null;
             }
+
             return new Angle(vector).Value switch
             {
                 < 0 + 45 / 2 => Direction8.Right,
@@ -147,6 +102,7 @@ namespace Utilities
             {
                 return null;
             }
+
             return new Angle(vector).Value switch
             {
                 < 0 + 45 / 2 => new List<Direction8> { Direction8.Right, Direction8.UpRight, Direction8.Up },

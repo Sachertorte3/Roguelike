@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using Model;
-using Model.Characters.Behavior;
+using Model.Domain.Characters.Behavior;
 using Model.Game;
 using R3;
 using UnityEngine;
@@ -14,7 +14,8 @@ namespace Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControllInputReceiver actionReceiver, World world, InventoryView inventoryView)
+        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControllInputReceiver actionReceiver,
+            World world, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)

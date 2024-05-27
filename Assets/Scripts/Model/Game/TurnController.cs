@@ -1,24 +1,20 @@
-﻿using Cysharp.Threading.Tasks;
-using Model.Characters;
-using Model.Game;
-using Model.Logs;
-using R3;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Cysharp.Threading.Tasks;
+using Model.Domain.Characters;
 using Unity.Logging;
 
-namespace Model
+namespace Model.Game
 {
     public sealed class TurnController
     {
-        private readonly World _world;
         private readonly GameInput _input;
-        private IEnumerable<Character> GetCharacters() => _world.Characters.Set;
-        private int _turn = 1;
-        private bool _isRunning = false;
+        private readonly World _world;
         private CancellationTokenSource _cancellationTokenSource;
+        private bool _isRunning = false;
         private UniTaskCompletionSource _runCompletionSource;
+        private int _turn = 1;
 
         public TurnController(World world, GameInput input)
         {
@@ -26,24 +22,28 @@ namespace Model
             _input = input;
         }
 
+        private IEnumerable<Character> GetCharacters()
+        {
+            return _world.Characters.Set;
+        }
+
         public async void Run()
         {
             _isRunning = true;
-            _cancellationTokenSource = new();
-            _runCompletionSource = new();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _runCompletionSource = new UniTaskCompletionSource();
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 Log.Debug($"Start turn {_turn}");
-                IEnumerable<Character> characterList = GetCharacters();
-                foreach (var character in characterList.ToList())
+                foreach (var character in _world.Characters.Set.ToList())
                 {
                     character.UpdateTurn();
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
-                        character.State = CharacterState.Think;
                         await character.DoNextAction(_world, _input);
                     }
+
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         _isRunning = false;
@@ -51,11 +51,13 @@ namespace Model
                         break;
                     }
                 }
-                await characterList.Select(character =>
+
+                await _world.Characters.Set.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
             }
         }
+
         public async UniTask Stop()
         {
             if (!_isRunning) return;

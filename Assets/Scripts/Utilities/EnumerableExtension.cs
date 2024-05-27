@@ -10,21 +10,25 @@ namespace Utilities
     {
         public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
         {
-            foreach (var item in ie) { action(item); }
+            foreach (var item in ie)
+            {
+                action(item);
+            }
         }
+
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
-                for (var y = rect.y; y < rect.y + rect.height; y++)
-                    yield return new Vector2Int(x, y);
+            for (var y = rect.y; y < rect.y + rect.height; y++)
+                yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                    if (x * x + y * y <= radius * radius)
-                        yield return new Vector2Int(x, y) + center;
+            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                if (x * x + y * y <= radius * radius)
+                    yield return new Vector2Int(x, y) + center;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
@@ -73,6 +77,7 @@ namespace Utilities
         {
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
+
         public static void SynchronizeWith<T>(this ICollection<T> collectionA, IEnumerable<T> collectionB)
         {
             // コレクションAの要素のうち、コレクションBに存在しないものを削除する

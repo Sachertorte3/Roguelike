@@ -1,13 +1,8 @@
 ﻿using R3;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Entities
+namespace Model.Domain.Entities
 {
     public interface IEntity
     {
@@ -17,6 +12,7 @@ namespace Model.Entities
         public ReadOnlyReactiveProperty<bool> Visibility { get; }
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
+
         public void SetVisiblity(bool visiblity)
         {
             Entity.SetVisibility(visiblity);

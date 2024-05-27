@@ -1,18 +1,19 @@
 ﻿#nullable enable
-using ObservableCollections;
-using R3;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Domain.Items;
+using ObservableCollections;
+using R3;
 using UnityEngine;
 using VContainer;
 
-namespace Model.Items
+namespace Model.Game
 {
     public sealed class ItemManager
     {
-        private HashSet<Vector2Int> _allItemPositions = new();
         private readonly ItemFactory _factory = new();
         private readonly ObservableList<ItemEntity> _items = new();
+        private HashSet<Vector2Int> _allItemPositions = new();
         public ItemEntityEvents ItemEntityEvents = new();
 
         [Inject]
@@ -51,6 +52,7 @@ namespace Model.Items
         {
             _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
         }
+
         public ItemEntity? TryPickUp(Vector2Int position)
         {
             if (GetAllItemPositions().Contains(position))

@@ -1,11 +1,11 @@
 ﻿#nullable enable
-using Assets.Scripts.View;
 using Model;
-using Model.Characters;
-using Model.Setting;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Setting;
+using Model.Domain.Characters;
+using Model.Game;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -17,12 +17,10 @@ namespace Provider
 {
     public class SynchronizedCharacterView : SynchronizedView<Character, CharacterView>
     {
-        protected override CharacterView _viewPrefab => Addressables
-            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion().GetComponent<CharacterView>();
-
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
+
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
@@ -32,6 +30,10 @@ namespace Provider
 
             world.Characters.Set.SubscribeToAll(Add, Remove);
         }
+
+        protected override CharacterView _viewPrefab => Addressables
+            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
+            .GetComponent<CharacterView>();
 
         protected override void InitializeView(Character character, CharacterView characterView)
         {
@@ -45,7 +47,8 @@ namespace Provider
             entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
             character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
-            character.OnSpawnEffect.Subscribe(useSkill => _effectViewSpawner.Spawn(useSkill.Intersect(_visibleArea), Settings.EffectDisplayTime.Value));
+            character.OnSpawnEffect.Subscribe(useSkill =>
+                _effectViewSpawner.Spawn(useSkill.Intersect(_visibleArea), Settings.EffectDisplayTime.Value));
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
 
@@ -62,7 +65,6 @@ namespace Provider
 
         protected override void CleanupView(Character character, CharacterView characterView)
         {
-
         }
     }
 }

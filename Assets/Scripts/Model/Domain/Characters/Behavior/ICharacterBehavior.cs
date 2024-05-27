@@ -1,8 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Action;
-using Model.Domain;
+using Model.Domain.Action;
 
-namespace Model.Characters.Behavior
+namespace Model.Domain.Characters.Behavior
 {
     public interface ICharacterBehavior
     {

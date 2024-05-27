@@ -11,8 +11,8 @@ namespace View
         private const int frame = 16;
         public int MoveMilliseconds = 1000;
         public int DashMilliseconds = 1000;
-        private Func<bool> _isDash;
         private readonly Subject<Unit> _onMoveFinished = new();
+        private Func<bool> _isDash;
         private SpriteView _view;
         public Observable<Unit> OnMoveFinished => _onMoveFinished;
         private bool _isVisible => _view.GetVisibility();

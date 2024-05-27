@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using Data.Character.Type;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
-public class EnemyData : ScriptableObject
+namespace Data.Character
 {
-    [SerializeReference] public ICharacterType CharacterType;
-    [MinValue(1)] public int Hp;
-    [MinValue(1)] public int Strength;
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
+    public class EnemyData : ScriptableObject
+    {
+        [MinValue(1)] public int Hp;
+        [MinValue(1)] public int Strength;
+        [SerializeReference] public ICharacterType CharacterType;
+    }
 }

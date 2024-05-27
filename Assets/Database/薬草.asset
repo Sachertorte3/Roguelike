@@ -17,17 +17,17 @@ MonoBehaviour:
   EffectsOnUse: 1
   EffectsOnThrow: 0
   Skill:
-    Effect:
-      rid: 6064254680659132420
     Area:
       rid: 6064254436379983901
+    Effect:
+      rid: 6064254728247705602
   UsageLimit: 1
   references:
     version: 2
     RefIds:
     - rid: 6064254436379983901
       type: {class: SelfArea, ns: Data.Area, asm: Data}
-    - rid: 6064254680659132420
-      type: {class: HealEffect, ns: Model.Effect, asm: Model.Domain}
+    - rid: 6064254728247705602
+      type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Power: 10

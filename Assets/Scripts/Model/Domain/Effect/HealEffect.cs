@@ -1,21 +1,23 @@
-﻿using Cysharp.Threading.Tasks;
-using Data;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using Data.Effect;
 using Sirenix.OdinInspector;
-using System;
 using UnityEngine;
 
-namespace Model.Effect
+namespace Model.Domain.Effect
 {
     [Serializable]
     public class HealEffect : IEffect
     {
         [MinValue(1)] public int Power;
-        public Impact Impact => Impact.Beneficial;
 
         public HealEffect(int power)
         {
             Power = power;
         }
+
+        public Impact Impact => Impact.Beneficial;
+
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target)
         {
             await target.GainHp(Formula.Calc(actor, Power));

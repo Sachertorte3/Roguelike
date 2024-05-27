@@ -1,8 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Domain;
 using Utilities;
 
-namespace Model.Action
+namespace Model.Domain.Action
 {
     internal record UseItem(int ItemIndex, Direction8 Direction) : IAction
     {

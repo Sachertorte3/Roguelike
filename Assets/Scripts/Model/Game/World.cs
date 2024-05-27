@@ -1,39 +1,37 @@
 ﻿#nullable enable
-using Model.Characters;
-using Model.Characters.Behavior;
+using System.Collections.Generic;
+using System.Linq;
+using Data.Setting;
 using Model.Domain;
-using Model.Items;
-using Model.Setting;
+using Model.Domain.Characters;
+using Model.Domain.Characters.Behavior;
+using Model.Domain.Items;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
-using Sirenix.Utilities;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using VContainer;
 
-namespace Model
+namespace Model.Game
 {
     public class World : IWorld
     {
-        public readonly Character Player;
-        public readonly List<MapManager> Maps = new();
-        public int ActiveMapIndex = 0;
-        public ReadOnlyReactiveProperty<MapManager> ActiveMap => _activeMap;
-        private ReactiveProperty<MapManager> _activeMap = new();
-        public readonly CharacterEvents PlayerEvents = new();
+        private readonly HashSet<Vector2Int> _visibleArea = new();
         public readonly CharacterEvents CharacterEvents = new();
 
         public readonly IntegratedSet<Character> Characters = new();
-        public readonly IntegratedSet<ItemEntity> Items = new();
         public readonly IntegratedSet<IEventEntity> EventEntities = new();
-        private HashSet<Vector2Int> _allItemPositions = new();
+        public readonly IntegratedSet<ItemEntity> Items = new();
+        public readonly List<MapManager> Maps = new();
+        public readonly Character Player;
+        public readonly CharacterEvents PlayerEvents = new();
+        private ReactiveProperty<MapManager> _activeMap = new();
 
-        public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
-        private readonly HashSet<Vector2Int> _visibleArea = new();
+        private HashSet<Vector2Int> _allCharacterPositions = new();
+        private HashSet<Vector2Int> _allItemPositions = new();
+        public int ActiveMapIndex = 0;
 
         [Inject]
         public World(CharacterControllInputReceiver receiver)
@@ -81,7 +79,8 @@ namespace Model
             CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllCharacterPosition();
-                positionChanged.Character.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
+                positionChanged.Character.SetVisiblity(
+                    Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             });
 
             Player = new CharacterFactory().CreatePlayer(Vector2Int.zero, receiver, Settings.IgnoreWall, this);
@@ -90,11 +89,58 @@ namespace Model
             CharacterEvents.Add(Player);
             _visibleArea.LiveSynchronizeWith(Player.Area.VisibleArea);
 
-            FieldBluePrint bluePrint = Addressables.LoadAssetAsync<FieldBluePrint>("Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
+            var bluePrint = Addressables
+                .LoadAssetAsync<FieldBluePrint>(
+                    "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
             GenerateMap(bluePrint);
 
             IsInitialized = true;
         }
+
+        public ReadOnlyReactiveProperty<MapManager> ActiveMap => _activeMap;
+
+        public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
+
+        public bool IsInitialized { get; private set; } = false;
+
+        public bool IsPassable(Vector2Int position)
+        {
+            return IsMapPassable(position) && !GetAllCharacterPositions().Contains(position);
+        }
+
+        /// <summary>
+        ///     Generates and returns a list of characters currently located within the given positions.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        {
+            return Characters.Set.Where(character => area.Contains(character.Position.CurrentValue))
+                .ToHashSet();
+        }
+
+        public HashSet<Vector2Int> GetAllLightPassablePositions()
+        {
+            return ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions();
+        }
+
+        public bool IsMapPassable(Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.Tilemap.IsPassable(position);
+        }
+
+        public bool IsReachable(Vector2Int from, Vector2Int to)
+        {
+            return IsPassable(to); //TODO: A*で実装
+        }
+
+        public ItemEntity SpawnItem(Item item, Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.ItemManager.SpawnItem(item, position);
+        }
+
+        public bool IsLoaded { get; private set; } = false;
+
         public void GenerateMap(FieldBluePrint bluePrint)
         {
             MapManager map = new(bluePrint, _visibleArea);
@@ -102,6 +148,7 @@ namespace Model
             LoadMap(Maps.Count - 1);
             map.Spawn(this);
         }
+
         private void LoadMap(int index)
         {
             IsLoaded = false;
@@ -126,7 +173,12 @@ namespace Model
 
             IsLoaded = true;
         }
-        public ItemEntity? TryPickUp(Vector2Int position) => ActiveMap.CurrentValue.ItemManager.TryPickUp(position);
+
+        public ItemEntity? TryPickUp(Vector2Int position)
+        {
+            return ActiveMap.CurrentValue.ItemManager.TryPickUp(position);
+        }
+
         public HashSet<Vector2Int> GetAllItemPositions()
         {
             return _allItemPositions;
@@ -136,38 +188,19 @@ namespace Model
         {
             _allItemPositions = Items.Set.Select(item => item.CurrentPosition).ToHashSet();
         }
-        public bool IsPassable(Vector2Int position)
-        {
-            return IsMapPassable(position) && !GetAllCharacterPositions().Contains(position);
-        }
 
         public bool IsPassableIgnoreWall(Vector2Int position)
         {
             return !GetAllCharacterPositions().Contains(position);
         }
 
-        /// <summary>
-        ///     Generates and returns a list of characters currently located within the given positions.
-        /// </summary>
-        /// <param name="area"></param>
-        /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
-        {
-            return Characters.Set.Where(character => area.Contains(character.Position.CurrentValue))
-                .ToHashSet();
-        }
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
             var result = ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions();
             result.ExceptWith(GetAllCharacterPositions());
             return result;
         }
-        public HashSet<Vector2Int> GetAllLightPassablePositions()
-        {
-            return ActiveMap.CurrentValue.Tilemap.GetAllPassablePositions();
-        }
 
-        private HashSet<Vector2Int> _allCharacterPositions = new();
         public HashSet<Vector2Int> GetAllCharacterPositions()
         {
             return new HashSet<Vector2Int>(_allCharacterPositions);
@@ -176,21 +209,6 @@ namespace Model
         private void SetAllCharacterPosition()
         {
             _allCharacterPositions = Characters.Set.Select(character => character.Position.CurrentValue).ToHashSet();
-        }
-
-        public bool IsMapPassable(Vector2Int position)
-        {
-            return ActiveMap.CurrentValue.Tilemap.IsPassable(position);
-        }
-
-        public bool IsReachable(Vector2Int from, Vector2Int to)
-        {
-            return IsPassable(to);//TODO: A*で実装
-        }
-
-        public ItemEntity SpawnItem(Item item, Vector2Int position)
-        {
-            return ActiveMap.CurrentValue.ItemManager.SpawnItem(item, position);
         }
 
         public void HandleItemDrop(int inventoryIndex)
@@ -203,8 +221,5 @@ namespace Model
                 ActiveMap.CurrentValue.ItemManager.SpawnItem(item, Player.CurrentPosition);
             }
         }
-
-        public bool IsInitialized { get; private set; } = false;
-        public bool IsLoaded { get; private set; } = false;
     }
 }

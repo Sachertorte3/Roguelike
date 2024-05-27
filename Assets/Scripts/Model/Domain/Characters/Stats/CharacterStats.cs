@@ -1,9 +1,9 @@
-﻿using R3;
+﻿using System;
+using R3;
 using StatSystem;
-using System;
 using Utilities;
 
-namespace Model.Characters.Stats
+namespace Model.Domain.Characters.Stats
 {
     internal class CharacterStats : IDisposable, IStats
     {
@@ -26,12 +26,5 @@ namespace Model.Characters.Stats
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.Max;
         public ReadOnlyReactiveProperty<int> Strength { get; init; }
-    }
-
-    public interface IStats
-    {
-        public ReadOnlyReactiveProperty<int> HpValue { get; }
-        public ReadOnlyReactiveProperty<int> MaxHp { get; }
-        public ReadOnlyReactiveProperty<int> Strength { get; }
     }
 }

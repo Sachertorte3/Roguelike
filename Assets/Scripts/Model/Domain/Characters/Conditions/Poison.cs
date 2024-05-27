@@ -1,9 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
-using Data;
 using Data.Condition;
+using Data.Effect;
 using Utilities;
 
-namespace Model.Characters.Conditions
+namespace Model.Domain.Characters.Conditions
 {
     internal class Poison : IConditionData
     {
@@ -13,7 +13,6 @@ namespace Model.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -24,7 +23,6 @@ namespace Model.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-
         }
     }
 }

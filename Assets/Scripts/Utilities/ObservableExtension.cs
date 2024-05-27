@@ -13,14 +13,17 @@ namespace Utilities
         {
             return source.Subscribe(item => target.OnNext(item));
         }
-        public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction, Action<T> removeAction = null)
+
+        public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction,
+            Action<T> removeAction = null)
         {
             foreach (var item in list)
             {
                 addAction(item);
             }
 
-            return new CompositeDisposable() {
+            return new CompositeDisposable()
+            {
                 list.ObserveAdd()
                     .Select(i => i.Value)
                     .Subscribe(addAction),
@@ -35,7 +38,9 @@ namespace Utilities
                     })
             };
         }
-        public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction, Action<T> removeAction = null)
+
+        public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction,
+            Action<T> removeAction = null)
         {
             addAction(property.CurrentValue);
 
@@ -46,7 +51,9 @@ namespace Utilities
                     removeAction?.Invoke(value.Previous);
                 });
         }
-        public static void SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IEnumerable<T> collectionB) where T : notnull
+
+        public static void SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IEnumerable<T> collectionB)
+            where T : notnull
         {
             // コレクションAの要素のうち、コレクションBに存在しないものを削除する
             var itemsToRemove = collectionA.Except(collectionB).ToList();
@@ -62,13 +69,17 @@ namespace Utilities
                 collectionA.Add(item);
             }
         }
-        public static IDisposable LiveSynchronizeWith<T>(this ObservableHashSet<T> collectionA, IObservableCollection<T> collectionB) where T : notnull
+
+        public static IDisposable LiveSynchronizeWith<T>(this ObservableHashSet<T> collectionA,
+            IObservableCollection<T> collectionB) where T : notnull
         {
             collectionA.SynchronizeWith(collectionB);
 
             return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
         }
-        public static IDisposable LiveSynchronizeWith<T>(this ICollection<T> collectionA, IObservableCollection<T> collectionB) where T : notnull
+
+        public static IDisposable LiveSynchronizeWith<T>(this ICollection<T> collectionA,
+            IObservableCollection<T> collectionB) where T : notnull
         {
             collectionA.SynchronizeWith(collectionB);
 

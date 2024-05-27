@@ -15,7 +15,8 @@ namespace Model.Domain.Map
     public class Tilemap : ITilemapViewer
     {
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
-        private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new();
+        private readonly Subject<(Vector2Int, TileData)> _onTileChanged = new();
+        private readonly Subject<(Vector2Int, TileData)> _onTileKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Height;
         public readonly int Width;
@@ -36,19 +37,20 @@ namespace Model.Domain.Map
                             var tileType = mapChipType == (int)MapChipType.Wall
                                 ? TileCategory.Wall
                                 : TileCategory.Floor;
-                            return new TileData(tileType);
+                            return new TileData(tileType, false);
                         }
                     )
             );
             _tiles.ObserveReplace()
-                .Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
+                .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
-            OnChangeTile.Subscribe(changeTile =>
+            OnTileChanged.Subscribe(changeTile =>
             {
                 if (changeTile.tile.IsPassable())
                     _allPassablePositionsSet.Add(changeTile.position);
                 else
                     _allPassablePositionsSet.Remove(changeTile.position);
+                ResetMask(changeTile.position);
             });
         }
 
@@ -57,13 +59,14 @@ namespace Model.Domain.Map
             Width = width;
             Height = height;
             _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
-                .ToDictionary(x => x, _ => new TileData(TileCategory.Blank)));
+                .ToDictionary(x => x, _ => new TileData(TileCategory.Blank, false)));
             _tiles.ObserveReplace()
-                .Subscribe(context => _onChangeTile.OnNext((context.NewValue.Key, context.NewValue.Value)));
+                .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
 
         public Vector2Int Size => new(Width, Height);
-        public Observable<(Vector2Int position, TileData tile)> OnChangeTile => _onChangeTile;
+        public Observable<(Vector2Int position, TileData tile)> OnTileChanged => _onTileChanged;
+        public Observable<(Vector2Int position, TileData tile)> OnTileKnownChanged => _onTileKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
 
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
@@ -101,6 +104,21 @@ namespace Model.Domain.Map
         private IEnumerable<Vector2Int> FindAllPassablePositions()
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
+        }
+        public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
+        {
+            foreach (var position in positions) SetTileKnown(position, isKnown);
+        }
+
+        public void SetTileKnown(Vector2Int position, bool isKnown)
+        {
+            Get(position).SetKnown(isKnown);
+            _onTileKnownChanged.OnNext((position, Get(position)));
+        }
+
+        public void ResetMask(Vector2Int position)
+        {
+            SetTilesKnown(new RectInt(position - new Vector2Int(1, 1), new Vector2Int(3, 3)).RectRange(), false);
         }
     }
 }

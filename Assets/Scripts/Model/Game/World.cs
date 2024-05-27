@@ -43,6 +43,7 @@ namespace Model.Game
 
             PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
+                ActiveMap.CurrentValue.Tilemap.SetTilesKnown(areaChanged.Message.AreaEntered, true);
                 foreach (var item in Items.Set)
                     if (areaChanged.Message.AreaExited.Contains(item.CurrentPosition))
                         item.SetVisiblity(false);

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Model.Items
+namespace Model.Domain.Items
 {
     public class InventoryIndexReceiver
     {

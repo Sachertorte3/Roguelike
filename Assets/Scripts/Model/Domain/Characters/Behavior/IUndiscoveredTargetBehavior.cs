@@ -1,8 +1,7 @@
-﻿using Model.Action;
-using Model.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Model.Domain.Action;
 
-namespace Model.Characters.Behavior
+namespace Model.Domain.Characters.Behavior
 {
     internal interface IUndiscoveredTargetBehavior
     {

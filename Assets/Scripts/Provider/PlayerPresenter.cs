@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Model;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -12,7 +13,8 @@ namespace Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _, StatLine statLine)
+        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
+            StatLine statLine)
         {
             var playerView = characters.Get(world.Player);
 
@@ -22,7 +24,8 @@ namespace Provider
             arrow.GetComponent<CharacterArrow>().Constract(playerView);
 
             Observable.Merge(world.Player.StatusManager.Stats.HpValue, world.Player.StatusManager.Stats.MaxHp)
-                .Subscribe(_ => statLine.SetValue(world.Player.StatusManager.MaxHp, world.Player.StatusManager.CurrentHp));
+                .Subscribe(_ =>
+                    statLine.SetValue(world.Player.StatusManager.MaxHp, world.Player.StatusManager.CurrentHp));
         }
     }
 }

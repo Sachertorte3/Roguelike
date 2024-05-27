@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data;
-using Model.Characters;
-using Model.Items;
+using Model.Domain.Characters;
+using Model.Domain.Items;
 using UnityEngine;
 
 namespace Model.Domain
@@ -19,10 +19,5 @@ namespace Model.Domain
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
         public ItemEntity SpawnItem(Item item, Vector2Int position);
-    }
-    public interface IInput
-    {
-        public bool IsDash();
-        public bool IsNoMove();
     }
 }

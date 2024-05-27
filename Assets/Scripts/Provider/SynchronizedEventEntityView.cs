@@ -1,6 +1,7 @@
 ﻿#nullable enable
+using Data.Setting;
 using Model;
-using Model.Setting;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -13,9 +14,6 @@ namespace Provider
 {
     public class SynchronizedEventEntityView : SynchronizedView<IEventEntity, EntityView>
     {
-        protected override EntityView _viewPrefab =>
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion().GetComponent<EntityView>();
-
         private readonly InputReceiver _inputReceiver;
 
         [Inject]
@@ -25,6 +23,10 @@ namespace Provider
 
             world.EventEntities.Set.SubscribeToAll(Add, Remove);
         }
+
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
 
         protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
         {

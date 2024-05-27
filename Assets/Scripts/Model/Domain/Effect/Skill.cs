@@ -1,13 +1,13 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
-using Model.Domain;
-using System.Collections.Generic;
-using System.Linq;
+using Data.Effect;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Effect
+namespace Model.Domain.Effect
 {
     public class Skill
     {
@@ -24,6 +24,7 @@ namespace Model.Effect
         {
             return _area.Get(position, direction);
         }
+
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IWorld world)
         {
             var area = _area.Get(position, direction);
@@ -34,6 +35,7 @@ namespace Model.Effect
                     {
                         target.WasAttackedBy(actor);
                     }
+
                     _effect.Apply(actor, target.StatusManager);
                 });
             return UniTask.CompletedTask;
@@ -49,6 +51,7 @@ namespace Model.Effect
             {
                 return -1;
             }
+
             foreach (var target in characters)
             {
                 // Enemy attacked or ally healed, add to evaluation

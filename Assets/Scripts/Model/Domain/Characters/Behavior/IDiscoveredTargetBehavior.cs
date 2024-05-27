@@ -1,12 +1,12 @@
-﻿using Model.Action;
-using Model.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Model.Domain.Action;
 using UnityEngine;
 
-namespace Model.Characters.Behavior
+namespace Model.Domain.Characters.Behavior
 {
     internal interface IDiscoveredTargetBehavior
     {
-        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition, IWorld world);
+        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+            IWorld world);
     }
 }

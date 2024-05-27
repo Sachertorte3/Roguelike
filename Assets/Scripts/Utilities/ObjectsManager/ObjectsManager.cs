@@ -64,9 +64,4 @@ namespace Utilities.ObjectsManager
             return _caches[typeof(T)].ObserveAdd().Select(obj => (T)obj.Value);
         }
     }
-
-    public interface IDestroyObservable
-    {
-        event Action OnDestroy;
-    }
 }

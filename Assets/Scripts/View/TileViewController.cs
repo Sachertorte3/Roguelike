@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace View
@@ -28,12 +27,5 @@ namespace View
         {
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
-    }
-
-    [Serializable]
-    internal struct Tiles
-    {
-        public TileBase Wall;
-        public TileBase Floor;
     }
 }

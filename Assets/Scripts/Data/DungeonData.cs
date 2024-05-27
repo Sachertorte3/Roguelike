@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Data.Character;
 using UnityEngine;
 
 namespace Data
@@ -10,4 +11,3 @@ namespace Data
         public List<EnemyData> Enemies;
     }
 }
-

@@ -1,9 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Domain;
-using Model.Effect;
+using Model.Domain.Effect;
 using Utilities;
 
-namespace Model.Action
+namespace Model.Domain.Action
 {
     internal record UseSkill(Skill Skill, Direction8 Direction) : IAction
     {

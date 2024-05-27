@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
-using Model.Domain;
 
-namespace Model.Action
+namespace Model.Domain.Action
 {
     public interface IAction
     {
@@ -17,4 +16,3 @@ namespace Model.Action
         public float Evaluate(IActor actor, IWorld world);
     }
 }
-

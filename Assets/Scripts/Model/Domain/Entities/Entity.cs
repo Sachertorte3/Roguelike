@@ -1,10 +1,10 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using R3;
-using System;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Entities
+namespace Model.Domain.Entities
 {
     public class Entity : IDisposable
     {

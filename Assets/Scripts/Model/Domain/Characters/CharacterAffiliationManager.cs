@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using Data;
-using Model.Characters;
+using Data.Effect;
 
 namespace Model.Domain.Characters
 {
     public class CharacterAffiliationManager : IAffiliation
     {
-        public CharacterGroup Group { get; private set; }
-
         public CharacterAffiliationManager(CharacterGroup group)
         {
             Group = group;
         }
+
+        public CharacterGroup Group { get; private set; }
 
         public bool IsAlly(IAffiliation other)
         {

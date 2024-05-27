@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using UnityEngine;
 
-namespace Model.Items
+namespace Model.Domain.Items
 {
     public sealed class ItemFactory
     {

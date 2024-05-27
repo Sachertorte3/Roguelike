@@ -1,4 +1,4 @@
-﻿namespace Model.Characters
+﻿namespace Model.Domain.Characters
 {
     public enum CharacterState
     {

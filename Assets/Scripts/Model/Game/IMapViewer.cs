@@ -1,7 +1,7 @@
 ﻿#nullable enable
-using Model.Map;
+using Model.Domain.Map;
 
-namespace Model
+namespace Model.Game
 {
     internal interface IMapViewer
     {

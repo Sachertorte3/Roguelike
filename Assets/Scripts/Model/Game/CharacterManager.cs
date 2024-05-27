@@ -1,18 +1,19 @@
 ﻿#nullable enable
-using Model.Characters.Behavior;
+using Data.Character;
 using Model.Domain;
+using Model.Domain.Characters;
+using Model.Domain.Characters.Behavior;
 using ObservableCollections;
 using R3;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Model.Characters
+namespace Model.Game
 {
     public sealed class CharacterManager
     {
+        private readonly ObservableList<Character> _characters = new();
         private readonly CharacterFactory _factory = new();
         public readonly CharacterEvents CharacterEvents = new();
-        private readonly ObservableList<Character> _characters = new();
 
         public CharacterManager()
         {
@@ -36,7 +37,8 @@ namespace Model.Characters
         public void SpawnCharacter(EnemyData data, Vector2Int spawnPosition, IWorld world)
         {
             AddCharacter(
-                _factory.CreateCharacter(data, spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
+                _factory.CreateCharacter(data, spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false),
+                    world));
         }
     }
 }

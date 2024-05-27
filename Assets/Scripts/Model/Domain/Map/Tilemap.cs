@@ -1,24 +1,24 @@
-﻿using ObservableCollections;
-using R3;
-using RandomDungeonWithBluePrint;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ObservableCollections;
+using R3;
+using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using VContainer;
 using static RandomDungeonWithBluePrint.Constants;
 
-namespace Model.Map
+namespace Model.Domain.Map
 {
     public class Tilemap : ITilemapViewer
     {
+        private readonly HashSet<Vector2Int> _allPassablePositionsSet;
         private readonly Subject<(Vector2Int, TileData)> _onChangeTile = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Height;
         public readonly int Width;
-        private readonly HashSet<Vector2Int> _allPassablePositionsSet;
 
         [Inject]
         public Tilemap(FieldBluePrint bluePrint)
@@ -102,14 +102,5 @@ namespace Model.Map
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
         }
-    }
-
-    public interface ITilemapViewer
-    {
-        public Observable<(Vector2Int position, TileData tile)> OnChangeTile { get; }
-        public RectInt Rect { get; }
-        public bool IsPassable(Vector2Int position);
-        public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles();
-        public HashSet<Vector2Int> GetAllPassablePositions();
     }
 }

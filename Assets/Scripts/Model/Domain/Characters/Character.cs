@@ -39,7 +39,7 @@ namespace Model.Domain.Characters
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
             _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(10, 2);
+            _statusManager = new CharacterStatusManager(100, 1);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);

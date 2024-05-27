@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
   m_Name: Bat
   m_EditorClassIdentifier: 
+  Hp: 3
+  Strength: 2
   CharacterType:
     rid: 6064254728247705600
-  Hp: 10
-  Strength: 2
   references:
     version: 2
     RefIds:

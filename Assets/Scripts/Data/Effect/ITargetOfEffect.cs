@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Data.Condition;
 
-namespace Data
+namespace Data.Effect
 {
     public interface ITargetOfEffect
     {

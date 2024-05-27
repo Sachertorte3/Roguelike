@@ -1,5 +1,6 @@
 #nullable enable
 using Model;
+using Model.Game;
 using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
@@ -12,7 +13,8 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, World world, SynchronizedEventEntityView _)
+        public Presenter(TileMaskController tileMask, GameManager gameManager, World world,
+            SynchronizedEventEntityView _)
         {
             LoggerInit();
 

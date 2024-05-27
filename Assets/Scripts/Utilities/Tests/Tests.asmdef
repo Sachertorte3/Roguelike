@@ -5,7 +5,8 @@
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner",
     "Utilities",
-    "Model"
+    "Model",
+    "Model.Domain"
   ],
   "includePlatforms": [
     "Editor"

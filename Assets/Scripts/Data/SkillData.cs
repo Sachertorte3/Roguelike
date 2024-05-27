@@ -1,6 +1,7 @@
 ﻿using Data.Area;
 using Sirenix.OdinInspector;
 using System;
+using Data.Effect;
 using UnityEngine;
 
 namespace Data
@@ -8,8 +9,8 @@ namespace Data
     [Serializable]
     public record SkillData : IHasInfo
     {
-        [SerializeReference, Required] public IEffect Effect;
         [SerializeReference, Required] public IArea Area;
+        [SerializeReference, Required] public IEffect Effect;
 
         public SkillData(IArea area, IEffect effect)
         {

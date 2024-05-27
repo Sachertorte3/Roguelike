@@ -3,12 +3,12 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Assets.Scripts.View
+namespace View
 {
     public class ParticleController : MonoBehaviour
     {
-        private Dictionary<ParticleType, GameObject> _particles = new();
         private Dictionary<ParticleType, int> _particleCounter = new();
+        private Dictionary<ParticleType, GameObject> _particles = new();
 
         public void Add(ParticleType particleType)
         {

@@ -13,7 +13,7 @@ namespace Data
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
-        [ReadOnly] [Required] public string Name = "";
+        [ReadOnly, Required] public string Name = "";
         [Required] public Sprite Icon;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow;

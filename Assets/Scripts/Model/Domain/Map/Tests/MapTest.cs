@@ -17,11 +17,6 @@ namespace Model.Domain.Map.Tests
             }
         }
 
-        private static IEnumerable<TestCaseData> IndexTest2Cases
-        {
-            get { yield return new TestCaseData(10, 10, new Vector2Int(9, 10)); }
-        }
-
         [TestCaseSource(nameof(IndexTestCases))]
         public void IndexTest1(int width, int height, Vector2Int position)
         {
@@ -29,11 +24,16 @@ namespace Model.Domain.Map.Tests
             Assert.AreEqual(new TileData(TileCategory.Blank), map.Get(position));
         }
 
+        private static IEnumerable<TestCaseData> IndexTest2Cases
+        {
+            get { yield return new TestCaseData(10, 10, new Vector2Int(9, 10)); }
+        }
+
         [TestCaseSource(nameof(IndexTest2Cases))]
         public void IndexTest2(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
-            Assert.That(() => map.Get(position), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.Throws<ArgumentOutOfRangeException>(() => map.Get(position));
         }
     }
 }

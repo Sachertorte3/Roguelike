@@ -33,8 +33,8 @@ namespace Utilities
                 list.ObserveReplace()
                     .Subscribe(value =>
                     {
-                        addAction(value.NewValue);
                         removeAction?.Invoke(value.OldValue);
+                        addAction(value.NewValue);
                     })
             };
         }
@@ -47,8 +47,8 @@ namespace Utilities
             return property.Pairwise()
                 .Subscribe(value =>
                 {
-                    addAction(value.Current);
                     removeAction?.Invoke(value.Previous);
+                    addAction(value.Current);
                 });
         }
 

@@ -51,7 +51,7 @@ namespace Model.Domain.Items
             Dispose();
         }
 
-        public async UniTask Throw(IActor actor, Direction8 direction, IWorld world)
+        public async UniTask Throw(IActor actor, Direction8 direction, IMap world)
         {
             while (world.IsPassable(CurrentPosition + direction.Vector()))
             {

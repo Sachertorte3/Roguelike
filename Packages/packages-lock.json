@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.cysharp.r3": {
-      "version": "1.1.11",
+      "version": "1.1.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -216,7 +216,7 @@
       "dependencies": {
         "com.unity.test-framework": "1.1.9"
       },
-      "hash": "d6c936c606b6da2b38ee72a83a9bb36193d50742"
+      "hash": "5eab27e315296530f9c66ff7795273394a6464b6"
     },
     "com.unity.ide.rider": {
       "version": "3.0.28",
@@ -437,7 +437,7 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.r3": {
-      "version": "1.1.11",
+      "version": "1.1.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {

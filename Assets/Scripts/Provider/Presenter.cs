@@ -2,7 +2,9 @@
 using Model.Game;
 using Unity.Logging;
 using Unity.Logging.Sinks;
+using Utilities.ObjectsManager;
 using VContainer;
+using View;
 using Logger = Unity.Logging.Logger;
 
 namespace Provider
@@ -13,7 +15,8 @@ namespace Provider
         public Presenter(GameManager gameManager, SynchronizedEventEntityView _)
         {
             LoggerInit();
-            gameManager.Run();
+            ObjectsManager.GetObjectsByType<SpriteView>();
+            gameManager.LoadMap();
         }
 
         private void LoggerInit()

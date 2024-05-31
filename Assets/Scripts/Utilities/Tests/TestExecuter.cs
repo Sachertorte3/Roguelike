@@ -7,7 +7,7 @@ namespace Utilities.Tests
 {
     public class TestExecutor
     {
-        [DidReloadScripts]
+        //[DidReloadScripts]
         public static void RunTests()
         {
             var testRunnerApi = ScriptableObject.CreateInstance<TestRunnerApi>();

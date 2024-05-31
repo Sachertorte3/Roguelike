@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.cysharp.r3": "1.1.11",
+    "com.cysharp.r3": "1.1.12",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.unity.addressables": "1.21.21",
     "com.unity.collab-proxy": "2.0.7",
@@ -21,7 +21,7 @@
     "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer",
     "org.nuget.observablecollections": "2.1.2",
     "org.nuget.observablecollections.r3": "2.1.2",
-    "org.nuget.r3": "1.1.11",
+    "org.nuget.r3": "1.1.12",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",

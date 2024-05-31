@@ -34,7 +34,7 @@ namespace Model.Domain.Characters
         public CharacterState State = CharacterState.Think;
 
         internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IWorld world, CharacterGroup group)
+            IMap world, CharacterGroup group)
         {
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
@@ -47,7 +47,7 @@ namespace Model.Domain.Characters
         }
 
         internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
-            Observable<bool> canIgnoreWall, IWorld world, CharacterGroup group)
+            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group)
         {
             CharacterType = data.CharacterType;
             _entity = new Entity(position);
@@ -62,7 +62,6 @@ namespace Model.Domain.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
         public Observable<Unit> OnDead => _statusManager.OnDead;
-
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
         public IStatusManager StatusManager => _statusManager;
@@ -75,7 +74,7 @@ namespace Model.Domain.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IWorld world)
+        public bool CanMove(Direction8 direction, IMap world)
         {
             return _canIgnoreWall
                 ? world.IsMapPassable(Position.CurrentValue + direction.Vector())
@@ -99,7 +98,7 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction, IWorld world)
+        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
             _direction.Value = direction;
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
@@ -112,7 +111,7 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseItem(int itemIndex, Direction8 direction, IWorld world)
+        public async UniTask UseItem(int itemIndex, Direction8 direction, IMap world)
         {
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
@@ -132,7 +131,7 @@ namespace Model.Domain.Characters
             }
         }
 
-        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world)
+        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
         {
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
@@ -201,7 +200,7 @@ namespace Model.Domain.Characters
             return CharacterType.SubtypeName();
         }
 
-        public async UniTask DoNextAction(IWorld world, IInput input)
+        public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
             var action = await Behavior.GenerateNextAction(this, world, input);

@@ -1,11 +1,12 @@
 ﻿#nullable enable
+using System;
 using Model.Domain.Entities;
 using R3;
 using Utilities.Messages;
 
 namespace Model.Domain.Characters
 {
-    public class CharacterEvents : IEntityGroupEvents
+    public class CharacterEvents : IDisposable, IEntityGroupEvents
     {
         private GroupEvents<Character> _events = new();
 
@@ -38,6 +39,14 @@ namespace Model.Domain.Characters
 
         Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
             _events.GetSubject<OnTeleportMessage>().SelectSender(character => character.Entity);
+        ~CharacterEvents()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _events.Dispose();
+        }
 
         public void Add(Character character)
         {

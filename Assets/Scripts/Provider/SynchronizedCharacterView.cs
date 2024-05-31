@@ -12,6 +12,8 @@ using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
+using Model.Domain;
+using System;
 
 namespace Provider
 {
@@ -19,16 +21,30 @@ namespace Provider
     {
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
-        private readonly IReadOnlyCollection<Vector2Int> _visibleArea;
+        private readonly World _world;
+        private readonly SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
-            _visibleArea = world.VisibleArea;
+            _world = world;
 
-            world.Characters.Set.SubscribeToAll(Add, Remove);
+            world.ActiveMap.SubscribeToAll(
+                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAll(Add, Remove),
+                map => map.Characters.ForEach(character => Remove(character))
+            );
+        }
+
+        ~SynchronizedCharacterView()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
 
         protected override CharacterView _viewPrefab => Addressables
@@ -41,26 +57,27 @@ namespace Provider
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
                 character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
-            character.Direction.Subscribe(direction => characterView.Turn(direction));
+            character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
             var entityView = characterView.GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
-            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport));
+            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             character.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill.Intersect(_visibleArea), Settings.EffectDisplayTime.Value));
-            Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
-            Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
+                _effectViewSpawner.Spawn(useSkill.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), Settings.EffectDisplayTime.Value)
+            ).AddTo(characterView);
+            Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
+            Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
 
             var spriteView = characterView.GetComponent<SpriteView>();
             spriteView.RegisterComponent();
-            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
+            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             character.StatusManager.Conditions.SubscribeToAll(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
-            );
+            ).AddTo(particleController);
         }
 
         protected override void CleanupView(Character character, CharacterView characterView)

@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Codice.Client.BaseCommands;
 using Model;
 using Model.Game;
 using R3;
@@ -7,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using VContainer;
 using View;
 using View.UI;
+using Utilities;
 
 namespace Provider
 {
@@ -16,16 +18,24 @@ namespace Provider
         public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
             StatLine statLine)
         {
-            var playerView = characters.Get(world.Player);
+            GameObject arrow = null;
+            world.ActiveMap.SubscribeToAll(map =>
+            {
+                var playerView = characters.Get(map.Player);
 
-            var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
-                .WaitForCompletion();
-            var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
-            arrow.GetComponent<CharacterArrow>().Constract(playerView);
+                var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
+                    .WaitForCompletion();
+                var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
+                arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-            Observable.Merge(world.Player.StatusManager.Stats.HpValue, world.Player.StatusManager.Stats.MaxHp)
-                .Subscribe(_ =>
-                    statLine.SetValue(world.Player.StatusManager.MaxHp, world.Player.StatusManager.CurrentHp));
+                Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                    .Subscribe(_ =>
+                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp));
+            },
+            map =>
+            {
+                Object.Destroy(arrow);
+            });
         }
     }
 }

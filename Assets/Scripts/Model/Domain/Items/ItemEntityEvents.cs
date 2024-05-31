@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using Model.Domain.Characters;
 using Model.Domain.Entities;
 using R3;
@@ -6,7 +7,7 @@ using Utilities.Messages;
 
 namespace Model.Domain.Items
 {
-    public class ItemEntityEvents : IEntityGroupEvents
+    public class ItemEntityEvents : IDisposable, IEntityGroupEvents
     {
         private readonly GroupEvents<ItemEntity> _events = new();
 
@@ -32,7 +33,14 @@ namespace Model.Domain.Items
 
         Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
             _events.GetSubject<OnTeleportMessage>().SelectSender(item => item.Entity);
-
+        ~ItemEntityEvents()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _events.Dispose();
+        }
         public void Add(ItemEntity item)
         {
             _events.Add(item, item.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));

@@ -7,6 +7,6 @@ namespace Model.Domain.Characters.Behavior
     internal interface IDiscoveredTargetBehavior
     {
         public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IWorld world);
+            IMap world);
     }
 }

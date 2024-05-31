@@ -2,6 +2,7 @@
 using System.Linq;
 using ObservableCollections;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
@@ -12,7 +13,7 @@ namespace Model.Domain.Characters
         private readonly ObservableHashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
-        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, IWorld world)
+        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
             position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition, world)));
         }
@@ -21,7 +22,7 @@ namespace Model.Domain.Characters
 
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
-        public void Refrash(Vector2Int position, IWorld world)
+        public void Refrash(Vector2Int position, IMap world)
         {
             ChangeVisibleArea(Calc(position, world));
         }
@@ -36,16 +37,9 @@ namespace Model.Domain.Characters
             _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, exitArea, enterArea));
         }
 
-        private HashSet<Vector2Int> Calc(Vector2Int position, IWorld world)
+        private HashSet<Vector2Int> Calc(Vector2Int position, IMap world)
         {
-            if (world.IsLoaded)
-            {
-                return ViewCalculator.ComputeCircle(world.GetAllLightPassablePositions(), position, 10f);
-            }
-            else
-            {
-                return new HashSet<Vector2Int>();
-            }
+            return ViewCalculator.ComputeCircle(world.GetAllLightPassablePositions(), position, 10f);
         }
     }
 }

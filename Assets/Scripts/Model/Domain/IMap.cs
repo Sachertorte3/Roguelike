@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +8,15 @@ using Data;
 using Model.Domain.Characters;
 using Model.Domain.Items;
 using UnityEngine;
+using ObservableCollections;
 
 namespace Model.Domain
 {
-    public interface IWorld
+    public interface IMap
     {
-        public bool IsLoaded { get; }
+        public IEnumerable<Vector2Int> VisibleArea { get; }
+        public IObservableCollection<Character> Characters { get; }
+        public IObservableCollection<ItemEntity> Items { get; }
         public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);
         public HashSet<Vector2Int> GetAllLightPassablePositions();
         public bool IsPassable(Vector2Int position);

@@ -14,7 +14,7 @@ namespace Model.Domain.Characters.Behavior
         private readonly float behavioralRandomness = 0.01f;
         private Vector2Int? _lastTargetPosition;
 
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input)
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);

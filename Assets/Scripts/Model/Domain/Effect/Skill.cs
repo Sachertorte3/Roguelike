@@ -25,7 +25,7 @@ namespace Model.Domain.Effect
             return _area.Get(position, direction);
         }
 
-        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IWorld world)
+        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
             world.GetCharactersInArea(area.ToHashSet())
@@ -41,7 +41,7 @@ namespace Model.Domain.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IWorld world)
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());

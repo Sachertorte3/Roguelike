@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Model.Domain;
 using Model.Domain.Characters;
 using Unity.Logging;
 
@@ -10,24 +11,17 @@ namespace Model.Game
     public sealed class TurnController
     {
         private readonly GameInput _input;
-        private readonly World _world;
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isRunning = false;
         private UniTaskCompletionSource _runCompletionSource;
         private int _turn = 1;
 
-        public TurnController(World world, GameInput input)
+        public TurnController(GameInput input)
         {
-            _world = world;
             _input = input;
         }
 
-        private IEnumerable<Character> GetCharacters()
-        {
-            return _world.Characters.Set;
-        }
-
-        public async void Run()
+        public async void Run(IMap map)
         {
             _isRunning = true;
             _cancellationTokenSource = new CancellationTokenSource();
@@ -36,12 +30,12 @@ namespace Model.Game
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 Log.Debug($"Start turn {_turn}");
-                foreach (var character in _world.Characters.Set.ToList())
+                foreach (var character in map.Characters.ToList())
                 {
                     character.UpdateTurn();
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
-                        await character.DoNextAction(_world, _input);
+                        await character.DoNextAction(map, _input);
                     }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
@@ -52,7 +46,7 @@ namespace Model.Game
                     }
                 }
 
-                await _world.Characters.Set.Select(character =>
+                await map.Characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
             }

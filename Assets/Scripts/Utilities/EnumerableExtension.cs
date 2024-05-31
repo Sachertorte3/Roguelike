@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -93,6 +94,10 @@ namespace Utilities
             {
                 collectionA.Add(item);
             }
+        }
+        public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()
+        {
+            return Enumerable.Range(0, count).Select(_ => new T());
         }
     }
 }

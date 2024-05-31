@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Model;
 using R3;
 using System.Linq;
 using Model.Domain.Map;
@@ -7,13 +6,12 @@ using Model.Game;
 using Utilities;
 using VContainer;
 using View;
-using UnityEngine;
 
 namespace Provider
 {
     public class TilemapPresenter
     {
-        private SerialDisposable[] _disposables = Enumerable.Range(0, 3).Select(_ => new SerialDisposable()).ToArray();
+        private SerialDisposable[] _disposables = EnumerableExtension.CreateArrayWithNewInstances<SerialDisposable>(4).ToArray();
 
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
@@ -35,9 +33,17 @@ namespace Provider
                     }
                 }
 
-                foreach (var (position, _) in mapLoaded.Tilemap.GetAllTiles())
+                foreach (var (position, tileData) in mapLoaded.Tilemap.GetAllTiles())
                 {
-                    tileMask.SetTileTransparent(position); // HACK: Separating this due to a bug when not separated
+                    // HACK: Separating this due to a bug when not separated
+                    if (tileData.IsKnown)
+                    {
+                        tileMask.SetTileVisible(position);
+                    }
+                    else
+                    {
+                        tileMask.SetTileTransparent(position);
+                    }
                 }
 
                 _disposables[1].Disposable = mapLoaded.Tilemap.OnTileChanged.Subscribe(context =>
@@ -64,18 +70,18 @@ namespace Provider
                         tileMask.SetTileTransparent(context.position);
                     }
                 });
-            });
-            // HACK: Here.
-            world.PlayerEvents.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
-            {
-                foreach (var position in visibleAreaChanged.Message.AreaEntered)
+                // HACK: Here.
+                _disposables[3].Disposable = mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
                 {
-                    tileMask.SetTileVisible(position);
-                }
-                foreach (var position in visibleAreaChanged.Message.AreaExited)
-                {
-                    tileMask.SetTileTranslucent(position);
-                }
+                    foreach (var position in visibleAreaChanged.Message.AreaEntered)
+                    {
+                        tileMask.SetTileVisible(position);
+                    }
+                    foreach (var position in visibleAreaChanged.Message.AreaExited)
+                    {
+                        tileMask.SetTileTranslucent(position);
+                    }
+                });
             });
         }
     }

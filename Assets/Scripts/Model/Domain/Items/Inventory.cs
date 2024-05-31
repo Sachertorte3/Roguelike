@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
+using Utilities;
 
 namespace Model.Domain.Items
 {
@@ -13,8 +14,8 @@ namespace Model.Domain.Items
         private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
-        private readonly List<SerialDisposable> disposables =
-            new(Enumerable.Range(0, MaxItems).Select(_ => new SerialDisposable()));
+        private readonly SerialDisposable[] disposables =
+            EnumerableExtension.CreateArrayWithNewInstances<SerialDisposable>(MaxItems).ToArray();
 
         public Inventory()
         {

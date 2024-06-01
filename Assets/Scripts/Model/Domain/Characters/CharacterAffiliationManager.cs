@@ -1,14 +1,20 @@
 using System.Collections.Generic;
 using Data;
+using Data.Character;
 using Data.Effect;
 
 namespace Model.Domain.Characters
 {
-    public class CharacterAffiliationManager : IAffiliation
+    public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {
-        public CharacterAffiliationManager(CharacterGroup group)
+        public CharacterAffiliationManager(AffiliationMemento data)
         {
-            Group = group;
+            Group = data.Group;
+        }
+
+        public AffiliationMemento Serialize()
+        {
+            return new AffiliationMemento(Group);
         }
 
         public CharacterGroup Group { get; private set; }

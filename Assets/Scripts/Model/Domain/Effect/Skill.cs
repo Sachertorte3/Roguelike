@@ -3,13 +3,14 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
+using Data.Character;
 using Data.Effect;
 using UnityEngine;
 using Utilities;
 
 namespace Model.Domain.Effect
 {
-    public class Skill
+    public class Skill : ISerializable<SkillMemento>
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
@@ -18,6 +19,17 @@ namespace Model.Domain.Effect
         {
             _area = data.Area;
             _effect = data.Effect;
+        }
+
+        public Skill(SkillMemento data)
+        {
+            _area = data.Area;
+            _effect = data.Effect;
+        }
+
+        public SkillMemento Serialize()
+        {
+            return new SkillMemento(_area, _effect);
         }
 
         public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction)

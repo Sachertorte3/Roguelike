@@ -18,6 +18,13 @@ namespace Model.Domain.Characters
                 CharacterGroup.Player);
         }
 
+        public Character CreatePlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver,
+            ReactiveProperty<bool> canIgnoreWall, IMap world)
+        {
+            _playerCount++;
+            return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, world);
+        }
+
         public Character CreateCharacter(EnemyData data, Vector2Int spawnPosition, ICharacterBehavior behavior,
             ReactiveProperty<bool> canIgnoreWall, IMap world)
         {

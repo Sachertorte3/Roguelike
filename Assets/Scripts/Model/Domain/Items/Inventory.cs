@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Character;
 using ObservableCollections;
 using R3;
 using Utilities;
 
 namespace Model.Domain.Items
 {
-    internal class Inventory : IInventory, IDisposable
+    internal class Inventory : ISerializable<InventoryMemento>, IInventory, IDisposable
     {
         private const int MaxItems = 10;
         public int MaxItemCount => MaxItems;
@@ -17,7 +18,7 @@ namespace Model.Domain.Items
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable _disposables = new();
 
-        public Inventory()
+        public Inventory(InventoryMemento data)
         {
             _disposable = OnItemChanged.Subscribe(itemChanged =>
             {
@@ -34,12 +35,21 @@ namespace Model.Domain.Items
                 }
             },
             _ => _disposables.Clear());
+            foreach (var item in data.Items)
+            {
+                if (item != null)
+                    _items[_items.IndexOf(null)] = new Item(item);
+            }
         }
 
         public void Dispose()
         {
             _disposable.Dispose();
             _disposables.Dispose();
+        }
+        public InventoryMemento Serialize()
+        {
+            return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
         }
 
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();

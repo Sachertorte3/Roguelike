@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data;
+﻿using System.Collections.Generic;
 using Model.Domain.Characters;
 using Model.Domain.Items;
 using UnityEngine;

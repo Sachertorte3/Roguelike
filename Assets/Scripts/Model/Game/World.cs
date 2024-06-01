@@ -8,6 +8,7 @@ using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
 using Model.Domain.Items;
+using Model.Domain.Map;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
@@ -35,15 +36,18 @@ namespace Model.Game
 
         public MapManager GenerateMap(FieldBluePrint bluePrint)
         {
-            TilemapMemento? tilemapData = null;
+            var tilemap = Tilemap.BuildMemento(bluePrint);
+            return LoadMap(tilemap);
+        }
+        public MapManager LoadMap(TilemapMemento tilemap)
+        {
             CharacterMemento? playerData = null;
             if (_activeMap.CurrentValue != null)
             {
                 _activeMap.CurrentValue.Dispose();
-                tilemapData = _activeMap.CurrentValue.Tilemap.Serialize();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
             }
-            MapManager map = new(bluePrint, _receiver, tilemapData, playerData);
+            MapManager map = new(_receiver, tilemap, _activeMap.CurrentValue?.Tilemap.Serialize(), playerData);
 
             _activeMap.Value = map;
             return map;

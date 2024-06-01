@@ -4,6 +4,7 @@ using Unity.Logging;
 using RandomDungeonWithBluePrint;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using Data.Map;
 
 namespace Model.Game
 {
@@ -22,14 +23,22 @@ namespace Model.Game
             Globals.GameManager = this;
         }
 
-        public async void LoadMap()
+        public async void LoadNewMap()
         {
-            Log.Debug("Start LoadMap");
+            Log.Debug("Start LoadNewMap");
             await _turnController.Stop();
             var bluePrint = Addressables
                 .LoadAssetAsync<FieldBluePrint>(
                     "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
             var map = _world.GenerateMap(bluePrint);
+            _turnController.Run(map);
+            Log.Debug("End LoadMap");
+        }
+        public async void LoadMap(TilemapMemento tilemap)
+        {
+            Log.Debug("Start LoadMap");
+            await _turnController.Stop();
+            var map = _world.LoadMap(tilemap);
             _turnController.Run(map);
             Log.Debug("End LoadMap");
         }

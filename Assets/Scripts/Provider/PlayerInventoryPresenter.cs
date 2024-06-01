@@ -30,6 +30,14 @@ namespace Provider
                 {
                     inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
                 }));
+                for (int i = 0; i < map.Player.Inventory.MaxItemCount; i++)
+                {
+                    var item = map.Player.Inventory.GetItem(i);
+                    if (item != null)
+                        inventoryView.Replace(item.Icon, item.RemainingUses.CurrentValue, item.Info, i);
+                    else
+                        inventoryView.Remove(i);
+                }
             },
             _ => _disposables.Clear());
         }

@@ -11,6 +11,7 @@ namespace Model.Domain.Items
     internal class Inventory : IInventory, IDisposable
     {
         private const int MaxItems = 10;
+        public int MaxItemCount => MaxItems;
         private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
         private readonly IDisposable _disposable;

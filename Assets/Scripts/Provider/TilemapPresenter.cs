@@ -11,12 +11,12 @@ namespace Provider
 {
     public class TilemapPresenter
     {
-        private SerialDisposable[] _disposables = EnumerableExtension.CreateArrayWithNewInstances<SerialDisposable>(4).ToArray();
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
         {
-            _disposables[0].Disposable = world.ActiveMap.SubscribeToAll(mapLoaded =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(mapLoaded =>
             {
                 tileView.Clear();
 
@@ -46,7 +46,7 @@ namespace Provider
                     }
                 }
 
-                _disposables[1].Disposable = mapLoaded.Tilemap.OnTileChanged.Subscribe(context =>
+                _disposables.Add(mapLoaded.Tilemap.OnTileChanged.Subscribe(context =>
                 {
                     switch (context.tile.TileType)
                     {
@@ -57,9 +57,9 @@ namespace Provider
                             tileView.SetFloor(context.position);
                             break;
                     }
-                });
+                }));
                 // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
-                _disposables[2].Disposable = mapLoaded.Tilemap.OnTileKnownChanged.Subscribe(context =>
+                _disposables.Add(mapLoaded.Tilemap.OnTileKnownChanged.Subscribe(context =>
                 {
                     if (context.tile.IsKnown)
                     {
@@ -69,9 +69,9 @@ namespace Provider
                     {
                         tileMask.SetTileTransparent(context.position);
                     }
-                });
+                }));
                 // HACK: Here.
-                _disposables[3].Disposable = mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
+                _disposables.Add(mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
                 {
                     foreach (var position in visibleAreaChanged.Message.AreaEntered)
                     {
@@ -81,8 +81,17 @@ namespace Provider
                     {
                         tileMask.SetTileTranslucent(position);
                     }
-                });
-            });
+                }));
+            },
+            _ => _disposables.Clear());
+        }
+        ~TilemapPresenter()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

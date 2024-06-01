@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Model.Domain;
 using Model.Domain.Characters;
 using Unity.Logging;
+using UnityEngine;
 
 namespace Model.Game
 {
@@ -27,7 +28,7 @@ namespace Model.Game
             _cancellationTokenSource = new CancellationTokenSource();
             _runCompletionSource = new UniTaskCompletionSource();
 
-            while (!_cancellationTokenSource.Token.IsCancellationRequested)
+            while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
                 Log.Debug($"Start turn {_turn}");
                 foreach (var character in map.Characters.ToList())

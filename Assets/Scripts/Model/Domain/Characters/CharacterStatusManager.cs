@@ -11,11 +11,13 @@ namespace Model.Domain.Characters
 {
     public class CharacterStatusManager : IDisposable, IStatusManager
     {
+        private string _name;
         private readonly CharacterConditions _conditions;
         private readonly CharacterStats _stats;
 
-        public CharacterStatusManager(int maxHp, int strength)
+        public CharacterStatusManager(string name, int maxHp, int strength)
         {
+            _name = name;
             _stats = new CharacterStats(maxHp, strength);
             _conditions = new CharacterConditions(this);
         }
@@ -36,13 +38,13 @@ namespace Model.Domain.Characters
 
         public UniTask GainHp(int value)
         {
-            _stats.Hp.Gain(value);
+            _stats.Hp.Gain(value, _name);
             return UniTask.CompletedTask;
         }
 
         public UniTask LoseHp(int value)
         {
-            _stats.Hp.Lose(value);
+            _stats.Hp.Lose(value, _name);
             return UniTask.CompletedTask;
         }
 

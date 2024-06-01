@@ -19,13 +19,14 @@ using System;
 
 namespace Model.Game
 {
-    public class MapManager : IMapViewer, IMap
+    public class MapManager : IDisposable, IMapViewer, IMap
     {
         private readonly Tilemap _tilemap;
         public Character Player => CharacterManager.Player;
         public IEnumerable<Vector2Int> VisibleArea => Player.Area.VisibleArea;
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
+        private readonly CompositeDisposable _disposables = new();
 
         public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver)
         {
@@ -33,11 +34,10 @@ namespace Model.Game
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
 
-            EventEntities = new ObservableHashSet<IEventEntity>
-                { new Stairs(_tilemap.GetAllPassablePositions().GetAtRandom()) };
+            EventEntities = new ObservableHashSet<IEventEntity>();
 
-            CharacterManager.Characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            ItemManager.Items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
+            CharacterManager.Characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition()).AddTo(_disposables);
+            ItemManager.Items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition()).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
@@ -58,7 +58,7 @@ namespace Model.Game
                         eventEntity.SetVisiblity(false);
                     else if (areaChanged.Message.AreaEntered.Contains(eventEntity.CurrentPosition))
                         eventEntity.SetVisiblity(true);
-            });
+            }).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
@@ -75,7 +75,7 @@ namespace Model.Game
                     var item = ItemManager.TryPickUp(positionChanged.Message.Position);
                     if (item != null) positionChanged.Character.TryPickUp(item.Item);
                 }
-            });
+            }).AddTo(_disposables);
 
             CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
@@ -83,14 +83,14 @@ namespace Model.Game
 
                 positionChanged.Character.SetVisiblity(
                     Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
-            });
+            }).AddTo(_disposables);
 
             ItemManager.ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
 
                 positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
-            });
+            }).AddTo(_disposables);
 
             Spawn(receiver);
 
@@ -105,8 +105,15 @@ namespace Model.Game
         }
         ~MapManager()
         {
+            Dispose();
+        }
+        public void Dispose()
+        {
             CharacterManager.Dispose();
             ItemManager.Dispose();
+            EventEntities.ForEach(eventEntity => eventEntity.Dispose());
+            _disposables.Dispose();
+            Debug.Log("MapManager Disposed");
         }
 
         public CharacterManager CharacterManager { get; init; }
@@ -125,6 +132,8 @@ namespace Model.Game
                 CharacterManager.SpawnCharacter(data.Enemies.GetAtRandom(), position, this);
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
                 ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
+            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
+                EventEntities.Add(new Stairs(position));
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

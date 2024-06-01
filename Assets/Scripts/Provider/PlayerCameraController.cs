@@ -12,7 +12,7 @@ namespace Provider
         [Inject]
         public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget camera)
         {
-            world.ActiveMap.SubscribeToAll(map =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
                 var playerView = characters.Get(map.Player);
                 camera.SetTarget(playerView.gameObject);

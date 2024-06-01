@@ -35,6 +35,7 @@ namespace Model.Game
 
         public void Dispose()
         {
+            _items.ForEach(item => item.Dispose());
             ItemEntityEvents.Dispose();
         }
 

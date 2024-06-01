@@ -1,4 +1,5 @@
-﻿using Model.Domain.Entities;
+﻿using System;
+using Model.Domain.Entities;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -6,7 +7,7 @@ using Utilities;
 
 namespace Model.Game
 {
-    public class Stairs : IEventEntity
+    public class Stairs : IDisposable, IEventEntity
     {
         private Entity _entity;
 
@@ -24,6 +25,14 @@ namespace Model.Game
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("Assets/Images/MapChipPalettes/Tiles/tiles.png[tiles_42]").WaitForCompletion();
+        ~Stairs()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _entity.Dispose();
+        }
 
         public void DoEvent()
         {

@@ -16,6 +16,7 @@ using Utilities;
 using R3;
 using Unity.Logging;
 using System;
+using Model.Domain.Logs;
 
 namespace Model.Game
 {
@@ -73,7 +74,17 @@ namespace Model.Game
                 if (positionChanged.Character.Inventory.HasEmptySpace())
                 {
                     var item = ItemManager.TryPickUp(positionChanged.Message.Position);
-                    if (item != null) positionChanged.Character.TryPickUp(item.Item);
+                    if (item != null)
+                    {
+                        if (positionChanged.Character.TryPickUp(item.Item))
+                        {
+                            GameLog.Add($"{Player.Name}: {item.Item.Name}を拾った");
+                        }
+                        else
+                        {
+                            Log.Error("cannot pick up item");
+                        }
+                    }
                 }
             }).AddTo(_disposables);
 
@@ -193,7 +204,12 @@ namespace Model.Game
             var item = Player.Inventory.GetItem(inventoryIndex);
             if (item != null)
             {
+                GameLog.Add($"{Player.Name}: {item.Name}を捨てた.");
                 var itemEntity = TryPickUp(Player.CurrentPosition);
+                if (itemEntity != null)
+                {
+                    GameLog.Add($"{Player.Name}: {itemEntity.Item.Name}を拾った");
+                }
                 Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
                 ItemManager.SpawnItem(item, Player.CurrentPosition);
             }

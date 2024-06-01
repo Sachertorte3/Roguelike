@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Data.Map;
 using R3;
 using UnityEngine;
 
 namespace Model.Domain.Map
 {
-    public interface ITilemapViewer
+    public interface ITilemapViewer : ISerializable<TilemapMemento>
     {
         public Observable<(Vector2Int position, TileData tile)> OnTileChanged { get; }
         public Observable<(Vector2Int position, TileData tile)> OnTileKnownChanged { get; }

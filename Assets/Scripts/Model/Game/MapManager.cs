@@ -18,6 +18,7 @@ using Unity.Logging;
 using System;
 using Model.Domain.Logs;
 using Data.Character;
+using Data.Map;
 
 namespace Model.Game
 {
@@ -25,14 +26,14 @@ namespace Model.Game
     {
         private readonly Tilemap _tilemap;
         public Character Player => CharacterManager.Player;
-        public IEnumerable<Vector2Int> VisibleArea => Player.Area.VisibleArea;
+        public IObservableCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
 
-        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver, CharacterMemento? playerData)
+        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver, TilemapMemento? tilemapData, CharacterMemento? playerData)
         {
-            _tilemap = new Tilemap(bluePrint);
+            _tilemap = tilemapData != null ? new Tilemap(tilemapData) : new Tilemap(bluePrint);
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
 

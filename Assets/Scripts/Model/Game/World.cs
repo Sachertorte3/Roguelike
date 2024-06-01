@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Data.Character;
+using Data.Map;
 using Data.Setting;
 using Model.Domain;
 using Model.Domain.Characters;
@@ -34,13 +35,15 @@ namespace Model.Game
 
         public MapManager GenerateMap(FieldBluePrint bluePrint)
         {
-            CharacterMemento playerData = null;
+            TilemapMemento? tilemapData = null;
+            CharacterMemento? playerData = null;
             if (_activeMap.CurrentValue != null)
             {
                 _activeMap.CurrentValue.Dispose();
+                tilemapData = _activeMap.CurrentValue.Tilemap.Serialize();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
             }
-            MapManager map = new(bluePrint, _receiver, playerData);
+            MapManager map = new(bluePrint, _receiver, tilemapData, playerData);
 
             _activeMap.Value = map;
             return map;

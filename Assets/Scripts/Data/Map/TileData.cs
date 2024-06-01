@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Model.Domain.Map
+namespace Data.Map
 {
     public record TileData
     {

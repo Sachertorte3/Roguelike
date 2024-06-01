@@ -14,7 +14,7 @@ namespace Model.Domain
 {
     public interface IMap
     {
-        public IEnumerable<Vector2Int> VisibleArea { get; }
+        public IObservableCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<Character> Characters { get; }
         public IObservableCollection<ItemEntity> Items { get; }
         public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);

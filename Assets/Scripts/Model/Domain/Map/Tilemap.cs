@@ -23,7 +23,7 @@ namespace Model.Domain.Map
         public readonly int Width;
 
         public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint)) {}
-        private static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
+        public static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);
             var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];

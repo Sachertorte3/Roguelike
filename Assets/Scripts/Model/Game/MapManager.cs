@@ -31,9 +31,9 @@ namespace Model.Game
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
 
-        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver, TilemapMemento? tilemapData, CharacterMemento? playerData)
+        public MapManager(CharacterControllInputReceiver receiver, TilemapMemento tilemapData, TilemapMemento? prevTilemap, CharacterMemento? playerData)
         {
-            _tilemap = tilemapData != null ? new Tilemap(tilemapData) : new Tilemap(bluePrint);
+            _tilemap = new Tilemap(tilemapData);
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
 
@@ -105,7 +105,7 @@ namespace Model.Game
                 positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
-            Spawn(receiver, playerData);
+            Spawn(receiver, playerData, prevTilemap);
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -136,7 +136,7 @@ namespace Model.Game
         public ObservableHashSet<IEventEntity> EventEntities { get; init; }
         public ITilemapViewer Tilemap => _tilemap;
 
-        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData)
+        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData, TilemapMemento? prevTilemap)
         {
             if (playerData != null)
             {
@@ -154,7 +154,12 @@ namespace Model.Game
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
                 ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                EventEntities.Add(new Stairs(position));
+                EventEntities.Add(new DownStairs(position));
+            if (prevTilemap != null)
+            {
+                foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(1))
+                    EventEntities.Add(new UpStairs(position, prevTilemap));
+            }
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

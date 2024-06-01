@@ -16,7 +16,7 @@ namespace Provider
         {
             LoggerInit();
             ObjectsManager.GetObjectsByType<SpriteView>();
-            gameManager.LoadMap();
+            gameManager.LoadNewMap();
         }
 
         private void LoggerInit()

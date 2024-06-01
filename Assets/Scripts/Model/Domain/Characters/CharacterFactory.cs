@@ -9,10 +9,12 @@ namespace Model.Domain.Characters
 {
     public sealed class CharacterFactory
     {
+        public static int _playerCount = 0;
         public Character CreatePlayer(Vector2Int spawnPosition, CharacterControllInputReceiver receiver,
             ReactiveProperty<bool> canIgnoreWall, IMap world)
         {
-            return new Character(spawnPosition, new PlayerBehavior(receiver), canIgnoreWall, world,
+            _playerCount++;
+            return new Character($"Player{_playerCount}", spawnPosition, new PlayerBehavior(receiver), canIgnoreWall, world,
                 CharacterGroup.Player);
         }
 

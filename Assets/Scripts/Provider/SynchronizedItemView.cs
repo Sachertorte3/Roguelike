@@ -30,7 +30,7 @@ namespace Provider
             _inputReceiver = inputReceiver;
             _world = world;
 
-            world.ActiveMap.SubscribeToAll(
+            world.ActiveMap.SubscribeToAllIgnoreNull(
                 map => _disposable.Disposable = map.Items.SubscribeToAll(Add, Remove),
                 map => map.Items.ForEach(item => Remove(item))
             );

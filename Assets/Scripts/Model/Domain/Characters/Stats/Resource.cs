@@ -33,23 +33,23 @@ namespace Model.Domain.Characters.Stats
             _value.Value = Mathf.Clamp(Value.CurrentValue, 0, Max.CurrentValue);
         }
 
-        public void Lose(int value)
+        public void Lose(int value, string name)
         {
             if (value < 0)
             {
-                Gain(-value);
+                Gain(-value, name);
                 return;
             }
 
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
-            Log.Debug($"Lose {value}, current value {_value.Value}");
+            Log.Debug($"{name} Lose {value}, current value {_value.Value}");
         }
 
-        public void Gain(int value)
+        public void Gain(int value, string name)
         {
             if (value < 0)
             {
-                Lose(-value);
+                Lose(-value, name);
                 return;
             }
 

@@ -13,28 +13,32 @@ namespace Model.Domain.Items
         private const int MaxItems = 10;
         private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
-
-        private readonly SerialDisposable[] disposables =
-            EnumerableExtension.CreateArrayWithNewInstances<SerialDisposable>(MaxItems).ToArray();
+        private readonly IDisposable _disposable;
+        private readonly CompositeDisposable _disposables = new();
 
         public Inventory()
         {
-            OnItemChanged.Subscribe(itemChanged =>
+            _disposable = OnItemChanged.Subscribe(itemChanged =>
             {
-                disposables[itemChanged.Index].Disposable = itemChanged.NewValue?.RemainingUses.Subscribe(
-                    remainingUses =>
-                    {
-                        if (remainingUses <= 0)
-                            Replace(null, _items.IndexOf(itemChanged.NewValue));
-                        else if (itemChanged.NewValue != null)
-                            _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
-                    });
-            });
+                if (itemChanged.NewValue != null)
+                {
+                    _disposables.Add(itemChanged.NewValue.RemainingUses.Subscribe(
+                        remainingUses =>
+                        {
+                            if (remainingUses <= 0)
+                                Replace(null, _items.IndexOf(itemChanged.NewValue));
+                            else if (itemChanged.NewValue != null)
+                                _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
+                        }));
+                }
+            },
+            _ => _disposables.Clear());
         }
 
         public void Dispose()
         {
-            foreach (var item in disposables) item?.Dispose();
+            _disposable.Dispose();
+            _disposables.Dispose();
         }
 
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();

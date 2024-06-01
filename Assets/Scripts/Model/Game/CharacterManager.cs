@@ -29,6 +29,7 @@ namespace Model.Game
 
         public void Dispose()
         {
+            _characters.ForEach(character => character.Dispose());
             PlayerEvents.Dispose();
             CharacterEvents.Dispose();
         }

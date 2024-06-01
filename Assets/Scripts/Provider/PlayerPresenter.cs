@@ -19,7 +19,7 @@ namespace Provider
             StatLine statLine)
         {
             GameObject arrow = null;
-            world.ActiveMap.SubscribeToAll(map =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
                 var playerView = characters.Get(map.Player);
 

@@ -18,7 +18,7 @@ namespace Model.Game
 {
     public class World
     {
-        private ReactiveProperty<MapManager> _activeMap = new();
+        private ReactiveProperty<MapManager?> _activeMap = new();
         public int ActiveMapIndex = 0;
         private CharacterControllInputReceiver _receiver;
 
@@ -27,18 +27,17 @@ namespace Model.Game
         {
             Globals.World = this;
             _receiver = receiver;
-
-            var bluePrint = Addressables
-                .LoadAssetAsync<FieldBluePrint>(
-                    "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-            GenerateMap(bluePrint);
         }
 
-        public ReadOnlyReactiveProperty<MapManager> ActiveMap => _activeMap;
+        public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
         public MapManager GenerateMap(FieldBluePrint bluePrint)
         {
             MapManager map = new(bluePrint, _receiver);
+            if (_activeMap.CurrentValue != null)
+            {
+                _activeMap.CurrentValue.Dispose();
+            }
             _activeMap.Value = map;
             return map;
         }

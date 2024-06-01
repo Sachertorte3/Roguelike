@@ -31,7 +31,7 @@ namespace Provider
             _inputReceiver = receiver;
             _world = world;
 
-            world.ActiveMap.SubscribeToAll(
+            world.ActiveMap.SubscribeToAllIgnoreNull(
                 map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAll(Add, Remove),
                 map => map.Characters.ForEach(character => Remove(character))
             );

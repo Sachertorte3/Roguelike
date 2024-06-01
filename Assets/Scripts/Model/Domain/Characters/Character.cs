@@ -26,20 +26,22 @@ namespace Model.Domain.Characters
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly Inventory _inventory = new();
-        private readonly string _name = "Character";
+        private string _name = "Character";
+        public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStatusManager _statusManager;
         private bool _canAct = true;
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
 
-        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
+        internal Character(string name, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap world, CharacterGroup group)
         {
+            _name = name;
             CharacterType = new Human(Addressables
                 .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
             _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(100, 1);
+            _statusManager = new CharacterStatusManager(name, 100, 1);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
@@ -49,9 +51,10 @@ namespace Model.Domain.Characters
         internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
             Observable<bool> canIgnoreWall, IMap world, CharacterGroup group)
         {
+            _name = data.Name;
             CharacterType = data.CharacterType;
             _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(data.Hp, data.Strength);
+            _statusManager = new CharacterStatusManager(_name, data.Hp, data.Strength);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
@@ -91,6 +94,7 @@ namespace Model.Domain.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
+            Debug.Log($"{_name}が{direction}に移動した");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);

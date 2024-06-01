@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Map;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
@@ -12,7 +13,7 @@ using static RandomDungeonWithBluePrint.Constants;
 
 namespace Model.Domain.Map
 {
-    public class Tilemap : ITilemapViewer
+    public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemapViewer
     {
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
         private readonly Subject<(Vector2Int, TileData)> _onTileChanged = new();
@@ -21,29 +22,34 @@ namespace Model.Domain.Map
         public readonly int Height;
         public readonly int Width;
 
-        [Inject]
-        public Tilemap(FieldBluePrint bluePrint)
+        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint)) {}
+        private static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);
-            Width = field.Grid.Size.x;
-            Height = field.Grid.Size.y;
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(
-                new RectInt(0, 0, Width, Height)
-                    .RectRange().ToDictionary(
-                        position => position,
-                        position =>
-                        {
-                            var mapChipType = field.Grid[position.x, position.y];
-                            var tileType = mapChipType == (int)MapChipType.Wall
-                                ? TileCategory.Wall
-                                : TileCategory.Floor;
-                            return new TileData(tileType, false);
-                        }
-                    )
-            );
+            var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];
+            for (int x = 0; x < field.Grid.Size.x; x++)
+            {
+                for (int y = 0; y < field.Grid.Size.y; y++)
+                {
+                    var mapChipType = field.Grid[x, y];
+                    var tileType = mapChipType == (int)MapChipType.Wall
+                        ? TileCategory.Wall
+                        : TileCategory.Floor;
+                    tiles[x, y] = new TileData(tileType, false);
+                }
+            }
+            return new TilemapMemento(tiles);
+        }
+        public Tilemap(TilemapMemento memento)
+        {
+            Width = memento.Tiles.GetLength(0);
+            Height = memento.Tiles.GetLength(1);
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange().ToDictionary(x => x, x => memento.Tiles[x.x, x.y]));
+
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
+
             OnTileChanged.Subscribe(changeTile =>
             {
                 if (changeTile.tile.IsPassable())
@@ -62,6 +68,26 @@ namespace Model.Domain.Map
                 .ToDictionary(x => x, _ => new TileData(TileCategory.Blank, false)));
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
+        }
+        ~Tilemap()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _onTileChanged.Dispose();
+            _onTileKnownChanged.Dispose();
+        }
+        public TilemapMemento Serialize()
+        {
+            var tiles = new TileData[Width, Height];
+            foreach (var (position, tile) in _tiles)
+            {
+                tiles[position.x, position.y] = tile;
+            }
+            return new TilemapMemento(
+                tiles
+            );
         }
 
         public Vector2Int Size => new(Width, Height);

@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using R3;
-using System.Linq;
-using Model.Domain.Map;
 using Model.Game;
 using Utilities;
 using VContainer;
 using View;
+using Data.Map;
+using System.Linq;
 
 namespace Provider
 {
@@ -38,7 +38,14 @@ namespace Provider
                     // HACK: Separating this due to a bug when not separated
                     if (tileData.IsKnown)
                     {
-                        tileMask.SetTileVisible(position);
+                        if (mapLoaded.VisibleArea.Contains(position))
+                        {
+                            tileMask.SetTileVisible(position);
+                        }
+                        else
+                        {
+                            tileMask.SetTileTranslucent(position);
+                        }
                     }
                     else
                     {

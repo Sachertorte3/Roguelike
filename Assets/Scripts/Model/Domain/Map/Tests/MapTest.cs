@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data.Map;
 using NUnit.Framework;
 using UnityEngine;
 

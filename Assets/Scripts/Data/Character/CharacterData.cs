@@ -30,8 +30,8 @@ namespace Data.Character
     public record ItemMemento(
         string Name,
         Sprite Icon,
-        bool EffectsOnThrow,
         bool EffectsOnUse,
+        bool EffectsOnThrow,
         int RemainingUses,
         SkillMemento Skill,
         string Info

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Data;
+using Data.Character;
 using Model.Domain.Action;
 using Model.Domain.Effect;
 using R3;
@@ -9,7 +10,7 @@ using Utilities;
 
 namespace Model.Domain.Items
 {
-    public class Item
+    public class Item : ISerializable<ItemMemento>
     {
         private readonly ReactiveProperty<int> _remainingUses;
         public readonly bool EffectsOnThrow;
@@ -28,6 +29,30 @@ namespace Model.Domain.Items
             Skill = new Skill(data.Skill);
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
             Info = data.Info();
+        }
+
+        public Item(ItemMemento data)
+        {
+            Name = data.Name;
+            Icon = data.Icon;
+            EffectsOnUse = data.EffectsOnUse;
+            EffectsOnThrow = data.EffectsOnThrow;
+            Skill = new Skill(data.Skill);
+            _remainingUses = new ReactiveProperty<int>(data.RemainingUses);
+            Info = data.Info;
+        }
+
+        public ItemMemento Serialize()
+        {
+            return new ItemMemento(
+                Name,
+                Icon,
+                EffectsOnUse,
+                EffectsOnThrow,
+                _remainingUses.CurrentValue,
+                Skill.Serialize(),
+                Info
+            );
         }
 
         public bool IsDisabled => _remainingUses.CurrentValue <= 0;

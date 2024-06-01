@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Data.Character;
 using Data.Setting;
 using Model.Domain;
 using Model.Domain.Characters;
@@ -33,11 +34,14 @@ namespace Model.Game
 
         public MapManager GenerateMap(FieldBluePrint bluePrint)
         {
-            MapManager map = new(bluePrint, _receiver);
+            CharacterMemento playerData = null;
             if (_activeMap.CurrentValue != null)
             {
                 _activeMap.CurrentValue.Dispose();
+                playerData = _activeMap.CurrentValue.Player.Serialize();
             }
+            MapManager map = new(bluePrint, _receiver, playerData);
+
             _activeMap.Value = map;
             return map;
         }

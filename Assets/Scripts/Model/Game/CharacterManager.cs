@@ -69,5 +69,9 @@ namespace Model.Game
         {
             SetPlayer(_factory.CreatePlayer(spawnPosition, receiver, new ReactiveProperty<bool>(false), world));
         }
+        internal void SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)
+        {
+            SetPlayer(_factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), world));
+        }
     }
 }

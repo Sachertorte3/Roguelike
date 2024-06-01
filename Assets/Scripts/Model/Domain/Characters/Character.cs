@@ -19,13 +19,13 @@ using Utilities;
 
 namespace Model.Domain.Characters
 {
-    public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, IActorOfEffect
+    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly VisionRange _area;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
-        private readonly Inventory _inventory = new();
+        private readonly Inventory _inventory;
         private string _name = "Character";
         public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
@@ -35,30 +35,63 @@ namespace Model.Domain.Characters
         public CharacterState State = CharacterState.Think;
 
         internal Character(string name, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IMap world, CharacterGroup group)
-        {
-            _name = name;
-            CharacterType = new Human(Addressables
-                .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
-            _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(name, 100, 1);
-            Behavior = behavior;
-            _area = new VisionRange(_entity.Position, world);
-            canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(group);
-        }
+            IMap world, CharacterGroup group) : this
+            (
+                new CharacterMemento(
+                    name,
+                    new Human(Addressables
+                        .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
+                    new CharacterStatusMemento(100, 100, 1),
+                    new EntityMemento(position),
+                    new InventoryMemento(new ItemMemento[10]),
+                    new AffiliationMemento(group)
+                ),
+                behavior,
+                canIgnoreWall,
+                world
+            )
+        { }
 
         internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
-            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group)
+            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group) : this
+            (
+                new CharacterMemento(
+                    data.Name,
+                    data.CharacterType,
+                    new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                    new EntityMemento(position),
+                    new InventoryMemento(new ItemMemento[10]),
+                    new AffiliationMemento(group)
+                ),
+                behavior,
+                canIgnoreWall,
+                world
+            )
+        { }
+
+        internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IMap world)
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(_name, data.Hp, data.Strength);
+            _entity = new Entity(data.EntityData);
+            _inventory = new(data.Inventory);
+            _statusManager = new CharacterStatusManager(data.Name, data.Status);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(group);
+            _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+        }
+
+        public CharacterMemento Serialize()
+        {
+            return new CharacterMemento(
+                _name,
+                CharacterType,
+                _statusManager.Serialize(),
+                _entity.Serialize(),
+                _inventory.Serialize(),
+                _affiliationManager.Serialize()
+            );
         }
 
         public bool CanAct => _canAct;

@@ -17,6 +17,7 @@ using R3;
 using Unity.Logging;
 using System;
 using Model.Domain.Logs;
+using Data.Character;
 
 namespace Model.Game
 {
@@ -29,7 +30,7 @@ namespace Model.Game
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
 
-        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver)
+        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver, CharacterMemento? playerData)
         {
             _tilemap = new Tilemap(bluePrint);
             CharacterManager = new CharacterManager();
@@ -103,7 +104,7 @@ namespace Model.Game
                 positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
-            Spawn(receiver);
+            Spawn(receiver, playerData);
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -134,9 +135,17 @@ namespace Model.Game
         public ObservableHashSet<IEventEntity> EventEntities { get; init; }
         public ITilemapViewer Tilemap => _tilemap;
 
-        private void Spawn(CharacterControllInputReceiver receiver)
+        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData)
         {
-            CharacterManager.SpawnPlayer(_tilemap.GetAllPassablePositions().GetAtRandom(), receiver, this);
+            if (playerData != null)
+            {
+                playerData = playerData with { EntityData = playerData.EntityData with { Position = _tilemap.GetAllPassablePositions().GetAtRandom() } };
+                CharacterManager.SpawnPlayer(playerData, receiver, this);
+            }
+            else
+            {
+                CharacterManager.SpawnPlayer(_tilemap.GetAllPassablePositions().GetAtRandom(), receiver, this);
+            }
 
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))

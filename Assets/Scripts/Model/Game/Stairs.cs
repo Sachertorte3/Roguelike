@@ -8,13 +8,15 @@ using Utilities;
 
 namespace Model.Game
 {
-    public class DownStairs : IDisposable, IEventEntity
+    public class DownStairs : IDisposable, ISerializable<DownStairsMemento>, IEventEntity
     {
+        private int _destinationMapId;
         private Entity _entity;
 
-        public DownStairs(Vector2Int position)
+        public DownStairs(Vector2Int position, int destinationMapId)
         {
             _entity = new Entity(position);
+            _destinationMapId = destinationMapId;
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -26,7 +28,7 @@ namespace Model.Game
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion();
-        ~DownStairs()
+                    ~DownStairs()
         {
             Dispose();
         }
@@ -34,10 +36,16 @@ namespace Model.Game
         {
             _entity.Dispose();
         }
-
+        public DownStairsMemento Serialize()
+        {
+            return new DownStairsMemento(
+                _destinationMapId,
+                _entity.Serialize()
+            );
+        }
         public void DoEvent()
         {
-            Globals.GameManager.LoadNewMap();
+            Globals.GameManager.LoadMap(_destinationMapId);
         }
 
         public void SetVisiblity(bool visiblity)
@@ -45,15 +53,15 @@ namespace Model.Game
             _entity.SetVisibility(visiblity);
         }
     }
-    public class UpStairs : IDisposable, IEventEntity
+    public class UpStairs : IDisposable, ISerializable<UpStairsMemento>, IEventEntity
     {
+        private int _destinationMapId;
         private Entity _entity;
-        private TilemapMemento _tilemap;
 
-        public UpStairs(Vector2Int position, TilemapMemento tilemap)
+        public UpStairs(Vector2Int position, int destinationMapId)
         {
             _entity = new Entity(position);
-            _tilemap = tilemap;
+            _destinationMapId = destinationMapId;
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -73,10 +81,17 @@ namespace Model.Game
         {
             _entity.Dispose();
         }
+        public UpStairsMemento Serialize()
+        {
+            return new UpStairsMemento(
+                _destinationMapId,
+                _entity.Serialize()
+            );
+        }
 
         public void DoEvent()
         {
-            Globals.GameManager.LoadMap(_tilemap);
+            Globals.GameManager.LoadMap(_destinationMapId);
         }
 
         public void SetVisiblity(bool visiblity)

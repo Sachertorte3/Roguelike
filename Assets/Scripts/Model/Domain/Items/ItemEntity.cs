@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data.Character;
 using Data.Map;
 using Data.Setting;
 using Model.Domain.Action;
@@ -18,10 +19,17 @@ namespace Model.Domain.Items
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         public readonly Item Item;
 
-        public ItemEntity(Vector2Int spawnPosition, Item item)
+        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
         {
-            Item = item;
-            _entity = new Entity(spawnPosition);
+            return new ItemEntityMemento(
+                item.Serialize(),
+                new EntityMemento(spawnPosition)
+            );
+        }
+        public ItemEntity(ItemEntityMemento item)
+        {
+            Item = new Item(item.Item);
+            _entity = new Entity(item.Entity);
         }
 
         public Sprite Icon => Item.Icon;

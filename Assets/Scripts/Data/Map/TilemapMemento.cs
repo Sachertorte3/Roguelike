@@ -10,7 +10,7 @@ namespace Data.Map
     );
     public record MapMemento(
         TilemapMemento Tilemap,
-        List<CharacterMemento> Players,
+        List<CharacterMemento> Characters,
         List<ItemEntityMemento> Items,
         DownStairsMemento DownStairs,
         UpStairsMemento? UpStairs

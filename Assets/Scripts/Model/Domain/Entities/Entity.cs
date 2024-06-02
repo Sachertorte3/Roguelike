@@ -14,9 +14,9 @@ namespace Model.Domain.Entities
         private readonly ReactiveProperty<Vector2Int> _position;
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
 
-        public Entity(Vector2Int position)
+        public static EntityMemento Build(Vector2Int position)
         {
-            _position = new ReactiveProperty<Vector2Int>(position);
+            return new EntityMemento(position);
         }
         public Entity(EntityMemento data)
         {

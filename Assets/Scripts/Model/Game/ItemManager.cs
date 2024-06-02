@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Character;
+using Data.Map;
 using Model.Domain.Items;
 using ObservableCollections;
 using R3;
@@ -49,7 +51,13 @@ namespace Model.Game
 
         public ItemEntity SpawnItem(Item item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(spawnPosition, item);
+            var itemEntity = _factory.CreateItem(ItemEntity.Build(spawnPosition, item));
+            AddItem(itemEntity);
+            return itemEntity;
+        }
+        public ItemEntity SpawnItem(ItemEntityMemento item)
+        {
+            var itemEntity = _factory.CreateItem(item);
             AddItem(itemEntity);
             return itemEntity;
         }

@@ -13,10 +13,17 @@ namespace Model.Game
         private int _destinationMapId;
         private Entity _entity;
 
-        public DownStairs(Vector2Int position, int destinationMapId)
+        public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
         {
-            _entity = new Entity(position);
-            _destinationMapId = destinationMapId;
+            return new DownStairsMemento(
+                destinationMapId,
+                Entity.Build(position)
+            );
+        }
+        public DownStairs(DownStairsMemento data)
+        {
+            _entity = new Entity(data.Entity);
+            _destinationMapId = data.DestinationMapId;
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -58,10 +65,17 @@ namespace Model.Game
         private int _destinationMapId;
         private Entity _entity;
 
-        public UpStairs(Vector2Int position, int destinationMapId)
+        public static UpStairsMemento Build(Vector2Int position, int destinationMapId)
         {
-            _entity = new Entity(position);
-            _destinationMapId = destinationMapId;
+            return new UpStairsMemento(
+                destinationMapId,
+                Entity.Build(position)
+            );
+        }
+        public UpStairs(UpStairsMemento data)
+        {
+            _entity = new Entity(data.Entity);
+            _destinationMapId = data.DestinationMapId;
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -72,7 +86,7 @@ namespace Model.Game
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         public Sprite Icon => Addressables
-            .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_343]").WaitForCompletion();
+            .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion();
         ~UpStairs()
         {
             Dispose();

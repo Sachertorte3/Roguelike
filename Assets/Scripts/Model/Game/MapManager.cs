@@ -22,7 +22,7 @@ using Data.Map;
 
 namespace Model.Game
 {
-    public class MapManager : IDisposable, IMapViewer, IMap
+    public class MapManager : IDisposable, ISerializable<MapMemento>, IMapViewer, IMap
     {
         private readonly Tilemap _tilemap;
         public Character Player => CharacterManager.Player;
@@ -30,8 +30,10 @@ namespace Model.Game
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
+        private readonly UpStairs _upStairs;
+        private readonly DownStairs _downStairs;
 
-        public MapManager(CharacterControllInputReceiver receiver, TilemapMemento tilemapData, TilemapMemento? prevTilemap, CharacterMemento? playerData)
+        public MapManager(CharacterControllInputReceiver receiver, TilemapMemento tilemapData, int nextMapId, int? prevMapId, CharacterMemento? playerData)
         {
             _tilemap = new Tilemap(tilemapData);
             CharacterManager = new CharacterManager();
@@ -105,7 +107,18 @@ namespace Model.Game
                 positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
-            Spawn(receiver, playerData, prevTilemap);
+            Spawn(receiver, playerData);
+            
+            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(1))
+            {
+                _downStairs = new DownStairs(position, nextMapId);
+                EventEntities.Add(_downStairs);
+            }
+            if (prevMapId != null)
+            {
+                _upStairs = new UpStairs(Player.Position.CurrentValue, prevMapId.Value);
+                EventEntities.Add(_upStairs);
+            }
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -128,6 +141,16 @@ namespace Model.Game
             _disposables.Dispose();
             Debug.Log("MapManager Disposed");
         }
+        public MapMemento Serialize()
+        {
+            return new MapMemento(
+                _tilemap.Serialize(),
+                CharacterManager.Characters.Select(character => character.Serialize()).ToList(),
+                ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                _downStairs.Serialize(),
+                _upStairs?.Serialize()
+            );
+        }
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<Character> Characters => CharacterManager.Characters;
@@ -136,7 +159,7 @@ namespace Model.Game
         public ObservableHashSet<IEventEntity> EventEntities { get; init; }
         public ITilemapViewer Tilemap => _tilemap;
 
-        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData, TilemapMemento? prevTilemap)
+        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData)
         {
             if (playerData != null)
             {
@@ -153,13 +176,6 @@ namespace Model.Game
                 CharacterManager.SpawnCharacter(data.Enemies.GetAtRandom(), position, this);
             foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
                 ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
-            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                EventEntities.Add(new DownStairs(position));
-            if (prevTilemap != null)
-            {
-                foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(1))
-                    EventEntities.Add(new UpStairs(position, prevTilemap));
-            }
         }
         public ItemEntity? TryPickUp(Vector2Int position)
         {

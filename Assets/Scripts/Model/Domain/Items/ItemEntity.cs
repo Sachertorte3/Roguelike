@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data.Map;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Entities;
@@ -11,7 +12,7 @@ using Utilities;
 
 namespace Model.Domain.Items
 {
-    public class ItemEntity : IDisposable, IEntity
+    public class ItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IEntity
     {
         private readonly Entity _entity;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
@@ -26,11 +27,22 @@ namespace Model.Domain.Items
         public Sprite Icon => Item.Icon;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
-
+        ~ItemEntity()
+        {
+            Dispose();
+        }
         public void Dispose()
         {
             _entity.Dispose();
             _onSpawnEffect.Dispose();
+        }
+
+        public ItemEntityMemento Serialize()
+        {
+            return new ItemEntityMemento(
+                Item.Serialize(),
+                _entity.Serialize()
+            );
         }
 
         public Entity Entity => _entity;
@@ -44,11 +56,6 @@ namespace Model.Domain.Items
         public void SetVisiblity(bool visiblity)
         {
             _entity.SetVisibility(visiblity);
-        }
-
-        ~ItemEntity()
-        {
-            Dispose();
         }
 
         public async UniTask Throw(IActor actor, Direction8 direction, IMap world)

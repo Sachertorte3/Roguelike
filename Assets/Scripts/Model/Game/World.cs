@@ -37,33 +37,43 @@ namespace Model.Game
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
-        private TilemapMemento GetMapMemento(int mapId)
+        private MapMemento GetMapMemento(int mapId)
         {
             if (_maps.ContainsKey(mapId))
             {
-                return _maps[mapId].Tilemap;
+                return _maps[mapId];
             }
             else
             {
                 var bluePrint = Addressables
                 .LoadAssetAsync<FieldBluePrint>(
                     "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-                return Tilemap.BuildMemento(bluePrint);
+                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId+1, mapId>0? mapId-1 : null);
             }
         }
         public MapManager LoadMap(int mapId)
         {
             Log.Debug($"LoadMap {mapId}");
-            var tilemap = GetMapMemento(mapId);
+            var mapMemento = GetMapMemento(mapId);
 
             CharacterMemento? playerData = null;
+            Vector2Int? initialPosition = null;
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
-                _activeMap.CurrentValue.Dispose();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
+                if (_activeMapId < mapId) // 下り階段から上り階段へ
+                {
+                    initialPosition = mapMemento.UpStairs.Entity.Position;
+                }
+                else if (_activeMapId > mapId) // 上り階段から下り階段へ
+                {
+                    initialPosition = mapMemento.DownStairs.Entity.Position;
+                }
+                _activeMap.CurrentValue.Dispose();
             }
-            MapManager map = new(_receiver, tilemap, mapId+1, mapId>0? mapId-1 : null, playerData);
+
+            MapManager map = new(mapMemento, playerData, initialPosition, _receiver);
 
             _activeMapId = mapId;
             _activeMap.Value = map;

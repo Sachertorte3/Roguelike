@@ -4,8 +4,8 @@ namespace Model.Domain.Action
 {
     public interface IAction
     {
-        public bool Doable(IActor actor, IWorld world);
-        public UniTask Do(IActor actor, IWorld world, IInput input);
+        public bool Doable(IActor actor, IMap world);
+        public UniTask Do(IActor actor, IMap world, IInput input);
 
         /// <summary>
         ///     Calculates the expected profit for the Actor when doing the action.
@@ -13,6 +13,6 @@ namespace Model.Domain.Action
         /// </summary>
         /// <param name="actor">The actor of this action.</param>
         /// <returns></returns>
-        public float Evaluate(IActor actor, IWorld world);
+        public float Evaluate(IActor actor, IMap world);
     }
 }

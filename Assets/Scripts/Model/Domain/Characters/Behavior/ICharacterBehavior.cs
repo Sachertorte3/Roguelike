@@ -5,6 +5,6 @@ namespace Model.Domain.Characters.Behavior
 {
     public interface ICharacterBehavior
     {
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input);
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input);
     }
 }

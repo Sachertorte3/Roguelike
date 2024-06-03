@@ -1,6 +1,9 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Character;
+using Data.Map;
 using Model.Domain.Items;
 using ObservableCollections;
 using R3;
@@ -9,7 +12,7 @@ using VContainer;
 
 namespace Model.Game
 {
-    public sealed class ItemManager
+    public sealed class ItemManager : IDisposable
     {
         private readonly ItemFactory _factory = new();
         private readonly ObservableList<ItemEntity> _items = new();
@@ -17,18 +20,28 @@ namespace Model.Game
         public ItemEntityEvents ItemEntityEvents = new();
 
         [Inject]
-        public ItemManager(HashSet<Vector2Int> visibleArea)
+        public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
-                positionChanged.Item.SetVisiblity(visibleArea.Contains(positionChanged.Message.Position));
             });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
 
-        internal IObservableCollection<ItemEntity> Items => _items;
+        ~ItemManager()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _items.ForEach(item => item.Dispose());
+            ItemEntityEvents.Dispose();
+        }
+
+        public IObservableCollection<ItemEntity> Items => _items;
 
         public void AddItem(ItemEntity item)
         {
@@ -38,7 +51,13 @@ namespace Model.Game
 
         public ItemEntity SpawnItem(Item item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(spawnPosition, item);
+            var itemEntity = _factory.CreateItem(ItemEntity.Build(spawnPosition, item));
+            AddItem(itemEntity);
+            return itemEntity;
+        }
+        public ItemEntity SpawnItem(ItemEntityMemento item)
+        {
+            var itemEntity = _factory.CreateItem(item);
             AddItem(itemEntity);
             return itemEntity;
         }

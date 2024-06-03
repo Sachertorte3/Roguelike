@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data.Map;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Model.Domain.Map.Tests
         public void IndexTest1(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
-            Assert.AreEqual(new TileData(TileCategory.Blank), map.Get(position));
+            Assert.AreEqual(new TileData(TileCategory.Blank, false), map.Get(position));
         }
 
         private static IEnumerable<TestCaseData> IndexTest2Cases

@@ -8,6 +8,6 @@ namespace Model.Domain.Characters
     {
         public IObservableCollection<Vector2Int> VisibleArea { get; }
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged { get; }
-        public void Refrash(Vector2Int position, IWorld world);
+        public void Refrash(Vector2Int position, IMap world);
     }
 }

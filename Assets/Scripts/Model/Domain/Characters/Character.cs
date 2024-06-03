@@ -19,50 +19,91 @@ using Utilities;
 
 namespace Model.Domain.Characters
 {
-    public sealed class Character : IDisposable, IEntity, IActor, IHasBehavior, IActorOfEffect
+    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly VisionRange _area;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
-        private readonly Inventory _inventory = new();
-        private readonly string _name = "Character";
+        private readonly Inventory _inventory;
+        private string _name = "Character";
+        public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStatusManager _statusManager;
         private bool _canAct = true;
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
 
-        internal Character(Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IWorld world, CharacterGroup group)
+        public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
-            CharacterType = new Human(Addressables
-                .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion());
-            _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(100, 1);
-            Behavior = behavior;
-            _area = new VisionRange(_entity.Position, world);
-            canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(group);
+            return new CharacterMemento(
+                "Player",
+                new Human(Addressables
+                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
+                new CharacterStatusMemento(100, 100, 1),
+                new EntityMemento(spawnPosition),
+                new InventoryMemento(new ItemMemento[10]),
+                new AffiliationMemento(CharacterGroup.Player)
+            );
+        }
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
+        {
+            return new CharacterMemento(
+                data.Name,
+                data.CharacterType,
+                new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                new EntityMemento(spawnPosition),
+                new InventoryMemento(new ItemMemento[10]),
+                new AffiliationMemento(CharacterGroup.Enemy)
+            );
         }
 
         internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
-            Observable<bool> canIgnoreWall, IWorld world, CharacterGroup group)
+            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group) : this
+            (
+                new CharacterMemento(
+                    data.Name,
+                    data.CharacterType,
+                    new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                    new EntityMemento(position),
+                    new InventoryMemento(new ItemMemento[10]),
+                    new AffiliationMemento(group)
+                ),
+                behavior,
+                canIgnoreWall,
+                world
+            )
+        { }
+
+        internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IMap world)
         {
+            _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(position);
-            _statusManager = new CharacterStatusManager(data.Hp, data.Strength);
+            _entity = new Entity(data.EntityData);
+            _inventory = new(data.Inventory);
+            _statusManager = new CharacterStatusManager(data.Name, data.Status);
             Behavior = behavior;
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(group);
+            _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+        }
+
+        public CharacterMemento Serialize()
+        {
+            return new CharacterMemento(
+                _name,
+                CharacterType,
+                _statusManager.Serialize(),
+                _entity.Serialize(),
+                _inventory.Serialize(),
+                _affiliationManager.Serialize()
+            );
         }
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
         public Observable<Unit> OnDead => _statusManager.OnDead;
-
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
         public IStatusManager StatusManager => _statusManager;
@@ -75,7 +116,7 @@ namespace Model.Domain.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IWorld world)
+        public bool CanMove(Direction8 direction, IMap world)
         {
             return _canIgnoreWall
                 ? world.IsMapPassable(Position.CurrentValue + direction.Vector())
@@ -92,6 +133,7 @@ namespace Model.Domain.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
+            Debug.Log($"{_name}が{direction}に移動した");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -99,7 +141,7 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction, IWorld world)
+        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
             _direction.Value = direction;
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
@@ -112,7 +154,7 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseItem(int itemIndex, Direction8 direction, IWorld world)
+        public async UniTask UseItem(int itemIndex, Direction8 direction, IMap world)
         {
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
@@ -132,7 +174,7 @@ namespace Model.Domain.Characters
             }
         }
 
-        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IWorld world)
+        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
         {
             Turn(direction);
             var item = _inventory.Remove(itemIndex);
@@ -201,7 +243,7 @@ namespace Model.Domain.Characters
             return CharacterType.SubtypeName();
         }
 
-        public async UniTask DoNextAction(IWorld world, IInput input)
+        public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
             var action = await Behavior.GenerateNextAction(this, world, input);

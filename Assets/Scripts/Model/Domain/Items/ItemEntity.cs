@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data.Character;
+using Data.Map;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Entities;
@@ -11,26 +13,44 @@ using Utilities;
 
 namespace Model.Domain.Items
 {
-    public class ItemEntity : IDisposable, IEntity
+    public class ItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IEntity
     {
         private readonly Entity _entity;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         public readonly Item Item;
 
-        public ItemEntity(Vector2Int spawnPosition, Item item)
+        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
         {
-            Item = item;
-            _entity = new Entity(spawnPosition);
+            return new ItemEntityMemento(
+                item.Serialize(),
+                new EntityMemento(spawnPosition)
+            );
+        }
+        public ItemEntity(ItemEntityMemento item)
+        {
+            Item = new Item(item.Item);
+            _entity = new Entity(item.Entity);
         }
 
         public Sprite Icon => Item.Icon;
         public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
-
+        ~ItemEntity()
+        {
+            Dispose();
+        }
         public void Dispose()
         {
             _entity.Dispose();
             _onSpawnEffect.Dispose();
+        }
+
+        public ItemEntityMemento Serialize()
+        {
+            return new ItemEntityMemento(
+                Item.Serialize(),
+                _entity.Serialize()
+            );
         }
 
         public Entity Entity => _entity;
@@ -46,12 +66,7 @@ namespace Model.Domain.Items
             _entity.SetVisibility(visiblity);
         }
 
-        ~ItemEntity()
-        {
-            Dispose();
-        }
-
-        public async UniTask Throw(IActor actor, Direction8 direction, IWorld world)
+        public async UniTask Throw(IActor actor, Direction8 direction, IMap world)
         {
             while (world.IsPassable(CurrentPosition + direction.Vector()))
             {

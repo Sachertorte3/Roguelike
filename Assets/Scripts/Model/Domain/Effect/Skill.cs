@@ -3,13 +3,14 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
+using Data.Character;
 using Data.Effect;
 using UnityEngine;
 using Utilities;
 
 namespace Model.Domain.Effect
 {
-    public class Skill
+    public class Skill : ISerializable<SkillMemento>
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
@@ -20,12 +21,23 @@ namespace Model.Domain.Effect
             _effect = data.Effect;
         }
 
+        public Skill(SkillMemento data)
+        {
+            _area = data.Area;
+            _effect = data.Effect;
+        }
+
+        public SkillMemento Serialize()
+        {
+            return new SkillMemento(_area, _effect);
+        }
+
         public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction)
         {
             return _area.Get(position, direction);
         }
 
-        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IWorld world)
+        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
             world.GetCharactersInArea(area.ToHashSet())
@@ -41,7 +53,7 @@ namespace Model.Domain.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IWorld world)
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());

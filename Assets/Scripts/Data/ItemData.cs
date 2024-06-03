@@ -1,15 +1,14 @@
 ﻿#nullable enable
 using Sirenix.OdinInspector;
-using System.IO;
 using UnityEngine;
+using System;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.IO;
+#endif
 
 namespace Data
 {
-    using System;
-#if UNITY_EDITOR
-    using UnityEditor;
-#endif
-
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {

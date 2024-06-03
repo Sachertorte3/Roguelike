@@ -6,6 +6,7 @@ using Data.Area;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Effect;
+using UnityEngine;
 
 namespace Model.Domain.Characters.Behavior
 {
@@ -19,7 +20,7 @@ namespace Model.Domain.Characters.Behavior
             _receiver = receiver;
         }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IWorld world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
             if (input.IsDash()) await _intelligentDashController.Wait(character, world);
 

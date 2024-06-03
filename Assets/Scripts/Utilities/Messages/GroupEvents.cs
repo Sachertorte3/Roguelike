@@ -2,15 +2,23 @@
 using R3;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Utilities.Messages
 {
-    public class GroupEvents<TSender> where TSender : notnull
+    public class GroupEvents<TSender> : IDisposable where TSender : notnull
     {
         private Dictionary<object, CompositeDisposable> _disposable = new();
         private Dictionary<Type, object> _events = new();
-
+        ~GroupEvents()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _disposable.Values.ForEach(disposable => disposable.Dispose());
+            _disposable.Clear();
+            _events.Clear();
+        }
         public void Add<TMessage>(TSender sender, Observable<TMessage> observable) where TMessage : notnull
         {
             if (!_disposable.ContainsKey(sender))

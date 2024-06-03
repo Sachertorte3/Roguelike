@@ -20,10 +20,10 @@ public class DamagePresenter
                 {
                     if (damageChanged.Character.Visibility.CurrentValue == true)
                     {
-                        var damagePercentageFromMaxHp = (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp;
-                        var hpPercentageFromMaxHp = (float)damageChanged.Character.StatusManager.CurrentHp / damageChanged.Character.StatusManager.MaxHp;
+                        var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 / damageChanged.Character.StatusManager.MaxHp;
+                        var hpPercentageFromMaxHp = damageChanged.Character.StatusManager.CurrentHp * 100 / damageChanged.Character.StatusManager.MaxHp;
                         damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, damagePercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
-                        if (damagePercentageFromMaxHp * 100 > Settings.SignificantDamageThresholdPercentage.Value || hpPercentageFromMaxHp * 100 < Settings.LowHpThresholdPercentage.Value)
+                        if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value || hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                         {
                             flushController.Flush(Settings.FlushDuration.Value);
                         }
@@ -35,7 +35,7 @@ public class DamagePresenter
                 {
                     if (healChanged.Character.Visibility.CurrentValue == true)
                     {
-                        damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal, (float)healChanged.Message.Heal / healChanged.Character.StatusManager.MaxHp, Settings.DamageTextDisplayTime.Value);
+                        damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal, healChanged.Message.Heal / healChanged.Character.StatusManager.MaxHp, Settings.DamageTextDisplayTime.Value);
                     }
                 }
             );

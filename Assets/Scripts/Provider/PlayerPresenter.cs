@@ -9,6 +9,7 @@ using VContainer;
 using View;
 using View.UI;
 using Utilities;
+using Data.Setting;
 
 namespace Provider
 {
@@ -30,7 +31,18 @@ namespace Provider
 
                 Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
                     .Subscribe(_ =>
-                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp));
+                    {
+                        var hpPercentageFromMaxHp = map.Player.StatusManager.CurrentHp * 100 / map.Player.StatusManager.MaxHp;
+                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp);
+                        if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                        {
+                            statLine.SetTextColor(Color.red);
+                        }
+                        else
+                        {
+                            statLine.SetTextColor(Color.white);
+                        }
+                    });
             },
             map =>
             {

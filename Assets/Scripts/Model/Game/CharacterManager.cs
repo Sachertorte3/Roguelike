@@ -58,17 +58,11 @@ namespace Model.Game
             CharacterEvents.Remove(character);
         }
 
-        public void SpawnCharacter(EnemyData data, Vector2Int spawnPosition, IMap world)
+        public void SpawnCharacter(CharacterMemento data, IMap world)
         {
-            AddCharacter(
-                _factory.CreateCharacter(data, spawnPosition, new EnemyBehavior(), new ReactiveProperty<bool>(false),
-                    world));
+            AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
         }
 
-        internal void SpawnPlayer(Vector2Int spawnPosition, CharacterControllInputReceiver receiver, IMap world)
-        {
-            SetPlayer(_factory.CreatePlayer(spawnPosition, receiver, new ReactiveProperty<bool>(false), world));
-        }
         internal void SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)
         {
             SetPlayer(_factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), world));

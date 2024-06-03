@@ -18,21 +18,23 @@ using Unity.Logging;
 using System;
 using Model.Domain.Logs;
 using Data.Character;
+using Data.Map;
 
 namespace Model.Game
 {
-    public class MapManager : IDisposable, IMapViewer, IMap
+    public class MapManager : IDisposable, ISerializable<MapMemento>, IMapViewer, IMap
     {
         private readonly Tilemap _tilemap;
         public Character Player => CharacterManager.Player;
-        public IEnumerable<Vector2Int> VisibleArea => Player.Area.VisibleArea;
+        public IObservableCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
-
-        public MapManager(FieldBluePrint bluePrint, CharacterControllInputReceiver receiver, CharacterMemento? playerData)
+        private readonly UpStairs? _upStairs;
+        private readonly DownStairs _downStairs;
+        public MapManager(MapMemento map, CharacterMemento? playerData, Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
         {
-            _tilemap = new Tilemap(bluePrint);
+            _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
 
@@ -104,7 +106,30 @@ namespace Model.Game
                 positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
-            Spawn(receiver, playerData);
+            if (playerData == null || playerPosition == null)
+            {
+                playerData = Character.BuildPlayer(_tilemap.GetAllPassablePositions().GetAtRandom());
+            }
+            else
+            {
+                playerData = playerData with { EntityData = playerData.EntityData with { Position = playerPosition.Value } };
+            }
+            CharacterManager.SpawnPlayer(playerData, receiver, this);
+            foreach (var character in map.Characters)
+            {
+                CharacterManager.SpawnCharacter(character, this);
+            }
+            foreach (var item in map.Items)
+            {
+                ItemManager.SpawnItem(item);
+            }
+            _downStairs = new DownStairs(map.DownStairs);
+            EventEntities.Add(_downStairs);
+            if (map.UpStairs != null)
+            {
+                _upStairs = new UpStairs(map.UpStairs);
+                EventEntities.Add(_upStairs);
+            }
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -114,6 +139,29 @@ namespace Model.Game
                 item.SetVisiblity(visibleArea.Contains(item.CurrentPosition));
             foreach (var eventEntity in EventEntities)
                 eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
+        }
+        public static MapMemento Build(TilemapMemento tilemapData, int nextMapId, int? prevMapId)
+        {
+            var tilemap = new Tilemap(tilemapData);
+            var characters = new List<CharacterMemento>();
+            var items = new List<ItemEntityMemento>();
+
+            var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
+            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
+                characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
+            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(30))
+                items.Add(ItemEntity.Build(position, new Item(data.Items.GetAtRandom())));
+            
+            var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
+            var upStairs = prevMapId.HasValue? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
+
+            return new MapMemento(
+                tilemap.Serialize(),
+                characters,
+                items,
+                downStairs,
+                upStairs
+            );
         }
         ~MapManager()
         {
@@ -127,6 +175,16 @@ namespace Model.Game
             _disposables.Dispose();
             Debug.Log("MapManager Disposed");
         }
+        public MapMemento Serialize()
+        {
+            return new MapMemento(
+                _tilemap.Serialize(),
+                CharacterManager.Characters.Where(character => character != Player).Select(character => character.Serialize()).ToList(),
+                ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                _downStairs.Serialize(),
+                _upStairs?.Serialize()
+            );
+        }
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<Character> Characters => CharacterManager.Characters;
@@ -135,26 +193,6 @@ namespace Model.Game
         public ObservableHashSet<IEventEntity> EventEntities { get; init; }
         public ITilemapViewer Tilemap => _tilemap;
 
-        private void Spawn(CharacterControllInputReceiver receiver, CharacterMemento? playerData)
-        {
-            if (playerData != null)
-            {
-                playerData = playerData with { EntityData = playerData.EntityData with { Position = _tilemap.GetAllPassablePositions().GetAtRandom() } };
-                CharacterManager.SpawnPlayer(playerData, receiver, this);
-            }
-            else
-            {
-                CharacterManager.SpawnPlayer(_tilemap.GetAllPassablePositions().GetAtRandom(), receiver, this);
-            }
-
-            var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
-            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                CharacterManager.SpawnCharacter(data.Enemies.GetAtRandom(), position, this);
-            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(30))
-                ItemManager.SpawnItem(new Item(data.Items.GetAtRandom()), position);
-            foreach (var position in _tilemap.GetAllPassablePositions().GetAtRandom(10))
-                EventEntities.Add(new Stairs(position));
-        }
         public ItemEntity? TryPickUp(Vector2Int position)
         {
             return ItemManager.TryPickUp(position);

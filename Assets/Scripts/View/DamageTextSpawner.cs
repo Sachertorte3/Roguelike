@@ -10,14 +10,15 @@ namespace View
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private Canvas canvas;
 
-        public void ShowDamage(Vector2Int position, int value, float percentageFromMaxHP) =>
-            SpawnText(position, value, percentageFromMaxHP, Color.red);
+        public void ShowDamage(Vector2Int position, int value, float percentageFromMaxHP, int textDisplayMilliseconds) =>
+            SpawnText(position, value, percentageFromMaxHP, textDisplayMilliseconds, Color.red);
 
-        public void ShowHeal(Vector2Int position, int value, float percentageFromMaxHP) =>
-            SpawnText(position, value, percentageFromMaxHP, Color.green);
+        public void ShowHeal(Vector2Int position, int value, float percentageFromMaxHP, int textDisplayMilliseconds) =>
+            SpawnText(position, value, percentageFromMaxHP, textDisplayMilliseconds, Color.green);
 
-        public void SpawnText(Vector2Int position, int value, float percentageFromMaxHP, Color color)
+        public void SpawnText(Vector2Int position, int value, float percentageFromMaxHP, int textDisplayMilliseconds, Color color)
         {
+            damageText.GetComponent<LifeTimer>().LifeTimeMilliseconds = textDisplayMilliseconds;
             TextMeshProUGUI text = Instantiate(damageText, canvas.transform);
             text.text = value.ToString();
             text.transform.position = position + new Vector2(0, 0.5f);

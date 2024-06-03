@@ -15,6 +15,8 @@ namespace Model.Domain.Characters
         private string _name;
         private readonly CharacterConditions _conditions;
         private readonly CharacterStats _stats;
+        private readonly Subject<int> _onDamageReceived = new();
+        private readonly Subject<int> _onHealReceived = new();
 
         public CharacterStatusManager(string name, int maxHp, int strength)
         {
@@ -52,16 +54,20 @@ namespace Model.Domain.Characters
         public int MaxHp => _stats.MaxHp.CurrentValue;
         public int CurrentHp => _stats.Hp.Value.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
+        public Observable<int> OnDamageReceived => _onDamageReceived;
+        public Observable<int> OnHealReceived => _onHealReceived;
 
         public UniTask GainHp(int value)
         {
             _stats.Hp.Gain(value, _name);
+            _onHealReceived.OnNext(value);
             return UniTask.CompletedTask;
         }
 
         public UniTask LoseHp(int value)
         {
             _stats.Hp.Lose(value, _name);
+            _onDamageReceived.OnNext(value);
             return UniTask.CompletedTask;
         }
 

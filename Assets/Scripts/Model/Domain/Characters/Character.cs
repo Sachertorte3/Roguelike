@@ -51,7 +51,7 @@ namespace Model.Domain.Characters
             return new CharacterMemento(
                 data.Name,
                 data.CharacterType,
-                new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 new AffiliationMemento(CharacterGroup.Enemy)
@@ -64,7 +64,7 @@ namespace Model.Domain.Characters
                 new CharacterMemento(
                     data.Name,
                     data.CharacterType,
-                    new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                    new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                     new EntityMemento(position),
                     new InventoryMemento(new ItemMemento[10]),
                     new AffiliationMemento(group)
@@ -267,3 +267,4 @@ namespace Model.Domain.Characters
         }
     }
 }
+

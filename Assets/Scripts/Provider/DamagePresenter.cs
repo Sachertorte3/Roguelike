@@ -6,6 +6,7 @@ using VContainer;
 using View;
 using Utilities;
 using R3;
+using Data.Setting;
 
 public class DamagePresenter
 {
@@ -17,13 +18,19 @@ public class DamagePresenter
             map.CharacterManager.CharacterEvents.OnDamageReceived.Subscribe(
                 damageChanged =>
                 {
-                    damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp);
+                    if (damageChanged.Character.Visibility.CurrentValue == true)
+                    {
+                        damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp, Settings.DamageTextDisplayTime.Value);
+                    }
                 }
             );
             map.CharacterManager.CharacterEvents.OnHealReceived.Subscribe(
                 healChanged =>
                 {
-                    damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal, (float)healChanged.Message.Heal / healChanged.Character.StatusManager.MaxHp);
+                    if (healChanged.Character.Visibility.CurrentValue == true)
+                    {
+                        damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal, (float)healChanged.Message.Heal / healChanged.Character.StatusManager.MaxHp, Settings.DamageTextDisplayTime.Value);
+                    }
                 }
             );
         });

@@ -23,7 +23,7 @@ public class DamagePresenter
                         var damagePercentageFromMaxHp = (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp;
                         var hpPercentageFromMaxHp = (float)damageChanged.Character.StatusManager.CurrentHp / damageChanged.Character.StatusManager.MaxHp;
                         damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, damagePercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
-                        if (damagePercentageFromMaxHp > 0.25f || hpPercentageFromMaxHp < 0.25f)
+                        if (damagePercentageFromMaxHp * 100 > Settings.SignificantDamageThresholdPercentage.Value || hpPercentageFromMaxHp * 100 < Settings.LowHpThresholdPercentage.Value)
                         {
                             flushController.Flush(Settings.FlushDuration.Value);
                         }

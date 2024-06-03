@@ -2,7 +2,7 @@
   "name": "Provider",
   "rootNamespace": "",
   "references": [
-    "GUID:ba6d9961455566247be48e262575975e",
+    "GUID:e12864a11a86db246803733698d2cb92",
     "GUID:b4613bb17d4f35f4d977214490c561da",
     "GUID:e4182c834e14f2e47bfe4b15a53d4aba",
     "GUID:e0cd26848372d4e5c891c569017e11f1",
@@ -13,7 +13,9 @@
     "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
     "GUID:4d2014a47cb26f347a356ab843f84c08",
     "GUID:77221876cc6b8244180b96e320b1bcd4",
-    "GUID:8ad20ff213e608f47810e3148ea614c3"
+    "GUID:8ad20ff213e608f47810e3148ea614c3",
+    "GUID:110953f10b9584c49aec8118717b2be0",
+    "GUID:5ac836fdddfe2644fb4b481a10cb3a46"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

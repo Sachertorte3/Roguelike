@@ -1,15 +1,14 @@
 ﻿#nullable enable
-using System.IO;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using System;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.IO;
+#endif
 
 namespace Data
 {
-    using System;
-#if UNITY_EDITOR
-    using UnityEditor;
-#endif
-
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
@@ -17,9 +16,9 @@ namespace Data
         [Required] public Sprite Icon;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow;
-        private bool Usable => EffectsOnUse || EffectsOnThrow;
         [ShowIf("Usable")] public SkillData Skill;
-        [ShowIf("Usable"), MinValue(1)] public int UsageLimit;
+        [ShowIf("Usable")] [MinValue(1)] public int UsageLimit;
+        private bool Usable => EffectsOnUse || EffectsOnThrow;
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -35,7 +34,7 @@ namespace Data
 #endif
         public string Info()
         {
-            string info = Name;
+            var info = Name;
             if (Usable)
             {
                 info += "\n[" + (EffectsOnUse, EffectsOnThrow) switch
@@ -43,10 +42,11 @@ namespace Data
                     (true, true) => "使用・投擲時",
                     (true, false) => "使用時",
                     (false, true) => "投擲時",
-                    (false, false) => throw new InvalidOperationException(),
+                    (false, false) => throw new InvalidOperationException()
                 };
                 info += $"]\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
             }
+
             return info;
         }
     }

@@ -1,8 +1,6 @@
 ﻿using Model;
-using Model.Characters;
-using Model.Characters.Behavior;
-using Model.Items;
-using Model.Map;
+using Model.Domain.Characters.Behavior;
+using Model.Game;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
@@ -20,28 +18,31 @@ namespace Provider
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<GameManager>(Lifetime.Singleton);
-            builder.Register<Tilemap>(Lifetime.Singleton);
-            builder.Register<ItemManager>(Lifetime.Singleton);
-            builder.Register<CharacterManager>(Lifetime.Singleton);
             builder.Register<World>(Lifetime.Singleton);
             builder.Register<InputReceiver>(Lifetime.Singleton);
+            builder.Register<GameInput>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
             builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
+            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
+            builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
+            builder.Register<SynchronizedEventEntityView>(Lifetime.Singleton);
+            builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
             builder.RegisterComponentInHierarchy<StatLine>();
-            builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
-            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
-            builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
+            builder.RegisterComponentInHierarchy<LogView>();
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
+            builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
+            builder.RegisterPlainEntryPoint<PlayerCameraController>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
+            builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
         }
     }

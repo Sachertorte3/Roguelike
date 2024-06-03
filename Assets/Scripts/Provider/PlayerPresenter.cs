@@ -1,45 +1,41 @@
 ﻿#nullable enable
-using Model.Characters;
+using Codice.Client.BaseCommands;
+using Model;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities;
 using VContainer;
 using View;
 using View.UI;
+using Utilities;
 
 namespace Provider
 {
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters,
-            SynchronizedItemView _, InventoryView inventoryView, StatLine statLine, CameraFollowTarget camera)
+        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
+            StatLine statLine)
         {
-            var playerView = characters.Get(characterManager.Player);
-
-            var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
-                .WaitForCompletion();
-            var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
-            arrow.GetComponent<CharacterArrow>().Constract(playerView);
-
-            characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
+            GameObject arrow = null;
+            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
-                if (itemChanged.NewValue != null)
-                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue,
-                        itemChanged.NewValue.Info, itemChanged.Index);
-                else
-                    inventoryView.Remove(itemChanged.Index);
-            });
-            characterManager.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
+                var playerView = characters.Get(map.Player);
+
+                var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
+                    .WaitForCompletion();
+                var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
+                arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
+
+                Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                    .Subscribe(_ =>
+                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp));
+            },
+            map =>
             {
-                inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
+                Object.Destroy(arrow);
             });
-
-            Observable.Merge(characterManager.Player.Stats.HpValue, characterManager.Player.Stats.MaxHp)
-                .Subscribe(_ => statLine.SetValue(characterManager.Player.Stats.MaxHp.CurrentValue, characterManager.Player.Stats.HpValue.CurrentValue));
-
-            camera.SetTarget(playerView.gameObject);
         }
     }
 }

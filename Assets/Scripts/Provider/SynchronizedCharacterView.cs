@@ -1,81 +1,87 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
-using Assets.Scripts.View;
-using BidirectionalMap;
-using Model.Characters;
-using Model.Setting;
+using Model;
 using R3;
+using System.Collections.Generic;
+using System.Linq;
+using Data.Setting;
+using Model.Domain.Characters;
+using Model.Game;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using Utilities.ObjectsManager;
+using VContainer;
 using View;
-using Object = UnityEngine.Object;
+using Model.Domain;
+using System;
 
 namespace Provider
 {
-    public class SynchronizedCharacterView
+    public class SynchronizedCharacterView : SynchronizedView<Character, CharacterView>
     {
-        private readonly GameObject _characterViewPrefab = Addressables
-            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion();
-
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
-        private readonly BiMap<Character, CharacterView> characterViewDict = new();
+        private readonly World _world;
+        private readonly SerialDisposable _disposable = new();
 
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver,
-            CharacterManager characterManager)
+        [Inject]
+        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
+            _world = world;
 
-            Add(characterManager.Player);
-
-            characterManager.OnCharacterAdded.Subscribe(character => { Add(character); });
-            characterManager.OnCharacterRemoved.Subscribe(character => { Remove(character); });
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAll(Add, Remove),
+                map => map.Characters.ForEach(character => Remove(character))
+            );
         }
 
-        public void Add(Character character)
+        ~SynchronizedCharacterView()
         {
-            var characterView = Object.Instantiate(_characterViewPrefab).GetComponent<CharacterView>();
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
+        }
+
+        protected override CharacterView _viewPrefab => Addressables
+            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
+            .GetComponent<CharacterView>();
+
+        protected override void InitializeView(Character character, CharacterView characterView)
+        {
             characterView.Construct(character.TypeName());
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
                 character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
-            character.Direction.Subscribe(direction => characterView.Turn(direction));
+            character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
             var entityView = characterView.GetComponent<EntityView>();
             entityView.Construct(_inputReceiver);
-            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
+            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             character.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
-            Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
-            Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
+                _effectViewSpawner.Spawn(useSkill.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), Settings.EffectDisplayTime.Value)
+            ).AddTo(characterView);
+            Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
+            Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
 
             var spriteView = characterView.GetComponent<SpriteView>();
             spriteView.RegisterComponent();
-            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
-            characterViewDict.Add(character, characterView);
+            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
 
             var particleController = characterView.GetComponent<ParticleController>();
-            character.Condition.OnConditionAdded.Subscribe(conditionAdded => particleController.Add(conditionAdded.ParticleType));
-            character.Condition.OnConditionRemoved.Subscribe(conditionAdded => particleController.Remove(conditionAdded.ParticleType));
+            character.StatusManager.Conditions.SubscribeToAll(
+                conditionAdded => particleController.Add(conditionAdded.ParticleType),
+                conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
+            ).AddTo(particleController);
         }
 
-        public void Remove(Character character)
+        protected override void CleanupView(Character character, CharacterView characterView)
         {
-            Object.Destroy(characterViewDict.Forward[character].gameObject);
-            characterViewDict.Remove(character);
-        }
-
-        public Character Get(CharacterView characterView)
-        {
-            return characterViewDict.Reverse[characterView];
-        }
-
-        public CharacterView Get(Character character)
-        {
-            return characterViewDict.Forward[character];
         }
     }
 }

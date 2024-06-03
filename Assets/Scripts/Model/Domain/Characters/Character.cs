@@ -34,23 +34,29 @@ namespace Model.Domain.Characters
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
 
-        internal Character(string name, Vector2Int position, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IMap world, CharacterGroup group) : this
-            (
-                new CharacterMemento(
-                    name,
-                    new Human(Addressables
-                        .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                    new CharacterStatusMemento(100, 100, 1),
-                    new EntityMemento(position),
-                    new InventoryMemento(new ItemMemento[10]),
-                    new AffiliationMemento(group)
-                ),
-                behavior,
-                canIgnoreWall,
-                world
-            )
-        { }
+        public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
+        {
+            return new CharacterMemento(
+                "Player",
+                new Human(Addressables
+                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
+                new CharacterStatusMemento(100, 100, 1),
+                new EntityMemento(spawnPosition),
+                new InventoryMemento(new ItemMemento[10]),
+                new AffiliationMemento(CharacterGroup.Player)
+            );
+        }
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
+        {
+            return new CharacterMemento(
+                data.Name,
+                data.CharacterType,
+                new CharacterStatusMemento(data.Hp, data.Hp , data.Strength),
+                new EntityMemento(spawnPosition),
+                new InventoryMemento(new ItemMemento[10]),
+                new AffiliationMemento(CharacterGroup.Enemy)
+            );
+        }
 
         internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
             Observable<bool> canIgnoreWall, IMap world, CharacterGroup group) : this

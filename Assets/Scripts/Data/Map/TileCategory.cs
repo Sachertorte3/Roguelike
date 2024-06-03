@@ -1,4 +1,4 @@
-﻿namespace Model.Domain.Map
+﻿namespace Data.Map
 {
     public enum TileCategory
     {

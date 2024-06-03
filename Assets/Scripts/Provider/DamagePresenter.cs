@@ -11,20 +11,26 @@ using Data.Setting;
 public class DamagePresenter
 {
     [Inject]
-    public DamagePresenter(World world, DamageTextSpawner damageTextSpawner)
+    public DamagePresenter(World world, DamageTextSpawner damageTextSpawner, FlushController flushController)
     {
         world.ActiveMap.SubscribeToAllIgnoreNull(map =>
         {
-            map.CharacterManager.CharacterEvents.OnDamageReceived.Subscribe(
+            map.CharacterManager.PlayerEvents.OnDamageReceived.Subscribe(
                 damageChanged =>
                 {
                     if (damageChanged.Character.Visibility.CurrentValue == true)
                     {
-                        damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp, Settings.DamageTextDisplayTime.Value);
+                        var damagePercentageFromMaxHp = (float)damageChanged.Message.Damage / damageChanged.Character.StatusManager.MaxHp;
+                        var hpPercentageFromMaxHp = (float)damageChanged.Character.StatusManager.CurrentHp / damageChanged.Character.StatusManager.MaxHp;
+                        damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, damagePercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
+                        if (damagePercentageFromMaxHp > 0.25f || hpPercentageFromMaxHp < 0.25f)
+                        {
+                            flushController.Flush(Settings.FlushDuration.Value);
+                        }
                     }
                 }
             );
-            map.CharacterManager.CharacterEvents.OnHealReceived.Subscribe(
+            map.CharacterManager.PlayerEvents.OnHealReceived.Subscribe(
                 healChanged =>
                 {
                     if (healChanged.Character.Visibility.CurrentValue == true)

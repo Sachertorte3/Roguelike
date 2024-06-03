@@ -1,15 +1,16 @@
 ﻿#nullable enable
 using System;
+using Unity.Logging;
 using RandomDungeonWithBluePrint;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using Data.Map;
 
 namespace Model.Game
 {
     public class GameManager
     {
-        private readonly GameInput _input;
-        private readonly TurnController _turnController;
+        private TurnController _turnController;
         private readonly World _world;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
@@ -18,24 +19,17 @@ namespace Model.Game
         public GameManager(World world, GameInput input)
         {
             _world = world;
-            _input = input;
-            _turnController = new TurnController(_world, _input);
+            _turnController = new(input);
             Globals.GameManager = this;
         }
 
-        public async void LoadMap()
+        public async void LoadMap(int mapId)
         {
+            Log.Debug("Start LoadMap");
             await _turnController.Stop();
-            var bluePrint = Addressables
-                .LoadAssetAsync<FieldBluePrint>(
-                    "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-            _world.GenerateMap(bluePrint);
-            _turnController.Run();
-        }
-
-        public void Run()
-        {
-            _turnController.Run();
+            var map = _world.LoadMap(mapId);
+            _turnController.Run(map);
+            Log.Debug("End LoadMap");
         }
     }
 }

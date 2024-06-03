@@ -1,10 +1,11 @@
-﻿using R3;
+﻿using System;
+using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Model.Domain.Entities
 {
-    public interface IEntity
+    public interface IEntity : IDisposable
     {
         public Entity Entity { get; }
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }

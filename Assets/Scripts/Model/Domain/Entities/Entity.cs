@@ -1,21 +1,31 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Data.Character;
 using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Model.Domain.Entities
 {
-    public class Entity : IDisposable
+    public class Entity : IDisposable, ISerializable<EntityMemento>
     {
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         private readonly Subject<Vector2Int> _onTeleport = new();
         private readonly ReactiveProperty<Vector2Int> _position;
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
 
-        public Entity(Vector2Int position)
+        public static EntityMemento Build(Vector2Int position)
         {
-            _position = new ReactiveProperty<Vector2Int>(position);
+            return new EntityMemento(position);
+        }
+        public Entity(EntityMemento data)
+        {
+            _position = new ReactiveProperty<Vector2Int>(data.Position);
+        }
+
+        public EntityMemento Serialize()
+        {
+            return new EntityMemento(_position.CurrentValue);
         }
 
         public Vector2Int CurrentPosition => Position.CurrentValue;

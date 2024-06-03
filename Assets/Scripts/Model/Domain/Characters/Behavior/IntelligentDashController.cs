@@ -9,7 +9,7 @@ namespace Model.Domain.Characters.Behavior
 {
     internal sealed class IntelligentDashController
     {
-        public async UniTask Wait(IHasBehavior character, IWorld world)
+        public async UniTask Wait(IHasBehavior character, IMap world)
         {
             if (character.CanMove(character.CurrentDirection, world) &&
                 character.CanMove(character.CurrentDirection.Reverse(), world) &&
@@ -23,14 +23,14 @@ namespace Model.Domain.Characters.Behavior
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
         }
 
-        public Move Filter(Move move, IHasBehavior character, bool started, IWorld world, IInput input)
+        public Move Filter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
         {
             move = MoveFilter(move, character, world);
             move = DashFilter(move, character, started, world, input);
             return move;
         }
 
-        private Move MoveFilter(Move move, IHasBehavior character, IWorld world)
+        private Move MoveFilter(Move move, IHasBehavior character, IMap world)
         {
             if (!character.CanMove(move.Direction, world))
             {
@@ -47,7 +47,7 @@ namespace Model.Domain.Characters.Behavior
             return move;
         }
 
-        private Move DashFilter(Move move, IHasBehavior character, bool started, IWorld world, IInput input)
+        private Move DashFilter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
         {
             if (!IsDashingStraight(started, input)) return move;
             var canMoveDirections = DirectionMethods.AllDirections

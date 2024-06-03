@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+using System.Collections.Generic;
 using Data.Setting;
 using Model;
 using Model.Game;
@@ -12,16 +14,30 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedEventEntityView : SynchronizedView<IEventEntity, EntityView>
+    public class SynchronizedEventEntityView : SynchronizedView<IEventEntity, EntityView>, IDisposable
     {
         private readonly InputReceiver _inputReceiver;
+        private readonly SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedEventEntityView(World world, InputReceiver inputReceiver)
         {
             _inputReceiver = inputReceiver;
 
-            world.EventEntities.Set.SubscribeToAll(Add, Remove);
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map => _disposable.Disposable = map.EventEntities.SubscribeToAll(Add, Remove),
+                map => map.EventEntities.ForEach(entity => Remove(entity))
+            );
+        }
+
+        ~SynchronizedEventEntityView()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
 
         protected override EntityView _viewPrefab =>
@@ -31,7 +47,7 @@ namespace Provider
         protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
-            eventEntity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
+            eventEntity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
             eventEntity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);

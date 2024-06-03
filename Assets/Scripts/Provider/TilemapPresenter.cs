@@ -1,26 +1,27 @@
 ﻿#nullable enable
-using Model;
 using R3;
-using System.Linq;
-using Model.Domain.Map;
 using Model.Game;
 using Utilities;
 using VContainer;
 using View;
+using Data.Map;
+using System.Linq;
 
 namespace Provider
 {
     public class TilemapPresenter
     {
-        private SerialDisposable _disposable = new();
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
         {
-            _disposable.Disposable = world.ActiveMap.SubscribeToAll(mapLoaded =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(mapLoaded =>
             {
                 tileView.Clear();
+
                 foreach (var (position, tileData) in mapLoaded.Tilemap.GetAllTiles())
+                {
                     switch (tileData.TileType)
                     {
                         case TileCategory.Wall:
@@ -30,10 +31,29 @@ namespace Provider
                             tileView.SetFloor(position);
                             break;
                     }
+                }
 
-                tileMask.SetTilesTransparent(mapLoaded.Tilemap.Rect.RectRange().ToHashSet());
+                foreach (var (position, tileData) in mapLoaded.Tilemap.GetAllTiles())
+                {
+                    // HACK: Separating this due to a bug when not separated
+                    if (tileData.IsKnown)
+                    {
+                        if (mapLoaded.VisibleArea.Contains(position))
+                        {
+                            tileMask.SetTileVisible(position);
+                        }
+                        else
+                        {
+                            tileMask.SetTileTranslucent(position);
+                        }
+                    }
+                    else
+                    {
+                        tileMask.SetTileTransparent(position);
+                    }
+                }
 
-                _disposable.Disposable = mapLoaded.Tilemap.OnChangeTile.Subscribe(context =>
+                _disposables.Add(mapLoaded.Tilemap.OnTileChanged.Subscribe(context =>
                 {
                     switch (context.tile.TileType)
                     {
@@ -44,10 +64,41 @@ namespace Provider
                             tileView.SetFloor(context.position);
                             break;
                     }
-
-                    tileMask.ResetMask(context.position);
-                });
-            });
+                }));
+                // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
+                _disposables.Add(mapLoaded.Tilemap.OnTileKnownChanged.Subscribe(context =>
+                {
+                    if (context.tile.IsKnown)
+                    {
+                        tileMask.SetTileVisible(context.position);
+                    }
+                    else
+                    {
+                        tileMask.SetTileTransparent(context.position);
+                    }
+                }));
+                // HACK: Here.
+                _disposables.Add(mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(visibleAreaChanged =>
+                {
+                    foreach (var position in visibleAreaChanged.Message.AreaEntered)
+                    {
+                        tileMask.SetTileVisible(position);
+                    }
+                    foreach (var position in visibleAreaChanged.Message.AreaExited)
+                    {
+                        tileMask.SetTileTranslucent(position);
+                    }
+                }));
+            },
+            _ => _disposables.Clear());
+        }
+        ~TilemapPresenter()
+        {
+            Dispose();
+        }
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

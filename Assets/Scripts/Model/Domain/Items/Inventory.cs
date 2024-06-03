@@ -2,38 +2,54 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Character;
 using ObservableCollections;
 using R3;
+using Utilities;
 
 namespace Model.Domain.Items
 {
-    internal class Inventory : IInventory, IDisposable
+    internal class Inventory : ISerializable<InventoryMemento>, IInventory, IDisposable
     {
         private const int MaxItems = 10;
+        public int MaxItemCount => MaxItems;
         private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
+        private readonly IDisposable _disposable;
+        private readonly CompositeDisposable _disposables = new();
 
-        private readonly List<SerialDisposable> disposables =
-            new(Enumerable.Range(0, MaxItems).Select(_ => new SerialDisposable()));
-
-        public Inventory()
+        public Inventory(InventoryMemento data)
         {
-            OnItemChanged.Subscribe(itemChanged =>
+            _disposable = OnItemChanged.Subscribe(itemChanged =>
             {
-                disposables[itemChanged.Index].Disposable = itemChanged.NewValue?.RemainingUses.Subscribe(
-                    remainingUses =>
-                    {
-                        if (remainingUses <= 0)
-                            Replace(null, _items.IndexOf(itemChanged.NewValue));
-                        else if (itemChanged.NewValue != null)
-                            _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
-                    });
-            });
+                if (itemChanged.NewValue != null)
+                {
+                    _disposables.Add(itemChanged.NewValue.RemainingUses.Subscribe(
+                        remainingUses =>
+                        {
+                            if (remainingUses <= 0)
+                                Replace(null, _items.IndexOf(itemChanged.NewValue));
+                            else if (itemChanged.NewValue != null)
+                                _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
+                        }));
+                }
+            },
+            _ => _disposables.Clear());
+            foreach (var item in data.Items)
+            {
+                if (item != null)
+                    _items[_items.IndexOf(null)] = new Item(item);
+            }
         }
 
         public void Dispose()
         {
-            foreach (var item in disposables) item?.Dispose();
+            _disposable.Dispose();
+            _disposables.Dispose();
+        }
+        public InventoryMemento Serialize()
+        {
+            return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
         }
 
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();

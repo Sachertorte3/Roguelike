@@ -33,22 +33,34 @@ namespace Utilities
                 list.ObserveReplace()
                     .Subscribe(value =>
                     {
-                        addAction(value.NewValue);
                         removeAction?.Invoke(value.OldValue);
+                        addAction(value.NewValue);
                     })
             };
         }
 
         public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction,
-            Action<T> removeAction = null)
+            Action<T>? removeAction = null) where T : notnull
         {
             addAction(property.CurrentValue);
 
             return property.Pairwise()
                 .Subscribe(value =>
                 {
-                    addAction(value.Current);
                     removeAction?.Invoke(value.Previous);
+                    addAction(value.Current);
+                });
+        }
+        public static IDisposable SubscribeToAllIgnoreNull<T>(this ReadOnlyReactiveProperty<T?> property, Action<T> addAction,
+            Action<T>? removeAction = null)
+        {
+            if (property.CurrentValue != null) addAction(property.CurrentValue);
+
+            return property.Pairwise()
+                .Subscribe(value =>
+                {
+                    if (value.Previous != null) removeAction?.Invoke(value.Previous);
+                    if (value.Current != null) addAction(value.Current);
                 });
         }
 

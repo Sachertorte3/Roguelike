@@ -1,6 +1,6 @@
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -25,7 +25,7 @@ namespace Data.Area
 
         public string Info()
         {
-            return $"直線　長さ{Length}マス{(ContainsSelf ? "(原点含む)" : "")}";
+            return $"直線 長さ{Length}マス{(ContainsSelf ? "(原点含む)" : "")}";
         }
     }
 }

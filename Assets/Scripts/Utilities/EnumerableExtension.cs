@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,8 +11,12 @@ namespace Utilities
     {
         public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
         {
-            foreach (var item in ie) { action(item); }
+            foreach (var item in ie)
+            {
+                action(item);
+            }
         }
+
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
@@ -72,6 +77,27 @@ namespace Utilities
         public static T MaxBy<T, U>(this IEnumerable<T> xs, Func<T, U> key) where U : IComparable<U>
         {
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
+        }
+
+        public static void SynchronizeWith<T>(this ICollection<T> collectionA, IEnumerable<T> collectionB)
+        {
+            // コレクションAの要素のうち、コレクションBに存在しないものを削除する
+            var itemsToRemove = collectionA.Except(collectionB).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                collectionA.Remove(item);
+            }
+
+            // コレクションBの要素のうち、コレクションAに存在しないものを追加する
+            var itemsToAdd = collectionB.Except(collectionA).ToList();
+            foreach (var item in itemsToAdd)
+            {
+                collectionA.Add(item);
+            }
+        }
+        public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()
+        {
+            return Enumerable.Range(0, count).Select(_ => new T());
         }
     }
 }

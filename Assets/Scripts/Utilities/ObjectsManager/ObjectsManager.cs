@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ObservableCollections;
+﻿using ObservableCollections;
 using R3;
 using R3.Triggers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utilities.ObjectsManager
@@ -63,10 +63,5 @@ namespace Utilities.ObjectsManager
             if (!_caches.ContainsKey(typeof(T))) RegisterType<T>();
             return _caches[typeof(T)].ObserveAdd().Select(obj => (T)obj.Value);
         }
-    }
-
-    public interface IDestroyObservable
-    {
-        event Action OnDestroy;
     }
 }

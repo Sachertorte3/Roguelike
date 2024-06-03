@@ -6,7 +6,7 @@ namespace View
 {
     public class CharacterArrow : MonoBehaviour
     {
-        public void Constract(CharacterView view)
+        public void SetCharacter(CharacterView view)
         {
             var direction = view.Direction;
             Turn(direction.CurrentValue);

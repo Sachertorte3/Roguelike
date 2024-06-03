@@ -1,4 +1,3 @@
-using Assets.Scripts.View;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

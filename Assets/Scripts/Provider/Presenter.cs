@@ -1,14 +1,7 @@
 #nullable enable
-using System.Linq;
-using Model;
-using Model.Characters;
-using Model.Items;
-using Model.Map;
-using R3;
-using Sirenix.Utilities;
+using Model.Game;
 using Unity.Logging;
 using Unity.Logging.Sinks;
-using UnityEngine;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
@@ -19,31 +12,11 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(TileMaskController tileMask, GameManager gameManager, Tilemap tilemap,
-            CharacterManager characterManager, ItemManager itemManager)
+        public Presenter(GameManager gameManager, SynchronizedEventEntityView _)
         {
             LoggerInit();
-
-            gameManager.Spawn(tilemap, characterManager, itemManager);
-
-            characterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(area =>
-            {
-                tileMask.SetTilesTranslucent(area.AreaExited);
-                tileMask.SetTilesVisible(area.AreaEntered);
-                ObjectsManager.GetObjectsByType<SpriteView>()
-                    .Where(view => area.AreaExited.Contains(Vector2Int.RoundToInt(view.Position())))
-                    .ForEach(view => view.SetVisibility(false));
-                ObjectsManager.GetObjectsByType<SpriteView>()
-                    .Where(view => area.AreaEntered.Contains(Vector2Int.RoundToInt(view.Position())))
-                    .ForEach(view => view.SetVisibility(true));
-            });
-            ObjectsManager.ObserveAdd<SpriteView>().Subscribe(view =>
-                view.SetVisibility(characterManager.Player.Area.Get()
-                    .Contains(Vector2Int.RoundToInt(view.Position()))));
-
-            characterManager.Player.Area.Refrash(characterManager.Player.CurrentPosition);
-
-            gameManager.Run(characterManager);
+            ObjectsManager.GetObjectsByType<SpriteView>();
+            gameManager.LoadMap(0);
         }
 
         private void LoggerInit()

@@ -36,6 +36,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
             builder.RegisterComponentInHierarchy<DamageTextSpawner>();
+            builder.RegisterComponentInHierarchy<FlushController>();
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();

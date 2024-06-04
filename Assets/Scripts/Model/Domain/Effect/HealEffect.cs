@@ -25,7 +25,7 @@ namespace Model.Domain.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, (float)Formula.Calc(actor, Power) / target.MaxHp);
+            return Mathf.Min(1, Mathf.Min(target.MaxHp - target.CurrentHp, Formula.Calc(actor, Power)) / target.MaxHp);
         }
 
         public string Info()

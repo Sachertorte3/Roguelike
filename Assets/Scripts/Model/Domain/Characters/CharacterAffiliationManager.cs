@@ -50,7 +50,6 @@ namespace Model.Domain.Characters
             }
 
             affections[target] += change;
-            Log.Debug($"affection: {affections[target]}");
         }
 
         public int GetAffectionByGroup(IAffiliation target)

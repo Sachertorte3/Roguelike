@@ -1,3 +1,4 @@
+using System;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -9,6 +10,7 @@ namespace View
     public class CharacterView : MonoBehaviour, IDirectional
     {
         private readonly ReactiveProperty<Direction8> _direction = new();
+        private SpriteRenderer _groupMarker;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
 
         public Direction8 GetDirection()
@@ -16,17 +18,33 @@ namespace View
             return Direction.CurrentValue;
         }
 
-        public void Construct(string characterTypeName)
+        public void Construct(string characterTypeName, bool isEnemy, bool isAlly)
         {
             var animation = Addressables
                 .LoadAssetAsync<RuntimeAnimatorController>($"Assets/Animations/{characterTypeName}.controller")
                 .WaitForCompletion();
             GetComponent<Animator>().runtimeAnimatorController = Instantiate(animation);
+            var groupMarker = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/GroupMarker.prefab").WaitForCompletion();
+            _groupMarker = Instantiate(groupMarker, transform).GetComponent<SpriteRenderer>();
+            UpdateGroupMarker(isEnemy, isAlly);
         }
 
         public void Turn(Direction8 direction)
         {
             _direction.OnNext(direction);
         }
+
+        public void UpdateGroupMarker(bool isEnemy, bool isAlly)
+        {
+            var color = (isEnemy, isAlly) switch
+            {
+                (true, false) => new Color(1, 0, 0, 0.5f),
+                (false, true) => new Color(0, 1, 0, 0.5f),
+                (true, true) => throw new InvalidOperationException("A character cannot be both an enemy and an ally."),
+                _ => Color.clear,
+            };
+            _groupMarker.color = color;
+        }
     }
 }
+

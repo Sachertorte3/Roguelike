@@ -278,4 +278,11 @@ namespace Model.Domain.Characters
             _affiliationManager.UpdateTurn(world.GetCharactersInArea(Area.VisibleArea).Select(x => x.Affiliation));
         }
     }
+    public static class CharacterExtensions
+    {
+        public static bool IsVisible(this Character character, Vector2Int position)
+        {
+            return character.Area.VisibleArea.Contains(position);
+        }
+    }
 }

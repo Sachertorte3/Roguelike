@@ -278,7 +278,7 @@ namespace Model.Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to)
         {
-            return IsPassable(to); //TODO: A*で実装
+            return true; //TODO: A*で実装
         }
     }
 }

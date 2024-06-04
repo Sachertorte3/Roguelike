@@ -23,7 +23,7 @@ namespace Model.Domain.Characters.Behavior
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
-            var visibleCharacters = world.GetCharactersInArea(visibleArea);
+            var visibleCharacters = world.GetVisibleCharacters(character);
             var visibleEnemies = visibleCharacters.Where(c => character.Affiliation.IsEnemy(c.Affiliation));
 
             if (_lastTarget != null)//ターゲットがいる

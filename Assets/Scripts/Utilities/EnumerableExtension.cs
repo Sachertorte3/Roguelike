@@ -79,6 +79,16 @@ namespace Utilities
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
 
+        public static T MinByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue) where U : IComparable<U>
+        {
+            return xs.Aggregate(defaultValue, (a, b) => key(a).CompareTo(key(b)) < 0 ? a : b);
+        }
+
+        public static T MaxByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue) where U : IComparable<U>
+        {
+            return xs.Aggregate(defaultValue, (a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
+        }
+
         public static void SynchronizeWith<T>(this ICollection<T> collectionA, IEnumerable<T> collectionB)
         {
             // コレクションAの要素のうち、コレクションBに存在しないものを削除する

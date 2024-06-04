@@ -5,6 +5,7 @@ using Data;
 using Data.Area;
 using Data.Character;
 using Data.Effect;
+using Model.Domain.Characters;
 using UnityEngine;
 using Utilities;
 
@@ -40,16 +41,25 @@ namespace Model.Domain.Effect
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
+            var characters = world.Characters;
             world.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
                 {
                     if (_effect.Impact == Impact.Harmful)
                     {
                         target.WasAttackedBy(actor);
+
+                        characters
+                            .Where(character => character.IsVisible(target.CurrentPosition))
+                            .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation));
                     }
                     else if (_effect.Impact == Impact.Beneficial)
                     {
                         target.WasHealedBy(actor);
+
+                        characters
+                            .Where(character => character.IsVisible(target.CurrentPosition))
+                            .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation));
                     }
 
                     _effect.Apply(actor, target.StatusManager);

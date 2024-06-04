@@ -96,14 +96,15 @@ namespace Model.Game
                 SetAllCharacterPosition();
 
                 positionChanged.Character.SetVisiblity(
-                    Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
+                    Player.IsVisible(positionChanged.Message.Position)
+                );
             }).AddTo(_disposables);
 
             ItemManager.ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
 
-                positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
+                positionChanged.Item.SetVisiblity(Player.IsVisible(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
             if (playerData == null || playerPosition == null)

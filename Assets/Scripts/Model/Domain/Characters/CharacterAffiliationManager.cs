@@ -82,7 +82,7 @@ namespace Model.Domain.Characters
                 (CharacterGroup.Player, CharacterGroup.Player) => BaseAllyValue,
                 (CharacterGroup.Player, CharacterGroup.Enemy) => BaseEnemyValue,
                 (CharacterGroup.Enemy, CharacterGroup.Player) => BaseEnemyValue,
-                (CharacterGroup.Enemy, CharacterGroup.Enemy) => BaseAllyValue,
+                (CharacterGroup.Enemy, CharacterGroup.Enemy) => 0,
                 (CharacterGroup.Neutral, _) => 0,
                 _ => 0,
             };
@@ -117,14 +117,21 @@ namespace Model.Domain.Characters
             }
             else
             {
-                var affectionToTarget = GetAffection(target);
-                if (affectionToTarget > 50) // 好感度が高い場合
+                if (IsAlly(target)) // 好感度が高い場合
                 {
                     ModifyAffection(attacker, -5); // 第三者の好感度が高い場合、攻撃者に対する好感度を減少
                 }
-                else if (affectionToTarget < -50) // 好感度が低い場合
+                else if (IsEnemy(target)) // 好感度が低い場合
                 {
                     ModifyAffection(attacker, 5); // 第三者の好感度が低い場合、攻撃者に対する好感度を増加
+                }
+                if (IsAlly(attacker))
+                {
+                    ModifyAffection(target, -5);// 攻撃者が味方の場合、攻撃されるユーザーの好感度を減少
+                }
+                else if (IsEnemy(attacker))
+                {
+                    ModifyAffection(target, 5);// 攻撃者が敵の場合、攻撃されるユーザーの好感度を増加
                 }
             }
         }
@@ -144,14 +151,21 @@ namespace Model.Domain.Characters
             }
             else
             {
-                var affectionToTarget = GetAffection(target);
-                if (affectionToTarget > 50) // 好感度が高い場合
+                if (IsAlly(target)) // 好感度が高い場合
                 {
                     ModifyAffection(healer, 5); // 第三者の好感度が高い場合、回復者に対する好感度を増加
                 }
-                else if (affectionToTarget < -50) // 好感度が低い場合
+                else if (IsEnemy(target)) // 好感度が低い場合
                 {
                     ModifyAffection(healer, -5); // 第三者の好感度が低い場合、回復者に対する好感度を減少
+                }
+                if (IsAlly(healer))
+                {
+                    ModifyAffection(target, 5);// 回復者が味方の場合、回復されるユーザーの好感度を増加
+                }
+                else if (IsEnemy(healer))
+                {
+                    ModifyAffection(target, -5);// 回復者が敵の場合、回復されるユーザーの好感度を減少
                 }
             }
         }

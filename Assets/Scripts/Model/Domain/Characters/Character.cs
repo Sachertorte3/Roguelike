@@ -226,6 +226,11 @@ namespace Model.Domain.Characters
             {
                 Turn(direction.Value);
             }
+            _affiliationManager.OnCharacterAttacked(actor.Affiliation, Affiliation);
+        }
+        public void WasHealedBy(IActorOfEffect actor)
+        {
+            _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation);
         }
 
         ~Character()

@@ -47,6 +47,10 @@ namespace Model.Domain.Effect
                     {
                         target.WasAttackedBy(actor);
                     }
+                    else if (_effect.Impact == Impact.Beneficial)
+                    {
+                        target.WasHealedBy(actor);
+                    }
 
                     _effect.Apply(actor, target.StatusManager);
                 });

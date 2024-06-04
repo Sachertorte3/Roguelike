@@ -11,7 +11,7 @@ namespace Model.Domain.Characters.Behavior
     {
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
         private readonly IUndiscoveredTargetBehavior _wander = new RandomWalk();
-        private readonly float behavioralRandomness = 0.01f;
+        private readonly float behavioralRandomness = 0.0f;
         private Vector2Int? _lastTargetPosition;
 
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using Data.Character;
 using Data.Effect;
 using R3;
+using UnityEngine;
 
 namespace Model.Domain.Characters
 {
@@ -28,21 +30,21 @@ namespace Model.Domain.Characters
 
         public bool IsAlly(IAffiliation other)
         {
-            int totalAffection = GetAffectionByGroup(other) + GetAffection(other);
+            var totalAffection = GetAffectionByGroup(other) + GetAffection(other);
 
             return totalAffection > AffectionAllyThreshold;
         }
 
         public bool IsEnemy(IAffiliation other)
         {
-            int totalAffection = GetAffectionByGroup(other) + GetAffection(other);
+            var totalAffection = GetAffectionByGroup(other) + GetAffection(other);
 
             return totalAffection < AffectionEnemyThreshold;
         }
 
-        private readonly Dictionary<IAffiliation, int> affections = new();
+        private readonly Dictionary<IAffiliation, float> affections = new();
 
-        public void ModifyAffection(IAffiliation target, int change)
+        public void ModifyAffection(IAffiliation target, float change)
         {
             if (target == this)
             {
@@ -57,7 +59,19 @@ namespace Model.Domain.Characters
             _onAffectionChanged.OnNext(new OnAffectionChangedMessage(target, affections[target], IsEnemy(target), IsAlly(target)));
         }
 
-        private int GetAffectionByGroup(IAffiliation target)
+        public void UpdateTurn(IEnumerable<IAffiliation> visibleCharacters)
+        {
+            foreach (var target in affections.Keys.Where(target => !visibleCharacters.Contains(target)).ToList())
+            {
+                ModifyAffection(target, affections[target] * -0.001f);
+                if (Mathf.Abs(affections[target]) <= 0.01f)
+                {
+                    affections.Remove(target);
+                }
+            }
+        }
+
+        private float GetAffectionByGroup(IAffiliation target)
         {
             if (target == this)
             {
@@ -74,7 +88,7 @@ namespace Model.Domain.Characters
             };
         }
 
-        private int GetAffection(IAffiliation target)
+        private float GetAffection(IAffiliation target)
         {
             if (target == this)
             {
@@ -103,7 +117,7 @@ namespace Model.Domain.Characters
             }
             else
             {
-                int affectionToTarget = GetAffection(target);
+                var affectionToTarget = GetAffection(target);
                 if (affectionToTarget > 50) // 好感度が高い場合
                 {
                     ModifyAffection(attacker, -5); // 第三者の好感度が高い場合、攻撃者に対する好感度を減少
@@ -130,7 +144,7 @@ namespace Model.Domain.Characters
             }
             else
             {
-                int affectionToTarget = GetAffection(target);
+                var affectionToTarget = GetAffection(target);
                 if (affectionToTarget > 50) // 好感度が高い場合
                 {
                     ModifyAffection(healer, 5); // 第三者の好感度が高い場合、回復者に対する好感度を増加

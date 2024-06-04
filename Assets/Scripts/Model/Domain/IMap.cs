@@ -11,7 +11,7 @@ namespace Model.Domain
         public IObservableCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<Character> Characters { get; }
         public IObservableCollection<ItemEntity> Items { get; }
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area);
+        public HashSet<Character> GetCharactersInArea(IEnumerable<Vector2Int> area);
         public HashSet<Vector2Int> GetAllLightPassablePositions();
         public bool IsPassable(Vector2Int position);
         public bool IsMapPassable(Vector2Int position);

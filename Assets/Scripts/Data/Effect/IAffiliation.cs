@@ -9,5 +9,6 @@ namespace Data.Effect
         public bool IsAlly(IAffiliation other);
         public bool IsEnemy(IAffiliation other);
     }
-    public record OnAffectionChangedMessage(IAffiliation Target, int Affection, bool IsEnemy, bool IsAlly);
+    public record OnAffectionChangedMessage(IAffiliation Target, float Affection, bool IsEnemy, bool IsAlly);
 }
+

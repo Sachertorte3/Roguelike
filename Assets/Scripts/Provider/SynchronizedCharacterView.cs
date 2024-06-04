@@ -53,7 +53,9 @@ namespace Provider
 
         protected override void InitializeView(Character character, CharacterView characterView)
         {
-            characterView.Construct(character.TypeName());
+            var playerAffiliation = _world.ActiveMap.CurrentValue.Player.Affiliation;
+            var characterAffiliation = character.Affiliation;
+            characterView.Construct(character.TypeName(), playerAffiliation.IsEnemy(characterAffiliation), playerAffiliation.IsAlly(characterAffiliation));
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
                 character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using Data;
 using Data.Character;
 using Data.Effect;
-using Unity.Logging;
+using R3;
 
 namespace Model.Domain.Characters
 {
@@ -13,6 +11,8 @@ namespace Model.Domain.Characters
         private const int AffectionEnemyThreshold = -10; // 敵と見なす好感度の閾値
         private const int BaseAllyValue = 20; // 同じグループの基本好感度
         private const int BaseEnemyValue = -20; // 敵対グループの基本好感度
+        public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
+        private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
 
         public CharacterAffiliationManager(AffiliationMemento data)
         {
@@ -40,20 +40,29 @@ namespace Model.Domain.Characters
             return totalAffection < AffectionEnemyThreshold;
         }
 
-        private Dictionary<IAffiliation, int> affections = new();
+        private readonly Dictionary<IAffiliation, int> affections = new();
 
         public void ModifyAffection(IAffiliation target, int change)
         {
+            if (target == this)
+            {
+                return;
+            }
             if (!affections.ContainsKey(target))
             {
                 affections[target] = 0;
             }
 
             affections[target] += change;
+            _onAffectionChanged.OnNext(new OnAffectionChangedMessage(target, affections[target], IsEnemy(target), IsAlly(target)));
         }
 
-        public int GetAffectionByGroup(IAffiliation target)
+        private int GetAffectionByGroup(IAffiliation target)
         {
+            if (target == this)
+            {
+                return 0;
+            }
             return (Group, target.Group) switch
             {
                 (CharacterGroup.Player, CharacterGroup.Player) => BaseAllyValue,
@@ -65,8 +74,12 @@ namespace Model.Domain.Characters
             };
         }
 
-        public int GetAffection(IAffiliation target)
+        private int GetAffection(IAffiliation target)
         {
+            if (target == this)
+            {
+                return 0;
+            }
             if (affections.ContainsKey(target))
             {
                 return affections[target];
@@ -76,6 +89,10 @@ namespace Model.Domain.Characters
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target)
         {
+            if (target == attacker)
+            {
+                return;
+            }
             if (target == this)
             {
                 ModifyAffection(attacker, -10); // 攻撃されると好感度が10ポイント減少
@@ -99,6 +116,10 @@ namespace Model.Domain.Characters
         }
         public void OnCharacterHealed(IAffiliation healer, IAffiliation target)
         {
+            if (target == healer)
+            {
+                return;
+            }
             if (target == this)
             {
                 ModifyAffection(healer, 10); // 回復されると好感度が10ポイント増加
@@ -122,3 +143,4 @@ namespace Model.Domain.Characters
         }
     }
 }
+

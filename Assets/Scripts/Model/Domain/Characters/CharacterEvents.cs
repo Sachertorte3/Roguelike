@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Data.Effect;
 using Model.Domain.Entities;
 using R3;
 using Utilities.Messages;
@@ -31,6 +32,9 @@ namespace Model.Domain.Characters
         public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged =>
             _events.GetObservable<OnVisibleAreaChangedMessage>();
 
+        public Observable<(Character Character, OnAffectionChangedMessage Message)> OnAffectionChanged =>
+            _events.GetObservable<OnAffectionChangedMessage>();
+
         Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
             _events.GetSubject<OnPositionChangedMessage>().SelectSender(character => character.Entity);
 
@@ -60,6 +64,7 @@ namespace Model.Domain.Characters
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(character, character.OnSpawnEffect.Select(useSkill => new OnEffectSpawnedMessage(useSkill)));
             _events.Add(character, character.Area.OnVisibleAreaChanged);
+            _events.Add(character, character.Affiliation.OnAffectionChanged);
         }
 
         public void Add(CharacterEvents characterEvents)
@@ -71,6 +76,7 @@ namespace Model.Domain.Characters
             _events.Add(characterEvents, characterEvents.OnTeleport);
             _events.Add(characterEvents, characterEvents.OnEffectSpawned);
             _events.Add(characterEvents, characterEvents.OnVisibleAreaChanged);
+            _events.Add(characterEvents, characterEvents.OnAffectionChanged);
         }
 
         public void Remove(Character character)

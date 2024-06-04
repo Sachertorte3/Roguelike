@@ -3,6 +3,8 @@ using Model.Domain.Characters;
 using Model.Domain.Items;
 using UnityEngine;
 using ObservableCollections;
+using System.Linq;
+using Model.Domain.Characters.Behavior;
 
 namespace Model.Domain
 {
@@ -17,5 +19,16 @@ namespace Model.Domain
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
         public ItemEntity SpawnItem(Item item, Vector2Int position);
+    }
+    public static class MapExtensions
+    {
+        public static IEnumerable<Character> GetVisibleCharacters(this IMap map, IHasBehavior character)
+        {
+            return map.GetCharactersInArea(character.Area.VisibleArea);
+        }
+        public static IEnumerable<Character> GetCharactersCanSeePosition(this IMap map, Vector2Int position)
+        {
+            return map.Characters.Where(character => character.IsVisible(position));
+        }
     }
 }

@@ -41,7 +41,6 @@ namespace Model.Domain.Effect
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var area = _area.Get(position, direction);
-            var characters = world.Characters;
             world.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
                 {
@@ -49,16 +48,14 @@ namespace Model.Domain.Effect
                     {
                         target.WasAttackedBy(actor);
 
-                        characters
-                            .Where(character => character.IsVisible(target.CurrentPosition))
+                        world.GetCharactersCanSeePosition(target.CurrentPosition)
                             .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation));
                     }
                     else if (_effect.Impact == Impact.Beneficial)
                     {
                         target.WasHealedBy(actor);
 
-                        characters
-                            .Where(character => character.IsVisible(target.CurrentPosition))
+                        world.GetCharactersCanSeePosition(target.CurrentPosition)
                             .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation));
                     }
 
@@ -81,14 +78,14 @@ namespace Model.Domain.Effect
             foreach (var target in characters)
             {
                 // Enemy attacked or ally healed, add to evaluation
-                if ((_effect.Impact == Impact.Harmful && actor.Affiliation.IsEnemy(target.Affiliation)) ||
-                    (_effect.Impact == Impact.Beneficial && actor.Affiliation.IsAlly(target.Affiliation)))
+                if ((_effect.Impact == Impact.Harmful && actor.IsEnemy(target)) ||
+                    (_effect.Impact == Impact.Beneficial && actor.IsAlly(target)))
                 {
                     totalEvaluation += _effect.Evaluate(actor, target.StatusManager);
                 }
                 // Enemy healed or ally attacked, subtract from evaluation
-                else if ((_effect.Impact == Impact.Beneficial && actor.Affiliation.IsEnemy(target.Affiliation)) ||
-                         (_effect.Impact == Impact.Harmful && actor.Affiliation.IsAlly(target.Affiliation)))
+                else if ((_effect.Impact == Impact.Beneficial && actor.IsEnemy(target)) ||
+                         (_effect.Impact == Impact.Harmful && actor.IsAlly(target)))
                 {
                     totalEvaluation -= _effect.Evaluate(actor, target.StatusManager);
                 }

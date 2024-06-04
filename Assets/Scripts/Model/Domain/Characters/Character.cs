@@ -275,7 +275,7 @@ namespace Model.Domain.Characters
         public void UpdateTurn(IMap world)
         {
             _statusManager.UpdateTurn();
-            _affiliationManager.UpdateTurn(world.GetCharactersInArea(Area.VisibleArea).Select(x => x.Affiliation));
+            _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
         }
     }
     public static class CharacterExtensions
@@ -284,5 +284,14 @@ namespace Model.Domain.Characters
         {
             return character.Area.VisibleArea.Contains(position);
         }
+        public static bool IsAlly(this IActorOfEffect character, Character target)
+        {
+            return character.Affiliation.IsAlly(target.Affiliation);
+        }
+        public static bool IsEnemy(this IActorOfEffect character, Character target)
+        {
+            return character.Affiliation.IsEnemy(target.Affiliation);
+        }
     }
 }
+

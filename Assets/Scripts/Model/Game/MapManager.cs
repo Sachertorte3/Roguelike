@@ -9,7 +9,6 @@ using Model.Domain.Characters.Behavior;
 using Model.Domain.Items;
 using Model.Domain.Map;
 using ObservableCollections;
-using RandomDungeonWithBluePrint;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -283,3 +282,4 @@ namespace Model.Game
         }
     }
 }
+

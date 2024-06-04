@@ -131,6 +131,11 @@ namespace Model.Domain.Characters
             _direction.Value = direction;
         }
 
+        public void DoNothing()
+        {
+            State = CharacterState.Wait;
+        }
+
         public async UniTask Move(Direction8 direction, IInput input)
         {
             Debug.Log($"{_name}が{direction}に移動した");

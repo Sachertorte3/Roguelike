@@ -2,6 +2,7 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Model.Domain.Action;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
@@ -28,14 +29,14 @@ namespace Model.Domain.Characters.Behavior
             if (_lastTargetPosition.HasValue)
             {
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
-                return UniTask.FromResult(actions.MaxBy(action =>
-                    action.Evaluate(character, world) + Random.Range(0, behavioralRandomness)));
+                var validActions = actions.Where(action => action.Evaluate(character, world) > 0).ToList();
+                return UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
             }
             else
             {
                 var actions = _wander.GenerateActionsDoable(character, world);
-                return UniTask.FromResult(actions.MaxBy(action =>
-                    action.Evaluate(character, world) + Random.Range(0, behavioralRandomness)));
+                var validActions = actions.Where(action => action.Evaluate(character, world) > 0).ToList();
+                return UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
             }
         }
     }

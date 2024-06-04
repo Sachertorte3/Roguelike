@@ -35,12 +35,15 @@ namespace Provider
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
+            builder.RegisterComponentInHierarchy<DamageTextSpawner>();
+            builder.RegisterComponentInHierarchy<FlushController>();
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
             builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
             builder.RegisterPlainEntryPoint<PlayerCameraController>();
+            builder.RegisterPlainEntryPoint<DamagePresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();

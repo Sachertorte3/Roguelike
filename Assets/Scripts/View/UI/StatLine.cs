@@ -14,5 +14,9 @@ namespace View.UI
             _text.text = $"{value}/{maxValue}";
             _statBar.fillAmount = value / maxValue;
         }
+        public void SetTextColor(Color color)
+        {
+            _text.color = color;
+        }
     }
 }

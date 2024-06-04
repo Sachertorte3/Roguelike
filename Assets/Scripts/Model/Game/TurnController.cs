@@ -33,7 +33,7 @@ namespace Model.Game
                 Log.Debug($"Start turn {_turn}");
                 foreach (var character in map.Characters.ToList())
                 {
-                    character.UpdateTurn();
+                    character.UpdateTurn(map);
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
                         await character.DoNextAction(map, _input);

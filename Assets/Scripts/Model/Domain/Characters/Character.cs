@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data.Character;
 using Data.Character.Type;
@@ -271,9 +272,10 @@ namespace Model.Domain.Characters
             return _inventory.Replace(item, index);
         }
 
-        public void UpdateTurn()
+        public void UpdateTurn(IMap world)
         {
             _statusManager.UpdateTurn();
+            _affiliationManager.UpdateTurn(world.GetCharactersInArea(Area.VisibleArea).Select(x => x.Affiliation));
         }
     }
 }

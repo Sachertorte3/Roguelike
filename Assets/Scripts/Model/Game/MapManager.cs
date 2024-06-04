@@ -208,7 +208,7 @@ namespace Model.Game
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        public HashSet<Character> GetCharactersInArea(IEnumerable<Vector2Int> area)
         {
             return Characters.Where(character => area.Contains(character.Position.CurrentValue))
                 .ToHashSet();

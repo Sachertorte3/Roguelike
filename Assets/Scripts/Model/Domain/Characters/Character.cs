@@ -41,7 +41,7 @@ namespace Model.Domain.Characters
                 "Player",
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                new CharacterStatusMemento(100, 100, 1),
+                new CharacterStatusMemento(20, 20, 1),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 new AffiliationMemento(CharacterGroup.Player)
@@ -225,18 +225,18 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public void WasAttackedBy(IActorOfEffect actor)
+        public void WasAttackedBy(IActorOfEffect actor, float impact)
         {
             var direction = DirectionMethods.NearestDirectionFromVector(actor.CurrentPosition - CurrentPosition);
             if (direction.HasValue)
             {
                 Turn(direction.Value);
             }
-            _affiliationManager.OnCharacterAttacked(actor.Affiliation, Affiliation);
+            _affiliationManager.OnCharacterAttacked(actor.Affiliation, Affiliation, impact);
         }
-        public void WasHealedBy(IActorOfEffect actor)
+        public void WasHealedBy(IActorOfEffect actor, float impact)
         {
-            _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation);
+            _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
         ~Character()

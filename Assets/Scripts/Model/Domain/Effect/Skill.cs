@@ -46,17 +46,19 @@ namespace Model.Domain.Effect
                 {
                     if (_effect.Impact == Impact.Harmful)
                     {
-                        target.WasAttackedBy(actor);
+                        var impactValue = _effect.Evaluate(actor, target.StatusManager);
+                        target.WasAttackedBy(actor, impactValue);
 
                         world.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation));
+                            .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation, impactValue));
                     }
                     else if (_effect.Impact == Impact.Beneficial)
                     {
-                        target.WasHealedBy(actor);
+                        var impactValue = _effect.Evaluate(actor, target.StatusManager);
+                        target.WasHealedBy(actor, impactValue);
 
                         world.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation));
+                            .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation, impactValue));
                     }
 
                     _effect.Apply(actor, target.StatusManager);

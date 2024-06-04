@@ -9,10 +9,10 @@ namespace Model.Domain.Characters
 {
     public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {
-        private const int AffectionAllyThreshold = 10; // 味方と見なす好感度の閾値
-        private const int AffectionEnemyThreshold = -10; // 敵と見なす好感度の閾値
-        private const int BaseAllyValue = 20; // 同じグループの基本好感度
-        private const int BaseEnemyValue = -20; // 敵対グループの基本好感度
+        private const float AffectionAllyThreshold = 1f; // 味方と見なす好感度の閾値
+        private const float AffectionEnemyThreshold = -0.2f; // 敵と見なす好感度の閾値
+        private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
+        private const float BaseEnemyValue = -1; // 敵対グループの基本好感度
         public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
         private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
 
@@ -101,7 +101,7 @@ namespace Model.Domain.Characters
             return 0; // デフォルトの好感度は0とする
         }
 
-        public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target)
+        public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
         {
             if (target == attacker)
             {
@@ -109,7 +109,7 @@ namespace Model.Domain.Characters
             }
             if (target == this)
             {
-                ModifyAffection(attacker, -10); // 攻撃されると好感度が10ポイント減少
+                ModifyAffection(attacker, -impact); // 攻撃されると好感度が減少
             }
             else if (attacker == this)
             {
@@ -119,23 +119,23 @@ namespace Model.Domain.Characters
             {
                 if (IsAlly(target)) // 好感度が高い場合
                 {
-                    ModifyAffection(attacker, -5); // 第三者の好感度が高い場合、攻撃者に対する好感度を減少
+                    ModifyAffection(attacker, -impact); // 攻撃対象の好感度が高い場合、攻撃者に対する好感度を減少
                 }
                 else if (IsEnemy(target)) // 好感度が低い場合
                 {
-                    ModifyAffection(attacker, 5); // 第三者の好感度が低い場合、攻撃者に対する好感度を増加
+                    ModifyAffection(attacker, impact); // 攻撃対象の好感度が低い場合、攻撃者に対する好感度を増加
                 }
                 if (IsAlly(attacker))
                 {
-                    ModifyAffection(target, -5);// 攻撃者が味方の場合、攻撃されるユーザーの好感度を減少
+                    ModifyAffection(target, -impact);// 攻撃者が味方の場合、攻撃されるユーザーの好感度を減少
                 }
                 else if (IsEnemy(attacker))
                 {
-                    ModifyAffection(target, 5);// 攻撃者が敵の場合、攻撃されるユーザーの好感度を増加
+                    ModifyAffection(target, impact);// 攻撃者が敵の場合、攻撃されるユーザーの好感度を増加
                 }
             }
         }
-        public void OnCharacterHealed(IAffiliation healer, IAffiliation target)
+        public void OnCharacterHealed(IAffiliation healer, IAffiliation target, float impact)
         {
             if (target == healer)
             {
@@ -143,7 +143,7 @@ namespace Model.Domain.Characters
             }
             if (target == this)
             {
-                ModifyAffection(healer, 10); // 回復されると好感度が10ポイント増加
+                ModifyAffection(healer, impact); // 回復されると好感度が増加
             }
             else if (healer == this)
             {
@@ -153,19 +153,19 @@ namespace Model.Domain.Characters
             {
                 if (IsAlly(target)) // 好感度が高い場合
                 {
-                    ModifyAffection(healer, 5); // 第三者の好感度が高い場合、回復者に対する好感度を増加
+                    ModifyAffection(healer, impact/2); // 回復対象の好感度が高い場合、回復者に対する好感度を増加
                 }
                 else if (IsEnemy(target)) // 好感度が低い場合
                 {
-                    ModifyAffection(healer, -5); // 第三者の好感度が低い場合、回復者に対する好感度を減少
+                    ModifyAffection(healer, -impact/2); // 回復対象の好感度が低い場合、回復者に対する好感度を減少
                 }
                 if (IsAlly(healer))
                 {
-                    ModifyAffection(target, 5);// 回復者が味方の場合、回復されるユーザーの好感度を増加
+                    ModifyAffection(target, impact/2);// 回復者が味方の場合、回復されるユーザーの好感度を増加
                 }
                 else if (IsEnemy(healer))
                 {
-                    ModifyAffection(target, -5);// 回復者が敵の場合、回復されるユーザーの好感度を減少
+                    ModifyAffection(target, -impact/2);// 回復者が敵の場合、回復されるユーザーの好感度を減少
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace Model.Domain.Characters
         public int Id => _id;
         private readonly int _id;
         private const float AffectionAllyThreshold = 1f; // 味方と見なす好感度の閾値
-        private const float AffectionEnemyThreshold = -0.2f; // 敵と見なす好感度の閾値
+        private const float AffectionEnemyThreshold = 0f; // 敵と見なす好感度の閾値
         private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
         private const float BaseEnemyValue = -1; // 敵対グループの基本好感度
         public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;

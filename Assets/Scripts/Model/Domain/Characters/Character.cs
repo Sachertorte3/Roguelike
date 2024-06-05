@@ -293,7 +293,7 @@ namespace Model.Domain.Characters
         {
             return character.Affiliation.IsAlly(target.Affiliation);
         }
-        public static bool IsAlly(this IActorOfEffect character, Character target)
+        public static bool IsAlly(this IActorOfEffect character, IActorOfEffect target)
         {
             return character.Affiliation.IsAlly(target.Affiliation);
         }
@@ -304,6 +304,10 @@ namespace Model.Domain.Characters
         public static bool IsEnemy(this IActorOfEffect character, IActorOfEffect target)
         {
             return character.Affiliation.IsEnemy(target.Affiliation);
+        }
+        public static bool IsNeutral(this IActorOfEffect character, IActorOfEffect target)
+        {
+            return !character.IsAlly(target) && !character.IsEnemy(target);
         }
     }
 }

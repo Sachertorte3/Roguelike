@@ -16,7 +16,7 @@ namespace Model.Domain.Characters.Behavior
         private Character? _lastTarget;
         private Vector2Int? _lastTargetPosition;
 
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
@@ -110,20 +110,21 @@ namespace Model.Domain.Characters.Behavior
                 }
             }
 
-            Debug.Log(_lastTarget);
-            Debug.Log(_lastTargetPosition);
-
             if (_lastTargetPosition != null)//目指す座標がある
             {
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
-                return UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                var action = await UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
+                return action;
             }
             else
             {
                 var actions = _wander.GenerateActionsDoable(character, world);
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
-                return UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                var action = await UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
+                return action;
             }
         }
     }

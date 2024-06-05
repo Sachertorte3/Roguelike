@@ -4,11 +4,14 @@ using Data.Character;
 using Data.Effect;
 using R3;
 using UnityEngine;
+using Utilities;
 
 namespace Model.Domain.Characters
 {
     public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {
+        public int Id => _id;
+        private readonly int _id;
         private const float AffectionAllyThreshold = 1f; // 味方と見なす好感度の閾値
         private const float AffectionEnemyThreshold = -0.2f; // 敵と見なす好感度の閾値
         private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
@@ -16,64 +19,79 @@ namespace Model.Domain.Characters
         public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
         private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
 
+        public static AffiliationMemento Build(CharacterGroup group)
+        {
+            return new AffiliationMemento(
+                UniqueIdGenerator.GenerateId(),
+                group,
+                new Dictionary<int, float>()
+            );
+        }
+
         public CharacterAffiliationManager(AffiliationMemento data)
         {
+            _id = data.Id;
             Group = data.Group;
+            _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => x.Item1, x => x.Item2);
         }
 
         public AffiliationMemento Serialize()
         {
-            return new AffiliationMemento(Group);
+            return new AffiliationMemento(
+                Id,
+                Group,
+                _affections.Select(x => (x.Key, x.Value)).ToDictionary(x => x.Item1, x => x.Item2)
+            );
         }
 
         public CharacterGroup Group { get; private set; }
 
         public bool IsAlly(IAffiliation other)
         {
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other);
+            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
 
             return totalAffection > AffectionAllyThreshold;
         }
 
         public bool IsEnemy(IAffiliation other)
         {
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other);
+            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
 
             return totalAffection < AffectionEnemyThreshold;
         }
 
-        private readonly Dictionary<IAffiliation, float> affections = new();
+        private readonly Dictionary<int, float> _affections;
 
-        public void ModifyAffection(IAffiliation target, float change)
+        public void ModifyAffection(int targetId, float change)
         {
-            if (target == this)
+            if (targetId == this.Id)
             {
                 return;
             }
-            if (!affections.ContainsKey(target))
+            if (!_affections.ContainsKey(targetId))
             {
-                affections[target] = 0;
+                _affections[targetId] = 0;
             }
 
-            affections[target] += change;
-            _onAffectionChanged.OnNext(new OnAffectionChangedMessage(target, affections[target], IsEnemy(target), IsAlly(target)));
+            _affections[targetId] += change;
+            _onAffectionChanged.OnNext(new OnAffectionChangedMessage(targetId, _affections[targetId]));
         }
 
         public void UpdateTurn(IEnumerable<IAffiliation> visibleCharacters)
         {
-            foreach (var target in affections.Keys.Where(target => !visibleCharacters.Contains(target)).ToList())
+            foreach (var target in _affections.Keys.Where(target => !visibleCharacters.Select(x => x.Id).Contains(target)).ToList())
             {
-                ModifyAffection(target, affections[target] * -0.001f);
-                if (Mathf.Abs(affections[target]) <= 0.01f)
+                ModifyAffection(target, _affections[target] * -0.001f);
+                if (Mathf.Abs(_affections[target]) <= 0.01f)
                 {
-                    affections.Remove(target);
+                    _affections.Remove(target);
                 }
             }
         }
 
         private float GetAffectionByGroup(IAffiliation target)
         {
-            if (target == this)
+            if (target.Id == this.Id)
             {
                 return 0;
             }
@@ -88,30 +106,30 @@ namespace Model.Domain.Characters
             };
         }
 
-        private float GetAffection(IAffiliation target)
+        private float GetAffection(int target)
         {
-            if (target == this)
+            if (target == this.Id)
             {
                 return 0;
             }
-            if (affections.ContainsKey(target))
+            if (_affections.ContainsKey(target))
             {
-                return affections[target];
+                return _affections[target];
             }
             return 0; // デフォルトの好感度は0とする
         }
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
         {
-            if (target == attacker)
+            if (target.Id == attacker.Id)
             {
                 return;
             }
             if (target == this)
             {
-                ModifyAffection(attacker, -impact); // 攻撃されると好感度が減少
+                ModifyAffection(attacker.Id, -impact); // 攻撃されると好感度が減少
             }
-            else if (attacker == this)
+            else if (attacker.Id == this.Id)
             {
                 return;
             }
@@ -119,19 +137,19 @@ namespace Model.Domain.Characters
             {
                 if (IsAlly(target)) // 好感度が高い場合
                 {
-                    ModifyAffection(attacker, -impact); // 攻撃対象の好感度が高い場合、攻撃者に対する好感度を減少
+                    ModifyAffection(attacker.Id, -impact); // 攻撃対象の好感度が高い場合、攻撃者に対する好感度を減少
                 }
                 else if (IsEnemy(target)) // 好感度が低い場合
                 {
-                    ModifyAffection(attacker, impact); // 攻撃対象の好感度が低い場合、攻撃者に対する好感度を増加
+                    ModifyAffection(attacker.Id, impact); // 攻撃対象の好感度が低い場合、攻撃者に対する好感度を増加
                 }
                 if (IsAlly(attacker))
                 {
-                    ModifyAffection(target, -impact);// 攻撃者が味方の場合、攻撃されるユーザーの好感度を減少
+                    ModifyAffection(target.Id, -impact);// 攻撃者が味方の場合、攻撃されるユーザーの好感度を減少
                 }
                 else if (IsEnemy(attacker))
                 {
-                    ModifyAffection(target, impact);// 攻撃者が敵の場合、攻撃されるユーザーの好感度を増加
+                    ModifyAffection(target.Id, impact);// 攻撃者が敵の場合、攻撃されるユーザーの好感度を増加
                 }
             }
         }
@@ -143,7 +161,7 @@ namespace Model.Domain.Characters
             }
             if (target == this)
             {
-                ModifyAffection(healer, impact); // 回復されると好感度が増加
+                ModifyAffection(healer.Id, impact); // 回復されると好感度が増加
             }
             else if (healer == this)
             {
@@ -153,19 +171,19 @@ namespace Model.Domain.Characters
             {
                 if (IsAlly(target)) // 好感度が高い場合
                 {
-                    ModifyAffection(healer, impact / 2); // 回復対象の好感度が高い場合、回復者に対する好感度を増加
+                    ModifyAffection(healer.Id, impact / 2); // 回復対象の好感度が高い場合、回復者に対する好感度を増加
                 }
                 else if (IsEnemy(target)) // 好感度が低い場合
                 {
-                    ModifyAffection(healer, -impact / 2); // 回復対象の好感度が低い場合、回復者に対する好感度を減少
+                    ModifyAffection(healer.Id, -impact / 2); // 回復対象の好感度が低い場合、回復者に対する好感度を減少
                 }
                 if (IsAlly(healer))
                 {
-                    ModifyAffection(target, impact / 2);// 回復者が味方の場合、回復されるユーザーの好感度を増加
+                    ModifyAffection(target.Id, impact / 2);// 回復者が味方の場合、回復されるユーザーの好感度を増加
                 }
                 else if (IsEnemy(healer))
                 {
-                    ModifyAffection(target, -impact / 2);// 回復者が敵の場合、回復されるユーザーの好感度を減少
+                    ModifyAffection(target.Id, -impact / 2);// 回復者が敵の場合、回復されるユーザーの好感度を減少
                 }
             }
         }

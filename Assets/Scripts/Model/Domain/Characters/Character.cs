@@ -45,7 +45,7 @@ namespace Model.Domain.Characters
                 new CharacterStatusMemento(20, 20, 1),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Player),
+                CharacterAffiliationManager.Build(CharacterGroup.Player),
                 true
             );
         }
@@ -57,7 +57,7 @@ namespace Model.Domain.Characters
                 new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Enemy),
+                CharacterAffiliationManager.Build(CharacterGroup.Enemy),
                 false
             );
         }
@@ -289,9 +289,17 @@ namespace Model.Domain.Characters
         {
             return character.Area.VisibleArea.Contains(position);
         }
+        public static bool IsAlly(this Character character, Character target)
+        {
+            return character.Affiliation.IsAlly(target.Affiliation);
+        }
         public static bool IsAlly(this IActorOfEffect character, Character target)
         {
             return character.Affiliation.IsAlly(target.Affiliation);
+        }
+        public static bool IsEnemy(this Character character, Character target)
+        {
+            return character.Affiliation.IsEnemy(target.Affiliation);
         }
         public static bool IsEnemy(this IActorOfEffect character, IActorOfEffect target)
         {

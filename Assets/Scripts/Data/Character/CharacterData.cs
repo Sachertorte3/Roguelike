@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using Data.Area;
 using Data.Character.Type;
 using Data.Effect;
@@ -40,6 +41,9 @@ namespace Data.Character
         IEffect Effect
     );
     public record AffiliationMemento(
-        CharacterGroup Group
+        int Id,
+        CharacterGroup Group,
+        Dictionary<int, float> Affiliations
     );
 }
+

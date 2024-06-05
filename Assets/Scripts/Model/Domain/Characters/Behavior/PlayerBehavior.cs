@@ -6,7 +6,6 @@ using Data.Area;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Effect;
-using UnityEngine;
 
 namespace Model.Domain.Characters.Behavior
 {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Model.Domain.Characters;
-using Model.Domain.Items;
-using UnityEngine;
-using ObservableCollections;
 using System.Linq;
+using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
+using Model.Domain.Items;
+using ObservableCollections;
+using UnityEngine;
 
 namespace Model.Domain
 {

@@ -1,6 +1,6 @@
 ﻿#nullable enable
-using R3;
 using System;
+using R3;
 
 namespace Utilities.Messages
 {

@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
 using Data.Setting;
-using Model;
 using Model.Game;
 using R3;
 using UnityEngine;

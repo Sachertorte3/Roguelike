@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Data.Effect;
 using Model.Domain.Action;
-using Model.Domain.Effect;
-using Unity.Logging;
 using UnityEngine;
 using Utilities;
 

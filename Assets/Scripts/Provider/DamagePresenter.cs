@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using Data.Setting;
 using Model.Game;
-using UnityEngine;
+using R3;
+using Utilities;
 using VContainer;
 using View;
-using Utilities;
-using R3;
-using Data.Setting;
 
 public class DamagePresenter
 {

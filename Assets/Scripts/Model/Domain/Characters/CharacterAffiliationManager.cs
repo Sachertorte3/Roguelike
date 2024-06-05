@@ -153,19 +153,19 @@ namespace Model.Domain.Characters
             {
                 if (IsAlly(target)) // 好感度が高い場合
                 {
-                    ModifyAffection(healer, impact/2); // 回復対象の好感度が高い場合、回復者に対する好感度を増加
+                    ModifyAffection(healer, impact / 2); // 回復対象の好感度が高い場合、回復者に対する好感度を増加
                 }
                 else if (IsEnemy(target)) // 好感度が低い場合
                 {
-                    ModifyAffection(healer, -impact/2); // 回復対象の好感度が低い場合、回復者に対する好感度を減少
+                    ModifyAffection(healer, -impact / 2); // 回復対象の好感度が低い場合、回復者に対する好感度を減少
                 }
                 if (IsAlly(healer))
                 {
-                    ModifyAffection(target, impact/2);// 回復者が味方の場合、回復されるユーザーの好感度を増加
+                    ModifyAffection(target, impact / 2);// 回復者が味方の場合、回復されるユーザーの好感度を増加
                 }
                 else if (IsEnemy(healer))
                 {
-                    ModifyAffection(target, -impact/2);// 回復者が敵の場合、回復されるユーザーの好感度を減少
+                    ModifyAffection(target, -impact / 2);// 回復者が敵の場合、回復されるユーザーの好感度を減少
                 }
             }
         }

@@ -34,6 +34,7 @@ namespace Model.Domain.Characters
         private bool _canAct = true;
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
+        public readonly bool IsLeader = false;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
@@ -44,7 +45,8 @@ namespace Model.Domain.Characters
                 new CharacterStatusMemento(20, 20, 1),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Player)
+                new AffiliationMemento(CharacterGroup.Player),
+                true
             );
         }
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
@@ -55,26 +57,10 @@ namespace Model.Domain.Characters
                 new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Enemy)
+                new AffiliationMemento(CharacterGroup.Enemy),
+                false
             );
         }
-
-        internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
-            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group) : this
-            (
-                new CharacterMemento(
-                    data.Name,
-                    data.CharacterType,
-                    new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
-                    new EntityMemento(position),
-                    new InventoryMemento(new ItemMemento[10]),
-                    new AffiliationMemento(group)
-                ),
-                behavior,
-                canIgnoreWall,
-                world
-            )
-        { }
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IMap world)
         {
@@ -87,6 +73,7 @@ namespace Model.Domain.Characters
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+            IsLeader = data.IsLeader;
         }
 
         public CharacterMemento Serialize()
@@ -97,7 +84,8 @@ namespace Model.Domain.Characters
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _inventory.Serialize(),
-                _affiliationManager.Serialize()
+                _affiliationManager.Serialize(),
+                IsLeader
             );
         }
 

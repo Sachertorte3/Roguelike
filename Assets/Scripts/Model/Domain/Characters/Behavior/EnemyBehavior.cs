@@ -35,7 +35,15 @@ namespace Model.Domain.Characters.Behavior
                     }
                     else if (character.IsAlly(_lastTarget) && _lastTarget.IsLeader)//ターゲットは味方かつリーダーである
                     {
-                        _lastTargetPosition = _lastTarget.CurrentPosition;
+                        if (visibleEnemies.Any())//敵がいる
+                        {
+                            _lastTarget = visibleEnemies.First();
+                            _lastTargetPosition = _lastTarget.CurrentPosition;
+                        }
+                        else
+                        {
+                            _lastTargetPosition = _lastTarget.CurrentPosition;
+                        }
                     }
                     else//ターゲットはいるが敵でも味方でもない
                     {

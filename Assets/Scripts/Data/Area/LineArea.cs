@@ -1,6 +1,6 @@
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -20,7 +20,7 @@ namespace Data.Area
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
         {
             return (ContainsSelf ? Enumerable.Range(0, Length + 1) : Enumerable.Range(1, Length))
-                .Select(i => position + direction.Vector() * i);
+                .Select(i => position + (direction.Vector() * i));
         }
 
         public string Info()

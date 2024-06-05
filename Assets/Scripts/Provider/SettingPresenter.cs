@@ -1,6 +1,6 @@
-﻿using R3;
-using System;
+﻿using System;
 using Data.Setting;
+using R3;
 using Unity.Logging;
 using VContainer;
 using View.UI;

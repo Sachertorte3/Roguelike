@@ -1,5 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
+using Sirenix.OdinInspector;
 using Random = UnityEngine.Random;
 
 namespace Data.Condition

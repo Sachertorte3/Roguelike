@@ -8,7 +8,6 @@ using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using VContainer;
 using static RandomDungeonWithBluePrint.Constants;
 
 namespace Model.Domain.Map
@@ -22,7 +21,7 @@ namespace Model.Domain.Map
         public readonly int Height;
         public readonly int Width;
 
-        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint)) {}
+        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint)) { }
         public static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);

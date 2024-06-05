@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Model;
 using Model.Domain.Characters.Behavior;
 using Model.Game;
 using R3;

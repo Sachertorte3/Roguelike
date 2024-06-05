@@ -17,7 +17,7 @@ namespace Data
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow;
         [ShowIf("Usable")] public SkillData Skill;
-        [ShowIf("Usable")] [MinValue(1)] public int UsageLimit;
+        [ShowIf("Usable")][MinValue(1)] public int UsageLimit;
         private bool Usable => EffectsOnUse || EffectsOnThrow;
 #if UNITY_EDITOR
         private void OnValidate()

@@ -1,6 +1,4 @@
 #nullable enable
-using System.Collections.Generic;
-using Data;
 using Data.Area;
 using Data.Character.Type;
 using Data.Effect;

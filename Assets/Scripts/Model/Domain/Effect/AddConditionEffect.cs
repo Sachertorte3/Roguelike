@@ -11,7 +11,7 @@ namespace Model.Domain.Effect
     public class AddConditionEffect : IEffect
     {
         [Required] public RemovalConditionData RemovalCondition;
-        [SerializeReference] [Required] public IConditionData Condition;
+        [SerializeReference][Required] public IConditionData Condition;
 
         public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
         {

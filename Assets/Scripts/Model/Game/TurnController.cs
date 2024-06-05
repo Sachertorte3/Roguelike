@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Model.Domain;
 using Model.Domain.Characters;
 using Unity.Logging;
-using UnityEngine;
 
 namespace Model.Game
 {

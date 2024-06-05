@@ -1,9 +1,7 @@
 #nullable enable
-using Model;
 using Model.Game;
 using Utilities;
 using VContainer;
-using R3;
 
 namespace Provider
 {

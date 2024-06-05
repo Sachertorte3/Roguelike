@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Data.Character;
-using UnityEngine;
 
 namespace Data.Map
 {
@@ -19,7 +17,7 @@ namespace Data.Map
         ItemMemento Item,
         EntityMemento Entity
     );
-    public interface IEventEntityMemento {}
+    public interface IEventEntityMemento { }
     public record UpStairsMemento(
         int DestinationMapId,
         EntityMemento Entity

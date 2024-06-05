@@ -35,7 +35,7 @@ namespace Model.Game
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion();
-                    ~DownStairs()
+        ~DownStairs()
         {
             Dispose();
         }

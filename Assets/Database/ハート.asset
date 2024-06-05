@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
+  m_Name: "\u30CF\u30FC\u30C8"
+  m_EditorClassIdentifier: 
+  Name: "\u30CF\u30FC\u30C8"
+  Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  EffectsOnUse: 1
+  EffectsOnThrow: 1
+  Skill:
+    Area:
+      rid: 6064254436379983901
+    Effect:
+      rid: 4425516828619964416
+  UsageLimit: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 4425516828619964416
+      type: {class: AffectionIncreaseEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 1
+    - rid: 6064254436379983901
+      type: {class: SelfArea, ns: Data.Area, asm: Data}

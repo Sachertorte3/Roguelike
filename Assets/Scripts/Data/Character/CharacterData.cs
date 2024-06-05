@@ -14,7 +14,8 @@ namespace Data.Character
         CharacterStatusMemento Status,
         EntityMemento EntityData,
         InventoryMemento Inventory,
-        AffiliationMemento Affiliation
+        AffiliationMemento Affiliation,
+        bool IsLeader
     );
     public record EntityMemento(
         Vector2Int Position

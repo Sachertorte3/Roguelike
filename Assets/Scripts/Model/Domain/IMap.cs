@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.Linq;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
@@ -30,5 +31,10 @@ namespace Model.Domain
         {
             return map.Characters.Where(character => character.IsVisible(position));
         }
+        public static Character? GetCharacter(this IMap map, int id)
+        {
+            return map.Characters.FirstOrDefault(character => character.Affiliation.Id == id);
+        }
     }
 }
+

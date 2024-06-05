@@ -18,17 +18,10 @@ namespace Model.Domain.Characters
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
 
-        public CharacterStatusManager(string name, int maxHp, int strength)
-        {
-            _name = name;
-            _stats = new CharacterStats(maxHp, strength);
-            _conditions = new CharacterConditions(this);
-        }
-
         public CharacterStatusManager(string name, CharacterStatusMemento memento)
         {
             _name = name;
-            _stats = new CharacterStats(memento.Hp, memento.Strength);
+            _stats = new CharacterStats(memento.MaxHp, memento.Hp, memento.Strength);
             _conditions = new CharacterConditions(this);
         }
 

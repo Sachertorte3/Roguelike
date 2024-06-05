@@ -11,7 +11,7 @@ namespace Model.Domain.Characters.Behavior
     public sealed class EnemyBehavior : ICharacterBehavior
     {
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
-        private readonly IUndiscoveredTargetBehavior _wander = new RandomWalk();
+        private readonly IUndiscoveredTargetBehavior _wander = new Wander();
         private readonly float behavioralRandomness = 0.01f;
         private Character? _lastTarget;
         private Vector2Int? _lastTargetPosition;

@@ -9,9 +9,9 @@ namespace Model.Domain.Characters.Stats
     {
         private readonly Stat _strength;
 
-        public CharacterStats(int maxHp, int strength)
+        public CharacterStats(int maxHp, int hp, int strength)
         {
-            Hp = new Resource(maxHp);
+            Hp = new Resource(maxHp, hp);
             _strength = new Stat(strength);
             Strength = _strength.ToReactiveProperty();
         }

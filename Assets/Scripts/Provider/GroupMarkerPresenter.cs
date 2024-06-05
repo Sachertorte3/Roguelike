@@ -2,6 +2,7 @@
 using Model.Domain;
 using Model.Game;
 using R3;
+using UnityEngine;
 using Utilities;
 using VContainer;
 
@@ -18,13 +19,10 @@ namespace Provider
                 {
                     if (affectionChanged.Message.Target == map.Player.Affiliation.Id)
                     {
-                        var target = map.GetCharacter(affectionChanged.Message.Target);
-                        if (target == null)
-                            return;
                         var characterView = synchronizedCharacterView.Get(affectionChanged.Character);
                         characterView.UpdateGroupMarker(
-                            target.Affiliation.IsEnemy(map.Player.Affiliation),
-                            target.Affiliation.IsAlly(map.Player.Affiliation)
+                            affectionChanged.Character.Affiliation.IsEnemy(map.Player.Affiliation),
+                            affectionChanged.Character.Affiliation.IsAlly(map.Player.Affiliation)
                         );
                     }
                 });

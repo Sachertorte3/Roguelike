@@ -154,7 +154,7 @@ namespace Model.Domain.Characters
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
-            _direction.Value = direction;
+            Turn(direction);
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),

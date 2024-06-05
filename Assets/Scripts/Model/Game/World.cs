@@ -1,21 +1,15 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using System.Linq;
 using Data.Character;
 using Data.Map;
-using Data.Setting;
-using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
-using Model.Domain.Items;
 using Model.Domain.Map;
-using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities;
 using VContainer;
 
 namespace Model.Game
@@ -48,7 +42,7 @@ namespace Model.Game
                 var bluePrint = Addressables
                 .LoadAssetAsync<FieldBluePrint>(
                     "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId+1, mapId>0? mapId-1 : null);
+                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId + 1, mapId > 0 ? mapId - 1 : null);
             }
         }
         public MapManager LoadMap(int mapId)

@@ -1,23 +1,22 @@
 ﻿#nullable enable
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using Data.Character;
+using Data.Map;
 using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
 using Model.Domain.Items;
+using Model.Domain.Logs;
 using Model.Domain.Map;
 using ObservableCollections;
+using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using R3;
-using Unity.Logging;
-using System;
-using Model.Domain.Logs;
-using Data.Character;
-using Data.Map;
 
 namespace Model.Game
 {
@@ -72,7 +71,7 @@ namespace Model.Game
                         eventEntity.DoEvent();
                     }
                 }
-                
+
                 if (positionChanged.Character.Inventory.HasEmptySpace())
                 {
                     var item = ItemManager.TryPickUp(positionChanged.Message.Position);
@@ -151,9 +150,9 @@ namespace Model.Game
                 characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(30))
                 items.Add(ItemEntity.Build(position, new Item(data.Items.GetAtRandom())));
-            
+
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
-            var upStairs = prevMapId.HasValue? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
+            var upStairs = prevMapId.HasValue ? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
 
             return new MapMemento(
                 tilemap.Serialize(),

@@ -68,6 +68,47 @@ namespace Utilities
             return result;
         }
 
+        public static int WeightedIndex(this IEnumerable<float> source)
+        {
+            return WeightedIndex(source, Random.value);
+        }
+
+        public static int WeightedIndex(this IEnumerable<float> source, float value)
+        {
+            float[] weights = source.ToArray();
+
+            float total = weights.Sum(x => x);
+            if (total <= 0f)
+            {
+                return -1;
+            }
+
+            int i = 0;
+            float w = 0f;
+            foreach (float weight in weights)
+            {
+                w += weight / total;
+                if (value <= w)
+                {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
+
+        public static int WeightedIndex<T>(this IEnumerable<T> source, float value, Func<T, float> weightSelector)
+        {
+            return source
+                .Select(x => weightSelector.Invoke(x))
+                .WeightedIndex(value);
+        }
+
+        public static int WeightedIndex<T>(this IEnumerable<T> source, Func<T, float> weightSelector)
+        {
+            return WeightedIndex(source, Random.value, weightSelector);
+        }
+
         public static T MinBy<T, U>(this IEnumerable<T> xs, Func<T, U> key) where U : IComparable<U>
         {
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) < 0 ? a : b);

@@ -48,6 +48,12 @@ namespace Model.Domain.Characters.Behavior
 
                             if (move.Doable(character, world))
                                 return move;
+                            else
+                            {
+                                var swap = new Swap(move.Direction);
+                                if (swap.Doable(character, world))
+                                    return swap;
+                            }
                             character.Turn(move.Direction);
                         }
 

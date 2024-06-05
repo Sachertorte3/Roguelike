@@ -14,6 +14,7 @@ namespace Model.Domain.Action
         public IInventory Inventory { get; }
         public void DoNothing();
         public bool CanMove(Direction8 direction, IMap world);
+        public bool CanMoveIgnoreCharacter(Direction8 direction, IMap world);
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
         public UniTask UseSkill(Skill skill, Direction8 direction, IMap world);

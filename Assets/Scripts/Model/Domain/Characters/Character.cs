@@ -108,11 +108,21 @@ namespace Model.Domain.Characters
         public bool CanMove(Direction8 direction, IMap world)
         {
             return _canIgnoreWall
-                ? world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                ? true
                 : world.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
                       (world.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
                        world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+        }
+
+        public bool CanMoveIgnoreCharacter(Direction8 direction, IMap world)
+        {
+            return _canIgnoreWall
+                ? true
+                : world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                  && (!direction.IsDiagonal() ||
+                      (world.IsMapPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       world.IsMapPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -133,6 +143,13 @@ namespace Model.Domain.Characters
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
 
             State = CharacterState.Wait;
+        }
+        public async UniTask ForceMove(Direction8 direction, IInput input)
+        {
+            Debug.Log($"{_name}が{direction}に移動した");
+            Turn(direction);
+            await _entity.Move(direction,
+                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
         }
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
@@ -276,7 +293,7 @@ namespace Model.Domain.Characters
         {
             return character.Affiliation.IsAlly(target.Affiliation);
         }
-        public static bool IsEnemy(this IActorOfEffect character, Character target)
+        public static bool IsEnemy(this IActorOfEffect character, IActorOfEffect target)
         {
             return character.Affiliation.IsEnemy(target.Affiliation);
         }

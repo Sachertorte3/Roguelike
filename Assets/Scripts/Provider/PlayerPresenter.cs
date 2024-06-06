@@ -30,8 +30,8 @@ namespace Provider
                 Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
                     .Subscribe(_ =>
                     {
-                        var hpPercentageFromMaxHp = map.Player.StatusManager.CurrentHp * 100 / map.Player.StatusManager.MaxHp;
-                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp);
+                        var hpPercentageFromMaxHp = map.Player.StatusManager.CurrentHp * 100 / map.Player.StatusManager.CurrentMaxHp;
+                        statLine.SetValue(map.Player.StatusManager.CurrentMaxHp, map.Player.StatusManager.CurrentHp);
                         if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                         {
                             statLine.SetTextColor(Color.red);

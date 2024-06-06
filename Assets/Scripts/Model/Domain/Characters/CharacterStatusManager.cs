@@ -44,7 +44,7 @@ namespace Model.Domain.Characters
 
         public IStats Stats => _stats;
         public IObservableCollection<Condition> Conditions => _conditions.Conditions;
-        public int MaxHp => _stats.MaxHp.CurrentValue;
+        public int CurrentMaxHp => _stats.MaxHp.CurrentValue;
         public int CurrentHp => _stats.Hp.Value.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;

@@ -121,6 +121,7 @@ namespace Model.Domain.Characters
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
         {
+            impact += 0.2f;
             if (target.Id == attacker.Id)
             {
                 return;
@@ -155,6 +156,7 @@ namespace Model.Domain.Characters
         }
         public void OnCharacterHealed(IAffiliation healer, IAffiliation target, float impact)
         {
+            impact += 0.2f;
             if (target == healer)
             {
                 return;

@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using Data.Setting;
 using Model.Game;
-using UnityEngine;
+using R3;
+using Utilities;
 using VContainer;
 using View;
-using Utilities;
-using R3;
-using Data.Setting;
 
 public class DamagePresenter
 {
@@ -17,8 +14,8 @@ public class DamagePresenter
         {
             map.CharacterManager.PlayerEvents.OnDamageReceived.Subscribe(damageChanged =>
             {
-                var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 / damageChanged.Character.StatusManager.MaxHp;
-                var hpPercentageFromMaxHp = damageChanged.Character.StatusManager.CurrentHp * 100 / damageChanged.Character.StatusManager.MaxHp;
+                var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 / damageChanged.Character.StatusManager.CurrentMaxHp;
+                var hpPercentageFromMaxHp = damageChanged.Character.StatusManager.CurrentHp * 100 / damageChanged.Character.StatusManager.CurrentMaxHp;
                 if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value || hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                 {
                     flushController.Flush(Settings.FlushDuration.Value);
@@ -28,7 +25,7 @@ public class DamagePresenter
             {
                 if (damageChanged.Character.Visibility.CurrentValue == true)
                 {
-                    var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 / damageChanged.Character.StatusManager.MaxHp;
+                    var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 / damageChanged.Character.StatusManager.CurrentMaxHp;
                     damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition, damageChanged.Message.Damage, damagePercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
                 }
             });
@@ -36,7 +33,7 @@ public class DamagePresenter
             {
                 if (healChanged.Character.Visibility.CurrentValue == true)
                 {
-                    var healPercentageFromMaxHp = healChanged.Message.Heal * 100 / healChanged.Character.StatusManager.MaxHp;
+                    var healPercentageFromMaxHp = healChanged.Message.Heal * 100 / healChanged.Character.StatusManager.CurrentMaxHp;
                     damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal, healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
                 }
             });

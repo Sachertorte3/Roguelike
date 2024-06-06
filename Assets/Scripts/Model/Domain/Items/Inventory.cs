@@ -1,11 +1,9 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Data.Character;
 using ObservableCollections;
 using R3;
-using Utilities;
 
 namespace Model.Domain.Items
 {

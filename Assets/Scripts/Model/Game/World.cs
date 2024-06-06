@@ -3,19 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Character;
 using Data.Map;
-using Data.Setting;
-using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
-using Model.Domain.Items;
 using Model.Domain.Map;
-using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities;
 using VContainer;
 
 namespace Model.Game
@@ -48,7 +43,7 @@ namespace Model.Game
                 var bluePrint = Addressables
                 .LoadAssetAsync<FieldBluePrint>(
                     "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId+1, mapId>0? mapId-1 : null);
+                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId + 1, mapId > 0 ? mapId - 1 : null);
             }
         }
         public MapManager LoadMap(int mapId)
@@ -57,11 +52,13 @@ namespace Model.Game
             var mapMemento = GetMapMemento(mapId);
 
             CharacterMemento? playerData = null;
+            List<CharacterMemento>? characters = null;
             Vector2Int? initialPosition = null;
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
+                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
                 if (_activeMapId < mapId) // 下り階段から上り階段へ
                 {
                     initialPosition = mapMemento.UpStairs.Entity.Position;
@@ -73,7 +70,7 @@ namespace Model.Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, playerData, initialPosition, _receiver);
+            MapManager map = new(mapMemento, playerData, characters, initialPosition, _receiver);
 
             _activeMapId = mapId;
             _activeMap.Value = map;

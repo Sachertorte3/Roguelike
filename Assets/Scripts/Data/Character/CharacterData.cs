@@ -1,6 +1,5 @@
 #nullable enable
 using System.Collections.Generic;
-using Data;
 using Data.Area;
 using Data.Character.Type;
 using Data.Effect;
@@ -14,7 +13,9 @@ namespace Data.Character
         CharacterStatusMemento Status,
         EntityMemento EntityData,
         InventoryMemento Inventory,
-        AffiliationMemento Affiliation
+        AffiliationMemento Affiliation,
+        Aggression Aggression,
+        bool IsLeader
     );
     public record EntityMemento(
         Vector2Int Position
@@ -41,6 +42,9 @@ namespace Data.Character
         IEffect Effect
     );
     public record AffiliationMemento(
-        CharacterGroup Group
+        int Id,
+        CharacterGroup Group,
+        Dictionary<int, float> Affiliations
     );
 }
+

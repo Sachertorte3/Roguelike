@@ -10,7 +10,6 @@ namespace Model.Domain.Characters
 {
     public interface IStatusManager : IHasCondition, ITarget, ITargetOfEffect
     {
-        public int CurrentHp { get; }
         public bool IsDead { get; }
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Data.Effect;
 using Model.Domain.Entities;
 using R3;
 using Utilities.Messages;
@@ -37,6 +38,9 @@ namespace Model.Domain.Characters
         public Observable<(Character Character, OnHealReceivedMessage Message)> OnHealReceived =>
             _events.GetObservable<OnHealReceivedMessage>();
 
+        public Observable<(Character Character, OnAffectionChangedMessage Message)> OnAffectionChanged =>
+            _events.GetObservable<OnAffectionChangedMessage>();
+
         Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
             _events.GetSubject<OnPositionChangedMessage>().SelectSender(character => character.Entity);
 
@@ -68,6 +72,7 @@ namespace Model.Domain.Characters
             _events.Add(character, character.Area.OnVisibleAreaChanged);
             _events.Add(character, character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
             _events.Add(character, character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
+            _events.Add(character, character.Affiliation.OnAffectionChanged);
         }
 
         public void Add(CharacterEvents characterEvents)
@@ -81,6 +86,7 @@ namespace Model.Domain.Characters
             _events.Add(characterEvents, characterEvents.OnVisibleAreaChanged);
             _events.Add(characterEvents, characterEvents.OnDamageReceived);
             _events.Add(characterEvents, characterEvents.OnHealReceived);
+            _events.Add(characterEvents, characterEvents.OnAffectionChanged);
         }
 
         public void Remove(Character character)

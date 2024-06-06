@@ -18,17 +18,10 @@ namespace Model.Domain.Characters
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
 
-        public CharacterStatusManager(string name, int maxHp, int strength)
-        {
-            _name = name;
-            _stats = new CharacterStats(maxHp, strength);
-            _conditions = new CharacterConditions(this);
-        }
-
         public CharacterStatusManager(string name, CharacterStatusMemento memento)
         {
             _name = name;
-            _stats = new CharacterStats(memento.Hp, memento.Strength);
+            _stats = new CharacterStats(memento.MaxHp, memento.Hp, memento.Strength);
             _conditions = new CharacterConditions(this);
         }
 
@@ -51,7 +44,7 @@ namespace Model.Domain.Characters
 
         public IStats Stats => _stats;
         public IObservableCollection<Condition> Conditions => _conditions.Conditions;
-        public int MaxHp => _stats.MaxHp.CurrentValue;
+        public int CurrentMaxHp => _stats.MaxHp.CurrentValue;
         public int CurrentHp => _stats.Hp.Value.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;

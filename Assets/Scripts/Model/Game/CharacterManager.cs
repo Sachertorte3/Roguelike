@@ -6,13 +6,12 @@ using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 
 namespace Model.Game
 {
     public sealed class CharacterManager : IDisposable
     {
-        public Character? Player { get; private set;}
+        public Character? Player { get; private set; }
         private readonly ObservableList<Character> _characters = new();
         private readonly CharacterFactory _factory = new();
         public readonly CharacterEvents PlayerEvents = new();

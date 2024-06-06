@@ -1,18 +1,16 @@
 ﻿#nullable enable
-using Model;
-using R3;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using Data.Setting;
 using Model.Domain.Items;
 using Model.Game;
+using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
-using System;
 
 namespace Provider
 {

@@ -1,9 +1,17 @@
-﻿namespace Data.Effect
+﻿using R3;
+
+namespace Data.Effect
 {
     public interface IAffiliation
     {
-        CharacterGroup Group { get; }
-        bool IsAlly(IAffiliation other);
-        bool IsEnemy(IAffiliation other);
+        public int Id { get; }
+        public CharacterGroup Group { get; }
+        public Observable<OnAffectionChangedMessage> OnAffectionChanged { get; }
+        public bool IsAlly(IAffiliation other);
+        public bool IsEnemy(IAffiliation other);
+        public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact);
+        public void OnCharacterHealed(IAffiliation healer, IAffiliation target, float impact);
     }
+    public record OnAffectionChangedMessage(int Target, float Affection);
 }
+

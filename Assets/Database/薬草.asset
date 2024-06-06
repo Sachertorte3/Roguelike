@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: "\u85AC\u8349"
   Icon: {fileID: 1741613238, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
-  EffectsOnThrow: 0
+  EffectsOnThrow: 1
   Skill:
     Area:
       rid: 6064254436379983901

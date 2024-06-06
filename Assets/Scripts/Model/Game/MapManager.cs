@@ -1,24 +1,23 @@
 ﻿#nullable enable
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using Data.Character;
+using Data.Map;
 using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
 using Model.Domain.Items;
+using Model.Domain.Logs;
 using Model.Domain.Map;
 using ObservableCollections;
-using RandomDungeonWithBluePrint;
+using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using R3;
-using Unity.Logging;
-using System;
-using Model.Domain.Logs;
-using Data.Character;
-using Data.Map;
+using Utilities.Algorithms;
 
 namespace Model.Game
 {
@@ -32,7 +31,7 @@ namespace Model.Game
         private readonly CompositeDisposable _disposables = new();
         private readonly UpStairs? _upStairs;
         private readonly DownStairs _downStairs;
-        public MapManager(MapMemento map, CharacterMemento? playerData, Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
+        public MapManager(MapMemento map, CharacterMemento? playerData, List<CharacterMemento>? characters, Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
         {
             _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager();
@@ -73,7 +72,7 @@ namespace Model.Game
                         eventEntity.DoEvent();
                     }
                 }
-                
+
                 if (positionChanged.Character.Inventory.HasEmptySpace())
                 {
                     var item = ItemManager.TryPickUp(positionChanged.Message.Position);
@@ -96,14 +95,15 @@ namespace Model.Game
                 SetAllCharacterPosition();
 
                 positionChanged.Character.SetVisiblity(
-                    Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
+                    Player.IsVisible(positionChanged.Message.Position)
+                );
             }).AddTo(_disposables);
 
             ItemManager.ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
                 SetAllItemPosition();
 
-                positionChanged.Item.SetVisiblity(Player.Area.VisibleArea.Contains(positionChanged.Message.Position));
+                positionChanged.Item.SetVisiblity(Player.IsVisible(positionChanged.Message.Position));
             }).AddTo(_disposables);
 
             if (playerData == null || playerPosition == null)
@@ -118,6 +118,14 @@ namespace Model.Game
             foreach (var character in map.Characters)
             {
                 CharacterManager.SpawnCharacter(character, this);
+            }
+            if (characters != null)
+            {
+                foreach (var character in characters)
+                {
+                    var characterData = character with { EntityData = character.EntityData with { Position = FindBlankPositionFrom(playerPosition.Value, position => !GetAllCharacterPositions().Contains(position)) } };
+                    CharacterManager.SpawnCharacter(characterData, this);
+                }
             }
             foreach (var item in map.Items)
             {
@@ -151,9 +159,9 @@ namespace Model.Game
                 characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(30))
                 items.Add(ItemEntity.Build(position, new Item(data.Items.GetAtRandom())));
-            
+
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
-            var upStairs = prevMapId.HasValue? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
+            var upStairs = prevMapId.HasValue ? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
 
             return new MapMemento(
                 tilemap.Serialize(),
@@ -177,9 +185,12 @@ namespace Model.Game
         }
         public MapMemento Serialize()
         {
+            var characters = Characters.ToList();
+            characters.Remove(Player);
+            characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento(
                 _tilemap.Serialize(),
-                CharacterManager.Characters.Where(character => character != Player).Select(character => character.Serialize()).ToList(),
+                characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 _downStairs.Serialize(),
                 _upStairs?.Serialize()
@@ -208,7 +219,7 @@ namespace Model.Game
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        public HashSet<Character> GetCharactersInArea(IEnumerable<Vector2Int> area)
         {
             return Characters.Where(character => area.Contains(character.Position.CurrentValue))
                 .ToHashSet();
@@ -278,7 +289,22 @@ namespace Model.Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to)
         {
-            return IsPassable(to); //TODO: A*で実装
+            return true; //TODO: A*で実装
+        }
+
+        /// <summary>
+        ///     Gets a character that follows the player when moving from one map to another.
+        ///     Does not include the players themselves.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Character> GetFollowingCharacters()
+        {
+            return CharacterManager.Characters.Where(character => character.IsAlly(Player) && character.IsVisible(Player.CurrentPosition));
+        }
+        public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
+        {
+            return BlankFinder.FindBlankPosition(isBlankFunc, Tilemap.IsPassable, position);
         }
     }
 }
+

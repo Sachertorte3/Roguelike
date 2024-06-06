@@ -1,11 +1,7 @@
 ﻿#nullable enable
 using Data.Character;
-using Data.Character.Type;
-using Data.Effect;
 using Model.Domain.Characters.Behavior;
 using R3;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Model.Domain.Characters
 {

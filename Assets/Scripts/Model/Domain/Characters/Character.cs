@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Character;
 using Data.Character.Type;
+using Data.Condition;
 using Data.Effect;
 using Data.Setting;
 using Model.Domain.Action;
@@ -21,7 +22,7 @@ using Utilities;
 
 namespace Model.Domain.Characters
 {
-    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect
+    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect, ITargetOfEffect
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly VisionRange _area;
@@ -288,6 +289,20 @@ namespace Model.Domain.Characters
         {
             _statusManager.UpdateTurn();
             _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
+        }
+        public int CurrentMaxHp => _statusManager.CurrentMaxHp;
+        public int CurrentHp => _statusManager.CurrentHp;
+        public UniTask GainHp(int value)
+        {
+            return _statusManager.GainHp(value);
+        }
+        public UniTask LoseHp(int value)
+        {
+            return _statusManager.LoseHp(value);
+        }
+        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            _statusManager.AddCondition(condition, removalCondition);
         }
     }
     public static class CharacterExtensions

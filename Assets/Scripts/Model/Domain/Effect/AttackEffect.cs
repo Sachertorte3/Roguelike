@@ -18,7 +18,7 @@ namespace Model.Domain.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target)
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map)
         {
             await target.LoseHp(Formula.Calc(actor, Power));
         }

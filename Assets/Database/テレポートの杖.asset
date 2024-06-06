@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
+  m_Name: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u6756"
+  m_EditorClassIdentifier: 
+  Name: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u6756"
+  Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  EffectsOnUse: 1
+  EffectsOnThrow: 0
+  Skill:
+    Area:
+      rid: 4425516828619964420
+    Effect:
+      rid: 4425516828619964421
+  UsageLimit: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: 4425516828619964420
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516828619964421
+      type: {class: TeleportEffect, ns: Model.Domain.Effect, asm: Model.Domain}

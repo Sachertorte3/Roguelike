@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Data.Effect;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
 using Model.Domain.Items;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace Model.Domain
 {
-    public interface IMap
+    public interface IMap : ISpawnPositionGenerator
     {
         public IObservableCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<Character> Characters { get; }

@@ -17,6 +17,7 @@ namespace Model.Domain.Characters.Conditions
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
+        public bool CanAct => _condition.CanAct;
 
         public void Inflict(IHasCondition hasCondition)
         {

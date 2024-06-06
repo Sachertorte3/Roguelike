@@ -28,6 +28,6 @@ MonoBehaviour:
     - rid: 4425516828619964416
       type: {class: AffectionIncreaseEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Power: 1
+        Power: 10
     - rid: 6064254436379983901
       type: {class: SelfArea, ns: Data.Area, asm: Data}

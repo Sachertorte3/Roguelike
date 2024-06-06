@@ -17,6 +17,7 @@ MonoBehaviour:
   Strength: 2
   CharacterType:
     rid: 4425516828619964417
+  Aggression: 4
   references:
     version: 2
     RefIds:

@@ -1,7 +1,9 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Data;
 using Data.Character;
 using Data.Character.Type;
 using Data.Effect;
@@ -33,6 +35,9 @@ namespace Model.Domain.Characters
         private bool _canAct = true;
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
+        public Aggression Aggression => _aggression;
+        private readonly Aggression _aggression;
+        public readonly bool IsLeader = false;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
@@ -40,10 +45,12 @@ namespace Model.Domain.Characters
                 "Player",
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                new CharacterStatusMemento(100, 100, 1),
+                new CharacterStatusMemento(20, 20, 1),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Player)
+                CharacterAffiliationManager.Build(CharacterGroup.Player),
+                Aggression.AttackAnyone,
+                true
             );
         }
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
@@ -54,26 +61,11 @@ namespace Model.Domain.Characters
                 new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
-                new AffiliationMemento(CharacterGroup.Enemy)
+                CharacterAffiliationManager.Build(CharacterGroup.Enemy),
+                data.Aggression,
+                false
             );
         }
-
-        internal Character(EnemyData data, Vector2Int position, ICharacterBehavior behavior,
-            Observable<bool> canIgnoreWall, IMap world, CharacterGroup group) : this
-            (
-                new CharacterMemento(
-                    data.Name,
-                    data.CharacterType,
-                    new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
-                    new EntityMemento(position),
-                    new InventoryMemento(new ItemMemento[10]),
-                    new AffiliationMemento(group)
-                ),
-                behavior,
-                canIgnoreWall,
-                world
-            )
-        { }
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall, IMap world)
         {
@@ -86,6 +78,8 @@ namespace Model.Domain.Characters
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+            _aggression = data.Aggression;
+            IsLeader = data.IsLeader;
         }
 
         public CharacterMemento Serialize()
@@ -96,7 +90,9 @@ namespace Model.Domain.Characters
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _inventory.Serialize(),
-                _affiliationManager.Serialize()
+                _affiliationManager.Serialize(),
+                Aggression,
+                IsLeader
             );
         }
 
@@ -119,16 +115,31 @@ namespace Model.Domain.Characters
         public bool CanMove(Direction8 direction, IMap world)
         {
             return _canIgnoreWall
-                ? world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                ? true
                 : world.IsPassable(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
                       (world.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
                        world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
+        public bool CanMoveIgnoreCharacter(Direction8 direction, IMap world)
+        {
+            return _canIgnoreWall
+                ? true
+                : world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                  && (!direction.IsDiagonal() ||
+                      (world.IsMapPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       world.IsMapPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+        }
+
         public void Turn(Direction8 direction)
         {
             _direction.Value = direction;
+        }
+
+        public void DoNothing()
+        {
+            State = CharacterState.Wait;
         }
 
         public async UniTask Move(Direction8 direction, IInput input)
@@ -140,10 +151,17 @@ namespace Model.Domain.Characters
 
             State = CharacterState.Wait;
         }
+        public async UniTask ForceMove(Direction8 direction, IInput input)
+        {
+            Debug.Log($"{_name}が{direction}に移動した");
+            Turn(direction);
+            await _entity.Move(direction,
+                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+        }
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
-            _direction.Value = direction;
+            Turn(direction);
             _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),
@@ -219,13 +237,18 @@ namespace Model.Domain.Characters
             State = CharacterState.Wait;
         }
 
-        public void WasAttackedBy(IActorOfEffect actor)
+        public void WasAttackedBy(IActorOfEffect actor, float impact)
         {
             var direction = DirectionMethods.NearestDirectionFromVector(actor.CurrentPosition - CurrentPosition);
             if (direction.HasValue)
             {
                 Turn(direction.Value);
             }
+            _affiliationManager.OnCharacterAttacked(actor.Affiliation, Affiliation, impact);
+        }
+        public void WasHealedBy(IActorOfEffect actor, float impact)
+        {
+            _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
         ~Character()
@@ -261,10 +284,40 @@ namespace Model.Domain.Characters
             return _inventory.Replace(item, index);
         }
 
-        public void UpdateTurn()
+        public void UpdateTurn(IMap world)
         {
             _statusManager.UpdateTurn();
+            _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
+        }
+    }
+    public static class CharacterExtensions
+    {
+        public static bool IsVisible(this Character character, Vector2Int position)
+        {
+            return character.Area.VisibleArea.Contains(position);
+        }
+        public static bool IsAlly(this Character character, Character target)
+        {
+            return character.Affiliation.IsAlly(target.Affiliation);
+        }
+        public static bool IsAlly(this IActorOfEffect character, IActorOfEffect target)
+        {
+            return character.Affiliation.IsAlly(target.Affiliation);
+        }
+        public static bool IsEnemy(this Character character, Character target)
+        {
+            return character.Affiliation.IsEnemy(target.Affiliation);
+        }
+        public static bool IsEnemy(this IActorOfEffect character, IActorOfEffect target)
+        {
+            return character.Affiliation.IsEnemy(target.Affiliation);
+        }
+        public static bool IsNeutral(this IActorOfEffect character, IActorOfEffect target)
+        {
+            return !character.IsAlly(target) && !character.IsEnemy(target);
         }
     }
 }
+
+
 

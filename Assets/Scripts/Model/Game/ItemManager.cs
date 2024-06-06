@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Data.Character;
 using Data.Map;
 using Model.Domain.Items;
 using ObservableCollections;

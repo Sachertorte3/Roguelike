@@ -2,7 +2,6 @@
 using System.Linq;
 using ObservableCollections;
 using R3;
-using Unity.Logging;
 using UnityEngine;
 using Utilities;
 

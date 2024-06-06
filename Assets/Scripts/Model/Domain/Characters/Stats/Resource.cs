@@ -20,6 +20,13 @@ namespace Model.Domain.Characters.Stats
             _value = new ReactiveProperty<int>(maxValue);
             Max.Subscribe(_ => clampCurrentValue());
         }
+        public Resource(int maxValue, int value)
+        {
+            _max = new Stat(maxValue);
+            Max = _max.ToReactiveProperty();
+            _value = new ReactiveProperty<int>(value);
+            Max.Subscribe(_ => clampCurrentValue());
+        }
 
         public ReadOnlyReactiveProperty<int> Value => _value;
 

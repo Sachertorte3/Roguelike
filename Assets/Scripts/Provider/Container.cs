@@ -1,5 +1,4 @@
-﻿using Model;
-using Model.Domain.Characters.Behavior;
+﻿using Model.Domain.Characters.Behavior;
 using Model.Game;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
@@ -44,6 +43,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
             builder.RegisterPlainEntryPoint<PlayerCameraController>();
             builder.RegisterPlainEntryPoint<DamagePresenter>();
+            builder.RegisterPlainEntryPoint<GroupMarkerPresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();

@@ -25,12 +25,39 @@ namespace Model.Domain.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, (float)Formula.Calc(actor, Power) / target.MaxHp);
+            return Mathf.Min(1, Mathf.Min(target.CurrentMaxHp - target.CurrentHp, Formula.Calc(actor, Power)) / target.CurrentMaxHp);
         }
 
         public string Info()
         {
             return $"回復\n威力: {Power}";
+        }
+    }
+    [Serializable]
+    public class AffectionIncreaseEffect : IEffect
+    {
+        [MinValue(1)] public float Power;
+
+        public AffectionIncreaseEffect(float power)
+        {
+            Power = power;
+        }
+
+        public Impact Impact => Impact.Beneficial;
+
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target)
+        {
+
+        }
+
+        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        {
+            return Power;
+        }
+
+        public string Info()
+        {
+            return $"好感度上昇\n威力: {Power}";
         }
     }
 }

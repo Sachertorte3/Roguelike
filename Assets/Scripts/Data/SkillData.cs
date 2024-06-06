@@ -1,7 +1,7 @@
-﻿using Data.Area;
-using Sirenix.OdinInspector;
-using System;
+﻿using System;
+using Data.Area;
 using Data.Effect;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Data

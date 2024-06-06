@@ -1,15 +1,13 @@
 ﻿#nullable enable
-using Codice.Client.BaseCommands;
-using Model;
+using Data.Setting;
 using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using VContainer;
 using View;
 using View.UI;
-using Utilities;
-using Data.Setting;
 
 namespace Provider
 {
@@ -32,8 +30,8 @@ namespace Provider
                 Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
                     .Subscribe(_ =>
                     {
-                        var hpPercentageFromMaxHp = map.Player.StatusManager.CurrentHp * 100 / map.Player.StatusManager.MaxHp;
-                        statLine.SetValue(map.Player.StatusManager.MaxHp, map.Player.StatusManager.CurrentHp);
+                        var hpPercentageFromMaxHp = map.Player.StatusManager.CurrentHp * 100 / map.Player.StatusManager.CurrentMaxHp;
+                        statLine.SetValue(map.Player.StatusManager.CurrentMaxHp, map.Player.StatusManager.CurrentHp);
                         if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                         {
                             statLine.SetTextColor(Color.red);

@@ -5,7 +5,8 @@ namespace Data.Effect
 {
     public interface ITargetOfEffect
     {
-        public int MaxHp { get; }
+        public int CurrentMaxHp { get; }
+        public int CurrentHp { get; }
         public UniTask GainHp(int value);
         public UniTask LoseHp(int value);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);

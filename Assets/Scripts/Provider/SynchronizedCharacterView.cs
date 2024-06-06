@@ -1,19 +1,15 @@
 ﻿#nullable enable
-using Model;
-using R3;
-using System.Collections.Generic;
 using System.Linq;
 using Data.Setting;
 using Model.Domain.Characters;
 using Model.Game;
+using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.ObjectsManager;
 using VContainer;
 using View;
-using Model.Domain;
-using System;
 
 namespace Provider
 {
@@ -53,7 +49,10 @@ namespace Provider
 
         protected override void InitializeView(Character character, CharacterView characterView)
         {
-            characterView.Construct(character.TypeName());
+            var player = _world.ActiveMap.CurrentValue.Player;
+            characterView.Construct(character.TypeName(), character.IsEnemy(player), character.IsAlly(player));
+            character.StatusManager.Stats.HpValue.SubscribeToAll(hp => characterView.UpdateHpBar(character.StatusManager.CurrentMaxHp, hp));
+            character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp => characterView.UpdateHpBar(maxHp, character.StatusManager.CurrentHp));
             characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
                 character.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;

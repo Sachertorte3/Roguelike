@@ -17,6 +17,7 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Utilities.Algorithms;
 
 namespace Model.Game
 {
@@ -122,7 +123,7 @@ namespace Model.Game
             {
                 foreach (var character in characters)
                 {
-                    var characterData = character with { EntityData = character.EntityData with { Position = playerPosition.Value } };
+                    var characterData = character with { EntityData = character.EntityData with { Position = FindBlankPositionFrom(playerPosition.Value, position => !GetAllCharacterPositions().Contains(position)) } };
                     CharacterManager.SpawnCharacter(characterData, this);
                 }
             }
@@ -299,6 +300,10 @@ namespace Model.Game
         public IEnumerable<Character> GetFollowingCharacters()
         {
             return CharacterManager.Characters.Where(character => character.IsAlly(Player) && character.IsVisible(Player.CurrentPosition));
+        }
+        public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
+        {
+            return BlankFinder.FindBlankPosition(isBlankFunc, Tilemap.IsPassable, position);
         }
     }
 }

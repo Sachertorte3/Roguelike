@@ -33,7 +33,7 @@ namespace Model.Domain.Characters
         public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStatusManager _statusManager;
-        private bool _canAct = true;
+        private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
         public Aggression Aggression => _aggression;

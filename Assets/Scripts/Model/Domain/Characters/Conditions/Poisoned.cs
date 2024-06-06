@@ -5,11 +5,12 @@ using Utilities;
 
 namespace Model.Domain.Characters.Conditions
 {
-    internal class Poison : IConditionData
+    internal class Poisoned : IConditionData
     {
         public string Name => "毒";
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
         public Impact Impact => Impact.Harmful;
+        public bool CanAct => true;
 
         public void Inflict(IHasCondition hasCondition)
         {

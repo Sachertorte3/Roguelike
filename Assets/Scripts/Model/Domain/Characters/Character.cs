@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Data;
 using Data.Character;
 using Data.Character.Type;
 using Data.Effect;
@@ -34,6 +35,8 @@ namespace Model.Domain.Characters
         private bool _canAct = true;
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
+        public Aggression Aggression => _aggression;
+        private readonly Aggression _aggression;
         public readonly bool IsLeader = false;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
@@ -46,6 +49,7 @@ namespace Model.Domain.Characters
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
+                Aggression.AttackAnyone,
                 true
             );
         }
@@ -58,6 +62,7 @@ namespace Model.Domain.Characters
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
+                data.Aggression,
                 false
             );
         }
@@ -73,6 +78,7 @@ namespace Model.Domain.Characters
             _area = new VisionRange(_entity.Position, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+            _aggression = data.Aggression;
             IsLeader = data.IsLeader;
         }
 
@@ -85,6 +91,7 @@ namespace Model.Domain.Characters
                 _entity.Serialize(),
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
+                Aggression,
                 IsLeader
             );
         }

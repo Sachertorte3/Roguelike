@@ -14,6 +14,7 @@ namespace Data.Character
         EntityMemento EntityData,
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
+        Aggression Aggression,
         bool IsLeader
     );
     public record EntityMemento(

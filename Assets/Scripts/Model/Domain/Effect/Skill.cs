@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
@@ -70,6 +71,7 @@ namespace Model.Domain.Effect
         {
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());
+            var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
             float totalEvaluation = 0;
 
             if (characters.Count <= 0)
@@ -82,31 +84,31 @@ namespace Model.Domain.Effect
                 switch (_effect.Impact)
                 {
                     case Impact.Harmful:
-                        if (actor.IsEnemy(target))
+                        if (actor.IsAlly(target))
                         {
-                            totalEvaluation += _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += allyImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
-                        else if (actor.IsAlly(target))
+                        else if (actor.IsEnemy(target))
                         {
-                            totalEvaluation -= _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += enemyImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
                         else
                         {
-                            totalEvaluation -= 0.5f * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += neutralImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
                         break;
                     case Impact.Beneficial:
                         if (actor.IsAlly(target))
                         {
-                            totalEvaluation += _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= allyImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
                         else if (actor.IsEnemy(target))
                         {
-                            totalEvaluation -= _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= enemyImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
                         else
                         {
-                            totalEvaluation += 0.5f * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= neutralImpactRate * _effect.Evaluate(actor, target.StatusManager);
                         }
                         break;
                 }
@@ -116,3 +118,4 @@ namespace Model.Domain.Effect
         }
     }
 }
+

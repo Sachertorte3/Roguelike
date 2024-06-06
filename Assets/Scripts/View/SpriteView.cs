@@ -21,9 +21,9 @@ namespace View
         {
             _isVisible = visible;
             GetComponent<SpriteRenderer>().enabled = visible;
-            foreach (Transform child in transform)
+            foreach (var child in transform.GetComponentsInChildren<SpriteRenderer>())
             {
-                child.GetComponent<SpriteRenderer>().enabled = visible;
+                child.enabled = visible;
             }
         }
     }

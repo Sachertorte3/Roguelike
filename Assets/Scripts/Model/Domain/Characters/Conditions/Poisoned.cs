@@ -11,6 +11,7 @@ namespace Model.Domain.Characters.Conditions
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
         public Impact Impact => Impact.Harmful;
         public bool CanAct => true;
+        public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition)
         {

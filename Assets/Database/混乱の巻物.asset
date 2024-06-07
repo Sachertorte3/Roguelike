@@ -10,33 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u9EBB\u75FA\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
+  m_Name: "\u6DF7\u4E71\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
-  Name: "\u9EBB\u75FA\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
-  Icon: {fileID: -136529006, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Name: "\u6DF7\u4E71\u306E\u5DFB\u7269"
+  Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
-  EffectsOnThrow: 1
+  EffectsOnThrow: 0
   Skill:
     Area:
-      rid: 4425516828619964424
+      rid: 4425516828619964427
     Effect:
-      rid: 4425516828619964423
+      rid: 4425516828619964429
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 4425516828619964423
+    - rid: 4425516828619964427
+      type: {class: CircleArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 1
+        Radius: 10
+    - rid: 4425516828619964429
       type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         RemovalCondition:
           RemoveByElapsedTurn: 1
-          Duration: 5
+          Duration: 10
           RemoveByDamage: 0
           AcceptableDamage: 0
           Probability: 0
         Condition:
-          rid: 4425516828619964431
-    - rid: 4425516828619964424
-      type: {class: SelfArea, ns: Data.Area, asm: Data}
-    - rid: 4425516828619964431
-      type: {class: Paralyzed, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+          rid: 4425516828619964430
+    - rid: 4425516828619964430
+      type: {class: Confused, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}

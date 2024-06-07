@@ -50,11 +50,11 @@ namespace Provider
         protected override void InitializeView(Character character, CharacterView characterView)
         {
             var player = _world.ActiveMap.CurrentValue.Player;
-            characterView.Construct(character.TypeName(), character.IsEnemy(player), character.IsAlly(player));
+            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player), character.IsAlly(player));
             character.StatusManager.Stats.HpValue.SubscribeToAll(hp => characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp));
             character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp => characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue));
-            characterView.GetComponent<OverrideSprite>().SetTexture(character.TypeName(), character.SubtypeName(),
-                character.TypeName() == "Human");
+            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(), character.CharacterType.SubtypeName(),
+                character.CharacterType.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 

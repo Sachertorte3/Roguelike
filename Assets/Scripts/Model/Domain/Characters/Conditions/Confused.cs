@@ -5,13 +5,13 @@ using Utilities;
 
 namespace Model.Domain.Characters.Conditions
 {
-    internal class Paralyzed : IConditionData
+    internal class Confused : IConditionData
     {
-        public string Name => "麻痺";
-        public ParticleType ParticleType => ParticleType.Paralysis;
+        public string Name => "混乱";
+        public ParticleType ParticleType => ParticleType.Confusion;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => false;
-        public bool CausesConfusion => false;
+        public bool CanAct => true;
+        public bool CausesConfusion => true;
 
         public void Inflict(IHasCondition hasCondition)
         {

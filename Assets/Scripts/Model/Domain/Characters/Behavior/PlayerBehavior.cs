@@ -1,11 +1,14 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Area;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Effect;
+using Utilities;
 
 namespace Model.Domain.Characters.Behavior
 {
@@ -45,22 +48,20 @@ namespace Model.Domain.Characters.Behavior
                             if (Settings.IntelligentDash.Value)
                                 move = _intelligentDashController.Filter(move, character, started, world, input);
 
+                            var swap = new Swap(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
+                            else if (swap.Doable(character, world))
+                                return swap;
                             else
-                            {
-                                var swap = new Swap(move.Direction);
-                                if (swap.Doable(character, world))
-                                    return swap;
-                            }
-                            character.Turn(move.Direction);
+                                character.Turn(move.Direction);
                         }
-
                         break;
                     case 1:
                         var itemIndex = firstCompletedTask.result2;
                         var item = character.Inventory.GetItem(itemIndex);
                         IAction action;
+
                         if (item == null)
                             action = new UseSkill(new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))),
                                 character.CurrentDirection);
@@ -76,7 +77,6 @@ namespace Model.Domain.Characters.Behavior
                             action = new ThrowItem(itemIndex, character.CurrentDirection);
                             if (action.Doable(character, world)) return action;
                         }
-
                         break;
                     default:
                         throw new IndexOutOfRangeException();

@@ -10,6 +10,7 @@ namespace Data.Condition
         public ParticleType ParticleType { get; }
         public Impact Impact { get; }
         public bool CanAct { get; }
+        public bool CausesConfusion { get; }
         public void Inflict(IHasCondition hasCondition);
         public UniTask Persist(IHasCondition hasCondition);
         public void Delete(IHasCondition hasCondition);

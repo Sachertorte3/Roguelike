@@ -129,3 +129,4 @@ namespace Model.Domain.Characters.Behavior
         }
     }
 }
+

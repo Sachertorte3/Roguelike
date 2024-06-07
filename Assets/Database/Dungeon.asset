@@ -23,3 +23,7 @@ MonoBehaviour:
   Enemies:
   - {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
   - {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+  Materials:
+  - {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
+  WeaponMolds:
+  - {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}

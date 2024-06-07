@@ -157,8 +157,15 @@ namespace Model.Game
             var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
                 characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(30))
+            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(25))
                 items.Add(ItemEntity.Build(position, new Item(data.Items.GetAtRandom())));
+            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(5))
+            {
+                var material = data.Materials.GetAtRandom();
+                var mold = data.WeaponMolds.GetAtRandom();
+                var weapon = WeaponFactory.Create(material, mold);
+                items.Add(ItemEntity.Build(position, new Item(weapon)));
+            }
 
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
             var upStairs = prevMapId.HasValue ? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;

@@ -81,6 +81,7 @@ namespace Model.Game
         {
             return ActiveMap.CurrentValue.GetCharactersInArea(area);
         }
+
         public void HandleItemDrop(int inventoryIndex)
         {
             ActiveMap.CurrentValue.HandleItemDrop(inventoryIndex);

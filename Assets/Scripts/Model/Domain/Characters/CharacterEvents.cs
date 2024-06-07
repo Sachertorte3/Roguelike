@@ -32,6 +32,9 @@ namespace Model.Domain.Characters
         public Observable<(Character Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged =>
             _events.GetObservable<OnVisibleAreaChangedMessage>();
 
+        public Observable<(Character Character, OnPickUpItemMessage Message)> OnPickUpItem =>
+            _events.GetObservable<OnPickUpItemMessage>();
+
         public Observable<(Character Character, OnDamageReceivedMessage Message)> OnDamageReceived =>
             _events.GetObservable<OnDamageReceivedMessage>();
 
@@ -70,6 +73,7 @@ namespace Model.Domain.Characters
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(character, character.OnSpawnEffect.Select(useSkill => new OnEffectSpawnedMessage(useSkill)));
             _events.Add(character, character.Area.OnVisibleAreaChanged);
+            _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
             _events.Add(character, character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
             _events.Add(character, character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
             _events.Add(character, character.Affiliation.OnAffectionChanged);
@@ -84,6 +88,7 @@ namespace Model.Domain.Characters
             _events.Add(characterEvents, characterEvents.OnTeleport);
             _events.Add(characterEvents, characterEvents.OnEffectSpawned);
             _events.Add(characterEvents, characterEvents.OnVisibleAreaChanged);
+            _events.Add(characterEvents, characterEvents.OnPickUpItem);
             _events.Add(characterEvents, characterEvents.OnDamageReceived);
             _events.Add(characterEvents, characterEvents.OnHealReceived);
             _events.Add(characterEvents, characterEvents.OnAffectionChanged);

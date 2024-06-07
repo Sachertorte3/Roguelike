@@ -18,6 +18,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.Algorithms;
+using Random = UnityEngine.Random;
 
 namespace Model.Game
 {
@@ -163,8 +164,17 @@ namespace Model.Game
             {
                 var material = data.Materials.GetAtRandom();
                 var mold = data.WeaponMolds.GetAtRandom();
-                var weapon = WeaponFactory.Create(material, mold);
-                items.Add(ItemEntity.Build(position, new Item(weapon)));
+                if (Random.value < data.PrefixChance)
+                {
+                    var prefix = data.WeaponPrefixes.GetAtRandom();
+                    var weapon = WeaponFactory.Create(prefix, material, mold);
+                    items.Add(ItemEntity.Build(position, new Item(weapon)));
+                }
+                else
+                {
+                    var weapon = WeaponFactory.Create(material, mold);
+                    items.Add(ItemEntity.Build(position, new Item(weapon)));
+                }
             }
 
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);

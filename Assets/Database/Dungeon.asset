@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
   - {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
   - {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+  WeaponPrefixes:
+  - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}

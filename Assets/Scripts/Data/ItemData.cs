@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -12,10 +13,10 @@ namespace Data
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
-        [ReadOnly, Required] public string Name = "";
+        [ReadOnly, Required] public string Name;
         [Required] public Sprite Icon;
         public bool EffectsOnUse = true;
-        public bool EffectsOnThrow;
+        public bool EffectsOnThrow = false;
         [ShowIf("Usable")] public SkillData Skill;
         [ShowIf("Usable")][MinValue(1)] public int UsageLimit;
         private bool Usable => EffectsOnUse || EffectsOnThrow;
@@ -51,3 +52,4 @@ namespace Data
         }
     }
 }
+

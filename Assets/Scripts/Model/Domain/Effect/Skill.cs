@@ -47,7 +47,7 @@ namespace Model.Domain.Effect
                 {
                     if (_effect.Impact == Impact.Harmful)
                     {
-                        var impactValue = _effect.Evaluate(actor, target.StatusManager);
+                        var impactValue = _effect.Evaluate(actor, target);
                         target.WasAttackedBy(actor, impactValue);
 
                         world.GetCharactersCanSeePosition(target.CurrentPosition)
@@ -55,14 +55,14 @@ namespace Model.Domain.Effect
                     }
                     else if (_effect.Impact == Impact.Beneficial)
                     {
-                        var impactValue = _effect.Evaluate(actor, target.StatusManager);
+                        var impactValue = _effect.Evaluate(actor, target);
                         target.WasHealedBy(actor, impactValue);
 
                         world.GetCharactersCanSeePosition(target.CurrentPosition)
                             .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation, impactValue));
                     }
 
-                    _effect.Apply(actor, target.StatusManager);
+                    _effect.Apply(actor, target, world);
                 });
             return UniTask.CompletedTask;
         }
@@ -86,29 +86,29 @@ namespace Model.Domain.Effect
                     case Impact.Harmful:
                         if (actor.IsAlly(target))
                         {
-                            totalEvaluation += allyImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += allyImpactRate * _effect.Evaluate(actor, target);
                         }
                         else if (actor.IsEnemy(target))
                         {
-                            totalEvaluation += enemyImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += enemyImpactRate * _effect.Evaluate(actor, target);
                         }
                         else
                         {
-                            totalEvaluation += neutralImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation += neutralImpactRate * _effect.Evaluate(actor, target);
                         }
                         break;
                     case Impact.Beneficial:
                         if (actor.IsAlly(target))
                         {
-                            totalEvaluation -= allyImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= allyImpactRate * _effect.Evaluate(actor, target);
                         }
                         else if (actor.IsEnemy(target))
                         {
-                            totalEvaluation -= enemyImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= enemyImpactRate * _effect.Evaluate(actor, target);
                         }
                         else
                         {
-                            totalEvaluation -= neutralImpactRate * _effect.Evaluate(actor, target.StatusManager);
+                            totalEvaluation -= neutralImpactRate * _effect.Evaluate(actor, target);
                         }
                         break;
                 }

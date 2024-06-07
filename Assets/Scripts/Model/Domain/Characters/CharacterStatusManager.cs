@@ -5,12 +5,13 @@ using Data.Character;
 using Data.Condition;
 using Model.Domain.Characters.Conditions;
 using Model.Domain.Characters.Stats;
+using Model.Domain.Effect;
 using ObservableCollections;
 using R3;
 
 namespace Model.Domain.Characters
 {
-    public class CharacterStatusManager : IDisposable, ISerializable<CharacterStatusMemento>, IStatusManager
+    public class CharacterStatusManager : IDisposable, ISerializable<CharacterStatusMemento>, IStatusManager, ITarget
     {
         private string _name;
         private readonly CharacterConditions _conditions;

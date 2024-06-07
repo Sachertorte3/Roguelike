@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Data.Character;
 using Data.Character.Type;
+using Data.Condition;
 using Data.Effect;
 using Data.Setting;
 using Model.Domain.Action;
@@ -15,13 +16,14 @@ using Model.Domain.Entities;
 using Model.Domain.Items;
 using Model.Domain.Logs;
 using R3;
+using Unity.VisualScripting.YamlDotNet.Serialization;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Model.Domain.Characters
 {
-    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect
+    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior, IActorOfEffect, ITargetOfEffect
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly VisionRange _area;
@@ -32,7 +34,8 @@ namespace Model.Domain.Characters
         public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
         private readonly CharacterStatusManager _statusManager;
-        private bool _canAct = true;
+        private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
+        private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
         private bool _canIgnoreWall;
         public CharacterState State = CharacterState.Think;
         public Aggression Aggression => _aggression;
@@ -256,22 +259,51 @@ namespace Model.Domain.Characters
             Dispose();
         }
 
-        public string TypeName()
-        {
-            return CharacterType.TypeName();
-        }
-
-        public string SubtypeName()
-        {
-            return CharacterType.SubtypeName();
-        }
-
         public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
             var action = await Behavior.GenerateNextAction(this, world, input);
+            if (_isConfused)
+            {
+                action = RegenerateConfuseAction(this, world, action);
+            }
             State = CharacterState.Act;
             await action.Do(this, world, input);
+        }
+
+        private IAction RegenerateConfuseAction(IHasBehavior character, IMap world, IAction action)
+        {
+            switch (action)
+            {
+                case Move _:
+                case Swap _:
+                    var moves = new List<IAction>();
+                    foreach (var direction in DirectionMethods.AllDirections)
+                    {
+                        var move = new Move(direction);
+                        var swap = new Swap(direction);
+                        if (move.Doable(character, world))
+                            moves.Add(move);
+                        else if (swap.Doable(character, world))
+                            moves.Add(swap);
+                    }
+                    return moves.GetAtRandom();
+
+                case UseSkill useSkill:
+                    return useSkill with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case UseItem useItem:
+                    return useItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case ThrowItem throwItem:
+                    return throwItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case DoNothing _:
+                    return action;
+
+                default:
+                    throw new InvalidOperationException();
+            }
         }
 
         public bool TryPickUp(Item item)
@@ -288,6 +320,20 @@ namespace Model.Domain.Characters
         {
             _statusManager.UpdateTurn();
             _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
+        }
+        public int CurrentMaxHp => _statusManager.CurrentMaxHp;
+        public int CurrentHp => _statusManager.CurrentHp;
+        public UniTask GainHp(int value)
+        {
+            return _statusManager.GainHp(value);
+        }
+        public UniTask LoseHp(int value)
+        {
+            return _statusManager.LoseHp(value);
+        }
+        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            _statusManager.AddCondition(condition, removalCondition);
         }
     }
     public static class CharacterExtensions

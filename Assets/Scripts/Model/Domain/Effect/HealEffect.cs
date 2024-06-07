@@ -18,7 +18,7 @@ namespace Model.Domain.Effect
 
         public Impact Impact => Impact.Beneficial;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target)
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map)
         {
             await target.GainHp(Formula.Calc(actor, Power));
         }
@@ -45,7 +45,7 @@ namespace Model.Domain.Effect
 
         public Impact Impact => Impact.Beneficial;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target)
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map)
         {
 
         }

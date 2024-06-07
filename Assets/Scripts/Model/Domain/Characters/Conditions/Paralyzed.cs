@@ -1,15 +1,17 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Data.Condition;
 using Data.Effect;
 using Utilities;
 
 namespace Model.Domain.Characters.Conditions
 {
-    internal class Poison : IConditionData
+    internal class Paralyzed : IConditionData
     {
-        public string Name => "毒";
-        public ParticleType ParticleType => ParticleType.PoisoningBubble;
+        public string Name => "麻痺";
+        public ParticleType ParticleType => ParticleType.Paralysis;
         public Impact Impact => Impact.Harmful;
+        public bool CanAct => false;
+        public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition)
         {
@@ -17,7 +19,6 @@ namespace Model.Domain.Characters.Conditions
 
         public UniTask Persist(IHasCondition hasCondition)
         {
-            hasCondition.LoseHp(1);
             return UniTask.CompletedTask;
         }
 

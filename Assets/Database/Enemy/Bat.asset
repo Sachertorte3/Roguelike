@@ -12,13 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
   m_Name: Bat
   m_EditorClassIdentifier: 
+  Name: Bat
   Hp: 3
   Strength: 2
   CharacterType:
     rid: 6064254728247705600
+  Aggression: 1
+  Skill:
+    Area:
+      rid: 4425516878087061507
+    Effect:
+      rid: 4425516878087061508
   references:
     version: 2
     RefIds:
+    - rid: 4425516878087061507
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516878087061508
+      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 1
     - rid: 6064254728247705600
       type: {class: Bat, ns: Data.Character.Type, asm: Data}
       data:

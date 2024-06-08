@@ -29,8 +29,7 @@ namespace Model.Domain.Characters.Behavior
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)
         {
             return DirectionMethods.AllDirections
-                .Select(direction => new UseSkill(new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))),
-                    direction))
+                .Select(direction => new UseSkill(character.Skill, direction))
                 .Where(move => move.Doable(character, world));
         }
     }

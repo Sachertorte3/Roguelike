@@ -72,7 +72,7 @@ namespace Model.Domain.Effect
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
-            float totalEvaluation = 0;
+            float totalEvaluation = -0.01f;//効果がないなら使わない
 
             if (characters.Count <= 0)
             {
@@ -100,15 +100,15 @@ namespace Model.Domain.Effect
                     case Impact.Beneficial:
                         if (actor.IsAlly(target))
                         {
-                            totalEvaluation -= allyImpactRate * _effect.Evaluate(actor, target);
+                            totalEvaluation += 1 * _effect.Evaluate(actor, target);
                         }
                         else if (actor.IsEnemy(target))
                         {
-                            totalEvaluation -= enemyImpactRate * _effect.Evaluate(actor, target);
+                            totalEvaluation += -Mathf.Infinity * _effect.Evaluate(actor, target);
                         }
                         else
                         {
-                            totalEvaluation -= neutralImpactRate * _effect.Evaluate(actor, target);
+                            totalEvaluation += 0 * _effect.Evaluate(actor, target);
                         }
                         break;
                 }

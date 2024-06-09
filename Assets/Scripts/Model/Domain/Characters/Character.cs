@@ -32,7 +32,7 @@ namespace Model.Domain.Characters
         private readonly Inventory _inventory;
         private string _name = "Character";
         public string Name => _name;
-        private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
+        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly CharacterStatusManager _statusManager;
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
@@ -101,7 +101,7 @@ namespace Model.Domain.Characters
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
-        public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
+        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDead => _statusManager.OnDead;
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
@@ -165,7 +165,7 @@ namespace Model.Domain.Characters
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
             Turn(direction);
-            _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
+            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(skill.GetArea(CurrentPosition, CurrentDirection), skill.Color));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -184,7 +184,7 @@ namespace Model.Domain.Characters
             if (item.EffectsOnUse)
             {
                 GameLog.Add($"{_name}:{item.Name}を使った");
-                _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.Skill.GetArea(CurrentPosition, CurrentDirection), item.Skill.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
                     await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -215,7 +215,7 @@ namespace Model.Domain.Characters
         {
             _entity.Dispose();
             _inventory.Dispose();
-            _onSpawnEffect.Dispose();
+            _onEffectSpawned.Dispose();
             _direction.Dispose();
         }
 

@@ -8,6 +8,7 @@ namespace Data.Effect
     public interface IEffect : IHasInfo
     {
         public Impact Impact { get; }
+        public Color Color { get; }
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map);
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
     }

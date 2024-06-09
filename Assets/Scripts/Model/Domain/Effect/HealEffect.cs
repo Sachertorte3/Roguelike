@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Data.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Model.Domain.Effect
 {
@@ -10,6 +11,7 @@ namespace Model.Domain.Effect
     public class HealEffect : IEffect
     {
         [MinValue(1)] public int Power;
+        public Color Color => Colors.Green;
 
         public HealEffect(int power)
         {
@@ -31,33 +33,6 @@ namespace Model.Domain.Effect
         public string Info()
         {
             return $"回復\n威力: {Power}";
-        }
-    }
-    [Serializable]
-    public class AffectionIncreaseEffect : IEffect
-    {
-        [MinValue(1)] public float Power;
-
-        public AffectionIncreaseEffect(float power)
-        {
-            Power = power;
-        }
-
-        public Impact Impact => Impact.Beneficial;
-
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map)
-        {
-
-        }
-
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
-        {
-            return Power;
-        }
-
-        public string Info()
-        {
-            return $"好感度上昇\n威力: {Power}";
         }
     }
 }

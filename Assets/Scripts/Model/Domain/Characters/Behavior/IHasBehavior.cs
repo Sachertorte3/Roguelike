@@ -6,7 +6,7 @@ namespace Model.Domain.Characters.Behavior
 {
     public interface IHasBehavior : IActor
     {
-        public Skill Skill { get; }
+        public Skill[] Skills { get; }
         public IInventory Inventory { get; }
         public IVisionRange Area { get; }
     }

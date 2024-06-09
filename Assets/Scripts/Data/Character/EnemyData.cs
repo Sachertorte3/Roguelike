@@ -19,7 +19,7 @@ namespace Data.Character
         [MinValue(1)] public int Strength;
         [SerializeReference] public ICharacterType CharacterType;
         public Aggression Aggression = Aggression.AvoidAllies;
-        public SkillData Skill;
+        public SkillData[] Skills;
 #if UNITY_EDITOR
         private void OnValidate()
         {

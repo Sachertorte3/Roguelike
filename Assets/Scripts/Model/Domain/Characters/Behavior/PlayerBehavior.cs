@@ -63,7 +63,7 @@ namespace Model.Domain.Characters.Behavior
                         IAction action;
 
                         if (item == null)
-                            action = new UseSkill(character.Skill, character.CurrentDirection);
+                            action = new UseSkill(character.Skills[0], character.CurrentDirection);
                         else
                             action = new UseItem(itemIndex, character.CurrentDirection);
 

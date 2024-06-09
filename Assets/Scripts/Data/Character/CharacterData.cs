@@ -12,7 +12,7 @@ namespace Data.Character
         ICharacterType CharacterType,
         CharacterStatusMemento Status,
         EntityMemento EntityData,
-        SkillMemento Skill,
+        SkillMemento[] Skills,
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
         Aggression Aggression,

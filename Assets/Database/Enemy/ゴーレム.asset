@@ -13,11 +13,20 @@ MonoBehaviour:
   m_Name: "\u30B4\u30FC\u30EC\u30E0"
   m_EditorClassIdentifier: 
   Name: "\u30B4\u30FC\u30EC\u30E0"
-  Hp: 20
+  Hp: 10
   Strength: 2
   CharacterType:
     rid: 4425516828619964417
   Aggression: 4
+  Skills:
+  - Area:
+      rid: 4425516923575599104
+    Effect:
+      rid: 4425516923575599105
+  - Area:
+      rid: 4425516923575599106
+    Effect:
+      rid: 4425516923575599108
   references:
     version: 2
     RefIds:
@@ -25,3 +34,21 @@ MonoBehaviour:
       type: {class: Golem, ns: Data.Character.Type, asm: Data}
       data:
         Type: 0
+    - rid: 4425516923575599104
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599105
+      type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 10
+    - rid: 4425516923575599106
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599108
+      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 2

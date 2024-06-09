@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
+using Data.Area;
 using Data.Character;
 using Data.Character.Type;
 using Data.Condition;
@@ -30,6 +31,7 @@ namespace Model.Domain.Characters
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly Inventory _inventory;
+        private readonly Skill[] _skills;
         private string _name = "Character";
         public string Name => _name;
         private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
@@ -50,6 +52,7 @@ namespace Model.Domain.Characters
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 new CharacterStatusMemento(20, 20, 1),
                 new EntityMemento(spawnPosition),
+                new[] { new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))).Serialize() },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
@@ -63,6 +66,7 @@ namespace Model.Domain.Characters
                 data.CharacterType,
                 new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
+                data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
                 data.Aggression,
@@ -75,6 +79,7 @@ namespace Model.Domain.Characters
             _name = data.Name;
             CharacterType = data.CharacterType;
             _entity = new Entity(data.EntityData);
+            _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _inventory = new(data.Inventory);
             _statusManager = new CharacterStatusManager(data.Name, data.Status);
             Behavior = behavior;
@@ -92,6 +97,7 @@ namespace Model.Domain.Characters
                 CharacterType,
                 _statusManager.Serialize(),
                 _entity.Serialize(),
+                _skills.Select(x => x.Serialize()).ToArray(),
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
@@ -109,6 +115,7 @@ namespace Model.Domain.Characters
         public IAffiliation Affiliation => _affiliationManager;
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
+        public Skill[] Skills => _skills;
 
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even

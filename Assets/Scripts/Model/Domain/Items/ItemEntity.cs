@@ -6,6 +6,7 @@ using Data.Character;
 using Data.Map;
 using Data.Setting;
 using Model.Domain.Action;
+using Model.Domain.Characters;
 using Model.Domain.Entities;
 using R3;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Model.Domain.Items
     public class ItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IEntity
     {
         private readonly Entity _entity;
-        private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
+        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public readonly Item Item;
 
         public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
@@ -33,7 +34,7 @@ namespace Model.Domain.Items
         }
 
         public Sprite Icon => Item.Icon;
-        public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
+        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
         ~ItemEntity()
         {
@@ -42,7 +43,7 @@ namespace Model.Domain.Items
         public void Dispose()
         {
             _entity.Dispose();
-            _onSpawnEffect.Dispose();
+            _onEffectSpawned.Dispose();
         }
 
         public ItemEntityMemento Serialize()
@@ -80,7 +81,7 @@ namespace Model.Domain.Items
 
             if (Item.EffectsOnThrow)
             {
-                _onSpawnEffect.OnNext(Item.Skill.GetArea(CurrentPosition, direction));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.Skill.GetArea(CurrentPosition, direction), Item.Skill.Color));
                 await Item.Use(actor, CurrentPosition, direction, world);
             }
         }

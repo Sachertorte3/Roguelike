@@ -62,8 +62,8 @@ namespace Provider
             entityView.Construct(_inputReceiver);
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
             character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
-            character.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), Settings.EffectDisplayTime.Value)
+            character.OnEffectSpawned.Subscribe(useSkill =>
+                _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), useSkill.Color, Settings.EffectDisplayTime.Value)
             ).AddTo(characterView);
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);

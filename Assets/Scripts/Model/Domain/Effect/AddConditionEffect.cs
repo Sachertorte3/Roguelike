@@ -13,6 +13,7 @@ namespace Model.Domain.Effect
     {
         [Required] public RemovalConditionData RemovalCondition;
         [SerializeReference][Required] public IConditionData Condition;
+        public Color Color => Colors.Purple;
 
         public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
         {
@@ -36,28 +37,6 @@ namespace Model.Domain.Effect
         public string Info()
         {
             return $"状態付与: {Condition.Name}";
-        }
-    }
-    [Serializable]
-    public class TeleportEffect : IEffect
-    {
-        public Impact Impact => Impact.Neutral;
-
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map)
-        {
-            var position = map.GetAllPassablePositions().GetAtRandom();
-            target.Teleport(position);
-            return UniTask.CompletedTask;
-        }
-
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
-        {
-            return 0;
-        }
-
-        public string Info()
-        {
-            return "テレポート";
         }
     }
 }

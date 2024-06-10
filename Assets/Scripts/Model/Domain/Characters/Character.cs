@@ -34,6 +34,7 @@ namespace Model.Domain.Characters
         private string _name = "Character";
         public string Name => _name;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
+        private readonly Subject<Unit> _onPickUpItem = new();
         private readonly CharacterStatusManager _statusManager;
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
@@ -114,6 +115,7 @@ namespace Model.Domain.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDead => _statusManager.OnDead;
+        public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
         public IStatusManager StatusManager => _statusManager;
@@ -331,7 +333,12 @@ namespace Model.Domain.Characters
 
         public bool TryPickUp(Item item)
         {
-            return _inventory.TryAdd(item);
+            if (_inventory.TryAdd(item))
+            {
+                _onPickUpItem.OnNext(Unit.Default);
+                return true;
+            }
+            return false;
         }
 
         public Item? ReplaceInventory(Item? item, int index)

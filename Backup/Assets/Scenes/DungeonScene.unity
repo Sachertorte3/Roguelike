@@ -736,8 +736,9 @@ GameObject:
   m_Component:
   - component: {fileID: 883410308}
   - component: {fileID: 883410307}
+  - component: {fileID: 883410309}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: BGM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -755,7 +756,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 0fa36890e9f0af64794e43460e689a16, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.25
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -854,6 +855,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &883410309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883410306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7eb459cd6cd694f88be0b0cd55a25c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &897980653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2055982679562989546, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}
@@ -2153,7 +2166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d411920c73d6ce54691cac380a93d13d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackSE: {fileID: 8300000, guid: 57b470ee8e026014e99a80a44123a146, type: 3}
+  _attackSE: {fileID: 8300000, guid: aa46d30d0f0172e438b3641dafed83ef, type: 3}
   _pickupSE: {fileID: 8300000, guid: 3a9509c4cfbeade4c890073ffa7c4e0f, type: 3}
 --- !u!82 &1953968010
 AudioSource:
@@ -2167,7 +2180,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0

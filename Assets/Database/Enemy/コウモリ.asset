@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: Bat
+  m_Name: "\u30B3\u30A6\u30E2\u30EA"
   m_EditorClassIdentifier: 
   Name: Bat
   Hp: 3

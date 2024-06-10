@@ -20,7 +20,6 @@ namespace Data.Character
     {
         [ReadOnly, Required] public string Name = "";
         [MinValue(1)] public int Hp;
-        [MinValue(1)] public int Strength;
         [SerializeReference] public ICharacterType CharacterType;
         public Aggression Aggression = Aggression.AvoidAllies;
         public List<AdditionalConditionData> AdditionalConditions = new();

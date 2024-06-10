@@ -49,7 +49,7 @@ namespace Model.Domain.Characters
                 "Player",
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                CharacterStatusManager.Build(20, 20, 1),
+                CharacterStatusManager.Build(20, 20),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
@@ -63,7 +63,7 @@ namespace Model.Domain.Characters
             return new CharacterMemento(
                 data.Name,
                 data.CharacterType,
-                CharacterStatusManager.Build(data.Hp, data.Hp, data.Strength),
+                CharacterStatusManager.Build(data.Hp, data.Hp),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),

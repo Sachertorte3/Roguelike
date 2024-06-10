@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Data.Condition;
 using UnityEngine;
 using Utilities;
@@ -15,6 +16,6 @@ namespace Data.Effect
         public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
-
     }
 }
+

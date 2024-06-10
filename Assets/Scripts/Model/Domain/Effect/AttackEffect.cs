@@ -4,6 +4,7 @@ using Data.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Model.Domain.Effect
 {
@@ -23,6 +24,13 @@ namespace Model.Domain.Effect
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
             await target.LoseHp(Formula.Calc(actor, Power));
+            foreach (var ((condition, removalCondition), probability) in actor.AdditionalConditions)
+            {
+                if (Random.value < probability)
+                {
+                    target.AddCondition(condition, removalCondition);
+                }
+            }
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

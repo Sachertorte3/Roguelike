@@ -12,13 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
   m_Name: Bat
   m_EditorClassIdentifier: 
+  Name: Bat
   Hp: 3
   Strength: 2
   CharacterType:
     rid: 6064254728247705600
+  Aggression: 1
+  AdditionalConditions:
+  - Condition:
+      rid: 4425516923575599112
+    RemovalCondition:
+      RemoveByElapsedTurn: 1
+      Duration: 3
+      RemoveByDamage: 0
+      AcceptableDamage: 0
+      Probability: 0
+    Probability: 0.2
   references:
     version: 2
     RefIds:
+    - rid: 4425516923575599112
+      type: {class: Poisoned, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
     - rid: 6064254728247705600
       type: {class: Bat, ns: Data.Character.Type, asm: Data}
       data:

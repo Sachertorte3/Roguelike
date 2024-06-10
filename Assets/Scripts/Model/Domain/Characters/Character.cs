@@ -16,7 +16,6 @@ using Model.Domain.Entities;
 using Model.Domain.Items;
 using Model.Domain.Logs;
 using R3;
-using Unity.VisualScripting.YamlDotNet.Serialization;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -41,6 +40,8 @@ namespace Model.Domain.Characters
         public Aggression Aggression => _aggression;
         private readonly Aggression _aggression;
         public readonly bool IsLeader = false;
+        public Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions => _additionalConditions;
+        private readonly Dictionary<(IConditionData, RemovalConditionData), float> _additionalConditions;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
@@ -48,12 +49,13 @@ namespace Model.Domain.Characters
                 "Player",
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                new CharacterStatusMemento(20, 20, 1),
+                CharacterStatusManager.Build(20, 20, 1),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
-                true
+                true,
+                new Dictionary<(IConditionData, RemovalConditionData), float>()
             );
         }
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
@@ -61,12 +63,13 @@ namespace Model.Domain.Characters
             return new CharacterMemento(
                 data.Name,
                 data.CharacterType,
-                new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
+                CharacterStatusManager.Build(data.Hp, data.Hp, data.Strength),
                 new EntityMemento(spawnPosition),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
                 data.Aggression,
-                false
+                false,
+                data.AdditionalConditions.ToDictionary(x => (x.Condition, x.RemovalCondition), x => x.Probability)
             );
         }
 
@@ -83,6 +86,7 @@ namespace Model.Domain.Characters
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
             IsLeader = data.IsLeader;
+            _additionalConditions = new(data.AdditionalConditions);
         }
 
         public CharacterMemento Serialize()
@@ -95,7 +99,8 @@ namespace Model.Domain.Characters
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                IsLeader
+                IsLeader,
+                _additionalConditions.ToDictionary(x => (x.Key.Item1, x.Key.Item2), x => x.Value)
             );
         }
 

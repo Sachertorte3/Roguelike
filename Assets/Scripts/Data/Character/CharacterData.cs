@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Data.Area;
 using Data.Character.Type;
+using Data.Condition;
 using Data.Effect;
 using UnityEngine;
 
@@ -15,7 +16,8 @@ namespace Data.Character
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
         Aggression Aggression,
-        bool IsLeader
+        bool IsLeader,
+        Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions
     );
     public record EntityMemento(
         Vector2Int Position
@@ -23,7 +25,13 @@ namespace Data.Character
     public record CharacterStatusMemento(
         int MaxHp,
         int Hp,
-        int Strength
+        int Strength,
+        ConditionMemento[] Conditions
+    );
+    public record ConditionMemento(
+        IConditionData Condition,
+        RemovalConditionData RemovalCondition,
+        int ElapsedTurns
     );
     public record InventoryMemento(
         ItemMemento?[] Items

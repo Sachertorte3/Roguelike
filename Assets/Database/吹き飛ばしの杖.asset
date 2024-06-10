@@ -27,6 +27,8 @@ MonoBehaviour:
     RefIds:
     - rid: 4425516923575599111
       type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Distance: 5
     - rid: 6064254436379983894
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:

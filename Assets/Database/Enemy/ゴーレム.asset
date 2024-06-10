@@ -18,6 +18,7 @@ MonoBehaviour:
   CharacterType:
     rid: 4425516828619964417
   Aggression: 4
+  AdditionalConditions: []
   references:
     version: 2
     RefIds:

@@ -11,8 +11,8 @@ namespace Model.Domain.Effect
     [Serializable]
     public class AddConditionEffect : IEffect
     {
-        [Required] public RemovalConditionData RemovalCondition;
         [SerializeReference][Required] public IConditionData Condition;
+        [Required] public RemovalConditionData RemovalCondition;
         public Color Color => Colors.Purple;
 
         public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)

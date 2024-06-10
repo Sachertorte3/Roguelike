@@ -1,4 +1,6 @@
 using Data;
+using Data.Area;
+using Effect.Position;
 using Model.Domain.Effect;
 using UnityEngine;
 
@@ -15,8 +17,13 @@ namespace Model.Domain
                 Icon = mold.Icon,
                 EffectsOnUse = true,
                 EffectsOnThrow = true,
-                Skill = new SkillData(
+                SkillOnUse = new SkillDataOnUse(
+                    new AtFeet(),
                     mold.Area,
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                ),
+                SkillOnThrow = new SkillDataOnThrow(
+                    new SelfArea(),
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification))
                 ),
                 UsageLimit = Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
@@ -30,8 +37,13 @@ namespace Model.Domain
                 Icon = mold.Icon,
                 EffectsOnUse = true,
                 EffectsOnThrow = true,
-                Skill = new SkillData(
+                SkillOnUse = new SkillDataOnUse(
+                    new AtFeet(),
                     mold.Area,
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                ),
+                SkillOnThrow = new SkillDataOnThrow(
+                    new SelfArea(),
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                 ),
                 UsageLimit = Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),

@@ -18,11 +18,15 @@ MonoBehaviour:
     rid: 4425516923575599116
   Aggression: 4
   Skills:
-  - Area:
+  - Position:
+      rid: 4425516923575599117
+    Area:
       rid: 4425516923575599104
     Effect:
       rid: 4425516923575599105
-  - Area:
+  - Position:
+      rid: 4425516923575599118
+    Area:
       rid: 4425516923575599106
     Effect:
       rid: 4425516923575599108
@@ -30,10 +34,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599116
-      type: {class: Crab, ns: Data.Character.Type, asm: Data}
-      data:
-        Type: 0
     - rid: 4425516923575599104
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
@@ -51,4 +51,12 @@ MonoBehaviour:
     - rid: 4425516923575599108
       type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Power: 2
+        Power: 1
+    - rid: 4425516923575599116
+      type: {class: Crab, ns: Data.Character.Type, asm: Data}
+      data:
+        Type: 2
+    - rid: 4425516923575599117
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599118
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}

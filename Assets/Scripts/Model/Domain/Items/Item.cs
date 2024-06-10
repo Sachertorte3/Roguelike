@@ -18,7 +18,8 @@ namespace Model.Domain.Items
         public readonly Sprite Icon;
         public readonly string Info;
         public readonly string Name;
-        public readonly Skill Skill;
+        public readonly Skill SkillOnUse;
+        public readonly Skill SkillOnThrow;
 
         public Item(ItemData data)
         {
@@ -26,7 +27,8 @@ namespace Model.Domain.Items
             Icon = data.Icon;
             EffectsOnUse = data.EffectsOnUse;
             EffectsOnThrow = data.EffectsOnThrow;
-            Skill = new Skill(data.Skill);
+            SkillOnUse = new Skill(data.SkillOnUse);
+            SkillOnThrow = new Skill(data.SkillOnThrow);
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
             Info = data.Info();
         }
@@ -37,7 +39,8 @@ namespace Model.Domain.Items
             Icon = data.Icon;
             EffectsOnUse = data.EffectsOnUse;
             EffectsOnThrow = data.EffectsOnThrow;
-            Skill = new Skill(data.Skill);
+            SkillOnUse = new Skill(data.SkillOnUse);
+            SkillOnThrow = new Skill(data.SkillOnThrow);
             _remainingUses = new ReactiveProperty<int>(data.RemainingUses);
             Info = data.Info;
         }
@@ -50,7 +53,8 @@ namespace Model.Domain.Items
                 EffectsOnUse,
                 EffectsOnThrow,
                 _remainingUses.CurrentValue,
-                Skill.Serialize(),
+                SkillOnUse.Serialize(),
+                SkillOnThrow.Serialize(),
                 Info
             );
         }
@@ -61,12 +65,12 @@ namespace Model.Domain.Items
         public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             _remainingUses.Value -= 1;
-            await Skill.Use(actor, position, direction, world);
+            await SkillOnUse.Use(actor, position, direction, world);
         }
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            return Skill.Evaluate(actor, position, direction, world);
+            return SkillOnUse.Evaluate(actor, position, direction, world);
         }
     }
 }

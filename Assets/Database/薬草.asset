@@ -15,19 +15,30 @@ MonoBehaviour:
   Name: "\u85AC\u8349"
   Icon: {fileID: 1741613238, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
-  EffectsOnThrow: 1
-  Skill:
+  EffectsOnThrow: 0
+  SkillOnUse:
+    Position:
+      rid: 4425516923575599139
     Area:
-      rid: 6064254436379983901
+      rid: 4425516923575599140
     Effect:
-      rid: 6064254728247705602
+      rid: 4425516923575599141
+  SkillOnThrow:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 6064254436379983901
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4425516923575599139
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599140
       type: {class: SelfArea, ns: Data.Area, asm: Data}
-    - rid: 6064254728247705602
+    - rid: 4425516923575599141
       type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Power: 10

@@ -81,7 +81,7 @@ namespace Model.Domain.Items
 
             if (Item.EffectsOnThrow)
             {
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.Skill.GetArea(CurrentPosition, direction), Item.Skill.Color));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.SkillOnThrow.GetArea(CurrentPosition, direction), Item.SkillOnThrow.Color));
                 await Item.Use(actor, CurrentPosition, direction, world);
             }
         }

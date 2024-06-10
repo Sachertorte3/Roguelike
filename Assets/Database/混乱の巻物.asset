@@ -16,30 +16,41 @@ MonoBehaviour:
   Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 0
-  Skill:
+  SkillOnUse:
+    Position:
+      rid: 4425516923575599135
     Area:
-      rid: 4425516828619964427
+      rid: 4425516923575599136
     Effect:
-      rid: 4425516828619964429
+      rid: 4425516923575599137
+  SkillOnThrow:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 4425516828619964427
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4425516923575599135
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599136
       type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0
         Radius: 10
-    - rid: 4425516828619964429
+    - rid: 4425516923575599137
       type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Condition:
-          rid: 4425516828619964430
+          rid: 4425516923575599138
         RemovalCondition:
           RemoveByElapsedTurn: 1
-          Duration: 10
+          Duration: 5
           RemoveByDamage: 0
           AcceptableDamage: 0
           Probability: 0
-    - rid: 4425516828619964430
+    - rid: 4425516923575599138
       type: {class: Confused, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}

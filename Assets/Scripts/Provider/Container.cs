@@ -36,6 +36,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<LogView>();
             builder.RegisterComponentInHierarchy<DamageTextSpawner>();
             builder.RegisterComponentInHierarchy<FlushController>();
+            builder.RegisterComponentInHierarchy<SEManager>();
 
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
@@ -43,6 +44,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
             builder.RegisterPlainEntryPoint<PlayerCameraController>();
             builder.RegisterPlainEntryPoint<DamagePresenter>();
+            builder.RegisterPlainEntryPoint<SoundPresenter>();
             builder.RegisterPlainEntryPoint<GroupMarkerPresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();

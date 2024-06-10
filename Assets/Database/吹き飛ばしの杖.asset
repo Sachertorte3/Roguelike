@@ -15,22 +15,33 @@ MonoBehaviour:
   Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
   Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
-  EffectsOnThrow: 1
-  Skill:
+  EffectsOnThrow: 0
+  SkillOnUse:
+    Position:
+      rid: 4425516923575599129
     Area:
-      rid: 6064254436379983894
+      rid: 4425516923575599131
     Effect:
-      rid: 4425516923575599111
+      rid: 4425516923575599132
+  SkillOnThrow:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
   UsageLimit: 10
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599111
-      type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
-      data:
-        Distance: 5
-    - rid: 6064254436379983894
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4425516923575599129
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599131
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0
         Length: 1
+    - rid: 4425516923575599132
+      type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Distance: 5

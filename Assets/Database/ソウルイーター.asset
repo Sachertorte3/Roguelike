@@ -16,22 +16,33 @@ MonoBehaviour:
   Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 0
-  Skill:
+  SkillOnUse:
+    Position:
+      rid: 4425516923575599123
     Area:
-      rid: 6064254436379983894
+      rid: 4425516923575599124
     Effect:
-      rid: 4425516923575599115
+      rid: 4425516923575599125
+  SkillOnThrow:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
   UsageLimit: 10
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599115
-      type: {class: AbsorbsEffect, ns: Model.Domain.Effect, asm: Model.Domain}
-      data:
-        Power: 5
-        Rate: 0.6
-    - rid: 6064254436379983894
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4425516923575599123
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599124
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0
         Length: 1
+    - rid: 4425516923575599125
+      type: {class: AbsorbsEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 5
+        Rate: 0.6

@@ -16,18 +16,28 @@ MonoBehaviour:
   Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 1
-  Skill:
+  _isSameSkill: 1
+  SkillOnUse:
+    Position:
+      rid: 4425516923575599126
     Area:
-      rid: 6064254436379983901
+      rid: 4425516923575599127
     Effect:
-      rid: 4425516828619964416
+      rid: 4425516923575599128
+  SkillOnThrow:
+    Area:
+      rid: 4425516923575599127
+    Effect:
+      rid: 4425516923575599128
   UsageLimit: 1
   references:
     version: 2
     RefIds:
-    - rid: 4425516828619964416
+    - rid: 4425516923575599126
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+    - rid: 4425516923575599127
+      type: {class: SelfArea, ns: Data.Area, asm: Data}
+    - rid: 4425516923575599128
       type: {class: AffectionIncreaseEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Power: 1
-    - rid: 6064254436379983901
-      type: {class: SelfArea, ns: Data.Area, asm: Data}

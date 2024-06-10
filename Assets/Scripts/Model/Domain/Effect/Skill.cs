@@ -6,6 +6,8 @@ using Data;
 using Data.Area;
 using Data.Character;
 using Data.Effect;
+using Effect;
+using Effect.Position;
 using Model.Domain.Characters;
 using UnityEngine;
 using Utilities;
@@ -14,25 +16,42 @@ namespace Model.Domain.Effect
 {
     public class Skill : ISerializable<SkillMemento>
     {
+        private readonly IEffectPosition _position;
         private readonly IArea _area;
         private readonly IEffect _effect;
         public Color Color => _effect.Color;
 
         public Skill(SkillData data)
         {
+            _position = data.Position;
+            _area = data.Area;
+            _effect = data.Effect;
+        }
+
+        public Skill(SkillDataOnUse data)
+        {
+            _position = data.Position;
+            _area = data.Area;
+            _effect = data.Effect;
+        }
+
+        public Skill(SkillDataOnThrow data)
+        {
+            _position = new AtFeet();
             _area = data.Area;
             _effect = data.Effect;
         }
 
         public Skill(SkillMemento data)
         {
+            _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
         }
 
         public SkillMemento Serialize()
         {
-            return new SkillMemento(_area, _effect);
+            return new SkillMemento(_position, _area, _effect);
         }
 
         public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction)
@@ -42,7 +61,8 @@ namespace Model.Domain.Effect
 
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            var area = _area.Get(position, direction);
+            var spawnPositions = _position.Get(actor, position);
+            var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
             world.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
                 {

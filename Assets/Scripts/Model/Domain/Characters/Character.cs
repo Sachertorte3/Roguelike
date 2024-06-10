@@ -10,6 +10,7 @@ using Data.Character.Type;
 using Data.Condition;
 using Data.Effect;
 using Data.Setting;
+using Effect.Position;
 using Model.Domain.Action;
 using Model.Domain.Characters.Behavior;
 using Model.Domain.Effect;
@@ -54,7 +55,7 @@ namespace Model.Domain.Characters
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 CharacterStatusManager.Build(20, 20),
                 new EntityMemento(spawnPosition),
-                new[] { new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))).Serialize() },
+                new[] { new Skill(new SkillData(new AtFeet(), new LineArea(1, false), new AttackEffect(1))).Serialize() },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
@@ -209,7 +210,7 @@ namespace Model.Domain.Characters
             if (item.EffectsOnUse)
             {
                 GameLog.Add($"{_name}:{item.Name}を使った");
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.Skill.GetArea(CurrentPosition, CurrentDirection), item.Skill.Color));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.SkillOnUse.GetArea(CurrentPosition, CurrentDirection), item.SkillOnUse.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
                     await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

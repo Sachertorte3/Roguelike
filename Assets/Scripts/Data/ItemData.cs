@@ -2,6 +2,14 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System;
+using Effect;
+using Data.Area;
+using Data.Effect;
+using Codice.Client.BaseCommands;
+
+
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -17,7 +25,9 @@ namespace Data
         [Required] public Sprite Icon;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow = false;
-        [ShowIf("Usable")] public SkillData Skill;
+        [ShowIf("Usable"), SerializeField] private bool _isSameSkill = false;
+        [ShowIf("EffectsOnUse")] public SkillDataOnUse SkillOnUse;
+        [ShowIf("EffectsOnThrow")] public SkillDataOnThrow SkillOnThrow;
         [ShowIf("Usable")][MinValue(1)] public int UsageLimit;
         private bool Usable => EffectsOnUse || EffectsOnThrow;
 #if UNITY_EDITOR
@@ -29,7 +39,11 @@ namespace Data
 
             if (!Usable)
             {
-                Skill = null;
+                _isSameSkill = false;
+            }
+            if (_isSameSkill)
+            {
+                SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect);
             }
         }
 #endif
@@ -38,17 +52,50 @@ namespace Data
             var info = Name;
             if (Usable)
             {
-                info += "\n[" + (EffectsOnUse, EffectsOnThrow) switch
+                if (EffectsOnUse)
                 {
-                    (true, true) => "使用・投擲時",
-                    (true, false) => "使用時",
-                    (false, true) => "投擲時",
-                    (false, false) => throw new InvalidOperationException()
-                };
-                info += $"]\n{Skill.Info()}\n使用可能回数: {UsageLimit}";
+                    info += $"[使用時]\n{SkillOnUse.Info()}\n";
+                }
+                if (EffectsOnThrow)
+                {
+                    info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
+                }
+                info += $"使用可能回数: {UsageLimit}";
             }
 
             return info;
+        }
+    }
+    [Serializable]
+    public class SkillDataOnUse : IHasInfo
+    {
+        [SerializeReference, Required] public IEffectPosition Position;
+        [SerializeReference, Required] public IArea Area;
+        [SerializeReference, Required] public IEffect Effect;
+        public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect)
+        {
+            Position = position;
+            Area = area;
+            Effect = effect;
+        }
+        public string Info()
+        {
+            return $"効果: {Effect.Info()}\n発動位置: {Position.Info()}\n範囲: {Area.Info()}";
+        }
+    }
+    [Serializable]
+    public class SkillDataOnThrow : IHasInfo
+    {
+        [SerializeReference, Required] public IArea Area;
+        [SerializeReference, Required] public IEffect Effect;
+        public SkillDataOnThrow(IArea area, IEffect effect)
+        {
+            Area = area;
+            Effect = effect;
+        }
+        public string Info()
+        {
+            return $"効果: {Effect.Info()}\n範囲: {Area.Info()}";
         }
     }
 }

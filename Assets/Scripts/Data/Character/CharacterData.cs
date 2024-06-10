@@ -4,6 +4,7 @@ using Data.Area;
 using Data.Character.Type;
 using Data.Condition;
 using Data.Effect;
+using Effect;
 using UnityEngine;
 
 namespace Data.Character
@@ -42,10 +43,12 @@ namespace Data.Character
         bool EffectsOnUse,
         bool EffectsOnThrow,
         int RemainingUses,
-        SkillMemento Skill,
+        SkillMemento SkillOnUse,
+        SkillMemento SkillOnThrow,
         string Info
     );
     public record SkillMemento(
+        IEffectPosition Position,
         IArea Area,
         IEffect Effect
     );

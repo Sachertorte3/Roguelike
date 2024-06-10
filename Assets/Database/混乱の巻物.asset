@@ -28,18 +28,18 @@ MonoBehaviour:
     - rid: 4425516828619964427
       type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
-        ContainsSelf: 1
+        ContainsSelf: 0
         Radius: 10
     - rid: 4425516828619964429
       type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
+        Condition:
+          rid: 4425516828619964430
         RemovalCondition:
           RemoveByElapsedTurn: 1
           Duration: 10
           RemoveByDamage: 0
           AcceptableDamage: 0
           Probability: 0
-        Condition:
-          rid: 4425516828619964430
     - rid: 4425516828619964430
       type: {class: Confused, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}

@@ -4,6 +4,6 @@ namespace Data.Condition
 {
     public interface IHasCondition
     {
-        public UniTask LoseHp(int value);
+        public UniTask<int> LoseHp(int value);
     }
 }

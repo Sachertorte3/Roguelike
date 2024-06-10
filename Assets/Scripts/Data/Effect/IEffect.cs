@@ -8,12 +8,15 @@ namespace Data.Effect
     public interface IEffect : IHasInfo
     {
         public Impact Impact { get; }
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, ISpawnPositionGenerator map);
+        public Color Color { get; }
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map);
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
     }
-    public interface ISpawnPositionGenerator
+    public interface IPassableChecker
     {
         public HashSet<Vector2Int> GetAllPassablePositions();
+        public bool IsPassable(Vector2Int position);
+        public bool IsMapPassable(Vector2Int position);
     }
 }
 

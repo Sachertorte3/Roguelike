@@ -19,6 +19,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
   - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
   - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+  - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
   Enemies:
   - {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
   - {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
@@ -30,3 +31,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
   - {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
   - {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+  WeaponPrefixes:
+  - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}

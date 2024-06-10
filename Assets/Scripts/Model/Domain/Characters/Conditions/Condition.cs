@@ -1,19 +1,25 @@
-﻿using Data.Condition;
+﻿using Data.Character;
+using Data.Condition;
 using Utilities;
 
 namespace Model.Domain.Characters.Conditions
 {
-    public class Condition
+    public class Condition : ISerializable<ConditionMemento>
     {
         private readonly IConditionData _condition;
         private readonly RemovalConditionData _removalCondition;
-        private int ElapsedTurn;
+        private int _elapsedTurn;
 
         public Condition(IConditionData condition, RemovalConditionData removalCondition)
         {
-            ElapsedTurn = 0;
+            _elapsedTurn = 0;
             _condition = condition;
             _removalCondition = removalCondition;
+        }
+
+        public ConditionMemento Serialize()
+        {
+            return new ConditionMemento(_condition, _removalCondition, _elapsedTurn);
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
@@ -32,13 +38,13 @@ namespace Model.Domain.Characters.Conditions
 
         public void UpdateTurn(IHasCondition hasCondition)
         {
-            ElapsedTurn += 1;
+            _elapsedTurn += 1;
             _condition.Persist(hasCondition);
         }
 
         public bool ShouldDelete(int receivedDamage)
         {
-            return _removalCondition.IsFinished(ElapsedTurn, receivedDamage);
+            return _removalCondition.IsFinished(_elapsedTurn, receivedDamage);
         }
     }
 }

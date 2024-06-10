@@ -71,7 +71,7 @@ namespace Model.Domain.Characters
             _events.Add(character,
                 character.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
-            _events.Add(character, character.OnSpawnEffect.Select(useSkill => new OnEffectSpawnedMessage(useSkill)));
+            _events.Add(character, character.OnEffectSpawned);
             _events.Add(character, character.Area.OnVisibleAreaChanged);
             _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
             _events.Add(character, character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));

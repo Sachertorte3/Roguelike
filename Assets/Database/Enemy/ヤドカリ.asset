@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30E4\u30C9\u30AB\u30EA"
+  m_EditorClassIdentifier: 
+  Name: "\u30E4\u30C9\u30AB\u30EA"
+  Hp: 10
+  CharacterType:
+    rid: 4425516923575599116
+  Aggression: 4
+  Skills:
+  - Area:
+      rid: 4425516923575599104
+    Effect:
+      rid: 4425516923575599105
+  - Area:
+      rid: 4425516923575599106
+    Effect:
+      rid: 4425516923575599108
+  AdditionalConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4425516923575599116
+      type: {class: Crab, ns: Data.Character.Type, asm: Data}
+      data:
+        Type: 0
+    - rid: 4425516923575599104
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599105
+      type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 10
+    - rid: 4425516923575599106
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599108
+      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 2

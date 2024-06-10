@@ -22,6 +22,7 @@ namespace Data.Character
         [MinValue(1)] public int Hp;
         [SerializeReference] public ICharacterType CharacterType;
         public Aggression Aggression = Aggression.AvoidAllies;
+        public SkillData[] Skills;
         public List<AdditionalConditionData> AdditionalConditions = new();
 #if UNITY_EDITOR
         private void OnValidate()

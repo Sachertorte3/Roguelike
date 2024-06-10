@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Model.Domain
 {
-    public interface IMap : ISpawnPositionGenerator
+    public interface IMap : IPassableChecker
     {
         public IObservableCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<Character> Characters { get; }

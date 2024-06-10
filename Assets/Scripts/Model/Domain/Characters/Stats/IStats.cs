@@ -6,6 +6,5 @@ namespace Model.Domain.Characters.Stats
     {
         public ReadOnlyReactiveProperty<int> HpValue { get; }
         public ReadOnlyReactiveProperty<int> MaxHp { get; }
-        public ReadOnlyReactiveProperty<int> Strength { get; }
     }
 }

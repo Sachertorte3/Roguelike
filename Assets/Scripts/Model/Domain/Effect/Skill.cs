@@ -16,6 +16,7 @@ namespace Model.Domain.Effect
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
+        public Color Color => _effect.Color;
 
         public Skill(SkillData data)
         {

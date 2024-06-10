@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30B4\u30FC\u30EC\u30E0"
+  m_Name: "\u30E4\u30C9\u30AB\u30EA"
   m_EditorClassIdentifier: 
-  Name: "\u30B4\u30FC\u30EC\u30E0"
+  Name: "\u30E4\u30C9\u30AB\u30EA"
   Hp: 10
-  Strength: 2
   CharacterType:
-    rid: 4425516828619964417
+    rid: 4425516923575599116
   Aggression: 4
   Skills:
   - Area:
@@ -27,11 +26,12 @@ MonoBehaviour:
       rid: 4425516923575599106
     Effect:
       rid: 4425516923575599108
+  AdditionalConditions: []
   references:
     version: 2
     RefIds:
-    - rid: 4425516828619964417
-      type: {class: Golem, ns: Data.Character.Type, asm: Data}
+    - rid: 4425516923575599116
+      type: {class: Crab, ns: Data.Character.Type, asm: Data}
       data:
         Type: 0
     - rid: 4425516923575599104

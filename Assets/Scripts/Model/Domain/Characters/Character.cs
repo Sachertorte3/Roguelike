@@ -115,7 +115,7 @@ namespace Model.Domain.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IMap world)
+        public bool CanMove(Direction8 direction, IPassableChecker world)
         {
             return _canIgnoreWall
                 ? true
@@ -125,7 +125,7 @@ namespace Model.Domain.Characters
                        world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
-        public bool CanMoveIgnoreCharacter(Direction8 direction, IMap world)
+        public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
         {
             return _canIgnoreWall
                 ? true
@@ -160,6 +160,15 @@ namespace Model.Domain.Characters
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+        }
+
+        public async UniTask BlowAway(Direction8 direction, IPassableChecker map)
+        {
+            Debug.Log($"{_name}は{direction}に吹き飛んだ");
+            while (CanMove(direction, map))
+            {
+                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+            }
         }
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)

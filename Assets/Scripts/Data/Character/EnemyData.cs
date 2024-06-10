@@ -2,6 +2,12 @@ using Data.Character.Type;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
+using Data.Condition;
+using System;
+
+
+
 
 #if UNITY_EDITOR
 using System.IO;
@@ -14,9 +20,10 @@ namespace Data.Character
     {
         [ReadOnly, Required] public string Name = "";
         [MinValue(1)] public int Hp;
-        [MinValue(1)] public int Strength;
         [SerializeReference] public ICharacterType CharacterType;
         public Aggression Aggression = Aggression.AvoidAllies;
+        public SkillData[] Skills;
+        public List<AdditionalConditionData> AdditionalConditions = new();
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -26,4 +33,12 @@ namespace Data.Character
         }
 #endif
     }
+    [Serializable]
+    public class AdditionalConditionData
+    {
+        [Required, SerializeReference] public IConditionData Condition;
+        [Required] public RemovalConditionData RemovalCondition;
+        [Range(0, 1)] public float Probability;
+    }
 }
+

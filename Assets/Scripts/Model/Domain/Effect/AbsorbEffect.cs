@@ -1,36 +1,32 @@
-﻿using System;
+using System;
 using Cysharp.Threading.Tasks;
 using Data.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Model.Domain.Effect
 {
     [Serializable]
-    public class AttackEffect : IEffect
+    public class AbsorbsEffect : IEffect
     {
         [MinValue(1)] public int Power;
-        public Color Color => Colors.Red;
+        [Range(0, 1)] public float Rate;
+        public Color Color => Colors.Yellow;
 
-        public AttackEffect(int power)
+        public AbsorbsEffect(int power, float rate)
         {
             Power = power;
+            Rate = rate;
         }
 
         public Impact Impact => Impact.Harmful;
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            await target.LoseHp(Formula.Calc(actor, Power));
-            foreach (var ((condition, removalCondition), probability) in actor.AdditionalConditions)
-            {
-                if (Random.value < probability)
-                {
-                    target.AddCondition(condition, removalCondition);
-                }
-            }
+            var value = Formula.Calc(actor, Power);
+            var loseValue = await target.LoseHp(value);
+            await actor.GainHp(Mathf.RoundToInt(loseValue * Rate));
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
@@ -40,7 +36,7 @@ namespace Model.Domain.Effect
 
         public string Info()
         {
-            return $"攻撃\n威力: {Power}";
+            return $"HP吸収\n威力: {Power}\n吸収割合: {Rate * 100}%";
         }
     }
 }

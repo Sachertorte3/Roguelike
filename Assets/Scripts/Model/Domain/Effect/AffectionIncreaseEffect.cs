@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Cysharp.Threading.Tasks;
 using Data.Effect;
 using Sirenix.OdinInspector;
@@ -8,12 +8,12 @@ using Utilities;
 namespace Model.Domain.Effect
 {
     [Serializable]
-    public class HealEffect : IEffect
+    public class AffectionIncreaseEffect : IEffect
     {
-        [MinValue(1)] public int Power;
-        public Color Color => Colors.Green;
+        [MinValue(1)] public float Power;
+        public Color Color => Colors.HotPink;
 
-        public HealEffect(int power)
+        public AffectionIncreaseEffect(float power)
         {
             Power = power;
         }
@@ -22,17 +22,17 @@ namespace Model.Domain.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            await target.GainHp(Formula.Calc(actor, Power));
+
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, Power)) / target.CurrentMaxHp);
+            return Power;
         }
 
         public string Info()
         {
-            return $"回復\n威力: {Power}";
+            return $"好感度上昇\n威力: {Power}";
         }
     }
 }

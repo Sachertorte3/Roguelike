@@ -113,6 +113,10 @@ namespace Model.Domain.Characters.Behavior
             if (_lastTargetPosition != null)//目指す座標がある
             {
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
+                foreach (var actionTemp in actions)
+                {
+                    Debug.Log($"{actionTemp.GetType()} {actionTemp.Evaluate(character, world)}");
+                }
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
                 var action = await UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
                 Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");

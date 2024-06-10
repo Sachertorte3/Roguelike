@@ -18,6 +18,12 @@ MonoBehaviour:
   CharacterType:
     rid: 6064254728247705600
   Aggression: 1
+  Skills:
+  - Area:
+      rid: 4425516923575599109
+    Effect:
+      rid: 4425516923575599110
+  Aggression: 1
   AdditionalConditions:
   - Condition:
       rid: 4425516923575599112
@@ -31,6 +37,15 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 4425516923575599109
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599110
+      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 1
     - rid: 4425516923575599112
       type: {class: Poisoned, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
     - rid: 6064254728247705600

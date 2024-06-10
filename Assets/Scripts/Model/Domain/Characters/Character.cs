@@ -339,11 +339,11 @@ namespace Model.Domain.Characters
         }
         public int CurrentMaxHp => _statusManager.CurrentMaxHp;
         public int CurrentHp => _statusManager.CurrentHp;
-        public UniTask GainHp(int value)
+        public UniTask<int> GainHp(int value)
         {
             return _statusManager.GainHp(value);
         }
-        public UniTask LoseHp(int value)
+        public UniTask<int> LoseHp(int value)
         {
             return _statusManager.LoseHp(value);
         }

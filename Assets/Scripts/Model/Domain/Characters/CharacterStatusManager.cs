@@ -58,18 +58,18 @@ namespace Model.Domain.Characters
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public UniTask GainHp(int value)
+        public UniTask<int> GainHp(int value)
         {
-            _stats.Hp.Gain(value, _name);
+            int gainValue = _stats.Hp.Gain(value, _name);
             _onHealReceived.OnNext(value);
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(gainValue);
         }
 
-        public UniTask LoseHp(int value)
+        public UniTask<int> LoseHp(int value)
         {
-            _stats.Hp.Lose(value, _name);
+            int loseValue = _stats.Hp.Lose(value, _name);
             _onDamageReceived.OnNext(value);
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(loseValue);
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

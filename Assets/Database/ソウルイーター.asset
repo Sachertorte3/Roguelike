@@ -10,27 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30ED\u30F3\u30B0\u30BD\u30FC\u30C9"
+  m_Name: "\u30BD\u30A6\u30EB\u30A4\u30FC\u30BF\u30FC"
   m_EditorClassIdentifier: 
-  Name: "\u30ED\u30F3\u30B0\u30BD\u30FC\u30C9"
-  Icon: {fileID: -85647645, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Name: "\u30BD\u30A6\u30EB\u30A4\u30FC\u30BF\u30FC"
+  Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
-  EffectsOnThrow: 1
+  EffectsOnThrow: 0
   Skill:
     Area:
       rid: 6064254436379983894
     Effect:
-      rid: 6064254728247705601
-  UsageLimit: 30
+      rid: 4425516923575599115
+  UsageLimit: 10
   references:
     version: 2
     RefIds:
+    - rid: 4425516923575599115
+      type: {class: AbsorbsEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      data:
+        Power: 5
+        Rate: 0.6
     - rid: 6064254436379983894
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 0
-        Length: 2
-    - rid: 6064254728247705601
-      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
-      data:
-        Power: 10
+        Length: 1

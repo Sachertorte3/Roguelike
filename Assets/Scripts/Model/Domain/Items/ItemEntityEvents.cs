@@ -46,7 +46,7 @@ namespace Model.Domain.Items
             _events.Add(item, item.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
             _events.Add(item, item.OnDisabled.Select(disabled => new OnDisabledMessage()));
             _events.Add(item, item.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
-            _events.Add(item, item.OnSpawnEffect.Select(useSkill => new OnEffectSpawnedMessage(useSkill)));
+            _events.Add(item, item.OnEffectSpawned.Select(useSkill => new OnEffectSpawnedMessage(useSkill.Area, useSkill.Color)));
         }
     }
 }

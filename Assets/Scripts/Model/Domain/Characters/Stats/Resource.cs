@@ -40,27 +40,28 @@ namespace Model.Domain.Characters.Stats
             _value.Value = Mathf.Clamp(Value.CurrentValue, 0, Max.CurrentValue);
         }
 
-        public void Lose(int value, string name)
+        public int Lose(int value, string name)
         {
             if (value < 0)
             {
-                Gain(-value, name);
-                return;
+                return Gain(-value, name);
             }
-
+            int oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
             Log.Debug($"{name} Lose {value}, current value {_value.Value}");
+            return oldValue - _value.Value;
         }
 
-        public void Gain(int value, string name)
+        public int Gain(int value, string name)
         {
             if (value < 0)
             {
-                Lose(-value, name);
-                return;
+                return Lose(-value, name);
             }
 
+            int oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
+            return oldValue - _value.Value;
         }
     }
 }

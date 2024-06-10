@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data.Character;
 using Data.Condition;
@@ -19,10 +20,15 @@ namespace Model.Domain.Characters
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
 
+        public static CharacterStatusMemento Build(int maxHp, int hp)
+        {
+            return new CharacterStatusMemento(maxHp, hp, new ConditionMemento[0]);
+        }
+
         public CharacterStatusManager(string name, CharacterStatusMemento memento)
         {
             _name = name;
-            _stats = new CharacterStats(memento.MaxHp, memento.Hp, memento.Strength);
+            _stats = new CharacterStats(memento.MaxHp, memento.Hp);
             _conditions = new CharacterConditions(this);
         }
 
@@ -31,7 +37,7 @@ namespace Model.Domain.Characters
             return new CharacterStatusMemento(
                 _stats.MaxHp.CurrentValue,
                 _stats.Hp.Value.CurrentValue,
-                _stats.Strength.CurrentValue
+                _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
         }
 
@@ -51,18 +57,18 @@ namespace Model.Domain.Characters
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public UniTask GainHp(int value)
+        public UniTask<int> GainHp(int value)
         {
-            _stats.Hp.Gain(value, _name);
+            int gainValue = _stats.Hp.Gain(value, _name);
             _onHealReceived.OnNext(value);
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(gainValue);
         }
 
-        public UniTask LoseHp(int value)
+        public UniTask<int> LoseHp(int value)
         {
-            _stats.Hp.Lose(value, _name);
+            int loseValue = _stats.Hp.Lose(value, _name);
             _onDamageReceived.OnNext(value);
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(loseValue);
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

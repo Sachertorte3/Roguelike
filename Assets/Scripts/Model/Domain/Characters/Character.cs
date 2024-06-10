@@ -17,7 +17,6 @@ using Model.Domain.Entities;
 using Model.Domain.Items;
 using Model.Domain.Logs;
 using R3;
-using Unity.VisualScripting.YamlDotNet.Serialization;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -34,7 +33,7 @@ namespace Model.Domain.Characters
         private readonly Skill[] _skills;
         private string _name = "Character";
         public string Name => _name;
-        private readonly Subject<IEnumerable<Vector2Int>> _onSpawnEffect = new();
+        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly CharacterStatusManager _statusManager;
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
@@ -43,6 +42,8 @@ namespace Model.Domain.Characters
         public Aggression Aggression => _aggression;
         private readonly Aggression _aggression;
         public readonly bool IsLeader = false;
+        public Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions => _additionalConditions;
+        private readonly Dictionary<(IConditionData, RemovalConditionData), float> _additionalConditions;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
@@ -50,13 +51,14 @@ namespace Model.Domain.Characters
                 "Player",
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                new CharacterStatusMemento(20, 20, 1),
+                CharacterStatusManager.Build(20, 20),
                 new EntityMemento(spawnPosition),
                 new[] { new Skill(new SkillData(new LineArea(1, false), new AttackEffect(1))).Serialize() },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
-                true
+                true,
+                new Dictionary<(IConditionData, RemovalConditionData), float>()
             );
         }
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
@@ -64,13 +66,14 @@ namespace Model.Domain.Characters
             return new CharacterMemento(
                 data.Name,
                 data.CharacterType,
-                new CharacterStatusMemento(data.Hp, data.Hp, data.Strength),
+                CharacterStatusManager.Build(data.Hp, data.Hp),
                 new EntityMemento(spawnPosition),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
                 data.Aggression,
-                false
+                false,
+                data.AdditionalConditions.ToDictionary(x => (x.Condition, x.RemovalCondition), x => x.Probability)
             );
         }
 
@@ -88,6 +91,7 @@ namespace Model.Domain.Characters
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
             IsLeader = data.IsLeader;
+            _additionalConditions = new(data.AdditionalConditions);
         }
 
         public CharacterMemento Serialize()
@@ -101,13 +105,14 @@ namespace Model.Domain.Characters
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                IsLeader
+                IsLeader,
+                _additionalConditions.ToDictionary(x => (x.Key.Item1, x.Key.Item2), x => x.Value)
             );
         }
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
-        public Observable<IEnumerable<Vector2Int>> OnSpawnEffect => _onSpawnEffect;
+        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDead => _statusManager.OnDead;
         public ICharacterType CharacterType { get; init; }
         private ICharacterBehavior Behavior { get; }
@@ -122,7 +127,7 @@ namespace Model.Domain.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IMap world)
+        public bool CanMove(Direction8 direction, IPassableChecker world)
         {
             return _canIgnoreWall
                 ? true
@@ -132,7 +137,7 @@ namespace Model.Domain.Characters
                        world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
-        public bool CanMoveIgnoreCharacter(Direction8 direction, IMap world)
+        public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
         {
             return _canIgnoreWall
                 ? true
@@ -169,10 +174,21 @@ namespace Model.Domain.Characters
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
         }
 
+        public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
+        {
+            Debug.Log($"{_name}は{direction}に吹き飛んだ");
+            for (int i = 0; i < distance; i++)
+            {
+                if (!CanMove(direction, map))
+                    break;
+                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+            }
+        }
+
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
         {
             Turn(direction);
-            _onSpawnEffect.OnNext(skill.GetArea(CurrentPosition, CurrentDirection));
+            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(skill.GetArea(CurrentPosition, CurrentDirection), skill.Color));
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -191,7 +207,7 @@ namespace Model.Domain.Characters
             if (item.EffectsOnUse)
             {
                 GameLog.Add($"{_name}:{item.Name}を使った");
-                _onSpawnEffect.OnNext(item.Skill.GetArea(CurrentPosition, CurrentDirection));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.Skill.GetArea(CurrentPosition, CurrentDirection), item.Skill.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
                     await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -222,7 +238,7 @@ namespace Model.Domain.Characters
         {
             _entity.Dispose();
             _inventory.Dispose();
-            _onSpawnEffect.Dispose();
+            _onEffectSpawned.Dispose();
             _direction.Dispose();
         }
 
@@ -330,11 +346,11 @@ namespace Model.Domain.Characters
         }
         public int CurrentMaxHp => _statusManager.CurrentMaxHp;
         public int CurrentHp => _statusManager.CurrentHp;
-        public UniTask GainHp(int value)
+        public UniTask<int> GainHp(int value)
         {
             return _statusManager.GainHp(value);
         }
-        public UniTask LoseHp(int value)
+        public UniTask<int> LoseHp(int value)
         {
             return _statusManager.LoseHp(value);
         }

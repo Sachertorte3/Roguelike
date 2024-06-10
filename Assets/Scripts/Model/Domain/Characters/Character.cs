@@ -162,11 +162,13 @@ namespace Model.Domain.Characters
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
         }
 
-        public async UniTask BlowAway(Direction8 direction, IPassableChecker map)
+        public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
         {
             Debug.Log($"{_name}は{direction}に吹き飛んだ");
-            while (CanMove(direction, map))
+            for (int i = 0; i < distance; i++)
             {
+                if (!CanMove(direction, map))
+                    break;
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
         }

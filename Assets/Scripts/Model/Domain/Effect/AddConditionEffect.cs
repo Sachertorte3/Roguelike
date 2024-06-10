@@ -39,30 +39,4 @@ namespace Model.Domain.Effect
             return $"状態付与: {Condition.Name}";
         }
     }
-    [Serializable]
-    public class BlowAwayEffect : IEffect
-    {
-        public Color Color => Colors.LightGreen;
-
-        public BlowAwayEffect()
-        {
-        }
-
-        public Impact Impact => Impact.Harmful;
-
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
-        {
-            await target.BlowAway(DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, map);
-        }
-
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
-        {
-            return 0;
-        }
-
-        public string Info()
-        {
-            return "吹き飛ばし";
-        }
-    }
 }

@@ -12,7 +12,7 @@ namespace Data.Effect
         public int CurrentHp { get; }
         public UniTask GainHp(int value);
         public UniTask LoseHp(int value);
-        public UniTask BlowAway(Direction8 direction, IPassableChecker map);
+        public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
 

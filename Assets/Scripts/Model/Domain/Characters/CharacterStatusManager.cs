@@ -20,15 +20,15 @@ namespace Model.Domain.Characters
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
 
-        public static CharacterStatusMemento Build(int maxHp, int hp, int strength)
+        public static CharacterStatusMemento Build(int maxHp, int hp)
         {
-            return new CharacterStatusMemento(maxHp, hp, strength, new ConditionMemento[0]);
+            return new CharacterStatusMemento(maxHp, hp, new ConditionMemento[0]);
         }
 
         public CharacterStatusManager(string name, CharacterStatusMemento memento)
         {
             _name = name;
-            _stats = new CharacterStats(memento.MaxHp, memento.Hp, memento.Strength);
+            _stats = new CharacterStats(memento.MaxHp, memento.Hp);
             _conditions = new CharacterConditions(this);
         }
 
@@ -37,7 +37,6 @@ namespace Model.Domain.Characters
             return new CharacterStatusMemento(
                 _stats.MaxHp.CurrentValue,
                 _stats.Hp.Value.CurrentValue,
-                _stats.Strength.CurrentValue,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
         }

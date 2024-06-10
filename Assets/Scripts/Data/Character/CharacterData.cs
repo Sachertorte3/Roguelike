@@ -25,7 +25,6 @@ namespace Data.Character
     public record CharacterStatusMemento(
         int MaxHp,
         int Hp,
-        int Strength,
         ConditionMemento[] Conditions
     );
     public record ConditionMemento(

@@ -7,13 +7,9 @@ namespace Model.Domain.Characters.Stats
 {
     internal class CharacterStats : IDisposable, IStats
     {
-        private readonly Stat _strength;
-
-        public CharacterStats(int maxHp, int hp, int strength)
+        public CharacterStats(int maxHp, int hp)
         {
             Hp = new Resource(maxHp, hp);
-            _strength = new Stat(strength);
-            Strength = _strength.ToReactiveProperty();
         }
 
         public Resource Hp { get; init; }
@@ -25,6 +21,5 @@ namespace Model.Domain.Characters.Stats
 
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.Max;
-        public ReadOnlyReactiveProperty<int> Strength { get; init; }
     }
 }

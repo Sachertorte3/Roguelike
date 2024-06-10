@@ -25,7 +25,7 @@ namespace Data
         [Required] public Sprite Icon;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow = false;
-        [ShowIf("Usable"), SerializeField] private bool _isSameSkill = false;
+        [ShowIf("@EffectsOnUse && EffectsOnThrow"), SerializeField] private bool _isSameSkill = false;
         [ShowIf("EffectsOnUse")] public SkillDataOnUse SkillOnUse;
         [ShowIf("EffectsOnThrow")] public SkillDataOnThrow SkillOnThrow;
         [ShowIf("Usable")][MinValue(1)] public int UsageLimit;
@@ -37,7 +37,7 @@ namespace Data
             Name = Path.GetFileNameWithoutExtension(assetPath);
             AssetDatabase.SaveAssets();
 
-            if (!Usable)
+            if (!(EffectsOnUse && EffectsOnThrow))
             {
                 _isSameSkill = false;
             }
@@ -49,16 +49,23 @@ namespace Data
 #endif
         public string Info()
         {
-            var info = Name;
+            var info = $"{Name}\n";
             if (Usable)
             {
-                if (EffectsOnUse)
+                if (_isSameSkill)
                 {
-                    info += $"[使用時]\n{SkillOnUse.Info()}\n";
+                    info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
                 }
-                if (EffectsOnThrow)
+                else
                 {
-                    info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
+                    if (EffectsOnUse)
+                    {
+                        info += $"[使用時]\n{SkillOnUse.Info()}\n";
+                    }
+                    if (EffectsOnThrow)
+                    {
+                        info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
+                    }
                 }
                 info += $"使用可能回数: {UsageLimit}";
             }

@@ -36,6 +36,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<LogView>();
             builder.RegisterComponentInHierarchy<DamageTextSpawner>();
             builder.RegisterComponentInHierarchy<FlushController>();
+            builder.RegisterComponentInHierarchy<BGMManager>();
             builder.RegisterComponentInHierarchy<SEManager>();
 
             builder.RegisterPlainEntryPoint<InputPresenter>();

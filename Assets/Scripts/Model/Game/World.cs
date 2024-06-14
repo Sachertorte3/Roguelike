@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Data;
 using Data.Character;
 using Data.Map;
 using Model.Domain.Characters;
@@ -22,12 +23,15 @@ namespace Model.Game
         private ReactiveProperty<MapManager?> _activeMap = new();
         public int ActiveMapIndex = 0;
         private CharacterControllInputReceiver _receiver;
+        private DungeonData _dungeonData;
 
         [Inject]
         public World(CharacterControllInputReceiver receiver)
         {
             Globals.World = this;
             _receiver = receiver;
+            
+            _dungeonData = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
@@ -40,10 +44,7 @@ namespace Model.Game
             }
             else
             {
-                var bluePrint = Addressables
-                .LoadAssetAsync<FieldBluePrint>(
-                    "Assets/kyouma0220/RandomDungeonWithBluePrint/BluePrints/99_Random.asset").WaitForCompletion();
-                return MapManager.Build(Tilemap.BuildMemento(bluePrint), mapId + 1, mapId > 0 ? mapId - 1 : null);
+                return MapManager.Build(Tilemap.BuildMemento(_dungeonData.Field), _dungeonData, mapId + 1, mapId > 0 ? mapId - 1 : null);
             }
         }
         public MapManager LoadMap(int mapId)

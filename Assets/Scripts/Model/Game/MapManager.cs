@@ -149,13 +149,12 @@ namespace Model.Game
             foreach (var eventEntity in EventEntities)
                 eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
         }
-        public static MapMemento Build(TilemapMemento tilemapData, int nextMapId, int? prevMapId)
+        public static MapMemento Build(TilemapMemento tilemapData, DungeonData data, int nextMapId, int? prevMapId)
         {
             var tilemap = new Tilemap(tilemapData);
             var characters = new List<CharacterMemento>();
             var items = new List<ItemEntityMemento>();
 
-            var data = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
                 characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(25))

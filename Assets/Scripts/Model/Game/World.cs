@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
@@ -13,6 +14,7 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using static Data.DungeonData;
 
 namespace Model.Game
 {
@@ -36,6 +38,19 @@ namespace Model.Game
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
+        private SectionData GetSectionData(int level)
+        {
+            int currentDepth = 0;
+            foreach (var section in _dungeonData.Sections)
+            {
+                currentDepth += section.Depth;
+                if (level <= currentDepth)
+                {
+                    return section;
+                }
+            }
+            throw new InvalidOperationException("指定されたレベルに対応するセクションが見つかりません。");
+        }
         private MapMemento GetMapMemento(int mapId)
         {
             if (_maps.ContainsKey(mapId))
@@ -44,7 +59,8 @@ namespace Model.Game
             }
             else
             {
-                return MapManager.Build(Tilemap.BuildMemento(_dungeonData.Field), _dungeonData, mapId + 1, mapId > 0 ? mapId - 1 : null);
+                var sectionData = GetSectionData(mapId);
+                return MapManager.Build(Tilemap.BuildMemento(sectionData.Field), sectionData, mapId + 1, mapId > 1 ? mapId - 1 : null);
             }
         }
         public MapManager LoadMap(int mapId)

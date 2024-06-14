@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Data.Character;
+using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Data
     {
         public int Floor;
         public float PrefixChance = 0.2f;
+        [Required] public FieldBluePrint Field;
         [RequiredListLength(1, null)] public List<ItemData> Items;
         [RequiredListLength(1, null)] public List<EnemyData> Enemies;
         [RequiredListLength(1, null)] public List<MaterialData> Materials;

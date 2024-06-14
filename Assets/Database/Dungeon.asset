@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Dungeon
   m_EditorClassIdentifier: 
   Floor: 0
+  PrefixChance: 0.2
+  Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
   Items:
   - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
   - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}

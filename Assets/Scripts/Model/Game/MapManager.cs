@@ -18,6 +18,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.Algorithms;
+using static Data.DungeonData;
 using Random = UnityEngine.Random;
 
 namespace Model.Game
@@ -149,7 +150,7 @@ namespace Model.Game
             foreach (var eventEntity in EventEntities)
                 eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
         }
-        public static MapMemento Build(TilemapMemento tilemapData, DungeonData data, int nextMapId, int? prevMapId)
+        public static MapMemento Build(TilemapMemento tilemapData, SectionData data, int nextMapId, int? prevMapId)
         {
             var tilemap = new Tilemap(tilemapData);
             var characters = new List<CharacterMemento>();

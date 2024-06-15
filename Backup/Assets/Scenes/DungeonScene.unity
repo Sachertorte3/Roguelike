@@ -1206,8 +1206,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30A2\u30A4\u30C6\u30E0\u540D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e0171e318dfddbd4c8a00ec7127926a7, type: 2}
-  m_sharedMaterial: {fileID: 4754154381529224934, guid: e0171e318dfddbd4c8a00ec7127926a7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 37048231315fad1469fdc00c9d965347, type: 2}
+  m_sharedMaterial: {fileID: -8947880408339658640, guid: 37048231315fad1469fdc00c9d965347, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1553,6 +1553,7 @@ GameObject:
   - component: {fileID: 1451462741}
   - component: {fileID: 1451462742}
   - component: {fileID: 1451462743}
+  - component: {fileID: 1451462744}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1595,7 +1596,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 8.4375
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1692,6 +1693,30 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1451462737}
   m_Enabled: 1
+--- !u!114 &1451462744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451462737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_AssetsPPU: 16
+  m_RefResolutionX: 480
+  m_RefResolutionY: 270
+  m_CropFrame: 0
+  m_GridSnapping: 0
+  m_FilterMode: 0
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1 &1502507454
 GameObject:
   m_ObjectHideFlags: 0
@@ -2571,6 +2596,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 757562774}
     m_Modifications:
+    - target: {fileID: 8763597573372393, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 37048231315fad1469fdc00c9d965347, type: 2}
+    - target: {fileID: 8763597573372393, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -8947880408339658640, guid: 37048231315fad1469fdc00c9d965347, type: 2}
+    - target: {fileID: 8763597573372393, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2055982679562989546, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

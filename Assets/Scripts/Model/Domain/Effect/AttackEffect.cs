@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data;
 using Data.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,10 +15,12 @@ namespace Model.Domain.Effect
     {
         [MinValue(1)] public int Power;
         public Color Color => Colors.Red;
+        public List<AdditionalConditionData> AdditionalConditions = new();
 
-        public AttackEffect(int power)
+        public AttackEffect(int power, List<AdditionalConditionData> additionalConditions)
         {
             Power = power;
+            AdditionalConditions = additionalConditions;
         }
 
         public Impact Impact => Impact.Harmful;
@@ -24,11 +28,11 @@ namespace Model.Domain.Effect
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
             await target.LoseHp(Formula.Calc(actor, Power));
-            foreach (var ((condition, removalCondition), probability) in actor.AdditionalConditions)
+            foreach (var condition in AdditionalConditions)
             {
-                if (Random.value < probability)
+                if (Random.value < condition.Probability)
                 {
-                    target.AddCondition(condition, removalCondition);
+                    target.AddCondition(condition.Condition, condition.RemovalCondition);
                 }
             }
         }

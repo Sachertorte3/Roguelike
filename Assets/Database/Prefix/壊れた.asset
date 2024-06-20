@@ -15,3 +15,7 @@ MonoBehaviour:
   Name: "\u58CA\u308C\u305F"
   PowerMagnification: 0.5
   UsageLimitMagnification: 0.2
+  AdditionalConditions: []
+  references:
+    version: 2
+    RefIds: []

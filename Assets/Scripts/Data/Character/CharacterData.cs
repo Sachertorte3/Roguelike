@@ -18,8 +18,7 @@ namespace Data.Character
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
         Aggression Aggression,
-        bool IsLeader,
-        Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions
+        bool IsLeader
     );
     public record EntityMemento(
         Vector2Int Position

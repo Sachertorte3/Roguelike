@@ -10,7 +10,6 @@ namespace Data.Effect
         public Vector2Int CurrentPosition { get; }
         public Aggression Aggression { get; }
         public IAffiliation Affiliation { get; }
-        public Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions { get; }
         public UniTask<int> GainHp(int value);
     }
 }

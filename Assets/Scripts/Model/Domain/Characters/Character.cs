@@ -44,8 +44,6 @@ namespace Model.Domain.Characters
         public Aggression Aggression => _aggression;
         private readonly Aggression _aggression;
         public readonly bool IsLeader = false;
-        public Dictionary<(IConditionData, RemovalConditionData), float> AdditionalConditions => _additionalConditions;
-        private readonly Dictionary<(IConditionData, RemovalConditionData), float> _additionalConditions;
 
         public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
         {
@@ -55,12 +53,11 @@ namespace Model.Domain.Characters
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 CharacterStatusManager.Build(20, 20),
                 new EntityMemento(spawnPosition),
-                new[] { new Skill(new SkillData(new AtFeet(), new LineArea(1, false), new AttackEffect(1))).Serialize() },
+                new[] { new Skill(new SkillData(new AtFeet(), new LineArea(1, false), new AttackEffect(1, new()))).Serialize() },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
-                true,
-                new Dictionary<(IConditionData, RemovalConditionData), float>()
+                true
             );
         }
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition)
@@ -74,8 +71,7 @@ namespace Model.Domain.Characters
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
                 data.Aggression,
-                false,
-                data.AdditionalConditions.ToDictionary(x => (x.Condition, x.RemovalCondition), x => x.Probability)
+                false
             );
         }
 
@@ -93,7 +89,6 @@ namespace Model.Domain.Characters
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
             IsLeader = data.IsLeader;
-            _additionalConditions = new(data.AdditionalConditions);
         }
 
         public CharacterMemento Serialize()
@@ -107,8 +102,7 @@ namespace Model.Domain.Characters
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                IsLeader,
-                _additionalConditions.ToDictionary(x => (x.Key.Item1, x.Key.Item2), x => x.Value)
+                IsLeader
             );
         }
 

@@ -20,11 +20,11 @@ namespace Model.Domain
                 SkillOnUse = new SkillDataOnUse(
                     new AtFeet(),
                     mold.Area,
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification), new())
                 ),
                 SkillOnThrow = new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification), new())
                 ),
                 UsageLimit = Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
             };
@@ -40,11 +40,11 @@ namespace Model.Domain
                 SkillOnUse = new SkillDataOnUse(
                     new AtFeet(),
                     mold.Area,
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification), prefix.AdditionalConditions)
                 ),
                 SkillOnThrow = new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification), prefix.AdditionalConditions)
                 ),
                 UsageLimit = Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
             };

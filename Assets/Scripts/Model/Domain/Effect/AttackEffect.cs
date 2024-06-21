@@ -44,7 +44,16 @@ namespace Model.Domain.Effect
 
         public string Info()
         {
-            return $"攻撃\n威力: {Power}";
+            string info = $"攻撃\n威力: {Power}";
+            if (AdditionalConditions.Count > 0)
+            {
+                info += "\n追加状態付与:";
+                foreach (var condition in AdditionalConditions)
+                {
+                    info += $"\n{condition.Info()}";
+                }
+            }
+            return info;
         }
     }
 }

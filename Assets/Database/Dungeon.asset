@@ -17,52 +17,101 @@ MonoBehaviour:
     PrefixChance: 0.2
     Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     Items:
-    - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
-    - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
-    - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
-    - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
-    - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
-    - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-    - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
-    - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+        Weight: 1
     Enemies:
-    - {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
-    - {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
     Materials:
-    - {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
-    - {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-    - {fileID: 11400000, guid: fcbcb87faab7ed5439340954d0086939, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: fcbcb87faab7ed5439340954d0086939, type: 2}
+        Weight: 1
     WeaponMolds:
-    - {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
-    - {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
-    - {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+        Weight: 1
     WeaponPrefixes:
-    - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
-    - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
-    - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
+        Weight: 1
   - Depth: 3
-    PrefixChance: 0.2
+    PrefixChance: 0.5
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
     Items:
-    - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
-    - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
-    - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
-    - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
-    - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
-    - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-    - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+        Weight: 1
     Enemies:
-    - {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
-    - {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
     Materials:
-    - {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
-    - {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-    - {fileID: 11400000, guid: fcbcb87faab7ed5439340954d0086939, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: fcbcb87faab7ed5439340954d0086939, type: 2}
+        Weight: 1
     WeaponMolds:
-    - {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
-    - {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
-    - {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+        Weight: 1
     WeaponPrefixes:
-    - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
-    - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
-    - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
+      items:
+      - Item: {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
+        Weight: 1

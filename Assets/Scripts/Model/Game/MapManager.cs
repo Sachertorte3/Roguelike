@@ -157,16 +157,16 @@ namespace Model.Game
             var items = new List<ItemEntityMemento>();
 
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
-                characters.Add(Character.BuildCharacter(data.Enemies.GetAtRandom(), position));
+                characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(25))
-                items.Add(ItemEntity.Build(position, new Item(data.Items.GetAtRandom())));
+                items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(5))
             {
-                var material = data.Materials.GetAtRandom();
-                var mold = data.WeaponMolds.GetAtRandom();
+                var material = data.Materials.GetRandomItem();
+                var mold = data.WeaponMolds.GetRandomItem();
                 if (Random.value < data.PrefixChance)
                 {
-                    var prefix = data.WeaponPrefixes.GetAtRandom();
+                    var prefix = data.WeaponPrefixes.GetRandomItem();
                     var weapon = WeaponFactory.Create(prefix, material, mold);
                     items.Add(ItemEntity.Build(position, new Item(weapon)));
                 }

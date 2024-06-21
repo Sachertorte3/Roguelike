@@ -38,6 +38,7 @@ MonoBehaviour:
     WeaponPrefixes:
     - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
     - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
+    - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
   - Depth: 3
     PrefixChance: 0.2
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
@@ -63,3 +64,4 @@ MonoBehaviour:
     WeaponPrefixes:
     - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
     - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
+    - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}

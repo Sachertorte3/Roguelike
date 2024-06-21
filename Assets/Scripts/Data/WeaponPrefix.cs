@@ -30,7 +30,7 @@ namespace Data
 #endif
     }
     [Serializable]
-    public class AdditionalConditionData
+    public class AdditionalConditionData : IHasInfo
     {
         [Required, SerializeReference] public IConditionData Condition;
         [Required] public RemovalConditionData RemovalCondition;
@@ -40,6 +40,10 @@ namespace Data
             Condition = condition;
             RemovalCondition = removalCondition;
             Probability = probability;
+        }
+        public string Info()
+        {
+            return $"{Condition.Name} {Probability:%}";
         }
     }
 }

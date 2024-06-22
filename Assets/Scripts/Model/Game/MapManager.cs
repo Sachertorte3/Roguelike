@@ -32,16 +32,19 @@ namespace Model.Game
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         private readonly CompositeDisposable _disposables = new();
-        private readonly UpStairs? _upStairs;
-        private readonly DownStairs _downStairs;
-        private readonly List<Chest> _chests = new();
         public MapManager(MapMemento map, CharacterMemento? playerData, List<CharacterMemento>? characters, Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
         {
             _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
-
-            EventEntities = new ObservableHashSet<IEventEntity>();
+            
+            DownStairs downStairs = new DownStairs(map.DownStairs);
+            UpStairs? upStairs = null;
+            if (map.UpStairs != null)
+            {
+                upStairs = new UpStairs(map.UpStairs);
+            }
+            EventEntityManager = new(downStairs, upStairs);
 
             CharacterManager.Characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition()).AddTo(_disposables);
             ItemManager.Items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition()).AddTo(_disposables);
@@ -135,18 +138,10 @@ namespace Model.Game
             {
                 ItemManager.SpawnItem(item);
             }
-            _downStairs = new DownStairs(map.DownStairs);
-            EventEntities.Add(_downStairs);
-            if (map.UpStairs != null)
-            {
-                _upStairs = new UpStairs(map.UpStairs);
-                EventEntities.Add(_upStairs);
-            }
             foreach (var chest in map.Chests)
             {
-                _chests.Add(new Chest(chest));
+                EventEntityManager.Add(new Chest(chest));
             }
-            EventEntities.AddRange(_chests);
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -220,17 +215,18 @@ namespace Model.Game
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                _downStairs.Serialize(),
-                _upStairs?.Serialize(),
-                _chests.Select(chest => chest.Serialize()).ToList()
+                EventEntityManager.DownStairs.Serialize(),
+                EventEntityManager.UpStairs?.Serialize(),
+                EventEntityManager.Chests.Select(chest => chest.Serialize()).ToList()
             );
         }
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<Character> Characters => CharacterManager.Characters;
         public IObservableCollection<ItemEntity> Items => ItemManager.Items;
+        public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public ItemManager ItemManager { get; init; }
-        public ObservableHashSet<IEventEntity> EventEntities { get; init; }
+        public EventEntityManager EventEntityManager { get; init; }
         public ITilemapViewer Tilemap => _tilemap;
 
         public ItemEntity? TryPickUp(Vector2Int position)
@@ -243,11 +239,9 @@ namespace Model.Game
             return ItemManager.SpawnItem(item, position);
         }
 
-        public void RemoveEventEntity(IEventEntity eventEntity)
+        public void RemoveEventEntity(Chest eventEntity)
         {
-            EventEntities.Remove(eventEntity);
-            if (_chests.Contains(eventEntity))
-                _chests.Remove(eventEntity as Chest);
+            EventEntityManager.Remove(eventEntity);
         }
 
         /// <summary>

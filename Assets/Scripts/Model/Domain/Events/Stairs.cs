@@ -1,4 +1,5 @@
 ﻿using System;
+using Data;
 using Data.Map;
 using Model.Domain.Entities;
 using R3;
@@ -18,7 +19,7 @@ namespace Model.Domain.Events
         {
             return new DownStairsMemento(
                 destinationMapId,
-                Entity.Build(position)
+                Entity.Build(position, Data.EntityLayer.Bottom)
             );
         }
         public DownStairs(DownStairsMemento data)
@@ -31,11 +32,13 @@ namespace Model.Domain.Events
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Entity Entity => _entity;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion();
+        public EventTrigger Trigger => EventTrigger.Tread;
         ~DownStairs()
         {
             Dispose();
@@ -70,7 +73,7 @@ namespace Model.Domain.Events
         {
             return new UpStairsMemento(
                 destinationMapId,
-                Entity.Build(position)
+                Entity.Build(position, Data.EntityLayer.Bottom)
             );
         }
         public UpStairs(UpStairsMemento data)
@@ -83,11 +86,13 @@ namespace Model.Domain.Events
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public Entity Entity => _entity;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion();
+        public EventTrigger Trigger => EventTrigger.Tread;
         ~UpStairs()
         {
             Dispose();

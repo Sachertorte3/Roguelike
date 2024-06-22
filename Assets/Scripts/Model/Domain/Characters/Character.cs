@@ -52,7 +52,7 @@ namespace Model.Domain.Characters
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 CharacterStatusManager.Build(20, 20),
-                new EntityMemento(spawnPosition),
+                new EntityMemento(spawnPosition, EntityLayer.Middle),
                 new[] { new Skill(new SkillData(new AtFeet(), new LineArea(1, false), new AttackEffect(1, new()))).Serialize() },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
@@ -66,7 +66,7 @@ namespace Model.Domain.Characters
                 data.Name,
                 data.CharacterType,
                 CharacterStatusManager.Build(data.Hp, data.Hp),
-                new EntityMemento(spawnPosition),
+                new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Enemy),
@@ -241,6 +241,7 @@ namespace Model.Domain.Characters
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Entity Entity => _entity;

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Data;
 using Data.Effect;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
@@ -20,6 +21,8 @@ namespace Model.Domain
         public bool IsPassable(Vector2Int position);
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
+        public bool IsEventEntityAt(Vector2Int position, EntityLayer layer);
+        public void Touch(Vector2Int position);
         public ItemEntity SpawnItem(Item item, Vector2Int position);
     }
     public static class MapExtensions

@@ -69,7 +69,7 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
-                foreach (var eventEntity in EventEntities)
+                foreach (var eventEntity in EventEntities.Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread))
                 {
                     if (positionChanged.Message.Position == eventEntity.CurrentPosition)
                     {
@@ -261,6 +261,11 @@ namespace Model.Game
                 .ToHashSet();
         }
 
+        public bool IsEventEntityAt(Vector2Int position, EntityLayer layer)
+        {
+            return EventEntities.Any(eventEntity => eventEntity.CurrentPosition == position && eventEntity.Layer == layer);
+        }
+
         public HashSet<Vector2Int> GetAllItemPositions()
         {
             return _allItemPositions;
@@ -288,6 +293,12 @@ namespace Model.Game
             return new HashSet<Vector2Int>(_allCharacterPositions);
         }
 
+        public IEnumerable<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer)
+        {
+            return Characters.Where(character => character.Layer == layer).Select(character => character.CurrentPosition).Concat(
+                EventEntities.Where(eventEntity => eventEntity.Layer == layer).Select(eventEntity => eventEntity.CurrentPosition));
+        }
+
         private void SetAllCharacterPosition()
         {
             _allCharacterPositions = Characters.Select(character => character.Position.CurrentValue).ToHashSet();
@@ -310,7 +321,7 @@ namespace Model.Game
         }
         public bool IsPassable(Vector2Int position)
         {
-            return IsMapPassable(position) && !GetAllCharacterPositions().Contains(position);
+            return IsMapPassable(position) && !GetAllEntityPositionsAt(EntityLayer.Middle).Contains(position);
         }
 
         public HashSet<Vector2Int> GetAllLightPassablePositions()
@@ -326,6 +337,13 @@ namespace Model.Game
         public bool IsReachable(Vector2Int from, Vector2Int to)
         {
             return true; //TODO: A*で実装
+        }
+
+        public void Touch(Vector2Int position)
+        {
+            var eventEntity = EventEntities.Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch).FirstOrDefault(eventEntity => eventEntity.CurrentPosition == position);
+            if (eventEntity != null)
+                eventEntity.DoEvent(Globals.GameManager, this);
         }
 
         /// <summary>

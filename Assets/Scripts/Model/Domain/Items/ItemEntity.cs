@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data;
 using Data.Character;
 using Data.Map;
 using Data.Setting;
@@ -24,7 +25,7 @@ namespace Model.Domain.Items
         {
             return new ItemEntityMemento(
                 item.Serialize(),
-                new EntityMemento(spawnPosition)
+                new EntityMemento(spawnPosition, EntityLayer.Bottom)
             );
         }
         public ItemEntity(ItemEntityMemento item)
@@ -59,6 +60,7 @@ namespace Model.Domain.Items
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
+        public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 

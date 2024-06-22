@@ -53,6 +53,11 @@ namespace Model.Domain.Characters.Behavior
                                 return move;
                             else if (swap.Doable(character, world))
                                 return swap;
+                            else if (world.IsEventEntityAt(character.CurrentPosition + character.CurrentDirection.Vector(), EntityLayer.Middle))
+                            {
+                                world.Touch(character.CurrentPosition + character.CurrentDirection.Vector());
+                                return new DoNothing();
+                            }
                             else
                                 character.Turn(move.Direction);
                         }

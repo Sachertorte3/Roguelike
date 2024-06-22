@@ -182,20 +182,20 @@ namespace Model.Domain.Characters
             }
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap world)
+        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap map)
         {
             Turn(direction);
-            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(skill.GetArea(CurrentPosition, CurrentDirection), skill.Color));
+            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(skill.GetArea(this, CurrentPosition, CurrentDirection, map), skill.Color));
             if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, world),
+                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, map),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
             else
-                await skill.Use(this, CurrentPosition, direction, world);
+                await skill.Use(this, CurrentPosition, direction, map);
 
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseItem(int itemIndex, Direction8 direction, IMap world)
+        public async UniTask UseItem(int itemIndex, Direction8 direction, IMap map)
         {
             Turn(direction);
             var item = _inventory.GetItem(itemIndex);
@@ -204,12 +204,12 @@ namespace Model.Domain.Characters
             if (item.EffectsOnUse)
             {
                 GameLog.Add($"{_name}:{item.Name}を使った");
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.SkillOnUse.GetArea(CurrentPosition, CurrentDirection), item.SkillOnUse.Color));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, world),
+                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, map),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
                 else
-                    await item.Use(this, CurrentPosition, direction, world);
+                    await item.Use(this, CurrentPosition, direction, map);
 
                 State = CharacterState.Wait;
             }
@@ -368,23 +368,15 @@ namespace Model.Domain.Characters
         {
             return character.Area.VisibleArea.Contains(position);
         }
-        public static bool IsAlly(this Character character, Character target)
+        public static bool IsAlly(this IHasAffiliation character, IHasAffiliation target)
         {
             return character.Affiliation.IsAlly(target.Affiliation);
         }
-        public static bool IsAlly(this IActorOfEffect character, IActorOfEffect target)
-        {
-            return character.Affiliation.IsAlly(target.Affiliation);
-        }
-        public static bool IsEnemy(this Character character, Character target)
+        public static bool IsEnemy(this IHasAffiliation character, IHasAffiliation target)
         {
             return character.Affiliation.IsEnemy(target.Affiliation);
         }
-        public static bool IsEnemy(this IActorOfEffect character, IActorOfEffect target)
-        {
-            return character.Affiliation.IsEnemy(target.Affiliation);
-        }
-        public static bool IsNeutral(this IActorOfEffect character, IActorOfEffect target)
+        public static bool IsNeutral(this IHasAffiliation character, IHasAffiliation target)
         {
             return !character.IsAlly(target) && !character.IsEnemy(target);
         }

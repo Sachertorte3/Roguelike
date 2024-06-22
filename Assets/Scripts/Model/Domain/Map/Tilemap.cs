@@ -21,29 +21,16 @@ namespace Model.Domain.Map
         public readonly int Height;
         public readonly int Width;
 
-        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint)) { }
-        public static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
+        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint))
         {
-            var field = FieldBuilder.Build(bluePrint);
-            var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];
-            for (int x = 0; x < field.Grid.Size.x; x++)
-            {
-                for (int y = 0; y < field.Grid.Size.y; y++)
-                {
-                    var mapChipType = field.Grid[x, y];
-                    var tileType = mapChipType == (int)MapChipType.Wall
-                        ? TileCategory.Wall
-                        : TileCategory.Floor;
-                    tiles[x, y] = new TileData(tileType, false);
-                }
-            }
-            return new TilemapMemento(tiles);
         }
+
         public Tilemap(TilemapMemento memento)
         {
             Width = memento.Tiles.GetLength(0);
             Height = memento.Tiles.GetLength(1);
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange().ToDictionary(x => x, x => memento.Tiles[x.x, x.y]));
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
+                .ToDictionary(x => x, x => memento.Tiles[x.x, x.y]));
 
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
@@ -68,15 +55,15 @@ namespace Model.Domain.Map
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
-        ~Tilemap()
-        {
-            Dispose();
-        }
+
+        public Vector2Int Size => new(Width, Height);
+
         public void Dispose()
         {
             _onTileChanged.Dispose();
             _onTileKnownChanged.Dispose();
         }
+
         public TilemapMemento Serialize()
         {
             var tiles = new TileData[Width, Height];
@@ -84,12 +71,12 @@ namespace Model.Domain.Map
             {
                 tiles[position.x, position.y] = tile;
             }
+
             return new TilemapMemento(
                 tiles
             );
         }
 
-        public Vector2Int Size => new(Width, Height);
         public Observable<(Vector2Int position, TileData tile)> OnTileChanged => _onTileChanged;
         public Observable<(Vector2Int position, TileData tile)> OnTileKnownChanged => _onTileKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
@@ -107,6 +94,35 @@ namespace Model.Domain.Map
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
             return new HashSet<Vector2Int>(_allPassablePositionsSet);
+        }
+
+        public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
+        {
+            foreach (var position in positions) SetTileKnown(position, isKnown);
+        }
+
+        public static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
+        {
+            var field = FieldBuilder.Build(bluePrint);
+            var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];
+            for (var x = 0; x < field.Grid.Size.x; x++)
+            {
+                for (var y = 0; y < field.Grid.Size.y; y++)
+                {
+                    var mapChipType = field.Grid[x, y];
+                    var tileType = mapChipType == (int)MapChipType.Wall
+                        ? TileCategory.Wall
+                        : TileCategory.Floor;
+                    tiles[x, y] = new TileData(tileType, false);
+                }
+            }
+
+            return new TilemapMemento(tiles);
+        }
+
+        ~Tilemap()
+        {
+            Dispose();
         }
 
         public bool IsPositionInsideMap(Vector2Int position)
@@ -129,10 +145,6 @@ namespace Model.Domain.Map
         private IEnumerable<Vector2Int> FindAllPassablePositions()
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
-        }
-        public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
-        {
-            foreach (var position in positions) SetTileKnown(position, isKnown);
         }
 
         public void SetTileKnown(Vector2Int position, bool isKnown)

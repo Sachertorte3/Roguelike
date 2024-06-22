@@ -14,7 +14,6 @@ namespace Model.Domain.Effect
     public class AttackEffect : IEffect
     {
         [MinValue(1)] public int Power;
-        public Color Color => Colors.Red;
         public List<AdditionalConditionData> AdditionalConditions = new();
 
         public AttackEffect(int power, List<AdditionalConditionData> additionalConditions)
@@ -22,6 +21,8 @@ namespace Model.Domain.Effect
             Power = power;
             AdditionalConditions = additionalConditions;
         }
+
+        public Color Color => Colors.Red;
 
         public Impact Impact => Impact.Harmful;
 
@@ -44,7 +45,7 @@ namespace Model.Domain.Effect
 
         public string Info()
         {
-            string info = $"攻撃\n威力: {Power}";
+            var info = $"攻撃\n威力: {Power}";
             if (AdditionalConditions.Count > 0)
             {
                 info += "\n追加状態付与:";
@@ -53,6 +54,7 @@ namespace Model.Domain.Effect
                     info += $"\n{condition.Info()}";
                 }
             }
+
             return info;
         }
     }

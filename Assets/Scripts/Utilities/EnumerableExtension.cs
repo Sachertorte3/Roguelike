@@ -19,16 +19,16 @@ namespace Utilities
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
-                for (var y = rect.y; y < rect.y + rect.height; y++)
-                    yield return new Vector2Int(x, y);
+            for (var y = rect.y; y < rect.y + rect.height; y++)
+                yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                    if ((x * x) + (y * y) <= radius * radius)
-                        yield return new Vector2Int(x, y) + center;
+            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                if (x * x + y * y <= radius * radius)
+                    yield return new Vector2Int(x, y) + center;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
@@ -75,25 +75,27 @@ namespace Utilities
 
         public static int WeightedIndex(this IEnumerable<float> source, float value)
         {
-            float[] weights = source.ToArray();
+            var weights = source.ToArray();
 
-            float total = weights.Sum(x => x);
+            var total = weights.Sum(x => x);
             if (total <= 0f)
             {
                 return -1;
             }
 
-            int i = 0;
-            float w = 0f;
-            foreach (float weight in weights)
+            var i = 0;
+            var w = 0f;
+            foreach (var weight in weights)
             {
                 w += weight / total;
                 if (value <= w)
                 {
                     return i;
                 }
+
                 i++;
             }
+
             return -1;
         }
 
@@ -119,12 +121,14 @@ namespace Utilities
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
 
-        public static T MinByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue) where U : IComparable<U>
+        public static T MinByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue)
+            where U : IComparable<U>
         {
             return xs.Aggregate(defaultValue, (a, b) => key(a).CompareTo(key(b)) < 0 ? a : b);
         }
 
-        public static T MaxByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue) where U : IComparable<U>
+        public static T MaxByOrDefault<T, U>(this IEnumerable<T> xs, Func<T, U> key, T defaultValue)
+            where U : IComparable<U>
         {
             return xs.Aggregate(defaultValue, (a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
@@ -145,6 +149,7 @@ namespace Utilities
                 collectionA.Add(item);
             }
         }
+
         public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()
         {
             return Enumerable.Range(0, count).Select(_ => new T());

@@ -25,6 +25,11 @@ namespace Model.Domain.Items
         public Observable<(ItemEntity Item, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
             _events.GetObservable<OnEffectSpawnedMessage>();
 
+        public void Dispose()
+        {
+            _events.Dispose();
+        }
+
         Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
             _events.GetSubject<OnPositionChangedMessage>().SelectSender(item => item.Entity);
 
@@ -33,20 +38,19 @@ namespace Model.Domain.Items
 
         Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
             _events.GetSubject<OnTeleportMessage>().SelectSender(item => item.Entity);
+
         ~ItemEntityEvents()
         {
             Dispose();
         }
-        public void Dispose()
-        {
-            _events.Dispose();
-        }
+
         public void Add(ItemEntity item)
         {
             _events.Add(item, item.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
             _events.Add(item, item.OnDisabled.Select(disabled => new OnDisabledMessage()));
             _events.Add(item, item.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
-            _events.Add(item, item.OnEffectSpawned.Select(useSkill => new OnEffectSpawnedMessage(useSkill.Area, useSkill.Color)));
+            _events.Add(item,
+                item.OnEffectSpawned.Select(useSkill => new OnEffectSpawnedMessage(useSkill.Area, useSkill.Color)));
         }
     }
 }

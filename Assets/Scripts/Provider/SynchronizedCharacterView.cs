@@ -15,10 +15,10 @@ namespace Provider
 {
     public class SynchronizedCharacterView : SynchronizedView<Character, CharacterView>
     {
+        private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly World _world;
-        private readonly SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
@@ -33,6 +33,10 @@ namespace Provider
             );
         }
 
+        protected override CharacterView _viewPrefab => Addressables
+            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
+            .GetComponent<CharacterView>();
+
         ~SynchronizedCharacterView()
         {
             Dispose();
@@ -43,17 +47,17 @@ namespace Provider
             _disposable.Dispose();
         }
 
-        protected override CharacterView _viewPrefab => Addressables
-            .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
-            .GetComponent<CharacterView>();
-
         protected override void InitializeView(Character character, CharacterView characterView)
         {
             var player = _world.ActiveMap.CurrentValue.Player;
-            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player), character.IsAlly(player));
-            character.StatusManager.Stats.HpValue.SubscribeToAll(hp => characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp));
-            character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp => characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue));
-            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(), character.CharacterType.SubtypeName(),
+            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player),
+                character.IsAlly(player));
+            character.StatusManager.Stats.HpValue.SubscribeToAll(hp =>
+                characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp));
+            character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp =>
+                characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue));
+            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(),
+                character.CharacterType.SubtypeName(),
                 character.CharacterType.TypeName() == "Human");
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
@@ -63,7 +67,8 @@ namespace Provider
             character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
             character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             character.OnEffectSpawned.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), useSkill.Color, Settings.EffectDisplayTime.Value)
+                _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
+                    useSkill.Color, Settings.EffectDisplayTime.Value)
             ).AddTo(characterView);
             Settings.MoveMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
             Settings.DashMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);

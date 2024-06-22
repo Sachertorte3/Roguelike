@@ -11,4 +11,3 @@ namespace Model.Domain.Items
         }
     }
 }
-

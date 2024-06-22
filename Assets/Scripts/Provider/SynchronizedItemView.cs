@@ -16,10 +16,10 @@ namespace Provider
 {
     public class SynchronizedItemView : SynchronizedView<ItemEntity, EntityView>, IDisposable
     {
+        private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
         private readonly InputReceiver _inputReceiver;
         private readonly World _world;
-        private readonly SerialDisposable _disposable = new();
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
@@ -34,19 +34,19 @@ namespace Provider
             );
         }
 
-        ~SynchronizedItemView()
-        {
-            Dispose();
-        }
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
 
         public void Dispose()
         {
             _disposable.Dispose();
         }
 
-        protected override EntityView _viewPrefab =>
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion()
-                .GetComponent<EntityView>();
+        ~SynchronizedItemView()
+        {
+            Dispose();
+        }
 
         protected override void InitializeView(ItemEntity item, EntityView entityView)
         {
@@ -54,7 +54,8 @@ namespace Provider
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
             item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             item.OnEffectSpawned.Subscribe(useSkill =>
-                    _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea), useSkill.Color, Settings.EffectDisplayTime.Value))
+                    _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
+                        useSkill.Color, Settings.EffectDisplayTime.Value))
                 .AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);

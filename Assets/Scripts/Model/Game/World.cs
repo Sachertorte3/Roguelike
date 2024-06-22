@@ -20,27 +20,28 @@ namespace Model.Game
 {
     public class World
     {
-        private Dictionary<int, MapMemento> _maps = new();
-        private int _activeMapId = 0;
         private ReactiveProperty<MapManager?> _activeMap = new();
-        public int ActiveMapIndex = 0;
-        private CharacterControllInputReceiver _receiver;
+        private int _activeMapId = 0;
         private DungeonData _dungeonData;
+        private Dictionary<int, MapMemento> _maps = new();
+        private CharacterControllInputReceiver _receiver;
+        public int ActiveMapIndex = 0;
 
         [Inject]
         public World(CharacterControllInputReceiver receiver)
         {
             Globals.World = this;
             _receiver = receiver;
-            
-            _dungeonData = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset").WaitForCompletion();
+
+            _dungeonData = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset")
+                .WaitForCompletion();
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
         private SectionData GetSectionData(int level)
         {
-            int currentDepth = 0;
+            var currentDepth = 0;
             foreach (var section in _dungeonData.Sections)
             {
                 currentDepth += section.Depth;
@@ -49,8 +50,10 @@ namespace Model.Game
                     return section;
                 }
             }
+
             throw new InvalidOperationException("指定されたレベルに対応するセクションが見つかりません。");
         }
+
         private MapMemento GetMapMemento(int mapId)
         {
             if (_maps.ContainsKey(mapId))
@@ -60,9 +63,11 @@ namespace Model.Game
             else
             {
                 var sectionData = GetSectionData(mapId);
-                return MapManager.Build(Tilemap.BuildMemento(sectionData.Field), sectionData, mapId + 1, mapId > 1 ? mapId - 1 : null);
+                return MapManager.Build(Tilemap.BuildMemento(sectionData.Field), sectionData, mapId + 1,
+                    mapId > 1 ? mapId - 1 : null);
             }
         }
+
         public MapManager LoadMap(int mapId)
         {
             Log.Debug($"LoadMap {mapId}");
@@ -75,15 +80,17 @@ namespace Model.Game
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
-                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
+                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize())
+                    .ToList();
                 if (_activeMapId < mapId) // 下り階段から上り階段へ
                 {
-                    initialPosition = mapMemento.UpStairs.Entity.Position;
+                    initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
                 }
                 else if (_activeMapId > mapId) // 上り階段から下り階段へ
                 {
-                    initialPosition = mapMemento.DownStairs.Entity.Position;
+                    initialPosition = mapMemento.EventEntities.DownStairs.Entity.Position;
                 }
+
                 _activeMap.CurrentValue.Dispose();
             }
 

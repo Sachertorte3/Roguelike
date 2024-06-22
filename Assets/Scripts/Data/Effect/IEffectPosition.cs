@@ -10,6 +10,7 @@ namespace Effect
     {
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, IEffectMap map);
     }
+
     public interface IEffectMap
     {
         public IEnumerable<Vector2Int> GetEnemyPositions(IHasAffiliation character);
@@ -17,4 +18,3 @@ namespace Effect
         public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character);
     }
 }
-

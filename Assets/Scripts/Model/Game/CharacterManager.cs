@@ -11,20 +11,19 @@ namespace Model.Game
 {
     public sealed class CharacterManager : IDisposable
     {
-        public Character? Player { get; private set; }
         private readonly ObservableList<Character> _characters = new();
         private readonly CharacterFactory _factory = new();
-        public readonly CharacterEvents PlayerEvents = new();
         public readonly CharacterEvents CharacterEvents = new();
+        public readonly CharacterEvents PlayerEvents = new();
 
         public CharacterManager()
         {
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
         }
-        ~CharacterManager()
-        {
-            Dispose();
-        }
+
+        public Character? Player { get; private set; }
+
+        public IObservableCollection<Character> Characters => _characters;
 
         public void Dispose()
         {
@@ -33,7 +32,10 @@ namespace Model.Game
             CharacterEvents.Dispose();
         }
 
-        public IObservableCollection<Character> Characters => _characters;
+        ~CharacterManager()
+        {
+            Dispose();
+        }
 
         private void SetPlayer(Character player)
         {
@@ -41,10 +43,12 @@ namespace Model.Game
             {
                 PlayerEvents.Remove(Player);
             }
+
             Player = player;
             AddCharacter(player);
             PlayerEvents.Add(player);
         }
+
         public void AddCharacter(Character character)
         {
             _characters.Add(character);

@@ -6,4 +6,3 @@ namespace Model.Domain.Characters
 {
     public record OnEffectSpawnedMessage(IEnumerable<Vector2Int> Area, Color Color);
 }
-

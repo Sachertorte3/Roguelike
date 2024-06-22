@@ -18,8 +18,8 @@ namespace Model.Domain.Items
         public readonly Sprite Icon;
         public readonly string Info;
         public readonly string Name;
-        public readonly Skill SkillOnUse;
         public readonly Skill SkillOnThrow;
+        public readonly Skill SkillOnUse;
 
         public Item(ItemData data)
         {
@@ -45,6 +45,9 @@ namespace Model.Domain.Items
             Info = data.Info;
         }
 
+        public bool IsDisabled => _remainingUses.CurrentValue <= 0;
+        public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUses;
+
         public ItemMemento Serialize()
         {
             return new ItemMemento(
@@ -58,9 +61,6 @@ namespace Model.Domain.Items
                 Info
             );
         }
-
-        public bool IsDisabled => _remainingUses.CurrentValue <= 0;
-        public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUses;
 
         public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {

@@ -8,8 +8,8 @@ namespace Model.Game
 {
     public class GameManager : IGameManager
     {
-        private TurnController _turnController;
         private readonly World _world;
+        private TurnController _turnController;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
 
@@ -17,7 +17,7 @@ namespace Model.Game
         public GameManager(World world, GameInput input)
         {
             _world = world;
-            _turnController = new(input);
+            _turnController = new TurnController(input);
             Globals.GameManager = this;
         }
 

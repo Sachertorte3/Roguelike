@@ -11,9 +11,9 @@ namespace Data.Effect
         public Aggression Aggression { get; }
         public UniTask<int> GainHp(int value);
     }
+
     public interface IHasAffiliation
     {
         public IAffiliation Affiliation { get; }
     }
 }
-

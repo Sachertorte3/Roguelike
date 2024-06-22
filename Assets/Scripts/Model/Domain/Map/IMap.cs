@@ -26,20 +26,22 @@ namespace Model.Domain
         public void Touch(Vector2Int position);
         public ItemEntity SpawnItem(Item item, Vector2Int position);
     }
+
     public static class MapExtensions
     {
         public static IEnumerable<Character> GetVisibleCharacters(this IMap map, IHasBehavior character)
         {
             return map.GetCharactersInArea(character.Area.VisibleArea);
         }
+
         public static IEnumerable<Character> GetCharactersCanSeePosition(this IMap map, Vector2Int position)
         {
             return map.Characters.Where(character => character.IsVisible(position));
         }
+
         public static Character? GetCharacter(this IMap map, int id)
         {
             return map.Characters.FirstOrDefault(character => character.Affiliation.Id == id);
         }
     }
 }
-

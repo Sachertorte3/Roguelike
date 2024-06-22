@@ -9,17 +9,17 @@ namespace Utilities.Algorithms
 
         private AStarNode _rootNode;
 
-        public int MoveTotalCost;
-
         public int ECost;
 
-        public int Score => ECost + MoveTotalCost;
+        public int MoveTotalCost;
 
         public AStarNode(Vector2Int position, Vector2Int goal)
         {
             _position = position;
             SetEstimateCost(position, goal);
         }
+
+        public int Score => ECost + MoveTotalCost;
 
         public void SetEstimateCost(Vector2Int position, Vector2Int goal)
         {

@@ -15,8 +15,8 @@ namespace Provider
 {
     public class SynchronizedEventEntityView : SynchronizedView<IEventEntity, EntityView>, IDisposable
     {
-        private readonly InputReceiver _inputReceiver;
         private readonly SerialDisposable _disposable = new();
+        private readonly InputReceiver _inputReceiver;
 
         [Inject]
         public SynchronizedEventEntityView(World world, InputReceiver inputReceiver)
@@ -29,19 +29,19 @@ namespace Provider
             );
         }
 
-        ~SynchronizedEventEntityView()
-        {
-            Dispose();
-        }
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
 
         public void Dispose()
         {
             _disposable.Dispose();
         }
 
-        protected override EntityView _viewPrefab =>
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
-                .GetComponent<EntityView>();
+        ~SynchronizedEventEntityView()
+        {
+            Dispose();
+        }
 
         protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
         {

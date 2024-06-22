@@ -8,16 +8,21 @@ namespace View
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private Canvas canvas;
 
-        public void ShowDamage(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds) =>
+        public void ShowDamage(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds)
+        {
             SpawnText(position, value, percentageFromMaxHP, textDisplayMilliseconds, Color.red);
+        }
 
-        public void ShowHeal(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds) =>
+        public void ShowHeal(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds)
+        {
             SpawnText(position, value, percentageFromMaxHP, textDisplayMilliseconds, Color.green);
+        }
 
-        public void SpawnText(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds, Color color)
+        public void SpawnText(Vector2Int position, int value, int percentageFromMaxHP, int textDisplayMilliseconds,
+            Color color)
         {
             damageText.GetComponent<LifeTimer>().LifeTimeMilliseconds = textDisplayMilliseconds;
-            TextMeshProUGUI text = Instantiate(damageText, canvas.transform);
+            var text = Instantiate(damageText, canvas.transform);
             text.text = value.ToString();
             text.transform.position = position + new Vector2(0, 0.5f);
             if (percentageFromMaxHP > 100)

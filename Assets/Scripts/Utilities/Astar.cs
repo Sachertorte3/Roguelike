@@ -6,10 +6,10 @@ namespace Utilities.Algorithms
 {
     public class AStar
     {
-        private Dictionary<Vector2Int, bool> _passableMap;
+        private HashSet<Vector2Int> _closeHash;
         private Dictionary<Vector2Int, AStarNode> _map;
         private HashSet<Vector2Int> _openHash;
-        private HashSet<Vector2Int> _closeHash;
+        private Dictionary<Vector2Int, bool> _passableMap;
 
         public AStar(Dictionary<Vector2Int, bool> passableMap)
         {
@@ -60,14 +60,14 @@ namespace Utilities.Algorithms
         {
             var openPos = new List<Vector2Int>
             {
-                new Vector2Int(current.x + 1, current.y),
-                new Vector2Int(current.x - 1, current.y),
-                new Vector2Int(current.x, current.y + 1),
-                new Vector2Int(current.x, current.y - 1),
-                new Vector2Int(current.x + 1, current.y + 1),
-                new Vector2Int(current.x + 1, current.y - 1),
-                new Vector2Int(current.x - 1, current.y + 1),
-                new Vector2Int(current.x - 1, current.y - 1),
+                new(current.x + 1, current.y),
+                new(current.x - 1, current.y),
+                new(current.x, current.y + 1),
+                new(current.x, current.y - 1),
+                new(current.x + 1, current.y + 1),
+                new(current.x + 1, current.y - 1),
+                new(current.x - 1, current.y + 1),
+                new(current.x - 1, current.y - 1)
             };
             foreach (var pos in openPos)
             {

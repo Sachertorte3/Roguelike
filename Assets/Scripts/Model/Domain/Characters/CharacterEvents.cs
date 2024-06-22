@@ -44,6 +44,11 @@ namespace Model.Domain.Characters
         public Observable<(Character Character, OnAffectionChangedMessage Message)> OnAffectionChanged =>
             _events.GetObservable<OnAffectionChangedMessage>();
 
+        public void Dispose()
+        {
+            _events.Dispose();
+        }
+
         Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
             _events.GetSubject<OnPositionChangedMessage>().SelectSender(character => character.Entity);
 
@@ -52,13 +57,10 @@ namespace Model.Domain.Characters
 
         Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
             _events.GetSubject<OnTeleportMessage>().SelectSender(character => character.Entity);
+
         ~CharacterEvents()
         {
             Dispose();
-        }
-        public void Dispose()
-        {
-            _events.Dispose();
         }
 
         public void Add(Character character)
@@ -74,8 +76,10 @@ namespace Model.Domain.Characters
             _events.Add(character, character.OnEffectSpawned);
             _events.Add(character, character.Area.OnVisibleAreaChanged);
             _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
-            _events.Add(character, character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
-            _events.Add(character, character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
+            _events.Add(character,
+                character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
+            _events.Add(character,
+                character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
             _events.Add(character, character.Affiliation.OnAffectionChanged);
         }
 

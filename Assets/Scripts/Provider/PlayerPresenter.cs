@@ -19,33 +19,32 @@ namespace Provider
         {
             GameObject arrow = null;
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
-            {
-                var playerView = characters.Get(map.Player);
+                {
+                    var playerView = characters.Get(map.Player);
 
-                var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
-                    .WaitForCompletion();
-                var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
-                arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
+                    var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
+                        .WaitForCompletion();
+                    var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
+                    arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
-                    .Subscribe(_ =>
-                    {
-                        var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 / map.Player.StatusManager.Stats.MaxHp.CurrentValue;
-                        statLine.SetValue(map.Player.StatusManager.Stats.MaxHp.CurrentValue, map.Player.StatusManager.Stats.HpValue.CurrentValue);
-                        if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                    Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                        .Subscribe(_ =>
                         {
-                            statLine.SetTextColor(Color.red);
-                        }
-                        else
-                        {
-                            statLine.SetTextColor(Color.white);
-                        }
-                    });
-            },
-            map =>
-            {
-                Object.Destroy(arrow);
-            });
+                            var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 /
+                                                        map.Player.StatusManager.Stats.MaxHp.CurrentValue;
+                            statLine.SetValue(map.Player.StatusManager.Stats.MaxHp.CurrentValue,
+                                map.Player.StatusManager.Stats.HpValue.CurrentValue);
+                            if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                            {
+                                statLine.SetTextColor(Color.red);
+                            }
+                            else
+                            {
+                                statLine.SetTextColor(Color.white);
+                            }
+                        });
+                },
+                map => { Object.Destroy(arrow); });
         }
     }
 }

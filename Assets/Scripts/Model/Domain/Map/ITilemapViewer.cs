@@ -16,4 +16,3 @@ namespace Model.Domain.Map
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown);
     }
 }
-

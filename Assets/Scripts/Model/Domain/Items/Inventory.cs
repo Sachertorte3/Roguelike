@@ -10,29 +10,28 @@ namespace Model.Domain.Items
     internal class Inventory : ISerializable<InventoryMemento>, IInventory, IDisposable
     {
         private const int MaxItems = 10;
-        public int MaxItemCount => MaxItems;
-        private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
-        private readonly Subject<OnItemUpdated> _onItemUpdated = new();
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable _disposables = new();
+        private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
+        private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Inventory(InventoryMemento data)
         {
             _disposable = OnItemChanged.Subscribe(itemChanged =>
-            {
-                if (itemChanged.NewValue != null)
                 {
-                    _disposables.Add(itemChanged.NewValue.RemainingUses.Subscribe(
-                        remainingUses =>
-                        {
-                            if (remainingUses <= 0)
-                                Replace(null, _items.IndexOf(itemChanged.NewValue));
-                            else if (itemChanged.NewValue != null)
-                                _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
-                        }));
-                }
-            },
-            _ => _disposables.Clear());
+                    if (itemChanged.NewValue != null)
+                    {
+                        _disposables.Add(itemChanged.NewValue.RemainingUses.Subscribe(
+                            remainingUses =>
+                            {
+                                if (remainingUses <= 0)
+                                    Replace(null, _items.IndexOf(itemChanged.NewValue));
+                                else if (itemChanged.NewValue != null)
+                                    _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
+                            }));
+                    }
+                },
+                _ => _disposables.Clear());
             foreach (var item in data.Items)
             {
                 if (item != null)
@@ -45,10 +44,8 @@ namespace Model.Domain.Items
             _disposable.Dispose();
             _disposables.Dispose();
         }
-        public InventoryMemento Serialize()
-        {
-            return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
-        }
+
+        public int MaxItemCount => MaxItems;
 
         public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
 
@@ -62,6 +59,11 @@ namespace Model.Domain.Items
         public Item? GetItem(int index)
         {
             return _items[index];
+        }
+
+        public InventoryMemento Serialize()
+        {
+            return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
         }
 
         public bool TryAdd(Item item)

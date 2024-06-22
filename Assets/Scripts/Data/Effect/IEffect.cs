@@ -12,6 +12,7 @@ namespace Data.Effect
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map);
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
     }
+
     public interface IPassableChecker
     {
         public HashSet<Vector2Int> GetAllPassablePositions();
@@ -19,4 +20,3 @@ namespace Data.Effect
         public bool IsMapPassable(Vector2Int position);
     }
 }
-

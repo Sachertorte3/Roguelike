@@ -51,7 +51,9 @@ namespace Utilities
                     addAction(value.Current);
                 });
         }
-        public static IDisposable SubscribeToAllIgnoreNull<T>(this ReadOnlyReactiveProperty<T?> property, Action<T> addAction,
+
+        public static IDisposable SubscribeToAllIgnoreNull<T>(this ReadOnlyReactiveProperty<T?> property,
+            Action<T> addAction,
             Action<T>? removeAction = null)
         {
             if (property.CurrentValue != null) addAction(property.CurrentValue);

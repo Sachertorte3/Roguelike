@@ -26,7 +26,8 @@ namespace View
                 .WaitForCompletion();
             GetComponent<Animator>().runtimeAnimatorController = Instantiate(animation);
 
-            var groupMarker = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/GroupMarker.prefab").WaitForCompletion();
+            var groupMarker = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/GroupMarker.prefab")
+                .WaitForCompletion();
             _groupMarker = Instantiate(groupMarker, transform).GetComponent<SpriteRenderer>();
             UpdateGroupMarker(isEnemy, isAlly);
 
@@ -46,14 +47,14 @@ namespace View
                 (true, false) => new Color(1, 0, 0, 0.5f),
                 (false, true) => new Color(0, 1, 0, 0.5f),
                 (true, true) => throw new InvalidOperationException("A character cannot be both an enemy and an ally."),
-                _ => Color.clear,
+                _ => Color.clear
             };
             _groupMarker.color = color;
         }
+
         public void UpdateHpBar(float maxHp, float hp)
         {
             _hpBar.SetValue(maxHp, hp);
         }
     }
 }
-

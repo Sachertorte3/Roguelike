@@ -1,36 +1,61 @@
 #nullable enable
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
+using Data.Map;
 using Model.Domain.Events;
 using ObservableCollections;
-using UnityEngine;
 
 namespace Model.Game
 {
-    public class EventEntityManager
+    public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
-        public UpStairs? UpStairs { get; init; }
-        public DownStairs DownStairs { get; init; }
+        private readonly UpStairs? _upStairs;
+        private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
-        public ReadOnlyCollection<Chest> Chests => new(_chests); 
         private ObservableList<IEventEntity> _eventEntities = new();
-        public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
-        public EventEntityManager(DownStairs downStairs, UpStairs? upStairs=null)
-        {
-            DownStairs = downStairs;
-            UpStairs = upStairs;
 
-            _eventEntities.Add(downStairs);
-            if (upStairs != null)
+        public EventEntityManager(EventEntitiesMemento eventEntities)
+        {
+            _downStairs = new(eventEntities.DownStairs);
+            _eventEntities.Add(_downStairs);
+
+            if (eventEntities.UpStairs != null)
             {
-                _eventEntities.Add(upStairs);
+                _upStairs = new(eventEntities.UpStairs);
+                _eventEntities.Add(_upStairs);
             }
+            else
+            {
+                _upStairs = null;
+            }
+
+            _chests = eventEntities.Chests.Select(chest => new Chest(chest)).ToList();
         }
+        public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
+        {
+            return new EventEntitiesMemento(
+                downStairs,
+                upStairs,
+                chests.ToList()
+            );
+        }
+        public EventEntitiesMemento Serialize()
+        {
+            return new EventEntitiesMemento(
+                _downStairs.Serialize(),
+                _upStairs?.Serialize(),
+                _chests.Select(chest => chest.Serialize()).ToList()
+            );
+        }
+
+        public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
+
         public void Add(Chest chest)
         {
             _chests.Add(chest);
             _eventEntities.Add(chest);
         }
+
         public void Remove(Chest chest)
         {
             _chests.Remove(chest);

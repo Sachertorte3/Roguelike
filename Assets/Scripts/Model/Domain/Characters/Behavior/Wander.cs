@@ -20,12 +20,15 @@ namespace Model.Domain.Characters.Behavior
             if (character.CanMove(facingDirection, world))
             {
                 directions.Add(facingDirection, 0.1f);
-                if (!world.IsMapPassable(character.CurrentPosition + facingDirection.RotateClockwise(new Angle(135)).Vector())
+                if (!world.IsMapPassable(character.CurrentPosition +
+                                         facingDirection.RotateClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), world))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
-                if (!world.IsMapPassable(character.CurrentPosition + facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
+
+                if (!world.IsMapPassable(character.CurrentPosition +
+                                         facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), world))
                 {
                     directions.Add(facingDirection.RotateAntiClockwise(new Angle(90)), 0.1f);
@@ -37,34 +40,41 @@ namespace Model.Domain.Characters.Behavior
                 {
                     directions.Add(facingDirection.Rotate90Clockwise(), 0.1f);
                 }
+
                 if (character.CanMove(facingDirection.Rotate90AntiClockwise(), world))
                 {
                     directions.Add(facingDirection.Rotate90AntiClockwise(), 0.1f);
                 }
+
                 if (character.CanMove(facingDirection.Rotate45Clockwise(), world))
                 {
                     directions.Add(facingDirection.Rotate45Clockwise(), 0.05f);
                 }
+
                 if (character.CanMove(facingDirection.Rotate45AntiClockwise(), world))
                 {
                     directions.Add(facingDirection.Rotate45AntiClockwise(), 0.05f);
                 }
+
                 if (character.CanMove(facingDirection.Reverse().Rotate45Clockwise(), world))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45Clockwise(), 0.02f);
                 }
+
                 if (character.CanMove(facingDirection.Reverse().Rotate45AntiClockwise(), world))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45AntiClockwise(), 0.02f);
                 }
+
                 if (character.CanMove(facingDirection.Reverse(), world))
                 {
                     directions.Add(facingDirection.Reverse(), 0.03f);
                 }
             }
+
             return directions.Select(direction => new Move(direction.Key, direction.Value));
         }
-        
+
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)
         {
             return character.Skills

@@ -10,17 +10,20 @@ namespace Model.Domain.Action
     {
         public bool Doable(IActor actor, IMap world)
         {
-            var target = world.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() }).FirstOrDefault();
+            var target = world.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
+                .FirstOrDefault();
             if (target == null)
                 return false;
             if (target.IsEnemy(actor))
                 return false;
-            return target.CanMoveIgnoreCharacter(Direction.Reverse(), world) && actor.CanMoveIgnoreCharacter(Direction, world);
+            return target.CanMoveIgnoreCharacter(Direction.Reverse(), world) &&
+                   actor.CanMoveIgnoreCharacter(Direction, world);
         }
 
         public UniTask Do(IActor actor, IMap world, IInput input)
         {
-            var target = world.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() }).FirstOrDefault();
+            var target = world.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
+                .FirstOrDefault();
             if (target == null)
                 throw new InvalidOperationException("target is null");
             var _1 = actor.Move(Direction, input);

@@ -17,14 +17,14 @@ namespace Model.Domain.Characters.Conditions
             _removalCondition = removalCondition;
         }
 
+        public ParticleType ParticleType => _condition.ParticleType;
+        public bool CanAct => _condition.CanAct;
+        public bool CausesConfusion => _condition.CausesConfusion;
+
         public ConditionMemento Serialize()
         {
             return new ConditionMemento(_condition, _removalCondition, _elapsedTurn);
         }
-
-        public ParticleType ParticleType => _condition.ParticleType;
-        public bool CanAct => _condition.CanAct;
-        public bool CausesConfusion => _condition.CausesConfusion;
 
         public void Inflict(IHasCondition hasCondition)
         {

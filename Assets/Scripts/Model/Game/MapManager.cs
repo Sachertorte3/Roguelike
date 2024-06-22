@@ -8,6 +8,7 @@ using Data.Map;
 using Model.Domain;
 using Model.Domain.Characters;
 using Model.Domain.Characters.Behavior;
+using Model.Domain.Events;
 using Model.Domain.Items;
 using Model.Domain.Logs;
 using Model.Domain.Map;
@@ -23,7 +24,7 @@ using Random = UnityEngine.Random;
 
 namespace Model.Game
 {
-    public class MapManager : IDisposable, ISerializable<MapMemento>, IMapViewer, IMap
+    public class MapManager : IDisposable, ISerializable<MapMemento>, IMapViewer, IMap, IMapManager
     {
         private readonly Tilemap _tilemap;
         public Character Player => CharacterManager.Player;
@@ -33,6 +34,7 @@ namespace Model.Game
         private readonly CompositeDisposable _disposables = new();
         private readonly UpStairs? _upStairs;
         private readonly DownStairs _downStairs;
+        private readonly List<Chest> _chests = new();
         public MapManager(MapMemento map, CharacterMemento? playerData, List<CharacterMemento>? characters, Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
         {
             _tilemap = new Tilemap(map.Tilemap);
@@ -71,7 +73,7 @@ namespace Model.Game
                 {
                     if (positionChanged.Message.Position == eventEntity.CurrentPosition)
                     {
-                        eventEntity.DoEvent();
+                        eventEntity.DoEvent(Globals.GameManager, this);
                     }
                 }
 
@@ -140,6 +142,11 @@ namespace Model.Game
                 _upStairs = new UpStairs(map.UpStairs);
                 EventEntities.Add(_upStairs);
             }
+            foreach (var chest in map.Chests)
+            {
+                _chests.Add(new Chest(chest));
+            }
+            EventEntities.AddRange(_chests);
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
@@ -155,6 +162,7 @@ namespace Model.Game
             var tilemap = new Tilemap(tilemapData);
             var characters = new List<CharacterMemento>();
             var items = new List<ItemEntityMemento>();
+            var chests = new List<ChestMemento>();
 
             foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
                 characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
@@ -176,6 +184,8 @@ namespace Model.Game
                     items.Add(ItemEntity.Build(position, new Item(weapon)));
                 }
             }
+            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(5))
+                chests.Add(Chest.Build(position, data.Items.GetRandomItem()));
 
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
             var upStairs = prevMapId.HasValue ? UpStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value) : null;
@@ -185,7 +195,8 @@ namespace Model.Game
                 characters,
                 items,
                 downStairs,
-                upStairs
+                upStairs,
+                chests
             );
         }
         ~MapManager()
@@ -210,7 +221,8 @@ namespace Model.Game
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 _downStairs.Serialize(),
-                _upStairs?.Serialize()
+                _upStairs?.Serialize(),
+                _chests.Select(chest => chest.Serialize()).ToList()
             );
         }
 
@@ -229,6 +241,13 @@ namespace Model.Game
         public ItemEntity SpawnItem(Item item, Vector2Int position)
         {
             return ItemManager.SpawnItem(item, position);
+        }
+
+        public void RemoveEventEntity(IEventEntity eventEntity)
+        {
+            EventEntities.Remove(eventEntity);
+            if (_chests.Contains(eventEntity))
+                _chests.Remove(eventEntity as Chest);
         }
 
         /// <summary>

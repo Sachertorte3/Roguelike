@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using Data.Setting;
+using Model.Domain.Events;
 using Model.Game;
 using R3;
 using UnityEngine;

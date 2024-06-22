@@ -11,7 +11,8 @@ namespace Data.Map
         List<CharacterMemento> Characters,
         List<ItemEntityMemento> Items,
         DownStairsMemento DownStairs,
-        UpStairsMemento? UpStairs
+        UpStairsMemento? UpStairs,
+        List<ChestMemento> Chests
     );
     public record ItemEntityMemento(
         ItemMemento Item,
@@ -24,6 +25,10 @@ namespace Data.Map
     ) : IEventEntityMemento;
     public record DownStairsMemento(
         int DestinationMapId,
+        EntityMemento Entity
+    ) : IEventEntityMemento;
+    public record ChestMemento(
+        ItemData Item,
         EntityMemento Entity
     ) : IEventEntityMemento;
 }

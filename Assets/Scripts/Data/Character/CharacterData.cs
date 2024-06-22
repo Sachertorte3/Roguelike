@@ -21,7 +21,8 @@ namespace Data.Character
         bool IsLeader
     );
     public record EntityMemento(
-        Vector2Int Position
+        Vector2Int Position,
+        EntityLayer Layer
     );
     public record CharacterStatusMemento(
         int MaxHp,

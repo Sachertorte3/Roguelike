@@ -10,6 +10,6 @@ namespace Model.Domain.Events
     public interface IMapManager
     {
         public ItemEntity SpawnItem(Item item, Vector2Int position);
-        public void RemoveEventEntity(IEventEntity entity);
+        public void RemoveEventEntity(Chest entity);
     }
 }

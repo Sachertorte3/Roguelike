@@ -1,11 +1,12 @@
 ﻿#nullable enable
 using System;
+using Model.Domain.Events;
 using Unity.Logging;
 using VContainer;
 
 namespace Model.Game
 {
-    public class GameManager
+    public class GameManager : IGameManager
     {
         private TurnController _turnController;
         private readonly World _world;

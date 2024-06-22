@@ -2,11 +2,12 @@
 using Data.Map;
 using Model.Domain.Entities;
 using R3;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Model.Game
+namespace Model.Domain.Events
 {
     public class DownStairs : IDisposable, ISerializable<DownStairsMemento>, IEventEntity
     {
@@ -50,9 +51,9 @@ namespace Model.Game
                 _entity.Serialize()
             );
         }
-        public void DoEvent()
+        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            Globals.GameManager.LoadMap(_destinationMapId);
+            gameManager.LoadMap(_destinationMapId);
         }
 
         public void SetVisiblity(bool visiblity)
@@ -103,9 +104,9 @@ namespace Model.Game
             );
         }
 
-        public void DoEvent()
+        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            Globals.GameManager.LoadMap(_destinationMapId);
+            gameManager.LoadMap(_destinationMapId);
         }
 
         public void SetVisiblity(bool visiblity)

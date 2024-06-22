@@ -2,7 +2,7 @@
 using Model.Domain.Entities;
 using UnityEngine;
 
-namespace Model.Game
+namespace Model.Domain.Events
 {
     public interface IEventEntity : IDisposable, IHasEvent, IEntity
     {

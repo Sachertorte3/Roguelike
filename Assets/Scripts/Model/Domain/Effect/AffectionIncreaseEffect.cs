@@ -11,18 +11,18 @@ namespace Model.Domain.Effect
     public class AffectionIncreaseEffect : IEffect
     {
         [MinValue(1)] public float Power;
-        public Color Color => Colors.HotPink;
 
         public AffectionIncreaseEffect(float power)
         {
             Power = power;
         }
 
+        public Color Color => Colors.HotPink;
+
         public Impact Impact => Impact.Beneficial;
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

@@ -22,17 +22,11 @@ namespace Model.Game
         public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
-            {
-                SetAllItemPosition();
-            });
+            ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged => { SetAllItemPosition(); });
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
 
-        ~ItemManager()
-        {
-            Dispose();
-        }
+        public IObservableCollection<ItemEntity> Items => _items;
 
         public void Dispose()
         {
@@ -40,7 +34,10 @@ namespace Model.Game
             ItemEntityEvents.Dispose();
         }
 
-        public IObservableCollection<ItemEntity> Items => _items;
+        ~ItemManager()
+        {
+            Dispose();
+        }
 
         public void AddItem(ItemEntity item)
         {
@@ -54,6 +51,7 @@ namespace Model.Game
             AddItem(itemEntity);
             return itemEntity;
         }
+
         public ItemEntity SpawnItem(ItemEntityMemento item)
         {
             var itemEntity = _factory.CreateItem(item);

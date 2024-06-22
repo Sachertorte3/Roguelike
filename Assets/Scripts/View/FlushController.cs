@@ -12,14 +12,11 @@ public class FlushController : MonoBehaviour
     {
         _img.color = new Color(0.5f, 0, 0, 0.5f);
         _disposable.Disposable =
-        Observable
-            .Interval(TimeSpan.FromMilliseconds(1000 / 60f))
-            .Take(duration * 60 / 1000)
-            .Index()
-            .Subscribe(x =>
-            {
-                _img.color = Color.Lerp(_img.color, Color.clear, x * 1000 / (duration * 60f));
-            }
-        );
+            Observable
+                .Interval(TimeSpan.FromMilliseconds(1000 / 60f))
+                .Take(duration * 60 / 1000)
+                .Index()
+                .Subscribe(x => { _img.color = Color.Lerp(_img.color, Color.clear, x * 1000 / (duration * 60f)); }
+                );
     }
 }

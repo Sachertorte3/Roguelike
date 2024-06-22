@@ -25,17 +25,17 @@ namespace Model.Domain.Characters.Behavior
             var visibleEnemies = visibleCharacters.Where(c => character.IsEnemy(c));
             var visibleLeaders = visibleCharacters.Where(c => character.IsAlly(c) && c.IsLeader);
 
-            if (_lastTarget != null)//ターゲットがいる
+            if (_lastTarget != null) //ターゲットがいる
             {
-                if (visibleCharacters.Contains(_lastTarget))//ターゲットは視界内である
+                if (visibleCharacters.Contains(_lastTarget)) //ターゲットは視界内である
                 {
-                    if (character.IsEnemy(_lastTarget))//ターゲットは敵である
+                    if (character.IsEnemy(_lastTarget)) //ターゲットは敵である
                     {
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
-                    else if (character.IsAlly(_lastTarget) && _lastTarget.IsLeader)//ターゲットは味方かつリーダーである
+                    else if (character.IsAlly(_lastTarget) && _lastTarget.IsLeader) //ターゲットは味方かつリーダーである
                     {
-                        if (visibleEnemies.Any())//敵がいる
+                        if (visibleEnemies.Any()) //敵がいる
                         {
                             _lastTarget = visibleEnemies.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
@@ -45,45 +45,46 @@ namespace Model.Domain.Characters.Behavior
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
                     }
-                    else//ターゲットはいるが敵でも味方でもない
+                    else //ターゲットはいるが敵でも味方でもない
                     {
-                        if (visibleEnemies.Any())//他に敵がいる
+                        if (visibleEnemies.Any()) //他に敵がいる
                         {
                             _lastTarget = visibleEnemies.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
-                        else if (visibleLeaders.Any())//他にリーダーがいる
+                        else if (visibleLeaders.Any()) //他にリーダーがいる
                         {
                             _lastTarget = visibleLeaders.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
-                        else//他に敵もリーダーもいない
+                        else //他に敵もリーダーもいない
                         {
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
                     }
                 }
-                else//ターゲットを見失った
+                else //ターゲットを見失った
                 {
-                    if (visibleEnemies.Any())//他に敵がいる
+                    if (visibleEnemies.Any()) //他に敵がいる
                     {
                         _lastTarget = visibleEnemies.First();
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
-                    else if (visibleLeaders.Any())//他にリーダーがいる
-                        {
-                            _lastTarget = visibleLeaders.First();
-                            _lastTargetPosition = _lastTarget.CurrentPosition;
-                    }
-                    else//他に敵もリーダーもいない
+                    else if (visibleLeaders.Any()) //他にリーダーがいる
                     {
-                        if (character.CurrentPosition == _lastTargetPosition)//ターゲットの最後にいた座標にいる
+                        _lastTarget = visibleLeaders.First();
+                        _lastTargetPosition = _lastTarget.CurrentPosition;
+                    }
+                    else //他に敵もリーダーもいない
+                    {
+                        if (character.CurrentPosition == _lastTargetPosition) //ターゲットの最後にいた座標にいる
                         {
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
-                        else if (!world.IsReachable(character.CurrentPosition, _lastTarget.CurrentPosition))//ターゲットの最後にいた座標にはたどり着けない
+                        else if (!world.IsReachable(character.CurrentPosition,
+                                     _lastTarget.CurrentPosition)) //ターゲットの最後にいた座標にはたどり着けない
                         {
                             _lastTarget = null;
                             _lastTargetPosition = null;
@@ -91,34 +92,37 @@ namespace Model.Domain.Characters.Behavior
                     }
                 }
             }
-            else//ターゲットはいない
+            else //ターゲットはいない
             {
-                if (visibleEnemies.Any())//敵がいる
+                if (visibleEnemies.Any()) //敵がいる
                 {
                     _lastTarget = visibleEnemies.First();
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
-                else if (visibleLeaders.Any())//他にリーダーがいる
+                else if (visibleLeaders.Any()) //他にリーダーがいる
                 {
                     _lastTarget = visibleLeaders.First();
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
-                else//敵はいない
+                else //敵はいない
                 {
                     _lastTarget = null;
                     _lastTargetPosition = null;
                 }
             }
 
-            if (_lastTargetPosition != null)//目指す座標がある
+            if (_lastTargetPosition != null) //目指す座標がある
             {
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
                 foreach (var actionTemp in actions)
                 {
                     Debug.Log($"{actionTemp.GetType()} {actionTemp.Evaluate(character, world)}");
                 }
+
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
-                var action = await UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                var action = await UniTask.FromResult(validActions.MaxByOrDefault(
+                    action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
+                    new DoNothing()));
                 Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
                 return action;
             }
@@ -126,11 +130,12 @@ namespace Model.Domain.Characters.Behavior
             {
                 var actions = _wander.GenerateActionsDoable(character, world);
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
-                var action = await UniTask.FromResult(validActions.MaxByOrDefault(action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness), new DoNothing()));
+                var action = await UniTask.FromResult(validActions.MaxByOrDefault(
+                    action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
+                    new DoNothing()));
                 Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
                 return action;
             }
         }
     }
 }
-

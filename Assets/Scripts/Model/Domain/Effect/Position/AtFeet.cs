@@ -16,14 +16,20 @@ namespace Effect.Position
         {
             yield return position;
         }
-        public string Info() => "その場";
+
+        public string Info()
+        {
+            return "その場";
+        }
     }
+
     public class NearByCharacter : IEffectPosition
     {
-        public bool TargetSelf;
         public bool TargetAlly;
-        public bool TargetNeutral;
         public bool TargetEnemy;
+        public bool TargetNeutral;
+        public bool TargetSelf;
+
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, IEffectMap map)
         {
             var positions = new List<Vector2Int>();
@@ -37,15 +43,25 @@ namespace Effect.Position
                 positions.AddRange(map.GetEnemyPositions(actor));
             return new[] { positions.MinBy(p => Vector2Int.Distance(p, position)) };
         }
-        public string Info() => "近くの敵";
+
+        public string Info()
+        {
+            return "近くの敵";
+        }
     }
+
     public class ProjectileImpact : IEffectPosition
     {
         [Required] public Sprite Icon;
+
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, IEffectMap map)
         {
             throw new NotImplementedException();
         }
-        public string Info() => "着弾地点";
+
+        public string Info()
+        {
+            return "着弾地点";
+        }
     }
 }

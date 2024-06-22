@@ -11,15 +11,16 @@ namespace Model.Domain.Effect
     [Serializable]
     public class AddConditionEffect : IEffect
     {
-        [SerializeReference][Required] public IConditionData Condition;
         [Required] public RemovalConditionData RemovalCondition;
-        public Color Color => Colors.Purple;
+        [SerializeReference] [Required] public IConditionData Condition;
 
         public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
         {
             Condition = condition;
             RemovalCondition = removalCondition;
         }
+
+        public Color Color => Colors.Purple;
 
         public Impact Impact => Condition.Impact;
 

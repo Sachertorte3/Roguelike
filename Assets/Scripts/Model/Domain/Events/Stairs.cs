@@ -15,17 +15,15 @@ namespace Model.Domain.Events
         private int _destinationMapId;
         private Entity _entity;
 
-        public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
-        {
-            return new DownStairsMemento(
-                destinationMapId,
-                Entity.Build(position, Data.EntityLayer.Bottom)
-            );
-        }
         public DownStairs(DownStairsMemento data)
         {
             _entity = new Entity(data.Entity);
             _destinationMapId = data.DestinationMapId;
+        }
+
+        public void Dispose()
+        {
+            _entity.Dispose();
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -38,22 +36,9 @@ namespace Model.Domain.Events
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion();
+
         public EventTrigger Trigger => EventTrigger.Tread;
-        ~DownStairs()
-        {
-            Dispose();
-        }
-        public void Dispose()
-        {
-            _entity.Dispose();
-        }
-        public DownStairsMemento Serialize()
-        {
-            return new DownStairsMemento(
-                _destinationMapId,
-                _entity.Serialize()
-            );
-        }
+
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
             gameManager.LoadMap(_destinationMapId);
@@ -63,23 +48,43 @@ namespace Model.Domain.Events
         {
             _entity.SetVisibility(visiblity);
         }
+
+        public DownStairsMemento Serialize()
+        {
+            return new DownStairsMemento(
+                _destinationMapId,
+                _entity.Serialize()
+            );
+        }
+
+        public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
+        {
+            return new DownStairsMemento(
+                destinationMapId,
+                Entity.Build(position, EntityLayer.Bottom)
+            );
+        }
+
+        ~DownStairs()
+        {
+            Dispose();
+        }
     }
+
     public class UpStairs : IDisposable, ISerializable<UpStairsMemento>, IEventEntity
     {
         private int _destinationMapId;
         private Entity _entity;
 
-        public static UpStairsMemento Build(Vector2Int position, int destinationMapId)
-        {
-            return new UpStairsMemento(
-                destinationMapId,
-                Entity.Build(position, Data.EntityLayer.Bottom)
-            );
-        }
         public UpStairs(UpStairsMemento data)
         {
             _entity = new Entity(data.Entity);
             _destinationMapId = data.DestinationMapId;
+        }
+
+        public void Dispose()
+        {
+            _entity.Dispose();
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -92,22 +97,8 @@ namespace Model.Domain.Events
 
         public Sprite Icon => Addressables
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion();
+
         public EventTrigger Trigger => EventTrigger.Tread;
-        ~UpStairs()
-        {
-            Dispose();
-        }
-        public void Dispose()
-        {
-            _entity.Dispose();
-        }
-        public UpStairsMemento Serialize()
-        {
-            return new UpStairsMemento(
-                _destinationMapId,
-                _entity.Serialize()
-            );
-        }
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
@@ -117,6 +108,27 @@ namespace Model.Domain.Events
         public void SetVisiblity(bool visiblity)
         {
             _entity.SetVisibility(visiblity);
+        }
+
+        public UpStairsMemento Serialize()
+        {
+            return new UpStairsMemento(
+                _destinationMapId,
+                _entity.Serialize()
+            );
+        }
+
+        public static UpStairsMemento Build(Vector2Int position, int destinationMapId)
+        {
+            return new UpStairsMemento(
+                destinationMapId,
+                Entity.Build(position, EntityLayer.Bottom)
+            );
+        }
+
+        ~UpStairs()
+        {
+            Dispose();
         }
     }
 }

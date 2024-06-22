@@ -27,7 +27,10 @@ namespace Data.Setting
         public static ReactiveProperty<int> EffectDisplayTime => _effectDisplayTime.OnValueChanged;
         public static ReactiveProperty<int> DamageTextDisplayTime => _damageTextDisplayTime.OnValueChanged;
         public static ReactiveProperty<int> FlushDuration => _flushDuration.OnValueChanged;
-        public static ReactiveProperty<int> SignificantDamageThresholdPercentage => _significantDamageThresholdPercentage.OnValueChanged;
+
+        public static ReactiveProperty<int> SignificantDamageThresholdPercentage =>
+            _significantDamageThresholdPercentage.OnValueChanged;
+
         public static ReactiveProperty<int> LowHpThresholdPercentage => _lowHpThresholdPercentage.OnValueChanged;
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
         public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;

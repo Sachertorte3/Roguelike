@@ -20,6 +20,7 @@ namespace Model.Domain.Characters.Stats
             _value = new ReactiveProperty<int>(maxValue);
             Max.Subscribe(_ => clampCurrentValue());
         }
+
         public Resource(int maxValue, int value)
         {
             _max = new Stat(maxValue);
@@ -46,7 +47,8 @@ namespace Model.Domain.Characters.Stats
             {
                 return Gain(-value, name);
             }
-            int oldValue = Value.CurrentValue;
+
+            var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
             Log.Debug($"{name} Lose {value}, current value {_value.Value}");
             return oldValue - _value.Value;
@@ -59,7 +61,7 @@ namespace Model.Domain.Characters.Stats
                 return Lose(-value, name);
             }
 
-            int oldValue = Value.CurrentValue;
+            var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
             return oldValue - _value.Value;
         }

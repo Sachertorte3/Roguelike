@@ -10,6 +10,8 @@ namespace Data
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
     public class DungeonData : ScriptableObject
     {
+        [RequiredListLength(1, null)] public List<SectionData> Sections;
+
         [Serializable]
         public class SectionData
         {
@@ -22,7 +24,5 @@ namespace Data
             [SerializeField] public Table<WeaponMold> WeaponMolds;
             [SerializeField] public Table<WeaponPrefix> WeaponPrefixes = new();
         }
-        [RequiredListLength(1, null)] public List<SectionData> Sections;
     }
 }
-

@@ -53,7 +53,9 @@ namespace Model.Domain.Characters.Behavior
                                 return move;
                             else if (swap.Doable(character, world))
                                 return swap;
-                            else if (world.IsEventEntityAt(character.CurrentPosition + character.CurrentDirection.Vector(), EntityLayer.Middle))
+                            else if (world.IsEventEntityAt(
+                                         character.CurrentPosition + character.CurrentDirection.Vector(),
+                                         EntityLayer.Middle))
                             {
                                 world.Touch(character.CurrentPosition + character.CurrentDirection.Vector());
                                 return new DoNothing();
@@ -61,6 +63,7 @@ namespace Model.Domain.Characters.Behavior
                             else
                                 character.Turn(move.Direction);
                         }
+
                         break;
                     case 1:
                         var itemIndex = firstCompletedTask.result2;
@@ -81,6 +84,7 @@ namespace Model.Domain.Characters.Behavior
                             action = new ThrowItem(itemIndex, character.CurrentDirection);
                             if (action.Doable(character, world)) return action;
                         }
+
                         break;
                     default:
                         throw new IndexOutOfRangeException();

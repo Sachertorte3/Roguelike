@@ -9,16 +9,19 @@ namespace Utilities.Messages
     {
         private Dictionary<object, CompositeDisposable> _disposable = new();
         private Dictionary<Type, object> _events = new();
-        ~GroupEvents()
-        {
-            Dispose();
-        }
+
         public void Dispose()
         {
             _disposable.Values.ForEach(disposable => disposable.Dispose());
             _disposable.Clear();
             _events.Clear();
         }
+
+        ~GroupEvents()
+        {
+            Dispose();
+        }
+
         public void Add<TMessage>(TSender sender, Observable<TMessage> observable) where TMessage : notnull
         {
             if (!_disposable.ContainsKey(sender))

@@ -52,8 +52,8 @@ namespace Model.Domain.Characters
                 var xc = currentCol;
                 for (var yc = currentCol; yc >= 0; yc--)
                 {
-                    Vector2Int pos = new(origin.x + (xc * txfrm.xx) + (yc * txfrm.xy),
-                        origin.y + (xc * txfrm.yx) + (yc * txfrm.yy));
+                    Vector2Int pos = new(origin.x + xc * txfrm.xx + yc * txfrm.xy,
+                        origin.y + xc * txfrm.yx + yc * txfrm.yy);
 
                     var leftBlockSlope = (yc + 0.5f) / (xc - 0.5f);
                     var rightBlockSlope = (yc - 0.5f) / (xc + 0.5f);

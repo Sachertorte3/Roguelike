@@ -11,12 +11,13 @@ namespace Model.Domain.Effect
     public class HealEffect : IEffect
     {
         [MinValue(1)] public int Power;
-        public Color Color => Colors.Green;
 
         public HealEffect(int power)
         {
             Power = power;
         }
+
+        public Color Color => Colors.Green;
 
         public Impact Impact => Impact.Beneficial;
 
@@ -27,7 +28,9 @@ namespace Model.Domain.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, Power)) / target.CurrentMaxHp);
+            return Mathf.Min(1,
+                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, Power)) /
+                target.CurrentMaxHp);
         }
 
         public string Info()

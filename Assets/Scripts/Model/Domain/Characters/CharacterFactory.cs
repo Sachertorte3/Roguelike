@@ -20,4 +20,3 @@ namespace Model.Domain.Characters
         }
     }
 }
-

@@ -20,23 +20,28 @@ namespace Data.Character
         Aggression Aggression,
         bool IsLeader
     );
+
     public record EntityMemento(
         Vector2Int Position,
         EntityLayer Layer
     );
+
     public record CharacterStatusMemento(
         int MaxHp,
         int Hp,
         ConditionMemento[] Conditions
     );
+
     public record ConditionMemento(
         IConditionData Condition,
         RemovalConditionData RemovalCondition,
         int ElapsedTurns
     );
+
     public record InventoryMemento(
         ItemMemento?[] Items
     );
+
     public record ItemMemento(
         string Name,
         Sprite Icon,
@@ -47,15 +52,16 @@ namespace Data.Character
         SkillMemento SkillOnThrow,
         string Info
     );
+
     public record SkillMemento(
         IEffectPosition Position,
         IArea Area,
         IEffect Effect
     );
+
     public record AffiliationMemento(
         int Id,
         CharacterGroup Group,
         Dictionary<int, float> Affiliations
     );
 }
-

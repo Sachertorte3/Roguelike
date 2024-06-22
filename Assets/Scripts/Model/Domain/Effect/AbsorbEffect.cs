@@ -12,13 +12,14 @@ namespace Model.Domain.Effect
     {
         [MinValue(1)] public int Power;
         [Range(0, 1)] public float Rate;
-        public Color Color => Colors.Yellow;
 
         public AbsorbsEffect(int power, float rate)
         {
             Power = power;
             Rate = rate;
         }
+
+        public Color Color => Colors.Yellow;
 
         public Impact Impact => Impact.Harmful;
 

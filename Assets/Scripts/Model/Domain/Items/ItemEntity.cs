@@ -21,13 +21,6 @@ namespace Model.Domain.Items
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public readonly Item Item;
 
-        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
-        {
-            return new ItemEntityMemento(
-                item.Serialize(),
-                new EntityMemento(spawnPosition, EntityLayer.Bottom)
-            );
-        }
         public ItemEntity(ItemEntityMemento item)
         {
             Item = new Item(item.Item);
@@ -37,22 +30,11 @@ namespace Model.Domain.Items
         public Sprite Icon => Item.Icon;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
-        ~ItemEntity()
-        {
-            Dispose();
-        }
+
         public void Dispose()
         {
             _entity.Dispose();
             _onEffectSpawned.Dispose();
-        }
-
-        public ItemEntityMemento Serialize()
-        {
-            return new ItemEntityMemento(
-                Item.Serialize(),
-                _entity.Serialize()
-            );
         }
 
         public Entity Entity => _entity;
@@ -69,6 +51,27 @@ namespace Model.Domain.Items
             _entity.SetVisibility(visiblity);
         }
 
+        public ItemEntityMemento Serialize()
+        {
+            return new ItemEntityMemento(
+                Item.Serialize(),
+                _entity.Serialize()
+            );
+        }
+
+        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
+        {
+            return new ItemEntityMemento(
+                item.Serialize(),
+                new EntityMemento(spawnPosition, EntityLayer.Bottom)
+            );
+        }
+
+        ~ItemEntity()
+        {
+            Dispose();
+        }
+
         public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
         {
             while (map.IsPassable(CurrentPosition + direction.Vector()))
@@ -83,7 +86,8 @@ namespace Model.Domain.Items
 
             if (Item.EffectsOnThrow)
             {
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
+                    Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
                 await Item.Use(actor, CurrentPosition, direction, map);
             }
         }

@@ -16,10 +16,9 @@ namespace Model.Domain.Effect
 {
     public class Skill : ISerializable<SkillMemento>
     {
-        private readonly IEffectPosition _position;
         private readonly IArea _area;
         private readonly IEffect _effect;
-        public Color Color => _effect.Color;
+        private readonly IEffectPosition _position;
 
         public Skill(SkillData data)
         {
@@ -49,12 +48,15 @@ namespace Model.Domain.Effect
             _effect = data.Effect;
         }
 
+        public Color Color => _effect.Color;
+
         public SkillMemento Serialize()
         {
             return new SkillMemento(_position, _area, _effect);
         }
 
-        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map)
+        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IEffectMap map)
         {
             var spawnPositions = _position.Get(actor, position, map);
             return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
@@ -73,7 +75,9 @@ namespace Model.Domain.Effect
                         target.WasAttackedBy(actor, impactValue);
 
                         map.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation, impactValue));
+                            .ForEach(character =>
+                                character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation,
+                                    impactValue));
                     }
                     else if (_effect.Impact == Impact.Beneficial)
                     {
@@ -81,7 +85,9 @@ namespace Model.Domain.Effect
                         target.WasHealedBy(actor, impactValue);
 
                         map.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation, impactValue));
+                            .ForEach(character =>
+                                character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation,
+                                    impactValue));
                     }
 
                     _effect.Apply(actor, target, map);
@@ -94,7 +100,7 @@ namespace Model.Domain.Effect
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
-            float totalEvaluation = -0.01f;//効果がないなら使わない
+            var totalEvaluation = -0.01f; //効果がないなら使わない
 
             if (characters.Count <= 0)
             {
@@ -118,6 +124,7 @@ namespace Model.Domain.Effect
                         {
                             totalEvaluation += neutralImpactRate * _effect.Evaluate(actor, target);
                         }
+
                         break;
                     case Impact.Beneficial:
                         if (actor.IsAlly(target))
@@ -132,6 +139,7 @@ namespace Model.Domain.Effect
                         {
                             totalEvaluation += 0 * _effect.Evaluate(actor, target);
                         }
+
                         break;
                 }
             }
@@ -140,4 +148,3 @@ namespace Model.Domain.Effect
         }
     }
 }
-

@@ -13,9 +13,18 @@ namespace Model.Domain.Events
     public class Chest : ISerializable<ChestMemento>, IEventEntity
     {
         private Entity _entity;
-        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]").WaitForCompletion();
-        public EventTrigger Trigger => EventTrigger.Touch;
         private ItemData _item;
+
+        public Chest(ChestMemento memento)
+        {
+            _item = memento.Item;
+            _entity = new Entity(memento.Entity);
+        }
+
+        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
+            .WaitForCompletion();
+
+        public EventTrigger Trigger => EventTrigger.Touch;
 
         public Entity Entity => _entity;
 
@@ -29,16 +38,7 @@ namespace Model.Domain.Events
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
 
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public static ChestMemento Build(Vector2Int position, ItemData item) => new(item, new EntityMemento(position, EntityLayer.Middle));
-        public Chest(ChestMemento memento)
-        {
-            _item = memento.Item;
-            _entity = new Entity(memento.Entity);
-        }
-        public ChestMemento Serialize()
-        {
-            return new(_item, _entity.Serialize());
-        }
+
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
             mapManager.SpawnItem(new Item(_item), CurrentPosition);
@@ -48,6 +48,16 @@ namespace Model.Domain.Events
         public void Dispose()
         {
             _entity.Dispose();
+        }
+
+        public ChestMemento Serialize()
+        {
+            return new ChestMemento(_item, _entity.Serialize());
+        }
+
+        public static ChestMemento Build(Vector2Int position, ItemData item)
+        {
+            return new ChestMemento(item, new EntityMemento(position, EntityLayer.Middle));
         }
     }
 }

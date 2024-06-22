@@ -14,22 +14,27 @@ namespace Model.Domain.Characters
 {
     public class CharacterStatusManager : IDisposable, ISerializable<CharacterStatusMemento>, IStatusManager, ITarget
     {
-        private string _name;
         private readonly CharacterConditions _conditions;
-        private readonly CharacterStats _stats;
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
-
-        public static CharacterStatusMemento Build(int maxHp, int hp)
-        {
-            return new CharacterStatusMemento(maxHp, hp, new ConditionMemento[0]);
-        }
+        private readonly CharacterStats _stats;
+        private string _name;
 
         public CharacterStatusManager(string name, CharacterStatusMemento memento)
         {
             _name = name;
             _stats = new CharacterStats(memento.MaxHp, memento.Hp);
             _conditions = new CharacterConditions(this);
+        }
+
+        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
+        public int CurrentMaxHp => _stats.MaxHp.CurrentValue;
+        public int CurrentHp => _stats.Hp.Value.CurrentValue;
+
+        public void Dispose()
+        {
+            _stats.Dispose();
+            _conditions.Dispose();
         }
 
         public CharacterStatusMemento Serialize()
@@ -41,44 +46,39 @@ namespace Model.Domain.Characters
             );
         }
 
-        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
-
-        public void Dispose()
-        {
-            _stats.Dispose();
-            _conditions.Dispose();
-        }
-
         public IStats Stats => _stats;
         public IObservableCollection<Condition> Conditions => _conditions.Conditions;
-        public int CurrentMaxHp => _stats.MaxHp.CurrentValue;
-        public int CurrentHp => _stats.Hp.Value.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public UniTask<int> GainHp(int value)
-        {
-            int gainValue = _stats.Hp.Gain(value, _name);
-            _onHealReceived.OnNext(value);
-            return UniTask.FromResult(gainValue);
-        }
-
         public UniTask<int> LoseHp(int value)
         {
-            int loseValue = _stats.Hp.Lose(value, _name);
+            var loseValue = _stats.Hp.Lose(value, _name);
             _onDamageReceived.OnNext(value);
             return UniTask.FromResult(loseValue);
-        }
-
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            _conditions.Add(condition, removalCondition);
         }
 
         public void UpdateTurn()
         {
             _conditions.UpdateTurn(this);
+        }
+
+        public static CharacterStatusMemento Build(int maxHp, int hp)
+        {
+            return new CharacterStatusMemento(maxHp, hp, new ConditionMemento[0]);
+        }
+
+        public UniTask<int> GainHp(int value)
+        {
+            var gainValue = _stats.Hp.Gain(value, _name);
+            _onHealReceived.OnNext(value);
+            return UniTask.FromResult(gainValue);
+        }
+
+        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            _conditions.Add(condition, removalCondition);
         }
     }
 }

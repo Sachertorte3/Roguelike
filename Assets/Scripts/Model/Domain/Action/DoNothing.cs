@@ -22,4 +22,3 @@ public class DoNothing : IAction
         return score;
     }
 }
-

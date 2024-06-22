@@ -18,16 +18,16 @@ namespace Model.Domain.Map.Tests
             }
         }
 
+        private static IEnumerable<TestCaseData> IndexTest2Cases
+        {
+            get { yield return new TestCaseData(10, 10, new Vector2Int(9, 10)); }
+        }
+
         [TestCaseSource(nameof(IndexTestCases))]
         public void IndexTest1(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
             Assert.AreEqual(new TileData(TileCategory.Blank, false), map.Get(position));
-        }
-
-        private static IEnumerable<TestCaseData> IndexTest2Cases
-        {
-            get { yield return new TestCaseData(10, 10, new Vector2Int(9, 10)); }
         }
 
         [TestCaseSource(nameof(IndexTest2Cases))]

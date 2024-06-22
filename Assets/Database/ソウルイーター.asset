@@ -16,11 +16,12 @@ MonoBehaviour:
   Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 0
+  _isSameSkill: 0
   SkillOnUse:
     Position:
-      rid: 4425516923575599123
+      rid: 4425517220030054405
     Area:
-      rid: 4425516923575599124
+      rid: 4425517220030054406
     Effect:
       rid: 4425516923575599125
   SkillOnThrow:
@@ -34,15 +35,16 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4425516923575599123
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
-    - rid: 4425516923575599124
-      type: {class: LineArea, ns: Data.Area, asm: Data}
-      data:
-        ContainsSelf: 0
-        Length: 1
     - rid: 4425516923575599125
       type: {class: AbsorbsEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Power: 5
         Rate: 0.6
+    - rid: 4425517220030054405
+      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 
+    - rid: 4425517220030054406
+      type: {class: LineArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Length: 1

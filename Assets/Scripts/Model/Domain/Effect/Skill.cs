@@ -54,16 +54,17 @@ namespace Model.Domain.Effect
             return new SkillMemento(_position, _area, _effect);
         }
 
-        public IEnumerable<Vector2Int> GetArea(Vector2Int position, Direction8 direction)
+        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map)
         {
-            return _area.Get(position, direction);
+            var spawnPositions = _position.Get(actor, position, map);
+            return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
         }
 
-        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
+        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            var spawnPositions = _position.Get(actor, position);
+            var spawnPositions = _position.Get(actor, position, map);
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
-            world.GetCharactersInArea(area.ToHashSet())
+            map.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
                 {
                     if (_effect.Impact == Impact.Harmful)
@@ -71,7 +72,7 @@ namespace Model.Domain.Effect
                         var impactValue = _effect.Evaluate(actor, target);
                         target.WasAttackedBy(actor, impactValue);
 
-                        world.GetCharactersCanSeePosition(target.CurrentPosition)
+                        map.GetCharactersCanSeePosition(target.CurrentPosition)
                             .ForEach(character => character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation, impactValue));
                     }
                     else if (_effect.Impact == Impact.Beneficial)
@@ -79,11 +80,11 @@ namespace Model.Domain.Effect
                         var impactValue = _effect.Evaluate(actor, target);
                         target.WasHealedBy(actor, impactValue);
 
-                        world.GetCharactersCanSeePosition(target.CurrentPosition)
+                        map.GetCharactersCanSeePosition(target.CurrentPosition)
                             .ForEach(character => character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation, impactValue));
                     }
 
-                    _effect.Apply(actor, target, world);
+                    _effect.Apply(actor, target, map);
                 });
             return UniTask.CompletedTask;
         }

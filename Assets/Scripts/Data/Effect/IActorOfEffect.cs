@@ -5,12 +5,15 @@ using UnityEngine;
 
 namespace Data.Effect
 {
-    public interface IActorOfEffect
+    public interface IActorOfEffect : IHasAffiliation
     {
         public Vector2Int CurrentPosition { get; }
         public Aggression Aggression { get; }
-        public IAffiliation Affiliation { get; }
         public UniTask<int> GainHp(int value);
+    }
+    public interface IHasAffiliation
+    {
+        public IAffiliation Affiliation { get; }
     }
 }
 

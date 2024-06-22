@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Data.Character;
+using Data.Effect;
 using Data.Map;
 using Model.Domain;
 using Model.Domain.Characters;
@@ -254,6 +255,10 @@ namespace Model.Game
             return Characters.Where(character => area.Contains(character.Position.CurrentValue))
                 .ToHashSet();
         }
+
+        public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character) => Characters.Where(c => c.IsAlly(character)).Select(c => c.CurrentPosition);
+        public IEnumerable<Vector2Int> GetNeutralPositions(IHasAffiliation character) => Characters.Where(c => c.IsNeutral(character)).Select(c => c.CurrentPosition);
+        public IEnumerable<Vector2Int> GetEnemyPositions(IHasAffiliation character) => Characters.Where(c => c.IsEnemy(character)).Select(c => c.CurrentPosition);
 
         public bool IsEventEntityAt(Vector2Int position, EntityLayer layer)
         {

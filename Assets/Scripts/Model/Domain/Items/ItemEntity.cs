@@ -69,22 +69,22 @@ namespace Model.Domain.Items
             _entity.SetVisibility(visiblity);
         }
 
-        public async UniTask Throw(IActor actor, Direction8 direction, IMap world)
+        public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
         {
-            while (world.IsPassable(CurrentPosition + direction.Vector()))
+            while (map.IsPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
 
-            if (world.IsMapPassable(CurrentPosition + direction.Vector()))
+            if (map.IsMapPassable(CurrentPosition + direction.Vector()))
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
 
             if (Item.EffectsOnThrow)
             {
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.SkillOnThrow.GetArea(CurrentPosition, direction), Item.SkillOnThrow.Color));
-                await Item.Use(actor, CurrentPosition, direction, world);
+                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
+                await Item.Use(actor, CurrentPosition, direction, map);
             }
         }
     }

@@ -50,11 +50,9 @@ namespace Model.Game
                 _eventAreas.Add(_monsterHouse);
             }
 
-            SetRules();
-
             if (playerData == null || playerPosition == null)
             {
-                playerData = Character.BuildPlayer(_tilemap.GetAllPassablePositions().GetAtRandom());
+                playerData = Character.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
             }
             else
             {
@@ -65,10 +63,6 @@ namespace Model.Game
             }
 
             CharacterManager.SpawnPlayer(playerData, receiver, this);
-            foreach (var character in map.Characters)
-            {
-                CharacterManager.SpawnCharacter(character, this);
-            }
 
             if (partyMembers != null)
             {
@@ -85,11 +79,18 @@ namespace Model.Game
                     CharacterManager.SpawnCharacter(characterData, this);
                 }
             }
+            
+            foreach (var character in map.Characters)
+            {
+                CharacterManager.SpawnCharacter(character, this);
+            }
 
             foreach (var item in map.Items)
             {
                 ItemManager.SpawnItem(item);
             }
+            
+            SetRules();
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);

@@ -70,7 +70,7 @@ namespace Model.Game
 
         public MapManager LoadMap(int mapId)
         {
-            Log.Debug($"LoadMap {mapId}");
+            Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
 
             CharacterMemento? playerData = null;

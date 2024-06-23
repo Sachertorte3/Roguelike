@@ -35,9 +35,9 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
-        Weight: 1
+        Weight: 21.13
       - Item: {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
-        Weight: 31.7
+        Weight: 1
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}

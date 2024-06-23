@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: "\u30E4\u30C9\u30AB\u30EA"
   m_EditorClassIdentifier: 
   Name: "\u30E4\u30C9\u30AB\u30EA"
-  Hp: 10
-  CharacterType:
-    rid: 4425516923575599116
+  Hp: 5
   Aggression: 4
   Skills:
-  - Position:
-      rid: 4425516923575599117
-    Area:
+  - Area:
       rid: 4425516923575599104
     Effect:
       rid: 4425516923575599105
-  - Position:
-      rid: 4425516923575599118
-    Area:
+    Position:
+      rid: 4425516923575599117
+  - Area:
       rid: 4425516923575599106
     Effect:
       rid: 4425516923575599108
+    Position:
+      rid: 4425516923575599118
   AdditionalConditions: []
+  CharacterType:
+    rid: 4425516923575599116
   references:
     version: 2
     RefIds:
@@ -42,7 +42,7 @@ MonoBehaviour:
     - rid: 4425516923575599105
       type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Power: 10
+        Power: 2
     - rid: 4425516923575599106
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
@@ -52,11 +52,14 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Power: 1
+        AdditionalConditions: []
     - rid: 4425516923575599116
       type: {class: Crab, ns: Data.Character.Type, asm: Data}
       data:
         Type: 2
     - rid: 4425516923575599117
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 
     - rid: 4425516923575599118
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 

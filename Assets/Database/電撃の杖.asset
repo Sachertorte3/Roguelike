@@ -18,18 +18,18 @@ MonoBehaviour:
   EffectsOnThrow: 0
   _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425517220030054407
     Area:
       rid: 4425517220030054408
     Effect:
       rid: 4425517220030054409
+    Position:
+      rid: 4425517220030054407
   SkillOnThrow:
     Area:
       rid: -2
     Effect:
       rid: -2
-  UsageLimit: 8
+  UsageLimit: 5
   references:
     version: 2
     RefIds:
@@ -38,10 +38,11 @@ MonoBehaviour:
     - rid: 4425517220030054407
       type: {class: NearByCharacter, ns: Effect.Position, asm: Model.Domain}
       data:
-        TargetSelf: 0
+        NumberOfTarget: 1
         TargetAlly: 0
-        TargetNeutral: 0
         TargetEnemy: 1
+        TargetNeutral: 0
+        TargetSelf: 0
     - rid: 4425517220030054408
       type: {class: SelfArea, ns: Data.Area, asm: Data}
       data: 

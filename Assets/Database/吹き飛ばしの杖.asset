@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
   m_EditorClassIdentifier: 
   Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
-  Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1233723462, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 0
+  _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425516923575599129
     Area:
       rid: 4425516923575599131
     Effect:
       rid: 4425516923575599132
+    Position:
+      rid: 4425516923575599129
   SkillOnThrow:
     Area:
       rid: -2
@@ -36,6 +37,7 @@ MonoBehaviour:
       type: {class: , ns: , asm: }
     - rid: 4425516923575599129
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 
     - rid: 4425516923575599131
       type: {class: LineArea, ns: Data.Area, asm: Data}
       data:
@@ -44,4 +46,4 @@ MonoBehaviour:
     - rid: 4425516923575599132
       type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Distance: 5
+        Distance: 10

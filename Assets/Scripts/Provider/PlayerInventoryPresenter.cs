@@ -21,7 +21,7 @@ namespace Provider
                         if (itemChanged.NewValue != null)
                             inventoryView.Replace(itemChanged.NewValue.Icon,
                                 itemChanged.NewValue.RemainingUses.CurrentValue,
-                                itemChanged.NewValue.Info, itemChanged.Index);
+                                itemChanged.NewValue.Info(), itemChanged.Index);
                         else
                             inventoryView.Remove(itemChanged.Index);
                     }));
@@ -33,7 +33,7 @@ namespace Provider
                     {
                         var item = map.Player.Inventory.GetItem(i);
                         if (item != null)
-                            inventoryView.Replace(item.Icon, item.RemainingUses.CurrentValue, item.Info, i);
+                            inventoryView.Replace(item.Icon, item.RemainingUses.CurrentValue, item.Info(), i);
                         else
                             inventoryView.Remove(i);
                     }

@@ -10,39 +10,47 @@ using Utilities;
 
 namespace Model.Domain.Items
 {
-    public class Item : ISerializable<ItemMemento>
+    public class Item : ISerializable<ItemMemento>, IHasInfo
     {
         private readonly ReactiveProperty<int> _remainingUses;
-        public readonly bool EffectsOnThrow;
-        public readonly bool EffectsOnUse;
+        public bool EffectsOnThrow => SkillOnThrow != null;
+        public bool EffectsOnUse => SkillOnUse != null;
         public readonly Sprite Icon;
-        public readonly string Info;
+        private readonly string _info;
         public readonly string Name;
-        public readonly Skill SkillOnThrow;
-        public readonly Skill SkillOnUse;
+        public readonly Skill? SkillOnThrow;
+        public readonly Skill? SkillOnUse;
 
         public Item(ItemData data)
         {
             Name = data.Name;
             Icon = data.Icon;
-            EffectsOnUse = data.EffectsOnUse;
-            EffectsOnThrow = data.EffectsOnThrow;
-            SkillOnUse = new Skill(data.SkillOnUse);
-            SkillOnThrow = new Skill(data.SkillOnThrow);
+            if (data.EffectsOnUse)
+            {
+                SkillOnUse = new Skill(data.SkillOnUse);
+            }
+            if (data.EffectsOnThrow)
+            {
+                SkillOnThrow = new Skill(data.SkillOnThrow);
+            }
             _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
-            Info = data.Info();
+            _info = data.Info();
         }
 
         public Item(ItemMemento data)
         {
             Name = data.Name;
             Icon = data.Icon;
-            EffectsOnUse = data.EffectsOnUse;
-            EffectsOnThrow = data.EffectsOnThrow;
-            SkillOnUse = new Skill(data.SkillOnUse);
-            SkillOnThrow = new Skill(data.SkillOnThrow);
+            if (data.SkillOnUse != null)
+            {
+                SkillOnUse = new Skill(data.SkillOnUse);
+            }
+            if (data.SkillOnThrow != null)
+            {
+                SkillOnThrow = new Skill(data.SkillOnThrow);
+            }
             _remainingUses = new ReactiveProperty<int>(data.RemainingUses);
-            Info = data.Info;
+            _info = data.Info;
         }
 
         public bool IsDisabled => _remainingUses.CurrentValue <= 0;
@@ -53,12 +61,10 @@ namespace Model.Domain.Items
             return new ItemMemento(
                 Name,
                 Icon,
-                EffectsOnUse,
-                EffectsOnThrow,
                 _remainingUses.CurrentValue,
-                SkillOnUse.Serialize(),
-                SkillOnThrow.Serialize(),
-                Info
+                SkillOnUse?.Serialize(),
+                SkillOnThrow?.Serialize(),
+                _info
             );
         }
 
@@ -72,5 +78,6 @@ namespace Model.Domain.Items
         {
             return SkillOnUse.Evaluate(actor, position, direction, world);
         }
+        public string Info() => _info;
     }
 }

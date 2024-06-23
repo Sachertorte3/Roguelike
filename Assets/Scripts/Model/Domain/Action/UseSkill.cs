@@ -23,5 +23,10 @@ namespace Model.Domain.Action
             score = Skill.Evaluate(actor, actor.CurrentPosition, Direction, world);
             return score;
         }
+
+        public string Info()
+        {
+            return $"UseSkill: \nSkill{Skill.Info()}\nDirection:{Direction}";
+        }
     }
 }

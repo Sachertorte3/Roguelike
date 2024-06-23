@@ -18,12 +18,12 @@ MonoBehaviour:
   EffectsOnThrow: 0
   _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425517220030054405
     Area:
       rid: 4425517220030054406
     Effect:
       rid: 4425516923575599125
+    Position:
+      rid: 4425517220030054405
   SkillOnThrow:
     Area:
       rid: -2

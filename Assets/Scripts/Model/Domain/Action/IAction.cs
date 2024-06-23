@@ -1,8 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
+using Data;
 
 namespace Model.Domain.Action
 {
-    public interface IAction
+    public interface IAction : IHasInfo
     {
         public bool Doable(IActor actor, IMap world);
         public UniTask Do(IActor actor, IMap world, IInput input);

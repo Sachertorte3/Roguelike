@@ -14,17 +14,19 @@ using Utilities;
 
 namespace Model.Domain.Effect
 {
-    public class Skill : ISerializable<SkillMemento>
+    public class Skill : ISerializable<SkillMemento>, IHasInfo
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
         private readonly IEffectPosition _position;
+        private readonly string _info;
 
         public Skill(SkillData data)
         {
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
+            _info = data.Info();
         }
 
         public Skill(SkillDataOnUse data)
@@ -32,6 +34,7 @@ namespace Model.Domain.Effect
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
+            _info = data.Info();
         }
 
         public Skill(SkillDataOnThrow data)
@@ -39,6 +42,7 @@ namespace Model.Domain.Effect
             _position = new AtFeet();
             _area = data.Area;
             _effect = data.Effect;
+            _info = data.Info();
         }
 
         public Skill(SkillMemento data)
@@ -46,13 +50,14 @@ namespace Model.Domain.Effect
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
+            _info = data.Info;
         }
 
         public Color Color => _effect.Color;
 
         public SkillMemento Serialize()
         {
-            return new SkillMemento(_position, _area, _effect);
+            return new SkillMemento(_position, _area, _effect, _info);
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
@@ -146,5 +151,6 @@ namespace Model.Domain.Effect
 
             return totalEvaluation;
         }
+        public string Info() => _info;
     }
 }

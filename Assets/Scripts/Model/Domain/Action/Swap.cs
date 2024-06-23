@@ -35,5 +35,10 @@ namespace Model.Domain.Action
         {
             return Score;
         }
+
+        public string Info()
+        {
+            return $"Swap: Direction:{Direction}";
+        }
     }
 }

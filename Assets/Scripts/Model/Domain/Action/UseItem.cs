@@ -22,5 +22,10 @@ namespace Model.Domain.Action
             score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction, world);
             return score;
         }
+
+        public string Info()
+        {
+            return $"UseItem: ItemIndex:{ItemIndex}, Direction:{Direction}";
+        }
     }
 }

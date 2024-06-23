@@ -22,5 +22,10 @@ namespace Model.Domain.Action
             score = 0;
             return score;
         }
+        
+        public string Info()
+        {
+            return $"ThrowItem: ItemIndex:{ItemIndex}, Direction:{Direction}";
+        }
     }
 }

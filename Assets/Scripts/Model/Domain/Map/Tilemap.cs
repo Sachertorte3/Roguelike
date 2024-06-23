@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Data.Map;
 using ObservableCollections;
@@ -20,11 +21,7 @@ namespace Model.Domain.Map
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Height;
         public readonly int Width;
-
-        public Tilemap(FieldBluePrint bluePrint) : this(BuildMemento(bluePrint))
-        {
-        }
-
+        public ReadOnlyCollection<RectInt> Rooms { get; init; }
         public Tilemap(TilemapMemento memento)
         {
             Width = memento.Tiles.GetLength(0);
@@ -44,6 +41,8 @@ namespace Model.Domain.Map
                     _allPassablePositionsSet.Remove(changeTile.position);
                 ResetMask(changeTile.position);
             });
+
+            Rooms = new(memento.Rooms);
         }
 
         public Tilemap(int width, int height)
@@ -73,7 +72,8 @@ namespace Model.Domain.Map
             }
 
             return new TilemapMemento(
-                tiles
+                tiles,
+                Rooms.ToList()
             );
         }
 
@@ -101,10 +101,11 @@ namespace Model.Domain.Map
             foreach (var position in positions) SetTileKnown(position, isKnown);
         }
 
-        public static TilemapMemento BuildMemento(FieldBluePrint bluePrint)
+        public static TilemapMemento Build(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);
             var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];
+            var rooms = field.Rooms.Select(room => room.Rect);
             for (var x = 0; x < field.Grid.Size.x; x++)
             {
                 for (var y = 0; y < field.Grid.Size.y; y++)
@@ -117,7 +118,7 @@ namespace Model.Domain.Map
                 }
             }
 
-            return new TilemapMemento(tiles);
+            return new TilemapMemento(tiles, rooms.ToList());
         }
 
         ~Tilemap()

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using Data.Character;
+using RandomDungeonWithBluePrint;
+using UnityEngine;
 
 namespace Data.Map
 {
     public record TilemapMemento(
-        TileData[,] Tiles
+        TileData[,] Tiles,
+        List<RectInt> Rooms
     );
 
     public record MapMemento(

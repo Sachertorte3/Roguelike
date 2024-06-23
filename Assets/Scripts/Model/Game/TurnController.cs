@@ -29,7 +29,8 @@ namespace Model.Game
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
                 Log.Debug($"Start turn {_turn}");
-                foreach (var character in map.Characters.ToList())
+                var characters = map.Characters.ToList();
+                foreach (var character in characters)
                 {
                     character.UpdateTurn(map);
                     if (character.CanAct && !character.StatusManager.IsDead)
@@ -45,7 +46,7 @@ namespace Model.Game
                     }
                 }
 
-                await map.Characters.Select(character =>
+                await characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
             }

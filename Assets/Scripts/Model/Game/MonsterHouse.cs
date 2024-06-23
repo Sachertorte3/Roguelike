@@ -1,18 +1,29 @@
+using Data.Map;
 using Model.Domain.Events;
 using UnityEngine;
 using Utilities;
 
 namespace Model.Game
 {
-    public class MonsterHouse : IEventArea
+    public class MonsterHouse : ISerializable<MonsterHouseMemento>, IEventArea
     {
         public RectInt Rect { get; init; }
         private bool hasEntered = false;
         private bool hasEverEntered = false;
 
-        public MonsterHouse(RectInt rect)
+        public MonsterHouse(MonsterHouseMemento data)
         {
-            Rect = rect;
+            Rect = data.Room;
+            hasEntered = data.hasEntered;
+            hasEverEntered = data.hasEverEntered;
+        }
+        public static MonsterHouseMemento Build(RectInt rect)
+        {
+            return new MonsterHouseMemento(rect, false, false);
+        }
+        public MonsterHouseMemento Serialize()
+        {
+            return new MonsterHouseMemento(Rect, hasEntered, hasEverEntered);
         }
 
         public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)

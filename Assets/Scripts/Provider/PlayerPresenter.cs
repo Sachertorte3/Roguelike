@@ -18,6 +18,7 @@ namespace Provider
             StatLine statLine)
         {
             GameObject arrow = null;
+            CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     var playerView = characters.Get(map.Player);
@@ -27,7 +28,7 @@ namespace Provider
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                    Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                    _disposable.Add(Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
                         .Subscribe(_ =>
                         {
                             var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 /
@@ -42,9 +43,12 @@ namespace Provider
                             {
                                 statLine.SetTextColor(Color.white);
                             }
-                        });
+                        }));
                 },
-                map => { Object.Destroy(arrow); });
+                map => { 
+                    Object.Destroy(arrow);
+                    _disposable.Clear();
+                });
         }
     }
 }

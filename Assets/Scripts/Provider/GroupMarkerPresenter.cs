@@ -13,9 +13,10 @@ namespace Provider
         [Inject]
         public GroupMarkerPresenter(World world, SynchronizedCharacterView synchronizedCharacterView)
         {
+            var serialDisposable = new SerialDisposable();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
-                map.CharacterManager.CharacterEvents.OnAffectionChanged.Subscribe(affectionChanged =>
+                serialDisposable.Disposable = map.CharacterManager.CharacterEvents.OnAffectionChanged.Subscribe(affectionChanged =>
                 {
                     if (affectionChanged.Message.Target == map.Player.Affiliation.Id)
                     {

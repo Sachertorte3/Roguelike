@@ -16,13 +16,14 @@ MonoBehaviour:
   Icon: {fileID: 1741613238, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   EffectsOnUse: 1
   EffectsOnThrow: 0
+  _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425516923575599139
     Area:
       rid: 4425516923575599140
     Effect:
       rid: 4425516923575599141
+    Position:
+      rid: 4425516923575599139
   SkillOnThrow:
     Area:
       rid: -2
@@ -36,9 +37,11 @@ MonoBehaviour:
       type: {class: , ns: , asm: }
     - rid: 4425516923575599139
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 
     - rid: 4425516923575599140
       type: {class: SelfArea, ns: Data.Area, asm: Data}
+      data: 
     - rid: 4425516923575599141
       type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Power: 10
+        Power: 3

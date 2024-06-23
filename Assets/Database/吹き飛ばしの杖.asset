@@ -19,7 +19,7 @@ MonoBehaviour:
   _isSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425516923575599131
+      rid: 4425517232088416259
     Effect:
       rid: 4425516923575599132
     Position:
@@ -38,12 +38,12 @@ MonoBehaviour:
     - rid: 4425516923575599129
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
       data: 
-    - rid: 4425516923575599131
-      type: {class: LineArea, ns: Data.Area, asm: Data}
-      data:
-        ContainsSelf: 0
-        Length: 1
     - rid: 4425516923575599132
       type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
         Distance: 10
+    - rid: 4425517232088416259
+      type: {class: CircleArea, ns: Data.Area, asm: Data}
+      data:
+        ContainsSelf: 0
+        Radius: 1

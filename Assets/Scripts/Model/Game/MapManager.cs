@@ -30,14 +30,20 @@ namespace Model.Game
         private readonly Tilemap _tilemap;
         private HashSet<Vector2Int> _allCharacterPositions = new();
         private HashSet<Vector2Int> _allItemPositions = new();
+        private SectionData _sectionData;
+        private List<IEventArea> _eventAreas = new();
 
-        public MapManager(MapMemento map, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
+        public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
         {
             _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager();
             ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(map.EventEntities);
+
+            _sectionData = sectionData;
+            
+            _eventAreas.Add(new MonsterHouse(_tilemap.Rooms.GetAtRandom()));
 
             SetRules();
 
@@ -113,6 +119,10 @@ namespace Model.Game
         public ItemEntity SpawnItem(Item item, Vector2Int position)
         {
             return ItemManager.SpawnItem(item, position);
+        }
+        public void SpawnRandomEnemy(Vector2Int position)
+        {
+            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position), this);
         }
 
         /// <summary>
@@ -238,6 +248,11 @@ namespace Model.Game
                     {
                         eventEntity.DoEvent(Globals.GameManager, this);
                     }
+                }
+
+                foreach (var eventArea in _eventAreas)
+                {
+                    eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
 
                 if (positionChanged.Character.Inventory.HasEmptySpace())

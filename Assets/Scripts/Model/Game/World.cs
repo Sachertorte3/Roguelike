@@ -63,7 +63,7 @@ namespace Model.Game
             else
             {
                 var sectionData = GetSectionData(mapId);
-                return MapManager.Build(Tilemap.BuildMemento(sectionData.Field), sectionData, mapId + 1,
+                return MapManager.Build(Tilemap.Build(sectionData.Field), sectionData, mapId + 1,
                     mapId > 1 ? mapId - 1 : null);
             }
         }
@@ -94,7 +94,7 @@ namespace Model.Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, playerData, characters, initialPosition, _receiver);
+            MapManager map = new(mapMemento, GetSectionData(mapId), playerData, characters, initialPosition, _receiver);
 
             _activeMapId = mapId;
             _activeMap.Value = map;

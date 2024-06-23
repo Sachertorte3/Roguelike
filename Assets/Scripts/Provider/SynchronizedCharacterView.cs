@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Linq;
 using Data.Setting;
 using Model.Domain.Characters;
@@ -49,13 +50,14 @@ namespace Provider
 
         protected override void InitializeView(Character character, CharacterView characterView)
         {
+            var disposables = new CompositeDisposable();
             var player = _world.ActiveMap.CurrentValue.Player;
             characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player),
                 character.IsAlly(player));
             character.StatusManager.Stats.HpValue.SubscribeToAll(hp =>
-                characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp));
+                characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
             character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp =>
-                characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue));
+                characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue)).AddTo(characterView);
             characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(),
                 character.CharacterType.SubtypeName(),
                 character.CharacterType.TypeName() == "Human");

@@ -44,8 +44,11 @@ namespace Model.Game
 
             _sectionData = sectionData;
             
-            _monsterHouse = new MonsterHouse(map.MonsterHouse);
-            _eventAreas.Add(_monsterHouse);
+            if (map.MonsterHouse != null)
+            {
+                _monsterHouse = new MonsterHouse(map.MonsterHouse);
+                _eventAreas.Add(_monsterHouse);
+            }
 
             SetRules();
 
@@ -343,7 +346,7 @@ namespace Model.Game
                 characters,
                 items,
                 eventEntities,
-                monsterHouse
+                null//monsterHouse
             );
         }
 

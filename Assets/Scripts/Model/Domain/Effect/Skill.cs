@@ -58,13 +58,13 @@ namespace Model.Domain.Effect
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map)
         {
-            var spawnPositions = _position.Get(actor, position, map);
+            var spawnPositions = _position.Get(actor, position, direction, map);
             return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
         }
 
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            var spawnPositions = _position.Get(actor, position, map);
+            var spawnPositions = _position.Get(actor, position, direction, map);
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
             map.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>

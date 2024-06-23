@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Data.Effect;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -7,6 +9,7 @@ namespace Effect.Position
 {
     public class NearByCharacter : IEffectPosition
     {
+        [MinValue(1)] public int NumberOfTarget = 1;
         public bool TargetAlly;
         public bool TargetEnemy;
         public bool TargetNeutral;
@@ -23,7 +26,7 @@ namespace Effect.Position
                 positions.AddRange(map.GetNeutralPositions(actor));
             if (TargetEnemy)
                 positions.AddRange(map.GetEnemyPositions(actor));
-            return new[] { positions.MinBy(p => Vector2Int.Distance(p, position)) };
+            return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
         }
 
         public string Info()

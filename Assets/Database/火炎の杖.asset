@@ -38,7 +38,7 @@ MonoBehaviour:
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Power: 3
+        Power: 5
         AdditionalConditions: []
     - rid: 4425517232088416257
       type: {class: ProjectileImpact, ns: Effect.Position, asm: Model.Domain}
@@ -48,4 +48,4 @@ MonoBehaviour:
       type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
         ContainsSelf: 1
-        Radius: 2
+        Radius: 1

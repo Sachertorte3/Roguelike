@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using Data.Character;
 using RandomDungeonWithBluePrint;
@@ -14,7 +15,8 @@ namespace Data.Map
         TilemapMemento Tilemap,
         List<CharacterMemento> Characters,
         List<ItemEntityMemento> Items,
-        EventEntitiesMemento EventEntities
+        EventEntitiesMemento EventEntities,
+        MonsterHouseMemento? MonsterHouse
     );
 
     public record ItemEntityMemento(
@@ -42,5 +44,11 @@ namespace Data.Map
     public record ChestMemento(
         ItemData Item,
         EntityMemento Entity
+    );
+
+    public record MonsterHouseMemento(
+        RectInt Room,
+        bool hasEntered,
+        bool hasEverEntered
     );
 }

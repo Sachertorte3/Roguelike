@@ -32,6 +32,7 @@ namespace Model.Game
         private HashSet<Vector2Int> _allItemPositions = new();
         private SectionData _sectionData;
         private List<IEventArea> _eventAreas = new();
+        private MonsterHouse? _monsterHouse;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
@@ -43,7 +44,8 @@ namespace Model.Game
 
             _sectionData = sectionData;
             
-            _eventAreas.Add(new MonsterHouse(_tilemap.Rooms.GetAtRandom()));
+            _monsterHouse = new MonsterHouse(map.MonsterHouse);
+            _eventAreas.Add(_monsterHouse);
 
             SetRules();
 
@@ -208,7 +210,8 @@ namespace Model.Game
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                EventEntityManager.Serialize()
+                EventEntityManager.Serialize(),
+                _monsterHouse?.Serialize()
             );
         }
 
@@ -333,11 +336,14 @@ namespace Model.Game
 
             var eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
 
+            var monsterHouse = MonsterHouse.Build(tilemap.Rooms.GetAtRandom());
+
             return new MapMemento(
                 tilemap.Serialize(),
                 characters,
                 items,
-                eventEntities
+                eventEntities,
+                monsterHouse
             );
         }
 

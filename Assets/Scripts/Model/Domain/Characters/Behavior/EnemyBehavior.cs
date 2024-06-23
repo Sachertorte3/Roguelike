@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Model.Domain.Action;
 using UnityEngine;
+using Unity.Logging;
 using Utilities;
 
 namespace Model.Domain.Characters.Behavior
@@ -47,13 +48,16 @@ namespace Model.Domain.Characters.Behavior
                     }
                     else //ターゲットはいるが敵でも味方でもない
                     {
+                        Log.Debug($"[Think] Stopped targeting because the target {_lastTarget.Name} is neither friend nor enemy.");
                         if (visibleEnemies.Any()) //他に敵がいる
                         {
+                            Log.Debug($"[Think] Change target to Enemy {_lastTarget.Name}.");
                             _lastTarget = visibleEnemies.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
                         else if (visibleLeaders.Any()) //他にリーダーがいる
                         {
+                            Log.Debug($"[Think] Change target to Leader {_lastTarget.Name}.");
                             _lastTarget = visibleLeaders.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
@@ -66,26 +70,31 @@ namespace Model.Domain.Characters.Behavior
                 }
                 else //ターゲットを見失った
                 {
+                    Log.Debug($"[Think] Target {_lastTarget.Name} is out of sight.");
                     if (visibleEnemies.Any()) //他に敵がいる
                     {
                         _lastTarget = visibleEnemies.First();
+                        Log.Debug($"[Think] Change target to Enemy {_lastTarget.Name}.");
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
                     else if (visibleLeaders.Any()) //他にリーダーがいる
                     {
                         _lastTarget = visibleLeaders.First();
+                        Log.Debug($"[Think] Change target to Leader {_lastTarget.Name}.");
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
                     else //他に敵もリーダーもいない
                     {
                         if (character.CurrentPosition == _lastTargetPosition) //ターゲットの最後にいた座標にいる
                         {
+                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.Name}.");
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
                         else if (!world.IsReachable(character.CurrentPosition,
                                      _lastTarget.CurrentPosition)) //ターゲットの最後にいた座標にはたどり着けない
                         {
+                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.Name}.");
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
@@ -97,11 +106,13 @@ namespace Model.Domain.Characters.Behavior
                 if (visibleEnemies.Any()) //敵がいる
                 {
                     _lastTarget = visibleEnemies.First();
+                    Log.Debug($"[Think] Discover Enemy {_lastTarget.Name}.");
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
                 else if (visibleLeaders.Any()) //他にリーダーがいる
                 {
                     _lastTarget = visibleLeaders.First();
+                    Log.Debug($"[Think] Discover Leader {_lastTarget.Name}.");
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
                 else //敵はいない
@@ -113,27 +124,32 @@ namespace Model.Domain.Characters.Behavior
 
             if (_lastTargetPosition != null) //目指す座標がある
             {
+                Log.Debug($"[Think] Target exists.");
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
-                foreach (var actionTemp in actions)
-                {
-                    Debug.Log($"{actionTemp.GetType()} {actionTemp.Evaluate(character, world)}");
-                }
 
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
+                foreach (var actionTemp in validActions)
+                {
+                    Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
+                }
                 var action = await UniTask.FromResult(validActions.MaxByOrDefault(
                     action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
                     new DoNothing()));
-                Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
                 return action;
             }
             else
             {
+                Log.Debug($"[Think] Wandering around.");
                 var actions = _wander.GenerateActionsDoable(character, world);
+
                 var validActions = actions.Where(action => action.Evaluate(character, world) >= 0).ToList();
+                foreach (var actionTemp in validActions)
+                {
+                    Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
+                }
                 var action = await UniTask.FromResult(validActions.MaxByOrDefault(
                     action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
                     new DoNothing()));
-                Debug.Log($"{action.GetType()} {action.Evaluate(character, world)}");
                 return action;
             }
         }

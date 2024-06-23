@@ -28,7 +28,7 @@ namespace Model.Game
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                Log.Debug($"Start turn {_turn}");
+                Log.Debug($"[Turn] Start turn {_turn}");
                 var characters = map.Characters.ToList();
                 foreach (var character in characters)
                 {

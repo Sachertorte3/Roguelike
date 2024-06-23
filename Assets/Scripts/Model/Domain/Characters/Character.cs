@@ -18,6 +18,7 @@ using Model.Domain.Entities;
 using Model.Domain.Items;
 using Model.Domain.Logs;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -109,12 +110,13 @@ namespace Model.Domain.Characters
 
         public void DoNothing()
         {
+            Log.Debug($"[Action]{_name}:DoNothing");
             State = CharacterState.Wait;
         }
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Debug.Log($"{_name}が{direction}に移動した");
+            Log.Debug($"[Action]{_name}:Move direction:{direction}");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -124,6 +126,7 @@ namespace Model.Domain.Characters
 
         public async UniTask UseSkill(Skill skill, Direction8 direction, IMap map)
         {
+            Log.Debug($"[Action]{_name}:UseSkill\n{skill.Info()}\ndirection:{direction}");
             Turn(direction);
             _onEffectSpawned.OnNext(
                 new OnEffectSpawnedMessage(skill.GetArea(this, CurrentPosition, CurrentDirection, map), skill.Color));
@@ -138,9 +141,10 @@ namespace Model.Domain.Characters
 
         public async UniTask UseItem(int itemIndex, Direction8 direction, IMap map)
         {
-            Turn(direction);
             var item = _inventory.GetItem(itemIndex);
             if (item == null) throw new Exception("item is null");
+            Log.Debug($"[Action]{_name}:UseItem\n{item.Info()}\ndirection:{direction}");
+            Turn(direction);
 
             if (item.EffectsOnUse)
             {
@@ -159,9 +163,10 @@ namespace Model.Domain.Characters
 
         public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
         {
-            Turn(direction);
             var item = _inventory.Remove(itemIndex);
             if (item == null) throw new Exception("item is null");
+            Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
+            Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
             GameLog.Add($"{_name}:{item.Name}を投げた");
             if (_entity.VisibleByPlayer.CurrentValue)

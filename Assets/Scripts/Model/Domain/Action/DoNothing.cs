@@ -21,4 +21,9 @@ public class DoNothing : IAction
         score = 0;
         return score;
     }
+
+    public string Info()
+    {
+        return "DoNothing";
+    }
 }

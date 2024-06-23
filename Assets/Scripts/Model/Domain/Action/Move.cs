@@ -20,5 +20,10 @@ namespace Model.Domain.Action
         {
             return Score;
         }
+
+        public string Info()
+        {
+            return $"Move: Direction:{Direction}";
+        }
     }
 }

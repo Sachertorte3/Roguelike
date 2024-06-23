@@ -5,7 +5,6 @@ using System;
 using Effect;
 using Data.Area;
 using Data.Effect;
-using Codice.Client.BaseCommands;
 
 
 #if UNITY_EDITOR
@@ -42,7 +41,7 @@ namespace Data
                 _isSameSkill = false;
             }
 
-            if (_isSameSkill)
+            if (_isSameSkill && SkillOnUse != null)
             {
                 SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect);
             }
@@ -80,9 +79,9 @@ namespace Data
     [Serializable]
     public class SkillDataOnUse : IHasInfo
     {
-        [SerializeReference] [Required] public IArea Area;
-        [SerializeReference] [Required] public IEffect Effect;
-        [SerializeReference] [Required] public IEffectPosition Position;
+        [SerializeReference, Required] public IArea Area;
+        [SerializeReference, Required] public IEffect Effect;
+        [SerializeReference, Required] public IEffectPosition Position;
 
         public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect)
         {
@@ -100,8 +99,8 @@ namespace Data
     [Serializable]
     public class SkillDataOnThrow : IHasInfo
     {
-        [SerializeReference] [Required] public IArea Area;
-        [SerializeReference] [Required] public IEffect Effect;
+        [SerializeReference, Required] public IArea Area;
+        [SerializeReference, Required] public IEffect Effect;
 
         public SkillDataOnThrow(IArea area, IEffect effect)
         {

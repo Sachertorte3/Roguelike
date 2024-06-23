@@ -45,18 +45,17 @@ namespace Data.Character
     public record ItemMemento(
         string Name,
         Sprite Icon,
-        bool EffectsOnUse,
-        bool EffectsOnThrow,
         int RemainingUses,
-        SkillMemento SkillOnUse,
-        SkillMemento SkillOnThrow,
+        SkillMemento? SkillOnUse,
+        SkillMemento? SkillOnThrow,
         string Info
     );
 
     public record SkillMemento(
         IEffectPosition Position,
         IArea Area,
-        IEffect Effect
+        IEffect Effect,
+        string Info
     );
 
     public record AffiliationMemento(

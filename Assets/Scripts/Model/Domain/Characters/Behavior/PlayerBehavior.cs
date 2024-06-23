@@ -8,6 +8,7 @@ using Data.Area;
 using Data.Setting;
 using Model.Domain.Action;
 using Model.Domain.Effect;
+using Unity.Logging;
 using Utilities;
 
 namespace Model.Domain.Characters.Behavior
@@ -24,6 +25,7 @@ namespace Model.Domain.Characters.Behavior
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
+            Log.Debug("[PlayerThink] Start waiting input...");
             if (input.IsDash()) await _intelligentDashController.Wait(character, world);
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();

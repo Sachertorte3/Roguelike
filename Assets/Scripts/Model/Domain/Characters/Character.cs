@@ -159,6 +159,10 @@ namespace Model.Domain.Characters
 
                 State = CharacterState.Wait;
             }
+            else
+            {
+                throw new Exception("item cannot use");
+            }
         }
 
         public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
@@ -225,7 +229,6 @@ namespace Model.Domain.Characters
 
         public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
         {
-            Debug.Log($"{_name}は{direction}に吹き飛んだ");
             for (var i = 0; i < distance; i++)
             {
                 if (!CanMove(direction, map))
@@ -254,10 +257,10 @@ namespace Model.Domain.Characters
             _statusManager.AddCondition(condition, removalCondition);
         }
 
-        public static CharacterMemento BuildPlayer(Vector2Int spawnPosition)
+        public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
         {
             return new CharacterMemento(
-                "Player",
+                Name,
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 CharacterStatusManager.Build(20, 20),
@@ -291,7 +294,6 @@ namespace Model.Domain.Characters
 
         public async UniTask ForceMove(Direction8 direction, IInput input)
         {
-            Debug.Log($"{_name}が{direction}に移動した");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);

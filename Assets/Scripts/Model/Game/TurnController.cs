@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Model.Domain;
@@ -14,6 +15,7 @@ namespace Model.Game
         private bool _isRunning = false;
         private UniTaskCompletionSource _runCompletionSource;
         private int _turn = 1;
+        private int _turnInLevel = 1;
 
         public TurnController(GameInput input)
         {
@@ -22,13 +24,15 @@ namespace Model.Game
 
         public async void Run(IMap map)
         {
+            if (_isRunning)
+                throw new Exception("Turn is already running");
             _isRunning = true;
             _cancellationTokenSource = new CancellationTokenSource();
             _runCompletionSource = new UniTaskCompletionSource();
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                Log.Debug($"[Turn] Start turn {_turn}");
+                Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})");
                 var characters = map.Characters.ToList();
                 foreach (var character in characters)
                 {
@@ -49,14 +53,19 @@ namespace Model.Game
                 await characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
                 _turn++;
+                _turnInLevel++;
             }
+            _isRunning = false;
+            _runCompletionSource.TrySetResult();
         }
 
         public async UniTask Stop()
         {
             if (!_isRunning) return;
+            _turnInLevel = 1;
             _cancellationTokenSource.Cancel();
             await _runCompletionSource.Task;
+            Log.Debug("[Turn] Stop");
         }
     }
 }

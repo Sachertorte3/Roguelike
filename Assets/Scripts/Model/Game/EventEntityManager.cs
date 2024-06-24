@@ -29,7 +29,8 @@ namespace Model.Game
                 _upStairs = null;
             }
 
-            _chests = eventEntities.Chests.Select(chest => new Chest(chest)).ToList();
+            foreach (var chest in eventEntities.Chests)
+                Add(new(chest));
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
         {

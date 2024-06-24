@@ -9,6 +9,7 @@ namespace Model.Domain.Characters.Behavior
 {
     public class CharacterControllInputReceiver
     {
+        private bool _enable = true;
         private readonly InventoryIndexReceiver _inventoryIndexReceiver = new();
         private readonly Subject<Unit> _onActionRead = new();
         private readonly AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
@@ -24,27 +25,36 @@ namespace Model.Domain.Characters.Behavior
 
         public void SetMoveInput(Direction8 direction, bool isStarted)
         {
-            _onMoveInputReceived.Value = (new Move(direction), isStarted);
+            if (_enable)
+                _onMoveInputReceived.Value = (new Move(direction), isStarted);
         }
 
         public void SetAttackInput()
         {
-            _onUseItemActionReceived.Value = _inventoryIndexReceiver.Index;
+            if (_enable)
+                _onUseItemActionReceived.Value = _inventoryIndexReceiver.Index;
         }
 
         public void SetThrowInput()
         {
-            _onThrowItemActionReceived.Value = _inventoryIndexReceiver.Index;
+            if (_enable)
+                _onThrowItemActionReceived.Value = _inventoryIndexReceiver.Index;
         }
 
         public void SetInventoryIndex(int index)
         {
-            _inventoryIndexReceiver.SetIndex(index);
+            if (_enable)
+                _inventoryIndexReceiver.SetIndex(index);
         }
 
         internal void ReadInput()
         {
-            _onActionRead.OnNext(Unit.Default);
+            if (_enable)
+                _onActionRead.OnNext(Unit.Default);
+        }
+        public void Enable(bool enable)
+        {
+            _enable = enable;
         }
     }
 }

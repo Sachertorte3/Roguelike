@@ -32,21 +32,27 @@ namespace Model.Game
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})");
+                Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
                 var characters = map.Characters.ToList();
                 foreach (var character in characters)
                 {
                     character.UpdateTurn(map);
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
+                        Log.Debug($"[Turn] {character.Name} think...");
                         await character.DoNextAction(map, _input);
+                    }
+                    else
+                    {
+                        Log.Debug($"[Turn] {character.Name} cannot act.");
                     }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         _isRunning = false;
                         _runCompletionSource.TrySetResult();
-                        break;
+                        Log.Debug($"[Turn] loop canceled.");
+                        return;
                     }
                 }
 

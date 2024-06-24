@@ -305,7 +305,7 @@ namespace Model.Game
 
             foreach (var room in tilemap.Rooms)
             {
-                foreach (var position in room.RectRange().GetAtRandom(2))
+                foreach (var position in room.RectRange().GetAtRandom(0))
                     characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
                 foreach (var position in room.RectRange().GetAtRandom(2))
                     items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));

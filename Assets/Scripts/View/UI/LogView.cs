@@ -6,19 +6,14 @@ namespace View.UI
 {
     public class LogView : MonoBehaviour
     {
-        [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private Transform _content;
         [SerializeField] private TMP_Text _logTextPrefab;
-
-        private void Update()
-        {
-            _scrollRect.verticalNormalizedPosition /= 1.2f;
-        }
 
         public void AddLog(string log)
         {
             var logText = Instantiate(_logTextPrefab, _content);
             logText.text = log;
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)logText.transform);
         }
     }
 }

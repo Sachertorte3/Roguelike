@@ -17,8 +17,10 @@ namespace Data
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo
     {
-        [ReadOnly] [Required] public string Name;
+        [ReadOnly, Required] private string _name = "";
+        public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Rarity.GetColor())}>{_name}</color>";
         [Required] public Sprite Icon;
+        public Rarity Rarity;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow = false;
 
@@ -29,11 +31,23 @@ namespace Data
         [ShowIf("EffectsOnThrow")] public SkillDataOnThrow SkillOnThrow;
         [ShowIf("Usable")] [MinValue(1)] public int UsageLimit;
         private bool Usable => EffectsOnUse || EffectsOnThrow;
+
+        public ItemData(string name, Sprite icon, Rarity rarity, bool effectsOnUse, bool effectsOnThrow, SkillDataOnUse skillOnUse, SkillDataOnThrow skillOnThrow, int usageLimit)
+        {
+            _name = name;
+            Icon = icon;
+            Rarity = rarity;
+            EffectsOnUse = effectsOnUse;
+            EffectsOnThrow = effectsOnThrow;
+            SkillOnUse = skillOnUse;
+            SkillOnThrow = skillOnThrow;
+            UsageLimit = usageLimit;
+        }
 #if UNITY_EDITOR
         private void OnValidate()
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
-            Name = Path.GetFileNameWithoutExtension(assetPath);
+            _name = Path.GetFileNameWithoutExtension(assetPath);
             AssetDatabase.SaveAssets();
 
             if (!(EffectsOnUse && EffectsOnThrow))

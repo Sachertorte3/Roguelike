@@ -43,7 +43,7 @@ namespace Model.Game
             EventEntityManager = new EventEntityManager(map.EventEntities);
 
             _sectionData = sectionData;
-            
+
             if (map.MonsterHouse != null)
             {
                 _monsterHouse = new MonsterHouse(map.MonsterHouse);
@@ -79,7 +79,7 @@ namespace Model.Game
                     CharacterManager.SpawnCharacter(characterData, this);
                 }
             }
-            
+
             foreach (var character in map.Characters)
             {
                 CharacterManager.SpawnCharacter(character, this);
@@ -89,7 +89,7 @@ namespace Model.Game
             {
                 ItemManager.SpawnItem(item);
             }
-            
+
             SetRules();
 
             var visibleArea = Player.Area.VisibleArea;
@@ -303,34 +303,37 @@ namespace Model.Game
             var items = new List<ItemEntityMemento>();
             var chests = new List<ChestMemento>();
 
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(10))
-                characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(15))
-                items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(5))
+            foreach (var room in tilemap.Rooms)
             {
-                var material = data.Materials.GetRandomItem();
-                var mold = data.WeaponMolds.GetRandomItem();
-                if (Random.value < data.PrefixChance)
+                foreach (var position in room.RectRange().GetAtRandom(2))
+                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
+                foreach (var position in room.RectRange().GetAtRandom(2))
+                    items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
+                foreach (var position in room.RectRange().GetAtRandom(1))
                 {
+                    var material = data.Materials.GetRandomItem();
+                    var mold = data.WeaponMolds.GetRandomItem();
+                    if (Random.value < data.PrefixChance)
+                    {
+                        var prefix = data.WeaponPrefixes.GetRandomItem();
+                        var weapon = WeaponFactory.Create(prefix, material, mold);
+                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                    }
+                    else
+                    {
+                        var weapon = WeaponFactory.Create(material, mold);
+                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                    }
+                }
+
+                foreach (var position in room.RectRange().GetAtRandom(1))
+                {
+                    var material = data.Materials.GetRandomItem();
+                    var mold = data.WeaponMolds.GetRandomItem();
                     var prefix = data.WeaponPrefixes.GetRandomItem();
                     var weapon = WeaponFactory.Create(prefix, material, mold);
-                    items.Add(ItemEntity.Build(position, new Item(weapon)));
+                    chests.Add(Chest.Build(position, weapon));
                 }
-                else
-                {
-                    var weapon = WeaponFactory.Create(material, mold);
-                    items.Add(ItemEntity.Build(position, new Item(weapon)));
-                }
-            }
-
-            foreach (var position in tilemap.GetAllPassablePositions().GetAtRandom(1))
-            {
-                var material = data.Materials.GetRandomItem();
-                var mold = data.WeaponMolds.GetRandomItem();
-                var prefix = data.WeaponPrefixes.GetRandomItem();
-                var weapon = WeaponFactory.Create(prefix, material, mold);
-                chests.Add(Chest.Build(position, weapon));
             }
 
             var downStairs = DownStairs.Build(tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);

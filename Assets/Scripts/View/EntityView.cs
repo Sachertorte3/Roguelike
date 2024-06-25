@@ -44,7 +44,7 @@ namespace View
             if (_isVisible)
             {
                 var position = (Vector3Int)destination - (Vector3Int)direction.Vector();
-                _disposable.Disposable = Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f *
+                Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f *
                         0.75f / frame))
                     .Take(frame)
                     .Index()
@@ -58,7 +58,6 @@ namespace View
             }
             else
             {
-                _disposable.Dispose();
                 transform.position = (Vector3Int)destination;
             }
         }

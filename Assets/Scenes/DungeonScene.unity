@@ -1805,7 +1805,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c30ee49b168d9e4e8a4b45a5018760b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollRect: {fileID: 1720082586}
   _content: {fileID: 1117746979}
   _logTextPrefab: {fileID: 1053364976146917548, guid: 8d94f7dde8746ae43bc48342354b097c, type: 3}
 --- !u!114 &1720082586

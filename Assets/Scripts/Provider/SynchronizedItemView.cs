@@ -57,8 +57,8 @@ namespace Provider
                     _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
                         useSkill.Color, Settings.EffectDisplayTime.Value))
                 .AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.RegisterComponent();

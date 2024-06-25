@@ -12,17 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u6DF7\u4E71\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
-  Name: "\u6DF7\u4E71\u306E\u5DFB\u7269"
   Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Rarity: 1
   EffectsOnUse: 1
   EffectsOnThrow: 0
+  _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425516923575599135
     Area:
       rid: 4425516923575599136
     Effect:
       rid: 4425516923575599137
+    Position:
+      rid: 4425516923575599135
   SkillOnThrow:
     Area:
       rid: -2
@@ -36,6 +37,7 @@ MonoBehaviour:
       type: {class: , ns: , asm: }
     - rid: 4425516923575599135
       type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      data: 
     - rid: 4425516923575599136
       type: {class: CircleArea, ns: Data.Area, asm: Data}
       data:
@@ -44,13 +46,14 @@ MonoBehaviour:
     - rid: 4425516923575599137
       type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
       data:
-        Condition:
-          rid: 4425516923575599138
         RemovalCondition:
           RemoveByElapsedTurn: 1
           Duration: 5
           RemoveByDamage: 0
           AcceptableDamage: 0
           Probability: 0
+        Condition:
+          rid: 4425516923575599138
     - rid: 4425516923575599138
       type: {class: Confused, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+      data: 

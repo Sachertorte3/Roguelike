@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
   m_EditorClassIdentifier: 
-  Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
   Icon: {fileID: 1233723462, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Rarity: 1
   EffectsOnUse: 1
   EffectsOnThrow: 0
   _isSameSkill: 0

@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u7834\u58CA\u306E\u6756"
   m_EditorClassIdentifier: 
-  Name: "\u7834\u58CA\u306E\u6756"
   Icon: {fileID: 1140478237, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Rarity: 3
   EffectsOnUse: 1
   EffectsOnThrow: 0
   _isSameSkill: 0
   SkillOnUse:
-    Position:
-      rid: 4425516923575599123
     Area:
       rid: 4425516923575599124
     Effect:
       rid: 4425517195511463936
+    Position:
+      rid: 4425516923575599123
   SkillOnThrow:
     Area:
       rid: -2

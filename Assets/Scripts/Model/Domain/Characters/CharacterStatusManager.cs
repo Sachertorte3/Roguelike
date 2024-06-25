@@ -9,6 +9,7 @@ using Model.Domain.Characters.Stats;
 using Model.Domain.Effect;
 using ObservableCollections;
 using R3;
+using Stats;
 
 namespace Model.Domain.Characters
 {
@@ -20,11 +21,11 @@ namespace Model.Domain.Characters
         private readonly CharacterStats _stats;
         private string _name;
 
-        public CharacterStatusManager(string name, CharacterStatusMemento memento)
+        public CharacterStatusManager(string name, CharacterStatusMemento data)
         {
             _name = name;
-            _stats = new CharacterStats(memento.MaxHp, memento.Hp);
-            _conditions = new CharacterConditions(this);
+            _stats = new CharacterStats(data.MaxHp, data.Hp);
+            _conditions = new CharacterConditions(this, data.Conditions);
         }
 
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
@@ -75,6 +76,11 @@ namespace Model.Domain.Characters
             _onHealReceived.OnNext(value);
             return UniTask.FromResult(gainValue);
         }
+
+        public void AddMaxHpValue(float value) => _stats.Hp.AddMaxHpValue(value);
+        public void AddMaxHpMultiplier(float value) => _stats.Hp.AddMaxHpMultiplier(value);
+        public void RemoveMaxHpValue(float value) => _stats.Hp.RemoveMaxHpValue(value);
+        public void RemoveMaxHpMultiplier(float value) => _stats.Hp.RemoveMaxHpMultiplier(value);
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {

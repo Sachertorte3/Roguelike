@@ -10,9 +10,9 @@ namespace Model.Domain.Characters.Conditions
         private readonly RemovalConditionData _removalCondition;
         private int _elapsedTurn;
 
-        public Condition(IConditionData condition, RemovalConditionData removalCondition)
+        public Condition(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurn = 0)
         {
-            _elapsedTurn = 0;
+            _elapsedTurn = elapsedTurn;
             _condition = condition;
             _removalCondition = removalCondition;
         }

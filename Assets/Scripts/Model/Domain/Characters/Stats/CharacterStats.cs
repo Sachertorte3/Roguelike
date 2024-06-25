@@ -1,6 +1,5 @@
 ﻿using System;
 using R3;
-using StatSystem;
 using Utilities;
 
 namespace Model.Domain.Characters.Stats

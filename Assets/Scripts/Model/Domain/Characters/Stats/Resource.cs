@@ -1,9 +1,8 @@
 ﻿using System;
 using R3;
-using StatSystem;
+using Stats;
 using Unity.Logging;
 using UnityEngine;
-using Utilities;
 
 namespace Model.Domain.Characters.Stats
 {
@@ -16,7 +15,7 @@ namespace Model.Domain.Characters.Stats
         public Resource(int maxValue)
         {
             _max = new Stat(maxValue);
-            Max = _max.ToReactiveProperty();
+            Max = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
             _value = new ReactiveProperty<int>(maxValue);
             Max.Subscribe(_ => clampCurrentValue());
         }
@@ -24,7 +23,7 @@ namespace Model.Domain.Characters.Stats
         public Resource(int maxValue, int value)
         {
             _max = new Stat(maxValue);
-            Max = _max.ToReactiveProperty();
+            Max = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
             _value = new ReactiveProperty<int>(value);
             Max.Subscribe(_ => clampCurrentValue());
         }
@@ -64,6 +63,23 @@ namespace Model.Domain.Characters.Stats
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
             return oldValue - _value.Value;
+        }
+
+        public void AddMaxHpValue(float value)
+        {
+            _max.AddValue(value);
+        }
+        public void AddMaxHpMultiplier(float value)
+        {
+            _max.AddMultiplier(value);
+        }
+        public void RemoveMaxHpValue(float value)
+        {
+            _max.AddValue(-value);
+        }
+        public void RemoveMaxHpMultiplier(float value)
+        {
+            _max.AddMultiplier(-value);
         }
     }
 }

@@ -35,6 +35,11 @@ namespace View
             _hpBar = Instantiate(hpBar, transform).GetComponent<SpriteHpBar>();
         }
 
+        public void SetScale(float value)
+        {
+            transform.localScale = new(value, value, 1);
+        }
+
         public void Turn(Direction8 direction)
         {
             _direction.OnNext(direction);

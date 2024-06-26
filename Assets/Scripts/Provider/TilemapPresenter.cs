@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System.Linq;
-using Data.Map;
+using Domain.Model.Map;
 using Model.Game;
 using R3;
 using Utilities;

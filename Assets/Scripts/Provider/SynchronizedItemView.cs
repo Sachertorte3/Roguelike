@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using Data.Setting;
+using Domain.Model.Setting;
 using Model.Domain.Items;
 using Model.Game;
 using R3;

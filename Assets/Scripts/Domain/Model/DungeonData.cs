@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using Domain.Model.Character;
+using RandomDungeonWithBluePrint;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace Domain.Model
+{
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
+    public class DungeonData : ScriptableObject
+    {
+        [RequiredListLength(1, null)] public List<SectionData> Sections;
+
+        [Serializable]
+        public class SectionData
+        {
+            [MinValue(1)] public int Depth;
+            [Range(0, 1)] public float PrefixChance = 0.2f;
+            [Range(0, 1)] public float ShineyChance = 0.01f;
+            [Required] public FieldBluePrint Field;
+            [SerializeField] public Table<ItemData> Items;
+            [SerializeField] public Table<EnemyData> Enemies;
+            [SerializeField] public Table<MaterialData> Materials;
+            [SerializeField] public Table<WeaponMold> WeaponMolds;
+            [SerializeField] public Table<WeaponPrefix> WeaponPrefixes = new();
+        }
+    }
+}

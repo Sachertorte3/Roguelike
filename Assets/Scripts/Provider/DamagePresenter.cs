@@ -1,4 +1,4 @@
-using Data.Setting;
+using Domain.Model.Setting;
 using Model.Game;
 using R3;
 using Utilities;

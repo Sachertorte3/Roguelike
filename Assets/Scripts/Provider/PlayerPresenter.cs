@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using Data.Setting;
+using Domain.Model.Setting;
 using Model.Game;
 using R3;
 using UnityEngine;
@@ -45,7 +45,8 @@ namespace Provider
                             }
                         }));
                 },
-                map => { 
+                map =>
+                {
                     Object.Destroy(arrow);
                     _disposable.Clear();
                 });

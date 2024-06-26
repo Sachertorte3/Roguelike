@@ -45,10 +45,10 @@ namespace Domain.Model.Character
     public record ItemMemento(
         string Name,
         Sprite Icon,
-        int RemainingUses,
+        int MaxUsages,
+        int RemainingUsages,
         SkillMemento? SkillOnUse,
-        SkillMemento? SkillOnThrow,
-        string Info
+        SkillMemento? SkillOnThrow
     );
 
     public record SkillMemento(

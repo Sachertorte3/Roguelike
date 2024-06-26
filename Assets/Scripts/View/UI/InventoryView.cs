@@ -37,7 +37,7 @@ namespace View.UI
             UpdateInfo("", index);
         }
 
-        private void UpdateInfo(string info, int index)
+        public void UpdateInfo(string info, int index)
         {
             _info[index] = info;
             if (CurrentFocus == index) _infoText.text = info;

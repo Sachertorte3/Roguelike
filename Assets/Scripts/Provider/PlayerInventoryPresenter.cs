@@ -28,6 +28,7 @@ namespace Provider
                     _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
                         inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
+                        inventoryView.UpdateInfo(itemUpdated.Item.Info(), itemUpdated.Index);
                     }));
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
                     {

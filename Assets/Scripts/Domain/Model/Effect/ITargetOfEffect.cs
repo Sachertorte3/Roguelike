@@ -29,5 +29,6 @@ namespace Domain.Model.Effect
         public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
+        public void RepairAllItem();
     }
 }

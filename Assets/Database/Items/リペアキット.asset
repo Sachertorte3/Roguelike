@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
+  m_Name: "\u30EA\u30DA\u30A2\u30AD\u30C3\u30C8"
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 11433948, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Rarity: 1
+  EffectsOnUse: 1
+  EffectsOnThrow: 0
+  IsSameSkill: 0
+  SkillOnUse:
+    Area:
+      rid: 4425516923575599143
+    Effect:
+      rid: 4425517307579858945
+    Position:
+      rid: 4425516923575599142
+  SkillOnThrow:
+    Area:
+      rid: 4425516923575599143
+    Effect:
+      rid: 4425516923575599144
+  UsageLimit: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 4425516923575599142
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+      data: 
+    - rid: 4425516923575599143
+      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
+      data: 
+    - rid: 4425516923575599144
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        RemovalCondition:
+          RemoveByElapsedTurn: 1
+          Duration: 5
+          RemoveByDamage: 0
+          AcceptableDamage: 0
+          Probability: 0
+        Condition:
+          rid: 4425516923575599145
+    - rid: 4425516923575599145
+      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 
+    - rid: 4425517307579858945
+      type: {class: RepairEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

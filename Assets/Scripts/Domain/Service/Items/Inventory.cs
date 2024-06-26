@@ -89,5 +89,13 @@ namespace Domain.Service.Items
         {
             return Replace(null, index);
         }
+
+        public void RepairAll()
+        {
+            foreach (var item in _items)
+            {
+                item?.Repair();
+            }
+        }
     }
 }

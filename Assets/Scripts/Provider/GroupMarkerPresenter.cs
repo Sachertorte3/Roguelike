@@ -1,5 +1,5 @@
 #nullable enable
-using Model.Domain;
+using Domain.Service;
 using Model.Game;
 using R3;
 using UnityEngine;

@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using System;
-using Model.Domain.Characters;
-using Model.Domain.Entities;
+using Domain.Service.Characters;
+using Domain.Service.Entities;
 using R3;
 using Utilities.Messages;
 
-namespace Model.Domain.Items
+namespace Domain.Service.Items
 {
     public class ItemEntityEvents : IDisposable, IEntityGroupEvents
     {

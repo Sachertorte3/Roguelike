@@ -8,11 +8,11 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Effect;
 using Effect.Position;
-using Model.Domain.Characters;
+using Domain.Service.Characters;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Effect
+namespace Domain.Service.Effect
 {
     public class Skill : ISerializable<SkillMemento>, IHasInfo
     {

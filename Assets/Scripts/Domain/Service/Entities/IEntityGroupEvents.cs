@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using R3;
 
-namespace Model.Domain.Entities
+namespace Domain.Service.Entities
 {
     public interface IEntityGroupEvents
     {

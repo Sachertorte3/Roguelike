@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Utilities;
 
-namespace Model.Domain.Action
+namespace Domain.Service.Action
 {
     internal record ThrowItem(int ItemIndex, Direction8 Direction) : IAction
     {
@@ -22,7 +22,7 @@ namespace Model.Domain.Action
             score = 0;
             return score;
         }
-        
+
         public string Info()
         {
             return $"ThrowItem: ItemIndex:{ItemIndex}, Direction:{Direction}";

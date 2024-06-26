@@ -6,12 +6,12 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Area;
 using Domain.Model.Setting;
-using Model.Domain.Action;
-using Model.Domain.Effect;
+using Domain.Service.Action;
+using Domain.Service.Effect;
 using Unity.Logging;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     public sealed class PlayerBehavior : ICharacterBehavior
     {

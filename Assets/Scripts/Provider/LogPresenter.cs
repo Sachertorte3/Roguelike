@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System;
-using Model.Domain.Logs;
+using Domain.Service.Logs;
 using Utilities;
 using VContainer;
 using View.UI;

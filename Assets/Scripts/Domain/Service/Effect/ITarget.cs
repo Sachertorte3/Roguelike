@@ -1,6 +1,6 @@
-﻿using Model.Domain.Characters.Stats;
+﻿using Domain.Service.Characters.Stats;
 
-namespace Model.Domain.Effect
+namespace Domain.Service.Effect
 {
     public interface ITarget
     {

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using System;
 using Domain.Model.Character;
-using Model.Domain;
-using Model.Domain.Characters;
-using Model.Domain.Characters.Behavior;
+using Domain.Service;
+using Domain.Service.Characters;
+using Domain.Service.Characters.Behavior;
 using ObservableCollections;
 using R3;
 

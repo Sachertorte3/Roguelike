@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Model.Domain.Entities
+namespace Domain.Service.Entities
 {
     public record OnPositionChangedMessage(Vector2Int Position);
 }

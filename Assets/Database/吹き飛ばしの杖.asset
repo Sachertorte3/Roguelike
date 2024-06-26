@@ -36,14 +36,14 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599129
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599132
-      type: {class: BlowAwayEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Distance: 10
     - rid: 4425517232088416259
-      type: {class: CircleArea, ns: Data.Area, asm: Data}
+      type: {class: CircleArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Radius: 1

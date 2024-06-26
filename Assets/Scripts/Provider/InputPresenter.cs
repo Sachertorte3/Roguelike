@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using Model.Domain.Characters.Behavior;
+using Domain.Service.Characters.Behavior;
 using Model.Game;
 using R3;
 using UnityEngine;

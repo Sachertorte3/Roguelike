@@ -1,6 +1,6 @@
 ﻿using R3;
 
-namespace Model.Domain.Characters.Stats
+namespace Domain.Service.Characters.Stats
 {
     public interface IStats
     {

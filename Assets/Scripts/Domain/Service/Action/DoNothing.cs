@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Model.Domain;
-using Model.Domain.Action;
+using Domain.Service;
+using Domain.Service.Action;
 
 public class DoNothing : IAction
 {

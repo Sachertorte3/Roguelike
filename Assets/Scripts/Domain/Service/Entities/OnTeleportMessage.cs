@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Model.Domain.Entities
+namespace Domain.Service.Entities
 {
     public record OnTeleportMessage(Vector2Int Position);
 }

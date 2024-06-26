@@ -4,7 +4,7 @@ using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Entities
+namespace Domain.Service.Entities
 {
     public interface IEntity : IDisposable
     {

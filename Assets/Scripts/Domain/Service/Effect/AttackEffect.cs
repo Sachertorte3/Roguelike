@@ -8,7 +8,7 @@ using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
 
-namespace Model.Domain.Effect
+namespace Domain.Service.Effect
 {
     [Serializable]
     public class AttackEffect : IEffect

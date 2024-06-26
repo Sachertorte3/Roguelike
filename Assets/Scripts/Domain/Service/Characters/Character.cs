@@ -11,12 +11,12 @@ using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Setting;
 using Effect.Position;
-using Model.Domain.Action;
-using Model.Domain.Characters.Behavior;
-using Model.Domain.Effect;
-using Model.Domain.Entities;
-using Model.Domain.Items;
-using Model.Domain.Logs;
+using Domain.Service.Action;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Effect;
+using Domain.Service.Entities;
+using Domain.Service.Items;
+using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -24,7 +24,7 @@ using UnityEngine.AddressableAssets;
 using Utilities;
 using AdditionalConditionData = Domain.Model.AdditionalConditionData;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
         IActorOfEffect, ITargetOfEffect

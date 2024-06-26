@@ -3,7 +3,7 @@ using Domain.Model.Map;
 using R3;
 using UnityEngine;
 
-namespace Model.Domain.Map
+namespace Domain.Service.Map
 {
     public interface ITilemapViewer : ISerializable<TilemapMemento>
     {

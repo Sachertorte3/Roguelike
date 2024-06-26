@@ -22,7 +22,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425516878087061505
-      type: {class: FanArea, ns: Data.Area, asm: Data}
+      type: {class: FanArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Radius: 1

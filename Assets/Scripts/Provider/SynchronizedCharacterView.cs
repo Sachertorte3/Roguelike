@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model.Setting;
-using Model.Domain.Characters;
+using Domain.Service.Characters;
 using Model.Game;
 using R3;
 using UnityEngine;

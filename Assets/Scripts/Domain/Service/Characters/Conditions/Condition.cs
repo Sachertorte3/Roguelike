@@ -2,7 +2,7 @@
 using Domain.Model.Condition;
 using Utilities;
 
-namespace Model.Domain.Characters.Conditions
+namespace Domain.Service.Characters.Conditions
 {
     public class Condition : ISerializable<ConditionMemento>
     {

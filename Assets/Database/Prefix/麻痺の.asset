@@ -30,5 +30,5 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425517265317527593
-      type: {class: Paralyzed, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

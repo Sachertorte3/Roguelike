@@ -35,31 +35,31 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425516923575599104
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599105
-      type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 2
     - rid: 4425516923575599106
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599108
-      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 1
         AdditionalConditions: []
     - rid: 4425516923575599116
-      type: {class: Crab, ns: Data.Character.Type, asm: Data}
+      type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 2
     - rid: 4425516923575599117
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599118
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 

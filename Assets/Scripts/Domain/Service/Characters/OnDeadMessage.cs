@@ -1,4 +1,4 @@
-﻿namespace Model.Domain.Characters
+﻿namespace Domain.Service.Characters
 {
     public record OnDeadMessage();
 }

@@ -2,7 +2,7 @@
 using R3;
 using UnityEngine;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public interface IVisionRange
     {

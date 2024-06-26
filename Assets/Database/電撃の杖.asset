@@ -36,7 +36,7 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425517220030054407
-      type: {class: NearByCharacter, ns: Effect.Position, asm: Model.Domain}
+      type: {class: NearByCharacter, ns: Effect.Position, asm: Domain.Service}
       data:
         NumberOfTarget: 1
         TargetAlly: 0
@@ -44,10 +44,10 @@ MonoBehaviour:
         TargetNeutral: 0
         TargetSelf: 0
     - rid: 4425517220030054408
-      type: {class: SelfArea, ns: Data.Area, asm: Data}
+      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
       data: 
     - rid: 4425517220030054409
-      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 3
         AdditionalConditions: []

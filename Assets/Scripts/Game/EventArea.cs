@@ -1,4 +1,4 @@
-using Model.Domain.Events;
+using Domain.Service.Events;
 using UnityEngine;
 
 namespace Model.Game

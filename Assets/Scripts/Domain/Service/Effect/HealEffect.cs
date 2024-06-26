@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Effect
+namespace Domain.Service.Effect
 {
     [Serializable]
     public class HealEffect : IEffect

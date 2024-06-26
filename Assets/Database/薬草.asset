@@ -36,12 +36,12 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599139
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599140
-      type: {class: SelfArea, ns: Data.Area, asm: Data}
+      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599141
-      type: {class: HealEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 3

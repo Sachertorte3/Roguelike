@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model.Setting;
-using Model.Domain.Items;
+using Domain.Service.Items;
 using Model.Game;
 using R3;
 using UnityEngine;

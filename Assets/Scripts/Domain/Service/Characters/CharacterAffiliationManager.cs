@@ -6,7 +6,7 @@ using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {

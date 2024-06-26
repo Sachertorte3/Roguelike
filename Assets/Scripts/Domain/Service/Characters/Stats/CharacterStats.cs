@@ -2,7 +2,7 @@
 using R3;
 using Utilities;
 
-namespace Model.Domain.Characters.Stats
+namespace Domain.Service.Characters.Stats
 {
     internal class CharacterStats : IDisposable, IStats
     {

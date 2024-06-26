@@ -4,7 +4,7 @@ using Stats;
 using Unity.Logging;
 using UnityEngine;
 
-namespace Model.Domain.Characters.Stats
+namespace Domain.Service.Characters.Stats
 {
     internal class Resource : IDisposable
     {

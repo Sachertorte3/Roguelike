@@ -1,4 +1,4 @@
-﻿namespace Model.Domain
+﻿namespace Domain.Service
 {
     public interface IInput
     {

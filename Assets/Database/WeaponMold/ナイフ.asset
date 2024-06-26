@@ -22,7 +22,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425516878087061506
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1

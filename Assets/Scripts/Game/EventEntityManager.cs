@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
-using Model.Domain.Events;
+using Domain.Service.Events;
 using ObservableCollections;
 
 namespace Model.Game

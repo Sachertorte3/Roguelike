@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Domain.Model.Character;
-using Model.Domain.Characters.Behavior;
+using Domain.Service.Characters.Behavior;
 using R3;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public sealed class CharacterFactory
     {

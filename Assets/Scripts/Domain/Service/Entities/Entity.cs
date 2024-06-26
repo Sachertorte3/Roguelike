@@ -8,7 +8,7 @@ using Utilities;
 using System.Runtime.CompilerServices;
 using Domain.Model;
 
-namespace Model.Domain.Entities
+namespace Domain.Service.Entities
 {
     public class Entity : IDisposable, ISerializable<EntityMemento>
     {

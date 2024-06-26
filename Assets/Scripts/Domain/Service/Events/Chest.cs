@@ -1,14 +1,14 @@
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
-using Model.Domain.Entities;
-using Model.Domain.Items;
+using Domain.Service.Entities;
+using Domain.Service.Items;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Model.Domain.Events
+namespace Domain.Service.Events
 {
     public class Chest : ISerializable<ChestMemento>, IEventEntity
     {

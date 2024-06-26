@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using Domain.Model;
 using Domain.Model.Area;
 using Effect.Position;
-using Model.Domain.Effect;
+using Domain.Service.Effect;
 using UnityEngine;
 
-namespace Model.Domain
+namespace Domain.Service
 {
     public static class WeaponFactory
     {

@@ -1,7 +1,7 @@
-using Model.Domain.Items;
+using Domain.Service.Items;
 using UnityEngine;
 
-namespace Model.Domain.Events
+namespace Domain.Service.Events
 {
     public interface IGameManager
     {

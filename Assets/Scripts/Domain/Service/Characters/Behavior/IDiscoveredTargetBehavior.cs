@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Model.Domain.Action;
+using Domain.Service.Action;
 using UnityEngine;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     internal interface IDiscoveredTargetBehavior
     {

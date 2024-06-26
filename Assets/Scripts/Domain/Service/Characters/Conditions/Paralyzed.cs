@@ -3,7 +3,7 @@ using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Utilities;
 
-namespace Model.Domain.Characters.Conditions
+namespace Domain.Service.Characters.Conditions
 {
     internal class Paralyzed : IConditionData
     {

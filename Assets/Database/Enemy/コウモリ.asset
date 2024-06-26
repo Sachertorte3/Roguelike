@@ -38,19 +38,19 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425516923575599109
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599110
-      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 1
     - rid: 4425516923575599112
-      type: {class: Poisoned, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
     - rid: 4425516923575599119
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
     - rid: 6064254728247705600
-      type: {class: Bat, ns: Data.Character.Type, asm: Data}
+      type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0

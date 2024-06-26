@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
 
-namespace Model.Domain.Action
+namespace Domain.Service.Action
 {
     public interface IAction : IHasInfo
     {

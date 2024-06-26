@@ -6,13 +6,13 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
-using Model.Domain;
-using Model.Domain.Characters;
-using Model.Domain.Characters.Behavior;
-using Model.Domain.Events;
-using Model.Domain.Items;
-using Model.Domain.Logs;
-using Model.Domain.Map;
+using Domain.Service;
+using Domain.Service.Characters;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
+using Domain.Service.Items;
+using Domain.Service.Logs;
+using Domain.Service.Map;
 using ObservableCollections;
 using R3;
 using Unity.Logging;
@@ -128,7 +128,7 @@ namespace Model.Game
         }
         public void SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position), this);
+            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>
@@ -305,8 +305,8 @@ namespace Model.Game
 
             foreach (var room in tilemap.Rooms)
             {
-                foreach (var position in room.RectRange().GetAtRandom(0))
-                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
+                foreach (var position in room.RectRange().GetAtRandom(2))
+                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
                 foreach (var position in room.RectRange().GetAtRandom(2))
                     items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
                 foreach (var position in room.RectRange().GetAtRandom(1))

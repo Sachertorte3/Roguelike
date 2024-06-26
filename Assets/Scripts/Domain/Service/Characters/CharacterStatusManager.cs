@@ -4,14 +4,14 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
-using Model.Domain.Characters.Conditions;
-using Model.Domain.Characters.Stats;
-using Model.Domain.Effect;
+using Domain.Service.Characters.Conditions;
+using Domain.Service.Characters.Stats;
+using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
 using Stats;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public class CharacterStatusManager : IDisposable, ISerializable<CharacterStatusMemento>, IStatusManager, ITarget
     {

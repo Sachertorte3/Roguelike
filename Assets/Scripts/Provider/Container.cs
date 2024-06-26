@@ -1,4 +1,4 @@
-﻿using Model.Domain.Characters.Behavior;
+﻿using Domain.Service.Characters.Behavior;
 using Model.Game;
 using RandomDungeonWithBluePrint;
 using UnityEngine;

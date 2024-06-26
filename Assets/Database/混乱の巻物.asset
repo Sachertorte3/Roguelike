@@ -36,15 +36,15 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599135
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599136
-      type: {class: CircleArea, ns: Data.Area, asm: Data}
+      type: {class: CircleArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Radius: 10
     - rid: 4425516923575599137
-      type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         RemovalCondition:
           RemoveByElapsedTurn: 1
@@ -55,5 +55,5 @@ MonoBehaviour:
         Condition:
           rid: 4425516923575599138
     - rid: 4425516923575599138
-      type: {class: Confused, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+      type: {class: Confused, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

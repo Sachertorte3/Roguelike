@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Model.Domain.Characters;
+using Domain.Service.Characters;
 using Utilities;
 
-namespace Model.Domain.Action
+namespace Domain.Service.Action
 {
     internal record Swap(Direction8 Direction, float Score = 0) : IAction
     {

@@ -1,8 +1,8 @@
-﻿using Model.Domain.Action;
-using Model.Domain.Effect;
-using Model.Domain.Items;
+﻿using Domain.Service.Action;
+using Domain.Service.Effect;
+using Domain.Service.Items;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     public interface IHasBehavior : IActor
     {

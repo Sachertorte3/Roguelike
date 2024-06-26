@@ -2,13 +2,13 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Model.Domain.Action;
-using Model.Domain.Effect;
+using Domain.Service.Action;
+using Domain.Service.Effect;
 using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Items
+namespace Domain.Service.Items
 {
     public class Item : ISerializable<ItemMemento>, IHasInfo
     {

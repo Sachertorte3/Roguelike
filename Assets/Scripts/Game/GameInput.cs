@@ -1,4 +1,4 @@
-using Model.Domain;
+using Domain.Service;
 
 namespace Model.Game
 {

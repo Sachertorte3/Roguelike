@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 using Domain.Model.Setting;
-using Model.Domain.Events;
+using Domain.Service.Events;
 using Model.Game;
 using R3;
 using UnityEngine;

@@ -7,7 +7,7 @@ using ObservableCollections;
 using R3;
 using Utilities;
 
-namespace Model.Domain.Characters.Conditions
+namespace Domain.Service.Characters.Conditions
 {
     internal class CharacterConditions : IDisposable
     {

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
-using Model.Domain.Characters.Behavior;
-using Model.Domain.Events;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
 using Unity.Logging;
 using VContainer;
 

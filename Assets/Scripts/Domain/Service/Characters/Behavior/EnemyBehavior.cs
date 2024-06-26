@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Model.Domain.Action;
+using Domain.Service.Action;
 using UnityEngine;
 using Unity.Logging;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {

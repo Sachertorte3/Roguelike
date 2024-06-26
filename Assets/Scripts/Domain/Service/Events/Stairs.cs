@@ -1,13 +1,13 @@
 ﻿using System;
 using Domain.Model;
 using Domain.Model.Map;
-using Model.Domain.Entities;
+using Domain.Service.Entities;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Model.Domain.Events
+namespace Domain.Service.Events
 {
     public class DownStairs : IDisposable, ISerializable<DownStairsMemento>, IEventEntity
     {

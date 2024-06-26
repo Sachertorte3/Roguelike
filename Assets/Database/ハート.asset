@@ -21,35 +21,25 @@ MonoBehaviour:
     Area:
       rid: 4425516923575599127
     Effect:
-      rid: 4425517282978433575
+      rid: 4425517307579858944
     Position:
       rid: 4425516923575599126
   SkillOnThrow:
     Area:
       rid: 4425516923575599127
     Effect:
-      rid: 4425517282978433575
+      rid: 4425517307579858944
   UsageLimit: 1
   references:
     version: 2
     RefIds:
     - rid: 4425516923575599126
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599127
-      type: {class: SelfArea, ns: Data.Area, asm: Data}
+      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
       data: 
-    - rid: 4425517282978433575
-      type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+    - rid: 4425517307579858944
+      type: {class: AffectionIncreaseEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        RemovalCondition:
-          RemoveByElapsedTurn: 0
-          Duration: 0
-          RemoveByDamage: 0
-          AcceptableDamage: 0
-          Probability: 0
-        Condition:
-          rid: 4425517282978433576
-    - rid: 4425517282978433576
-      type: {class: Star, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
-      data: 
+        Power: 1

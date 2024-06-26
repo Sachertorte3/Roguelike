@@ -4,7 +4,7 @@ using Domain.Model.Map;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Model.Domain.Map.Tests
+namespace Domain.Service.Map.Tests
 {
     internal class MapTest
     {

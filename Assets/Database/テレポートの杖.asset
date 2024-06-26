@@ -36,13 +36,13 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599120
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599121
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599122
-      type: {class: TeleportEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: TeleportEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 

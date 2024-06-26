@@ -5,7 +5,7 @@ using Domain.Model.Character;
 using ObservableCollections;
 using R3;
 
-namespace Model.Domain.Items
+namespace Domain.Service.Items
 {
     internal class Inventory : ISerializable<InventoryMemento>, IInventory, IDisposable
     {

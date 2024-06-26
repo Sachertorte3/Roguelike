@@ -1,6 +1,6 @@
 ﻿using ObservableCollections;
 
-namespace Model.Domain.Logs
+namespace Domain.Service.Logs
 {
     public static class GameLog
     {

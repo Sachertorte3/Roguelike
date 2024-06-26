@@ -34,13 +34,13 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4425516923575599142
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599143
-      type: {class: SelfArea, ns: Data.Area, asm: Data}
+      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599144
-      type: {class: AddConditionEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         RemovalCondition:
           RemoveByElapsedTurn: 1
@@ -51,5 +51,5 @@ MonoBehaviour:
         Condition:
           rid: 4425516923575599145
     - rid: 4425516923575599145
-      type: {class: Paralyzed, ns: Model.Domain.Characters.Conditions, asm: Model.Domain}
+      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

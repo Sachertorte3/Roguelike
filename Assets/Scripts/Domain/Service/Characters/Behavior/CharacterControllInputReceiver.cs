@@ -1,11 +1,11 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Model.Domain.Action;
-using Model.Domain.Items;
+using Domain.Service.Action;
+using Domain.Service.Items;
 using R3;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     public class CharacterControllInputReceiver
     {

@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Setting;
-using Model.Domain.Action;
+using Domain.Service.Action;
 using Unity.Logging;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     internal sealed class IntelligentDashController
     {

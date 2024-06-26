@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Effect;
-using Model.Domain;
-using Model.Domain.Characters;
+using Domain.Service;
+using Domain.Service.Characters;
 using UnityEngine;
 using Utilities;
 

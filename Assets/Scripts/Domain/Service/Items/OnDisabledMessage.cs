@@ -1,4 +1,4 @@
-﻿namespace Model.Domain.Items
+﻿namespace Domain.Service.Items
 {
     public record OnDisabledMessage();
 }

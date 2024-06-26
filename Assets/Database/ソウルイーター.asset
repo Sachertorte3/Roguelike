@@ -36,15 +36,15 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599125
-      type: {class: AbsorbsEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 5
         Rate: 0.6
     - rid: 4425517220030054405
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425517220030054406
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1

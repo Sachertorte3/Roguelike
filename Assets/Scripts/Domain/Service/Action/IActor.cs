@@ -1,11 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
-using Model.Domain.Effect;
-using Model.Domain.Items;
+using Domain.Service.Effect;
+using Domain.Service.Items;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Action
+namespace Domain.Service.Action
 {
     public interface IActor : IActorOfEffect
     {

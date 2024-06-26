@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using Model.Domain.Map;
+using Domain.Service.Map;
 
 namespace Model.Game
 {

@@ -1,4 +1,4 @@
-﻿namespace Model.Domain.Events
+﻿namespace Domain.Service.Events
 {
     public interface IHasEvent
     {

@@ -2,12 +2,12 @@
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Area;
-using Model.Domain.Action;
-using Model.Domain.Effect;
+using Domain.Service.Action;
+using Domain.Service.Effect;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     internal sealed class Chase : IDiscoveredTargetBehavior
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
-using Model.Domain.Items;
+using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 using UnityEngine;

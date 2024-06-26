@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using Domain.Model.Map;
 
-namespace Model.Domain.Items
+namespace Domain.Service.Items
 {
     public sealed class ItemFactory
     {

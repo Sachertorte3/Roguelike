@@ -4,7 +4,7 @@ using Domain.Model.Effect;
 using Unity.Logging;
 using Utilities;
 
-namespace Model.Domain.Characters.Conditions
+namespace Domain.Service.Characters.Conditions
 {
     internal class Star : IConditionData
     {

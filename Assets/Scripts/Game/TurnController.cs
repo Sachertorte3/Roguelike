@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Model.Domain;
-using Model.Domain.Characters;
+using Domain.Service;
+using Domain.Service.Characters;
 using Unity.Logging;
 
 namespace Model.Game

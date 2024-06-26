@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Model.Domain.Action;
+using Domain.Service.Action;
 using Utilities;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     internal sealed class RandomWalk : IUndiscoveredTargetBehavior
     {

@@ -11,7 +11,7 @@ using UnityEngine;
 using Utilities;
 using static RandomDungeonWithBluePrint.Constants;
 
-namespace Model.Domain.Map
+namespace Domain.Service.Map
 {
     public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemapViewer
     {

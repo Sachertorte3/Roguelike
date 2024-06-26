@@ -36,16 +36,16 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425517220030054409
-      type: {class: AttackEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 5
         AdditionalConditions: []
     - rid: 4425517232088416257
-      type: {class: ProjectileImpact, ns: Effect.Position, asm: Model.Domain}
+      type: {class: ProjectileImpact, ns: Effect.Position, asm: Domain.Service}
       data:
         Icon: {fileID: -503745, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
     - rid: 4425517232088416258
-      type: {class: CircleArea, ns: Data.Area, asm: Data}
+      type: {class: CircleArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 1
         Radius: 1

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Model.Domain.Action;
+using Domain.Service.Action;
 
-namespace Model.Domain.Characters.Behavior
+namespace Domain.Service.Characters.Behavior
 {
     internal interface IUndiscoveredTargetBehavior
     {

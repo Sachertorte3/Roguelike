@@ -36,13 +36,13 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 4425516923575599123
-      type: {class: AtFeet, ns: Effect.Position, asm: Model.Domain}
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 
     - rid: 4425516923575599124
-      type: {class: LineArea, ns: Data.Area, asm: Data}
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425517195511463936
-      type: {class: BreakEffect, ns: Model.Domain.Effect, asm: Model.Domain}
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 

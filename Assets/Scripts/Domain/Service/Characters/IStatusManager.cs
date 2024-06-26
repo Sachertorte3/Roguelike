@@ -1,13 +1,13 @@
 #nullable enable
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Model.Domain.Characters.Conditions;
-using Model.Domain.Characters.Stats;
-using Model.Domain.Effect;
+using Domain.Service.Characters.Conditions;
+using Domain.Service.Characters.Stats;
+using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     public interface IStatusManager : IHasCondition
     {

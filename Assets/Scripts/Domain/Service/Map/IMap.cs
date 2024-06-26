@@ -4,13 +4,13 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Effect;
 using Effect;
-using Model.Domain.Characters;
-using Model.Domain.Characters.Behavior;
-using Model.Domain.Items;
+using Domain.Service.Characters;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Items;
 using ObservableCollections;
 using UnityEngine;
 
-namespace Model.Domain
+namespace Domain.Service
 {
     public interface IMap : IPassableChecker, IEffectMap
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace Model.Domain.Characters
+namespace Domain.Service.Characters
 {
     internal static class ViewCalculator
     {

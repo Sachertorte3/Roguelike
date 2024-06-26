@@ -65,9 +65,24 @@ namespace Model.Domain.Characters
             _conditions.UpdateTurn(this);
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hp)
+        public static CharacterStatusMemento Build(int maxHp, int hp, bool isShiney)
         {
-            return new CharacterStatusMemento(maxHp, hp, new ConditionMemento[0]);
+            if (isShiney)
+            {
+                return new CharacterStatusMemento(
+                    maxHp * 3,
+                    hp * 3,
+                    new[] { Condition.Build(new Star(), new RemovalConditionData()) }
+                );
+            }
+            else
+            {
+                return new CharacterStatusMemento(
+                    maxHp,
+                    hp,
+                    new ConditionMemento[0]
+                );
+            }
         }
 
         public UniTask<int> GainHp(int value)

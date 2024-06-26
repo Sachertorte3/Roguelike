@@ -15,8 +15,9 @@ namespace Data
         [Serializable]
         public class SectionData
         {
-            public int Depth;
-            public float PrefixChance = 0.2f;
+            [MinValue(1)] public int Depth;
+            [Range(0, 1)] public float PrefixChance = 0.2f;
+            [Range(0, 1)] public float ShineyChance = 0.01f;
             [Required] public FieldBluePrint Field;
             [SerializeField] public Table<ItemData> Items;
             [SerializeField] public Table<EnemyData> Enemies;

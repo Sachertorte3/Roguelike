@@ -16,8 +16,6 @@ namespace Model.Domain.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            Log.Debug("Star inflict");
-            hasCondition.AddMaxHpMultiplier(2);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,8 +25,6 @@ namespace Model.Domain.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            Log.Debug("Star delete");
-            hasCondition.RemoveMaxHpMultiplier(2);
         }
     }
 }

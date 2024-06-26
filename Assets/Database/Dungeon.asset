@@ -15,6 +15,7 @@ MonoBehaviour:
   Sections:
   - Depth: 1
     PrefixChance: 0.2
+    ShineyChance: 0.01
     Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
     Items:
       items:
@@ -70,6 +71,7 @@ MonoBehaviour:
         Weight: 1
   - Depth: 3
     PrefixChance: 0.5
+    ShineyChance: 1
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
     Items:
       items:

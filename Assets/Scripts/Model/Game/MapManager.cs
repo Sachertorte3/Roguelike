@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using Data;
 using Data.Character;
 using Data.Effect;
@@ -128,7 +129,7 @@ namespace Model.Game
         }
         public void SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position), this);
+            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>
@@ -305,8 +306,8 @@ namespace Model.Game
 
             foreach (var room in tilemap.Rooms)
             {
-                foreach (var position in room.RectRange().GetAtRandom(0))
-                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position));
+                foreach (var position in room.RectRange().GetAtRandom(2))
+                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
                 foreach (var position in room.RectRange().GetAtRandom(2))
                     items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
                 foreach (var position in room.RectRange().GetAtRandom(1))

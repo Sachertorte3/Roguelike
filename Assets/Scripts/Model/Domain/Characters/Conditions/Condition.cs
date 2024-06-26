@@ -16,6 +16,10 @@ namespace Model.Domain.Characters.Conditions
             _condition = condition;
             _removalCondition = removalCondition;
         }
+        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            return new ConditionMemento(condition, removalCondition, 0);
+        }
 
         public ParticleType ParticleType => _condition.ParticleType;
         public bool CanAct => _condition.CanAct;

@@ -12,12 +12,14 @@ namespace Domain.Service.Items
 {
     public class Item : ISerializable<ItemMemento>, IHasInfo
     {
-        private readonly ReactiveProperty<int> _remainingUses;
+        private readonly int _maxUsages;
+        private readonly ReactiveProperty<int> _remainingUsages;
         public bool EffectsOnThrow => SkillOnThrow != null;
         public bool EffectsOnUse => SkillOnUse != null;
+        private bool _usable => EffectsOnUse || EffectsOnThrow;
         public readonly Sprite Icon;
-        private readonly string _info;
         public readonly string Name;
+        private readonly bool _isSameSkill;
         public readonly Skill? SkillOnThrow;
         public readonly Skill? SkillOnUse;
 
@@ -33,8 +35,8 @@ namespace Domain.Service.Items
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
-            _remainingUses = new ReactiveProperty<int>(data.UsageLimit);
-            _info = data.Info();
+            _maxUsages = data.UsageLimit;
+            _remainingUsages = new ReactiveProperty<int>(data.UsageLimit);
         }
 
         public Item(ItemMemento data)
@@ -49,35 +51,63 @@ namespace Domain.Service.Items
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
-            _remainingUses = new ReactiveProperty<int>(data.RemainingUses);
-            _info = data.Info;
+            _maxUsages = data.MaxUsages;
+            _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
         }
 
-        public bool IsDisabled => _remainingUses.CurrentValue <= 0;
-        public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUses;
+        public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
+        public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
 
         public ItemMemento Serialize()
         {
             return new ItemMemento(
                 Name,
                 Icon,
-                _remainingUses.CurrentValue,
+                _maxUsages,
+                _remainingUsages.CurrentValue,
                 SkillOnUse?.Serialize(),
-                SkillOnThrow?.Serialize(),
-                _info
+                SkillOnThrow?.Serialize()
             );
         }
 
         public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            _remainingUses.Value -= 1;
+            _remainingUsages.Value -= 1;
             await SkillOnUse.Use(actor, position, direction, world);
+        }
+
+        public void Repair()
+        {
+            _remainingUsages.Value = _maxUsages;
         }
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return SkillOnUse.Evaluate(actor, position, direction, world);
         }
-        public string Info() => _info;
+        public string Info()
+        {
+            var info = $"{Name}\n";
+            if (_usable)
+            {
+                if (_isSameSkill)
+                {
+                    info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
+                }
+                else
+                {
+                    if (SkillOnUse != null)
+                    {
+                        info += $"[使用時]\n{SkillOnUse.Info()}\n";
+                    }
+                    if (SkillOnThrow != null)
+                    {
+                        info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
+                    }
+                }
+                info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}";
+            }
+            return info;
+        }
     }
 }

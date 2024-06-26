@@ -24,7 +24,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
-        Weight: 52.26
+        Weight: 1
       - Item: {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
@@ -39,6 +39,8 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
         Weight: 1
+      - Item: {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+        Weight: 51.84
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}

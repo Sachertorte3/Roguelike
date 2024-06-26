@@ -6,7 +6,6 @@ using Effect;
 using Domain.Model.Area;
 using Domain.Model.Effect;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -26,12 +25,12 @@ namespace Domain.Model
 
         [ShowIf("@EffectsOnUse && EffectsOnThrow")]
         [SerializeField]
-        private bool _isSameSkill = false;
+        public bool IsSameSkill = false;
 
         [ShowIf("EffectsOnUse")] public SkillDataOnUse SkillOnUse;
         [ShowIf("EffectsOnThrow")] public SkillDataOnThrow SkillOnThrow;
-        [ShowIf("Usable")][MinValue(1)] public int UsageLimit;
-        private bool Usable => EffectsOnUse || EffectsOnThrow;
+        [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
+        private bool _usable => EffectsOnUse || EffectsOnThrow;
 
         public ItemData(string name, Sprite icon, Rarity rarity, bool effectsOnUse, bool effectsOnThrow, SkillDataOnUse skillOnUse, SkillDataOnThrow skillOnThrow, int usageLimit)
         {
@@ -53,10 +52,10 @@ namespace Domain.Model
 
             if (!(EffectsOnUse && EffectsOnThrow))
             {
-                _isSameSkill = false;
+                IsSameSkill = false;
             }
 
-            if (_isSameSkill && SkillOnUse != null)
+            if (IsSameSkill && SkillOnUse != null)
             {
                 SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect);
             }
@@ -65,9 +64,9 @@ namespace Domain.Model
         public string Info()
         {
             var info = $"{Name}\n";
-            if (Usable)
+            if (_usable)
             {
-                if (_isSameSkill)
+                if (IsSameSkill)
                 {
                     info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
                 }

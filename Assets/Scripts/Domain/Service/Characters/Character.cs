@@ -385,6 +385,11 @@ namespace Domain.Service.Characters
             return _inventory.Replace(item, index);
         }
 
+        public void RepairAllItem()
+        {
+            _inventory.RepairAll();
+        }
+
         public void UpdateTurn(IMap world)
         {
             _statusManager.UpdateTurn();

@@ -8,5 +8,6 @@ namespace View
     {
         public TileBase Wall;
         public TileBase Floor;
+        public TileBase ShopFloor;
     }
 }

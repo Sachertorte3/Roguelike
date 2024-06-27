@@ -9,10 +9,4 @@ namespace Domain.Service.Events
         public Sprite Icon { get; }
         public EventTrigger Trigger { get; }
     }
-
-    public enum EventTrigger
-    {
-        Tread,
-        Touch
-    }
 }

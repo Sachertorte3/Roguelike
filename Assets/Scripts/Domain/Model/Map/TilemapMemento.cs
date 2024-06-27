@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using Domain.Model.Character;
-using RandomDungeonWithBluePrint;
 using UnityEngine;
 
 namespace Domain.Model.Map
@@ -16,7 +15,8 @@ namespace Domain.Model.Map
         List<CharacterMemento> Characters,
         List<ItemEntityMemento> Items,
         EventEntitiesMemento EventEntities,
-        MonsterHouseMemento? MonsterHouse
+        RoomMemento? MonsterHouse,
+        ShopMemento? Shop
     );
 
     public record ItemEntityMemento(
@@ -46,9 +46,13 @@ namespace Domain.Model.Map
         EntityMemento Entity
     );
 
-    public record MonsterHouseMemento(
+    public record RoomMemento(
         RectInt Room,
         bool hasEntered,
         bool hasEverEntered
+    );
+    public record ShopMemento(
+        RoomMemento Room,
+        List<ItemEntityMemento> Items
     );
 }

@@ -40,7 +40,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-        Weight: 51.84
+        Weight: 1
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}

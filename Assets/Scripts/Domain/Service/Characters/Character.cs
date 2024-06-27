@@ -43,6 +43,8 @@ namespace Domain.Service.Characters
         private bool _canIgnoreWall;
         private string _name = "Character";
         public CharacterState State = CharacterState.Think;
+        private int _money = 120;
+        public int Money => _money;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap world)

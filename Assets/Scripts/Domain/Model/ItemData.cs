@@ -20,6 +20,7 @@ namespace Domain.Model
         public string Name => $"<color=#{ColorUtility.ToHtmlStringRGB(Rarity.GetColor())}>{_name}</color>";
         [Required] public Sprite Icon;
         public Rarity Rarity;
+        public int Price = 100;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow = false;
 

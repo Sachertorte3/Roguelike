@@ -1,3 +1,4 @@
+using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Events;
 using UnityEngine;
@@ -5,65 +6,72 @@ using Utilities;
 
 namespace Model.Game
 {
-    public class MonsterHouse : ISerializable<MonsterHouseMemento>, IEventArea
+    public abstract class Room<TMemento> : ISerializable<TMemento>, IEventArea
     {
         public RectInt Rect { get; init; }
-        private bool hasEntered = false;
-        private bool hasEverEntered = false;
+        protected bool hasEntered = false;
+        protected bool hasEverEntered = false;
 
-        public MonsterHouse(MonsterHouseMemento data)
+        public Room(RoomMemento data)
         {
             Rect = data.Room;
             hasEntered = data.hasEntered;
             hasEverEntered = data.hasEverEntered;
         }
-        public static MonsterHouseMemento Build(RectInt rect)
-        {
-            return new MonsterHouseMemento(rect, false, false);
-        }
-        public MonsterHouseMemento Serialize()
-        {
-            return new MonsterHouseMemento(Rect, hasEntered, hasEverEntered);
-        }
-
+        public abstract TMemento Serialize();
         public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
         {
             bool isInside = Rect.Contains(currentPosition);
 
-            if (isInside && !hasEntered)
+            if (isInside)
             {
-                if (!hasEverEntered)
+                if (!hasEntered)
                 {
-                    FirstTimeEnter(gameManager, mapManager);
-                    hasEverEntered = true;
+                    if (!hasEverEntered)
+                    {
+                        FirstTimeEnter(gameManager, mapManager);
+                        hasEverEntered = true;
+                    }
+                    EveryTimeEnter(gameManager, mapManager);
+                    hasEntered = true;
                 }
-                EveryTimeEnter(gameManager, mapManager);
-                hasEntered = true;
             }
-            else if (!isInside && hasEntered)
+            else
             {
-                EveryTimeExit(gameManager, mapManager);
-                hasEntered = false;
+                UpdateTurnIfNotInside(gameManager, mapManager);
+                if (hasEntered)
+                {
+                    EveryTimeExit(gameManager, mapManager);
+                    hasEntered = false;
+                }
             }
         }
+        protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager) { }
+        protected virtual void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager) { }
+        protected virtual void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager) { }
+        protected virtual void EveryTimeExit(IGameManager gameManager, IMapManager mapManager) { }
+    }
 
-        private void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+    public class MonsterHouse : Room<RoomMemento>
+    {
+
+        public MonsterHouse(RoomMemento data) : base(data) { }
+
+        public static RoomMemento Build(RectInt rect)
+        {
+            return new RoomMemento(rect, false, false);
+        }
+        public override RoomMemento Serialize()
+        {
+            return new RoomMemento(Rect, hasEntered, hasEverEntered);
+        }
+        protected override void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
             Debug.Log("First time entering the Monster House.");
             for (int i = 0; i < 10; i++)
             {
                 mapManager.SpawnRandomEnemy(Rect.RectRange().GetAtRandom());
             }
-        }
-
-        private void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
-        {
-            Debug.Log("Entering the Monster House.");
-        }
-
-        private void EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
-        {
-            Debug.Log("Exiting the Monster House.");
         }
     }
 }

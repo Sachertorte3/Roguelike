@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
 using Domain.Service.Events;
+using Domain.Service.Rooms;
 using ObservableCollections;
 
 namespace Model.Game

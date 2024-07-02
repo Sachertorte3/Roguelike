@@ -19,6 +19,7 @@ namespace Domain.Service.Items
         private bool _usable => EffectsOnUse || EffectsOnThrow;
         public readonly Sprite Icon;
         public readonly string Name;
+        public readonly int Price;
         private readonly bool _isSameSkill;
         public readonly Skill? SkillOnThrow;
         public readonly Skill? SkillOnUse;
@@ -27,6 +28,7 @@ namespace Domain.Service.Items
         {
             Name = data.Name;
             Icon = data.Icon;
+            Price = data.Price;
             if (data.EffectsOnUse)
             {
                 SkillOnUse = new Skill(data.SkillOnUse);

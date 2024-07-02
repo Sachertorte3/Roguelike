@@ -13,17 +13,19 @@ namespace Model.Game
         private readonly UpStairs? _upStairs;
         private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
+        private readonly List<Clerk> _clerks = new();
         private ObservableList<IEventEntity> _eventEntities = new();
+        private ObservableList<IEventEntityAndIcon> _eventEntitiesAndIcons = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities)
         {
             _downStairs = new(eventEntities.DownStairs);
-            _eventEntities.Add(_downStairs);
+            _eventEntitiesAndIcons.Add(_downStairs);
 
             if (eventEntities.UpStairs != null)
             {
                 _upStairs = new(eventEntities.UpStairs);
-                _eventEntities.Add(_upStairs);
+                _eventEntitiesAndIcons.Add(_upStairs);
             }
             else
             {
@@ -31,7 +33,7 @@ namespace Model.Game
             }
 
             foreach (var chest in eventEntities.Chests)
-                Add(new(chest));
+                Add(new Chest(chest));
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
         {
@@ -51,17 +53,26 @@ namespace Model.Game
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
+        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => _eventEntitiesAndIcons;
 
         public void Add(Chest chest)
         {
             _chests.Add(chest);
             _eventEntities.Add(chest);
+            _eventEntitiesAndIcons.Add(chest);
+        }
+
+        public void Add(Clerk clerk)
+        {
+            _clerks.Add(clerk);
+            _eventEntities.Add(clerk);
         }
 
         public void Remove(Chest chest)
         {
             _chests.Remove(chest);
             _eventEntities.Remove(chest);
+            _eventEntitiesAndIcons.Remove(chest);
         }
     }
 }

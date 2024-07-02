@@ -4,9 +4,13 @@ using UnityEngine;
 
 namespace Domain.Service.Events
 {
-    public interface IEventEntity : IDisposable, IHasEvent, IEntity
+    public interface IEventEntity : IHasEvent, IEntity
+    {
+        public EventTrigger Trigger { get; }
+    }
+
+    public interface IEventEntityAndIcon : IEventEntity
     {
         public Sprite Icon { get; }
-        public EventTrigger Trigger { get; }
     }
 }

@@ -100,6 +100,7 @@ namespace Model.Game
             {
                 var clerk = Characters.First(character => character.CurrentPosition == map.Shop.Clerk.Position);
                 _shop = new Shop(map.Shop, clerk, this);
+                EventEntityManager.Add(_shop.Clerk);
                 _eventAreas.Add(_shop);
             }
 
@@ -117,6 +118,7 @@ namespace Model.Game
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
+        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
 
@@ -213,6 +215,8 @@ namespace Model.Game
                 .FirstOrDefault(eventEntity => eventEntity.CurrentPosition == position);
             if (eventEntity != null)
                 eventEntity.DoEvent(Globals.GameManager, this);
+            else
+                Log.Info($"I tried touch position {position} event but there was no event there.");
         }
 
         public void RemoveEventEntity(Chest eventEntity)

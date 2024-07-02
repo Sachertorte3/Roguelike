@@ -52,6 +52,7 @@ namespace Model.Game
         }
         public void Dispose()
         {
+            Clerk.Dispose();
             _disposable.Dispose();
         }
         ~Shop()

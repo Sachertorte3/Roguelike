@@ -397,6 +397,16 @@ namespace Domain.Service.Characters
             _statusManager.UpdateTurn();
             _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
         }
+
+        public void AddMoney(int value)
+        {
+            _money += value;
+        }
+
+        public void ReduceMoney(int value)
+        {
+            _money -= value;
+        }
     }
 
     public static class CharacterExtensions

@@ -21,6 +21,7 @@ namespace Domain.Model
             [Required] public FieldBluePrint Field;
             [SerializeField] public Table<ItemData> Items;
             [SerializeField] public Table<EnemyData> Enemies;
+            [Required] public EnemyData Clerk;
             [SerializeField] public Table<MaterialData> Materials;
             [SerializeField] public Table<WeaponMold> WeaponMolds;
             [SerializeField] public Table<WeaponPrefix> WeaponPrefixes = new();

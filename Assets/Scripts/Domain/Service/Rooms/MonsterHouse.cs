@@ -1,4 +1,3 @@
-using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Events;
 using UnityEngine;

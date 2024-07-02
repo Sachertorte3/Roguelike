@@ -13,6 +13,7 @@ using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Map;
+using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
@@ -97,7 +98,8 @@ namespace Model.Game
 
             if (map.Shop != null)
             {
-                _shop = new Shop(map.Shop, this);
+                var clerk = Characters.First(character => character.CurrentPosition == map.Shop.Clerk.Position);
+                _shop = new Shop(map.Shop, clerk, this);
                 _eventAreas.Add(_shop);
             }
 
@@ -322,7 +324,9 @@ namespace Model.Game
             foreach (var position in tilemap.Rooms.First().RectRange().GetAtRandom(2))
                 items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
 
-            var shop = Shop.Build(tilemap.Rooms.First(), items.ToList());
+            var clerk = Character.BuildCharacter(data.Clerk, tilemap.Rooms.First().RectRange().GetAtRandom(), Random.value < data.ShineyChance);
+            characters.Add(clerk);
+            var shop = Shop.Build(tilemap.Rooms.First(), clerk.EntityData, items.ToList());
 
             foreach (var room in tilemap.Rooms.Skip(1))
             {

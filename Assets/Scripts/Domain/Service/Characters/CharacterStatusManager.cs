@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Model.Characters;
 using Domain.Model.Condition;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Characters.Stats;
@@ -48,7 +49,7 @@ namespace Domain.Service.Characters
         }
 
         public IStats Stats => _stats;
-        public IObservableCollection<Condition> Conditions => _conditions.Conditions;
+        public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;

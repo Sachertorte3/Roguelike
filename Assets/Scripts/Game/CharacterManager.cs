@@ -11,7 +11,7 @@ namespace Model.Game
 {
     public sealed class CharacterManager : IDisposable
     {
-        private readonly ObservableList<Character> _characters = new();
+        private readonly ObservableList<ICharacter> _characters = new();
         private readonly CharacterFactory _factory = new();
         public readonly CharacterEvents CharacterEvents = new();
         public readonly CharacterEvents PlayerEvents = new();
@@ -21,9 +21,9 @@ namespace Model.Game
             CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
         }
 
-        public Character? Player { get; private set; }
+        public ICharacter? Player { get; private set; }
 
-        public IObservableCollection<Character> Characters => _characters;
+        public IObservableCollection<ICharacter> Characters => _characters;
 
         public void Dispose()
         {
@@ -37,7 +37,7 @@ namespace Model.Game
             Dispose();
         }
 
-        private void SetPlayer(Character player)
+        private void SetPlayer(ICharacter player)
         {
             if (Player != null)
             {
@@ -49,13 +49,13 @@ namespace Model.Game
             PlayerEvents.Add(player);
         }
 
-        public void AddCharacter(Character character)
+        public void AddCharacter(ICharacter character)
         {
             _characters.Add(character);
             CharacterEvents.Add(character);
         }
 
-        public void RemoveCharacter(Character character)
+        public void RemoveCharacter(ICharacter character)
         {
             _characters.Remove(character);
             CharacterEvents.Remove(character);
@@ -63,7 +63,7 @@ namespace Model.Game
 
         public void SpawnCharacter(CharacterMemento data, IMap world)
         {
-            AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(), new ReactiveProperty<bool>(false), world));
+            AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), world));
         }
 
         internal void SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)

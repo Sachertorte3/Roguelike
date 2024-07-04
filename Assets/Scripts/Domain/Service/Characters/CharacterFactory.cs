@@ -1,19 +1,68 @@
 ﻿#nullable enable
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Model;
+using Domain.Model.Area;
 using Domain.Model.Character;
+using Domain.Model.Character.Type;
+using Domain.Model.Effect;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Effect;
+using Effect.Position;
 using R3;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Domain.Service.Characters
 {
     public sealed class CharacterFactory
     {
-        public Character CreatePlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver,
+        public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
+        {
+            return new CharacterMemento(
+                Name,
+                new Human(Addressables
+                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
+                true,
+                CharacterStatusManager.Build(20, 20, false),
+                new EntityMemento(spawnPosition, EntityLayer.Middle),
+                new[]
+                {
+                    new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
+                        new AttackEffect(1, new List<AdditionalConditionData>()))).Serialize()
+                },
+                new InventoryMemento(new ItemMemento[10]),
+                CharacterAffiliationManager.Build(CharacterGroup.Player),
+                Aggression.AttackAnyone,
+                true,
+                false
+            );
+        }
+
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isShiney)
+        {
+            return new CharacterMemento(
+                data.Name,
+                data.CharacterType,
+                data.WanderAround,
+                CharacterStatusManager.Build(data.Hp, data.Hp, isShiney),
+                new EntityMemento(spawnPosition, EntityLayer.Middle),
+                data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
+                new InventoryMemento(new ItemMemento[10]),
+                CharacterAffiliationManager.Build(data.Group),
+                data.Aggression,
+                false,
+                data.IsBoss
+            );
+        }
+
+        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver,
             ReactiveProperty<bool> canIgnoreWall, IMap world)
         {
             return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, world);
         }
 
-        public Character CreateCharacter(CharacterMemento data, ICharacterBehavior behavior,
+        public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior,
             ReactiveProperty<bool> canIgnoreWall, IMap world)
         {
             return new Character(data, behavior, canIgnoreWall, world);

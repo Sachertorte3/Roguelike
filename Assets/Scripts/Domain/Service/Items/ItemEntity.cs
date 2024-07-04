@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Items;
 using Domain.Model.Map;
+using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Characters;
@@ -15,11 +18,11 @@ using Utilities;
 
 namespace Domain.Service.Items
 {
-    public class ItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IEntity
+    internal class ItemEntity : IItemEntity
     {
         private readonly Entity _entity;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
-        public readonly Item Item;
+        public IItem Item { get; init; }
 
         public ItemEntity(ItemEntityMemento item)
         {
@@ -36,8 +39,6 @@ namespace Domain.Service.Items
             _entity.Dispose();
             _onEffectSpawned.Dispose();
         }
-
-        public Entity Entity => _entity;
 
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -56,14 +57,6 @@ namespace Domain.Service.Items
             return new ItemEntityMemento(
                 Item.Serialize(),
                 _entity.Serialize()
-            );
-        }
-
-        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
-        {
-            return new ItemEntityMemento(
-                item.Serialize(),
-                new EntityMemento(spawnPosition, EntityLayer.Bottom)
             );
         }
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Items;
 using Domain.Model.Map;
 using Domain.Service;
 using Domain.Service.Characters;
@@ -50,7 +51,7 @@ namespace Model.Game
 
             if (playerData == null || playerPosition == null)
             {
-                playerData = Character.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
+                playerData = CharacterFactory.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
             }
             else
             {
@@ -114,7 +115,7 @@ namespace Model.Game
                 eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
         }
 
-        public Character Player => CharacterManager.Player;
+        public ICharacter Player => CharacterManager.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
@@ -132,16 +133,16 @@ namespace Model.Game
         }
 
         public IObservableCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
-        public IObservableCollection<Character> Characters => CharacterManager.Characters;
-        public IObservableCollection<ItemEntity> Items => ItemManager.Items;
+        public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
+        public IObservableCollection<IItemEntity> Items => ItemManager.Items;
 
-        public ItemEntity SpawnItem(Item item, Vector2Int position)
+        public IItemEntity SpawnItem(IItem item, Vector2Int position)
         {
             return ItemManager.SpawnItem(item, position);
         }
         public void SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
+            CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>
@@ -149,13 +150,13 @@ namespace Model.Game
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(IEnumerable<Vector2Int> area)
+        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area)
         {
             return Characters.Where(character => area.Contains(character.Position.CurrentValue))
                 .ToHashSet();
         }
 
-        public HashSet<ItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area)
+        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area)
         {
             return Items.Where(item => area.Contains(item.Position.CurrentValue))
                 .ToHashSet();
@@ -326,18 +327,18 @@ namespace Model.Game
             var chests = new List<ChestMemento>();
 
             foreach (var position in tilemap.Rooms.First().RectRange().GetAtRandom(2))
-                items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
+                items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
 
-            var clerk = Character.BuildCharacter(data.Clerk, tilemap.Rooms.First().RectRange().GetAtRandom(), Random.value < data.ShineyChance);
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, tilemap.Rooms.First().RectRange().GetAtRandom(), Random.value < data.ShineyChance);
             characters.Add(clerk);
             var shop = Shop.Build(tilemap.Rooms.First(), clerk.EntityData, items.ToList());
 
             foreach (var room in tilemap.Rooms.Skip(1))
             {
                 foreach (var position in room.RectRange().GetAtRandom(2))
-                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
+                    characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
                 foreach (var position in room.RectRange().GetAtRandom(2))
-                    items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
+                    items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
                 foreach (var position in room.RectRange().GetAtRandom(1))
                 {
                     var material = data.Materials.GetRandomItem();
@@ -346,12 +347,12 @@ namespace Model.Game
                     {
                         var prefix = data.WeaponPrefixes.GetRandomItem();
                         var weapon = WeaponFactory.Create(prefix, material, mold);
-                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                        items.Add(ItemFactory.Build(position, new Item(weapon)));
                     }
                     else
                     {
                         var weapon = WeaponFactory.Create(material, mold);
-                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                        items.Add(ItemFactory.Build(position, new Item(weapon)));
                     }
                 }
 
@@ -389,7 +390,7 @@ namespace Model.Game
             Dispose();
         }
 
-        public ItemEntity? TryPickUp(Vector2Int position)
+        public IItemEntity? TryPickUp(Vector2Int position)
         {
             return ItemManager.TryPickUp(position);
         }
@@ -449,7 +450,7 @@ namespace Model.Game
         ///     Does not include the players themselves.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Character> GetFollowingCharacters()
+        public IEnumerable<ICharacter> GetFollowingCharacters()
         {
             return CharacterManager.Characters.Where(character =>
                 character.IsAlly(Player) && character.IsVisible(Player.CurrentPosition));

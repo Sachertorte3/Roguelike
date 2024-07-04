@@ -1,11 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
-using Domain.Service.Effect;
-using Domain.Service.Items;
+using Domain.Model.Items;
+using Domain.Service;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Service.Action
+namespace Domain.Model.Action
 {
     public interface IActor : IActorOfEffect
     {
@@ -17,7 +17,7 @@ namespace Domain.Service.Action
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world);
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
-        public UniTask UseSkill(Skill skill, Direction8 direction, IMap world);
+        public UniTask UseSkill(ISkill skill, Direction8 direction, IMap world);
         public UniTask UseItem(int itemIndex, Direction8 direction, IMap world);
         public UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world);
     }

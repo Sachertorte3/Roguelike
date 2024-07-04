@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Items;
 using Domain.Service.Action;
 using Domain.Service.Effect;
 using R3;
@@ -10,19 +12,19 @@ using Utilities;
 
 namespace Domain.Service.Items
 {
-    public class Item : ISerializable<ItemMemento>, IHasInfo
+    public class Item : IItem
     {
         private readonly int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
         public bool EffectsOnThrow => SkillOnThrow != null;
         public bool EffectsOnUse => SkillOnUse != null;
         private bool _usable => EffectsOnUse || EffectsOnThrow;
-        public readonly Sprite Icon;
-        public readonly string Name;
-        public readonly int Price;
+        public Sprite Icon { get; init; }
+        public string Name  { get; init; }
+        public int Price { get; init; }
         private readonly bool _isSameSkill;
-        public readonly Skill? SkillOnThrow;
-        public readonly Skill? SkillOnUse;
+        public ISkill? SkillOnThrow { get; init; }
+        public ISkill? SkillOnUse { get; init; }
 
         public Item(ItemData data)
         {

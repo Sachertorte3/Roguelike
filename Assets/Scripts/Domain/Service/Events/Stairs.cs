@@ -27,7 +27,6 @@ namespace Domain.Service.Events
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public Entity Entity => _entity;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
@@ -88,7 +87,6 @@ namespace Domain.Service.Events
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public Entity Entity => _entity;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;

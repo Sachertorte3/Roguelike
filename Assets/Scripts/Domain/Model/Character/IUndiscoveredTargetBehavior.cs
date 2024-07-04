@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using Domain.Service.Action;
+using Domain.Model.Action;
+using Domain.Service;
 
-namespace Domain.Service.Characters.Behavior
+namespace Domain.Model.Characters
 {
-    internal interface IUndiscoveredTargetBehavior
+    public interface IUndiscoveredTargetBehavior
     {
         public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, IMap world);
     }

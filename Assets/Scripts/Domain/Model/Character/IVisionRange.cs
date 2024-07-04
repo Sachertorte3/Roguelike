@@ -1,8 +1,10 @@
-﻿using ObservableCollections;
+﻿using Domain.Model.Message;
+using Domain.Service;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
-namespace Domain.Service.Characters
+namespace Domain.Model.Character
 {
     public interface IVisionRange
     {

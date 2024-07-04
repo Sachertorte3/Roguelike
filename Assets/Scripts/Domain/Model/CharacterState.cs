@@ -1,4 +1,4 @@
-﻿namespace Domain.Service.Characters
+﻿namespace Domain.Model
 {
     public enum CharacterState
     {

@@ -11,7 +11,7 @@ namespace Domain.Service.Characters.Conditions
 {
     internal class CharacterConditions : IDisposable
     {
-        private readonly ObservableHashSet<Condition> _conditions = new();
+        private readonly ObservableHashSet<ICondition> _conditions = new();
         private readonly CompositeDisposable _disposables = new();
 
         public CharacterConditions(IHasCondition hasCondition, ConditionMemento[] conditions)
@@ -24,7 +24,7 @@ namespace Domain.Service.Characters.Conditions
             _disposables.Add(_conditions.ObserveRemove().Subscribe(add => add.Value.Delete(hasCondition)));
         }
 
-        public IObservableCollection<Condition> Conditions => _conditions;
+        public IObservableCollection<ICondition> Conditions => _conditions;
 
         public void Dispose()
         {

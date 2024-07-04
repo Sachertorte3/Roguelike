@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Service;
 using Domain.Service.Characters;
 using Unity.Logging;

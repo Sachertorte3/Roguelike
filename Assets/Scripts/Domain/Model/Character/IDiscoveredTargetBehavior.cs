@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using Domain.Service.Action;
+using Domain.Model.Action;
+using Domain.Service;
 using UnityEngine;
 
-namespace Domain.Service.Characters.Behavior
+namespace Domain.Model.Characters
 {
-    internal interface IDiscoveredTargetBehavior
+    public interface IDiscoveredTargetBehavior
     {
         public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world);

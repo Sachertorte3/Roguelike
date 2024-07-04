@@ -5,8 +5,8 @@ namespace Domain.Service.Entities
 {
     public interface IEntityGroupEvents
     {
-        public Observable<(Entity Entity, OnPositionChangedMessage Message)> OnPositionChanged { get; }
-        public Observable<(Entity Entity, OnMoveMessage Message)> OnMove { get; }
-        public Observable<(Entity Entity, OnTeleportMessage Message)> OnTeleport { get; }
+        public Observable<(IEntity Entity, OnPositionChangedMessage Message)> OnPositionChanged { get; }
+        public Observable<(IEntity Entity, OnMoveMessage Message)> OnMove { get; }
+        public Observable<(IEntity Entity, OnTeleportMessage Message)> OnTeleport { get; }
     }
 }

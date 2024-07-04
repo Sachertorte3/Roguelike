@@ -1,6 +1,6 @@
 ﻿using Utilities;
 
-namespace Domain.Service.Characters
+namespace Domain.Model.Message
 {
     public record OnDirectionChangedMessage(Direction8 Direction);
 }

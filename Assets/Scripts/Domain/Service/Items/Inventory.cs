@@ -2,6 +2,8 @@
 using System;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Items;
+using Domain.Model.Message;
 using ObservableCollections;
 using R3;
 
@@ -12,7 +14,7 @@ namespace Domain.Service.Items
         private const int MaxItems = 10;
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable _disposables = new();
-        private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
+        private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Inventory(InventoryMemento data)
@@ -47,7 +49,7 @@ namespace Domain.Service.Items
 
         public int MaxItemCount => MaxItems;
 
-        public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
+        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
 
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
 
@@ -56,7 +58,7 @@ namespace Domain.Service.Items
             return _items.IndexOf(null) >= 0;
         }
 
-        public Item? GetItem(int index)
+        public IItem? GetItem(int index)
         {
             return _items[index];
         }
@@ -66,7 +68,7 @@ namespace Domain.Service.Items
             return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
         }
 
-        public bool TryAdd(Item item)
+        public bool TryAdd(IItem item)
         {
             var index = _items.IndexOf(null);
             if (index >= 0)
@@ -78,14 +80,14 @@ namespace Domain.Service.Items
             return false;
         }
 
-        public Item? Replace(Item? item, int index)
+        public IItem? Replace(IItem? item, int index)
         {
             var removed = _items[index];
             _items[index] = item;
             return removed;
         }
 
-        public Item? Remove(int index)
+        public IItem? Remove(int index)
         {
             return Replace(null, index);
         }

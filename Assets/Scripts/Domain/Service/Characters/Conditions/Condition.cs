@@ -4,7 +4,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    public class Condition : ISerializable<ConditionMemento>
+    internal class Condition : ICondition
     {
         private readonly IConditionData _condition;
         private readonly RemovalConditionData _removalCondition;
@@ -16,6 +16,7 @@ namespace Domain.Service.Characters.Conditions
             _condition = condition;
             _removalCondition = removalCondition;
         }
+
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
         {
             return new ConditionMemento(condition, removalCondition, 0);

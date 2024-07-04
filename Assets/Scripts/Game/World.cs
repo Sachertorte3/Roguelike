@@ -5,7 +5,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
-using Domain.Service.Characters;
+using Domain.Service;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Map;
 using R3;
@@ -100,7 +100,7 @@ namespace Model.Game
             return map;
         }
 
-        public HashSet<Character> GetCharactersInArea(HashSet<Vector2Int> area)
+        public HashSet<ICharacter> GetCharactersInArea(HashSet<Vector2Int> area)
         {
             return ActiveMap.CurrentValue.GetCharactersInArea(area);
         }

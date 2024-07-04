@@ -54,6 +54,8 @@ namespace Provider
             var player = _world.ActiveMap.CurrentValue.Player;
             characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player),
                 character.IsAlly(player));
+            if (character.IsBoss)
+                characterView.SetScale(1.5f);
             character.StatusManager.Stats.HpValue.SubscribeToAll(hp =>
                 characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
             character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp =>

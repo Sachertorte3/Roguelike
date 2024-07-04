@@ -18,7 +18,8 @@ namespace Domain.Model.Character
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
         Aggression Aggression,
-        bool IsLeader
+        bool IsLeader,
+        bool IsBoss
     );
 
     public record EntityMemento(

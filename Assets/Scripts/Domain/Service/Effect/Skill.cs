@@ -19,8 +19,8 @@ namespace Domain.Service.Effect
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
-        private readonly IEffectPosition _position;
         private readonly string _info;
+        private readonly IEffectPosition _position;
 
         public Skill(SkillData data)
         {
@@ -152,6 +152,10 @@ namespace Domain.Service.Effect
 
             return totalEvaluation;
         }
-        public string Info() => _info;
+
+        public string Info()
+        {
+            return _info;
+        }
     }
 }

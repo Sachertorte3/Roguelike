@@ -14,17 +14,9 @@ namespace Domain.Service.Items
 {
     public class Item : IItem
     {
+        private readonly bool _isSameSkill;
         private readonly int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
-        public bool EffectsOnThrow => SkillOnThrow != null;
-        public bool EffectsOnUse => SkillOnUse != null;
-        private bool _usable => EffectsOnUse || EffectsOnThrow;
-        public Sprite Icon { get; init; }
-        public string Name  { get; init; }
-        public int Price { get; init; }
-        private readonly bool _isSameSkill;
-        public ISkill? SkillOnThrow { get; init; }
-        public ISkill? SkillOnUse { get; init; }
 
         public Item(ItemData data)
         {
@@ -35,10 +27,12 @@ namespace Domain.Service.Items
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
             }
+
             if (data.EffectsOnThrow)
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
+
             _maxUsages = data.UsageLimit;
             _remainingUsages = new ReactiveProperty<int>(data.UsageLimit);
         }
@@ -51,13 +45,24 @@ namespace Domain.Service.Items
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
             }
+
             if (data.SkillOnThrow != null)
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
+
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
         }
+
+        private bool _usable => EffectsOnUse || EffectsOnThrow;
+        public bool EffectsOnThrow => SkillOnThrow != null;
+        public bool EffectsOnUse => SkillOnUse != null;
+        public Sprite Icon { get; init; }
+        public string Name { get; init; }
+        public int Price { get; init; }
+        public ISkill? SkillOnThrow { get; init; }
+        public ISkill? SkillOnUse { get; init; }
 
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
@@ -89,6 +94,7 @@ namespace Domain.Service.Items
         {
             return SkillOnUse.Evaluate(actor, position, direction, world);
         }
+
         public string Info()
         {
             var info = $"{Name}\n";
@@ -104,13 +110,16 @@ namespace Domain.Service.Items
                     {
                         info += $"[使用時]\n{SkillOnUse.Info()}\n";
                     }
+
                     if (SkillOnThrow != null)
                     {
                         info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
                     }
                 }
+
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}";
             }
+
             return info;
         }
     }

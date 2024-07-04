@@ -22,13 +22,14 @@ namespace Domain.Service.Items
     {
         private readonly Entity _entity;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
-        public IItem Item { get; init; }
 
         public ItemEntity(ItemEntityMemento item)
         {
             Item = new Item(item.Item);
             _entity = new Entity(item.Entity);
         }
+
+        public IItem Item { get; init; }
 
         public Sprite Icon => Item.Icon;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
@@ -60,11 +61,6 @@ namespace Domain.Service.Items
             );
         }
 
-        ~ItemEntity()
-        {
-            Dispose();
-        }
-
         public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
         {
             while (map.IsPassable(CurrentPosition + direction.Vector()))
@@ -83,6 +79,11 @@ namespace Domain.Service.Items
                     Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
                 await Item.Use(actor, CurrentPosition, direction, map);
             }
+        }
+
+        ~ItemEntity()
+        {
+            Dispose();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Domain.Model
     [Serializable]
     public class SkillDataOnThrow : IHasInfo
     {
-        [SerializeReference, Required] public IArea Area;
-        [SerializeReference, Required] public IEffect Effect;
+        [SerializeReference] [Required] public IArea Area;
+        [SerializeReference] [Required] public IEffect Effect;
 
         public SkillDataOnThrow(IArea area, IEffect effect)
         {

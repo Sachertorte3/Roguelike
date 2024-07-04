@@ -10,9 +10,9 @@ namespace Domain.Model
     [Serializable]
     public class SkillDataOnUse : IHasInfo
     {
-        [SerializeReference, Required] public IArea Area;
-        [SerializeReference, Required] public IEffect Effect;
-        [SerializeReference, Required] public IEffectPosition Position;
+        [SerializeReference] [Required] public IArea Area;
+        [SerializeReference] [Required] public IEffect Effect;
+        [SerializeReference] [Required] public IEffectPosition Position;
 
         public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect)
         {

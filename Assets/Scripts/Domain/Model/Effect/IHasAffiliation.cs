@@ -3,6 +3,7 @@
     public interface IHasAffiliation
     {
         public IAffiliation Affiliation { get; }
+
         public bool IsAlly(IHasAffiliation target)
         {
             return Affiliation.IsAlly(target.Affiliation);

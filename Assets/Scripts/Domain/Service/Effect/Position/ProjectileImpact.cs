@@ -11,7 +11,8 @@ namespace Effect.Position
     {
         [Required] public Sprite Icon;
 
-        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map)
+        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IEffectMap map)
         {
             var pos = position;
             while (map.IsPassable(pos + direction.Vector()))
@@ -23,6 +24,7 @@ namespace Effect.Position
             {
                 pos += direction.Vector();
             }
+
             return new[] { pos };
         }
 

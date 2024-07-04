@@ -17,11 +17,6 @@ namespace Domain.Service.Characters.Conditions
             _removalCondition = removalCondition;
         }
 
-        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            return new ConditionMemento(condition, removalCondition, 0);
-        }
-
         public ParticleType ParticleType => _condition.ParticleType;
         public bool CanAct => _condition.CanAct;
         public bool CausesConfusion => _condition.CausesConfusion;
@@ -50,6 +45,11 @@ namespace Domain.Service.Characters.Conditions
         public bool ShouldDelete(int receivedDamage)
         {
             return _removalCondition.IsFinished(_elapsedTurn, receivedDamage);
+        }
+
+        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            return new ConditionMemento(condition, removalCondition, 0);
         }
     }
 }

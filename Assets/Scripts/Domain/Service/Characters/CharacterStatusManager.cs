@@ -66,6 +66,26 @@ namespace Domain.Service.Characters
             _conditions.UpdateTurn(this);
         }
 
+        public void AddMaxHpValue(float value)
+        {
+            _stats.Hp.AddMaxHpValue(value);
+        }
+
+        public void AddMaxHpMultiplier(float value)
+        {
+            _stats.Hp.AddMaxHpMultiplier(value);
+        }
+
+        public void RemoveMaxHpValue(float value)
+        {
+            _stats.Hp.RemoveMaxHpValue(value);
+        }
+
+        public void RemoveMaxHpMultiplier(float value)
+        {
+            _stats.Hp.RemoveMaxHpMultiplier(value);
+        }
+
         public static CharacterStatusMemento Build(int maxHp, int hp, bool isShiney)
         {
             if (isShiney)
@@ -92,11 +112,6 @@ namespace Domain.Service.Characters
             _onHealReceived.OnNext(value);
             return UniTask.FromResult(gainValue);
         }
-
-        public void AddMaxHpValue(float value) => _stats.Hp.AddMaxHpValue(value);
-        public void AddMaxHpMultiplier(float value) => _stats.Hp.AddMaxHpMultiplier(value);
-        public void RemoveMaxHpValue(float value) => _stats.Hp.RemoveMaxHpValue(value);
-        public void RemoveMaxHpMultiplier(float value) => _stats.Hp.RemoveMaxHpMultiplier(value);
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {

@@ -14,6 +14,7 @@ namespace Domain.Service.Events
     {
         private Entity _entity;
         private ItemData _item;
+
         public Chest(ChestMemento memento)
         {
             _item = memento.Item;
@@ -22,6 +23,7 @@ namespace Domain.Service.Events
 
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
+
         public EventTrigger Trigger => EventTrigger.Touch;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
@@ -41,6 +43,11 @@ namespace Domain.Service.Events
             _entity.Dispose();
         }
 
+        public void SetVisiblity(bool visiblity)
+        {
+            _entity.SetVisibility(visiblity);
+        }
+
         public ChestMemento Serialize()
         {
             return new ChestMemento(_item, _entity.Serialize());
@@ -49,11 +56,6 @@ namespace Domain.Service.Events
         public static ChestMemento Build(Vector2Int position, ItemData item)
         {
             return new ChestMemento(item, new EntityMemento(position, EntityLayer.Middle));
-        }
-
-        public void SetVisiblity(bool visiblity)
-        {
-            _entity.SetVisibility(visiblity);
         }
     }
 }

@@ -8,6 +8,5 @@ namespace Domain.Service.Characters
 {
     public static class CharacterExtensions
     {
-        
     }
 }

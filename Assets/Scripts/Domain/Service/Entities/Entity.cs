@@ -1,16 +1,14 @@
-﻿using System.Reflection.Emit;
-using System;
+﻿using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using R3;
 using UnityEngine;
 using Utilities;
-using System.Runtime.CompilerServices;
 using Domain.Model;
 
 namespace Domain.Service.Entities
 {
-    public class Entity : IDisposable, ISerializable<EntityMemento>
+    internal class Entity : IDisposable, ISerializable<EntityMemento>
     {
         private readonly EntityLayer _layer;
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();

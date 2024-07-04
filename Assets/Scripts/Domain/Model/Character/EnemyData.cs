@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Domain.Model.Condition;
 using System;
 using Domain.Model.Effect;
+using Domain.Model.Characters;
 
 
 
@@ -23,6 +24,7 @@ namespace Domain.Model.Character
         public bool IsBoss = false;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
+        public bool WanderAround = true;
         public SkillData[] Skills;
         public List<AdditionalConditionData> AdditionalConditions = new();
         [SerializeReference] public ICharacterType CharacterType;
@@ -34,13 +36,5 @@ namespace Domain.Model.Character
             AssetDatabase.SaveAssets();
         }
 #endif
-    }
-
-    [Serializable]
-    public class AdditionalConditionData
-    {
-        [Required] public RemovalConditionData RemovalCondition;
-        [Range(0, 1)] public float Probability;
-        [Required][SerializeReference] public IConditionData Condition;
     }
 }

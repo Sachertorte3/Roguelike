@@ -23,11 +23,14 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using AdditionalConditionData = Domain.Model.AdditionalConditionData;
+using Domain.Model.Action;
+using Domain.Model.Characters;
+using Domain.Model.Message;
+using Domain.Model.Items;
 
 namespace Domain.Service.Characters
 {
-    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
-        IActorOfEffect, ITargetOfEffect
+    internal sealed class Character : ICharacter
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
@@ -37,13 +40,13 @@ namespace Domain.Service.Characters
         private readonly Inventory _inventory;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
-        private readonly Skill[] _skills;
+        private readonly ISkill[] _skills;
         private readonly CharacterStatusManager _statusManager;
-        public readonly bool IsLeader = false;
-        public readonly bool IsBoss;
+        public bool IsLeader { get; init; }
+        public bool IsBoss { get; init; }
         private bool _canIgnoreWall;
         private string _name = "Character";
-        public CharacterState State = CharacterState.Think;
+        public CharacterState State { get; set; } = CharacterState.Think;
         private int _money = 120;
         public int Money => _money;
 
@@ -128,7 +131,7 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap map)
+        public async UniTask UseSkill(ISkill skill, Direction8 direction, IMap map)
         {
             Log.Debug($"[Action]{_name}:UseSkill\n{skill.Info()}\ndirection:{direction}");
             Turn(direction);
@@ -212,7 +215,7 @@ namespace Domain.Service.Characters
             _entity.SetVisibility(visiblity);
         }
 
-        public Skill[] Skills => _skills;
+        public ISkill[] Skills => _skills;
 
         public IVisionRange Area => _area;
 
@@ -221,6 +224,7 @@ namespace Domain.Service.Characters
             return new CharacterMemento(
                 _name,
                 CharacterType,
+                Behavior.WanderAround,
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _skills.Select(x => x.Serialize()).ToArray(),
@@ -260,43 +264,6 @@ namespace Domain.Service.Characters
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {
             _statusManager.AddCondition(condition, removalCondition);
-        }
-
-        public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
-        {
-            return new CharacterMemento(
-                Name,
-                new Human(Addressables
-                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                CharacterStatusManager.Build(20, 20, false),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
-                new[]
-                {
-                    new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>()))).Serialize()
-                },
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Player),
-                Aggression.AttackAnyone,
-                true,
-                false
-            );
-        }
-
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isShiney)
-        {
-            return new CharacterMemento(
-                data.Name,
-                data.CharacterType,
-                CharacterStatusManager.Build(data.Hp, data.Hp, isShiney),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
-                data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(data.Group),
-                data.Aggression,
-                false,
-                data.IsBoss
-            );
         }
 
         public async UniTask ForceMove(Direction8 direction, IInput input)
@@ -376,7 +343,7 @@ namespace Domain.Service.Characters
             }
         }
 
-        public bool TryPickUp(Item item)
+        public bool TryPickUp(IItem item)
         {
             if (_inventory.TryAdd(item))
             {
@@ -387,7 +354,7 @@ namespace Domain.Service.Characters
             return false;
         }
 
-        public Item? ReplaceInventory(Item? item, int index)
+        public IItem? ReplaceInventory(IItem? item, int index)
         {
             return _inventory.Replace(item, index);
         }
@@ -411,29 +378,6 @@ namespace Domain.Service.Characters
         public void ReduceMoney(int value)
         {
             _money -= value;
-        }
-    }
-
-    public static class CharacterExtensions
-    {
-        public static bool IsVisible(this Character character, Vector2Int position)
-        {
-            return character.Area.VisibleArea.Contains(position);
-        }
-
-        public static bool IsAlly(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return character.Affiliation.IsAlly(target.Affiliation);
-        }
-
-        public static bool IsEnemy(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return character.Affiliation.IsEnemy(target.Affiliation);
-        }
-
-        public static bool IsNeutral(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return !character.IsAlly(target) && !character.IsEnemy(target);
         }
     }
 }

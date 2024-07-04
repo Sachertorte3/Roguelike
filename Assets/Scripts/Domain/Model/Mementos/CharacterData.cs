@@ -12,6 +12,7 @@ namespace Domain.Model.Character
     public record CharacterMemento(
         string Name,
         ICharacterType CharacterType,
+        bool wanderAround,
         CharacterStatusMemento Status,
         EntityMemento EntityData,
         SkillMemento[] Skills,

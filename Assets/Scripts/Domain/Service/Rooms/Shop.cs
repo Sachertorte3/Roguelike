@@ -9,20 +9,20 @@ using Domain.Service.Rooms;
 using UnityEngine;
 using Utilities;
 using R3;
-using Domain.Service.Characters;
 using Unity.Logging;
+using Domain.Service;
 
 namespace Model.Game
 {
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private HashSet<ItemEntity> _shopItems;
+        private HashSet<IItemEntity> _shopItems;
         private IDisposable _disposable;
-        public Shop(ShopMemento data, Character clerk, IMapManager mapManager) : base(data.Room)
+        public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var itemMementosInRoom = itemsInRoom.Select(item => (item.Entity.CurrentPosition, item.Item.Info()));
+            var itemMementosInRoom = itemsInRoom.Select(item => (item.CurrentPosition, item.Item.Info()));
             foreach (var positionAnditemInfo in data.Items.Select(item => (item.Entity.Position, new Item(item.Item).Info())))
             {
                 if (!itemMementosInRoom.Contains(positionAnditemInfo))
@@ -34,7 +34,7 @@ namespace Model.Game
             }
             _shopItems = itemsInRoom;
 
-            Clerk = new Clerk(clerk, this);
+            Clerk = new Clerk(clerk);
 
             _disposable = Clerk.OnEventDone.Subscribe(_ =>
             {
@@ -65,9 +65,9 @@ namespace Model.Game
         }
         public override ShopMemento Serialize()
         {
-            return new ShopMemento(new(Rect, hasEntered, hasEverEntered), Clerk.Character.Entity.Serialize(), _shopItems.Select(item => item.Serialize()).ToList());
+            return new ShopMemento(new(Rect, hasEntered, hasEverEntered), Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Serialize()).ToList());
         }
-        private HashSet<ItemEntity> GetItemsInRoom(IMapManager mapManager)
+        private HashSet<IItemEntity> GetItemsInRoom(IMapManager mapManager)
         {
             return mapManager.GetItemsInArea(Rect.RectRange());
         }

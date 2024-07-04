@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model.Setting;
+using Domain.Service;
 using Domain.Service.Items;
 using Model.Game;
 using R3;
@@ -14,7 +15,7 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedItemView : SynchronizedView<ItemEntity, EntityView>, IDisposable
+    public class SynchronizedItemView : SynchronizedView<IItemEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
@@ -48,7 +49,7 @@ namespace Provider
             Dispose();
         }
 
-        protected override void InitializeView(ItemEntity item, EntityView entityView)
+        protected override void InitializeView(IItemEntity item, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
             item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
@@ -67,7 +68,7 @@ namespace Provider
             item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
 
-        protected override void CleanupView(ItemEntity item, EntityView view)
+        protected override void CleanupView(IItemEntity item, EntityView view)
         {
         }
     }

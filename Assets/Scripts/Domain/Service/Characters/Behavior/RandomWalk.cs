@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Action;
+using Domain.Model.Characters;
 using Domain.Service.Action;
 using Utilities;
 

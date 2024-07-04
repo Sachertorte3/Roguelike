@@ -1,10 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
-using Domain.Service.Effect;
+using Domain.Model.Action;
 using Utilities;
 
 namespace Domain.Service.Action
 {
-    internal record UseSkill(Skill Skill, Direction8 Direction) : IAction
+    internal record UseSkill(ISkill Skill, Direction8 Direction) : IAction
     {
         private float score;
 

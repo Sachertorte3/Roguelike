@@ -2,6 +2,8 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
+using Domain.Model.Characters;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Unity.Logging;
@@ -9,10 +11,11 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public sealed class PlayerBehavior : ICharacterBehavior
+    internal sealed class PlayerBehavior : ICharacterBehavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControllInputReceiver _receiver;
+        public bool WanderAround => true;
 
         public PlayerBehavior(CharacterControllInputReceiver receiver)
         {

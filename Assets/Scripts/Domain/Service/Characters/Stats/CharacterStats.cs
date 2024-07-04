@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Model.Characters;
 using R3;
 using Utilities;
 

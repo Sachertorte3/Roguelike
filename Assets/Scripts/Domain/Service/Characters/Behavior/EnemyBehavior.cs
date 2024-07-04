@@ -2,21 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Service.Action;
 using UnityEngine;
 using Unity.Logging;
 using Utilities;
+using Domain.Model.Characters;
+using Domain.Model.Action;
 
 namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
-        private readonly IUndiscoveredTargetBehavior _wander = new Wander();
+        private readonly IUndiscoveredTargetBehavior _wander;
+        public bool WanderAround { get; init; }
         private readonly float behavioralRandomness = 0.01f;
-        private Character? _lastTarget;
+        private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
-
+        public EnemyBehavior(bool wanderAround)
+        {
+            if (wanderAround)
+                _wander = new Wander();
+            else
+                _wander = new NoMove();
+            WanderAround = wanderAround;
+        }
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);

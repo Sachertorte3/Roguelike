@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model.Setting;
+using Domain.Service;
 using Domain.Service.Characters;
 using Model.Game;
 using R3;
@@ -14,7 +15,7 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedCharacterView : SynchronizedView<Character, CharacterView>
+    public class SynchronizedCharacterView : SynchronizedView<ICharacter, CharacterView>
     {
         private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
@@ -48,7 +49,7 @@ namespace Provider
             _disposable.Dispose();
         }
 
-        protected override void InitializeView(Character character, CharacterView characterView)
+        protected override void InitializeView(ICharacter character, CharacterView characterView)
         {
             var disposables = new CompositeDisposable();
             var player = _world.ActiveMap.CurrentValue.Player;
@@ -88,7 +89,7 @@ namespace Provider
             ).AddTo(particleController);
         }
 
-        protected override void CleanupView(Character character, CharacterView characterView)
+        protected override void CleanupView(ICharacter character, CharacterView characterView)
         {
         }
     }

@@ -11,10 +11,11 @@ using Effect.Position;
 using Domain.Service.Characters;
 using UnityEngine;
 using Utilities;
+using Domain.Model.Action;
 
 namespace Domain.Service.Effect
 {
-    public class Skill : ISerializable<SkillMemento>, IHasInfo
+    public class Skill : ISkill
     {
         private readonly IArea _area;
         private readonly IEffect _effect;

@@ -15,12 +15,13 @@ namespace Domain.Service.Characters.Behavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControllInputReceiver _receiver;
-        public bool WanderAround => true;
 
         public PlayerBehavior(CharacterControllInputReceiver receiver)
         {
             _receiver = receiver;
         }
+
+        public bool WanderAround => true;
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {

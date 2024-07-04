@@ -20,6 +20,7 @@ namespace Domain.Service.Characters.Conditions
             {
                 _conditions.Add(new Condition(condition.Condition, condition.RemovalCondition, condition.ElapsedTurns));
             }
+
             _disposables.Add(_conditions.ObserveAdd().Subscribe(add => add.Value.Inflict(hasCondition)));
             _disposables.Add(_conditions.ObserveRemove().Subscribe(add => add.Value.Delete(hasCondition)));
         }

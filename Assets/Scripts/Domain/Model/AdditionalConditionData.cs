@@ -15,7 +15,7 @@ namespace Domain.Model
     {
         [Required] public RemovalConditionData RemovalCondition;
         [Range(0, 1)] public float Probability;
-        [Required][SerializeReference] public IConditionData Condition;
+        [Required] [SerializeReference] public IConditionData Condition;
 
         public AdditionalConditionData(IConditionData condition, RemovalConditionData removalCondition,
             float probability)

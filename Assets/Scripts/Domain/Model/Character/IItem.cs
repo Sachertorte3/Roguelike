@@ -18,7 +18,7 @@ namespace Domain.Model.Items
         public int Price { get; }
         public ISkill? SkillOnThrow { get; }
         public ISkill? SkillOnUse { get; }
-        public bool IsDisabled  { get; }
+        public bool IsDisabled { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public void Repair();

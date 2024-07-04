@@ -21,7 +21,7 @@ namespace Domain.Service.Map
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Height;
         public readonly int Width;
-        public ReadOnlyCollection<RectInt> Rooms { get; init; }
+
         public Tilemap(TilemapMemento memento)
         {
             Width = memento.Tiles.GetLength(0);
@@ -42,7 +42,7 @@ namespace Domain.Service.Map
                 ResetMask(changeTile.position);
             });
 
-            Rooms = new(memento.Rooms);
+            Rooms = new ReadOnlyCollection<RectInt>(memento.Rooms);
         }
 
         public Tilemap(int width, int height)
@@ -54,6 +54,8 @@ namespace Domain.Service.Map
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
         }
+
+        public ReadOnlyCollection<RectInt> Rooms { get; init; }
 
         public Vector2Int Size => new(Width, Height);
 

@@ -9,7 +9,6 @@ using Domain.Model.Effect;
 using Domain.Model.Characters;
 
 
-
 #if UNITY_EDITOR
 using System.IO;
 #endif
@@ -19,7 +18,7 @@ namespace Domain.Model.Character
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [ReadOnly][Required] public string Name = "";
+        [ReadOnly] [Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Enemy;
         public bool IsBoss = false;
         [MinValue(1)] public int Hp;

@@ -42,13 +42,9 @@ namespace Domain.Service.Characters
         private readonly Subject<Unit> _onPickUpItem = new();
         private readonly ISkill[] _skills;
         private readonly CharacterStatusManager _statusManager;
-        public bool IsLeader { get; init; }
-        public bool IsBoss { get; init; }
         private bool _canIgnoreWall;
-        private string _name = "Character";
-        public CharacterState State { get; set; } = CharacterState.Think;
         private int _money = 120;
-        public int Money => _money;
+        private string _name = "Character";
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap world)
@@ -68,9 +64,16 @@ namespace Domain.Service.Characters
             IsBoss = data.IsBoss;
         }
 
-        public string Name => _name;
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
+        private ICharacterBehavior Behavior { get; }
+        public Entity Entity => _entity;
+        public bool IsLeader { get; init; }
+        public bool IsBoss { get; init; }
+        public CharacterState State { get; set; } = CharacterState.Think;
+        public int Money => _money;
+
+        public string Name => _name;
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
@@ -78,7 +81,6 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnDead => _statusManager.OnDead;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public ICharacterType CharacterType { get; init; }
-        private ICharacterBehavior Behavior { get; }
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -207,7 +209,6 @@ namespace Domain.Service.Characters
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Entity Entity => _entity;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
 
         public void SetVisiblity(bool visiblity)
@@ -289,11 +290,6 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        ~Character()
-        {
-            Dispose();
-        }
-
         public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
@@ -305,42 +301,6 @@ namespace Domain.Service.Characters
 
             State = CharacterState.Act;
             await action.Do(this, world, input);
-        }
-
-        private IAction RegenerateConfuseAction(IHasBehavior character, IMap world, IAction action)
-        {
-            switch (action)
-            {
-                case Move _:
-                case Swap _:
-                    var moves = new List<IAction>();
-                    foreach (var direction in DirectionMethods.AllDirections)
-                    {
-                        var move = new Move(direction);
-                        var swap = new Swap(direction);
-                        if (move.Doable(character, world))
-                            moves.Add(move);
-                        else if (swap.Doable(character, world))
-                            moves.Add(swap);
-                    }
-
-                    return moves.GetAtRandom();
-
-                case UseSkill useSkill:
-                    return useSkill with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case UseItem useItem:
-                    return useItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case ThrowItem throwItem:
-                    return throwItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case DoNothing _:
-                    return action;
-
-                default:
-                    throw new InvalidOperationException();
-            }
         }
 
         public bool TryPickUp(IItem item)
@@ -378,6 +338,47 @@ namespace Domain.Service.Characters
         public void ReduceMoney(int value)
         {
             _money -= value;
+        }
+
+        ~Character()
+        {
+            Dispose();
+        }
+
+        private IAction RegenerateConfuseAction(IHasBehavior character, IMap world, IAction action)
+        {
+            switch (action)
+            {
+                case Move _:
+                case Swap _:
+                    var moves = new List<IAction>();
+                    foreach (var direction in DirectionMethods.AllDirections)
+                    {
+                        var move = new Move(direction);
+                        var swap = new Swap(direction);
+                        if (move.Doable(character, world))
+                            moves.Add(move);
+                        else if (swap.Doable(character, world))
+                            moves.Add(swap);
+                    }
+
+                    return moves.GetAtRandom();
+
+                case UseSkill useSkill:
+                    return useSkill with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case UseItem useItem:
+                    return useItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case ThrowItem throwItem:
+                    return throwItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case DoNothing _:
+                    return action;
+
+                default:
+                    throw new InvalidOperationException();
+            }
         }
     }
 }

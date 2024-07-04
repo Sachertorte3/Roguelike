@@ -15,7 +15,7 @@ namespace Domain.Model
                 Rarity.Rare => Colors.SkyBlue,
                 Rarity.Epic => Colors.Purple,
                 Rarity.Legendary => Colors.Yellow,
-                _ => throw new ArgumentOutOfRangeException(),
+                _ => throw new ArgumentOutOfRangeException()
             };
         }
     }

@@ -6,7 +6,6 @@ namespace Model.Game
 {
     public abstract class Room<TMemento> : ISerializable<TMemento>, IEventArea
     {
-        public RectInt Rect { get; init; }
         protected bool hasEntered = false;
         protected bool hasEverEntered = false;
 
@@ -16,10 +15,12 @@ namespace Model.Game
             hasEntered = data.hasEntered;
             hasEverEntered = data.hasEverEntered;
         }
-        public abstract TMemento Serialize();
+
+        public RectInt Rect { get; init; }
+
         public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
         {
-            bool isInside = Rect.Contains(currentPosition);
+            var isInside = Rect.Contains(currentPosition);
 
             if (isInside)
             {
@@ -30,6 +31,7 @@ namespace Model.Game
                         FirstTimeEnter(gameManager, mapManager);
                         hasEverEntered = true;
                     }
+
                     EveryTimeEnter(gameManager, mapManager);
                     hasEntered = true;
                 }
@@ -44,9 +46,23 @@ namespace Model.Game
                 }
             }
         }
-        protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager) { }
-        protected virtual void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager) { }
-        protected virtual void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager) { }
-        protected virtual void EveryTimeExit(IGameManager gameManager, IMapManager mapManager) { }
+
+        public abstract TMemento Serialize();
+
+        protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        {
+        }
+
+        protected virtual void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        {
+        }
+
+        protected virtual void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        {
+        }
+
+        protected virtual void EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
+        {
+        }
     }
 }

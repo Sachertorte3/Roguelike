@@ -17,13 +17,15 @@ namespace Model.Game
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private HashSet<IItemEntity> _shopItems;
         private IDisposable _disposable;
+        private HashSet<IItemEntity> _shopItems;
+
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var itemMementosInRoom = itemsInRoom.Select(item => (item.CurrentPosition, item.Item.Info()));
-            foreach (var positionAnditemInfo in data.Items.Select(item => (item.Entity.Position, new Item(item.Item).Info())))
+            foreach (var positionAnditemInfo in data.Items.Select(item =>
+                         (item.Entity.Position, new Item(item.Item).Info())))
             {
                 if (!itemMementosInRoom.Contains(positionAnditemInfo))
                 {
@@ -32,6 +34,7 @@ namespace Model.Game
                     throw new Exception("ItemNotFound: I can't find an item that should be in the shop.");
                 }
             }
+
             _shopItems = itemsInRoom;
 
             Clerk = new Clerk(clerk);
@@ -50,39 +53,48 @@ namespace Model.Game
                 }
             });
         }
+
         public void Dispose()
         {
             Clerk.Dispose();
             _disposable.Dispose();
         }
+
         ~Shop()
         {
             Dispose();
         }
+
         public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
         {
-            return new ShopMemento(new(rect, false, false), entity, items);
+            return new ShopMemento(new RoomMemento(rect, false, false), entity, items);
         }
+
         public override ShopMemento Serialize()
         {
-            return new ShopMemento(new(Rect, hasEntered, hasEverEntered), Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Serialize()).ToList());
+            return new ShopMemento(new RoomMemento(Rect, hasEntered, hasEverEntered),
+                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Serialize()).ToList());
         }
+
         private HashSet<IItemEntity> GetItemsInRoom(IMapManager mapManager)
         {
             return mapManager.GetItemsInArea(Rect.RectRange());
         }
+
         public int GetPurchasePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var purchaseItems = _shopItems.Except(itemsInRoom);
             return purchaseItems.Sum(item => item.Item.Price);
         }
+
         public void Purchase(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var remainShopItems = _shopItems.Intersect(itemsInRoom);
             _shopItems = remainShopItems.ToHashSet();
         }
+
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);

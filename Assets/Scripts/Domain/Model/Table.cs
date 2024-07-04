@@ -13,8 +13,7 @@ namespace Domain.Model
     [Serializable]
     public class Table<T>
     {
-        [RequiredListLength(1, null)]
-        [SerializeField]
+        [RequiredListLength(1, null)] [SerializeField]
         private List<WeightedItem> items = new();
 
         public T GetRandomItem()

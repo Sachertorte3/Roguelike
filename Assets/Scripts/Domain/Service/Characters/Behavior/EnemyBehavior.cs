@@ -14,10 +14,10 @@ namespace Domain.Service.Characters.Behavior
     {
         private readonly IDiscoveredTargetBehavior _chase = new Chase();
         private readonly IUndiscoveredTargetBehavior _wander;
-        public bool WanderAround { get; init; }
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
+
         public EnemyBehavior(bool wanderAround)
         {
             if (wanderAround)
@@ -26,6 +26,9 @@ namespace Domain.Service.Characters.Behavior
                 _wander = new NoMove();
             WanderAround = wanderAround;
         }
+
+        public bool WanderAround { get; init; }
+
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
@@ -57,7 +60,8 @@ namespace Domain.Service.Characters.Behavior
                     }
                     else //ターゲットはいるが敵でも味方でもない
                     {
-                        Log.Debug($"[Think] Stopped targeting because the target {_lastTarget.Name} is neither friend nor enemy.");
+                        Log.Debug(
+                            $"[Think] Stopped targeting because the target {_lastTarget.Name} is neither friend nor enemy.");
                         if (visibleEnemies.Any()) //他に敵がいる
                         {
                             Log.Debug($"[Think] Change target to Enemy {_lastTarget.Name}.");
@@ -141,6 +145,7 @@ namespace Domain.Service.Characters.Behavior
                 {
                     Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
                 }
+
                 var action = await UniTask.FromResult(validActions.MaxByOrDefault(
                     action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
                     new DoNothing()));
@@ -156,6 +161,7 @@ namespace Domain.Service.Characters.Behavior
                 {
                     Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
                 }
+
                 var action = await UniTask.FromResult(validActions.MaxByOrDefault(
                     action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
                     new DoNothing()));

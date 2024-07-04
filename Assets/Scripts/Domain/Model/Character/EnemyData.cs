@@ -5,6 +5,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using Domain.Model.Condition;
 using System;
+using Domain.Model.Effect;
+
 
 
 #if UNITY_EDITOR
@@ -17,6 +19,8 @@ namespace Domain.Model.Character
     public class EnemyData : ScriptableObject
     {
         [ReadOnly][Required] public string Name = "";
+        public CharacterGroup Group = CharacterGroup.Enemy;
+        public bool IsBoss = false;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
         public SkillData[] Skills;

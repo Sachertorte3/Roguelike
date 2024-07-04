@@ -40,6 +40,7 @@ namespace Domain.Service.Characters
         private readonly Skill[] _skills;
         private readonly CharacterStatusManager _statusManager;
         public readonly bool IsLeader = false;
+        public readonly bool IsBoss;
         private bool _canIgnoreWall;
         private string _name = "Character";
         public CharacterState State = CharacterState.Think;
@@ -61,6 +62,7 @@ namespace Domain.Service.Characters
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
             IsLeader = data.IsLeader;
+            IsBoss = data.IsBoss;
         }
 
         public string Name => _name;
@@ -225,7 +227,8 @@ namespace Domain.Service.Characters
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                IsLeader
+                IsLeader,
+                IsBoss
             );
         }
 
@@ -275,7 +278,8 @@ namespace Domain.Service.Characters
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
-                true
+                true,
+                false
             );
         }
 
@@ -288,9 +292,10 @@ namespace Domain.Service.Characters
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Enemy),
+                CharacterAffiliationManager.Build(data.Group),
                 data.Aggression,
-                false
+                false,
+                data.IsBoss
             );
         }
 

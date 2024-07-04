@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: "\u5E97\u54E1"
   m_EditorClassIdentifier: 
   Name: "\u5E97\u54E1"
+  Group: 2
+  IsBoss: 0
   Hp: 3
   Aggression: 4
   Skills:

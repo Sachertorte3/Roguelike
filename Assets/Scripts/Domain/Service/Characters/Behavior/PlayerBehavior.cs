@@ -53,8 +53,6 @@ namespace Domain.Service.Characters.Behavior
                             var swap = new Swap(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
-                            else if (swap.Doable(character, world))
-                                return swap;
                             else if (world.IsEventEntityAt(
                                          character.CurrentPosition + character.CurrentDirection.Vector(),
                                          EntityLayer.Middle))
@@ -62,6 +60,8 @@ namespace Domain.Service.Characters.Behavior
                                 world.Touch(character.CurrentPosition + character.CurrentDirection.Vector());
                                 return new DoNothing();
                             }
+                            else if (swap.Doable(character, world))
+                                return swap;
                             else
                                 character.Turn(move.Direction);
                         }

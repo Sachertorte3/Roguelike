@@ -17,6 +17,7 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 3
   Aggression: 4
+  WanderAround: 0
   Skills:
   - Area:
       rid: 4425516923575599109

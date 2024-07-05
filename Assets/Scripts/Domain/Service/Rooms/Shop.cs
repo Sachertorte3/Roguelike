@@ -43,7 +43,7 @@ namespace Model.Game
             {
                 if (mapManager.Player.Money >= GetPurchasePrice(mapManager))
                 {
-                    Log.Debug("purchase");
+                    Log.Debug($"purchase {GetPurchasePrice(mapManager)}");
                     mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
                     Purchase(mapManager);
                 }
@@ -85,6 +85,10 @@ namespace Model.Game
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var purchaseItems = _shopItems.Except(itemsInRoom);
+            foreach (var item in purchaseItems)
+            {
+                Log.Debug($"purchaseItems: {item.Item.Info()}");
+            }
             return purchaseItems.Sum(item => item.Item.Price);
         }
 

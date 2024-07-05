@@ -45,6 +45,11 @@ namespace Domain.Service.Rooms
             _onEventDone.OnNext(Unit.Default);
         }
 
+        public void ReducesFavorabilityTowardsThief(ICharacter thief)
+        {
+            Character.Affiliation.OnCharacterAttacked(thief.Affiliation, Character.Affiliation, 1f);
+        }
+
         public void SetVisiblity(bool visiblity)
         {
             Character.SetVisiblity(visiblity);

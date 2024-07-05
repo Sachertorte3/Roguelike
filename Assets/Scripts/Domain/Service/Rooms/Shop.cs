@@ -101,6 +101,7 @@ namespace Model.Game
             if (missingItems.Any())
             {
                 GameLog.Add("どろぼう！");
+                Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
             }
         }
 

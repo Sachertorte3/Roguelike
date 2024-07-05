@@ -19,7 +19,7 @@ namespace Domain.Service
         public bool IsPassable(Vector2Int position);
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
-        public bool IsEventEntityAt(Vector2Int position, EntityLayer layer);
+        public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer);
         public void Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
     }

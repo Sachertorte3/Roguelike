@@ -17,7 +17,6 @@ namespace Model.Game
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private IDisposable _disposable;
         private IEnumerable<IItem> _shopItems;
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
@@ -36,27 +35,16 @@ namespace Model.Game
 
             _shopItems = itemsInRoom;
 
-            Clerk = new Clerk(clerk);
-
-            _disposable = Clerk.OnEventDone.Subscribe(_ =>
-            {
-                if (mapManager.Player.Money >= GetPurchasePrice(mapManager))
-                {
-                    GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
-                    mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                    Purchase(mapManager);
-                }
-                else
-                {
-                    GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G持っていなかった");
-                }
-            });
+            Clerk = new Clerk(
+                clerk,
+                () => GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0,
+                mapManager => Purchase(mapManager)
+            );
         }
 
         public void Dispose()
         {
             Clerk.Dispose();
-            _disposable.Dispose();
         }
 
         ~Shop()
@@ -87,11 +75,28 @@ namespace Model.Game
             return purchaseItems.Sum(item => item.Price);
         }
 
-        public void Purchase(IMapManager mapManager)
+        public int GetSalePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var remainShopItems = _shopItems.Intersect(itemsInRoom);
-            _shopItems = remainShopItems.ToHashSet();
+            var saleItems = itemsInRoom.Except(_shopItems);
+            return saleItems.Sum(item => item.Price);
+        }
+
+        public void Purchase(IMapManager mapManager)
+        {
+            if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
+            {
+                GameLog.Add($"{mapManager.Player.Name}は{GetSalePrice(mapManager)}G受け取った");
+                mapManager.Player.AddMoney(GetSalePrice(mapManager));
+                GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
+                mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
+                var itemsInRoom = GetItemsInRoom(mapManager);
+                _shopItems = itemsInRoom;
+            }
+            else
+            {
+                GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G持っていなかった");
+            }
         }
 
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)

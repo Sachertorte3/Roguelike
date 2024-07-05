@@ -175,10 +175,13 @@ namespace Model.Game
             return Characters.Where(c => c.IsEnemy(character)).Select(c => c.CurrentPosition);
         }
 
-        public bool IsEventEntityAt(Vector2Int position, EntityLayer layer)
+        public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer)
         {
-            return EventEntities.Any(eventEntity =>
-                eventEntity.CurrentPosition == position && eventEntity.Layer == layer);
+            return EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .Where(eventEntity => eventEntity.Layer == layer)
+                .Any(eventEntity => eventEntity.CurrentPosition == position);
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -211,6 +214,7 @@ namespace Model.Game
         public void Touch(Vector2Int position)
         {
             var eventEntity = EventEntities.Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
                 .FirstOrDefault(eventEntity => eventEntity.CurrentPosition == position);
             if (eventEntity != null)
                 eventEntity.DoEvent(Globals.GameManager, this);
@@ -269,8 +273,10 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
-                foreach (var eventEntity in EventEntities.Where(
-                             eventEntity => eventEntity.Trigger == EventTrigger.Tread))
+                foreach (var eventEntity in EventEntities
+                    .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
+                    .Where(eventEntity => eventEntity.CanExecuteEvent)
+                )
                 {
                     if (positionChanged.Message.Position == eventEntity.CurrentPosition)
                     {

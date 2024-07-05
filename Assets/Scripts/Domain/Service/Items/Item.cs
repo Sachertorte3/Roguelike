@@ -41,6 +41,7 @@ namespace Domain.Service.Items
         {
             Name = data.Name;
             Icon = data.Icon;
+            Price = data.Price;
             if (data.SkillOnUse != null)
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
@@ -72,6 +73,7 @@ namespace Domain.Service.Items
             return new ItemMemento(
                 Name,
                 Icon,
+                Price,
                 _maxUsages,
                 _remainingUsages.CurrentValue,
                 SkillOnUse?.Serialize(),
@@ -97,7 +99,7 @@ namespace Domain.Service.Items
 
         public string Info()
         {
-            var info = $"{Name}\n";
+            var info = $"{Name}\n価格: {Price}\n";
             if (_usable)
             {
                 if (_isSameSkill)

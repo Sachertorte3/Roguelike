@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 11433948, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   Rarity: 1
+  Price: 100
   EffectsOnUse: 1
   EffectsOnThrow: 0
   IsSameSkill: 0

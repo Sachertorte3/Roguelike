@@ -14,12 +14,14 @@ namespace Domain.Service.Items
 {
     public class Item : IItem
     {
+        public Id<IItem> Id { get; init; }
         private readonly bool _isSameSkill;
         private readonly int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
 
         public Item(ItemData data)
         {
+            Id = UniqueIdGenerator.Generate<IItem>();
             Name = data.Name;
             Icon = data.Icon;
             Price = data.Price;
@@ -39,6 +41,7 @@ namespace Domain.Service.Items
 
         public Item(ItemMemento data)
         {
+            Id = new Id<IItem>(data.Id);
             Name = data.Name;
             Icon = data.Icon;
             Price = data.Price;
@@ -71,6 +74,7 @@ namespace Domain.Service.Items
         public ItemMemento Serialize()
         {
             return new ItemMemento(
+                Id.Value,
                 Name,
                 Icon,
                 Price,
@@ -123,6 +127,21 @@ namespace Domain.Service.Items
             }
 
             return info;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return Id.Value == ((Item)obj).Id.Value;
+        }
+        
+        public override int GetHashCode()
+        {
+            return Id.Value;
         }
     }
 }

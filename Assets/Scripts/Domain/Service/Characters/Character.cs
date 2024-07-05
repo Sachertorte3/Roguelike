@@ -125,7 +125,7 @@ namespace Domain.Service.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Log.Debug($"[Action]{_name}:Move direction:{direction}");
+            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{CurrentPosition+direction.Vector()}");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);

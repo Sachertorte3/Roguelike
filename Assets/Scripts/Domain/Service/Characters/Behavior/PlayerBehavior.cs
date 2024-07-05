@@ -51,19 +51,18 @@ namespace Domain.Service.Characters.Behavior
                                 move = _intelligentDashController.Filter(move, character, started, world, input);
 
                             var swap = new Swap(move.Direction);
+                            character.Turn(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
                             else if (world.IsEventEntityAt(
-                                         character.CurrentPosition + character.CurrentDirection.Vector(),
+                                         character.CurrentPosition + move.Direction.Vector(),
                                          EntityLayer.Middle))
                             {
-                                world.Touch(character.CurrentPosition + character.CurrentDirection.Vector());
+                                world.Touch(character.CurrentPosition + move.Direction.Vector());
                                 return new DoNothing();
                             }
                             else if (swap.Doable(character, world))
                                 return swap;
-                            else
-                                character.Turn(move.Direction);
                         }
 
                         break;

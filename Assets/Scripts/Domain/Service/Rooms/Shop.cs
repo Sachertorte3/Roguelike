@@ -4,13 +4,13 @@ using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using Domain.Service.Rooms;
 using UnityEngine;
 using Utilities;
 using R3;
-using Unity.Logging;
 using Domain.Service;
+using Domain.Service.Logs;
+using Domain.Model.Items;
 
 namespace Model.Game
 {
@@ -18,19 +18,18 @@ namespace Model.Game
     {
         public readonly Clerk Clerk;
         private IDisposable _disposable;
-        private HashSet<IItemEntity> _shopItems;
+        private IEnumerable<IItem> _shopItems;
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var itemMementosInRoom = itemsInRoom.Select(item => (item.CurrentPosition, item.Item.Info()));
-            foreach (var positionAnditemInfo in data.Items.Select(item =>
-                         (item.Entity.Position, new Item(item.Item).Info())))
+            var itemMementosInRoom = itemsInRoom.Select(item => item.Id);
+            foreach (var itemId in data.ItemIds)
             {
-                if (!itemMementosInRoom.Contains(positionAnditemInfo))
+                if (!itemMementosInRoom.Contains(new Id<IItem>(itemId)))
                 {
-                    Debug.Log(itemsInRoom.Count);
-                    Debug.Log(data.Items.Count);
+                    Debug.Log(itemsInRoom.Count());
+                    Debug.Log(data.ItemIds.Count);
                     throw new Exception("ItemNotFound: I can't find an item that should be in the shop.");
                 }
             }
@@ -43,13 +42,13 @@ namespace Model.Game
             {
                 if (mapManager.Player.Money >= GetPurchasePrice(mapManager))
                 {
-                    Log.Debug($"purchase {GetPurchasePrice(mapManager)}");
+                    GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
                     mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
                     Purchase(mapManager);
                 }
                 else
                 {
-                    Log.Debug("You don't have enough money");
+                    GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G持っていなかった");
                 }
             });
         }
@@ -67,29 +66,25 @@ namespace Model.Game
 
         public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
         {
-            return new ShopMemento(new RoomMemento(rect, false, false), entity, items);
+            return new ShopMemento(new RoomMemento(rect, false, false), entity, items.Select(item => item.Item.Id).ToList());
         }
 
         public override ShopMemento Serialize()
         {
             return new ShopMemento(new RoomMemento(Rect, hasEntered, hasEverEntered),
-                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Serialize()).ToList());
+                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Id.Value).ToList());
         }
 
-        private HashSet<IItemEntity> GetItemsInRoom(IMapManager mapManager)
+        private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
         {
-            return mapManager.GetItemsInArea(Rect.RectRange());
+            return mapManager.GetItemsInArea(Rect.RectRange()).Select(item => item.Item);
         }
 
         public int GetPurchasePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var purchaseItems = _shopItems.Except(itemsInRoom);
-            foreach (var item in purchaseItems)
-            {
-                Log.Debug($"purchaseItems: {item.Item.Info()}");
-            }
-            return purchaseItems.Sum(item => item.Item.Price);
+            return purchaseItems.Sum(item => item.Price);
         }
 
         public void Purchase(IMapManager mapManager)
@@ -105,7 +100,7 @@ namespace Model.Game
             var missingItems = _shopItems.Except(itemsInRoom);
             if (missingItems.Any())
             {
-                Debug.Log("Thief detected in the shop!");
+                GameLog.Add("どろぼう！");
             }
         }
 

@@ -11,6 +11,7 @@ namespace Domain.Model.Items
 {
     public interface IItem : ISerializable<ItemMemento>, IHasInfo
     {
+        public Id<IItem> Id { get; }
         public bool EffectsOnThrow => SkillOnThrow != null;
         public bool EffectsOnUse => SkillOnUse != null;
         public Sprite Icon { get; }

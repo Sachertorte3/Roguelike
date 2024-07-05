@@ -3,6 +3,7 @@
 namespace Domain.Model.Character
 {
     public record ItemMemento(
+        int Id,
         string Name,
         Sprite Icon,
         int Price,

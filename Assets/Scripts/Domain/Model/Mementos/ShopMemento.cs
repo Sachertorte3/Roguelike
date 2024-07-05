@@ -6,6 +6,6 @@ namespace Domain.Model.Map
     public record ShopMemento(
         RoomMemento Room,
         EntityMemento Clerk,
-        List<ItemEntityMemento> Items
+        List<int> ItemIds
     );
 }

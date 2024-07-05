@@ -9,23 +9,27 @@ using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Clerk : IDisposable, IEventEntity
+    public class Clerk : IEventEntity
     {
-        private readonly Subject<Unit> _onEventDone = new();
         public readonly ICharacter Character;
+        private readonly Func<bool> _canExecuteEvent;
+        public bool CanExecuteEvent => _canExecuteEvent();
+        private readonly Action<IMapManager> _doEvent;
 
-        public Clerk(ICharacter character)
+        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Action<IMapManager> doEvent)
         {
             Character = character;
+            _canExecuteEvent = canExecuteEvent;
+            _doEvent = doEvent;
         }
-
-        public Observable<Unit> OnEventDone => _onEventDone;
-
         public void Dispose()
         {
-            _onEventDone.Dispose();
+            Character.Dispose();
         }
-
+        ~Clerk()
+        {
+            Dispose();
+        }
         public EventTrigger Trigger => EventTrigger.Touch;
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
@@ -42,7 +46,7 @@ namespace Domain.Service.Rooms
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            _onEventDone.OnNext(Unit.Default);
+            _doEvent(mapManager);
         }
 
         public void ReducesFavorabilityTowardsThief(ICharacter thief)

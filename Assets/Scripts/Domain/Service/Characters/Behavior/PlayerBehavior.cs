@@ -54,9 +54,7 @@ namespace Domain.Service.Characters.Behavior
                             character.Turn(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
-                            else if (world.IsEventEntityAt(
-                                         character.CurrentPosition + move.Direction.Vector(),
-                                         EntityLayer.Middle))
+                            else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
                             {
                                 world.Touch(character.CurrentPosition + move.Direction.Vector());
                                 return new DoNothing();

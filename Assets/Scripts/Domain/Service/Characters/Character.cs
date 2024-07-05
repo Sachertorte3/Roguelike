@@ -332,11 +332,13 @@ namespace Domain.Service.Characters
 
         public void AddMoney(int value)
         {
+            Log.Debug($"{_name}:AddMoney {_money}+={value}");
             _money += value;
         }
 
         public void ReduceMoney(int value)
         {
+            Log.Debug($"{_name}:ReduceMoney {_money}-={value}");
             _money -= value;
         }
 

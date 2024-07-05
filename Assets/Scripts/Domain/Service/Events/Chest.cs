@@ -25,6 +25,7 @@ namespace Domain.Service.Events
             .WaitForCompletion();
 
         public EventTrigger Trigger => EventTrigger.Touch;
+        public bool CanExecuteEvent => true;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;

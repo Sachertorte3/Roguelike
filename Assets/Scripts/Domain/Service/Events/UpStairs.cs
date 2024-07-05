@@ -36,6 +36,7 @@ namespace Domain.Service.Events
             .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion();
 
         public EventTrigger Trigger => EventTrigger.Tread;
+        public bool CanExecuteEvent => true;
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {

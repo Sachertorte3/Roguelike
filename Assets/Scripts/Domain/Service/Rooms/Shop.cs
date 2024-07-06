@@ -79,7 +79,7 @@ namespace Model.Game
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var saleItems = itemsInRoom.Except(_shopItems);
-            return saleItems.Sum(item => item.Price);
+            return saleItems.Sum(item => item.Price) / 2;
         }
 
         public void Purchase(IMapManager mapManager)

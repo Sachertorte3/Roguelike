@@ -93,7 +93,7 @@ namespace Model.Game
             }
         }
 
-        private IEnumerable<ShopItemCache> GetPurchaseItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetMissingItems(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State == ItemState.ShopItem);
             var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
@@ -101,19 +101,18 @@ namespace Model.Game
         }
         public int GetPurchasePrice(IMapManager mapManager)
         {
-            var purchaseItems = GetPurchaseItems(mapManager);
+            var purchaseItems = GetMissingItems(mapManager);
             return purchaseItems.Sum(item => item.Price);
         }
 
-        private IEnumerable<ShopItemCache> GetSaleItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetAddedItems(IMapManager mapManager)
         {
-            var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
-            var saleItems = itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)).Except(_shopItems);
-            return saleItems;
+            var saleItems = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
+            return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
         public int GetSalePrice(IMapManager mapManager)
         {
-            var saleItems = GetSaleItems(mapManager);
+            var saleItems = GetAddedItems(mapManager);
             return saleItems.Sum(item => item.Price) / 2;
         }
 
@@ -125,7 +124,7 @@ namespace Model.Game
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
                 GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                var purchaseItems = GetPurchaseItems(mapManager);
+                var purchaseItems = GetMissingItems(mapManager);
                 RemoveMark(mapManager, purchaseItems);
                 SetShopItems(GetItemsInRoom(mapManager));
             }
@@ -137,8 +136,7 @@ namespace Model.Game
 
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
-            var itemsInRoom = GetItemsInRoom(mapManager);
-            var missingItems = _shopItems.Select(item => item.Id).Except(itemsInRoom.Select(item => item.Id));
+            var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
                 GameLog.Add("どろぼう！");

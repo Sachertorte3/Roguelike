@@ -25,6 +25,7 @@ namespace Domain.Service.Events
             .WaitForCompletion();
 
         public EventTrigger Trigger => EventTrigger.Touch;
+        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => true;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;

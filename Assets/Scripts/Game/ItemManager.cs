@@ -77,6 +77,7 @@ namespace Model.Game
             {
                 var item = _items.First(item => item.CurrentPosition == position);
                 _items.Remove(item);
+                ItemEntityEvents.Remove(item);
                 return item;
             }
 

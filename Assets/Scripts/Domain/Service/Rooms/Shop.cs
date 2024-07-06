@@ -107,6 +107,7 @@ namespace Model.Game
             {
                 GameLog.Add("どろぼう！");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
+                CanExecute = false;
             }
         }
 

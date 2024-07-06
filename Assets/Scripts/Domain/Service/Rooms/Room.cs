@@ -8,6 +8,7 @@ namespace Model.Game
     {
         protected bool hasEntered = false;
         protected bool hasEverEntered = false;
+        protected bool CanExecute = true;
 
         public Room(RoomMemento data)
         {
@@ -20,6 +21,9 @@ namespace Model.Game
 
         public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
         {
+            if (!CanExecute)
+                return;
+
             var isInside = Rect.Contains(currentPosition);
 
             if (isInside)

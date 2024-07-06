@@ -45,6 +45,7 @@ namespace Domain.Service.Characters
         private bool _canIgnoreWall;
         private int _money = 120;
         private string _name = "Character";
+        private readonly IDisposable _disposable;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap world)
@@ -62,6 +63,8 @@ namespace Domain.Service.Characters
             _aggression = data.Aggression;
             IsLeader = data.IsLeader;
             IsBoss = data.IsBoss;
+
+            _disposable = OnDead.Subscribe(_ => Entity.Destroy());
         }
 
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
@@ -198,6 +201,7 @@ namespace Domain.Service.Characters
 
         public void Dispose()
         {
+            _disposable.Dispose();
             _entity.Dispose();
             _inventory.Dispose();
             _onEffectSpawned.Dispose();
@@ -205,11 +209,12 @@ namespace Domain.Service.Characters
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
+        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public void SetVisiblity(bool visiblity)
         {

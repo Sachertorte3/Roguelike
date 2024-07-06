@@ -27,6 +27,9 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnTeleportMessage Message)> OnTeleport =>
             _events.GetObservable<OnTeleportMessage>();
 
+        public Observable<(ICharacter Character, OnDestroyedMessage Message)> OnDestroyed =>
+            _events.GetObservable<OnDestroyedMessage>();
+
         public Observable<(ICharacter Character, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
             _events.GetObservable<OnEffectSpawnedMessage>();
 
@@ -59,6 +62,9 @@ namespace Domain.Service.Characters
         Observable<(IEntity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
             _events.GetSubject<OnTeleportMessage>().SelectSender(character => (IEntity)character);
 
+        Observable<(IEntity Entity, OnDestroyedMessage Message)> IEntityGroupEvents.OnDestroyed =>
+            _events.GetSubject<OnDestroyedMessage>().SelectSender(character => (IEntity)character);
+
         ~CharacterEvents()
         {
             Dispose();
@@ -84,29 +90,9 @@ namespace Domain.Service.Characters
             _events.Add(character, character.Affiliation.OnAffectionChanged);
         }
 
-        public void Add(CharacterEvents characterEvents)
-        {
-            _events.Add(characterEvents, characterEvents.OnPositionChanged);
-            _events.Add(characterEvents, characterEvents.OnDirectionChanged);
-            _events.Add(characterEvents, characterEvents.OnDead);
-            _events.Add(characterEvents, characterEvents.OnMove);
-            _events.Add(characterEvents, characterEvents.OnTeleport);
-            _events.Add(characterEvents, characterEvents.OnEffectSpawned);
-            _events.Add(characterEvents, characterEvents.OnVisibleAreaChanged);
-            _events.Add(characterEvents, characterEvents.OnPickUpItem);
-            _events.Add(characterEvents, characterEvents.OnDamageReceived);
-            _events.Add(characterEvents, characterEvents.OnHealReceived);
-            _events.Add(characterEvents, characterEvents.OnAffectionChanged);
-        }
-
         public void Remove(ICharacter character)
         {
             _events.Remove(character);
-        }
-
-        public void Remove(CharacterEvents characterEvents)
-        {
-            _events.Remove(characterEvents);
         }
     }
 }

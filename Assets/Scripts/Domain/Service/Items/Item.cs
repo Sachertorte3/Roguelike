@@ -16,6 +16,7 @@ namespace Domain.Service.Items
     public class Item : IItem
     {
         public Id<IItem> Id { get; init; }
+        private readonly int _basePrice;
         private readonly bool _isSameSkill;
         private readonly int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
@@ -27,7 +28,7 @@ namespace Domain.Service.Items
             Name = data.Name;
             Icon = data.Icon;
             State = state;
-            Price = data.Price;
+            _basePrice = data.Price;
             if (data.EffectsOnUse)
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
@@ -48,7 +49,7 @@ namespace Domain.Service.Items
             Name = data.Name;
             Icon = data.Icon;
             State = data.State;
-            Price = data.Price;
+            _basePrice = data.Price;
             if (data.SkillOnUse != null)
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
@@ -68,7 +69,7 @@ namespace Domain.Service.Items
         public ItemState State { get; private set; }
         public bool EffectsOnThrow => SkillOnThrow != null;
         public bool EffectsOnUse => SkillOnUse != null;
-        public int Price { get; init; }
+        public int Price => Mathf.RoundToInt(_basePrice * _remainingUsages.CurrentValue / _maxUsages);
         public ISkill? SkillOnThrow { get; init; }
         public ISkill? SkillOnUse { get; init; }
 
@@ -84,7 +85,7 @@ namespace Domain.Service.Items
                 Name,
                 Icon,
                 State,
-                Price,
+                _basePrice,
                 _maxUsages,
                 _remainingUsages.CurrentValue,
                 SkillOnUse?.Serialize(),

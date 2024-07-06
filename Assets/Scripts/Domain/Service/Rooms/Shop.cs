@@ -11,14 +11,13 @@ using R3;
 using Domain.Service;
 using Domain.Service.Logs;
 using Domain.Model.Items;
-using Domain.Service.Characters;
 
 namespace Model.Game
 {
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private IEnumerable<IItem> _shopItems = new List<IItem>();
+        private IEnumerable<Id<IItem>> _shopItems = new List<Id<IItem>>();
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
@@ -61,7 +60,7 @@ namespace Model.Game
         public override ShopMemento Serialize()
         {
             return new ShopMemento(new RoomMemento(Rect, hasEntered, hasEverEntered),
-                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => item.Id.Value).ToList());
+                Clerk.Character.Serialize().EntityData, _shopItems.Select(itemId => itemId.Value).ToList());
         }
 
         private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
@@ -71,8 +70,8 @@ namespace Model.Game
 
         private void SetShopItems(IEnumerable<IItem> items)
         {
-            _shopItems = items;
-            foreach (var item in _shopItems)
+            _shopItems = items.Select(item => item.Id);
+            foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
             }
@@ -87,33 +86,26 @@ namespace Model.Game
                 }
             }
         }
-        private void MarkItemsAsStolen(IEnumerable<IItem> inventoryItems)
+        private void MarkItemsAsStolen(IMapManager mapManager)
         {
             foreach (var item in _shopItems)
             {
-                item.SetState(ItemState.Stolen);
-            }
-            foreach (var item in inventoryItems)
-            {
-                if (item.State == ItemState.ShopItem || item.State == ItemState.UsedShopItem)
-                {
-                    item.SetState(ItemState.Stolen);
-                }
+                mapManager.GetItemFromId(item).SetState(ItemState.Stolen);
             }
         }
 
         public int GetPurchasePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var purchaseItems = _shopItems.Except(itemsInRoom);
-            return purchaseItems.Sum(item => item.Price);
+            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => item.Id));
+            return purchaseItems.Sum(item => mapManager.GetItemFromId(item).Price);
         }
 
         public int GetSalePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var saleItems = itemsInRoom.Except(_shopItems);
-            return saleItems.Sum(item => item.Price) / 2;
+            var saleItems = itemsInRoom.Select(item => item.Id).Except(_shopItems);
+            return saleItems.Sum(item => mapManager.GetItemFromId(item).Price) / 2;
         }
 
         public void Purchase(IMapManager mapManager)
@@ -136,12 +128,12 @@ namespace Model.Game
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var missingItems = _shopItems.Except(itemsInRoom);
+            var missingItems = _shopItems.Except(itemsInRoom.Select(item => item.Id));
             if (missingItems.Any())
             {
                 GameLog.Add("どろぼう！");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
-                MarkItemsAsStolen(mapManager.Player.Inventory.AllItems);
+                MarkItemsAsStolen(mapManager);
                 CanExecute = false;
             }
         }

@@ -160,6 +160,13 @@ namespace Model.Game
                 .ToHashSet();
         }
 
+        public IItem? GetItemFromId(Id<IItem> id)
+        {
+            var itemEntity = ItemManager.Items.FirstOrDefault(item => item.Item.Id == id);
+            var item = itemEntity?.Item ?? Player.Inventory.AllItems.FirstOrDefault(i => i.Id == id);
+            return item;
+        }
+
         public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character)
         {
             return Characters.Where(c => c.IsAlly(character)).Select(c => c.CurrentPosition);

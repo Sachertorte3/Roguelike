@@ -11,13 +11,14 @@ using R3;
 using Domain.Service;
 using Domain.Service.Logs;
 using Domain.Model.Items;
+using Domain.Service.Characters;
 
 namespace Model.Game
 {
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private IEnumerable<IItem> _shopItems;
+        private IEnumerable<IItem> _shopItems = new List<IItem>();
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
@@ -33,7 +34,7 @@ namespace Model.Game
                 }
             }
 
-            _shopItems = itemsInRoom;
+            SetShopItems(itemsInRoom);
 
             Clerk = new Clerk(
                 clerk,
@@ -68,6 +69,39 @@ namespace Model.Game
             return mapManager.GetItemsInArea(Rect.RectRange()).Select(item => item.Item);
         }
 
+        private void SetShopItems(IEnumerable<IItem> items)
+        {
+            _shopItems = items;
+            foreach (var item in _shopItems)
+            {
+                item.SetState(ItemState.ShopItem);
+            }
+        }
+        private void RemoveMark(IEnumerable<IItem> inventoryItems)
+        {
+            foreach (var item in inventoryItems)
+            {
+                if (item.State == ItemState.ShopItem || item.State == ItemState.UsedShopItem)
+                {
+                    item.SetState(ItemState.None);
+                }
+            }
+        }
+        private void MarkItemsAsStolen(IEnumerable<IItem> inventoryItems)
+        {
+            foreach (var item in _shopItems)
+            {
+                item.SetState(ItemState.Stolen);
+            }
+            foreach (var item in inventoryItems)
+            {
+                if (item.State == ItemState.ShopItem || item.State == ItemState.UsedShopItem)
+                {
+                    item.SetState(ItemState.Stolen);
+                }
+            }
+        }
+
         public int GetPurchasePrice(IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
@@ -90,8 +124,8 @@ namespace Model.Game
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
                 GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                var itemsInRoom = GetItemsInRoom(mapManager);
-                _shopItems = itemsInRoom;
+                RemoveMark(mapManager.Player.Inventory.AllItems);
+                SetShopItems(GetItemsInRoom(mapManager));
             }
             else
             {
@@ -107,6 +141,7 @@ namespace Model.Game
             {
                 GameLog.Add("どろぼう！");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
+                MarkItemsAsStolen(mapManager.Player.Inventory.AllItems);
                 CanExecute = false;
             }
         }

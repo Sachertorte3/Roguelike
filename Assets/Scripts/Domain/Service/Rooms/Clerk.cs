@@ -31,18 +31,13 @@ namespace Domain.Service.Rooms
             Dispose();
         }
         public EventTrigger Trigger => EventTrigger.Touch;
-
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
-
         public Vector2Int CurrentPosition => Character.CurrentPosition;
-
         public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;
-
         public EntityLayer Layer => Character.Layer;
-
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => Character.OnMove;
-
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
+        public Observable<Unit> OnDestroyed => Character.OnDestroyed;
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {

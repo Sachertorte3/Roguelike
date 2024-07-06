@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Domain.Service.Rooms;
 using ObservableCollections;
+using R3;
 
 namespace Model.Game
 {
@@ -13,9 +15,9 @@ namespace Model.Game
         private readonly UpStairs? _upStairs;
         private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
-        private readonly List<Clerk> _clerks = new();
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntityAndIcon> _eventEntitiesAndIcons = new();
+        public EventEntityEvents EventEntityEvents = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities)
         {
@@ -34,6 +36,8 @@ namespace Model.Game
 
             foreach (var chest in eventEntities.Chests)
                 Add(new Chest(chest));
+            
+            EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
         {
@@ -60,12 +64,13 @@ namespace Model.Game
             _chests.Add(chest);
             _eventEntities.Add(chest);
             _eventEntitiesAndIcons.Add(chest);
+            EventEntityEvents.Add(chest);
         }
 
         public void Add(Clerk clerk)
         {
-            _clerks.Add(clerk);
             _eventEntities.Add(clerk);
+            EventEntityEvents.Add(clerk);
         }
 
         public void Remove(Chest chest)
@@ -73,6 +78,18 @@ namespace Model.Game
             _chests.Remove(chest);
             _eventEntities.Remove(chest);
             _eventEntitiesAndIcons.Remove(chest);
+        }
+
+        public void Remove(IEventEntity eventEntity)
+        {
+            _eventEntities.Remove(eventEntity);
+            EventEntityEvents.Remove(eventEntity);
+        }
+        public void Remove(IEventEntityAndIcon eventEntityAndIcon)
+        {
+            _eventEntities.Remove(eventEntityAndIcon);
+            _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
+            EventEntityEvents.Remove(eventEntityAndIcon);
         }
     }
 }

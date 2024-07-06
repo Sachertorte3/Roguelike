@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Service.Entities;
+using R3;
 
 namespace Domain.Service.Events
 {

@@ -28,6 +28,7 @@ namespace Model.Game
 
             if (isInside)
             {
+                UpdateTurnIfInside(gameManager, mapManager);
                 if (!hasEntered)
                 {
                     if (!hasEverEntered)
@@ -54,6 +55,10 @@ namespace Model.Game
         public abstract TMemento Serialize();
 
         protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        {
+        }
+
+        protected virtual void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
         {
         }
 

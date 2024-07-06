@@ -12,6 +12,7 @@ using R3;
 using Domain.Service;
 using Domain.Service.Logs;
 using Domain.Model.Items;
+using Unity.Logging;
 
 namespace Model.Game
 {
@@ -19,7 +20,7 @@ namespace Model.Game
     {
         public readonly Clerk Clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);
-        private IEnumerable<ShopItemCache> _shopItems = new List<ShopItemCache>();
+        private HashSet<ShopItemCache> _shopItems = new HashSet<ShopItemCache>();
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
@@ -72,7 +73,7 @@ namespace Model.Game
 
         private void SetShopItems(IEnumerable<IItem> items)
         {
-            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price));
+            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
             foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
@@ -113,7 +114,7 @@ namespace Model.Game
         public int GetSalePrice(IMapManager mapManager)
         {
             var saleItems = GetAddedItems(mapManager);
-            return saleItems.Sum(item => item.Price) / 2;
+            return Mathf.RoundToInt(saleItems.Sum(item => item.Price) / 2f);
         }
 
         public void Purchase(IMapManager mapManager)
@@ -142,12 +143,16 @@ namespace Model.Game
                 GameLog.Add("どろぼう！");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
                 MarkItemsAsStolen(mapManager);
-                CanExecute = false;
+                //CanExecute = false;
             }
         }
 
-        protected override void EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
+        protected override void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
         {
+            foreach (var item in _shopItems)
+            {
+                Log.Debug(item.ToString());
+            }
         }
     }
 }

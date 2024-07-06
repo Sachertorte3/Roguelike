@@ -66,6 +66,11 @@ namespace Model.Game
             return _allItemPositions;
         }
 
+        public IItemEntity? GetItemAt(Vector2Int position)
+        {
+            return _items.FirstOrDefault(item => item.CurrentPosition == position);
+        }
+
         private void SetAllItemPosition()
         {
             _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
@@ -73,15 +78,13 @@ namespace Model.Game
 
         public IItemEntity? TryPickUp(Vector2Int position)
         {
-            if (GetAllItemPositions().Contains(position))
+            var item = GetItemAt(position);
+            if (item != null)
             {
-                var item = _items.First(item => item.CurrentPosition == position);
                 _items.Remove(item);
                 ItemEntityEvents.Remove(item);
-                return item;
             }
-
-            return null;
+            return item;
         }
     }
 }

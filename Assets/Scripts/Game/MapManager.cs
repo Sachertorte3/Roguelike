@@ -403,11 +403,6 @@ namespace Model.Game
             Dispose();
         }
 
-        public IItemEntity? TryPickUp(Vector2Int position)
-        {
-            return ItemManager.TryPickUp(position);
-        }
-
         public HashSet<Vector2Int> GetAllItemPositions()
         {
             return _allItemPositions;
@@ -433,7 +428,9 @@ namespace Model.Game
             return Characters.Where(character => character.Layer == layer)
                 .Select(character => character.CurrentPosition).Concat(
                     EventEntities.Where(eventEntity => eventEntity.Layer == layer)
-                        .Select(eventEntity => eventEntity.CurrentPosition));
+                        .Select(eventEntity => eventEntity.CurrentPosition)).Concat(
+                    Items.Where(item => item.Layer == layer)
+                        .Select(item => item.CurrentPosition));
         }
 
         private void SetAllCharacterPosition()
@@ -447,7 +444,7 @@ namespace Model.Game
             if (item != null)
             {
                 GameLog.Add($"{Player.Name}: {item.Name}を捨てた.");
-                var itemEntity = TryPickUp(Player.CurrentPosition);
+                var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
                 if (itemEntity != null)
                 {
                     GameLog.Add($"{Player.Name}: {itemEntity.Item.Name}を拾った");

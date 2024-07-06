@@ -186,9 +186,10 @@ namespace Model.Game
         {
             return EventEntities
                 .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
-                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
-                .Any(eventEntity => eventEntity.CurrentPosition == position);
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .Any();
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -220,9 +221,11 @@ namespace Model.Game
 
         public void Touch(Vector2Int position)
         {
-            var eventEntity = EventEntities.Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+            var eventEntity = EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.CanExecuteEvent)
-                .FirstOrDefault(eventEntity => eventEntity.CurrentPosition == position);
+                .FirstOrDefault();
             if (eventEntity != null)
                 eventEntity.DoEvent(Globals.GameManager, this);
             else
@@ -280,15 +283,14 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
-                foreach (var eventEntity in EventEntities
+                var eventEntity = EventEntities
                     .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
+                    .Where(eventEntity => eventEntity.CurrentPosition == positionChanged.Message.Position)
                     .Where(eventEntity => eventEntity.CanExecuteEvent)
-                )
+                    .FirstOrDefault();
+                if (eventEntity != null)
                 {
-                    if (positionChanged.Message.Position == eventEntity.CurrentPosition)
-                    {
-                        eventEntity.DoEvent(Globals.GameManager, this);
-                    }
+                    eventEntity.DoEvent(Globals.GameManager, this);
                 }
 
                 foreach (var eventArea in _eventAreas)

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,18 +18,19 @@ namespace Model.Game
     public class Shop : Room<ShopMemento>, IDisposable
     {
         public readonly Clerk Clerk;
-        private IEnumerable<Id<IItem>> _shopItems = new List<Id<IItem>>();
+        private record ShopItemCache(Id<IItem> Id, int Price);
+        private IEnumerable<ShopItemCache> _shopItems = new List<ShopItemCache>();
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
             var itemMementosInRoom = itemsInRoom.Select(item => item.Id);
-            foreach (var itemId in data.ItemIds)
+            foreach (var item in data.Items)
             {
-                if (!itemMementosInRoom.Contains(new Id<IItem>(itemId)))
+                if (!itemMementosInRoom.Contains(new Id<IItem>(item.Id)))
                 {
                     Debug.Log(itemsInRoom.Count());
-                    Debug.Log(data.ItemIds.Count);
+                    Debug.Log(data.Items.Count);
                     throw new Exception("ItemNotFound: I can't find an item that should be in the shop.");
                 }
             }
@@ -54,13 +56,13 @@ namespace Model.Game
 
         public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
         {
-            return new ShopMemento(new RoomMemento(rect, false, false), entity, items.Select(item => item.Item.Id).ToList());
+            return new ShopMemento(new RoomMemento(rect, false, false), entity, items.Select(item => new ShopItemMemento(item.Item.Id, item.Item.Price)).ToList());
         }
 
         public override ShopMemento Serialize()
         {
             return new ShopMemento(new RoomMemento(Rect, hasEntered, hasEverEntered),
-                Clerk.Character.Serialize().EntityData, _shopItems.Select(itemId => itemId.Value).ToList());
+                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => new ShopItemMemento(item.Id.Value, item.Price)).ToList());
         }
 
         private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
@@ -70,42 +72,49 @@ namespace Model.Game
 
         private void SetShopItems(IEnumerable<IItem> items)
         {
-            _shopItems = items.Select(item => item.Id);
+            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price));
             foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
             }
         }
-        private void RemoveMark(IEnumerable<IItem> inventoryItems)
+        private void RemoveMark(IMapManager mapManager, IEnumerable<ShopItemCache> items)
         {
-            foreach (var item in inventoryItems)
+            foreach (var item in items)
             {
-                if (item.State == ItemState.ShopItem || item.State == ItemState.UsedShopItem)
-                {
-                    item.SetState(ItemState.None);
-                }
+                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
             }
         }
         private void MarkItemsAsStolen(IMapManager mapManager)
         {
             foreach (var item in _shopItems)
             {
-                mapManager.GetItemFromId(item).SetState(ItemState.Stolen);
+                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.Stolen);
             }
         }
 
+        private IEnumerable<ShopItemCache> GetPurchaseItems(IMapManager mapManager)
+        {
+            var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State == ItemState.ShopItem);
+            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
+            return purchaseItems;
+        }
         public int GetPurchasePrice(IMapManager mapManager)
         {
-            var itemsInRoom = GetItemsInRoom(mapManager);
-            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => item.Id));
-            return purchaseItems.Sum(item => mapManager.GetItemFromId(item).Price);
+            var purchaseItems = GetPurchaseItems(mapManager);
+            return purchaseItems.Sum(item => item.Price);
         }
 
+        private IEnumerable<ShopItemCache> GetSaleItems(IMapManager mapManager)
+        {
+            var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
+            var saleItems = itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)).Except(_shopItems);
+            return saleItems;
+        }
         public int GetSalePrice(IMapManager mapManager)
         {
-            var itemsInRoom = GetItemsInRoom(mapManager);
-            var saleItems = itemsInRoom.Select(item => item.Id).Except(_shopItems);
-            return saleItems.Sum(item => mapManager.GetItemFromId(item).Price) / 2;
+            var saleItems = GetSaleItems(mapManager);
+            return saleItems.Sum(item => item.Price) / 2;
         }
 
         public void Purchase(IMapManager mapManager)
@@ -116,7 +125,8 @@ namespace Model.Game
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
                 GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                RemoveMark(mapManager.Player.Inventory.AllItems);
+                var purchaseItems = GetPurchaseItems(mapManager);
+                RemoveMark(mapManager, purchaseItems);
                 SetShopItems(GetItemsInRoom(mapManager));
             }
             else
@@ -128,7 +138,7 @@ namespace Model.Game
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager);
-            var missingItems = _shopItems.Except(itemsInRoom.Select(item => item.Id));
+            var missingItems = _shopItems.Select(item => item.Id).Except(itemsInRoom.Select(item => item.Id));
             if (missingItems.Any())
             {
                 GameLog.Add("どろぼう！");

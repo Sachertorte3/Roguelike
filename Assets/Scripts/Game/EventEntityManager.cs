@@ -22,12 +22,12 @@ namespace Model.Game
         public EventEntityManager(EventEntitiesMemento eventEntities)
         {
             _downStairs = new(eventEntities.DownStairs);
-            _eventEntitiesAndIcons.Add(_downStairs);
+            Add(_downStairs);
 
             if (eventEntities.UpStairs != null)
             {
                 _upStairs = new(eventEntities.UpStairs);
-                _eventEntitiesAndIcons.Add(_upStairs);
+                Add(_upStairs);
             }
             else
             {
@@ -67,10 +67,14 @@ namespace Model.Game
             EventEntityEvents.Add(chest);
         }
 
-        public void Add(Clerk clerk)
+        public void Add(IEventEntity eventEntity)
         {
-            _eventEntities.Add(clerk);
-            EventEntityEvents.Add(clerk);
+            _eventEntities.Add(eventEntity);
+            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            {
+                _eventEntitiesAndIcons.Add(eventEntityAndIcon);
+            }
+            EventEntityEvents.Add(eventEntity);
         }
 
         public void Remove(Chest chest)
@@ -83,13 +87,11 @@ namespace Model.Game
         public void Remove(IEventEntity eventEntity)
         {
             _eventEntities.Remove(eventEntity);
+            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            {
+                _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
+            }
             EventEntityEvents.Remove(eventEntity);
-        }
-        public void Remove(IEventEntityAndIcon eventEntityAndIcon)
-        {
-            _eventEntities.Remove(eventEntityAndIcon);
-            _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
-            EventEntityEvents.Remove(eventEntityAndIcon);
         }
     }
 }

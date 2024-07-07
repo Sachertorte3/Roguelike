@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
@@ -107,6 +108,8 @@ namespace Domain.Service.Items
                 State = ItemState.UsedShopItem;
             }
             _onItemUpdated.OnNext(Unit.Default);
+            if (SkillOnUse == null)
+                throw new InvalidOperationException("SkillOnUse is null");
             await SkillOnUse.Use(actor, position, direction, world);
         }
 
@@ -118,6 +121,8 @@ namespace Domain.Service.Items
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
+            if (SkillOnUse == null)
+                throw new InvalidOperationException("SkillOnUse is null");
             return SkillOnUse.Evaluate(actor, position, direction, world);
         }
 
@@ -128,6 +133,8 @@ namespace Domain.Service.Items
             {
                 if (_isSameSkill)
                 {
+                    if (SkillOnUse == null)
+                        throw new InvalidOperationException("SkillOnUse is null");
                     info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
                 }
                 else

@@ -11,9 +11,10 @@ public class DoNothing : IAction
         return true;
     }
 
-    public async UniTask Do(IActor actor, IMap world, IInput input)
+    public UniTask Do(IActor actor, IMap world, IInput input)
     {
         actor.DoNothing();
+        return UniTask.CompletedTask;
     }
 
     public float Evaluate(IActor actor, IMap world)

@@ -16,8 +16,8 @@ MonoBehaviour:
   - Depth: 1
     PrefixChance: 0.2
     ShineyChance: 0.01
-    ShopChance: 1
-    MonsterHouseChance: 1
+    ShopChance: 0.515
+    MonsterHouseChance: 0.509
     Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
     Items:
       items:
@@ -77,8 +77,8 @@ MonoBehaviour:
   - Depth: 3
     PrefixChance: 0.5
     ShineyChance: 1
-    ShopChance: 0.1
-    MonsterHouseChance: 0.1
+    ShopChance: 0
+    MonsterHouseChance: 0
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
     Items:
       items:
@@ -104,7 +104,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
-    Clerk: {fileID: 0}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Materials:
       items:
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}

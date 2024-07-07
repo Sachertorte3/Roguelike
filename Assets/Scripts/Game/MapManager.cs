@@ -339,14 +339,32 @@ namespace Model.Game
             var items = new List<ItemEntityMemento>();
             var chests = new List<ChestMemento>();
 
-            foreach (var position in tilemap.Rooms.First().RectRange().GetAtRandom(2))
-                items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+            var rooms = tilemap.Rooms.ToList();
 
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, tilemap.Rooms.First().RectRange().GetAtRandom(), Random.value < data.ShineyChance);
-            characters.Add(clerk);
-            var shop = Shop.Build(tilemap.Rooms.First(), clerk.EntityData, items.ToList());
+            ShopMemento? shop = null;
+            if (Random.value < data.ShopChance && rooms.Any())
+            {
+                var shopRoom = rooms.GetAtRandom();
+                rooms.Remove(shopRoom);
 
-            foreach (var room in tilemap.Rooms.Skip(1))
+                foreach (var position in shopRoom.RectRange().GetAtRandom(2))
+                    items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+
+                var clerk = CharacterFactory.BuildCharacter(data.Clerk, shopRoom.RectRange().GetAtRandom(), Random.value < data.ShineyChance);
+                characters.Add(clerk);
+                shop = Shop.Build(shopRoom, clerk.EntityData, items.ToList());
+            }
+
+            RoomMemento? monsterHouse = null;
+            if (Random.value < data.MonsterHouseChance && rooms.Any())
+            {
+                var monsterHouseRoom = rooms.GetAtRandom();
+                rooms.Remove(monsterHouseRoom);
+
+                monsterHouse = MonsterHouse.Build(monsterHouseRoom);
+            }
+
+            foreach (var room in rooms)
             {
                 foreach (var position in room.RectRange().GetAtRandom(2))
                     characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
@@ -386,14 +404,12 @@ namespace Model.Game
 
             var eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
 
-            var monsterHouse = MonsterHouse.Build(tilemap.Rooms.GetAtRandom());
-
             return new MapMemento(
                 tilemap.Serialize(),
                 characters,
                 items,
                 eventEntities,
-                null,//monsterHouse
+                monsterHouse,//monsterHouse
                 shop//shop
             );
         }

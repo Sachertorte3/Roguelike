@@ -1,5 +1,6 @@
 using Domain.Model.Map;
 using Domain.Service.Events;
+using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
 
@@ -23,7 +24,7 @@ namespace Model.Game
 
         protected override void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
-            Debug.Log("First time entering the Monster House.");
+            GameLog.Add("モンスターハウスだ！");
             for (var i = 0; i < 10; i++)
             {
                 mapManager.SpawnRandomEnemy(Rect.RectRange().GetAtRandom());

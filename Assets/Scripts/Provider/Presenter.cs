@@ -37,13 +37,13 @@ namespace Provider
                 .SyncMode.FullSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.UnityEditorConsole(
-                    minLevel:LogLevel.Debug,
+                    minLevel:LogLevel.Info,
                     captureStackTrace:true);
 
         private static LoggerConfig DevelopmentConfiguration()
             => new LoggerConfig()
                 .SyncMode.FatalIsSync()
-                .RedirectUnityLogs(log:true)
+                //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
                     absFileName:$"{UnityEngine.Application.persistentDataPath}/Logs/logging_dev/client_dev_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel:LogLevel.Debug,
@@ -53,7 +53,7 @@ namespace Provider
         private static LoggerConfig ReleaseConfiguration()
             => new LoggerConfig()
                 .SyncMode.FatalIsSync()
-                .RedirectUnityLogs(log:true)
+                //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
                     absFileName:$"{UnityEngine.Application.persistentDataPath}/Logs/logging/client_release_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel:LogLevel.Info,

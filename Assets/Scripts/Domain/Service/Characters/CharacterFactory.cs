@@ -34,6 +34,7 @@ namespace Domain.Service.Characters
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
+                0,
                 true,
                 false
             );
@@ -51,6 +52,7 @@ namespace Domain.Service.Characters
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(data.Group),
                 data.Aggression,
+                0,
                 false,
                 data.IsBoss
             );

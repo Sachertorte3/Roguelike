@@ -43,7 +43,7 @@ namespace Domain.Service.Characters
         private readonly ISkill[] _skills;
         private readonly CharacterStatusManager _statusManager;
         private bool _canIgnoreWall;
-        private int _money = 120;
+        private int _money;
         private string _name = "Character";
         private readonly IDisposable _disposable;
 
@@ -61,6 +61,7 @@ namespace Domain.Service.Characters
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
+            _money = data.Money;
             IsLeader = data.IsLeader;
             IsBoss = data.IsBoss;
 
@@ -237,6 +238,7 @@ namespace Domain.Service.Characters
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
+                _money,
                 IsLeader,
                 IsBoss
             );

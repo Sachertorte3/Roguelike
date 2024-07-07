@@ -13,6 +13,7 @@ namespace Domain.Model.Character
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,
         Aggression Aggression,
+        int Money,
         bool IsLeader,
         bool IsBoss
     );

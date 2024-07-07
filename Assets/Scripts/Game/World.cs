@@ -83,6 +83,8 @@ namespace Model.Game
                     .ToList();
                 if (_activeMapId < mapId) // 下り階段から上り階段へ
                 {
+                    if (mapMemento.EventEntities.UpStairs == null)
+                        throw new InvalidOperationException("upstairs is null");
                     initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
                 }
                 else if (_activeMapId > mapId) // 上り階段から下り階段へ
@@ -102,11 +104,15 @@ namespace Model.Game
 
         public HashSet<ICharacter> GetCharactersInArea(HashSet<Vector2Int> area)
         {
+            if (ActiveMap.CurrentValue == null)
+                throw new InvalidOperationException("ActiveMap is null");
             return ActiveMap.CurrentValue.GetCharactersInArea(area);
         }
 
         public void HandleItemDrop(int inventoryIndex)
         {
+            if (ActiveMap.CurrentValue == null)
+                throw new InvalidOperationException("ActiveMap is null");
             ActiveMap.CurrentValue.HandleItemDrop(inventoryIndex);
         }
     }

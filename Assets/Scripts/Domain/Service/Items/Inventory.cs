@@ -18,7 +18,7 @@ namespace Domain.Service.Items
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable[] _disposables = EnumerableExtension.CreateArrayWithNewInstances<CompositeDisposable>(MaxItems).ToArray();
         private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
-        public IEnumerable<IItem> AllItems => _items.Where(item => item != null);
+        public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Inventory(InventoryMemento data)

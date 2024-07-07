@@ -74,7 +74,7 @@ namespace Domain.Service.Items
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
 
-            if (Item.EffectsOnThrow)
+            if (Item.SkillOnThrow != null)
             {
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));

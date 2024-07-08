@@ -21,8 +21,9 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Beneficial;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
+            return UniTask.CompletedTask;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

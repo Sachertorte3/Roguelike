@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Characters;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Unity.Logging;

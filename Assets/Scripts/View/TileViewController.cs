@@ -23,6 +23,11 @@ namespace View
             SetTile(position, _tiles.Floor);
         }
 
+        public void SetShopFloor(Vector2Int position)
+        {
+            SetTile(position, _tiles.ShopFloor);
+        }
+
         private void SetTile(Vector2Int position, TileBase tile)
         {
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);

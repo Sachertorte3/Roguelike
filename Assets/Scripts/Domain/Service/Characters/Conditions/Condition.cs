@@ -4,7 +4,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    public class Condition : ISerializable<ConditionMemento>
+    internal class Condition : ICondition
     {
         private readonly IConditionData _condition;
         private readonly RemovalConditionData _removalCondition;
@@ -15,10 +15,6 @@ namespace Domain.Service.Characters.Conditions
             _elapsedTurn = elapsedTurn;
             _condition = condition;
             _removalCondition = removalCondition;
-        }
-        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            return new ConditionMemento(condition, removalCondition, 0);
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
@@ -49,6 +45,11 @@ namespace Domain.Service.Characters.Conditions
         public bool ShouldDelete(int receivedDamage)
         {
             return _removalCondition.IsFinished(_elapsedTurn, receivedDamage);
+        }
+
+        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
+        {
+            return new ConditionMemento(condition, removalCondition, 0);
         }
     }
 }

@@ -11,15 +11,16 @@ using Effect.Position;
 using Domain.Service.Characters;
 using UnityEngine;
 using Utilities;
+using Domain.Model.Action;
 
 namespace Domain.Service.Effect
 {
-    public class Skill : ISerializable<SkillMemento>, IHasInfo
+    public class Skill : ISkill
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
-        private readonly IEffectPosition _position;
         private readonly string _info;
+        private readonly IEffectPosition _position;
 
         public Skill(SkillData data)
         {
@@ -151,6 +152,10 @@ namespace Domain.Service.Effect
 
             return totalEvaluation;
         }
-        public string Info() => _info;
+
+        public string Info()
+        {
+            return _info;
+        }
     }
 }

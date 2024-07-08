@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using System;
-using Domain.Service.Characters;
+using Domain.Model.Message;
 using Domain.Service.Entities;
+using Domain.Service.Events;
 using R3;
 using Utilities.Messages;
 
@@ -9,20 +10,23 @@ namespace Domain.Service.Items
 {
     public class ItemEntityEvents : IDisposable, IEntityGroupEvents
     {
-        private readonly GroupEvents<ItemEntity> _events = new();
+        private readonly GroupEvents<IItemEntity> _events = new();
 
-        public Observable<(ItemEntity Item, OnPositionChangedMessage Message)> OnPositionChanged =>
+        public Observable<(IItemEntity Item, OnPositionChangedMessage Message)> OnPositionChanged =>
             _events.GetObservable<OnPositionChangedMessage>();
 
-        public Observable<(ItemEntity Item, OnDisabledMessage Message)> OnDisabled =>
+        public Observable<(IItemEntity Item, OnDisabledMessage Message)> OnDisabled =>
             _events.GetObservable<OnDisabledMessage>();
 
-        public Observable<(ItemEntity Item, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
+        public Observable<(IItemEntity Item, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
 
-        public Observable<(ItemEntity Item, OnTeleportMessage Message)> OnTeleport =>
+        public Observable<(IItemEntity Item, OnTeleportMessage Message)> OnTeleport =>
             _events.GetObservable<OnTeleportMessage>();
+            
+        public Observable<(IItemEntity Item, OnDestroyedMessage Message)> OnDestroyed =>
+            _events.GetObservable<OnDestroyedMessage>();
 
-        public Observable<(ItemEntity Item, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
+        public Observable<(IItemEntity Item, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
             _events.GetObservable<OnEffectSpawnedMessage>();
 
         public void Dispose()
@@ -30,27 +34,87 @@ namespace Domain.Service.Items
             _events.Dispose();
         }
 
-        Observable<(Entity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
-            _events.GetSubject<OnPositionChangedMessage>().SelectSender(item => item.Entity);
+        Observable<(IEntity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
+            _events.GetSubject<OnPositionChangedMessage>().SelectSender(item => (IEntity)item);
 
-        Observable<(Entity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove =>
-            _events.GetSubject<OnMoveMessage>().SelectSender(item => item.Entity);
+        Observable<(IEntity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove =>
+            _events.GetSubject<OnMoveMessage>().SelectSender(item => (IEntity)item);
 
-        Observable<(Entity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
-            _events.GetSubject<OnTeleportMessage>().SelectSender(item => item.Entity);
+        Observable<(IEntity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
+            _events.GetSubject<OnTeleportMessage>().SelectSender(item => (IEntity)item);
+            
+        Observable<(IEntity Entity, OnDestroyedMessage Message)> IEntityGroupEvents.OnDestroyed =>
+            _events.GetSubject<OnDestroyedMessage>().SelectSender(item => (IEntity)item);
 
         ~ItemEntityEvents()
         {
             Dispose();
         }
 
-        public void Add(ItemEntity item)
+        public void Add(IItemEntity item)
         {
             _events.Add(item, item.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
             _events.Add(item, item.OnDisabled.Select(disabled => new OnDisabledMessage()));
             _events.Add(item, item.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
+            _events.Add(item, item.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(item,
                 item.OnEffectSpawned.Select(useSkill => new OnEffectSpawnedMessage(useSkill.Area, useSkill.Color)));
+            _events.Add(item, item.OnDestroyed.Select(destroyed => new OnDestroyedMessage()));
+        }
+
+        public void Remove(IItemEntity character)
+        {
+            _events.Remove(character);
+        }
+    }
+    public class EventEntityEvents : IDisposable, IEntityGroupEvents
+    {
+        private readonly GroupEvents<IEventEntity> _events = new();
+
+        public Observable<(IEventEntity EventEntity, OnPositionChangedMessage Message)> OnPositionChanged =>
+            _events.GetObservable<OnPositionChangedMessage>();
+
+        public Observable<(IEventEntity EventEntity, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
+
+        public Observable<(IEventEntity EventEntity, OnTeleportMessage Message)> OnTeleport =>
+            _events.GetObservable<OnTeleportMessage>();
+
+        public Observable<(IEventEntity EventEntity, OnDestroyedMessage Message)> OnDestroyed =>
+            _events.GetObservable<OnDestroyedMessage>();
+
+        public void Dispose()
+        {
+            _events.Dispose();
+        }
+
+        Observable<(IEntity Entity, OnPositionChangedMessage Message)> IEntityGroupEvents.OnPositionChanged =>
+            _events.GetSubject<OnPositionChangedMessage>().SelectSender(item => (IEntity)item);
+
+        Observable<(IEntity Entity, OnMoveMessage Message)> IEntityGroupEvents.OnMove =>
+            _events.GetSubject<OnMoveMessage>().SelectSender(item => (IEntity)item);
+
+        Observable<(IEntity Entity, OnTeleportMessage Message)> IEntityGroupEvents.OnTeleport =>
+            _events.GetSubject<OnTeleportMessage>().SelectSender(item => (IEntity)item);
+
+        Observable<(IEntity Entity, OnDestroyedMessage Message)> IEntityGroupEvents.OnDestroyed =>
+            _events.GetSubject<OnDestroyedMessage>().SelectSender(item => (IEntity)item);
+
+        ~EventEntityEvents()
+        {
+            Dispose();
+        }
+
+        public void Add(IEventEntity eventEntity)
+        {
+            _events.Add(eventEntity, eventEntity.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
+            _events.Add(eventEntity, eventEntity.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
+            _events.Add(eventEntity, eventEntity.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
+            _events.Add(eventEntity, eventEntity.OnDestroyed.Select(destroyed => new OnDestroyedMessage()));
+        }
+        
+        public void Remove(IEventEntity character)
+        {
+            _events.Remove(character);
         }
     }
 }

@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: "\u9EBB\u75FA\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
   Icon: {fileID: -136529006, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  Rarity: 1
+  _rarity: 1
+  Price: 100
   EffectsOnUse: 1
   EffectsOnThrow: 1
-  _isSameSkill: 1
+  IsSameSkill: 0
   SkillOnUse:
     Area:
       rid: 4425516923575599143

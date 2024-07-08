@@ -926,6 +926,7 @@ MonoBehaviour:
   _tiles:
     Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
     Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -1203,8 +1204,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30A2\u30A4\u30C6\u30E0\u540D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 37048231315fad1469fdc00c9d965347, type: 2}
-  m_sharedMaterial: {fileID: -8947880408339658640, guid: 37048231315fad1469fdc00c9d965347, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f271622ac877c46408440dd8d8f01228, type: 2}
+  m_sharedMaterial: {fileID: 4499955260974354472, guid: f271622ac877c46408440dd8d8f01228, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

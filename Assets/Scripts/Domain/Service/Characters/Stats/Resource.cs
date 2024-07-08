@@ -69,14 +69,17 @@ namespace Domain.Service.Characters.Stats
         {
             _max.AddValue(value);
         }
+
         public void AddMaxHpMultiplier(float value)
         {
             _max.AddMultiplier(value);
         }
+
         public void RemoveMaxHpValue(float value)
         {
             _max.AddValue(-value);
         }
+
         public void RemoveMaxHpMultiplier(float value)
         {
             _max.AddMultiplier(-value);

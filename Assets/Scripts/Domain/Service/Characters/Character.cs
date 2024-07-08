@@ -23,11 +23,14 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using AdditionalConditionData = Domain.Model.AdditionalConditionData;
+using Domain.Model.Action;
+using Domain.Model.Characters;
+using Domain.Model.Message;
+using Domain.Model.Items;
 
 namespace Domain.Service.Characters
 {
-    public sealed class Character : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
-        IActorOfEffect, ITargetOfEffect
+    internal sealed class Character : ICharacter
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
@@ -37,12 +40,12 @@ namespace Domain.Service.Characters
         private readonly Inventory _inventory;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
-        private readonly Skill[] _skills;
+        private readonly ISkill[] _skills;
         private readonly CharacterStatusManager _statusManager;
-        public readonly bool IsLeader = false;
         private bool _canIgnoreWall;
+        private int _money;
         private string _name = "Character";
-        public CharacterState State = CharacterState.Think;
+        private readonly IDisposable _disposable;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap world)
@@ -58,12 +61,23 @@ namespace Domain.Service.Characters
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
+            _money = data.Money;
             IsLeader = data.IsLeader;
+            IsBoss = data.IsBoss;
+
+            _disposable = OnDead.Subscribe(_ => Entity.Destroy());
         }
 
-        public string Name => _name;
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
         private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
+        private ICharacterBehavior Behavior { get; }
+        public Entity Entity => _entity;
+        public bool IsLeader { get; init; }
+        public bool IsBoss { get; init; }
+        public CharacterState State { get; set; } = CharacterState.Think;
+        public int Money => _money;
+
+        public string Name => _name;
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
@@ -71,7 +85,6 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnDead => _statusManager.OnDead;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public ICharacterType CharacterType { get; init; }
-        private ICharacterBehavior Behavior { get; }
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -116,7 +129,7 @@ namespace Domain.Service.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Log.Debug($"[Action]{_name}:Move direction:{direction}");
+            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{CurrentPosition+direction.Vector()}");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -124,7 +137,7 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(Skill skill, Direction8 direction, IMap map)
+        public async UniTask UseSkill(ISkill skill, Direction8 direction, IMap map)
         {
             Log.Debug($"[Action]{_name}:UseSkill\n{skill.Info()}\ndirection:{direction}");
             Turn(direction);
@@ -142,11 +155,12 @@ namespace Domain.Service.Characters
         public async UniTask UseItem(int itemIndex, Direction8 direction, IMap map)
         {
             var item = _inventory.GetItem(itemIndex);
-            if (item == null) throw new Exception("item is null");
+            if (item == null)
+                throw new Exception("item is null");
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info()}\ndirection:{direction}");
             Turn(direction);
 
-            if (item.EffectsOnUse)
+            if (item.SkillOnUse != null)
             {
                 GameLog.Add($"{_name}:{item.Name}を使った");
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
@@ -168,7 +182,8 @@ namespace Domain.Service.Characters
         public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
         {
             var item = _inventory.Remove(itemIndex);
-            if (item == null) throw new Exception("item is null");
+            if (item == null)
+                throw new Exception("item is null");
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
@@ -189,6 +204,7 @@ namespace Domain.Service.Characters
 
         public void Dispose()
         {
+            _disposable.Dispose();
             _entity.Dispose();
             _inventory.Dispose();
             _onEffectSpawned.Dispose();
@@ -196,19 +212,19 @@ namespace Domain.Service.Characters
         }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Entity Entity => _entity;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
+        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public void SetVisiblity(bool visiblity)
         {
             _entity.SetVisibility(visiblity);
         }
 
-        public Skill[] Skills => _skills;
+        public ISkill[] Skills => _skills;
 
         public IVisionRange Area => _area;
 
@@ -217,13 +233,16 @@ namespace Domain.Service.Characters
             return new CharacterMemento(
                 _name,
                 CharacterType,
+                Behavior.WanderAround,
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _skills.Select(x => x.Serialize()).ToArray(),
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                IsLeader
+                _money,
+                IsLeader,
+                IsBoss
             );
         }
 
@@ -257,41 +276,6 @@ namespace Domain.Service.Characters
             _statusManager.AddCondition(condition, removalCondition);
         }
 
-        public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
-        {
-            return new CharacterMemento(
-                Name,
-                new Human(Addressables
-                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                CharacterStatusManager.Build(20, 20, false),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
-                new[]
-                {
-                    new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>()))).Serialize()
-                },
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Player),
-                Aggression.AttackAnyone,
-                true
-            );
-        }
-
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isShiney)
-        {
-            return new CharacterMemento(
-                data.Name,
-                data.CharacterType,
-                CharacterStatusManager.Build(data.Hp, data.Hp, isShiney),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
-                data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Enemy),
-                data.Aggression,
-                false
-            );
-        }
-
         public async UniTask ForceMove(Direction8 direction, IInput input)
         {
             Turn(direction);
@@ -315,11 +299,6 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        ~Character()
-        {
-            Dispose();
-        }
-
         public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
@@ -331,6 +310,50 @@ namespace Domain.Service.Characters
 
             State = CharacterState.Act;
             await action.Do(this, world, input);
+        }
+
+        public bool TryPickUp(IItem item)
+        {
+            if (_inventory.TryAdd(item))
+            {
+                _onPickUpItem.OnNext(Unit.Default);
+                return true;
+            }
+
+            return false;
+        }
+
+        public IItem? ReplaceInventory(IItem? item, int index)
+        {
+            return _inventory.Replace(item, index);
+        }
+
+        public void RepairAllItem()
+        {
+            _inventory.RepairAll();
+        }
+
+        public void UpdateTurn(IMap world)
+        {
+            _statusManager.UpdateTurn();
+            _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
+        }
+
+        public void AddMoney(int value)
+        {
+            Log.Debug($"{_name}:AddMoney {_money}+={value}");
+            _money += value;
+        }
+
+        public void ReduceMoney(int value)
+        {
+            Log.Debug($"{_name}:ReduceMoney {_money}-={value}");
+            _money -= value;
+        }
+
+        ~Character()
+        {
+            Dispose();
         }
 
         private IAction RegenerateConfuseAction(IHasBehavior character, IMap world, IAction action)
@@ -367,56 +390,6 @@ namespace Domain.Service.Characters
                 default:
                     throw new InvalidOperationException();
             }
-        }
-
-        public bool TryPickUp(Item item)
-        {
-            if (_inventory.TryAdd(item))
-            {
-                _onPickUpItem.OnNext(Unit.Default);
-                return true;
-            }
-
-            return false;
-        }
-
-        public Item? ReplaceInventory(Item? item, int index)
-        {
-            return _inventory.Replace(item, index);
-        }
-
-        public void RepairAllItem()
-        {
-            _inventory.RepairAll();
-        }
-
-        public void UpdateTurn(IMap world)
-        {
-            _statusManager.UpdateTurn();
-            _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
-        }
-    }
-
-    public static class CharacterExtensions
-    {
-        public static bool IsVisible(this Character character, Vector2Int position)
-        {
-            return character.Area.VisibleArea.Contains(position);
-        }
-
-        public static bool IsAlly(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return character.Affiliation.IsAlly(target.Affiliation);
-        }
-
-        public static bool IsEnemy(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return character.Affiliation.IsEnemy(target.Affiliation);
-        }
-
-        public static bool IsNeutral(this IHasAffiliation character, IHasAffiliation target)
-        {
-            return !character.IsAlly(target) && !character.IsEnemy(target);
         }
     }
 }

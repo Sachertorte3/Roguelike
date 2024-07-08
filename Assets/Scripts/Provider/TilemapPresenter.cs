@@ -3,6 +3,7 @@ using System.Linq;
 using Domain.Model.Map;
 using Model.Game;
 using R3;
+using UnityEngine;
 using Utilities;
 using VContainer;
 using View;
@@ -20,20 +21,12 @@ namespace Provider
                 {
                     tileView.Clear();
 
-                    foreach (var (position, tileData) in mapLoaded.Tilemap.GetAllTiles())
+                    foreach (var (position, tileData) in mapLoaded.TilemapViewer.GetAllTiles())
                     {
-                        switch (tileData.TileType)
-                        {
-                            case TileCategory.Wall:
-                                tileView.SetWall(position);
-                                break;
-                            case TileCategory.Floor:
-                                tileView.SetFloor(position);
-                                break;
-                        }
+                        SetTile(tileView, tileData, position, mapLoaded.ShopRect);
                     }
 
-                    foreach (var (position, tileData) in mapLoaded.Tilemap.GetAllTiles())
+                    foreach (var (position, tileData) in mapLoaded.TilemapViewer.GetAllTiles())
                     {
                         // HACK: Separating this due to a bug when not separated
                         if (tileData.IsKnown)
@@ -53,20 +46,12 @@ namespace Provider
                         }
                     }
 
-                    _disposables.Add(mapLoaded.Tilemap.OnTileChanged.Subscribe(context =>
+                    _disposables.Add(mapLoaded.TilemapViewer.OnTileChanged.Subscribe(context =>
                     {
-                        switch (context.tile.TileType)
-                        {
-                            case TileCategory.Wall:
-                                tileView.SetWall(context.position);
-                                break;
-                            case TileCategory.Floor:
-                                tileView.SetFloor(context.position);
-                                break;
-                        }
+                        SetTile(tileView, context.tile, context.position, mapLoaded.ShopRect);
                     }));
                     // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
-                    _disposables.Add(mapLoaded.Tilemap.OnTileKnownChanged.Subscribe(context =>
+                    _disposables.Add(mapLoaded.TilemapViewer.OnTileKnownChanged.Subscribe(context =>
                     {
                         if (context.tile.IsKnown)
                         {
@@ -103,6 +88,22 @@ namespace Provider
         public void Dispose()
         {
             _disposables.Dispose();
+        }
+
+        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, RectInt? shop)
+        {
+            switch (tileData.TileType)
+            {
+                case TileCategory.Wall:
+                    tileView.SetWall(position);
+                    break;
+                case TileCategory.Floor:
+                    if (shop.HasValue && shop.Value.Contains(position))
+                        tileView.SetShopFloor(position);
+                    else
+                        tileView.SetFloor(position);
+                    break;
+            }
         }
     }
 }

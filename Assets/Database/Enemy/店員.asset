@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u5E97\u54E1"
+  m_EditorClassIdentifier: 
+  Name: "\u5E97\u54E1"
+  Group: 2
+  IsBoss: 0
+  Hp: 3
+  Aggression: 4
+  WanderAround: 0
+  Skills:
+  - Area:
+      rid: 4425516923575599109
+    Effect:
+      rid: 4425516923575599110
+    Position:
+      rid: 4425516923575599119
+  AdditionalConditions:
+  - RemovalCondition:
+      RemoveByElapsedTurn: 1
+      Duration: 3
+      RemoveByDamage: 0
+      AcceptableDamage: 0
+      Probability: 0
+    Probability: 0.2
+    Condition:
+      rid: 4425516923575599112
+  CharacterType:
+    rid: 4425517307579858946
+  references:
+    version: 2
+    RefIds:
+    - rid: 4425516923575599109
+      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4425516923575599110
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 1
+        AdditionalConditions: []
+    - rid: 4425516923575599112
+      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 
+    - rid: 4425516923575599119
+      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+      data: 
+    - rid: 4425517307579858946
+      type: {class: Witch, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0

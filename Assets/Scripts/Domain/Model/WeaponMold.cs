@@ -13,11 +13,11 @@ namespace Domain.Model
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/WeaponMold")]
     public class WeaponMold : ScriptableObject
     {
-        [ReadOnly][Required] public string Name;
+        [ReadOnly] [Required] public string Name;
         [Required] public Sprite Icon;
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(1)] public int UsageLimit;
-        [Required][SerializeReference] public IArea Area;
+        [Required] [SerializeReference] public IArea Area;
 #if UNITY_EDITOR
         private void OnValidate()
         {

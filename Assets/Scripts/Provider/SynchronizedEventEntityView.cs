@@ -13,7 +13,7 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedEventEntityView : SynchronizedView<IEventEntity, EntityView>, IDisposable
+    public class SynchronizedEventEntityView : SynchronizedView<IEventEntityAndIcon, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         private readonly InputReceiver _inputReceiver;
@@ -24,8 +24,8 @@ namespace Provider
             _inputReceiver = inputReceiver;
 
             world.ActiveMap.SubscribeToAllIgnoreNull(
-                map => _disposable.Disposable = map.EventEntities.SubscribeToAll(Add, Remove),
-                map => map.EventEntities.ForEach(entity => Remove(entity))
+                map => _disposable.Disposable = map.EventEntitiesAndIcons.SubscribeToAll(Add, Remove),
+                map => map.EventEntitiesAndIcons.ForEach(entity => Remove(entity))
             );
         }
 
@@ -43,7 +43,7 @@ namespace Provider
             Dispose();
         }
 
-        protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
+        protected override void InitializeView(IEventEntityAndIcon eventEntity, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
             eventEntity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
@@ -58,7 +58,7 @@ namespace Provider
             eventEntity.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
 
-        protected override void CleanupView(IEventEntity item, EntityView view)
+        protected override void CleanupView(IEventEntityAndIcon item, EntityView view)
         {
         }
     }

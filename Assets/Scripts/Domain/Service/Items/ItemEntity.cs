@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Items;
 using Domain.Model.Map;
+using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Characters;
@@ -15,17 +18,18 @@ using Utilities;
 
 namespace Domain.Service.Items
 {
-    public class ItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IEntity
+    internal class ItemEntity : IItemEntity
     {
         private readonly Entity _entity;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
-        public readonly Item Item;
 
         public ItemEntity(ItemEntityMemento item)
         {
             Item = new Item(item.Item);
             _entity = new Entity(item.Entity);
         }
+
+        public IItem Item { get; init; }
 
         public Sprite Icon => Item.Icon;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
@@ -37,14 +41,13 @@ namespace Domain.Service.Items
             _onEffectSpawned.Dispose();
         }
 
-        public Entity Entity => _entity;
-
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
+        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
+        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public void SetVisiblity(bool visiblity)
         {
@@ -59,19 +62,6 @@ namespace Domain.Service.Items
             );
         }
 
-        public static ItemEntityMemento Build(Vector2Int spawnPosition, Item item)
-        {
-            return new ItemEntityMemento(
-                item.Serialize(),
-                new EntityMemento(spawnPosition, EntityLayer.Bottom)
-            );
-        }
-
-        ~ItemEntity()
-        {
-            Dispose();
-        }
-
         public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
         {
             while (map.IsPassable(CurrentPosition + direction.Vector()))
@@ -84,12 +74,17 @@ namespace Domain.Service.Items
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
 
-            if (Item.EffectsOnThrow)
+            if (Item.SkillOnThrow != null)
             {
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
                 await Item.Use(actor, CurrentPosition, direction, map);
             }
+        }
+
+        ~ItemEntity()
+        {
+            Dispose();
         }
     }
 }

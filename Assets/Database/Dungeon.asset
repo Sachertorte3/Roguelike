@@ -69,14 +69,17 @@ MonoBehaviour:
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
     Items:
       items:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
+      - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+      - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
+      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+      - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+      - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
+      - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
@@ -102,6 +105,7 @@ MonoBehaviour:
         Weight: 1
     WeaponPrefixes:
       items:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+      - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
+      - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
+      - {fileID: 11400000, guid: 7ff5f55f4da0a3b40b62a33f150f131c, type: 2}

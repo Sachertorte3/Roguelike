@@ -36,11 +36,38 @@ namespace Model.Game
             _shop = CreateShop(data, rooms);
             _monsterHouse = CreateMonsterHouse(data, rooms);
 
-            PopulateRooms(data, rooms, chests);
+            Vector2Int? downStairsPosition = null;
+            Vector2Int? upStairsPosition = null;
 
-            var downStairs = DownStairs.Build(_tilemap.GetAllPassablePositions().GetAtRandom(), nextMapId);
+            RectInt downStairsRoom = rooms.GetAtRandom();
+            RectInt? upStairsRoom = prevMapId.HasValue ? rooms.GetAtRandom() : null;
+
+            foreach (var room in rooms)
+            {
+                var positions = room.RectRange().GetAtRandom(8).ToList();
+                var characterPositions = positions.TakeAndRemove(2);
+                var itemPositions = positions.TakeAndRemove(2);
+                var weaponPositions = positions.TakeAndRemove(1);
+                var chestPositions = positions.TakeAndRemove(1);
+
+                AddCharactersToRoom(data, characterPositions);
+                AddItemsToRoom(data, itemPositions);
+                AddWeaponsToRoom(data, weaponPositions);
+                AddChestsToRoom(data, chestPositions, chests);
+
+                if (room == downStairsRoom)
+                {
+                    downStairsPosition = positions.TakeAndRemove(1).First();
+                }
+                else if (room == upStairsRoom)
+                {
+                    upStairsPosition = positions.TakeAndRemove(1).First();
+                }
+            }
+            
+            var downStairs = DownStairs.Build(downStairsPosition.Value, nextMapId);
             var upStairs = prevMapId.HasValue
-                ? UpStairs.Build(_tilemap.GetAllPassablePositions().GetAtRandom(), prevMapId.Value)
+                ? UpStairs.Build(upStairsPosition.Value, prevMapId.Value)
                 : null;
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
@@ -73,36 +100,19 @@ namespace Model.Game
             return MonsterHouse.Build(monsterHouseRoom);
         }
 
-        private void PopulateRooms(SectionData data, List<RectInt> rooms, List<ChestMemento> chests)
-        {
-            foreach (var room in rooms)
-            {
-                var positions = room.RectRange().GetAtRandom(6).ToList();
-                var characterPositions = positions.TakeAndRemove(2);
-                var itemPositions = positions.TakeAndRemove(2);
-                var weaponPositions = positions.TakeAndRemove(1);
-                var chestPositions = positions.TakeAndRemove(1);
-
-                AddCharactersToRoom(data, room, characterPositions);
-                AddItemsToRoom(data, room, itemPositions);
-                AddWeaponsToRoom(data, room, weaponPositions);
-                AddChestsToRoom(data, room, chestPositions, chests);
-            }
-        }
-
-        private void AddCharactersToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
+        private void AddCharactersToRoom(SectionData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
                 _characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
         }
 
-        private void AddItemsToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
+        private void AddItemsToRoom(SectionData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
         }
 
-        private void AddWeaponsToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
+        private void AddWeaponsToRoom(SectionData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
             {
@@ -122,7 +132,7 @@ namespace Model.Game
             }
         }
 
-        private void AddChestsToRoom(SectionData data, RectInt room, List<Vector2Int> positions, List<ChestMemento> chests)
+        private void AddChestsToRoom(SectionData data, List<Vector2Int> positions, List<ChestMemento> chests)
         {
             foreach (var position in positions)
             {

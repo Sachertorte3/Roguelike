@@ -157,6 +157,20 @@ namespace Utilities
             return result;
         }
 
+        public static T GetAtRandomAndRemove<T>(this List<T> list)
+        {
+            var result = list.GetAtRandom();
+            list.Remove(result);
+            return result;
+        }
+
+        public static List<T> GetAtRandomAndRemove<T>(this List<T> list, int n)
+        {
+            var result = list.GetAtRandom(n);
+            list.RemoveAll(item => result.Contains(item));
+            return result;
+        }
+
         public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()
         {
             return Enumerable.Range(0, count).Select(_ => new T());

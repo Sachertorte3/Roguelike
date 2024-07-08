@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
+using Domain.Service.Entities;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect
 {
-    public interface ITargetOfEffect
+    public interface ITargetOfEffect : IEntity
     {
-        public Vector2Int CurrentPosition { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
 

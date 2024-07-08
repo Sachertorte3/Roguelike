@@ -48,6 +48,11 @@ namespace Domain.Service.Events
         {
             _entity.SetVisibility(visiblity);
         }
+        
+        public void Destroy()
+        {
+            _entity.Destroy();
+        }
 
         public DownStairsMemento Serialize()
         {

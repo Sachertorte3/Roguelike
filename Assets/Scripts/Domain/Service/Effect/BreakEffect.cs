@@ -12,9 +12,10 @@ namespace Domain.Service.Effect
         public Color Color => Colors.Black;
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            await target.LoseHp(target.CurrentHp);
+            target.Destroy();
+            return UniTask.CompletedTask;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

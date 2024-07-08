@@ -59,7 +59,7 @@ namespace Model.Game
                 {
                     downStairsPosition = positions.TakeAndRemove(1).First();
                 }
-                else if (room == upStairsRoom)
+                if (room == upStairsRoom)
                 {
                     upStairsPosition = positions.TakeAndRemove(1).First();
                 }
@@ -73,7 +73,7 @@ namespace Model.Game
 
         private ShopMemento? CreateShop(SectionData data, List<RectInt> rooms)
         {
-            if (Random.value >= data.ShopChance || !rooms.Any()) return null;
+            if (Random.value >= data.ShopChance || rooms.Count() <= 1) return null;
 
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
@@ -90,7 +90,7 @@ namespace Model.Game
 
         private RoomMemento? CreateMonsterHouse(SectionData data, List<RectInt> rooms)
         {
-            if (Random.value >= data.MonsterHouseChance || !rooms.Any()) return null;
+            if (Random.value >= data.MonsterHouseChance || rooms.Count() <= 1) return null;
 
             var monsterHouseRoom = rooms.GetAtRandom();
             rooms.Remove(monsterHouseRoom);

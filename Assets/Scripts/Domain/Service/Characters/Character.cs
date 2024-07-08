@@ -223,6 +223,11 @@ namespace Domain.Service.Characters
         {
             _entity.SetVisibility(visiblity);
         }
+        
+        public void Destroy()
+        {
+            _entity.Destroy();
+        }
 
         public ISkill[] Skills => _skills;
 

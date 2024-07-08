@@ -16,5 +16,6 @@ namespace Domain.Service.Entities
         public Observable<Vector2Int> OnTeleport { get; }
         public Observable<Unit> OnDestroyed { get; }
         public void SetVisiblity(bool visiblity);
+        public void Destroy();
     }
 }

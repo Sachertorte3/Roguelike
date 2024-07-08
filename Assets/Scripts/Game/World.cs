@@ -62,8 +62,8 @@ namespace Model.Game
             else
             {
                 var sectionData = GetSectionData(mapId);
-                return MapManager.Build(Tilemap.Build(sectionData.Field), sectionData, mapId + 1,
-                    mapId > 1 ? mapId - 1 : null);
+                return new MapBuilder(Tilemap.Build(sectionData.Field), sectionData, mapId + 1,
+                    mapId > 1 ? mapId - 1 : null).Build();
             }
         }
 

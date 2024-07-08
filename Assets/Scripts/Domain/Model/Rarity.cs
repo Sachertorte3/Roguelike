@@ -14,4 +14,19 @@ namespace Domain.Model
         Epic, //基準: めったに見ない。感覚としては狙って出すもの
         Legendary //基準: 文句なしに強い。感覚としては1度出るかどうか
     }
+    public static class RarityExtensions
+    {
+        public static float GetWeight(this Rarity rarity)
+        {
+            return rarity switch
+            {
+                Rarity.Common => 50,
+                Rarity.Uncommon => 30,
+                Rarity.Rare => 15,
+                Rarity.Epic => 4,
+                Rarity.Legendary => 1,
+                _ => 0
+            };
+        }
+    }
 }

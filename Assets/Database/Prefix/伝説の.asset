@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u4F1D\u8AAC\u306E"
   m_EditorClassIdentifier: Data:Data:WeaponPrefix
   Name: "\u4F1D\u8AAC\u306E"
-  Rarity: 4
+  _rarity: 4
   PowerMagnification: 2
   UsageLimitMagnification: 1.5
   AdditionalConditions: []

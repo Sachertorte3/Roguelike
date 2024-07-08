@@ -12,10 +12,11 @@ using System.IO;
 namespace Domain.Model
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/WeaponPrefix")]
-    public class WeaponPrefix : ScriptableObject
+    public class WeaponPrefix : ScriptableObject, IHasRarity
     {
         [ReadOnly] [Required] public string Name;
-        public Rarity Rarity;
+        [SerializeField] private Rarity _rarity;
+        public Rarity Rarity => _rarity;
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
         public List<AdditionalConditionData> AdditionalConditions = new();

@@ -10,10 +10,11 @@ using System.IO;
 namespace Domain.Model
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
-    public class ItemData : ScriptableObject, IHasInfo
+    public class ItemData : ScriptableObject, IHasInfo, IHasRarity
     {
         [Required] public Sprite Icon;
-        public Rarity Rarity;
+        [SerializeField] private Rarity _rarity;
+        public Rarity Rarity => _rarity;
         public int Price = 100;
         public bool EffectsOnUse = true;
         public bool EffectsOnThrow = false;
@@ -31,7 +32,7 @@ namespace Domain.Model
         {
             _name = name;
             Icon = icon;
-            Rarity = rarity;
+            _rarity = rarity;
             EffectsOnUse = effectsOnUse;
             EffectsOnThrow = effectsOnThrow;
             SkillOnUse = skillOnUse;
@@ -86,5 +87,10 @@ namespace Domain.Model
 
             return info;
         }
+    }
+
+    public interface IHasRarity
+    {
+        Rarity Rarity { get; }
     }
 }

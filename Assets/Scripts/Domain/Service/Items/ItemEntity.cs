@@ -53,6 +53,11 @@ namespace Domain.Service.Items
         {
             _entity.SetVisibility(visiblity);
         }
+        
+        public void Destroy()
+        {
+            _entity.Destroy();
+        }
 
         public ItemEntityMemento Serialize()
         {

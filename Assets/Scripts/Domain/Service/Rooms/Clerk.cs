@@ -53,5 +53,10 @@ namespace Domain.Service.Rooms
         {
             Character.SetVisiblity(visiblity);
         }
+        
+        public void Destroy()
+        {
+            Character.Destroy();
+        }
     }
 }

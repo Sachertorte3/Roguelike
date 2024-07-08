@@ -18,7 +18,7 @@ namespace Model.Game
 
         public CharacterManager()
         {
-            CharacterEvents.OnDead.Subscribe(dead => _characters.Remove(dead.Character));
+            CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
         }
 
         public ICharacter? Player { get; private set; }

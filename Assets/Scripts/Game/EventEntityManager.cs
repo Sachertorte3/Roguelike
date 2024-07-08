@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
 using Domain.Service.Events;
+using Domain.Service.Items;
+using Domain.Service.Rooms;
 using ObservableCollections;
+using R3;
 
 namespace Model.Game
 {
@@ -13,16 +16,18 @@ namespace Model.Game
         private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
         private ObservableList<IEventEntity> _eventEntities = new();
+        private ObservableList<IEventEntityAndIcon> _eventEntitiesAndIcons = new();
+        public EventEntityEvents EventEntityEvents = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities)
         {
             _downStairs = new(eventEntities.DownStairs);
-            _eventEntities.Add(_downStairs);
+            Add(_downStairs);
 
             if (eventEntities.UpStairs != null)
             {
                 _upStairs = new(eventEntities.UpStairs);
-                _eventEntities.Add(_upStairs);
+                Add(_upStairs);
             }
             else
             {
@@ -30,7 +35,9 @@ namespace Model.Game
             }
 
             foreach (var chest in eventEntities.Chests)
-                Add(new(chest));
+                Add(new Chest(chest));
+            
+            EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
         {
@@ -50,17 +57,41 @@ namespace Model.Game
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
+        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => _eventEntitiesAndIcons;
 
         public void Add(Chest chest)
         {
             _chests.Add(chest);
             _eventEntities.Add(chest);
+            _eventEntitiesAndIcons.Add(chest);
+            EventEntityEvents.Add(chest);
+        }
+
+        public void Add(IEventEntity eventEntity)
+        {
+            _eventEntities.Add(eventEntity);
+            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            {
+                _eventEntitiesAndIcons.Add(eventEntityAndIcon);
+            }
+            EventEntityEvents.Add(eventEntity);
         }
 
         public void Remove(Chest chest)
         {
             _chests.Remove(chest);
             _eventEntities.Remove(chest);
+            _eventEntitiesAndIcons.Remove(chest);
+        }
+
+        public void Remove(IEventEntity eventEntity)
+        {
+            _eventEntities.Remove(eventEntity);
+            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            {
+                _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
+            }
+            EventEntityEvents.Remove(eventEntity);
         }
     }
 }

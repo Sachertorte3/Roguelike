@@ -10,7 +10,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Chest : ISerializable<ChestMemento>, IEventEntity
+    public class Chest : ISerializable<ChestMemento>, IEventEntityAndIcon
     {
         private Entity _entity;
         private ItemData _item;
@@ -25,18 +25,13 @@ namespace Domain.Service.Events
             .WaitForCompletion();
 
         public EventTrigger Trigger => EventTrigger.Touch;
-
-        public Entity Entity => _entity;
-
+        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
+        public bool CanExecuteEvent => true;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
-
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
-
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
-
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
@@ -48,6 +43,11 @@ namespace Domain.Service.Events
         public void Dispose()
         {
             _entity.Dispose();
+        }
+
+        public void SetVisiblity(bool visiblity)
+        {
+            _entity.SetVisibility(visiblity);
         }
 
         public ChestMemento Serialize()

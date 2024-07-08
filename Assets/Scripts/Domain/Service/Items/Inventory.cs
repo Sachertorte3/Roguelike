@@ -1,9 +1,14 @@
 ﻿#nullable enable
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Items;
+using Domain.Model.Message;
 using ObservableCollections;
 using R3;
+using Utilities;
 
 namespace Domain.Service.Items
 {
@@ -11,27 +16,32 @@ namespace Domain.Service.Items
     {
         private const int MaxItems = 10;
         private readonly IDisposable _disposable;
-        private readonly CompositeDisposable _disposables = new();
-        private readonly ObservableList<Item?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
+        private readonly CompositeDisposable[] _disposables = EnumerableExtension.CreateArrayWithNewInstances<CompositeDisposable>(MaxItems).ToArray();
+        private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
+        public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Inventory(InventoryMemento data)
         {
             _disposable = OnItemChanged.Subscribe(itemChanged =>
                 {
+                    _disposables[itemChanged.Index].Clear();
                     if (itemChanged.NewValue != null)
                     {
-                        _disposables.Add(itemChanged.NewValue.RemainingUses.Subscribe(
+                        _disposables[itemChanged.Index].Add(itemChanged.NewValue.OnItemUpdated.Subscribe(
+                            _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
+                        ));
+                        _disposables[itemChanged.Index].Add(itemChanged.NewValue.RemainingUses.Subscribe(
                             remainingUses =>
                             {
                                 if (remainingUses <= 0)
-                                    Replace(null, _items.IndexOf(itemChanged.NewValue));
-                                else if (itemChanged.NewValue != null)
-                                    _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index));
-                            }));
+                                    Replace(null, itemChanged.Index);
+                            }
+                        ));
                     }
-                },
-                _ => _disposables.Clear());
+                }
+            );
+
             foreach (var item in data.Items)
             {
                 if (item != null)
@@ -42,13 +52,13 @@ namespace Domain.Service.Items
         public void Dispose()
         {
             _disposable.Dispose();
-            _disposables.Dispose();
+            foreach (var disposable in _disposables)
+                disposable.Dispose();
         }
 
         public int MaxItemCount => MaxItems;
 
-        public Observable<CollectionReplaceEvent<Item?>> OnItemChanged => _items.ObserveReplace();
-
+        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
 
         public bool HasEmptySpace()
@@ -56,7 +66,7 @@ namespace Domain.Service.Items
             return _items.IndexOf(null) >= 0;
         }
 
-        public Item? GetItem(int index)
+        public IItem? GetItem(int index)
         {
             return _items[index];
         }
@@ -66,7 +76,7 @@ namespace Domain.Service.Items
             return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
         }
 
-        public bool TryAdd(Item item)
+        public bool TryAdd(IItem item)
         {
             var index = _items.IndexOf(null);
             if (index >= 0)
@@ -78,14 +88,14 @@ namespace Domain.Service.Items
             return false;
         }
 
-        public Item? Replace(Item? item, int index)
+        public IItem? Replace(IItem? item, int index)
         {
             var removed = _items[index];
             _items[index] = item;
             return removed;
         }
 
-        public Item? Remove(int index)
+        public IItem? Remove(int index)
         {
             return Replace(null, index);
         }

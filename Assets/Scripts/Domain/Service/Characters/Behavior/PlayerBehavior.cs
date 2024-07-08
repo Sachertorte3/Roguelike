@@ -1,19 +1,17 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Area;
+using Domain.Model.Action;
+using Domain.Model.Characters;
 using Domain.Model.Setting;
 using Domain.Service.Action;
-using Domain.Service.Effect;
 using Unity.Logging;
 using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public sealed class PlayerBehavior : ICharacterBehavior
+    internal sealed class PlayerBehavior : ICharacterBehavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControllInputReceiver _receiver;
@@ -22,6 +20,8 @@ namespace Domain.Service.Characters.Behavior
         {
             _receiver = receiver;
         }
+
+        public bool WanderAround => true;
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
@@ -51,19 +51,16 @@ namespace Domain.Service.Characters.Behavior
                                 move = _intelligentDashController.Filter(move, character, started, world, input);
 
                             var swap = new Swap(move.Direction);
+                            character.Turn(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
-                            else if (swap.Doable(character, world))
-                                return swap;
-                            else if (world.IsEventEntityAt(
-                                         character.CurrentPosition + character.CurrentDirection.Vector(),
-                                         EntityLayer.Middle))
+                            else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
                             {
-                                world.Touch(character.CurrentPosition + character.CurrentDirection.Vector());
+                                world.Touch(character.CurrentPosition + move.Direction.Vector());
                                 return new DoNothing();
                             }
-                            else
-                                character.Turn(move.Direction);
+                            else if (swap.Doable(character, world))
+                                return swap;
                         }
 
                         break;

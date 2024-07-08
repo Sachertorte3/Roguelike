@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using Domain.Model.Condition;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Domain.Model.Effect
@@ -10,10 +8,5 @@ namespace Domain.Model.Effect
         public Vector2Int CurrentPosition { get; }
         public Aggression Aggression { get; }
         public UniTask<int> GainHp(int value);
-    }
-
-    public interface IHasAffiliation
-    {
-        public IAffiliation Affiliation { get; }
     }
 }

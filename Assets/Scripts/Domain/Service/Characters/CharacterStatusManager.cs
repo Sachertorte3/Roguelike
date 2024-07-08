@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Model.Characters;
 using Domain.Model.Condition;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Characters.Stats;
@@ -48,7 +49,7 @@ namespace Domain.Service.Characters
         }
 
         public IStats Stats => _stats;
-        public IObservableCollection<Condition> Conditions => _conditions.Conditions;
+        public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -63,6 +64,26 @@ namespace Domain.Service.Characters
         public void UpdateTurn()
         {
             _conditions.UpdateTurn(this);
+        }
+
+        public void AddMaxHpValue(float value)
+        {
+            _stats.Hp.AddMaxHpValue(value);
+        }
+
+        public void AddMaxHpMultiplier(float value)
+        {
+            _stats.Hp.AddMaxHpMultiplier(value);
+        }
+
+        public void RemoveMaxHpValue(float value)
+        {
+            _stats.Hp.RemoveMaxHpValue(value);
+        }
+
+        public void RemoveMaxHpMultiplier(float value)
+        {
+            _stats.Hp.RemoveMaxHpMultiplier(value);
         }
 
         public static CharacterStatusMemento Build(int maxHp, int hp, bool isShiney)
@@ -91,11 +112,6 @@ namespace Domain.Service.Characters
             _onHealReceived.OnNext(value);
             return UniTask.FromResult(gainValue);
         }
-
-        public void AddMaxHpValue(float value) => _stats.Hp.AddMaxHpValue(value);
-        public void AddMaxHpMultiplier(float value) => _stats.Hp.AddMaxHpMultiplier(value);
-        public void RemoveMaxHpValue(float value) => _stats.Hp.RemoveMaxHpValue(value);
-        public void RemoveMaxHpMultiplier(float value) => _stats.Hp.RemoveMaxHpMultiplier(value);
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {

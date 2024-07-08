@@ -1,0 +1,19 @@
+﻿#nullable enable
+using System.Collections.Generic;
+using Domain.Model.Items;
+using UnityEngine;
+using Utilities;
+
+namespace Domain.Service.Events
+{
+    public interface IMapManager
+    {
+        public ICharacter Player { get; }
+        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
+        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area);
+        public IItem? GetItemFromId(Id<IItem> id);
+        public IItemEntity SpawnItem(IItem item, Vector2Int position);
+        public void SpawnRandomEnemy(Vector2Int position);
+        public void RemoveEventEntity(Chest entity);
+    }
+}

@@ -1,12 +1,14 @@
+using System;
+
 namespace Utilities
 {
     public static class UniqueIdGenerator
     {
-        private static int _id = 0;
-
-        public static int GenerateId()
+        private static int _id = new Random().Next();
+        public static Id<T> Generate<T>()
         {
-            return _id++;
+            return new Id<T>(unchecked(_id++));
         }
     }
+    public record Id<T>(int Value);
 }

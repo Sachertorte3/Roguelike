@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Items;
 using Domain.Model.Map;
+using Domain.Service;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;
@@ -14,7 +16,7 @@ namespace Model.Game
     public sealed class ItemManager : IDisposable
     {
         private readonly ItemFactory _factory = new();
-        private readonly ObservableList<ItemEntity> _items = new();
+        private readonly ObservableList<IItemEntity> _items = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         public ItemEntityEvents ItemEntityEvents = new();
 
@@ -26,7 +28,7 @@ namespace Model.Game
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
 
-        public IObservableCollection<ItemEntity> Items => _items;
+        public IObservableCollection<IItemEntity> Items => _items;
 
         public void Dispose()
         {
@@ -39,20 +41,20 @@ namespace Model.Game
             Dispose();
         }
 
-        public void AddItem(ItemEntity item)
+        public void AddItem(IItemEntity item)
         {
             _items.Add(item);
             ItemEntityEvents.Add(item);
         }
 
-        public ItemEntity SpawnItem(Item item, Vector2Int spawnPosition)
+        public IItemEntity SpawnItem(IItem item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(ItemEntity.Build(spawnPosition, item));
+            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item));
             AddItem(itemEntity);
             return itemEntity;
         }
 
-        public ItemEntity SpawnItem(ItemEntityMemento item)
+        public IItemEntity SpawnItem(ItemEntityMemento item)
         {
             var itemEntity = _factory.CreateItem(item);
             AddItem(itemEntity);
@@ -64,21 +66,25 @@ namespace Model.Game
             return _allItemPositions;
         }
 
+        public IItemEntity? GetItemAt(Vector2Int position)
+        {
+            return _items.FirstOrDefault(item => item.CurrentPosition == position);
+        }
+
         private void SetAllItemPosition()
         {
             _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
         }
 
-        public ItemEntity? TryPickUp(Vector2Int position)
+        public IItemEntity? TryPickUp(Vector2Int position)
         {
-            if (GetAllItemPositions().Contains(position))
+            var item = GetItemAt(position);
+            if (item != null)
             {
-                var item = _items.First(item => item.CurrentPosition == position);
                 _items.Remove(item);
-                return item;
+                ItemEntityEvents.Remove(item);
             }
-
-            return null;
+            return item;
         }
     }
 }

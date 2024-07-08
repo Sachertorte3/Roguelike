@@ -9,12 +9,12 @@ namespace Domain.Service.Characters.Behavior
 {
     public class CharacterControllInputReceiver
     {
-        private bool _enable = true;
         private readonly InventoryIndexReceiver _inventoryIndexReceiver = new();
         private readonly Subject<Unit> _onActionRead = new();
         private readonly AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
         private readonly AsyncReactiveProperty<int> _onThrowItemActionReceived = new(0);
         private readonly AsyncReactiveProperty<int> _onUseItemActionReceived = new(0);
+        private bool _enable = true;
 
         internal IReadOnlyAsyncReactiveProperty<(Move action, bool isStarted)> OnMoveInputReceived =>
             _onMoveInputReceived;
@@ -52,6 +52,7 @@ namespace Domain.Service.Characters.Behavior
             if (_enable)
                 _onActionRead.OnNext(Unit.Default);
         }
+
         public void Enable(bool enable)
         {
             _enable = enable;

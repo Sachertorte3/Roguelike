@@ -5,6 +5,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Items;
 using Domain.Model.Map;
 using Domain.Service;
 using Domain.Service.Characters;
@@ -33,6 +34,8 @@ namespace Model.Game
         private SectionData _sectionData;
         private List<IEventArea> _eventAreas = new();
         private MonsterHouse? _monsterHouse;
+        private Shop? _shop;
+        public RectInt? ShopRect => _shop?.Rect;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
@@ -44,15 +47,9 @@ namespace Model.Game
 
             _sectionData = sectionData;
 
-            if (map.MonsterHouse != null)
-            {
-                _monsterHouse = new MonsterHouse(map.MonsterHouse);
-                _eventAreas.Add(_monsterHouse);
-            }
-
             if (playerData == null || playerPosition == null)
             {
-                playerData = Character.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
+                playerData = CharacterFactory.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
             }
             else
             {
@@ -92,6 +89,20 @@ namespace Model.Game
 
             SetRules();
 
+            if (map.MonsterHouse != null)
+            {
+                _monsterHouse = new MonsterHouse(map.MonsterHouse);
+                _eventAreas.Add(_monsterHouse);
+            }
+
+            if (map.Shop != null)
+            {
+                var clerk = Characters.First(character => character.CurrentPosition == map.Shop.Clerk.Position);
+                _shop = new Shop(map.Shop, clerk, this);
+                EventEntityManager.Add(_shop.Clerk);
+                _eventAreas.Add(_shop);
+            }
+
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
             foreach (var character in CharacterManager.Characters)
@@ -102,10 +113,11 @@ namespace Model.Game
                 eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
         }
 
-        public Character Player => CharacterManager.Player;
+        public ICharacter Player => CharacterManager.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
+        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
 
@@ -119,16 +131,16 @@ namespace Model.Game
         }
 
         public IObservableCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
-        public IObservableCollection<Character> Characters => CharacterManager.Characters;
-        public IObservableCollection<ItemEntity> Items => ItemManager.Items;
+        public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
+        public IObservableCollection<IItemEntity> Items => ItemManager.Items;
 
-        public ItemEntity SpawnItem(Item item, Vector2Int position)
+        public IItemEntity SpawnItem(IItem item, Vector2Int position)
         {
             return ItemManager.SpawnItem(item, position);
         }
         public void SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(Character.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
+            CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>
@@ -136,10 +148,23 @@ namespace Model.Game
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>
-        public HashSet<Character> GetCharactersInArea(IEnumerable<Vector2Int> area)
+        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area)
         {
             return Characters.Where(character => area.Contains(character.Position.CurrentValue))
                 .ToHashSet();
+        }
+
+        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area)
+        {
+            return Items.Where(item => area.Contains(item.Position.CurrentValue))
+                .ToHashSet();
+        }
+
+        public IItem? GetItemFromId(Id<IItem> id)
+        {
+            var itemEntity = ItemManager.Items.FirstOrDefault(item => item.Item.Id == id);
+            var item = itemEntity?.Item ?? Player.Inventory.AllItems.FirstOrDefault(i => i.Id == id);
+            return item;
         }
 
         public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character)
@@ -157,15 +182,19 @@ namespace Model.Game
             return Characters.Where(c => c.IsEnemy(character)).Select(c => c.CurrentPosition);
         }
 
-        public bool IsEventEntityAt(Vector2Int position, EntityLayer layer)
+        public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer)
         {
-            return EventEntities.Any(eventEntity =>
-                eventEntity.CurrentPosition == position && eventEntity.Layer == layer);
+            return EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.Layer == layer)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .Any();
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
-            var result = Tilemap.GetAllPassablePositions();
+            var result = TilemapViewer.GetAllPassablePositions();
             result.ExceptWith(GetAllCharacterPositions());
             return result;
         }
@@ -177,12 +206,12 @@ namespace Model.Game
 
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
-            return Tilemap.GetAllPassablePositions();
+            return TilemapViewer.GetAllPassablePositions();
         }
 
         public bool IsMapPassable(Vector2Int position)
         {
-            return Tilemap.IsPassable(position);
+            return TilemapViewer.IsPassable(position);
         }
 
         public bool IsReachable(Vector2Int from, Vector2Int to)
@@ -192,10 +221,15 @@ namespace Model.Game
 
         public void Touch(Vector2Int position)
         {
-            var eventEntity = EventEntities.Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
-                .FirstOrDefault(eventEntity => eventEntity.CurrentPosition == position);
+            var eventEntity = EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .FirstOrDefault();
             if (eventEntity != null)
                 eventEntity.DoEvent(Globals.GameManager, this);
+            else
+                Log.Info($"I tried touch position {position} event but there was no event there.");
         }
 
         public void RemoveEventEntity(Chest eventEntity)
@@ -203,7 +237,7 @@ namespace Model.Game
             EventEntityManager.Remove(eventEntity);
         }
 
-        public ITilemapViewer Tilemap => _tilemap;
+        public ITilemapViewer TilemapViewer => _tilemap;
 
         public MapMemento Serialize()
         {
@@ -215,7 +249,8 @@ namespace Model.Game
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 EventEntityManager.Serialize(),
-                _monsterHouse?.Serialize()
+                _monsterHouse?.Serialize(),
+                _shop?.Serialize()
             );
         }
 
@@ -248,13 +283,14 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
-                foreach (var eventEntity in EventEntities.Where(
-                             eventEntity => eventEntity.Trigger == EventTrigger.Tread))
+                var eventEntity = EventEntities
+                    .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
+                    .Where(eventEntity => eventEntity.CurrentPosition == positionChanged.Message.Position)
+                    .Where(eventEntity => eventEntity.CanExecuteEvent)
+                    .FirstOrDefault();
+                if (eventEntity != null)
                 {
-                    if (positionChanged.Message.Position == eventEntity.CurrentPosition)
-                    {
-                        eventEntity.DoEvent(Globals.GameManager, this);
-                    }
+                    eventEntity.DoEvent(Globals.GameManager, this);
                 }
 
                 foreach (var eventArea in _eventAreas)
@@ -303,12 +339,37 @@ namespace Model.Game
             var items = new List<ItemEntityMemento>();
             var chests = new List<ChestMemento>();
 
-            foreach (var room in tilemap.Rooms)
+            var rooms = tilemap.Rooms.ToList();
+
+            ShopMemento? shop = null;
+            if (Random.value < data.ShopChance && rooms.Any())
+            {
+                var shopRoom = rooms.GetAtRandom();
+                rooms.Remove(shopRoom);
+
+                foreach (var position in shopRoom.RectRange().GetAtRandom(2))
+                    items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+
+                var clerk = CharacterFactory.BuildCharacter(data.Clerk, shopRoom.RectRange().GetAtRandom(), Random.value < data.ShineyChance);
+                characters.Add(clerk);
+                shop = Shop.Build(shopRoom, clerk.EntityData, items.ToList());
+            }
+
+            RoomMemento? monsterHouse = null;
+            if (Random.value < data.MonsterHouseChance && rooms.Any())
+            {
+                var monsterHouseRoom = rooms.GetAtRandom();
+                rooms.Remove(monsterHouseRoom);
+
+                monsterHouse = MonsterHouse.Build(monsterHouseRoom);
+            }
+
+            foreach (var room in rooms)
             {
                 foreach (var position in room.RectRange().GetAtRandom(2))
-                    characters.Add(Character.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
+                    characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
                 foreach (var position in room.RectRange().GetAtRandom(2))
-                    items.Add(ItemEntity.Build(position, new Item(data.Items.GetRandomItem())));
+                    items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
                 foreach (var position in room.RectRange().GetAtRandom(1))
                 {
                     var material = data.Materials.GetRandomItem();
@@ -317,12 +378,12 @@ namespace Model.Game
                     {
                         var prefix = data.WeaponPrefixes.GetRandomItem();
                         var weapon = WeaponFactory.Create(prefix, material, mold);
-                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                        items.Add(ItemFactory.Build(position, new Item(weapon)));
                     }
                     else
                     {
                         var weapon = WeaponFactory.Create(material, mold);
-                        items.Add(ItemEntity.Build(position, new Item(weapon)));
+                        items.Add(ItemFactory.Build(position, new Item(weapon)));
                     }
                 }
 
@@ -343,25 +404,19 @@ namespace Model.Game
 
             var eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
 
-            var monsterHouse = MonsterHouse.Build(tilemap.Rooms.GetAtRandom());
-
             return new MapMemento(
                 tilemap.Serialize(),
                 characters,
                 items,
                 eventEntities,
-                null//monsterHouse
+                monsterHouse,//monsterHouse
+                shop//shop
             );
         }
 
         ~MapManager()
         {
             Dispose();
-        }
-
-        public ItemEntity? TryPickUp(Vector2Int position)
-        {
-            return ItemManager.TryPickUp(position);
         }
 
         public HashSet<Vector2Int> GetAllItemPositions()
@@ -389,7 +444,9 @@ namespace Model.Game
             return Characters.Where(character => character.Layer == layer)
                 .Select(character => character.CurrentPosition).Concat(
                     EventEntities.Where(eventEntity => eventEntity.Layer == layer)
-                        .Select(eventEntity => eventEntity.CurrentPosition));
+                        .Select(eventEntity => eventEntity.CurrentPosition)).Concat(
+                    Items.Where(item => item.Layer == layer)
+                        .Select(item => item.CurrentPosition));
         }
 
         private void SetAllCharacterPosition()
@@ -403,7 +460,7 @@ namespace Model.Game
             if (item != null)
             {
                 GameLog.Add($"{Player.Name}: {item.Name}を捨てた.");
-                var itemEntity = TryPickUp(Player.CurrentPosition);
+                var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
                 if (itemEntity != null)
                 {
                     GameLog.Add($"{Player.Name}: {itemEntity.Item.Name}を拾った");
@@ -419,7 +476,7 @@ namespace Model.Game
         ///     Does not include the players themselves.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Character> GetFollowingCharacters()
+        public IEnumerable<ICharacter> GetFollowingCharacters()
         {
             return CharacterManager.Characters.Where(character =>
                 character.IsAlly(Player) && character.IsVisible(Player.CurrentPosition));
@@ -427,7 +484,7 @@ namespace Model.Game
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
         {
-            return BlankFinder.FindBlankPosition(isBlankFunc, Tilemap.IsPassable, position);
+            return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsPassable, position);
         }
     }
 }

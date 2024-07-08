@@ -133,7 +133,7 @@ namespace Domain.Service.Characters
         public static AffiliationMemento Build(CharacterGroup group)
         {
             return new AffiliationMemento(
-                UniqueIdGenerator.GenerateId(),
+                UniqueIdGenerator.Generate<IAffiliation>().Value,
                 group,
                 new Dictionary<int, float>()
             );

@@ -12,6 +12,4 @@ namespace Domain.Model.Effect
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact);
         public void OnCharacterHealed(IAffiliation healer, IAffiliation target, float impact);
     }
-
-    public record OnAffectionChangedMessage(int Target, float Affection);
 }

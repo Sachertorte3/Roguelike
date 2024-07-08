@@ -12,7 +12,7 @@ namespace Model.Game
 {
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
-        private readonly UpStairs? _upStairs;
+        private readonly UpStairs _upStairs;
         private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
         private ObservableList<IEventEntity> _eventEntities = new();
@@ -24,15 +24,8 @@ namespace Model.Game
             _downStairs = new(eventEntities.DownStairs);
             Add(_downStairs);
 
-            if (eventEntities.UpStairs != null)
-            {
-                _upStairs = new(eventEntities.UpStairs);
-                Add(_upStairs);
-            }
-            else
-            {
-                _upStairs = null;
-            }
+            _upStairs = new(eventEntities.UpStairs);
+            Add(_upStairs);
 
             foreach (var chest in eventEntities.Chests)
                 Add(new Chest(chest));

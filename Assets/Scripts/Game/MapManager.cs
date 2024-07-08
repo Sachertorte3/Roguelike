@@ -38,7 +38,7 @@ namespace Model.Game
         public RectInt? ShopRect => _shop?.Rect;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int? playerPosition, CharacterControllInputReceiver receiver)
+            Vector2Int playerPosition, CharacterControllInputReceiver receiver)
         {
             _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager();
@@ -47,15 +47,15 @@ namespace Model.Game
 
             _sectionData = sectionData;
 
-            if (playerData == null || playerPosition == null)
+            if (playerData == null)
             {
-                playerData = CharacterFactory.BuildPlayer("Player", _tilemap.GetAllPassablePositions().GetAtRandom());
+                playerData = CharacterFactory.BuildPlayer("Player", playerPosition);
             }
             else
             {
                 playerData = playerData with
                 {
-                    EntityData = playerData.EntityData with { Position = playerPosition.Value }
+                    EntityData = playerData.EntityData with { Position = playerPosition }
                 };
             }
 
@@ -69,7 +69,7 @@ namespace Model.Game
                     {
                         EntityData = character.EntityData with
                         {
-                            Position = FindBlankPositionFrom(playerPosition.Value,
+                            Position = FindBlankPositionFrom(playerPosition,
                                 position => !GetAllCharacterPositions().Contains(position))
                         }
                     };

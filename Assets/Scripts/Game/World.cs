@@ -62,8 +62,7 @@ namespace Model.Game
             else
             {
                 var sectionData = GetSectionData(mapId);
-                return new MapBuilder(Tilemap.Build(sectionData.Field), sectionData, mapId + 1,
-                    mapId > 1 ? mapId - 1 : null).Build();
+                return new MapBuilder(Tilemap.Build(sectionData.Field), sectionData, mapId + 1, mapId - 1).Build();
             }
         }
 
@@ -74,7 +73,7 @@ namespace Model.Game
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;
-            Vector2Int? initialPosition = null;
+            Vector2Int initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
@@ -83,8 +82,6 @@ namespace Model.Game
                     .ToList();
                 if (_activeMapId < mapId) // 下り階段から上り階段へ
                 {
-                    if (mapMemento.EventEntities.UpStairs == null)
-                        throw new InvalidOperationException("upstairs is null");
                     initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
                 }
                 else if (_activeMapId > mapId) // 上り階段から下り階段へ

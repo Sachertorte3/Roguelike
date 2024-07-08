@@ -24,7 +24,7 @@ namespace Model.Game
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
 
-        public MapBuilder(TilemapMemento tilemapData, SectionData data, int nextMapId, int? prevMapId)
+        public MapBuilder(TilemapMemento tilemapData, SectionData data, int nextMapId, int prevMapId)
         {
             _tilemap = new Tilemap(tilemapData);
             _characters = new List<CharacterMemento>();
@@ -40,7 +40,7 @@ namespace Model.Game
             Vector2Int? upStairsPosition = null;
 
             RectInt downStairsRoom = rooms.GetAtRandom();
-            RectInt? upStairsRoom = prevMapId.HasValue ? rooms.GetAtRandom() : null;
+            RectInt upStairsRoom = rooms.GetAtRandom();
 
             foreach (var room in rooms)
             {
@@ -66,9 +66,7 @@ namespace Model.Game
             }
             
             var downStairs = DownStairs.Build(downStairsPosition.Value, nextMapId);
-            var upStairs = prevMapId.HasValue
-                ? UpStairs.Build(upStairsPosition.Value, prevMapId.Value)
-                : null;
+            var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
         }

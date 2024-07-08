@@ -5,7 +5,7 @@ namespace Domain.Model.Map
     public record EventEntitiesMemento
     (
         DownStairsMemento DownStairs,
-        UpStairsMemento? UpStairs,
+        UpStairsMemento UpStairs,
         List<ChestMemento> Chests
     );
 }

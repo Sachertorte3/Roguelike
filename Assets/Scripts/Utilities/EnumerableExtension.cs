@@ -19,16 +19,16 @@ namespace Utilities
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
-            for (var y = rect.y; y < rect.y + rect.height; y++)
-                yield return new Vector2Int(x, y);
+                for (var y = rect.y; y < rect.y + rect.height; y++)
+                    yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                if (x * x + y * y <= radius * radius)
-                    yield return new Vector2Int(x, y) + center;
+                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                    if (x * x + y * y <= radius * radius)
+                        yield return new Vector2Int(x, y) + center;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
@@ -148,6 +148,13 @@ namespace Utilities
             {
                 collectionA.Add(item);
             }
+        }
+
+        public static List<T> TakeAndRemove<T>(this List<T> list, int count)
+        {
+            var result = list.Take(count).ToList();
+            list.RemoveAll(item => result.Contains(item));
+            return result;
         }
 
         public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()

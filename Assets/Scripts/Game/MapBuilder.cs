@@ -53,10 +53,12 @@ namespace Model.Game
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
 
-            foreach (var position in shopRoom.RectRange().GetAtRandom(2))
+            var positions = shopRoom.RectRange().GetAtRandom(3).ToList();
+            foreach (var position in positions.Take(2))
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
 
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, shopRoom.RectRange().GetAtRandom(), Random.value < data.ShineyChance);
+            var clerkPosition = positions.Last();
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, Random.value < data.ShineyChance);
             _characters.Add(clerk);
             return Shop.Build(shopRoom, clerk.EntityData, _items.ToList());
         }
@@ -75,28 +77,34 @@ namespace Model.Game
         {
             foreach (var room in rooms)
             {
-                AddCharactersToRoom(data, room);
-                AddItemsToRoom(data, room);
-                AddWeaponsToRoom(data, room);
-                AddChestsToRoom(data, room, chests);
+                var positions = room.RectRange().GetAtRandom(6).ToList();
+                var characterPositions = positions.TakeAndRemove(2);
+                var itemPositions = positions.TakeAndRemove(2);
+                var weaponPositions = positions.TakeAndRemove(1);
+                var chestPositions = positions.TakeAndRemove(1);
+
+                AddCharactersToRoom(data, room, characterPositions);
+                AddItemsToRoom(data, room, itemPositions);
+                AddWeaponsToRoom(data, room, weaponPositions);
+                AddChestsToRoom(data, room, chestPositions, chests);
             }
         }
 
-        private void AddCharactersToRoom(SectionData data, RectInt room)
+        private void AddCharactersToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
         {
-            foreach (var position in room.RectRange().GetAtRandom(2))
+            foreach (var position in positions)
                 _characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
         }
 
-        private void AddItemsToRoom(SectionData data, RectInt room)
+        private void AddItemsToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
         {
-            foreach (var position in room.RectRange().GetAtRandom(2))
+            foreach (var position in positions)
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
         }
 
-        private void AddWeaponsToRoom(SectionData data, RectInt room)
+        private void AddWeaponsToRoom(SectionData data, RectInt room, List<Vector2Int> positions)
         {
-            foreach (var position in room.RectRange().GetAtRandom(1))
+            foreach (var position in positions)
             {
                 var material = data.Materials.GetRandomItem();
                 var mold = data.WeaponMolds.GetRandomItem();
@@ -114,9 +122,9 @@ namespace Model.Game
             }
         }
 
-        private void AddChestsToRoom(SectionData data, RectInt room, List<ChestMemento> chests)
+        private void AddChestsToRoom(SectionData data, RectInt room, List<Vector2Int> positions, List<ChestMemento> chests)
         {
-            foreach (var position in room.RectRange().GetAtRandom(1))
+            foreach (var position in positions)
             {
                 var material = data.Materials.GetRandomItem();
                 var mold = data.WeaponMolds.GetRandomItem();

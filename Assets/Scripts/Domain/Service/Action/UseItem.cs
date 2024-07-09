@@ -6,8 +6,6 @@ namespace Domain.Service.Action
 {
     internal record UseItem(int ItemIndex, Direction8 Direction) : IAction
     {
-        private float score;
-
         public bool Doable(IActor actor, IMap world)
         {
             return actor.Inventory.GetItem(ItemIndex).EffectsOnUse;
@@ -20,8 +18,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap world)
         {
-            score = actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction, world);
-            return score;
+            return actor.Inventory.GetItem(ItemIndex).Evaluate(actor, actor.CurrentPosition, Direction, world);
         }
 
         public string Info()

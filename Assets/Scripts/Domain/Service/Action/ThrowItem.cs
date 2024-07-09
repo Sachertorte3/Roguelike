@@ -6,8 +6,6 @@ namespace Domain.Service.Action
 {
     internal record ThrowItem(int ItemIndex, Direction8 Direction) : IAction
     {
-        private float score;
-
         public bool Doable(IActor actor, IMap world)
         {
             return true;
@@ -20,8 +18,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap world)
         {
-            score = 0;
-            return score;
+            return 0;
         }
 
         public string Info()

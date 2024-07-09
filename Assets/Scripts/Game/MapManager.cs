@@ -10,6 +10,7 @@ using Domain.Model.Map;
 using Domain.Service;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Entities;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
@@ -105,12 +106,9 @@ namespace Model.Game
 
             var visibleArea = Player.Area.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
-            foreach (var character in CharacterManager.Characters)
-                character.SetVisiblity(visibleArea.Contains(character.Position.CurrentValue));
-            foreach (var item in ItemManager.Items)
-                item.SetVisiblity(visibleArea.Contains(item.CurrentPosition));
-            foreach (var eventEntity in EventEntities)
-                eventEntity.SetVisiblity(visibleArea.Contains(eventEntity.CurrentPosition));
+
+            foreach (var entity in Entities)
+                entity.SetVisiblity(visibleArea.Contains(entity.CurrentPosition));
         }
 
         public ICharacter Player => CharacterManager.Player;
@@ -130,9 +128,23 @@ namespace Model.Game
             Debug.Log("MapManager Disposed");
         }
 
-        public IObservableCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
+        public IReadOnlyCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
         public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
+        public IEnumerable<IEntity> Entities
+        {
+            get
+            {
+                foreach (var character in Characters)
+                    yield return character;
+
+                foreach (var item in Items)
+                    yield return item;
+
+                foreach (var eventEntity in EventEntities)
+                    yield return eventEntity;
+            }
+        }
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position)
         {
@@ -262,23 +274,11 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
-                _tilemap.SetTilesKnown(areaChanged.Message.AreaEntered, true);
+                var areaEntered = areaChanged.Message.NewArea.Except(areaChanged.Message.OldArea).ToHashSet();
+                _tilemap.SetTilesKnown(areaEntered, true);
 
-                foreach (var character in Characters)
-                    if (areaChanged.Message.AreaExited.Contains(character.Position.CurrentValue))
-                        character.SetVisiblity(false);
-                    else if (areaChanged.Message.AreaEntered.Contains(character.Position.CurrentValue))
-                        character.SetVisiblity(true);
-                foreach (var item in Items)
-                    if (areaChanged.Message.AreaExited.Contains(item.CurrentPosition))
-                        item.SetVisiblity(false);
-                    else if (areaChanged.Message.AreaEntered.Contains(item.CurrentPosition))
-                        item.SetVisiblity(true);
-                foreach (var eventEntity in EventEntities)
-                    if (areaChanged.Message.AreaExited.Contains(eventEntity.CurrentPosition))
-                        eventEntity.SetVisiblity(false);
-                    else if (areaChanged.Message.AreaEntered.Contains(eventEntity.CurrentPosition))
-                        eventEntity.SetVisiblity(true);
+                foreach (var entity in Entities)
+                    entity.SetVisiblity(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
             }).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>

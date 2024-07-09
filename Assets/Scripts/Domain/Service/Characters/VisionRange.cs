@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Message;
@@ -11,7 +12,7 @@ namespace Domain.Service.Characters
 {
     internal class VisionRange : IVisionRange
     {
-        private readonly ObservableHashSet<Vector2Int> _visibleArea = new();
+        private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
@@ -19,7 +20,7 @@ namespace Domain.Service.Characters
             position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition, world)));
         }
 
-        public IObservableCollection<Vector2Int> VisibleArea => _visibleArea;
+        public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
 
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
@@ -30,12 +31,9 @@ namespace Domain.Service.Characters
 
         private void ChangeVisibleArea(HashSet<Vector2Int> area)
         {
-            HashSet<Vector2Int> enterArea = new(area);
-            var exitArea = VisibleArea.ToHashSet();
-            exitArea.ExceptWith(area);
-            enterArea.ExceptWith(VisibleArea);
-            _visibleArea.SynchronizeWith(area);
-            _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, exitArea, enterArea));
+            var oldArea = _visibleArea;
+            _visibleArea = area;
+            _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, oldArea));
         }
 
         private HashSet<Vector2Int> Calc(Vector2Int position, IMap world)

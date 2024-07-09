@@ -1,13 +1,12 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Items;
 using Effect;
 using ObservableCollections;
 using UnityEngine;
 
-namespace Domain.Service
+namespace Domain.Model
 {
     public interface IMap : IPassableChecker, IEffectMap
     {

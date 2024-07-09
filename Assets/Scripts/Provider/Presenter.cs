@@ -12,7 +12,7 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(GameManager gameManager, SynchronizedEventEntityView _)
+        public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
         {
             LoggerInit();
             ObjectsManager.GetObjectsByType<SpriteView>();
@@ -37,27 +37,27 @@ namespace Provider
                 .SyncMode.FullSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.UnityEditorConsole(
-                    minLevel:LogLevel.Info,
-                    captureStackTrace:true);
+                    minLevel: LogLevel.Info,
+                    captureStackTrace: true);
 
         private static LoggerConfig DevelopmentConfiguration()
             => new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    absFileName:$"{UnityEngine.Application.persistentDataPath}/Logs/logging_dev/client_dev_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
-                    minLevel:LogLevel.Debug,
-                    captureStackTrace:true,
-                    outputTemplate:"{Timestamp} [{Level}] {Message}{NewLine}{Stacktrace}");
+                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging_dev/client_dev_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    minLevel: LogLevel.Debug,
+                    captureStackTrace: true,
+                    outputTemplate: "{Timestamp} [{Level}] {Message}{NewLine}{Stacktrace}");
 
         private static LoggerConfig ReleaseConfiguration()
             => new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    absFileName:$"{UnityEngine.Application.persistentDataPath}/Logs/logging/client_release_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
-                    minLevel:LogLevel.Info,
-                    captureStackTrace:false,
-                    outputTemplate:"{Timestamp} [{Level}] {Message}");
+                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging/client_release_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    minLevel: LogLevel.Info,
+                    captureStackTrace: false,
+                    outputTemplate: "{Timestamp} [{Level}] {Message}");
     }
 }

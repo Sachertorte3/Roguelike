@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
@@ -11,12 +10,11 @@ using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Items;
 using Domain.Model.Message;
-using Domain.Service.Entities;
 using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Service
+namespace Domain.Model
 {
     public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
         IActorOfEffect, ITargetOfEffect

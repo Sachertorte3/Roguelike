@@ -1,10 +1,9 @@
 ﻿using System;
-using Domain.Model;
 using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Service.Entities
+namespace Domain.Model
 {
     public interface IEntity : IDisposable
     {

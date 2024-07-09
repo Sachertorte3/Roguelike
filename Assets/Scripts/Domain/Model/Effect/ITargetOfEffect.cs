@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
-using Domain.Service.Entities;
 using UnityEngine;
 using Utilities;
 

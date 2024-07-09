@@ -13,6 +13,7 @@ using Domain.Service;
 using Domain.Service.Logs;
 using Domain.Model.Items;
 using Unity.Logging;
+using Domain.Model;
 
 namespace Model.Game
 {

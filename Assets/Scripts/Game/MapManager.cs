@@ -115,7 +115,7 @@ namespace Model.Game
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
-        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
+        public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
 

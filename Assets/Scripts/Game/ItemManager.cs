@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Items;
 using Domain.Model.Map;
-using Domain.Service;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;

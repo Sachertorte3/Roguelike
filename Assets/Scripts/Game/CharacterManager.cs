@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Service;
 using Domain.Service.Characters;

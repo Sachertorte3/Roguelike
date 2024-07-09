@@ -1,16 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Setting;
-using Domain.Service;
-using Domain.Service.Entities;
-using Domain.Service.Items;
 using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Utilities.ObjectsManager;
 using VContainer;
 using View;
 

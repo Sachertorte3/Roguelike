@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Action;
 using Domain.Service.Characters;
 using Utilities;

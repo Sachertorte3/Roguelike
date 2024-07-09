@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Message;
 using Domain.Service.Entities;

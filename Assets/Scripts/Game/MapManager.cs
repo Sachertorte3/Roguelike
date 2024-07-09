@@ -211,6 +211,13 @@ namespace Model.Game
             return result;
         }
 
+        public HashSet<Vector2Int> GetPassablePositionsInArea(IEnumerable<Vector2Int> area)
+        {
+            var result = TilemapViewer.GetAllPassablePositions();
+            result.IntersectWith(area);
+            return result;
+        }
+
         public bool IsPassable(Vector2Int position)
         {
             return IsMapPassable(position) && !GetAllEntityPositionsAt(EntityLayer.Middle).Contains(position);

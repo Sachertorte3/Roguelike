@@ -27,7 +27,7 @@ namespace Model.Game
             GameLog.Add("モンスターハウスだ！");
             for (var i = 0; i < 10; i++)
             {
-                mapManager.SpawnRandomEnemy(Rect.RectRange().GetAtRandom());
+                mapManager.SpawnRandomEnemy(mapManager.GetPassablePositionsInArea(Rect.RectRange()).GetAtRandom());
             }
         }
     }

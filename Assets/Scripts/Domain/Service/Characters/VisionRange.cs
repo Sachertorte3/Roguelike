@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Message;
 using ObservableCollections;

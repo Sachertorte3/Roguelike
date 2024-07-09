@@ -9,7 +9,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class UpStairs : IDisposable, ISerializable<UpStairsMemento>, IEventEntityAndIcon
+    public class UpStairs : IDisposable, ISerializable<UpStairsMemento>, IIconEventEntity
     {
         private int _destinationMapId;
         private Entity _entity;

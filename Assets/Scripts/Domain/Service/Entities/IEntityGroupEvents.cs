@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Domain.Model;
 using R3;
 
 namespace Domain.Service.Entities

@@ -7,6 +7,7 @@ using Unity.Logging;
 using Utilities;
 using Domain.Model.Characters;
 using Domain.Model.Action;
+using Domain.Model;
 
 namespace Domain.Service.Characters.Behavior
 {

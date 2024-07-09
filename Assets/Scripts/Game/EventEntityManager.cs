@@ -16,7 +16,7 @@ namespace Model.Game
         private readonly DownStairs _downStairs;
         private readonly List<Chest> _chests = new();
         private ObservableList<IEventEntity> _eventEntities = new();
-        private ObservableList<IEventEntityAndIcon> _eventEntitiesAndIcons = new();
+        private ObservableList<IIconEventEntity> _eventEntitiesAndIcons = new();
         public EventEntityEvents EventEntityEvents = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities)
@@ -50,7 +50,7 @@ namespace Model.Game
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
-        public IObservableCollection<IEventEntityAndIcon> EventEntitiesAndIcons => _eventEntitiesAndIcons;
+        public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => _eventEntitiesAndIcons;
 
         public void Add(Chest chest)
         {
@@ -63,9 +63,9 @@ namespace Model.Game
         public void Add(IEventEntity eventEntity)
         {
             _eventEntities.Add(eventEntity);
-            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            if (eventEntity is IIconEventEntity iconEventEntity)
             {
-                _eventEntitiesAndIcons.Add(eventEntityAndIcon);
+                _eventEntitiesAndIcons.Add(iconEventEntity);
             }
             EventEntityEvents.Add(eventEntity);
         }
@@ -80,7 +80,7 @@ namespace Model.Game
         public void Remove(IEventEntity eventEntity)
         {
             _eventEntities.Remove(eventEntity);
-            if (eventEntity is IEventEntityAndIcon eventEntityAndIcon)
+            if (eventEntity is IIconEventEntity eventEntityAndIcon)
             {
                 _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
             }

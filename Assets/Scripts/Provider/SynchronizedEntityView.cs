@@ -1,7 +1,7 @@
 #nullable enable
 using BidirectionalMap;
+using Domain.Model;
 using Domain.Model.Setting;
-using Domain.Service.Entities;
 using R3;
 using UnityEngine;
 using Utilities.ObjectsManager;

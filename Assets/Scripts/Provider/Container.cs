@@ -24,7 +24,7 @@ namespace Provider
             builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
-            builder.Register<SynchronizedEventEntityView>(Lifetime.Singleton);
+            builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.RegisterComponent(_bluePrint);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();

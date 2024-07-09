@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Characters;
 using UnityEngine;
 

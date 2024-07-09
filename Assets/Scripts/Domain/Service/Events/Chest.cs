@@ -10,7 +10,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Chest : ISerializable<ChestMemento>, IEventEntityAndIcon
+    public class Chest : ISerializable<ChestMemento>, IIconEventEntity
     {
         private Entity _entity;
         private ItemData _item;

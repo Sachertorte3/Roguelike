@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Model;
 using Domain.Service.Entities;
 using R3;
 

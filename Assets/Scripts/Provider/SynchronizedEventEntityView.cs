@@ -1,29 +1,24 @@
 ﻿#nullable enable
 using System;
-using BidirectionalMap;
-using Codice.Client.Commands;
-using Domain.Model.Setting;
-using Domain.Service.Entities;
-using Domain.Service.Events;
+using Domain.Model;
 using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Utilities.ObjectsManager;
 using VContainer;
 using View;
 
 namespace Provider
 {
-    public class SynchronizedEventEntityView : SynchronizedEntityView<IEventEntityAndIcon, EntityView>, IDisposable
+    public class SynchronizedIconEntityView : SynchronizedEntityView<IIconEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
         protected override EntityView GetEntityView(EntityView view) => view;
 
         [Inject]
-        public SynchronizedEventEntityView(World world, InputReceiver inputReceiver)
+        public SynchronizedIconEntityView(World world, InputReceiver inputReceiver)
         {
             _inputReceiver = inputReceiver;
 
@@ -42,18 +37,18 @@ namespace Provider
             _disposable.Dispose();
         }
 
-        ~SynchronizedEventEntityView()
+        ~SynchronizedIconEntityView()
         {
             Dispose();
         }
 
-        protected override void InitializeView(IEventEntityAndIcon eventEntity, EntityView entityView)
+        protected override void InitializeView(IIconEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.GetComponent<SpriteRenderer>().sprite = eventEntity.Icon;
         }
 
-        protected override void CleanupView(IEventEntityAndIcon item, EntityView view)
+        protected override void CleanupView(IIconEntity item, EntityView view)
         {
         }
     }

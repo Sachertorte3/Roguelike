@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using Domain.Model;
 using Domain.Model.Items;
 using UnityEngine;
 using Utilities;

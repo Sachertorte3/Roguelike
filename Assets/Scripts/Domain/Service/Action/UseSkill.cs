@@ -6,8 +6,6 @@ namespace Domain.Service.Action
 {
     internal record UseSkill(ISkill Skill, Direction8 Direction) : IAction
     {
-        private float score;
-
         public bool Doable(IActor actor, IMap world)
         {
             return true;
@@ -20,8 +18,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap world)
         {
-            score = Skill.Evaluate(actor, actor.CurrentPosition, Direction, world);
-            return score;
+            return Skill.Evaluate(actor, actor.CurrentPosition, Direction, world);
         }
 
         public string Info()

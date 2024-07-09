@@ -11,7 +11,7 @@ namespace Domain.Service
 {
     public interface IMap : IPassableChecker, IEffectMap
     {
-        public IObservableCollection<Vector2Int> VisibleArea { get; }
+        public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);

@@ -3,6 +3,5 @@ using UnityEngine;
 
 namespace Domain.Model.Message
 {
-    public record OnVisibleAreaChangedMessage(HashSet<Vector2Int> NewArea, HashSet<Vector2Int> AreaExited,
-        HashSet<Vector2Int> AreaEntered);
+    public record OnVisibleAreaChangedMessage(IReadOnlyCollection<Vector2Int> NewArea, IReadOnlyCollection<Vector2Int> OldArea);
 }

@@ -4,8 +4,6 @@ using Domain.Service;
 
 public class DoNothing : IAction
 {
-    private float score;
-
     public bool Doable(IActor actor, IMap world)
     {
         return true;
@@ -19,8 +17,7 @@ public class DoNothing : IAction
 
     public float Evaluate(IActor actor, IMap world)
     {
-        score = 0;
-        return score;
+        return 0;
     }
 
     public string Info()

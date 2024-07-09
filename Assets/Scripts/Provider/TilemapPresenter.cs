@@ -66,12 +66,14 @@ namespace Provider
                     _disposables.Add(mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(
                         visibleAreaChanged =>
                         {
-                            foreach (var position in visibleAreaChanged.Message.AreaEntered)
+                            var areaEntered = visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
+                            var areaExited = visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
+                            foreach (var position in areaEntered)
                             {
                                 tileMask.SetTileVisible(position);
                             }
 
-                            foreach (var position in visibleAreaChanged.Message.AreaExited)
+                            foreach (var position in areaExited)
                             {
                                 tileMask.SetTileTranslucent(position);
                             }

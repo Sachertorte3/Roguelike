@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Model.Setting;
 using Domain.Service;
 using Domain.Service.Characters;
+using Domain.Service.Entities;
 using Model.Game;
 using R3;
 using UnityEngine;
@@ -15,12 +16,13 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedCharacterView : SynchronizedView<ICharacter, CharacterView>
+    public class SynchronizedCharacterView : SynchronizedEntityView<ICharacter, CharacterView>
     {
         private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
-        private readonly InputReceiver _inputReceiver;
+        protected override InputReceiver _inputReceiver { get; init; }
         private readonly World _world;
+        protected override EntityView GetEntityView(CharacterView view) => view.GetComponent<EntityView>();
 
         [Inject]
         public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
@@ -67,20 +69,10 @@ namespace Provider
             characterView.transform.position = (Vector3Int)character.CurrentPosition;
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
-            var entityView = characterView.GetComponent<EntityView>();
-            entityView.Construct(_inputReceiver);
-            character.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
-            character.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             character.OnEffectSpawned.Subscribe(useSkill =>
                 _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
                     useSkill.Color, Settings.EffectDisplayTime.Value)
             ).AddTo(characterView);
-            Settings.MoveMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
-            Settings.DashMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
-
-            var spriteView = characterView.GetComponent<SpriteView>();
-            spriteView.RegisterComponent();
-            character.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             character.StatusManager.Conditions.SubscribeToAll(

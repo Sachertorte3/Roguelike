@@ -1,6 +1,9 @@
 ﻿#nullable enable
 using System;
+using BidirectionalMap;
+using Codice.Client.Commands;
 using Domain.Model.Setting;
+using Domain.Service.Entities;
 using Domain.Service.Events;
 using Model.Game;
 using R3;
@@ -13,10 +16,11 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedEventEntityView : SynchronizedView<IEventEntityAndIcon, EntityView>, IDisposable
+    public class SynchronizedEventEntityView : SynchronizedEntityView<IEventEntityAndIcon, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
-        private readonly InputReceiver _inputReceiver;
+        protected override InputReceiver _inputReceiver { get; init; }
+        protected override EntityView GetEntityView(EntityView view) => view;
 
         [Inject]
         public SynchronizedEventEntityView(World world, InputReceiver inputReceiver)
@@ -45,17 +49,8 @@ namespace Provider
 
         protected override void InitializeView(IEventEntityAndIcon eventEntity, EntityView entityView)
         {
-            entityView.Construct(_inputReceiver);
-            eventEntity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
-            eventEntity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
-
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.RegisterComponent();
-            spriteView.transform.position = (Vector3Int)eventEntity.CurrentPosition;
             spriteView.GetComponent<SpriteRenderer>().sprite = eventEntity.Icon;
-            eventEntity.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
 
         protected override void CleanupView(IEventEntityAndIcon item, EntityView view)

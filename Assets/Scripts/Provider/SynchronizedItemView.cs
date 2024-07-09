@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Domain.Model.Setting;
 using Domain.Service;
+using Domain.Service.Entities;
 using Domain.Service.Items;
 using Model.Game;
 using R3;
@@ -15,12 +16,13 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedItemView : SynchronizedView<IItemEntity, EntityView>, IDisposable
+    public class SynchronizedItemView : SynchronizedEntityView<IItemEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
-        private readonly InputReceiver _inputReceiver;
+        protected override InputReceiver _inputReceiver { get; init; }
         private readonly World _world;
+        protected override EntityView GetEntityView(EntityView view) => view;
 
         [Inject]
         public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
@@ -51,21 +53,13 @@ namespace Provider
 
         protected override void InitializeView(IItemEntity item, EntityView entityView)
         {
-            entityView.Construct(_inputReceiver);
-            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
-            item.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             item.OnEffectSpawned.Subscribe(useSkill =>
                     _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
                         useSkill.Color, Settings.EffectDisplayTime.Value))
                 .AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.RegisterComponent();
-            spriteView.transform.position = (Vector3Int)item.CurrentPosition;
             spriteView.GetComponent<SpriteRenderer>().sprite = item.Icon;
-            item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
 
         protected override void CleanupView(IItemEntity item, EntityView view)

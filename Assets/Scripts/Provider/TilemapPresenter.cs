@@ -46,20 +46,26 @@ namespace Provider
                         }
                     }
 
-                    _disposables.Add(mapLoaded.TilemapViewer.OnTileChanged.Subscribe(context =>
+                    _disposables.Add(mapLoaded.TilemapViewer.OnTilesChanged.Subscribe(context =>
                     {
-                        SetTile(tileView, context.tile, context.position, mapLoaded.ShopRect);
+                        foreach (var (position, tile) in context)
+                        {
+                            SetTile(tileView, tile, position, mapLoaded.ShopRect);
+                        }
                     }));
                     // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
-                    _disposables.Add(mapLoaded.TilemapViewer.OnTileKnownChanged.Subscribe(context =>
+                    _disposables.Add(mapLoaded.TilemapViewer.OnTilesKnownChanged.Subscribe(context =>
                     {
-                        if (context.tile.IsKnown)
+                        foreach (var (position, tile) in context)
                         {
-                            tileMask.SetTileVisible(context.position);
-                        }
-                        else
-                        {
-                            tileMask.SetTileTransparent(context.position);
+                            if (tile.IsKnown)
+                            {
+                                tileMask.SetTileVisible(position);
+                            }
+                            else
+                            {
+                                tileMask.SetTileTransparent(position);
+                            }
                         }
                     }));
                     // HACK: Here.

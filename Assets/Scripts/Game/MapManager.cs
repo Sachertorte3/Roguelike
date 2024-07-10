@@ -281,8 +281,7 @@ namespace Model.Game
 
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
-                var areaEntered = areaChanged.Message.NewArea.Except(areaChanged.Message.OldArea).ToHashSet();
-                _tilemap.SetTilesKnown(areaEntered, true);
+                _tilemap.SetTilesKnown(areaChanged.Message.NewArea, true);
 
                 foreach (var entity in Entities)
                     entity.SetVisiblity(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
@@ -337,11 +336,21 @@ namespace Model.Game
 
                 positionChanged.Item.SetVisiblity(Player.IsVisible(positionChanged.Message.Position));
             }).AddTo(_disposables);
+
+            _tilemap.OnTilesChanged.Subscribe(tileChanged =>
+            {
+                CharacterManager.Characters.ForEach(character => character.Area.Refresh(character.CurrentPosition, this));
+            }).AddTo(_disposables);
         }
 
         ~MapManager()
         {
             Dispose();
+        }
+
+        public void RemoveWalls(IEnumerable<Vector2Int> positions)
+        {
+            _tilemap.RemoveWalls(positions);
         }
 
         public HashSet<Vector2Int> GetAllItemPositions()

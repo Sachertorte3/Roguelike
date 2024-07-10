@@ -7,8 +7,8 @@ namespace Domain.Service.Map
 {
     public interface ITilemapViewer : ISerializable<TilemapMemento>
     {
-        public Observable<(Vector2Int position, TileData tile)> OnTileChanged { get; }
-        public Observable<(Vector2Int position, TileData tile)> OnTileKnownChanged { get; }
+        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged { get; }
+        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesKnownChanged { get; }
         public RectInt Rect { get; }
         public bool IsPassable(Vector2Int position);
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles();

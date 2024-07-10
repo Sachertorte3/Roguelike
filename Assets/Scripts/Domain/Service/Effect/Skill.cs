@@ -98,6 +98,7 @@ namespace Domain.Service.Effect
 
                     _effect.Apply(actor, target, map);
                 });
+            _effect.Apply(actor, area, map);
             return UniTask.CompletedTask;
         }
 

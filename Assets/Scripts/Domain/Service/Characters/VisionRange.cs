@@ -25,7 +25,7 @@ namespace Domain.Service.Characters
 
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
-        public void Refrash(Vector2Int position, IMap world)
+        public void Refresh(Vector2Int position, IMap world)
         {
             ChangeVisibleArea(Calc(position, world));
         }

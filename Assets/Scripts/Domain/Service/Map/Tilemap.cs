@@ -16,8 +16,8 @@ namespace Domain.Service.Map
     public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemapViewer
     {
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
-        private readonly Subject<(Vector2Int, TileData)> _onTileChanged = new();
-        private readonly Subject<(Vector2Int, TileData)> _onTileKnownChanged = new();
+        private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
+        private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         public readonly int Height;
         public readonly int Width;
@@ -30,16 +30,19 @@ namespace Domain.Service.Map
                 .ToDictionary(x => x, x => memento.Tiles[x.x, x.y]));
 
             _tiles.ObserveReplace()
-                .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
+                .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
 
-            OnTileChanged.Subscribe(changeTile =>
+            OnTilesChanged.Subscribe(changeTiles =>
             {
-                if (changeTile.tile.IsPassable())
-                    _allPassablePositionsSet.Add(changeTile.position);
-                else
-                    _allPassablePositionsSet.Remove(changeTile.position);
-                ResetMask(changeTile.position);
+                foreach (var (position, tileData) in changeTiles)
+                {
+                    if (tileData.IsPassable())
+                        _allPassablePositionsSet.Add(position);
+                    else
+                        _allPassablePositionsSet.Remove(position);
+                    ResetMask(position);
+                }
             });
 
             Rooms = new ReadOnlyCollection<RectInt>(memento.Rooms);
@@ -52,7 +55,7 @@ namespace Domain.Service.Map
             _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
                 .ToDictionary(x => x, _ => new TileData(TileCategory.Blank, false)));
             _tiles.ObserveReplace()
-                .Subscribe(context => _onTileChanged.OnNext((context.NewValue.Key, context.NewValue.Value)));
+                .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
         }
 
         public ReadOnlyCollection<RectInt> Rooms { get; init; }
@@ -61,8 +64,8 @@ namespace Domain.Service.Map
 
         public void Dispose()
         {
-            _onTileChanged.Dispose();
-            _onTileKnownChanged.Dispose();
+            _onTilesChanged.Dispose();
+            _onTilesKnownChanged.Dispose();
         }
 
         public TilemapMemento Serialize()
@@ -79,8 +82,8 @@ namespace Domain.Service.Map
             );
         }
 
-        public Observable<(Vector2Int position, TileData tile)> OnTileChanged => _onTileChanged;
-        public Observable<(Vector2Int position, TileData tile)> OnTileKnownChanged => _onTileKnownChanged;
+        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
+        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesKnownChanged => _onTilesKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
 
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
@@ -96,11 +99,6 @@ namespace Domain.Service.Map
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
             return new HashSet<Vector2Int>(_allPassablePositionsSet);
-        }
-
-        public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
-        {
-            foreach (var position in positions) SetTileKnown(position, isKnown);
         }
 
         public static TilemapMemento Build(FieldBluePrint bluePrint)
@@ -150,10 +148,24 @@ namespace Domain.Service.Map
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
         }
 
-        public void SetTileKnown(Vector2Int position, bool isKnown)
+        public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
         {
-            Get(position).SetKnown(isKnown);
-            _onTileKnownChanged.OnNext((position, Get(position)));
+            var changedPositions = positions.Select(position => (position, Get(position))).Where(pair => pair.Item2.IsKnown != isKnown);
+            foreach (var (_, tile) in changedPositions)
+            {
+                tile.SetKnown(isKnown);
+            }
+            _onTilesKnownChanged.OnNext(changedPositions);
+        }
+
+        public void RemoveWalls(IEnumerable<Vector2Int> positions)
+        {
+            var changedPositions = positions.Where(position => Get(position).TileType == TileCategory.Wall);
+            foreach (var position in changedPositions)
+            {
+                _tiles[position] = new TileData(TileCategory.Floor, false);
+            }
+            _onTilesChanged.OnNext(changedPositions.Select(position => (position, Get(position))));
         }
 
         public void ResetMask(Vector2Int position)

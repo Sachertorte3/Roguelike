@@ -24,7 +24,7 @@ namespace Model.Game
 
         protected override void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
-            GameLog.Add("モンスターハウスだ！");
+            GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
                 mapManager.SpawnRandomEnemy(mapManager.GetPassablePositionsInArea(Rect.RectRange()).GetAtRandom());

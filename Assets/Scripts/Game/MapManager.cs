@@ -312,7 +312,7 @@ namespace Model.Game
                     {
                         if (positionChanged.Character.TryPickUp(item.Item))
                         {
-                            GameLog.Add($"{Player.Name}: {item.Item.Name}を拾った");
+                            GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
                         }
                         else
                         {
@@ -394,11 +394,11 @@ namespace Model.Game
             var item = Player.Inventory.GetItem(inventoryIndex);
             if (item != null)
             {
-                GameLog.Add($"{Player.Name}: {item.Name}を捨てた.");
+                GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
                 var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
                 if (itemEntity != null)
                 {
-                    GameLog.Add($"{Player.Name}: {itemEntity.Item.Name}を拾った");
+                    GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
                 }
 
                 Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
@@ -413,8 +413,10 @@ namespace Model.Game
         /// <returns></returns>
         public IEnumerable<ICharacter> GetFollowingCharacters()
         {
-            return CharacterManager.Characters.Where(character =>
-                character.IsAlly(Player) && character.IsVisible(Player.CurrentPosition));
+            return CharacterManager.Characters
+                .Where(character => character != Player)
+                .Where(character =>character.IsAlly(Player))
+                .Where(character => character.IsVisible(Player.CurrentPosition));
         }
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)

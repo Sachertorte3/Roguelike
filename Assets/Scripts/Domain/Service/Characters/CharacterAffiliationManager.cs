@@ -33,6 +33,11 @@ namespace Domain.Service.Characters
 
         public bool IsAlly(IAffiliation other)
         {
+            if (other.Id == Id)
+            {
+                return true;
+            }
+
             var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
 
             return totalAffection > AffectionAllyThreshold;
@@ -40,6 +45,11 @@ namespace Domain.Service.Characters
 
         public bool IsEnemy(IAffiliation other)
         {
+            if (other.Id == Id)
+            {
+                return false;
+            }
+
             var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
 
             return totalAffection < AffectionEnemyThreshold;

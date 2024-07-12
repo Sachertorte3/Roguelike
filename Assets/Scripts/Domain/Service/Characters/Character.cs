@@ -77,7 +77,14 @@ namespace Domain.Service.Characters
         public CharacterState State { get; set; } = CharacterState.Think;
         public int Money => _money;
 
-        public string Name => _name;
+        public string GetName(IHasAffiliation player)
+        {
+            if (Affiliation.IsAlly(player.Affiliation))
+                return _name.SetColored(Colors.Green);
+            else if (Affiliation.IsEnemy(player.Affiliation))
+                return _name.SetColored(Colors.Red);
+            return _name.SetColored(Colors.SkyBlue);
+        }
 
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
@@ -162,7 +169,7 @@ namespace Domain.Service.Characters
 
             if (item.SkillOnUse != null)
             {
-                GameLog.Add($"{_name}:{item.Name}を使った");
+                GameLog.Add($"<color=green>{_name}</color>は{item.Name}を使った");
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
@@ -187,7 +194,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
-            GameLog.Add($"{_name}:{item.Name}を投げた");
+            GameLog.Add($"<color=blue>{_name}</color>は{item.Name}を投げた");
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

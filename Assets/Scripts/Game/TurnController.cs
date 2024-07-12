@@ -40,12 +40,12 @@ namespace Model.Game
                     character.UpdateTurn(map);
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
-                        Log.Debug($"[Turn] {character.Name} think...");
+                        Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
                         await character.DoNextAction(map, _input);
                     }
                     else
                     {
-                        Log.Debug($"[Turn] {character.Name} cannot act.");
+                        Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
                     }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)

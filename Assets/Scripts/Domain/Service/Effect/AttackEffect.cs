@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -14,6 +15,7 @@ namespace Domain.Service.Effect
     public class AttackEffect : IEffect
     {
         [MinValue(1)] public int Power;
+        [Range(0, 1)] public float CriticalRate;
         public List<AdditionalConditionData> AdditionalConditions = new();
 
         public AttackEffect(int power, List<AdditionalConditionData> additionalConditions)
@@ -28,7 +30,16 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            await target.LoseHp(Formula.Calc(actor, Power));
+            if (Random.value < CriticalRate)
+            {
+                GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{Power * 2}のダメージ</color>");
+                await target.LoseHp(Formula.Calc(actor, Power * 2));
+            }
+            else
+            {
+                GameLog.Add($"{target.GetName(map.Player)}に{Power}のダメージ");
+                await target.LoseHp(Formula.Calc(actor, Power));
+            }
             foreach (var condition in AdditionalConditions)
             {
                 if (Random.value < condition.Probability)

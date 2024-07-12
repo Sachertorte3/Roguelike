@@ -62,16 +62,16 @@ namespace Domain.Service.Characters.Behavior
                     else //ターゲットはいるが敵でも味方でもない
                     {
                         Log.Debug(
-                            $"[Think] Stopped targeting because the target {_lastTarget.Name} is neither friend nor enemy.");
+                            $"[Think] Stopped targeting because the target {_lastTarget.GetName(world.Player)} is neither friend nor enemy.");
                         if (visibleEnemies.Any()) //他に敵がいる
                         {
-                            Log.Debug($"[Think] Change target to Enemy {_lastTarget.Name}.");
+                            Log.Debug($"[Think] Change target to Enemy {_lastTarget.GetName(world.Player)}.");
                             _lastTarget = visibleEnemies.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
                         else if (visibleLeaders.Any()) //他にリーダーがいる
                         {
-                            Log.Debug($"[Think] Change target to Leader {_lastTarget.Name}.");
+                            Log.Debug($"[Think] Change target to Leader {_lastTarget.GetName(world.Player)}.");
                             _lastTarget = visibleLeaders.First();
                             _lastTargetPosition = _lastTarget.CurrentPosition;
                         }
@@ -84,31 +84,31 @@ namespace Domain.Service.Characters.Behavior
                 }
                 else //ターゲットを見失った
                 {
-                    Log.Debug($"[Think] Target {_lastTarget.Name} is out of sight.");
+                    Log.Debug($"[Think] Target {_lastTarget.GetName(world.Player)} is out of sight.");
                     if (visibleEnemies.Any()) //他に敵がいる
                     {
                         _lastTarget = visibleEnemies.First();
-                        Log.Debug($"[Think] Change target to Enemy {_lastTarget.Name}.");
+                        Log.Debug($"[Think] Change target to Enemy {_lastTarget.GetName(world.Player)}.");
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
                     else if (visibleLeaders.Any()) //他にリーダーがいる
                     {
                         _lastTarget = visibleLeaders.First();
-                        Log.Debug($"[Think] Change target to Leader {_lastTarget.Name}.");
+                        Log.Debug($"[Think] Change target to Leader {_lastTarget.GetName(world.Player)}.");
                         _lastTargetPosition = _lastTarget.CurrentPosition;
                     }
                     else //他に敵もリーダーもいない
                     {
                         if (character.CurrentPosition == _lastTargetPosition) //ターゲットの最後にいた座標にいる
                         {
-                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.Name}.");
+                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.GetName(world.Player)}.");
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
                         else if (!world.IsReachable(character.CurrentPosition,
                                      _lastTarget.CurrentPosition)) //ターゲットの最後にいた座標にはたどり着けない
                         {
-                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.Name}.");
+                            Log.Debug($"[Think] Abandoned pursuit of target {_lastTarget.GetName(world.Player)}.");
                             _lastTarget = null;
                             _lastTargetPosition = null;
                         }
@@ -120,13 +120,13 @@ namespace Domain.Service.Characters.Behavior
                 if (visibleEnemies.Any()) //敵がいる
                 {
                     _lastTarget = visibleEnemies.First();
-                    Log.Debug($"[Think] Discover Enemy {_lastTarget.Name}.");
+                    Log.Debug($"[Think] Discover Enemy {_lastTarget.GetName(world.Player)}.");
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
                 else if (visibleLeaders.Any()) //他にリーダーがいる
                 {
                     _lastTarget = visibleLeaders.First();
-                    Log.Debug($"[Think] Discover Leader {_lastTarget.Name}.");
+                    Log.Debug($"[Think] Discover Leader {_lastTarget.GetName(world.Player)}.");
                     _lastTargetPosition = _lastTarget.CurrentPosition;
                 }
                 else //敵はいない

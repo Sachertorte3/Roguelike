@@ -7,6 +7,7 @@ namespace Domain.Model.Effect
 {
     public interface ITargetOfEffect : IEntity
     {
+        public string GetName(IHasAffiliation player);
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
 

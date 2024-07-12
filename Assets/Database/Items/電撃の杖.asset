@@ -51,4 +51,5 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 3
+        CriticalRate: 0
         AdditionalConditions: []

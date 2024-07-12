@@ -124,9 +124,9 @@ namespace Model.Game
         {
             if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
             {
-                GameLog.Add($"{mapManager.Player.Name}は{GetSalePrice(mapManager)}G受け取った");
+                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
-                GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager)}G支払った");
+                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
                 var purchaseItems = GetMissingItems(mapManager);
                 RemoveMark(mapManager, purchaseItems);
@@ -134,7 +134,7 @@ namespace Model.Game
             }
             else
             {
-                GameLog.Add($"{mapManager.Player.Name}は{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G持っていなかった");
+                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
             }
         }
 
@@ -143,7 +143,7 @@ namespace Model.Game
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
-                GameLog.Add("どろぼう！");
+                GameLog.Add("<color=red>どろぼう！</color>");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
                 MarkItemsAsStolen(mapManager);
                 CanExecute = false;

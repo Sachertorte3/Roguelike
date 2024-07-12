@@ -19,6 +19,7 @@ namespace Domain.Model.Map
             {
                 TileCategory.Floor => true,
                 TileCategory.Wall => false,
+                TileCategory.UnbreakableWall => false,
                 TileCategory.Blank => false,
                 _ => throw new InvalidEnumArgumentException()
             };

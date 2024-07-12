@@ -104,17 +104,26 @@ namespace Domain.Service.Map
         public static TilemapMemento Build(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);
-            var tiles = new TileData[field.Grid.Size.x, field.Grid.Size.y];
-            var rooms = field.Rooms.Select(room => room.Rect);
-            for (var x = 0; x < field.Grid.Size.x; x++)
+            var tiles = new TileData[field.Grid.Size.x+2, field.Grid.Size.y+2];
+            var rooms = field.Rooms.Select(room => room.Rect).Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
+
+            for (var x = -1; x < field.Grid.Size.x + 1; x++)
             {
-                for (var y = 0; y < field.Grid.Size.y; y++)
+                for (var y = -1; y < field.Grid.Size.y + 1; y++)
                 {
-                    var mapChipType = field.Grid[x, y];
-                    var tileType = mapChipType == (int)MapChipType.Wall
-                        ? TileCategory.Wall
-                        : TileCategory.Floor;
-                    tiles[x, y] = new TileData(tileType, false);
+                    TileCategory tileType;
+                    if (x == -1 || y == -1 || x == field.Grid.Size.x || y == field.Grid.Size.y)
+                    {
+                        tileType = TileCategory.UnbreakableWall;
+                    }
+                    else
+                    {
+                        var mapChipType = field.Grid[x, y];
+                        tileType = mapChipType == (int)MapChipType.Wall
+                            ? TileCategory.Wall
+                            : TileCategory.Floor;
+                    }
+                    tiles[x+1, y+1] = new TileData(tileType, false);
                 }
             }
 
@@ -128,14 +137,13 @@ namespace Domain.Service.Map
 
         public bool IsPositionInsideMap(Vector2Int position)
         {
-            return position.x < 0 || position.x >= Width || position.y < 0 || position.y >= Height;
+            return position.x >= 0 && position.x < Width && position.y >= 0 && position.y < Height;
         }
 
         public TileData Get(Vector2Int position)
         {
-            if (IsPositionInsideMap(position))
+            if (!IsPositionInsideMap(position))
             {
-                Log.Fatal($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
                 throw new ArgumentOutOfRangeException(
                     $"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
             }

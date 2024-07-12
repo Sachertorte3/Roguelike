@@ -26,6 +26,30 @@ namespace Provider
                         SetTile(tileView, tileData, position, mapLoaded.ShopRect);
                     }
 
+                    var mapSize = mapLoaded.TilemapViewer.Rect;
+                    Debug.Log(mapSize);
+                    var unbreakableWall = new TileData(TileCategory.UnbreakableWall, false);
+                    for (int x = mapSize.x-1; x <= mapSize.x + mapSize.width; x++)
+                    {
+                        tileView.SetUnbreakableWall(new Vector2Int(x, -1));
+                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height));
+                    }
+                    for (int y = mapSize.y-1; y <= mapSize.y + mapSize.height; y++)
+                    {
+                        tileView.SetUnbreakableWall(new Vector2Int(-1, y));
+                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y));
+                    }
+                    for (int x = mapSize.x-1; x <= mapSize.x + mapSize.width; x++)
+                    {
+                        tileMask.SetTileTransparent(new Vector2Int(x, -1));
+                        tileMask.SetTileTransparent(new Vector2Int(x, mapSize.y + mapSize.height));
+                    }
+                    for (int y = mapSize.y-1; y <= mapSize.y + mapSize.height; y++)
+                    {
+                        tileMask.SetTileTransparent(new Vector2Int(-1, y));
+                        tileMask.SetTileTransparent(new Vector2Int(mapSize.x + mapSize.width, y));
+                    }
+
                     foreach (var (position, tileData) in mapLoaded.TilemapViewer.GetAllTiles())
                     {
                         // HACK: Separating this due to a bug when not separated
@@ -104,6 +128,9 @@ namespace Provider
             {
                 case TileCategory.Wall:
                     tileView.SetWall(position);
+                    break;
+                case TileCategory.UnbreakableWall:
+                    tileView.SetUnbreakableWall(position);
                     break;
                 case TileCategory.Floor:
                     if (shop.HasValue && shop.Value.Contains(position))

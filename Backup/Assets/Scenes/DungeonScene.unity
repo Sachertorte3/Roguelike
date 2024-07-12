@@ -751,7 +751,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 0fa36890e9f0af64794e43460e689a16, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0
   m_Pitch: 1
@@ -865,6 +865,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 883410307}
+  _normalBGM: {fileID: 8300000, guid: 0fa36890e9f0af64794e43460e689a16, type: 3}
+  _stolenBGM: {fileID: 8300000, guid: a6b3442616705ec47bb67d3911a3b5f9, type: 3}
 --- !u!224 &897980653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2055982679562989546, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}

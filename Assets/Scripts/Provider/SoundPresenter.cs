@@ -18,6 +18,11 @@ namespace Provider
             Settings.SEVolume.SubscribeToAll(volume => seManager.SetVolume(volume / 100f));
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
+                    bgmManager.NormalBGM();
+                    _disposable.Add(map.OnStolen.Subscribe(_ =>
+                    {
+                        bgmManager.StolenBGM();
+                    }));
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnPickUpItem.Subscribe(itemChanged =>
                     {
                         seManager.PickupSE();

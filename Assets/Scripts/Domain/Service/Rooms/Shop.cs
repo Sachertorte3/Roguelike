@@ -22,6 +22,8 @@ namespace Model.Game
         public readonly Clerk Clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);
         private HashSet<ShopItemCache> _shopItems = new HashSet<ShopItemCache>();
+        private Subject<Unit> _onStolen = new Subject<Unit>();
+        public Observable<Unit> OnStolen => _onStolen;
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
@@ -144,7 +146,8 @@ namespace Model.Game
                 GameLog.Add("どろぼう！");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
                 MarkItemsAsStolen(mapManager);
-                //CanExecute = false;
+                CanExecute = false;
+                _onStolen.OnNext(Unit.Default);
             }
         }
 

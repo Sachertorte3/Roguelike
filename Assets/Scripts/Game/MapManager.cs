@@ -36,6 +36,7 @@ namespace Model.Game
         private List<IEventArea> _eventAreas = new();
         private MonsterHouse? _monsterHouse;
         private Shop? _shop;
+        public Observable<Unit>? OnStolen => _shop?.OnStolen;
         public RectInt? ShopRect => _shop?.Rect;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,

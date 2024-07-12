@@ -927,6 +927,7 @@ MonoBehaviour:
   _tilemap: {fileID: 986205760}
   _tiles:
     Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
+    UnbreakableWall: {fileID: 11400000, guid: a2d497af8a8a25c4c858f92cf8e6d084, type: 2}
     Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
 --- !u!483693784 &986205759

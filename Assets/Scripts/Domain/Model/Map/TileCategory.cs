@@ -4,6 +4,7 @@
     {
         Floor,
         Wall,
+        UnbreakableWall,
         Blank
     }
 }

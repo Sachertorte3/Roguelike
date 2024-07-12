@@ -18,6 +18,11 @@ namespace View
             SetTile(position, _tiles.Wall);
         }
 
+        public void SetUnbreakableWall(Vector2Int position)
+        {
+            SetTile(position, _tiles.Wall);
+        }
+
         public void SetFloor(Vector2Int position)
         {
             SetTile(position, _tiles.Floor);

@@ -78,12 +78,12 @@ namespace Model.Game
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
 
-            var positions = shopRoom.RectRange().GetAtRandom(3).ToList();
-            foreach (var position in positions.Take(2))
-                _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+            var positions = shopRoom.RectRange().GetAtRandom(6).ToList();
+            foreach (var position in positions.Take(5))
+                _items.Add(ItemFactory.Build(position, new Item(data.ShopItems.GetRandomItem())));
 
             var clerkPosition = positions.Last();
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, Random.value < data.SleepChance, Random.value < data.ShineyChance);
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, false, false);
             _characters.Add(clerk);
             return Shop.Build(shopRoom, clerk.EntityData, _items.ToList());
         }

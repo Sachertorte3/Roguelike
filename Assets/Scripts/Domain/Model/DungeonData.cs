@@ -22,12 +22,13 @@ namespace Domain.Model
             [Range(0, 1)] public float ShopChance = 0.1f;
             [Range(0, 1)] public float MonsterHouseChance = 0.1f;
             [Required] public FieldBluePrint Field;
-            [SerializeField] public RarityWeightTable<ItemData> Items;
-            [SerializeField] public Table<EnemyData> Enemies;
-            [Required] public EnemyData Clerk;
-            [SerializeField] public Table<MaterialData> Materials;
-            [SerializeField] public Table<WeaponMold> WeaponMolds;
-            [SerializeField] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
+            public RarityWeightTable<ItemData> Items;
+            [ShowIf("@ShopChance > 0")] public RarityWeightTable<ItemData> ShopItems;
+            [ShowIf("@ShopChance > 0"), Required] public EnemyData Clerk;
+            public Table<EnemyData> Enemies;
+            public Table<MaterialData> Materials;
+            public Table<WeaponMold> WeaponMolds;
+            [ShowIf("@PrefixChance > 0")]public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         }
     }
 }

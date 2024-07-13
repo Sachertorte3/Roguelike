@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 2
   IsBoss: 0
   Hp: 3
-  Aggression: 4
+  Aggression: 1
   WanderAround: 0
   Skills:
   - Area:
@@ -32,6 +32,7 @@ MonoBehaviour:
       RemoveByDamage: 0
       AcceptableDamage: 0
       Probability: 0
+      RemoveByEnemyNearby: 0
     Probability: 0.2
     Condition:
       rid: 4425516923575599112
@@ -48,7 +49,8 @@ MonoBehaviour:
     - rid: 4425516923575599110
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 8
+        CriticalRate: 1
         AdditionalConditions: []
     - rid: 4425516923575599112
       type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}

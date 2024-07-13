@@ -27,19 +27,19 @@ namespace View
             text.transform.position = position + new Vector2(0, 0.5f);
             if (percentageFromMaxHP > 100)
             {
-                text.fontSize = 0.6f;
+                text.fontSize = 1f;
             }
             else if (percentageFromMaxHP > 25)
             {
-                text.fontSize = 0.5f;
+                text.fontSize = 0.8f;
             }
             else if (percentageFromMaxHP > 10)
             {
-                text.fontSize = 0.4f;
+                text.fontSize = 0.7f;
             }
             else
             {
-                text.fontSize = 0.3f;
+                text.fontSize = 0.5f;
             }
 
             text.color = color;

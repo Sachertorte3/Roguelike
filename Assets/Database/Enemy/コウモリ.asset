@@ -13,27 +13,32 @@ MonoBehaviour:
   m_Name: "\u30B3\u30A6\u30E2\u30EA"
   m_EditorClassIdentifier: 
   Name: "\u30B3\u30A6\u30E2\u30EA"
+  Group: 1
+  IsBoss: 0
   Hp: 3
-  CharacterType:
-    rid: 6064254728247705600
   Aggression: 1
+  WanderAround: 1
   Skills:
-  - Position:
-      rid: 4425516923575599119
-    Area:
+  - Area:
       rid: 4425516923575599109
     Effect:
       rid: 4425516923575599110
+    Position:
+      rid: 4425516923575599119
+    Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
   AdditionalConditions:
-  - Condition:
-      rid: 4425516923575599112
-    RemovalCondition:
+  - RemovalCondition:
       RemoveByElapsedTurn: 1
       Duration: 3
       RemoveByDamage: 0
       AcceptableDamage: 0
       Probability: 0
+      RemoveByEnemyNearby: 0
     Probability: 0.2
+    Condition:
+      rid: 4425516923575599112
+  CharacterType:
+    rid: 6064254728247705600
   references:
     version: 2
     RefIds:
@@ -46,10 +51,14 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 1
+        CriticalRate: 0
+        AdditionalConditions: []
     - rid: 4425516923575599112
       type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 
     - rid: 4425516923575599119
       type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+      data: 
     - rid: 6064254728247705600
       type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

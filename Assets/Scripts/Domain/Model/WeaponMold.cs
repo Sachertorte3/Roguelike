@@ -18,6 +18,7 @@ namespace Domain.Model
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(1)] public int UsageLimit;
         [Required] [SerializeReference] public IArea Area;
+        [Required] public string Log = "は[Item]を振った";
 #if UNITY_EDITOR
         private void OnValidate()
         {

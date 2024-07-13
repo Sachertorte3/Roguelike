@@ -13,12 +13,14 @@ namespace Domain.Model
         [SerializeReference] [Required] public IArea Area;
         [SerializeReference] [Required] public IEffect Effect;
         [SerializeReference] [Required] public IEffectPosition Position;
+        [Required] public string Log = "は行動した";
 
-        public SkillData(IEffectPosition position, IArea area, IEffect effect)
+        public SkillData(IEffectPosition position, IArea area, IEffect effect, string log)
         {
             Position = position;
             Area = area;
             Effect = effect;
+            Log = log;
         }
 
         public string Info()

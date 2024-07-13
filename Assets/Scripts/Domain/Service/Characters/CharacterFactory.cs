@@ -29,7 +29,7 @@ namespace Domain.Service.Characters
                 new[]
                 {
                     new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>()))).Serialize()
+                        new AttackEffect(1, new List<AdditionalConditionData>()), "は殴りかかった")).Serialize()
                 },
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),

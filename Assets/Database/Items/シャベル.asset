@@ -25,6 +25,7 @@ MonoBehaviour:
       rid: 8824446334317363257
     Position:
       rid: 4425516923575599123
+    Log: "\u306F\u58C1\u3092\u6398\u3063\u305F"
   SkillOnThrow:
     Area:
       rid: -2

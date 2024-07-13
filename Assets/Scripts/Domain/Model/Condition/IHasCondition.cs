@@ -10,6 +10,8 @@ namespace Domain.Model.Condition
         public void RemoveMaxHpValue(float value);
         public void RemoveMaxHpMultiplier(float value);
         public void RemoveViewRangeMultiplier(float value);
+        public void AddClairvoyantFlags();
+        public void RemoveClairvoyantFlags();
         public UniTask<int> LoseHp(int value);
     }
 }

@@ -83,7 +83,7 @@ namespace Domain.Service.Characters
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(character, character.OnDestroyed.Select(_ => new OnDestroyedMessage()));
             _events.Add(character, character.OnEffectSpawned);
-            _events.Add(character, character.Area.OnVisibleAreaChanged);
+            _events.Add(character, character.VisionRange.OnVisibleAreaChanged);
             _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
             _events.Add(character,
                 character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));

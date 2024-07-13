@@ -102,7 +102,7 @@ namespace Model.Game
                 _eventAreas.Add(_shop);
             }
 
-            var visibleArea = Player.Area.VisibleArea;
+            var visibleArea = Player.VisionRange.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
 
             foreach (var entity in Entities)
@@ -126,7 +126,7 @@ namespace Model.Game
             Debug.Log("MapManager Disposed");
         }
 
-        public IReadOnlyCollection<Vector2Int> VisibleArea => Player.Area.VisibleArea;
+        public IReadOnlyCollection<Vector2Int> VisibleArea => Player.VisionRange.VisibleArea;
         public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
         public IEnumerable<IEntity> Entities
@@ -337,7 +337,7 @@ namespace Model.Game
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {
-                CharacterManager.Characters.ForEach(character => character.Area.Refresh(this));
+                CharacterManager.Characters.ForEach(character => character.VisionRange.Refresh(this));
             }).AddTo(_disposables);
         }
 
@@ -412,7 +412,7 @@ namespace Model.Game
         {
             return CharacterManager.Characters
                 .Where(character => character != Player)
-                .Where(character =>character.IsAlly(Player))
+                .Where(character => character.IsAlly(Player))
                 .Where(character => character.IsVisible(Player.CurrentPosition));
         }
 

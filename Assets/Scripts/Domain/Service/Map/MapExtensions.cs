@@ -11,7 +11,7 @@ namespace Domain.Service
     {
         public static IEnumerable<ICharacter> GetVisibleCharacters(this IMap map, IHasBehavior character)
         {
-            return map.GetCharactersInArea(character.Area.VisibleArea);
+            return map.GetCharactersInArea(character.VisionRange.VisibleArea);
         }
 
         public static IEnumerable<ICharacter> GetCharactersCanSeePosition(this IMap map, Vector2Int position)

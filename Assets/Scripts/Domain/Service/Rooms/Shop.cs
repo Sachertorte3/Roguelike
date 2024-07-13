@@ -14,6 +14,8 @@ using Domain.Service.Logs;
 using Domain.Model.Items;
 using Unity.Logging;
 using Domain.Model;
+using Domain.Service.Characters.Conditions;
+using Domain.Model.Condition;
 
 namespace Model.Game
 {
@@ -145,6 +147,7 @@ namespace Model.Game
             {
                 GameLog.Add("<color=red>どろぼう！</color>");
                 Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
+                Clerk.Character.AddCondition(new Clairvoyant(), new RemovalConditionData());
                 MarkItemsAsStolen(mapManager);
                 CanExecute = false;
                 _onStolen.OnNext(Unit.Default);

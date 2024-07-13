@@ -34,7 +34,6 @@ namespace Domain.Service.Characters
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
-        private readonly VisionRange _area;
         private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
         private readonly Entity _entity;
         private readonly Inventory _inventory;
@@ -55,9 +54,8 @@ namespace Domain.Service.Characters
             _entity = new Entity(data.EntityData);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _inventory = new Inventory(data.Inventory);
-            _statusManager = new CharacterStatusManager(data.Name, data.Status);
+            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, world);
             Behavior = behavior;
-            _area = new VisionRange(_entity.Position, _statusManager.Stats.ViewRangeValue, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
@@ -136,7 +134,7 @@ namespace Domain.Service.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{CurrentPosition+direction.Vector()}");
+            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{CurrentPosition + direction.Vector()}");
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -230,7 +228,7 @@ namespace Domain.Service.Characters
         {
             _entity.SetVisibility(visiblity);
         }
-        
+
         public void Destroy()
         {
             _entity.Destroy();
@@ -238,7 +236,7 @@ namespace Domain.Service.Characters
 
         public ISkill[] Skills => _skills;
 
-        public IVisionRange Area => _area;
+        public IVisionRange VisionRange => _statusManager.VisionRange;
 
         public CharacterMemento Serialize()
         {

@@ -32,7 +32,7 @@ namespace Domain.Service.Characters.Behavior
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
         {
-            HashSet<Vector2Int> visibleArea = new(character.Area.VisibleArea);
+            HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
 
             var visibleCharacters = world.GetVisibleCharacters(character);

@@ -44,8 +44,16 @@ namespace Utilities.Algorithms
                 current = _openHash.OrderBy(p => _map[p].Score)
                     .First();
 
-                if (_map[current].ECost <= 0)
-                    break;
+                if (_passables.Contains(goal))
+                {
+                    if (_map[current].ECost <= 0)
+                        break;
+                }
+                else
+                {
+                    if (_map[current].ECost <= 1)
+                        break;
+                }
 
                 _openHash.Remove(current);
                 _closeHash.Add(current);

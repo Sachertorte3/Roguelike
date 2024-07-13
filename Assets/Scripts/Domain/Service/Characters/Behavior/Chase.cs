@@ -22,7 +22,12 @@ namespace Domain.Service.Characters.Behavior
         private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
+            Debug.Log($"{character.CurrentPosition}:{targetPosition}");
             var route = new AStar(world.GetAllPassablePositions()).Calc(character.CurrentPosition, targetPosition);
+            foreach (var position in route)
+            {
+                Debug.Log(position);
+            }
             if (route.Count < 2)
             {
                 return Enumerable.Empty<Move>();

@@ -94,6 +94,10 @@ namespace Model.Game
 
             var monsterHouseRoom = rooms.GetAtRandom();
             rooms.Remove(monsterHouseRoom);
+            
+            var positions = monsterHouseRoom.RectRange().GetAtRandom(5).ToList();
+            foreach (var position in positions.Take(5))
+                _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
 
             return MonsterHouse.Build(monsterHouseRoom);
         }

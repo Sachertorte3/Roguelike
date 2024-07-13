@@ -43,7 +43,7 @@ namespace Domain.Model
         public Vector2Int CurrentPosition { get; }
         public ISkill[] Skills { get; }
 
-        public IVisionRange Area { get; }
+        public IVisionRange VisionRange { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
 
@@ -75,7 +75,7 @@ namespace Domain.Model
 
         public bool IsVisible(Vector2Int position)
         {
-            return Area.VisibleArea.Contains(position);
+            return VisionRange.VisibleArea.Contains(position);
         }
     }
 }

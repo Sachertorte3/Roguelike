@@ -20,6 +20,22 @@ namespace Domain.Service.Characters
             new(1, 0, 0, -1) // 7 SE-E
         };
 
+        public static HashSet<Vector2Int> ComputeFullVisibility(HashSet<Vector2Int> passables)
+        {
+            HashSet<Vector2Int> result = new HashSet<Vector2Int>(passables);
+            foreach (var pos in passables)
+            {
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        result.Add(new Vector2Int(pos.x + dx, pos.y + dy));
+                    }
+                }
+            }
+            return result;
+        }
+
         public static HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position,
             float radius)
         {

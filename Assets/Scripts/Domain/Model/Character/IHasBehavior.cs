@@ -10,6 +10,6 @@ namespace Domain.Model.Characters
     {
         public ISkill[] Skills { get; }
         public IInventory Inventory { get; }
-        public IVisionRange Area { get; }
+        public IVisionRange VisionRange { get; }
     }
 }

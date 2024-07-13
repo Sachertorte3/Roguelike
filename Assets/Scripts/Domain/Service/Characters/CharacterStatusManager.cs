@@ -24,13 +24,15 @@ namespace Domain.Service.Characters
         private readonly Subject<int> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
         private readonly CharacterStats _stats;
+        private readonly VisionRange _visionRange;
         private string _name;
 
-        public CharacterStatusManager(string name, CharacterStatusMemento data)
+        public CharacterStatusManager(string name, CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
             _name = name;
             _stats = new CharacterStats(data.MaxHp, data.Hp, data.ViewRange);
             _conditions = new CharacterConditions(this, data.Conditions);
+            _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
 
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
@@ -47,11 +49,13 @@ namespace Domain.Service.Characters
                 _stats.MaxHp.CurrentValue,
                 _stats.Hp.Value.CurrentValue,
                 _stats.ViewRange.CurrentValue,
+                _visionRange.ClairvoyantFlags,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
         }
 
         public IStats Stats => _stats;
+        public IVisionRange VisionRange => _visionRange;
         public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
@@ -99,6 +103,16 @@ namespace Domain.Service.Characters
             _stats.ViewRange.AddMultiplier(-value);
         }
 
+        public void AddClairvoyantFlags()
+        {
+            _visionRange.AddClairvoyantFlags();
+        }
+
+        public void RemoveClairvoyantFlags()
+        {
+            _visionRange.RemoveClairvoyantFlags();
+        }
+
         public static CharacterStatusMemento Build(int maxHp, int hp, float viewRange, bool isSleeped, bool isShiney)
         {
             var conditions = new List<ConditionMemento>();
@@ -113,6 +127,7 @@ namespace Domain.Service.Characters
                     maxHp * 3,
                     hp * 3,
                     viewRange,
+                    0,
                     conditions.ToArray()
                 );
             }
@@ -122,6 +137,7 @@ namespace Domain.Service.Characters
                     maxHp,
                     hp,
                     viewRange,
+                    0,
                     conditions.ToArray()
                 );
             }

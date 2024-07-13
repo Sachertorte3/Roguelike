@@ -6,6 +6,7 @@ namespace Domain.Model.Character
         int MaxHp,
         int Hp,
         float ViewRange,
+        int ClairvoyantFlags,
         ConditionMemento[] Conditions
     );
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -8,10 +9,10 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Effect;
 using Effect.Position;
-using Domain.Service.Characters;
 using UnityEngine;
 using Utilities;
 using Domain.Model.Action;
+using Domain.Service.Logs;
 
 namespace Domain.Service.Effect
 {
@@ -20,6 +21,7 @@ namespace Domain.Service.Effect
         private readonly IArea _area;
         private readonly IEffect _effect;
         private readonly string _info;
+        private readonly string? _log;
         private readonly IEffectPosition _position;
 
         public Skill(SkillData data)
@@ -28,6 +30,7 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effect = data.Effect;
             _info = data.Info();
+            _log = data.Log;
         }
 
         public Skill(SkillDataOnUse data)
@@ -52,13 +55,14 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effect = data.Effect;
             _info = data.Info;
+            _log = data.Log;
         }
 
         public Color Color => _effect.Color;
 
         public SkillMemento Serialize()
         {
-            return new SkillMemento(_position, _area, _effect, _info);
+            return new SkillMemento(_position, _area, _effect, _info, _log);
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
@@ -70,6 +74,8 @@ namespace Domain.Service.Effect
 
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            if (_log != null)
+                GameLog.Add($"{actor.GetName(map.Player)}{_log}");
             var spawnPositions = _position.Get(actor, position, direction, map);
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
             map.GetCharactersInArea(area.ToHashSet())

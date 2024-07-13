@@ -21,7 +21,8 @@ namespace Domain.Service
                     new AtFeet(),
                     mold.Area,
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
-                        new List<AdditionalConditionData>())
+                        new List<AdditionalConditionData>()),
+                    mold.Log
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
@@ -45,7 +46,8 @@ namespace Domain.Service
                     mold.Area,
                     new AttackEffect(
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
-                        prefix.AdditionalConditions)
+                        prefix.AdditionalConditions),
+                    mold.Log
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),

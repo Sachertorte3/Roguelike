@@ -13,36 +13,25 @@ MonoBehaviour:
   m_Name: "\u30E4\u30C9\u30AB\u30EA"
   m_EditorClassIdentifier: 
   Name: "\u30E4\u30C9\u30AB\u30EA"
+  Group: 1
+  IsBoss: 0
   Hp: 5
   Aggression: 4
+  WanderAround: 1
   Skills:
-  - Area:
-      rid: 4425516923575599104
-    Effect:
-      rid: 4425516923575599105
-    Position:
-      rid: 4425516923575599117
   - Area:
       rid: 4425516923575599106
     Effect:
       rid: 4425516923575599108
     Position:
       rid: 4425516923575599118
+    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
   AdditionalConditions: []
   CharacterType:
     rid: 4425516923575599116
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599104
-      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
-    - rid: 4425516923575599105
-      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 2
     - rid: 4425516923575599106
       type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
       data:
@@ -52,14 +41,12 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 1
+        CriticalRate: 0
         AdditionalConditions: []
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 2
-    - rid: 4425516923575599117
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
-      data: 
     - rid: 4425516923575599118
       type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
       data: 

@@ -3,11 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using Domain.Model.Condition;
-using System;
 using Domain.Model.Effect;
-using Domain.Model.Characters;
-
 
 #if UNITY_EDITOR
 using System.IO;

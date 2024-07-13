@@ -5,8 +5,6 @@ using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Items;
-using Domain.Model.Message;
-using Domain.Service.Action;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;

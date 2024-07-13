@@ -14,7 +14,7 @@ namespace Domain.Model
         [SerializeReference] [Required] public IEffect Effect;
         [SerializeReference] [Required] public IEffectPosition Position;
 
-        public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect)
+        public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect, string log)
         {
             Position = position;
             Area = area;

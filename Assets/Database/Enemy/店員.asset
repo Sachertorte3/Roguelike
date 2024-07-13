@@ -25,6 +25,7 @@ MonoBehaviour:
       rid: 4425516923575599110
     Position:
       rid: 4425516923575599119
+    Log: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F\u3002"
   AdditionalConditions:
   - RemovalCondition:
       RemoveByElapsedTurn: 1

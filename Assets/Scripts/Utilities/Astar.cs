@@ -9,17 +9,17 @@ namespace Utilities.Algorithms
         private HashSet<Vector2Int> _closeHash;
         private Dictionary<Vector2Int, AStarNode> _map;
         private HashSet<Vector2Int> _openHash;
-        private Dictionary<Vector2Int, bool> _passableMap;
+        private HashSet<Vector2Int> _passables;
 
-        public AStar(Dictionary<Vector2Int, bool> passableMap)
+        public AStar(HashSet<Vector2Int> passables)
         {
-            SetMap(passableMap);
+            SetMap(passables);
         }
 
-        private void SetMap(Dictionary<Vector2Int, bool> passableMap)
+        private void SetMap(HashSet<Vector2Int> passables)
         {
-            _passableMap = passableMap;
-            var length = passableMap.Count();
+            _passables = passables;
+            var length = passables.Count;
             _openHash = new HashSet<Vector2Int>();
             _closeHash = new HashSet<Vector2Int>();
             _map = new Dictionary<Vector2Int, AStarNode>(length);
@@ -44,7 +44,7 @@ namespace Utilities.Algorithms
                 current = _openHash.OrderBy(p => _map[p].Score)
                     .First();
 
-                if (_map[current].ECost <= 1)
+                if (_map[current].ECost <= 0)
                     break;
 
                 _openHash.Remove(current);
@@ -72,7 +72,7 @@ namespace Utilities.Algorithms
             foreach (var pos in openPos)
             {
                 if (!_map.ContainsKey(pos))
-                    if (inMap(pos) && _passableMap[pos])
+                    if (CanMove(current, pos))
                         _map.Add(pos, new AStarNode(pos, goal));
                     else
                         continue;
@@ -92,9 +92,25 @@ namespace Utilities.Algorithms
             }
         }
 
-        private bool inMap(Vector2Int position)
+        private bool CanMove(Vector2Int current, Vector2Int pos)
         {
-            return _passableMap.ContainsKey(position);
+            if (IsDiagonalMove(current, pos) && !CanMoveDiagonally(current, pos))
+            {
+                return false;
+            }
+            return _passables.Contains(pos);
+        }
+
+        private bool IsDiagonalMove(Vector2Int current, Vector2Int pos)
+        {
+            return Mathf.Abs(current.x - pos.x) == 1 && Mathf.Abs(current.y - pos.y) == 1;
+        }
+
+        private bool CanMoveDiagonally(Vector2Int current, Vector2Int pos)
+        {
+            var horizontal = new Vector2Int(pos.x, current.y);
+            var vertical = new Vector2Int(current.x, pos.y);
+            return _passables.Contains(horizontal) && _passables.Contains(vertical);
         }
     }
 }

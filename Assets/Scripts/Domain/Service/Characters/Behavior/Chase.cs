@@ -6,6 +6,7 @@ using Domain.Model.Characters;
 using Domain.Service.Action;
 using UnityEngine;
 using Utilities;
+using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
@@ -21,9 +22,16 @@ namespace Domain.Service.Characters.Behavior
         private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
-            var directions = DirectionMethods.NearDirectionsFromVector(targetPosition - character.CurrentPosition);
-            return new List<Move> { new(directions[0], 0.1f), new(directions[1], 0.05f), new(directions[2], 0.01f) }
-                .Where(move => move.Doable(character, world));
+            var route = new AStar(world.GetAllPassablePositions()).Calc(character.CurrentPosition, targetPosition);
+            if (route.Count < 2)
+            {
+                return Enumerable.Empty<Move>();
+            }
+
+            var direction = DirectionMethods.FromVector(route[1] - route[0]);
+
+            var move = new Move(direction, 0.5f);
+            return move.Doable(character, world) ? new List<Move> { move } : Enumerable.Empty<Move>();
         }
 
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)

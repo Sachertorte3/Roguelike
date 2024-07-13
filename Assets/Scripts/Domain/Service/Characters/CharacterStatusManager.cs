@@ -118,7 +118,7 @@ namespace Domain.Service.Characters
             var conditions = new List<ConditionMemento>();
             if (isSleeped)
             {
-                conditions.Add(Condition.Build(new Sleeped(), new RemovalConditionData(acceptableDamage: 0, probability: 0.5f, removeByEnemyNearby: true)));
+                conditions.Add(Condition.Build(new Sleeped(), new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)));
             }
             if (isShiney)
             {

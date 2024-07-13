@@ -43,7 +43,7 @@ namespace Domain.Service.Characters.Conditions
         public void UpdateTurn(IHasCondition hasCondition, bool enemyVisible)
         {
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
-            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(0, enemyVisible)).ToList());
+            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(enemyVisible)).ToList());
         }
     }
 }

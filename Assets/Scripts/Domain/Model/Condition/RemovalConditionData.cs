@@ -13,11 +13,10 @@ namespace Domain.Model.Condition
         public bool RemoveByElapsedTurn = false;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage = false;
-        [ShowIf("@RemoveByDamage")] public int AcceptableDamage;
         [ShowIf("@RemoveByDamage")] public float Probability;
         public bool RemoveByEnemyNearby = false;
 
-        public RemovalConditionData(int duration = -1, int acceptableDamage = 0, float probability = -1, bool removeByEnemyNearby = false)
+        public RemovalConditionData(int duration = -1, float probability = -1, bool removeByEnemyNearby = false)
         {
             if (duration > 0)
             {
@@ -25,20 +24,19 @@ namespace Domain.Model.Condition
                 Duration = duration;
             }
 
-            if (acceptableDamage >= 0 && probability > 0)
+            if (probability > 0)
             {
                 RemoveByDamage = true;
-                AcceptableDamage = acceptableDamage;
                 Probability = probability;
             }
 
             RemoveByEnemyNearby = removeByEnemyNearby;
         }
 
-        public bool IsFinished(int elapsedTurns, int receivedDamage, bool enemyVisible)
+        public bool IsFinished(int elapsedTurns, bool enemyVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByDamage && receivedDamage > AcceptableDamage && Random.value < Probability) ||
+                   (RemoveByDamage && Random.value < Probability) ||
                    (RemoveByEnemyNearby && enemyVisible);
         }
     }

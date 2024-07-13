@@ -19,9 +19,8 @@ MonoBehaviour:
   AdditionalConditions:
   - RemovalCondition:
       RemoveByElapsedTurn: 1
-      Duration: 5
+      Duration: 3
       RemoveByDamage: 1
-      AcceptableDamage: 0
       Probability: 0.5
       RemoveByEnemyNearby: 0
     Probability: 0.1

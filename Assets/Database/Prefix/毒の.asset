@@ -21,8 +21,8 @@ MonoBehaviour:
       RemoveByElapsedTurn: 1
       Duration: 5
       RemoveByDamage: 0
-      AcceptableDamage: 0
       Probability: 0
+      RemoveByEnemyNearby: 0
     Probability: 0.2
     Condition:
       rid: 4425517175658250242

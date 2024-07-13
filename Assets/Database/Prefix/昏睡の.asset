@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d20d47e3661a0064f81a1012970562ee, type: 3}
-  m_Name: "\u9EBB\u75FA\u306E"
+  m_Name: "\u660F\u7761\u306E"
   m_EditorClassIdentifier: Data:Data:WeaponPrefix
-  Name: "\u9EBB\u75FA\u306E"
+  Name: "\u660F\u7761\u306E"
   _rarity: 3
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
   - RemovalCondition:
       RemoveByElapsedTurn: 1
-      Duration: 3
-      RemoveByDamage: 0
-      Probability: 0
+      Duration: 5
+      RemoveByDamage: 1
+      Probability: 0.2
       RemoveByEnemyNearby: 0
     Probability: 0.1
     Condition:
-      rid: 4425517265317527593
+      rid: 2541219064542658561
   references:
     version: 2
     RefIds:
-    - rid: 4425517265317527593
-      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 2541219064542658561
+      type: {class: Sleeped, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

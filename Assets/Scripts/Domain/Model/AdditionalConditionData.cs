@@ -27,7 +27,7 @@ namespace Domain.Model
 
         public string Info()
         {
-            return $"{Condition.Name} {Probability:%}";
+            return $"{Condition.Name} {Probability:P0}";
         }
     }
 }

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d20d47e3661a0064f81a1012970562ee, type: 3}
-  m_Name: "\u9EBB\u75FA\u306E"
+  m_Name: "\u30B9\u30BF\u30F3\u306E"
   m_EditorClassIdentifier: Data:Data:WeaponPrefix
-  Name: "\u9EBB\u75FA\u306E"
-  _rarity: 3
+  Name: "\u30B9\u30BF\u30F3\u306E"
+  _rarity: 2
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
   - RemovalCondition:
       RemoveByElapsedTurn: 1
-      Duration: 3
+      Duration: 1
       RemoveByDamage: 0
       Probability: 0
       RemoveByEnemyNearby: 0

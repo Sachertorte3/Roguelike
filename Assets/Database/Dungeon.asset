@@ -16,7 +16,8 @@ MonoBehaviour:
   - Depth: 1
     PrefixChance: 0.2
     ShineyChance: 0.01
-    ShopChance: 0.515
+    SleepChance: 0.5
+    ShopChance: 0.51
     MonsterHouseChance: 0.509
     Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
     Items:
@@ -24,7 +25,6 @@ MonoBehaviour:
       - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
       - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
       - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
       - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
       - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
@@ -32,14 +32,21 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
       - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
       - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+    ShopItems:
+      items:
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
+      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
+      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
-    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Materials:
       items:
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
@@ -65,6 +72,7 @@ MonoBehaviour:
   - Depth: 3
     PrefixChance: 0.5
     ShineyChance: 1
+    SleepChance: 0.5
     ShopChance: 0
     MonsterHouseChance: 0
     Field: {fileID: 11400000, guid: c47355a2a4c4a45bd86d7a07e58c985d, type: 2}
@@ -81,13 +89,15 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
       - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
       - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+    ShopItems:
+      items: []
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
-    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Materials:
       items:
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}

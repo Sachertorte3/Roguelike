@@ -1,17 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using R3;
-using UnityEngine;
 
 namespace Stats
 {
-    public class Stat
+    public class Stat : IDisposable
     {
         private float _baseValue;
         private float _additiveValue = 0;
         private float _multiplicativeValue = 1;
         private ReactiveProperty<float> _value = new();
+        public float BaseValue => _baseValue;
         public ReadOnlyReactiveProperty<float> Value => _value;
+        public float CurrentValue => _value.CurrentValue;
 
         public Stat(float baseValue)
         {
@@ -19,6 +19,16 @@ namespace Stats
             _additiveValue = 0f;
             _multiplicativeValue = 1f;
             SetValue();
+        }
+
+        public void Dispose()
+        {
+            _value.Dispose();
+        }
+
+        ~Stat()
+        {
+            Dispose();
         }
 
         public void AddValue(float value)

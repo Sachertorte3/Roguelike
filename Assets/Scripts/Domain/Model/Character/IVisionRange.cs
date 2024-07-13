@@ -10,6 +10,6 @@ namespace Domain.Model.Character
     {
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged { get; }
-        public void Refresh(Vector2Int position, IMap world);
+        public void Refresh(IMap world);
     }
 }

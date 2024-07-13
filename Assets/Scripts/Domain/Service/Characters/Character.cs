@@ -57,7 +57,7 @@ namespace Domain.Service.Characters
             _inventory = new Inventory(data.Inventory);
             _statusManager = new CharacterStatusManager(data.Name, data.Status);
             Behavior = behavior;
-            _area = new VisionRange(_entity.Position, world);
+            _area = new VisionRange(_entity.Position, _statusManager.Stats.ViewRangeValue, world);
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
             _aggression = data.Aggression;
@@ -74,7 +74,7 @@ namespace Domain.Service.Characters
         public Entity Entity => _entity;
         public bool IsLeader { get; init; }
         public bool IsBoss { get; init; }
-        public CharacterState State { get; set; } = CharacterState.Think;
+        public CharacterState State { get; set; } = CharacterState.Wait;
         public int Money => _money;
 
         public string GetName(IHasAffiliation player)
@@ -275,8 +275,8 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
-        public int CurrentMaxHp => _statusManager.CurrentMaxHp;
-        public int CurrentHp => _statusManager.CurrentHp;
+        public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
+        public int CurrentHp => _statusManager.Stats.CurrentHp;
 
         public UniTask<int> LoseHp(int value)
         {
@@ -345,10 +345,10 @@ namespace Domain.Service.Characters
             _inventory.RepairAll();
         }
 
-        public void UpdateTurn(IMap world)
+        public void UpdateTurn(IMap map)
         {
-            _statusManager.UpdateTurn();
-            _affiliationManager.UpdateTurn(world.GetVisibleCharacters(this).Select(x => x.Affiliation));
+            _statusManager.UpdateTurn(map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
+            _affiliationManager.UpdateTurn(map.GetVisibleCharacters(this).Select(x => x.Affiliation));
         }
 
         public void AddMoney(int value)

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using Domain.Model.Effect;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Domain.Model.Condition
@@ -12,8 +15,9 @@ namespace Domain.Model.Condition
         public bool RemoveByDamage = false;
         [ShowIf("@RemoveByDamage")] public int AcceptableDamage;
         [ShowIf("@RemoveByDamage")] public float Probability;
+        public bool RemoveByEnemyNearby = false;
 
-        public RemovalConditionData(int duration = -1, int acceptableDamage = 0, float probability = -1)
+        public RemovalConditionData(int duration = -1, int acceptableDamage = 0, float probability = -1, bool removeByEnemyNearby = false)
         {
             if (duration > 0)
             {
@@ -27,12 +31,15 @@ namespace Domain.Model.Condition
                 AcceptableDamage = acceptableDamage;
                 Probability = probability;
             }
+
+            RemoveByEnemyNearby = removeByEnemyNearby;
         }
 
-        public bool IsFinished(int elapsedTurns, int receivedDamage)
+        public bool IsFinished(int elapsedTurns, int receivedDamage, bool enemyVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByDamage && receivedDamage > AcceptableDamage && Random.value < Probability);
+                   (RemoveByDamage && receivedDamage > AcceptableDamage && Random.value < Probability) ||
+                   (RemoveByEnemyNearby && enemyVisible);
         }
     }
 }

@@ -10,24 +10,24 @@ namespace Domain.Service.Characters.Stats
     {
         public readonly Stat _max;
         private readonly ReactiveProperty<int> _value;
-        public readonly ReadOnlyReactiveProperty<int> Max;
 
         public Resource(int maxValue)
         {
             _max = new Stat(maxValue);
-            Max = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
+            MaxValue = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
             _value = new ReactiveProperty<int>(maxValue);
-            Max.Subscribe(_ => clampCurrentValue());
+            MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
         public Resource(int maxValue, int value)
         {
             _max = new Stat(maxValue);
-            Max = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
+            MaxValue = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
             _value = new ReactiveProperty<int>(value);
-            Max.Subscribe(_ => clampCurrentValue());
+            MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
+        public readonly ReadOnlyReactiveProperty<int> MaxValue;
         public ReadOnlyReactiveProperty<int> Value => _value;
 
         public void Dispose()
@@ -37,7 +37,7 @@ namespace Domain.Service.Characters.Stats
 
         private void clampCurrentValue()
         {
-            _value.Value = Mathf.Clamp(Value.CurrentValue, 0, Max.CurrentValue);
+            _value.Value = Mathf.Clamp(Value.CurrentValue, 0, MaxValue.CurrentValue);
         }
 
         public int Lose(int value, string name)
@@ -48,7 +48,7 @@ namespace Domain.Service.Characters.Stats
             }
 
             var oldValue = Value.CurrentValue;
-            _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, Max.CurrentValue);
+            _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
             Log.Debug($"{name} Lose {value}, current value {_value.Value}");
             return oldValue - _value.Value;
         }
@@ -61,26 +61,26 @@ namespace Domain.Service.Characters.Stats
             }
 
             var oldValue = Value.CurrentValue;
-            _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, Max.CurrentValue);
+            _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, MaxValue.CurrentValue);
             return oldValue - _value.Value;
         }
 
-        public void AddMaxHpValue(float value)
+        public void AddMaxValue(float value)
         {
             _max.AddValue(value);
         }
 
-        public void AddMaxHpMultiplier(float value)
+        public void AddMaxMultiplier(float value)
         {
             _max.AddMultiplier(value);
         }
 
-        public void RemoveMaxHpValue(float value)
+        public void RemoveMaxValue(float value)
         {
             _max.AddValue(-value);
         }
 
-        public void RemoveMaxHpMultiplier(float value)
+        public void RemoveMaxMultiplier(float value)
         {
             _max.AddMultiplier(-value);
         }

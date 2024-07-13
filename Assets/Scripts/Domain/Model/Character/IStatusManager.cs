@@ -1,8 +1,10 @@
 #nullable enable
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Effect;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Domain.Model.Characters
 {
@@ -13,6 +15,6 @@ namespace Domain.Model.Characters
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }
-        public void UpdateTurn();
+        public void UpdateTurn(bool enemyVisible);
     }
 }

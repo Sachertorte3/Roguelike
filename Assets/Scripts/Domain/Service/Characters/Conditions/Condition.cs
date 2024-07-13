@@ -1,5 +1,8 @@
-﻿using Domain.Model.Character;
+﻿using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Effect;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -42,9 +45,9 @@ namespace Domain.Service.Characters.Conditions
             _condition.Persist(hasCondition);
         }
 
-        public bool ShouldDelete(int receivedDamage)
+        public bool ShouldDelete(int receivedDamage, bool enemyVisible)
         {
-            return _removalCondition.IsFinished(_elapsedTurn, receivedDamage);
+            return _removalCondition.IsFinished(_elapsedTurn, receivedDamage, enemyVisible);
         }
 
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)

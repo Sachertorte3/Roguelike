@@ -1,16 +1,20 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Characters;
 using Domain.Model.Condition;
+using Domain.Model.Effect;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
 using Stats;
+using UnityEngine;
 
 namespace Domain.Service.Characters
 {
@@ -25,13 +29,11 @@ namespace Domain.Service.Characters
         public CharacterStatusManager(string name, CharacterStatusMemento data)
         {
             _name = name;
-            _stats = new CharacterStats(data.MaxHp, data.Hp);
+            _stats = new CharacterStats(data.MaxHp, data.Hp, data.ViewRange);
             _conditions = new CharacterConditions(this, data.Conditions);
         }
 
         public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
-        public int CurrentMaxHp => _stats.MaxHp.CurrentValue;
-        public int CurrentHp => _stats.Hp.Value.CurrentValue;
 
         public void Dispose()
         {
@@ -44,6 +46,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento(
                 _stats.MaxHp.CurrentValue,
                 _stats.Hp.Value.CurrentValue,
+                _stats.ViewRange.CurrentValue,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
         }
@@ -61,39 +64,56 @@ namespace Domain.Service.Characters
             return UniTask.FromResult(loseValue);
         }
 
-        public void UpdateTurn()
+        public void UpdateTurn(bool enemyVisible)
         {
-            _conditions.UpdateTurn(this);
+            _conditions.UpdateTurn(this, enemyVisible);
         }
 
         public void AddMaxHpValue(float value)
         {
-            _stats.Hp.AddMaxHpValue(value);
+            _stats.Hp.AddMaxValue(value);
         }
 
         public void AddMaxHpMultiplier(float value)
         {
-            _stats.Hp.AddMaxHpMultiplier(value);
+            _stats.Hp.AddMaxMultiplier(value);
+        }
+
+        public void AddViewRangeMultiplier(float value)
+        {
+            _stats.ViewRange.AddMultiplier(value);
         }
 
         public void RemoveMaxHpValue(float value)
         {
-            _stats.Hp.RemoveMaxHpValue(value);
+            _stats.Hp.RemoveMaxValue(value);
         }
 
         public void RemoveMaxHpMultiplier(float value)
         {
-            _stats.Hp.RemoveMaxHpMultiplier(value);
+            _stats.Hp.RemoveMaxMultiplier(value);
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hp, bool isShiney)
+        public void RemoveViewRangeMultiplier(float value)
         {
+            _stats.ViewRange.AddMultiplier(-value);
+        }
+
+        public static CharacterStatusMemento Build(int maxHp, int hp, float viewRange, bool isSleeped, bool isShiney)
+        {
+            var conditions = new List<ConditionMemento>();
+            if (isSleeped)
+            {
+                conditions.Add(Condition.Build(new Sleeped(), new RemovalConditionData(acceptableDamage: 0, probability: 0.5f, removeByEnemyNearby: true)));
+            }
             if (isShiney)
             {
+                conditions.Add(Condition.Build(new Star(), new RemovalConditionData()));
                 return new CharacterStatusMemento(
                     maxHp * 3,
                     hp * 3,
-                    new[] { Condition.Build(new Star(), new RemovalConditionData()) }
+                    viewRange,
+                    conditions.ToArray()
                 );
             }
             else
@@ -101,9 +121,11 @@ namespace Domain.Service.Characters
                 return new CharacterStatusMemento(
                     maxHp,
                     hp,
-                    new ConditionMemento[0]
+                    viewRange,
+                    conditions.ToArray()
                 );
             }
+
         }
 
         public UniTask<int> GainHp(int value)

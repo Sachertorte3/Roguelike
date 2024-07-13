@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Effect;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -37,10 +40,10 @@ namespace Domain.Service.Characters.Conditions
             _conditions.Add(new Condition(condition, removalCondition));
         }
 
-        public void UpdateTurn(IHasCondition hasCondition)
+        public void UpdateTurn(IHasCondition hasCondition, bool enemyVisible)
         {
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
-            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(0)).ToList());
+            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(0, enemyVisible)).ToList());
         }
     }
 }

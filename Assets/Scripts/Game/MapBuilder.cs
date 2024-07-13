@@ -83,7 +83,7 @@ namespace Model.Game
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
 
             var clerkPosition = positions.Last();
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, Random.value < data.ShineyChance);
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, Random.value < data.SleepChance, Random.value < data.ShineyChance);
             _characters.Add(clerk);
             return Shop.Build(shopRoom, clerk.EntityData, _items.ToList());
         }
@@ -101,7 +101,10 @@ namespace Model.Game
         private void AddCharactersToRoom(SectionData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
-                _characters.Add(CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.ShineyChance));
+            {
+                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.SleepChance, Random.value < data.ShineyChance);
+                _characters.Add(character);
+            }
         }
 
         private void AddItemsToRoom(SectionData data, List<Vector2Int> positions)

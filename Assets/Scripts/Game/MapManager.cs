@@ -7,12 +7,9 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Items;
 using Domain.Model.Map;
-using Domain.Service;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
-using Domain.Service.Entities;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Map;
 using ObservableCollections;
@@ -153,7 +150,7 @@ namespace Model.Game
         }
         public void SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.ShineyChance), this);
+            CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.SleepChance, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>
@@ -340,7 +337,7 @@ namespace Model.Game
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {
-                CharacterManager.Characters.ForEach(character => character.Area.Refresh(character.CurrentPosition, this));
+                CharacterManager.Characters.ForEach(character => character.Area.Refresh(this));
             }).AddTo(_disposables);
         }
 

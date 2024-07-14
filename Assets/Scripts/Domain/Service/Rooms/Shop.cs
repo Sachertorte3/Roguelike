@@ -9,7 +9,6 @@ using Domain.Service.Rooms;
 using UnityEngine;
 using Utilities;
 using R3;
-using Domain.Service;
 using Domain.Service.Logs;
 using Domain.Model.Items;
 using Unity.Logging;
@@ -19,7 +18,14 @@ using Domain.Model.Condition;
 
 namespace Model.Game
 {
-    public class Shop : Room<ShopMemento>, IDisposable
+    public interface IShop
+    {
+        public ReadOnlyReactiveProperty<bool> IsInside { get; }
+        public int GetPurchasePrice(IMapManager mapManager);
+        public int GetSalePrice(IMapManager mapManager);
+    }
+
+    public class Shop : Room<ShopMemento>, IShop, IDisposable
     {
         public readonly Clerk Clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);

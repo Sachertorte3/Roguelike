@@ -38,7 +38,7 @@ namespace Model.Game
             Dispose();
         }
 
-        private void SetPlayer(ICharacter player)
+        private ICharacter SetPlayer(ICharacter player)
         {
             if (Player != null)
             {
@@ -48,12 +48,14 @@ namespace Model.Game
             Player = player;
             AddCharacter(player);
             PlayerEvents.Add(player);
+            return player;
         }
 
-        public void AddCharacter(ICharacter character)
+        public ICharacter AddCharacter(ICharacter character)
         {
             _characters.Add(character);
             CharacterEvents.Add(character);
+            return character;
         }
 
         public void RemoveCharacter(ICharacter character)
@@ -62,14 +64,14 @@ namespace Model.Game
             CharacterEvents.Remove(character);
         }
 
-        public void SpawnCharacter(CharacterMemento data, IMap world)
+        public ICharacter SpawnCharacter(CharacterMemento data, IMap world)
         {
-            AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), world));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), world));
         }
 
-        internal void SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)
+        internal ICharacter SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)
         {
-            SetPlayer(_factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), world));
+            return SetPlayer(_factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), world));
         }
     }
 }

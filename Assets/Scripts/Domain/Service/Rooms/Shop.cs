@@ -18,23 +18,28 @@ using Domain.Model.Condition;
 
 namespace Model.Game
 {
-    public interface IShop
-    {
-        public ReadOnlyReactiveProperty<bool> IsInside { get; }
-        public int GetPurchasePrice(IMapManager mapManager);
-        public int GetSalePrice(IMapManager mapManager);
-    }
-
     public class Shop : Room<ShopMemento>, IShop, IDisposable
     {
         public readonly Clerk Clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);
         private HashSet<ShopItemCache> _shopItems = new HashSet<ShopItemCache>();
-        private Subject<Unit> _onStolen = new Subject<Unit>();
-        public Observable<Unit> OnStolen => _onStolen;
+        private ReactiveProperty<bool> _isStolen = new ReactiveProperty<bool>(false);
+        public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
+            Clerk = new Clerk(
+                clerk,
+                () => CanExecute && GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0,
+                mapManager => Purchase(mapManager)
+            );
+
+            if (data.IsStolen)
+            {
+                Stolen(mapManager);
+                return;
+            }
+
             var itemsInRoom = GetItemsInRoom(mapManager);
             var itemMementosInRoom = itemsInRoom.Select(item => item.Id);
             foreach (var item in data.Items)
@@ -48,12 +53,6 @@ namespace Model.Game
             }
 
             SetShopItems(itemsInRoom);
-
-            Clerk = new Clerk(
-                clerk,
-                () => GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0,
-                mapManager => Purchase(mapManager)
-            );
         }
 
         public void Dispose()
@@ -68,13 +67,22 @@ namespace Model.Game
 
         public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
         {
-            return new ShopMemento(new RoomMemento(rect, false, false), entity, items.Select(item => new ShopItemMemento(item.Item.Id, item.Item.Price)).ToList());
+            return new ShopMemento(
+                new RoomMemento(rect, false, false),
+                entity,
+                items.Select(item => new ShopItemMemento(item.Item.Id, item.Item.Price)).ToList(),
+                false
+            );
         }
 
         public override ShopMemento Serialize()
         {
-            return new ShopMemento(new RoomMemento(Rect, hasEntered, hasEverEntered),
-                Clerk.Character.Serialize().EntityData, _shopItems.Select(item => new ShopItemMemento(item.Id.Value, item.Price)).ToList());
+            return new ShopMemento(
+                new RoomMemento(Rect, hasEntered, hasEverEntered),
+                Clerk.Character.Serialize().EntityData,
+                _shopItems.Select(item => new ShopItemMemento(item.Id.Value, item.Price)).ToList(),
+                _isStolen.Value
+            );
         }
 
         private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
@@ -146,17 +154,22 @@ namespace Model.Game
             }
         }
 
+        public void Stolen(IMapManager mapManager)
+        {
+            GameLog.Add("<color=red>どろぼう！</color>");
+            Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
+            Clerk.Character.AddCondition(new Clairvoyant(), new RemovalConditionData());
+            MarkItemsAsStolen(mapManager);
+            CanExecute = false;
+            _isStolen.Value = true;
+        }
+
         protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
-                GameLog.Add("<color=red>どろぼう！</color>");
-                Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
-                Clerk.Character.AddCondition(new Clairvoyant(), new RemovalConditionData());
-                MarkItemsAsStolen(mapManager);
-                CanExecute = false;
-                _onStolen.OnNext(Unit.Default);
+                Stolen(mapManager);
             }
         }
 

@@ -34,7 +34,7 @@ namespace Model.Game
         private MonsterHouse? _monsterHouse;
         private Shop? _shop;
         public IShop? Shop => _shop;
-        public Observable<Unit>? OnStolen => _shop?.OnStolen;
+        public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
@@ -97,10 +97,15 @@ namespace Model.Game
 
             if (map.Shop != null)
             {
-                var clerk = Characters.First(character => character.CurrentPosition == map.Shop.Clerk.Position);
-                _shop = new Shop(map.Shop, clerk, this);
-                EventEntityManager.Add(_shop.Clerk);
-                _eventAreas.Add(_shop);
+                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Clerk.Position);
+                if (clerk == null && !map.Shop.IsStolen)
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Clerk, map.Shop.Room.Room.RectRange().Where(IsPassable).GetAtRandom(), false, false), this);
+                if (clerk != null)
+                {
+                    _shop = new Shop(map.Shop, clerk, this);
+                    EventEntityManager.Add(_shop.Clerk);
+                    _eventAreas.Add(_shop);
+                }
             }
 
             var visibleArea = Player.VisionRange.VisibleArea;
@@ -149,9 +154,9 @@ namespace Model.Game
         {
             return ItemManager.SpawnItem(item, position);
         }
-        public void SpawnRandomEnemy(Vector2Int position)
+        public ICharacter SpawnRandomEnemy(Vector2Int position)
         {
-            CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.SleepChance, Random.value < _sectionData.ShineyChance), this);
+            return CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Enemies.GetRandomItem(), position, Random.value < _sectionData.SleepChance, Random.value < _sectionData.ShineyChance), this);
         }
 
         /// <summary>

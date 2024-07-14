@@ -409,7 +409,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -1853008491
@@ -927,7 +927,6 @@ MonoBehaviour:
   _tilemap: {fileID: 986205760}
   _tiles:
     Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
-    UnbreakableWall: {fileID: 11400000, guid: a2d497af8a8a25c4c858f92cf8e6d084, type: 2}
     Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
 --- !u!483693784 &986205759
@@ -1205,7 +1204,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30A2\u30A4\u30C6\u30E0\u540D"
+  m_text: "<color=#FFFFFF>\u30C0\u30DF\u30FC\u8349</color>\n\u4FA1\u683C: 0\n[\u4F7F\u7528\u6642]\n\u52B9\u679C:
+    \u56DE\u5FA9\n\u5A01\u529B: 0\n\u767A\u52D5\u4F4D\u7F6E: \u305D\u306E\u5834\n\u7BC4\u56F2:
+    \u305D\u306E\u5834\n\u4F7F\u7528\u53EF\u80FD\u56DE\u6570: 1/1"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 37048231315fad1469fdc00c9d965347, type: 2}
   m_sharedMaterial: {fileID: 4435184959169666709, guid: 37048231315fad1469fdc00c9d965347, type: 2}
@@ -1597,7 +1598,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8.4375
+  orthographic size: 11.21875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

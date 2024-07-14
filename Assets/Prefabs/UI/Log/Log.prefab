@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1474059007109173779}
   - component: {fileID: 7583762816329180030}
   - component: {fileID: 1053364976146917548}
-  - component: {fileID: -9096141372103487823}
   - component: {fileID: -4490114742331415813}
   m_Layer: 5
   m_Name: Log
@@ -137,19 +136,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &-9096141372103487823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7175993115757507487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfdcc592c10c61846a1f566d34d2909c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LifeTimeMilliseconds: 5000
 --- !u!114 &-4490114742331415813
 MonoBehaviour:
   m_ObjectHideFlags: 0

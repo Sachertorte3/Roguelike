@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using System;
+using Domain.Model.Setting;
 using Domain.Service.Logs;
-using Utilities;
+using R3;
 using VContainer;
 using View.UI;
 
@@ -9,12 +10,13 @@ namespace Provider
 {
     public class LogPresenter
     {
-        private IDisposable _disposable;
+        private CompositeDisposable _disposable = new();
 
         [Inject]
         public LogPresenter(LogView logView)
         {
-            _disposable = GameLog.Logs.SubscribeToAll(logView.AddLog);
+            _disposable.Add(Settings.LogShownMilliSeconds.Subscribe(logView.SetLogShownMilliSeconds));
+            _disposable.Add(GameLog.OnLogOutput.Subscribe(logView.AddLog));
         }
 
         ~LogPresenter()

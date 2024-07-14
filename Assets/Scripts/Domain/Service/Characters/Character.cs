@@ -47,22 +47,22 @@ namespace Domain.Service.Characters
         private readonly IDisposable _disposable;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IMap world)
+            IMap map)
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
             _entity = new Entity(data.EntityData);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _inventory = new Inventory(data.Inventory);
-            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, world);
+            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(data.Affiliation);
+            _affiliationManager = new CharacterAffiliationManager(data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
             IsBoss = data.IsBoss;
-
+        
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
         }
 

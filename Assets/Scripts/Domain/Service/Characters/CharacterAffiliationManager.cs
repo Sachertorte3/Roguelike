@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
@@ -18,12 +19,14 @@ namespace Domain.Service.Characters
         private readonly Dictionary<int, float> _affections;
         private readonly int _id;
         private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
+        private IAffiliation? _player;
 
-        public CharacterAffiliationManager(AffiliationMemento data)
+        public CharacterAffiliationManager(AffiliationMemento data, IAffiliation? player)
         {
             _id = data.Id;
             Group = data.Group;
             _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => x.Item1, x => x.Item2);
+            _player = player;
         }
 
         public int Id => _id;
@@ -38,6 +41,11 @@ namespace Domain.Service.Characters
                 return true;
             }
 
+            if (other != _player && _player != null && IsAlly(_player))
+            {
+                return other.IsAlly(_player);
+            }
+
             var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
 
             return totalAffection > AffectionAllyThreshold;
@@ -48,6 +56,11 @@ namespace Domain.Service.Characters
             if (other.Id == Id)
             {
                 return false;
+            }
+
+            if (other != _player && _player != null && IsAlly(_player))
+            {
+                return other.IsEnemy(_player);
             }
 
             var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);

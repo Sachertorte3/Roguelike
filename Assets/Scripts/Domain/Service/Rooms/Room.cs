@@ -1,5 +1,6 @@
 ﻿using Domain.Model.Map;
 using Domain.Service.Events;
+using R3;
 using UnityEngine;
 
 namespace Model.Game
@@ -8,7 +9,9 @@ namespace Model.Game
     {
         protected bool hasEntered = false;
         protected bool hasEverEntered = false;
-        protected bool CanExecute = true;
+        public bool CanExecute { get; protected set; } = true;
+        private ReactiveProperty<bool> _isInside = new();
+        public ReadOnlyReactiveProperty<bool> IsInside => _isInside;
 
         public Room(RoomMemento data)
         {
@@ -24,9 +27,8 @@ namespace Model.Game
             if (!CanExecute)
                 return;
 
-            var isInside = Rect.Contains(currentPosition);
-
-            if (isInside)
+            _isInside.Value = Rect.Contains(currentPosition);
+            if (_isInside.Value)
             {
                 UpdateTurnIfInside(gameManager, mapManager);
                 if (!hasEntered)

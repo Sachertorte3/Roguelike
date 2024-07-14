@@ -7,7 +7,6 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Characters;
 using Domain.Model.Condition;
-using Domain.Model.Effect;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
@@ -30,7 +29,7 @@ namespace Domain.Service.Characters
         public CharacterStatusManager(string name, CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
             _name = name;
-            _stats = new CharacterStats(data.MaxHp, data.Hp, data.ViewRange);
+            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.ViewRange);
             _conditions = new CharacterConditions(this, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
@@ -46,9 +45,9 @@ namespace Domain.Service.Characters
         public CharacterStatusMemento Serialize()
         {
             return new CharacterStatusMemento(
-                _stats.MaxHp.CurrentValue,
-                _stats.Hp.Value.CurrentValue,
-                _stats.ViewRange.CurrentValue,
+                _stats.Hp.GetData(),
+                _stats.HpNaturalRecoveryAmount.GetData(),
+                _stats.ViewRange.GetData(),
                 _visionRange.ClairvoyantFlags,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
@@ -61,15 +60,43 @@ namespace Domain.Service.Characters
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public UniTask<int> LoseHp(int value)
+        public UniTask<int> GainHp(int value, bool notifyOnlyActualGain = false)
+        {
+            var gainValue = _stats.Hp.Gain(value, _name);
+            if (notifyOnlyActualGain)
+            {
+                if (gainValue > 0)
+                {
+                    _onHealReceived.OnNext(gainValue);
+                }
+            }
+            else
+            {
+                _onHealReceived.OnNext(value);
+            }
+            return UniTask.FromResult(gainValue);
+        }
+
+        public UniTask<int> LoseHp(int value, bool notifyOnlyActualLoss = false)
         {
             var loseValue = _stats.Hp.Lose(value, _name);
-            _onDamageReceived.OnNext(value);
+            if (notifyOnlyActualLoss)
+            {
+                if (loseValue > 0)
+                {
+                    _onDamageReceived.OnNext(loseValue);
+                }
+            }
+            else
+            {
+                _onDamageReceived.OnNext(value);
+            }
             return UniTask.FromResult(loseValue);
         }
 
-        public void UpdateTurn(bool enemyVisible)
+        public async UniTask UpdateTurn(bool enemyVisible)
         {
+            await GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             _conditions.UpdateTurn(this, enemyVisible);
         }
 
@@ -113,7 +140,7 @@ namespace Domain.Service.Characters
             _visionRange.RemoveClairvoyantFlags();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hp, float viewRange, bool isSleeped, bool isShiney)
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSleeped, bool isShiney)
         {
             var conditions = new List<ConditionMemento>();
             if (isSleeped)
@@ -124,9 +151,9 @@ namespace Domain.Service.Characters
             {
                 conditions.Add(Condition.Build(new Star(), new RemovalConditionData()));
                 return new CharacterStatusMemento(
-                    maxHp * 3,
-                    hp * 3,
-                    viewRange,
+                    new ResourceData(new StatData(maxHp * 3), maxHp * 3),
+                    new StatData(hpNaturalRecoveryAmount),
+                    new StatData(viewRange),
                     0,
                     conditions.ToArray()
                 );
@@ -134,21 +161,14 @@ namespace Domain.Service.Characters
             else
             {
                 return new CharacterStatusMemento(
-                    maxHp,
-                    hp,
-                    viewRange,
+                    new ResourceData(new StatData(maxHp), maxHp),
+                    new StatData(hpNaturalRecoveryAmount),
+                    new StatData(viewRange),
                     0,
                     conditions.ToArray()
                 );
             }
 
-        }
-
-        public UniTask<int> GainHp(int value)
-        {
-            var gainValue = _stats.Hp.Gain(value, _name);
-            _onHealReceived.OnNext(value);
-            return UniTask.FromResult(gainValue);
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

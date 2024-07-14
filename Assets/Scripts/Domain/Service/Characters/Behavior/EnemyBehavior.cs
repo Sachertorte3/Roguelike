@@ -141,7 +141,7 @@ namespace Domain.Service.Characters.Behavior
                 Log.Debug($"[Think] Target exists.");
                 var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
 
-                var validActions = actions.Where(action => action.Evaluate(character, world) >= 0);
+                var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
                 foreach (var actionTemp in validActions)
                 {
                     Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
@@ -157,7 +157,7 @@ namespace Domain.Service.Characters.Behavior
                 Log.Debug($"[Think] Wandering around.");
                 var actions = _wander.GenerateActionsDoable(character, world);
 
-                var validActions = actions.Where(action => action.Evaluate(character, world) >= 0);
+                var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
                 foreach (var actionTemp in validActions)
                 {
                     Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");

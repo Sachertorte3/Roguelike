@@ -113,7 +113,7 @@ namespace Domain.Service.Effect
             var area = _area.Get(position, direction);
             var characters = world.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
-            var totalEvaluation = -0.01f; //効果がないなら使わない
+            var totalEvaluation = 0f;
 
             if (characters.Count <= 0)
             {

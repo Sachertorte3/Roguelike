@@ -1,14 +1,15 @@
 ﻿using ObservableCollections;
+using R3;
 
 namespace Domain.Service.Logs
 {
     public static class GameLog
     {
-        public static ObservableList<string> Logs = new();
-
+        public static Observable<string> OnLogOutput => _onLogOutput;
+        private static readonly Subject<string> _onLogOutput = new();
         public static void Add(string log)
         {
-            Logs.Add(log);
+            _onLogOutput.OnNext(log);
         }
     }
 }

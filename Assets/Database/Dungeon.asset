@@ -17,7 +17,7 @@ MonoBehaviour:
     PrefixChance: 0.2
     ShineyChance: 0.01
     SleepChance: 0.5
-    ShopChance: 0.51
+    ShopChance: 1
     MonsterHouseChance: 0.509
     Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
     Items:

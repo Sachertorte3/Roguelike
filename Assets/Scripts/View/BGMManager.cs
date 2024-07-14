@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Logging;
 
 namespace View
 {
@@ -15,11 +16,13 @@ namespace View
 
         public void NormalBGM()
         {
+            Log.Debug("Change BGM to Normal");
             ChangeBGM(_normalBGM);
         }
 
         public void StolenBGM()
         {
+            Log.Debug("Change BGM to Stolen");
             ChangeBGM(_stolenBGM);
         }
 

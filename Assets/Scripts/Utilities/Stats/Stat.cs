@@ -9,7 +9,6 @@ namespace Stats
         private float _additiveValue = 0;
         private float _multiplicativeValue = 1;
         private ReactiveProperty<float> _value = new();
-        public float BaseValue => _baseValue;
         public ReadOnlyReactiveProperty<float> Value => _value;
         public float CurrentValue => _value.CurrentValue;
 
@@ -21,6 +20,14 @@ namespace Stats
             SetValue();
         }
 
+        public Stat(StatData data)
+        {
+            _baseValue = data.BaseValue;
+            _additiveValue = data.AdditiveValue;
+            _multiplicativeValue = data.MultiplicativeValue;
+            SetValue();
+        }
+
         public void Dispose()
         {
             _value.Dispose();
@@ -29,6 +36,11 @@ namespace Stats
         ~Stat()
         {
             Dispose();
+        }
+
+        public StatData GetData()
+        {
+            return new StatData(_baseValue, _additiveValue, _multiplicativeValue);
         }
 
         public void AddValue(float value)

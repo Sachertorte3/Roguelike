@@ -1,38 +1,51 @@
 ﻿using System;
 using R3;
-using Stats;
-using Unity.Logging;
 using UnityEngine;
 
-namespace Domain.Service.Characters.Stats
+namespace Stats
 {
-    internal class Resource : IDisposable
+    public class Resource : IDisposable
     {
-        public readonly Stat _max;
+        public readonly IntStat _max;
         private readonly ReactiveProperty<int> _value;
 
         public Resource(int maxValue)
         {
-            _max = new Stat(maxValue);
-            MaxValue = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
+            _max = new IntStat(maxValue);
             _value = new ReactiveProperty<int>(maxValue);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
         public Resource(int maxValue, int value)
         {
-            _max = new Stat(maxValue);
-            MaxValue = _max.Value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
+            _max = new IntStat(maxValue);
             _value = new ReactiveProperty<int>(value);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
-        public readonly ReadOnlyReactiveProperty<int> MaxValue;
+        public Resource(ResourceData data)
+        {
+            _max = new IntStat(data.Max);
+            _value = new ReactiveProperty<int>(data.Value);
+            MaxValue.Subscribe(_ => clampCurrentValue());
+        }
+
+        public ReadOnlyReactiveProperty<int> MaxValue => _max.Value;
         public ReadOnlyReactiveProperty<int> Value => _value;
 
         public void Dispose()
         {
             _value.Dispose();
+        }
+
+        ~Resource()
+        {
+            Dispose();
+        }
+
+        public ResourceData GetData()
+        {
+            return new ResourceData(_max.GetData(), _value.Value);
         }
 
         private void clampCurrentValue()
@@ -44,12 +57,11 @@ namespace Domain.Service.Characters.Stats
         {
             if (value < 0)
             {
-                return Gain(-value, name);
+                return -Gain(-value, name);
             }
 
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
-            Log.Debug($"{name} Lose {value}, current value {_value.Value}");
             return oldValue - _value.Value;
         }
 
@@ -57,12 +69,12 @@ namespace Domain.Service.Characters.Stats
         {
             if (value < 0)
             {
-                return Lose(-value, name);
+                return -Lose(-value, name);
             }
 
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, MaxValue.CurrentValue);
-            return oldValue - _value.Value;
+            return _value.Value - oldValue;
         }
 
         public void AddMaxValue(float value)

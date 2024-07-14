@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Area;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Setting;
-using Effect.Position;
 using Domain.Service.Action;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
@@ -20,9 +18,7 @@ using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
-using AdditionalConditionData = Domain.Model.AdditionalConditionData;
 using Domain.Model.Action;
 using Domain.Model.Characters;
 using Domain.Model.Message;
@@ -343,9 +339,9 @@ namespace Domain.Service.Characters
             _inventory.RepairAll();
         }
 
-        public void UpdateTurn(IMap map)
+        public async UniTask UpdateTurn(IMap map)
         {
-            _statusManager.UpdateTurn(map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
+            await _statusManager.UpdateTurn(map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
             _affiliationManager.UpdateTurn(map.GetVisibleCharacters(this).Select(x => x.Affiliation));
         }
 

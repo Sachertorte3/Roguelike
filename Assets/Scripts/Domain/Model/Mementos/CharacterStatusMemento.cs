@@ -1,11 +1,12 @@
 ﻿using Sirenix.OdinInspector;
+using Stats;
 
 namespace Domain.Model.Character
 {
     public record CharacterStatusMemento(
-        int MaxHp,
-        int Hp,
-        float ViewRange,
+        ResourceData Hp,
+        StatData HpNaturalRecoveryAmount,
+        StatData ViewRange,
         int ClairvoyantFlags,
         ConditionMemento[] Conditions
     );

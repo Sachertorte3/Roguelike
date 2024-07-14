@@ -12,6 +12,6 @@ namespace Domain.Model.Condition
         public void RemoveViewRangeMultiplier(float value);
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
-        public UniTask<int> LoseHp(int value);
+        public UniTask<int> LoseHp(int value, bool notifyOnlyActualLoss = false);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Model.Character;
+using Domain.Model.Item;
 
 namespace Domain.Model.Map
 {

@@ -1,4 +1,4 @@
-﻿using Domain.Model.Items;
+﻿using Domain.Model.Item;
 
 namespace Domain.Model.Message
 {

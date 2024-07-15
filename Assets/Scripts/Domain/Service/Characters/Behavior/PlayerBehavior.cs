@@ -3,7 +3,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
-using Domain.Model.Characters;
+using Domain.Model.Character;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Unity.Logging;

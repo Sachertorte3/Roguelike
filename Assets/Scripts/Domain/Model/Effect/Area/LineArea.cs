@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Model.Area
+namespace Domain.Model.Effect.Area
 {
     public class LineArea : IDirectionalArea
     {

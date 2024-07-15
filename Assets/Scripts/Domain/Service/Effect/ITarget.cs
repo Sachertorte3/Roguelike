@@ -1,4 +1,4 @@
-﻿using Domain.Model.Characters;
+﻿using Domain.Model.Character;
 
 namespace Domain.Service.Effect
 {

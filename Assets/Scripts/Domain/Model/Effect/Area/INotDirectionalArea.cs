@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Domain.Model.Area
+namespace Domain.Model.Effect.Area
 {
     public interface INotDirectionalArea : IArea
     {

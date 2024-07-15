@@ -24,7 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 4425517220030054409
     Position:
-      rid: 4425517232088416257
+      rid: 2541219106150416407
   SkillOnThrow:
     Area:
       rid: -2
@@ -36,17 +36,18 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 2541219106150416407
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon: {fileID: -503745, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 5
+        CriticalRate: 0
         AdditionalConditions: []
-    - rid: 4425517232088416257
-      type: {class: ProjectileImpact, ns: Effect.Position, asm: Domain.Service}
-      data:
-        Icon: {fileID: -503745, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
     - rid: 4425517232088416258
-      type: {class: CircleArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 1
         Radius: 1

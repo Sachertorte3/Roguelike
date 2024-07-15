@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Unity.Logging;
 using Utilities;
-using Domain.Model.Characters;
+using Domain.Model.Character;
 using Domain.Model.Action;
 using Domain.Model;
 

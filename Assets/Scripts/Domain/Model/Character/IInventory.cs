@@ -1,11 +1,10 @@
 ﻿#nullable enable
-using System.Collections;
 using System.Collections.Generic;
 using Domain.Model.Message;
 using ObservableCollections;
 using R3;
 
-namespace Domain.Model.Items
+namespace Domain.Model.Item
 {
     public interface IInventory
     {

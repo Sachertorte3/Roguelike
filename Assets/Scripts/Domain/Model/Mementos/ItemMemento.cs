@@ -1,4 +1,5 @@
-﻿using Domain.Model.Items;
+﻿#nullable enable
+using Domain.Model.Item;
 using UnityEngine;
 
 namespace Domain.Model.Character

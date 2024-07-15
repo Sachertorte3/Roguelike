@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Area;
+using Domain.Model.Effect.Area;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;
+using Domain.Model.Effect.Position;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
-using Effect.Position;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

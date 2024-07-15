@@ -1,5 +1,5 @@
 ﻿using System;
-using Domain.Model.Characters;
+using Domain.Model.Character;
 using R3;
 using Stats;
 

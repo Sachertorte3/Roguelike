@@ -4,7 +4,9 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
-using Domain.Model.Items;
+using Domain.Model.Effect;
+using Domain.Model.Item;
+using Domain.Model.Item;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;
@@ -163,7 +165,7 @@ namespace Domain.Service.Items
 
             return Id.Value == ((Item)obj).Id.Value;
         }
-        
+
         public override int GetHashCode()
         {
             return Id.Value;

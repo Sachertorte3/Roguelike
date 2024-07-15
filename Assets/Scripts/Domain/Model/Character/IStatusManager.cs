@@ -1,11 +1,10 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
-using Domain.Model.Character;
 using Domain.Model.Condition;
 using ObservableCollections;
 using R3;
 
-namespace Domain.Model.Characters
+namespace Domain.Model.Character
 {
     public interface IStatusManager : IHasCondition
     {

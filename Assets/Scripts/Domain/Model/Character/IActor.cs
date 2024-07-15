@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
-using Domain.Model.Items;
-using Domain.Service;
+using Domain.Model.Item;
 using UnityEngine;
 using Utilities;
 

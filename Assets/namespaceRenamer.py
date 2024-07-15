@@ -6,7 +6,7 @@ def replace_namespace_in_file(file_path, old_ns, new_ns):
         content = f.read()
 
     # 正規表現パターンを定義
-    pattern = re.compile(f'class: [^,]+, ns: [^,]+, asm: {re.escape(old_ns)}')
+    pattern = re.compile(f'class: [^,]+, ns: {re.escape(old_ns)}, asm: ')
     
     # デバッグ用に一致する部分を表示
     matches = pattern.findall(content)
@@ -32,6 +32,6 @@ def replace_namespace_in_folder(folder_path, old_ns, new_ns):
 
 if __name__ == "__main__":
     folder_path = r"C:\Users\Torte\Documents\Unity\LogRogue\Assets\Database"  # 対象のフォルダーのパスを指定
-    old_ns = "Data"
-    new_ns = "Domain.Model"
+    old_ns = "Domain.Model.Area"
+    new_ns = "Domain.Model.Effect.Area"
     replace_namespace_in_folder(folder_path, old_ns, new_ns)

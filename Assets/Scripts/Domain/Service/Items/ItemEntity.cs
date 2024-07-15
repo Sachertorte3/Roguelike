@@ -1,16 +1,11 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
-using Domain.Model.Character;
-using Domain.Model.Items;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Message;
 using Domain.Model.Setting;
-using Domain.Service.Action;
-using Domain.Service.Characters;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;

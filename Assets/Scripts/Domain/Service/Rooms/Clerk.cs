@@ -1,8 +1,7 @@
 using System;
 using Domain.Model;
-using Domain.Service.Characters;
+using Domain.Model.Character;
 using Domain.Service.Events;
-using Model.Game;
 using R3;
 using UnityEngine;
 using Utilities;

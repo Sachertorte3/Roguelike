@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using UnityEngine;
 
 namespace Domain.Model.Effect

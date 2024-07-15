@@ -2,7 +2,6 @@ using Domain.Model.Character.Type;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
 using Domain.Model.Effect;
 
 #if UNITY_EDITOR
@@ -16,13 +15,12 @@ namespace Domain.Model.Character
     {
         [ReadOnly] [Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Enemy;
+        [SerializeReference] public ICharacterType CharacterType;
         public bool IsBoss = false;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
         public bool WanderAround = true;
         public SkillData[] Skills;
-        public List<AdditionalConditionData> AdditionalConditions = new();
-        [SerializeReference] public ICharacterType CharacterType;
 #if UNITY_EDITOR
         private void OnValidate()
         {

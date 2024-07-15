@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System.Linq;
-using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Setting;
 using Model.Game;
 using R3;

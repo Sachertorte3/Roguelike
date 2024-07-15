@@ -10,11 +10,10 @@ using UnityEngine;
 using Utilities;
 using R3;
 using Domain.Service.Logs;
-using Domain.Model.Items;
 using Unity.Logging;
-using Domain.Model;
 using Domain.Service.Characters.Conditions;
 using Domain.Model.Condition;
+using Domain.Model.Item;
 
 namespace Model.Game
 {

@@ -24,7 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599144
     Position:
-      rid: 4425516923575599142
+      rid: 2541219106150416411
   SkillOnThrow:
     Area:
       rid: 4425516923575599143
@@ -34,11 +34,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599142
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+    - rid: 2541219106150416411
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 4425516923575599143
-      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599144
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -47,8 +47,8 @@ MonoBehaviour:
           RemoveByElapsedTurn: 1
           Duration: 5
           RemoveByDamage: 0
-          AcceptableDamage: 0
           Probability: 0
+          RemoveByEnemyNearby: 0
         Condition:
           rid: 4425516923575599145
     - rid: 4425516923575599145

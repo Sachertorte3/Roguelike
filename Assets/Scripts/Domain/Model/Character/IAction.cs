@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Domain.Service;
 
 namespace Domain.Model.Action
 {

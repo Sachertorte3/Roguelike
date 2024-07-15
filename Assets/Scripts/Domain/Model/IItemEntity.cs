@@ -2,7 +2,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
-using Domain.Model.Items;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Message;
 using R3;

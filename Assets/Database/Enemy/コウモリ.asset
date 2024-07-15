@@ -24,41 +24,27 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599110
     Position:
-      rid: 4425516923575599119
+      rid: 2541219106150416413
     Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
-  AdditionalConditions:
-  - RemovalCondition:
-      RemoveByElapsedTurn: 1
-      Duration: 3
-      RemoveByDamage: 0
-      AcceptableDamage: 0
-      Probability: 0
-      RemoveByEnemyNearby: 0
-    Probability: 0.2
-    Condition:
-      rid: 4425516923575599112
   CharacterType:
     rid: 6064254728247705600
   references:
     version: 2
     RefIds:
+    - rid: 2541219106150416413
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
     - rid: 4425516923575599109
-      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599110
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 3
         CriticalRate: 0
         AdditionalConditions: []
-    - rid: 4425516923575599112
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
-    - rid: 4425516923575599119
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
-      data: 
     - rid: 6064254728247705600
       type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

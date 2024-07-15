@@ -2,7 +2,7 @@
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Action;
-using Domain.Model.Characters;
+using Domain.Model.Character;
 using Domain.Service.Action;
 using Unity.Logging;
 using UnityEngine;

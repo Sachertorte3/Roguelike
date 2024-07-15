@@ -20,9 +20,8 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Domain.Model.Action;
-using Domain.Model.Characters;
 using Domain.Model.Message;
-using Domain.Model.Items;
+using Domain.Model.Item;
 
 namespace Domain.Service.Characters
 {
@@ -58,7 +57,7 @@ namespace Domain.Service.Characters
             _money = data.Money;
             IsLeader = data.IsLeader;
             IsBoss = data.IsBoss;
-        
+
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
         }
 

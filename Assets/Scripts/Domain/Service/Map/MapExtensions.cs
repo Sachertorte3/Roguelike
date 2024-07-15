@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Characters;
+using Domain.Model.Character;
 using UnityEngine;
 
 namespace Domain.Service

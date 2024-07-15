@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d20d47e3661a0064f81a1012970562ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 21664f3bcf3eccd46aa738ff7a0c2ccb, type: 3}
   m_Name: "\u58CA\u308C\u305F"
   m_EditorClassIdentifier: Data:Data:WeaponPrefix
   Name: "\u58CA\u308C\u305F"
+  _rarity: 0
   PowerMagnification: 0.5
   UsageLimitMagnification: 0.2
   AdditionalConditions: []

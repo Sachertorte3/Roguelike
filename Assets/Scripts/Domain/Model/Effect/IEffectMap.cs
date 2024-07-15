@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Domain.Model.Effect;
 using UnityEngine;
 
-namespace Effect
+namespace Domain.Model.Effect
 {
     public interface IEffectMap
     {

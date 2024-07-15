@@ -24,8 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599125
     Position:
-      rid: 4425517220030054405
-    Log: "\u306F[Item]\u3092\u632F\u3063\u305F"
+      rid: 2541219106150416400
   SkillOnThrow:
     Area:
       rid: -2
@@ -37,16 +36,16 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 2541219106150416400
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
     - rid: 4425516923575599125
       type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 5
         Rate: 0.6
-    - rid: 4425517220030054405
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
-      data: 
     - rid: 4425517220030054406
-      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1

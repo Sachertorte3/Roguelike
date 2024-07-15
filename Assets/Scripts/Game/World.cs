@@ -27,13 +27,12 @@ namespace Model.Game
         public int ActiveMapIndex = 0;
 
         [Inject]
-        public World(CharacterControllInputReceiver receiver)
+        public World(CharacterControllInputReceiver receiver, DungeonData dungeonData)
         {
             Globals.World = this;
             _receiver = receiver;
 
-            _dungeonData = Addressables.LoadAssetAsync<DungeonData>("Assets/Database/Dungeon.asset")
-                .WaitForCompletion();
+            _dungeonData = dungeonData;
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;

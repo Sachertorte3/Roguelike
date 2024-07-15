@@ -5,7 +5,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Model.Items;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;

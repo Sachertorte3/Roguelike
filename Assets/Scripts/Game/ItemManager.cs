@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Items;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Items;
 using ObservableCollections;

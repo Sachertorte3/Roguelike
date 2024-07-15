@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace Domain.Model
             public Table<EnemyData> Enemies;
             public Table<MaterialData> Materials;
             public Table<WeaponMold> WeaponMolds;
-            [ShowIf("@PrefixChance > 0")]public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
+            [ShowIf("@PrefixChance > 0")] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         }
     }
 }

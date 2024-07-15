@@ -1,6 +1,4 @@
 using Domain.Model.Condition;
-using Domain.Model.Effect;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Character

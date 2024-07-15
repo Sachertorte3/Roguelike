@@ -24,7 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599132
     Position:
-      rid: 4425516923575599129
+      rid: 2541219106150416405
   SkillOnThrow:
     Area:
       rid: -2
@@ -36,15 +36,15 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4425516923575599129
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+    - rid: 2541219106150416405
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 4425516923575599132
       type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Distance: 10
     - rid: 4425517232088416259
-      type: {class: CircleArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Radius: 1

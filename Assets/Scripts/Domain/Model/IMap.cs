@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Model.Items;
-using Effect;
+using Domain.Model.Item;
 using ObservableCollections;
 using UnityEngine;
 

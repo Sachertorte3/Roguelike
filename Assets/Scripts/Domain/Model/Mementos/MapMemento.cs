@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using Domain.Model.Character;
 
 namespace Domain.Model.Map

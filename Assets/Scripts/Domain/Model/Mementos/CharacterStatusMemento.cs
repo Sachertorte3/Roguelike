@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using Stats;
+﻿using Stats;
 
 namespace Domain.Model.Character
 {

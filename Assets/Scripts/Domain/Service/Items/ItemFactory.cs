@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Items;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 

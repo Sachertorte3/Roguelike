@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using Domain.Model;
-using Domain.Model.Area;
-using Effect.Position;
+using Domain.Model.Character;
+using Domain.Model.Effect;
+using Domain.Model.Effect.Area;
+using Domain.Model.Item;
 using Domain.Service.Effect;
 using UnityEngine;
 
@@ -18,11 +19,10 @@ namespace Domain.Service
                 true,
                 true,
                 new SkillDataOnUse(
-                    new AtFeet(),
+                    mold.Position,
                     mold.Area,
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
-                        new List<AdditionalConditionData>()),
-                    mold.Log
+                        new List<AdditionalConditionData>())
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
@@ -42,12 +42,11 @@ namespace Domain.Service
                 true,
                 true,
                 new SkillDataOnUse(
-                    new AtFeet(),
+                    mold.Position,
                     mold.Area,
                     new AttackEffect(
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
-                        prefix.AdditionalConditions),
-                    mold.Log
+                        prefix.AdditionalConditions)
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),

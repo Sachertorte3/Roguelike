@@ -1,6 +1,6 @@
-﻿using Domain.Service.Characters.Behavior;
+﻿using Domain.Model;
+using Domain.Service.Characters.Behavior;
 using Model.Game;
-using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
 using VContainer;
@@ -12,7 +12,7 @@ namespace Provider
 {
     internal class Container : LifetimeScope
     {
-        [SerializeField] private FieldBluePrint _bluePrint;
+        [SerializeField] private DungeonData _dungeonData;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -25,7 +25,7 @@ namespace Provider
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
-            builder.RegisterComponent(_bluePrint);
+            builder.RegisterComponent(_dungeonData);
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();

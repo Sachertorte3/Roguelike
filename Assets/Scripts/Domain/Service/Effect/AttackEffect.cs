@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;

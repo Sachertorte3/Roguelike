@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: "\u30E4\u30C9\u30AB\u30EA"
   Group: 1
+  CharacterType:
+    rid: 4425516923575599116
   IsBoss: 0
   Hp: 5
-  Aggression: 4
+  Aggression: 1
   WanderAround: 1
   Skills:
   - Area:
@@ -24,29 +26,26 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599108
     Position:
-      rid: 4425516923575599118
+      rid: 2541219106150416414
     Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-  AdditionalConditions: []
-  CharacterType:
-    rid: 4425516923575599116
   references:
     version: 2
     RefIds:
+    - rid: 2541219106150416414
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
     - rid: 4425516923575599106
-      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
     - rid: 4425516923575599108
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 2
         CriticalRate: 0
         AdditionalConditions: []
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 2
-    - rid: 4425516923575599118
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
-      data: 

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Domain.Model.Action;
-using Domain.Service;
 
-namespace Domain.Model.Characters
+namespace Domain.Model.Character
 {
     public interface IUndiscoveredTargetBehavior
     {

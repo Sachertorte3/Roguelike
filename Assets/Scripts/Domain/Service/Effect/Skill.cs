@@ -1,18 +1,16 @@
 ﻿#nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Area;
+using Domain.Model.Effect.Area;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using Effect;
-using Effect.Position;
 using UnityEngine;
 using Utilities;
 using Domain.Model.Action;
 using Domain.Service.Logs;
+using Domain.Model.Effect.Position;
 
 namespace Domain.Service.Effect
 {

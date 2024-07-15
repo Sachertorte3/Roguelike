@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: "\u30D6\u30ED\u30F3\u30BA"
   m_EditorClassIdentifier: 
   Name: "\u30D6\u30ED\u30F3\u30BA"
-  Power: 4
-  UsageLimitMagnification: 1
+  Power: 5
+  UsageLimitMagnification: 1.2

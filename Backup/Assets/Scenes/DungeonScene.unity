@@ -618,7 +618,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _bluePrint: {fileID: 11400000, guid: 4dcbc3b4d2b3c4beeb5bea52285e145f, type: 2}
+  _dungeonData: {fileID: 11400000, guid: 884b3df8cbbbc2042a625b68cea2698a, type: 2}
 --- !u!1 &440029840
 GameObject:
   m_ObjectHideFlags: 0

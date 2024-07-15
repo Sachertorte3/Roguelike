@@ -24,8 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 8824446334317363257
     Position:
-      rid: 4425516923575599123
-    Log: "\u306F\u58C1\u3092\u6398\u3063\u305F"
+      rid: 2541219106150416399
   SkillOnThrow:
     Area:
       rid: -2
@@ -37,11 +36,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4425516923575599123
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+    - rid: 2541219106150416399
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 4425516923575599124
-      type: {class: LineArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1

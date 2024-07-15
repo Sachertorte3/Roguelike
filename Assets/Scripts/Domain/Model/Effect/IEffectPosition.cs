@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using Domain.Model;
-using Domain.Model.Effect;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using Utilities;
 
-namespace Effect
+namespace Domain.Model.Effect
 {
     public interface IEffectPosition : IHasInfo
     {

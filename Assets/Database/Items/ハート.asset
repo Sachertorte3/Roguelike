@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u30CF\u30FC\u30C8"
   m_EditorClassIdentifier: 
   Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  Rarity: 0
+  _rarity: 0
   Price: 100
   EffectsOnUse: 1
   EffectsOnThrow: 1
@@ -24,7 +24,7 @@ MonoBehaviour:
     Effect:
       rid: 4425517307579858944
     Position:
-      rid: 4425516923575599126
+      rid: 2541219106150416402
   SkillOnThrow:
     Area:
       rid: 4425516923575599127
@@ -34,11 +34,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4425516923575599126
-      type: {class: AtFeet, ns: Effect.Position, asm: Domain.Service}
+    - rid: 2541219106150416402
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 4425516923575599127
-      type: {class: SelfArea, ns: Domain.Model.Area, asm: Domain.Model}
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 4425517307579858944
       type: {class: AffectionIncreaseEffect, ns: Domain.Service.Effect, asm: Domain.Service}

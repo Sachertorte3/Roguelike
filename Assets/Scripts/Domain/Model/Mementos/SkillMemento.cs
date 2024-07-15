@@ -1,6 +1,6 @@
-﻿using Domain.Model.Area;
+﻿#nullable enable
+using Domain.Model.Effect.Area;
 using Domain.Model.Effect;
-using Effect;
 
 namespace Domain.Model.Character
 {

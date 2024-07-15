@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Domain.Model
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
-    public class DungeonData : ScriptableObject
+    public partial class DungeonData : ScriptableObject
     {
         [RequiredListLength(1, null)] public List<SectionData> Sections;
 
@@ -23,6 +23,7 @@ namespace Domain.Model
             [Range(0, 1)] public float ShopChance = 0.1f;
             [Range(0, 1)] public float MonsterHouseChance = 0.1f;
             [Required] public FieldBluePrint Field;
+            public RoomData Room;
             public RarityWeightTable<ItemData> Items;
             [ShowIf("@ShopChance > 0")] public RarityWeightTable<ItemData> ShopItems;
             [ShowIf("@ShopChance > 0"), Required] public EnemyData Clerk;

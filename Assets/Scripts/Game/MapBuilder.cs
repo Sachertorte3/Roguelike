@@ -44,11 +44,17 @@ namespace Model.Game
 
             foreach (var room in rooms)
             {
-                var positions = room.RectRange().GetAtRandom(8).ToList();
-                var characterPositions = positions.TakeAndRemove(2);
-                var itemPositions = positions.TakeAndRemove(2);
-                var weaponPositions = positions.TakeAndRemove(1);
-                var chestPositions = positions.TakeAndRemove(1);
+                var characterCount = data.Room.CharacterCount;
+                var itemCount = data.Room.ItemCount;
+                var weaponCount = data.Room.WeaponCount;
+                var chestCount = Random.value < data.Room.ChestChance ? 1 : 0;
+                var sum = characterCount + itemCount + weaponCount + chestCount + 2;
+
+                var positions = room.RectRange().GetAtRandom(sum).ToList();
+                var characterPositions = positions.TakeAndRemove(characterCount);
+                var itemPositions = positions.TakeAndRemove(itemCount);
+                var weaponPositions = positions.TakeAndRemove(weaponCount);
+                var chestPositions = positions.TakeAndRemove(chestCount);
 
                 AddCharactersToRoom(data, characterPositions);
                 AddItemsToRoom(data, itemPositions);

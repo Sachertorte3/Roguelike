@@ -162,7 +162,7 @@ namespace Domain.Service.Characters
 
             if (item.SkillOnUse != null)
             {
-                GameLog.Add($"<color=green>{_name}</color>は{item.Name}を使った");
+                GameLog.Add($"{GetName(map.Player)}は{item.Name}を使った");
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)

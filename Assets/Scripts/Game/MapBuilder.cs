@@ -44,9 +44,9 @@ namespace Model.Game
 
             foreach (var room in rooms)
             {
-                var characterCount = data.Room.CharacterCount;
-                var itemCount = data.Room.ItemCount;
-                var weaponCount = data.Room.WeaponCount;
+                var characterCount = GetCount(data.Room.CharacterCount);
+                var itemCount = GetCount(data.Room.ItemCount);
+                var weaponCount = GetCount(data.Room.WeaponCount);
                 var chestCount = Random.value < data.Room.ChestChance ? 1 : 0;
                 var sum = characterCount + itemCount + weaponCount + chestCount + 2;
 
@@ -75,6 +75,20 @@ namespace Model.Game
             var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
+        }
+        
+        private int GetCount(int attemptCount)
+        {
+            var probability = 0.5f;
+            var count = 0;
+            for (int i = 0; i < attemptCount; i++)
+            {
+                if (Random.value < probability)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         private ShopMemento? CreateShop(SectionData data, List<RectInt> rooms)

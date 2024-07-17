@@ -25,19 +25,19 @@ namespace Domain.Model.Item
         [SerializeField]
         public bool IsSameSkill = false;
 
-        [ShowIf("EffectsOnUse")] public SkillDataOnUse SkillOnUse;
-        [ShowIf("EffectsOnThrow")] public SkillDataOnThrow SkillOnThrow;
+        [ShowIf("EffectsOnUse")] public SkillDataOnUse? SkillOnUse;
+        [ShowIf("EffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         [ReadOnly][Required] private string _name = "";
 
-        public ItemData(string name, Sprite icon, Rarity rarity, bool effectsOnUse, bool effectsOnThrow,
-            SkillDataOnUse skillOnUse, SkillDataOnThrow skillOnThrow, int usageLimit)
+        public ItemData(string name, Sprite icon, Rarity rarity,
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, int usageLimit)
         {
             _name = name;
             Icon = icon;
             _rarity = rarity;
-            EffectsOnUse = effectsOnUse;
-            EffectsOnThrow = effectsOnThrow;
+            EffectsOnUse = skillOnUse != null;
+            EffectsOnThrow = skillOnThrow != null;
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
             UsageLimit = usageLimit;

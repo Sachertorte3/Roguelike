@@ -166,10 +166,10 @@ namespace Domain.Service.Characters
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
                 if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, map),
+                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, map, false),
                         UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
                 else
-                    await item.Use(this, CurrentPosition, direction, map);
+                    await item.Use(this, CurrentPosition, direction, map, false);
 
                 State = CharacterState.Wait;
             }

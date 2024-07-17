@@ -24,7 +24,7 @@ namespace Domain.Model.Item
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public void SetState(ItemState state);
-        public UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world, bool isThrown);
         public void Repair();
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world);
     }

@@ -6,7 +6,6 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
-using Domain.Model.Item;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;
@@ -100,7 +99,7 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world, bool isThrown)
         {
             _remainingUsages.Value -= 1;
             if (State == ItemState.ShopItem)
@@ -108,9 +107,18 @@ namespace Domain.Service.Items
                 State = ItemState.UsedShopItem;
             }
             _onItemUpdated.OnNext(Unit.Default);
-            if (SkillOnUse == null)
-                throw new InvalidOperationException("SkillOnUse is null");
-            await SkillOnUse.Use(actor, position, direction, world);
+            if (isThrown)
+            {
+                if (SkillOnThrow == null)
+                    throw new InvalidOperationException("SkillOnThrow is null");
+                await SkillOnThrow.Use(actor, position, direction, world);
+            }
+            else
+            {
+                if (SkillOnUse == null)
+                    throw new InvalidOperationException("SkillOnUse is null");
+                await SkillOnUse.Use(actor, position, direction, world);
+            }
         }
 
         public void Repair()

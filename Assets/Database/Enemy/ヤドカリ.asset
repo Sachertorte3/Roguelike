@@ -22,23 +22,23 @@ MonoBehaviour:
   WanderAround: 1
   Skills:
   - Area:
-      rid: 4425516923575599106
+      rid: 2541219158355345415
     Effect:
       rid: 4425516923575599108
     Position:
-      rid: 2541219106150416414
+      rid: 2541219158355345416
     Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 4425516923575599106
+    - rid: 2541219158355345415
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
+    - rid: 2541219158355345416
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
     - rid: 4425516923575599108
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

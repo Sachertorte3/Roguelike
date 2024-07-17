@@ -5,17 +5,17 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Sleeped : IConditionData
+    internal class Clairvoyant : IConditionData
     {
-        public string Name => "睡眠";
-        public ParticleType ParticleType => ParticleType.Sleep;
-        public Impact Impact => Impact.Harmful;
-        public bool CanAct => false;
+        public string Name => "千里眼";
+        public ParticleType ParticleType => ParticleType.Relieve;
+        public Impact Impact => Impact.Beneficial;
+        public bool CanAct => true;
         public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.RemoveViewRangeMultiplier(0.25f);
+            hasCondition.AddClairvoyantFlags();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,7 +25,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.AddViewRangeMultiplier(0.25f);
+            hasCondition.RemoveClairvoyantFlags();
         }
     }
 }

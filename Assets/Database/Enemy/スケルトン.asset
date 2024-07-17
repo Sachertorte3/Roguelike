@@ -22,11 +22,11 @@ MonoBehaviour:
   WanderAround: 1
   Skills:
   - Area:
-      rid: 4425516923575599106
+      rid: 2541219158355345408
     Effect:
-      rid: 4425516923575599108
+      rid: 2541219158355345409
     Position:
-      rid: 2541219106150416414
+      rid: 2541219158355345410
     Log: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F\u3002"
   - Area:
       rid: 2541219106150416437
@@ -38,9 +38,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219106150416434
       type: {class: Skeleton, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
@@ -58,14 +55,17 @@ MonoBehaviour:
         Power: 2
         CriticalRate: 0
         AdditionalConditions: []
-    - rid: 4425516923575599106
+    - rid: 2541219158355345408
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 4425516923575599108
+    - rid: 2541219158355345409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 4
         CriticalRate: 0
         AdditionalConditions: []
+    - rid: 2541219158355345410
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

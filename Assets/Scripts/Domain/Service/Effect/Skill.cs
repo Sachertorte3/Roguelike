@@ -8,7 +8,6 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using UnityEngine;
 using Utilities;
-using Domain.Model.Action;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
 
@@ -106,10 +105,11 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            var area = _area.Get(position, direction);
-            var characters = world.GetCharactersInArea(area.ToHashSet());
+            var spawnPositions = _position.Get(actor, position, direction, map);
+            var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
+            var characters = map.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
             var totalEvaluation = 0f;
 

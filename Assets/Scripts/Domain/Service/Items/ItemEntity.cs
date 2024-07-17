@@ -78,7 +78,7 @@ namespace Domain.Service.Items
             {
                 _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                     Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
-                await Item.Use(actor, CurrentPosition, direction, map);
+                await Item.Use(actor, CurrentPosition, direction, map, true);
             }
         }
 

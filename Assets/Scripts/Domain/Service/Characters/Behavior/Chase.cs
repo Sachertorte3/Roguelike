@@ -32,7 +32,7 @@ namespace Domain.Service.Characters.Behavior
 
             var direction = DirectionMethods.FromVector(route[1] - route[0]);
 
-            var move = new Move(direction, 0.5f);
+            var move = new Move(direction, 0.01f);
             if (move.Doable(character, world))
             {
                 return new List<Move> { move };

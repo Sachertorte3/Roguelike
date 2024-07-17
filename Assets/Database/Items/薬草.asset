@@ -22,7 +22,7 @@ MonoBehaviour:
     Area:
       rid: 4425516923575599140
     Effect:
-      rid: 4425516923575599141
+      rid: 2541219106150416439
     Position:
       rid: 2541219106150416409
   SkillOnThrow:
@@ -39,10 +39,21 @@ MonoBehaviour:
     - rid: 2541219106150416409
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 2541219106150416439
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        RemovalCondition:
+          RemoveByElapsedTurn: 1
+          Duration: 30
+          RemoveByDamage: 0
+          Probability: 0
+          RemoveByEnemyNearby: 0
+        Condition:
+          rid: 2541219106150416440
+    - rid: 2541219106150416440
+      type: {class: NaturalHeal, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        Power: 1
     - rid: 4425516923575599140
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599141
-      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 3

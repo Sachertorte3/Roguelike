@@ -109,6 +109,11 @@ namespace Domain.Service.Characters
         {
             _stats.Hp.AddMaxMultiplier(value);
         }
+        
+        public void AddHpNaturalRecoveryValue(float value)
+        {
+            _stats.HpNaturalRecoveryAmount.AddValue(value);
+        }
 
         public void AddViewRangeMultiplier(float value)
         {
@@ -123,6 +128,11 @@ namespace Domain.Service.Characters
         public void RemoveMaxHpMultiplier(float value)
         {
             _stats.Hp.RemoveMaxMultiplier(value);
+        }
+        
+        public void RemoveHpNaturalRecoveryValue(float value)
+        {
+            _stats.HpNaturalRecoveryAmount.AddValue(-value);
         }
 
         public void RemoveViewRangeMultiplier(float value)

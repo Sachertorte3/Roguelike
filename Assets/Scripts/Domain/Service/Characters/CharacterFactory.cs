@@ -46,7 +46,7 @@ namespace Domain.Service.Characters
                 data.Name,
                 data.CharacterType,
                 data.WanderAround,
-                CharacterStatusManager.Build(data.Hp, 0, 5, isSleeped, isShiney),
+                CharacterStatusManager.Build(data.Hp, 0, 8, isSleeped, isShiney),
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 new InventoryMemento(new ItemMemento[10]),

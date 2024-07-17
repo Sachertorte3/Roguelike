@@ -16,8 +16,6 @@ namespace Domain.Service
                 material.Name + mold.Name,
                 mold.Icon,
                 Rarity.Common,
-                true,
-                true,
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,
@@ -39,8 +37,6 @@ namespace Domain.Service
                 prefix.Name + material.Name + mold.Name,
                 mold.Icon,
                 prefix.Rarity,
-                true,
-                true,
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,

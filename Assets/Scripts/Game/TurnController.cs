@@ -33,10 +33,12 @@ namespace Model.Game
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
+                
+                map.UpdateTurn(_turn);
                 var characters = map.Characters.ToList();
                 foreach (var character in characters)
                 {
-                    character.UpdateTurn(map);
+                    await character.UpdateTurn(map);
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
                         Log.Debug($"[Turn] {character.GetName(map.Player)} think...");

@@ -11,11 +11,17 @@ namespace Provider
 {
     public class LogPresenter
     {
+        private CompositeDisposable _disposables = new();
         [Inject]
         public LogPresenter(LogView logView)
         {
-            Settings.LogShownMilliSeconds.Subscribe(logView.SetLogShownMilliSeconds);
-            GameLog.OnLogOutput.Subscribe(logView.AddLog);
+            _disposables.Add(Settings.LogShownMilliSeconds.Subscribe(logView.SetLogShownMilliSeconds));
+            _disposables.Add(GameLog.OnLogOutput.Subscribe(logView.AddLog));
+        }
+
+        ~LogPresenter()
+        {
+            _disposables.Dispose();
         }
     }
 }

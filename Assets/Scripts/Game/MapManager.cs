@@ -352,6 +352,12 @@ namespace Model.Game
             Dispose();
         }
 
+        public void UpdateTurn(int turn)
+        {
+            if (turn % 20 == 0)
+                SpawnRandomEnemy(GetAllPassablePositions().Except(Player.VisionRange.VisibleArea).GetAtRandom());
+        }
+
         public void RemoveWalls(IEnumerable<Vector2Int> positions)
         {
             _tilemap.RemoveWalls(positions);

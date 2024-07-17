@@ -23,7 +23,7 @@ MonoBehaviour:
       RemoveByDamage: 1
       Probability: 0.5
       RemoveByEnemyNearby: 0
-    Probability: 0.1
+    Probability: 0.2
     Condition:
       rid: 2541219064542658561
   references:

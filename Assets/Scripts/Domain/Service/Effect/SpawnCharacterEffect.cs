@@ -16,11 +16,13 @@ namespace Domain.Service.Effect
     {
         [Required] public EnemyData Character;
         [MinValue(1)] public int Count;
+        public bool InheritsShiney;
 
-        public SpawnCharacterEffect(EnemyData character, int count)
+        public SpawnCharacterEffect(EnemyData character, int count, bool inheritsShiney)
         {
             Character = character;
             Count = count;
+            InheritsShiney = inheritsShiney;
         }
 
         public Color Color => Colors.MediumPurple;
@@ -40,7 +42,9 @@ namespace Domain.Service.Effect
                             map.IsMapPassable,
                             position
                         ),
-                        actor.Affiliation
+                        actor.Affiliation,
+                        false,
+                        InheritsShiney ? actor.IsShiney : null
                     );
                 }
             }

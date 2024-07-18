@@ -43,30 +43,6 @@ namespace Utilities
             return GetAtRandom(ie, n, max => Random.Range(0, max));
         }
 
-        public static T? GetAtRandomOrDefault<T>(this IEnumerable<T> ie)
-        {
-            try
-            {
-                return GetAtRandom(ie, 1, max => Random.Range(0, max))[0];
-            }
-            catch
-            {
-                return default;
-            }
-        }
-
-        public static List<T> GetAtRandomOrDefault<T>(this IEnumerable<T> ie, int n)
-        {
-            try
-            {
-                return GetAtRandom(ie, n, max => Random.Range(0, max));
-            }
-            catch
-            {
-                return new List<T>();
-            }
-        }
-
         public static List<T> GetAtRandom<T>(this IEnumerable<T> ie, int n, Func<int, int> randomRange)
         {
             if (!ie.Any()) throw new Exception("IEnumerable Argument is null or empty");

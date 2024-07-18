@@ -40,13 +40,6 @@ namespace Model.Game
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int playerPosition, CharacterControllInputReceiver receiver)
         {
-            _tilemap = new Tilemap(map.Tilemap);
-            CharacterManager = new CharacterManager();
-            ItemManager = new ItemManager();
-            EventEntityManager = new EventEntityManager(map.EventEntities);
-
-            _sectionData = sectionData;
-
             if (playerData == null)
             {
                 playerData = CharacterFactory.BuildPlayer("Player", playerPosition);
@@ -59,7 +52,12 @@ namespace Model.Game
                 };
             }
 
-            CharacterManager.SpawnPlayer(playerData, receiver, this);
+            _tilemap = new Tilemap(map.Tilemap);
+            CharacterManager = new CharacterManager(playerData, receiver, this);
+            ItemManager = new ItemManager();
+            EventEntityManager = new EventEntityManager(map.EventEntities);
+
+            _sectionData = sectionData;
 
             if (partyMembers != null)
             {
@@ -108,14 +106,14 @@ namespace Model.Game
                 }
             }
 
-            var visibleArea = Player.VisionRange.VisibleArea;
+            var visibleArea = CharacterManager.Player.VisionRange.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
 
             foreach (var entity in Entities)
                 entity.SetVisiblity(visibleArea.Contains(entity.CurrentPosition));
         }
 
-        public ICharacter Player => CharacterManager.Player;
+        public ICharacter? Player => CharacterManager?.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
@@ -154,14 +152,14 @@ namespace Model.Game
         {
             return ItemManager.SpawnItem(item, position);
         }
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null)
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null, bool? isSleeped=null, bool? isShiney=null)
         {
             return CharacterManager.SpawnCharacter(
                 CharacterFactory.BuildCharacter(
                     enemy,
                     position,
-                    Random.value < _sectionData.SleepChance,
-                    Random.value < _sectionData.ShineyChance,
+                    isSleeped ?? Random.value < _sectionData.SleepChance,
+                    isShiney ?? Random.value < _sectionData.ShineyChance,
                     affiliation?.Serialize()
                 ),
                 this
@@ -367,11 +365,11 @@ namespace Model.Game
 
         public void UpdateTurn(int turn)
         {
-            if (turn % 20 == 0)
+            if (turn % 30 == 0)
             {
-                var position = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea).GetAtRandomOrDefault();
-                if (position != null)
-                    SpawnRandomEnemy(position);
+                var positions = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea);
+                if (positions.Any())
+                    SpawnRandomEnemy(positions.GetAtRandom());
             }
         }
 

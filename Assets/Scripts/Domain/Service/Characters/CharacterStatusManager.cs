@@ -5,7 +5,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Characters.Stats;
@@ -150,35 +149,25 @@ namespace Domain.Service.Characters
             _visionRange.RemoveClairvoyantFlags();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSleeped, bool isShiney)
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSleeped)
         {
             var conditions = new List<ConditionMemento>();
             if (isSleeped)
             {
-                conditions.Add(Condition.Build(new Sleeped(), new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)));
-            }
-            if (isShiney)
-            {
-                conditions.Add(Condition.Build(new Star(), new RemovalConditionData()));
-                return new CharacterStatusMemento(
-                    new ResourceData(new StatData(maxHp * 3), maxHp * 3),
-                    new StatData(hpNaturalRecoveryAmount),
-                    new StatData(viewRange),
-                    0,
-                    conditions.ToArray()
+                conditions.Add(
+                    Condition.Build(
+                        new Sleeped(),
+                        new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)
+                    )
                 );
             }
-            else
-            {
-                return new CharacterStatusMemento(
-                    new ResourceData(new StatData(maxHp), maxHp),
-                    new StatData(hpNaturalRecoveryAmount),
-                    new StatData(viewRange),
-                    0,
-                    conditions.ToArray()
-                );
-            }
-
+            return new CharacterStatusMemento(
+                new ResourceData(new StatData(maxHp), maxHp),
+                new StatData(hpNaturalRecoveryAmount),
+                new StatData(viewRange),
+                0,
+                conditions.ToArray()
+            );
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

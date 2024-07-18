@@ -13,6 +13,6 @@ namespace Domain.Model.Character
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }
-        public UniTask UpdateTurn(bool enemyVisible);
+        public void UpdateTurn(bool enemyVisible);
     }
 }

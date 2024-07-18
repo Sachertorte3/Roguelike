@@ -38,7 +38,7 @@ namespace Model.Game
                 var characters = map.Characters.ToList();
                 foreach (var character in characters)
                 {
-                    await character.UpdateTurn(map);
+                    character.UpdateTurn();
                     if (character.CanAct && !character.StatusManager.IsDead)
                     {
                         Log.Debug($"[Turn] {character.GetName(map.Player)} think...");

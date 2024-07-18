@@ -67,7 +67,7 @@ namespace Domain.Model.Character
         public bool TryPickUp(IItem item);
         public IItem? ReplaceInventory(IItem? item, int index);
         public void RepairAllItem();
-        public UniTask UpdateTurn(IMap world);
+        public void UpdateTurn();
         public void AddMoney(int value);
         public void ReduceMoney(int value);
 

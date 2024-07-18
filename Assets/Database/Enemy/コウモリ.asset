@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: "\u30B3\u30A6\u30E2\u30EA"
   Group: 1
+  CharacterType:
+    rid: 6064254728247705600
   IsBoss: 0
   Hp: 3
   Aggression: 1
@@ -26,11 +28,20 @@ MonoBehaviour:
     Position:
       rid: 2541219106150416413
     Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
-  CharacterType:
-    rid: 6064254728247705600
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416413
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

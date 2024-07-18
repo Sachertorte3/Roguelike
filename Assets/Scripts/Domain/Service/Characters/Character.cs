@@ -35,11 +35,13 @@ namespace Domain.Service.Characters
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
         private readonly ISkill[] _skills;
+        private readonly ISkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         private bool _canIgnoreWall;
         private int _money;
         private string _name = "Character";
         private readonly IDisposable _disposable;
+        private IMap _map;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap map)
@@ -48,6 +50,7 @@ namespace Domain.Service.Characters
             CharacterType = data.CharacterType;
             _entity = new Entity(data.EntityData);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
+            _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
             _inventory = new Inventory(data.Inventory);
             _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
             Behavior = behavior;
@@ -59,6 +62,7 @@ namespace Domain.Service.Characters
             IsBoss = data.IsBoss;
 
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
+            _map = map;
         }
 
         private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
@@ -199,7 +203,7 @@ namespace Domain.Service.Characters
 
         public UniTask<int> GainHp(int value)
         {
-            return _statusManager.GainHp(value);
+            return UniTask.FromResult(_statusManager.GainHp(value));
         }
 
         public void Dispose()
@@ -242,6 +246,7 @@ namespace Domain.Service.Characters
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _skills.Select(x => x.Serialize()).ToArray(),
+                _lastSkill?.Serialize(),
                 _inventory.Serialize(),
                 _affiliationManager.Serialize(),
                 Aggression,
@@ -271,9 +276,12 @@ namespace Domain.Service.Characters
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
 
-        public UniTask<int> LoseHp(int value)
+        public async UniTask<int> LoseHp(int value)
         {
-            return _statusManager.LoseHp(value);
+            var result = _statusManager.LoseHp(value);
+            if (_statusManager.IsDead && _lastSkill != null)
+                await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+            return result;
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
@@ -338,10 +346,10 @@ namespace Domain.Service.Characters
             _inventory.RepairAll();
         }
 
-        public async UniTask UpdateTurn(IMap map)
+        public void UpdateTurn()
         {
-            await _statusManager.UpdateTurn(map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
-            _affiliationManager.UpdateTurn(map.GetVisibleCharacters(this).Select(x => x.Affiliation));
+            _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
+            _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
         }
 
         public void AddMoney(int value)

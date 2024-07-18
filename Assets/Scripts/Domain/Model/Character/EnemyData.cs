@@ -1,3 +1,4 @@
+#nullable enable
 using Domain.Model.Character.Type;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -21,6 +22,8 @@ namespace Domain.Model.Character
         public Aggression Aggression = Aggression.AvoidAllies;
         public bool WanderAround = true;
         public SkillData[] Skills;
+        public bool HasLastSkill = false;
+        [ShowIf("@HasLastSkill")] public SkillData LastSkill;
 #if UNITY_EDITOR
         private void OnValidate()
         {

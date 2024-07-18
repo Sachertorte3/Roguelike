@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
@@ -22,9 +24,13 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Neutral;
 
-        public async UniTask Apply(IActorOfEffect actor, Vector2Int position, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            await map.SpawnEnemy(Character, position);
+            foreach (var position in positions)
+            {
+                map.SpawnEnemy(Character, position);
+            }
+            return UniTask.CompletedTask;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

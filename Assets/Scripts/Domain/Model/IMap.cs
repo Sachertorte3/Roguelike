@@ -23,5 +23,6 @@ namespace Domain.Model
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public void Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position);
     }
 }

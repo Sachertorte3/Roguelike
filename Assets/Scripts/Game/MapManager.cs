@@ -389,15 +389,15 @@ namespace Model.Game
             _tilemap.RemoveWalls(positions);
         }
 
-        public record EntityFilter(MapManager Map, IEnumerable<IEntity> Entities, HashSet<Vector2Int>? cachedPositions, EntityLayer? Layer, IEnumerable<Vector2Int>? Area)
+        public record EntityFilter(MapManager Map, IEnumerable<IEntity> Entities, EntityLayer? Layer, IEnumerable<Vector2Int>? Area)
         {
             public EntityFilter On(EntityLayer layer)
             {
-                return new(Map, Entities, null, layer, Area);
+                return new(Map, Entities, layer, Area);
             }
             public EntityFilter In(IEnumerable<Vector2Int> area)
             {
-                return new(Map, Entities, null, Layer, area);
+                return new(Map, Entities, Layer, area);
             }
             private IEnumerable<IEntity> Get()
             {
@@ -414,18 +414,16 @@ namespace Model.Game
             }
             public HashSet<Vector2Int> GetPositions()
             {
-                if (cachedPositions != null)
-                    return cachedPositions;
                 return Get().Select(entity => entity.CurrentPosition).ToHashSet();
             }
         }
 
-        public EntityFilter AllEntities() => new(this, Entities, null, null, null);
-        public EntityFilter AllItem() => new(this, ItemManager.Items, ItemManager.GetAllItemPositions(), null, null);
-        public EntityFilter AllCharacter() => new(this, CharacterManager.Characters, CharacterManager.GetAllCharacterPositions(), null, null);
-        public EntityFilter AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null, null);
-        public HashSet<Vector2Int> AllItemPositions() =>  AllItem().GetPositions();
-        public HashSet<Vector2Int> AllCharacterPositions() => AllCharacter().GetPositions();
+        public EntityFilter AllEntities() => new(this, Entities, null, null);
+        public EntityFilter AllItem() => new(this, ItemManager.Items, null, null);
+        public EntityFilter AllCharacter() => new(this, CharacterManager.Characters, null, null);
+        public EntityFilter AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null);
+        public HashSet<Vector2Int> AllItemPositions() =>  ItemManager.GetAllItemPositions();
+        public HashSet<Vector2Int> AllCharacterPositions() => CharacterManager.GetAllCharacterPositions();
         public IEnumerable<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
 
         public void HandleItemDrop(int inventoryIndex)

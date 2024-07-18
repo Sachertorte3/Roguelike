@@ -24,7 +24,7 @@ namespace Domain.Service.Characters
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 true,
-                CharacterStatusManager.Build(100, 1, 10, false, false),
+                CharacterStatusManager.Build(100, 1, 10, false),
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 new[]
                 {
@@ -37,6 +37,7 @@ namespace Domain.Service.Characters
                 Aggression.AttackAnyone,
                 0,
                 true,
+                false,
                 false
             );
         }
@@ -44,10 +45,10 @@ namespace Domain.Service.Characters
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSleeped, bool isShiney, AffiliationMemento? affiliation=null)
         {
             return new CharacterMemento(
-                data.Name,
+                isShiney ? "☆" + data.Name : data.Name,
                 data.CharacterType,
                 data.WanderAround,
-                CharacterStatusManager.Build(data.Hp, 0, 8, isSleeped, isShiney),
+                CharacterStatusManager.Build(isShiney ? data.Hp*3 : data.Hp, 0, 8, isSleeped),
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
@@ -56,6 +57,7 @@ namespace Domain.Service.Characters
                 data.Aggression,
                 0,
                 false,
+                isShiney,
                 data.IsBoss
             );
         }

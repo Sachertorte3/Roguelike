@@ -51,6 +51,7 @@ MonoBehaviour:
       data:
         Character: {fileID: 11400000, guid: f55365a5b2e92814593b1b47597022fb, type: 2}
         Count: 2
+        InheritsShiney: 1
     - rid: 2541219158355345427
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

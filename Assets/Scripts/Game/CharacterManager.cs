@@ -2,7 +2,6 @@
 using System;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Service;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using ObservableCollections;
@@ -17,12 +16,22 @@ namespace Model.Game
         public readonly CharacterEvents CharacterEvents = new();
         public readonly CharacterEvents PlayerEvents = new();
 
-        public CharacterManager()
+        public CharacterManager(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap map)
         {
             CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
+
+            var player = _factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), map);
+            if (Player != null)
+            {
+                PlayerEvents.Remove(Player);
+            }
+
+            Player = player;
+            AddCharacter(player);
+            PlayerEvents.Add(player);
         }
 
-        public ICharacter? Player { get; private set; }
+        public readonly ICharacter Player;
 
         public IObservableCollection<ICharacter> Characters => _characters;
 
@@ -38,19 +47,6 @@ namespace Model.Game
             Dispose();
         }
 
-        private ICharacter SetPlayer(ICharacter player)
-        {
-            if (Player != null)
-            {
-                PlayerEvents.Remove(Player);
-            }
-
-            Player = player;
-            AddCharacter(player);
-            PlayerEvents.Add(player);
-            return player;
-        }
-
         public ICharacter AddCharacter(ICharacter character)
         {
             _characters.Add(character);
@@ -64,14 +60,9 @@ namespace Model.Game
             CharacterEvents.Remove(character);
         }
 
-        public ICharacter SpawnCharacter(CharacterMemento data, IMap world)
+        public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), world));
-        }
-
-        internal ICharacter SpawnPlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap world)
-        {
-            return SetPlayer(_factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), world));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), map));
         }
     }
 }

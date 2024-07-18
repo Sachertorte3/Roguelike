@@ -9,6 +9,7 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Entities;
 using Domain.Service.Events;
 using Domain.Service.Logs;
 using Domain.Service.Map;
@@ -68,7 +69,7 @@ namespace Model.Game
                         EntityData = character.EntityData with
                         {
                             Position = FindBlankPositionFrom(playerPosition,
-                                position => !GetAllCharacterPositions().Contains(position))
+                                position => !AllCharacterPositions().Contains(position))
                         }
                     };
                     CharacterManager.SpawnCharacter(characterData, this);
@@ -152,7 +153,7 @@ namespace Model.Game
         {
             return ItemManager.SpawnItem(item, position);
         }
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null, bool? isSleeped=null, bool? isShiney=null)
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSleeped = null, bool? isShiney = null)
         {
             return CharacterManager.SpawnCharacter(
                 CharacterFactory.BuildCharacter(
@@ -219,18 +220,34 @@ namespace Model.Game
                 .Any();
         }
 
-        public HashSet<Vector2Int> GetAllPassablePositions()
+        public record PassablePositionFilter(MapManager Map, EntityLayer? Layer, IEnumerable<Vector2Int>? Area)
         {
-            var result = TilemapViewer.GetAllPassablePositions();
-            result.ExceptWith(GetAllCharacterPositions());
-            return result;
+            public PassablePositionFilter On(EntityLayer layer)
+            {
+                return new(Map, layer, Area);
+            }
+            public PassablePositionFilter In(IEnumerable<Vector2Int> area)
+            {
+                return new(Map, Layer, area);
+            }
+            public HashSet<Vector2Int> Get()
+            {
+                var result = Map.TilemapViewer.GetAllPassablePositions();
+                if (Layer.HasValue)
+                    result.ExceptWith(Map.GetAllEntityPositionsAt(Layer.Value));
+                if (Area != null)
+                    result.IntersectWith(Area);
+                return result;
+            }
         }
 
-        public HashSet<Vector2Int> GetPassablePositionsInArea(IEnumerable<Vector2Int> area)
+        public PassablePositionFilter BlankPositions() => new(this, null, null);
+        public HashSet<Vector2Int> GetAllBlankPositionsOn(EntityLayer layer) => BlankPositions().On(layer).Get();
+        public HashSet<Vector2Int> GetAllPassablePositions() => GetAllBlankPositionsOn(EntityLayer.Middle);
+        public HashSet<Vector2Int> GetPassablePositionsInArea(IEnumerable<Vector2Int> area) => BlankPositions().In(area).Get();
+        public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
-            var result = TilemapViewer.GetAllPassablePositions();
-            result.IntersectWith(area);
-            return result;
+            return TilemapViewer.GetAllPassablePositions();
         }
 
         public bool IsPassable(Vector2Int position)
@@ -238,14 +255,14 @@ namespace Model.Game
             return IsMapPassable(position) && !GetAllEntityPositionsAt(EntityLayer.Middle).Contains(position);
         }
 
-        public HashSet<Vector2Int> GetAllLightPassablePositions()
-        {
-            return TilemapViewer.GetAllPassablePositions();
-        }
-
         public bool IsMapPassable(Vector2Int position)
         {
             return TilemapViewer.IsPassable(position);
+        }
+
+        public bool IsPassableIgnoreWall(Vector2Int position)
+        {
+            return !AllCharacterPositions().Contains(position);
         }
 
         public bool IsReachable(Vector2Int from, Vector2Int to)
@@ -296,10 +313,6 @@ namespace Model.Game
 
         private void SetRules()
         {
-            CharacterManager.Characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition())
-                .AddTo(_disposables);
-            ItemManager.Items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition()).AddTo(_disposables);
-
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 _tilemap.SetTilesKnown(areaChanged.Message.NewArea, true);
@@ -342,21 +355,13 @@ namespace Model.Game
                 }
             }).AddTo(_disposables);
 
-            CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
-            {
-                SetAllCharacterPosition();
-
-                positionChanged.Character.SetVisiblity(
-                    Player.IsVisible(positionChanged.Message.Position)
-                );
-            }).AddTo(_disposables);
-
-            ItemManager.ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged =>
-            {
-                SetAllItemPosition();
-
-                positionChanged.Item.SetVisiblity(Player.IsVisible(positionChanged.Message.Position));
-            }).AddTo(_disposables);
+            Observable.Merge(
+                ((IEntityGroupEvents)CharacterManager.CharacterEvents).OnPositionChanged,
+                ((IEntityGroupEvents)ItemManager.ItemEntityEvents).OnPositionChanged,
+                ((IEntityGroupEvents)EventEntityManager.EventEntityEvents).OnPositionChanged
+            ).Subscribe(positionChanged =>
+                positionChanged.Entity.SetVisiblity(Player.IsVisible(positionChanged.Message.Position))
+            ).AddTo(_disposables);
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {
@@ -384,40 +389,44 @@ namespace Model.Game
             _tilemap.RemoveWalls(positions);
         }
 
-        public HashSet<Vector2Int> GetAllItemPositions()
+        public record EntityFilter(MapManager Map, IEnumerable<IEntity> Entities, HashSet<Vector2Int>? cachedPositions, EntityLayer? Layer, IEnumerable<Vector2Int>? Area)
         {
-            return _allItemPositions;
+            public EntityFilter On(EntityLayer layer)
+            {
+                return new(Map, Entities, null, layer, Area);
+            }
+            public EntityFilter In(IEnumerable<Vector2Int> area)
+            {
+                return new(Map, Entities, null, Layer, area);
+            }
+            private IEnumerable<IEntity> Get()
+            {
+                var result = Entities;
+                if (Layer.HasValue)
+                    result = result.Where(entity => entity.Layer == Layer.Value);
+                if (Area != null)
+                    result = result.Where(entity => Area.Contains(entity.CurrentPosition));
+                return result.ToHashSet();
+            }
+            public HashSet<IEntity> GetEntities()
+            {
+                return Get().ToHashSet();
+            }
+            public HashSet<Vector2Int> GetPositions()
+            {
+                if (cachedPositions != null)
+                    return cachedPositions;
+                return Get().Select(entity => entity.CurrentPosition).ToHashSet();
+            }
         }
 
-        private void SetAllItemPosition()
-        {
-            _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
-        }
-
-        public bool IsPassableIgnoreWall(Vector2Int position)
-        {
-            return !GetAllCharacterPositions().Contains(position);
-        }
-
-        public HashSet<Vector2Int> GetAllCharacterPositions()
-        {
-            return new HashSet<Vector2Int>(_allCharacterPositions);
-        }
-
-        public IEnumerable<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer)
-        {
-            return Characters.Where(character => character.Layer == layer)
-                .Select(character => character.CurrentPosition).Concat(
-                    EventEntities.Where(eventEntity => eventEntity.Layer == layer)
-                        .Select(eventEntity => eventEntity.CurrentPosition)).Concat(
-                    Items.Where(item => item.Layer == layer)
-                        .Select(item => item.CurrentPosition));
-        }
-
-        private void SetAllCharacterPosition()
-        {
-            _allCharacterPositions = Characters.Select(character => character.Position.CurrentValue).ToHashSet();
-        }
+        public EntityFilter AllEntities() => new(this, Entities, null, null, null);
+        public EntityFilter AllItem() => new(this, ItemManager.Items, ItemManager.GetAllItemPositions(), null, null);
+        public EntityFilter AllCharacter() => new(this, CharacterManager.Characters, CharacterManager.GetAllCharacterPositions(), null, null);
+        public EntityFilter AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null, null);
+        public HashSet<Vector2Int> AllItemPositions() =>  AllItem().GetPositions();
+        public HashSet<Vector2Int> AllCharacterPositions() => AllCharacter().GetPositions();
+        public IEnumerable<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
 
         public void HandleItemDrop(int inventoryIndex)
         {

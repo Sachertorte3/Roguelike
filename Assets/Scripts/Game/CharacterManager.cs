@@ -1,11 +1,14 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Model.Game
 {
@@ -15,9 +18,12 @@ namespace Model.Game
         private readonly CharacterFactory _factory = new();
         public readonly CharacterEvents CharacterEvents = new();
         public readonly CharacterEvents PlayerEvents = new();
+        private HashSet<Vector2Int> _allCharacterPositions = new();
 
         public CharacterManager(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap map)
         {
+            _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
+            CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
 
             var player = _factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), map);
@@ -63,6 +69,16 @@ namespace Model.Game
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
             return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), map));
+        }
+
+        public HashSet<Vector2Int> GetAllCharacterPositions()
+        {
+            return _allCharacterPositions;
+        }
+
+        private void SetAllCharacterPosition()
+        {
+            _allCharacterPositions = _characters.Select(character => character.CurrentPosition).ToHashSet();
         }
     }
 }

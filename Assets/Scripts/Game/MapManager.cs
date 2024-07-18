@@ -154,9 +154,18 @@ namespace Model.Game
         {
             return ItemManager.SpawnItem(item, position);
         }
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position)
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null)
         {
-            return CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(enemy, position, Random.value < _sectionData.SleepChance, Random.value < _sectionData.ShineyChance), this);
+            return CharacterManager.SpawnCharacter(
+                CharacterFactory.BuildCharacter(
+                    enemy,
+                    position,
+                    Random.value < _sectionData.SleepChance,
+                    Random.value < _sectionData.ShineyChance,
+                    affiliation?.Serialize()
+                ),
+                this
+            );
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position)
         {

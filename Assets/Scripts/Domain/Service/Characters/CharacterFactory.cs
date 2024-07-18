@@ -33,7 +33,7 @@ namespace Domain.Service.Characters
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Player),
+                CharacterAffiliationManager.Build(CharacterGroup.Player, null),
                 Aggression.AttackAnyone,
                 0,
                 true,
@@ -41,7 +41,7 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSleeped, bool isShiney)
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSleeped, bool isShiney, AffiliationMemento? affiliation=null)
         {
             return new CharacterMemento(
                 data.Name,
@@ -52,7 +52,7 @@ namespace Domain.Service.Characters
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(data.Group),
+                CharacterAffiliationManager.Build(data.Group, affiliation),
                 data.Aggression,
                 0,
                 false,

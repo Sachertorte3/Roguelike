@@ -153,12 +153,19 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static AffiliationMemento Build(CharacterGroup group)
+        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation)
         {
+
+            var affiliationDict = new Dictionary<int, float>();
+            if (affiliation != null)
+            {
+                affiliationDict = new(affiliation.Affiliations);
+                affiliationDict[affiliation.Id] = 5f;
+            }
             return new AffiliationMemento(
                 UniqueIdGenerator.Generate<IAffiliation>().Value,
                 group,
-                new Dictionary<int, float>()
+                affiliationDict
             );
         }
 

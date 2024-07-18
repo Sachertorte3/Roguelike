@@ -1,8 +1,9 @@
-﻿using R3;
+﻿using Domain.Model.Character;
+using R3;
 
 namespace Domain.Model.Effect
 {
-    public interface IAffiliation
+    public interface IAffiliation : ISerializable<AffiliationMemento>
     {
         public int Id { get; }
         public CharacterGroup Group { get; }

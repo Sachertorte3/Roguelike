@@ -24,7 +24,7 @@ namespace Model.Game
         public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            ItemEntityEvents.OnPositionChanged.Subscribe(positionChanged => { SetAllItemPosition(); });
+            ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
         }
 
@@ -66,14 +66,14 @@ namespace Model.Game
             return _allItemPositions;
         }
 
-        public IItemEntity? GetItemAt(Vector2Int position)
-        {
-            return _items.FirstOrDefault(item => item.CurrentPosition == position);
-        }
-
         private void SetAllItemPosition()
         {
             _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
+        }
+
+        public IItemEntity? GetItemAt(Vector2Int position)
+        {
+            return _items.FirstOrDefault(item => item.CurrentPosition == position);
         }
 
         public IItemEntity? TryPickUp(Vector2Int position)

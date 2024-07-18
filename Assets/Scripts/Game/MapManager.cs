@@ -250,7 +250,13 @@ namespace Model.Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to)
         {
-            return true; //TODO: A*で実装
+            var route = new AStar(GetAllPassablePositions()).Calc(from, to);
+            if (route.Any())
+                return false;
+            if (IsPassable(to))
+                return route.Last() == to;
+            else
+                return (route.Last() - to).sqrMagnitude <= 2;
         }
 
         public void Touch(Vector2Int position)

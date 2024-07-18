@@ -60,7 +60,7 @@ namespace Domain.Service.Characters
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public UniTask<int> GainHp(int value, bool notifyOnlyActualGain = false)
+        public int GainHp(int value, bool notifyOnlyActualGain = false)
         {
             var gainValue = _stats.Hp.Gain(value, _name);
             if (notifyOnlyActualGain)
@@ -74,10 +74,10 @@ namespace Domain.Service.Characters
             {
                 _onHealReceived.OnNext(value);
             }
-            return UniTask.FromResult(gainValue);
+            return gainValue;
         }
 
-        public UniTask<int> LoseHp(int value, bool notifyOnlyActualLoss = false)
+        public int LoseHp(int value, bool notifyOnlyActualLoss = false)
         {
             var loseValue = _stats.Hp.Lose(value, _name);
             if (notifyOnlyActualLoss)
@@ -91,12 +91,12 @@ namespace Domain.Service.Characters
             {
                 _onDamageReceived.OnNext(value);
             }
-            return UniTask.FromResult(loseValue);
+            return loseValue;
         }
 
-        public async UniTask UpdateTurn(bool enemyVisible)
+        public void UpdateTurn(bool enemyVisible)
         {
-            await GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
+            GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             _conditions.UpdateTurn(this, enemyVisible);
         }
 

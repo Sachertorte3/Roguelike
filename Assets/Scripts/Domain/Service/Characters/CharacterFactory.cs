@@ -31,6 +31,7 @@ namespace Domain.Service.Characters
                     new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
                         new AttackEffect(1, new List<AdditionalConditionData>()), "は殴りかかった")).Serialize()
                 },
+                null,
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(CharacterGroup.Player),
                 Aggression.AttackAnyone,
@@ -49,6 +50,7 @@ namespace Domain.Service.Characters
                 CharacterStatusManager.Build(data.Hp, 0, 8, isSleeped, isShiney),
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
+                data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(data.Group),
                 data.Aggression,

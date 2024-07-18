@@ -7,6 +7,7 @@ using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Utilities.Algorithms;
 
 namespace Domain.Service.Effect
 {
@@ -14,10 +15,12 @@ namespace Domain.Service.Effect
     public class SpawnCharacterEffect : IEffect
     {
         [Required] public EnemyData Character;
+        [MinValue(1)] public int Count;
 
-        public SpawnCharacterEffect(EnemyData character)
+        public SpawnCharacterEffect(EnemyData character, int count)
         {
             Character = character;
+            Count = count;
         }
 
         public Color Color => Colors.MediumPurple;
@@ -28,7 +31,18 @@ namespace Domain.Service.Effect
         {
             foreach (var position in positions)
             {
-                map.SpawnEnemy(Character, position);
+                for (var i = 0; i < Count; i++)
+                {
+                    map.SpawnEnemy(
+                        Character,
+                        BlankFinder.FindBlankPosition(
+                            map.IsPassable,
+                            map.IsMapPassable,
+                            position
+                        ),
+                        actor.Affiliation
+                    );
+                }
             }
             return UniTask.CompletedTask;
         }
@@ -40,7 +54,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return "召喚";
+            return $"召喚: {Character.Name}\n{Count}体";
         }
     }
 }

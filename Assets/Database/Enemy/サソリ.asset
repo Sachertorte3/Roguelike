@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30B5\u30BD\u30EA"
+  m_EditorClassIdentifier: 
+  Name: "\u30B5\u30BD\u30EA"
+  Group: 1
+  CharacterType:
+    rid: 2541219158355345422
+  IsBoss: 0
+  Hp: 10
+  Aggression: 1
+  WanderAround: 1
+  Skills:
+  - Area:
+      rid: 2541219158355345408
+    Effect:
+      rid: 2541219158355345409
+    Position:
+      rid: 2541219158355345410
+    Log: "\u306F\u6BD2\u91DD\u3092\u7A81\u304D\u7ACB\u3066\u3066\u304D\u305F\u3002"
+  references:
+    version: 2
+    RefIds:
+    - rid: 2541219158355345408
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219158355345409
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 2
+        CriticalRate: 0
+        AdditionalConditions:
+        - RemovalCondition:
+            RemoveByElapsedTurn: 1
+            Duration: 5
+            RemoveByDamage: 0
+            Probability: 0
+            RemoveByEnemyNearby: 0
+          Probability: 0.5
+          Condition:
+            rid: 2541219158355345423
+    - rid: 2541219158355345410
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345422
+      type: {class: Scorpion, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0
+    - rid: 2541219158355345423
+      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        Power: 1

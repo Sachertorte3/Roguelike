@@ -368,7 +368,11 @@ namespace Model.Game
         public void UpdateTurn(int turn)
         {
             if (turn % 20 == 0)
-                SpawnRandomEnemy(GetAllPassablePositions().Except(Player.VisionRange.VisibleArea).GetAtRandom());
+            {
+                var position = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea).GetAtRandomOrDefault();
+                if (position != null)
+                    SpawnRandomEnemy(position);
+            }
         }
 
         public void RemoveWalls(IEnumerable<Vector2Int> positions)

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u3061\u3073\u30B9\u30E9\u30A4\u30E02"
+  m_Name: "\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7"
   m_EditorClassIdentifier: 
-  Name: "\u3061\u3073\u30B9\u30E9\u30A4\u30E02"
+  Name: "\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7"
   Group: 1
   CharacterType:
-    rid: 2541219158355345428
+    rid: 2541219158355345429
   IsBoss: 0
-  Hp: 3
+  Hp: 2
   Aggression: 1
   WanderAround: 1
   Skills:
@@ -28,7 +28,7 @@ MonoBehaviour:
     Position:
       rid: 2541219106150416414
     Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-  HasLastSkill: 1
+  HasLastSkill: 0
   LastSkill:
     Area:
       rid: 2541219158355345425
@@ -49,15 +49,15 @@ MonoBehaviour:
     - rid: 2541219158355345426
       type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Character: {fileID: 11400000, guid: f55365a5b2e92814593b1b47597022fb, type: 2}
-        Count: 2
+        Character: {fileID: 11400000}
+        Count: 0
     - rid: 2541219158355345427
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219158355345428
-      type: {class: SlimeSmall, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345429
+      type: {class: SlimeSmaller, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 0
+        Type: 3
     - rid: 4425516923575599106
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

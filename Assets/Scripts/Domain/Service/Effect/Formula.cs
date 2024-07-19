@@ -1,4 +1,5 @@
 ﻿using Domain.Model.Effect;
+using UnityEngine;
 
 namespace Domain.Service.Effect
 {
@@ -6,7 +7,7 @@ namespace Domain.Service.Effect
     {
         public static int Calc(IActorOfEffect actor, int power)
         {
-            return power;
+            return Mathf.RoundToInt(power * actor.AttackMultiplier);
         }
     }
 }

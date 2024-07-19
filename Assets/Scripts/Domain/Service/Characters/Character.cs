@@ -279,6 +279,7 @@ namespace Domain.Service.Characters
 
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
+        public float AttackMultiplier => _statusManager.Stats.CurrentAttackMultiplier;
 
         public async UniTask<int> LoseHp(int value)
         {

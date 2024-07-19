@@ -11,5 +11,6 @@ namespace Domain.Model.Effect
         public Vector2Int CurrentPosition { get; }
         public Aggression Aggression { get; }
         public UniTask<int> GainHp(int value);
+        public float AttackMultiplier { get; }
     }
 }

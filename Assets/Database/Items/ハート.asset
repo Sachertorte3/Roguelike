@@ -31,6 +31,7 @@ MonoBehaviour:
     Effect:
       rid: 4425517307579858944
   UsageLimit: 1
+  Conditions: []
   references:
     version: 2
     RefIds:

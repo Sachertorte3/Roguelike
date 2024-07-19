@@ -49,10 +49,10 @@ namespace Domain.Service.Characters
             _name = data.Name;
             CharacterType = data.CharacterType;
             _entity = new Entity(data.Entity);
+            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
-            _inventory = new Inventory(data.Inventory);
-            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
+            _inventory = new Inventory(data.Inventory, _statusManager);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
@@ -354,6 +354,7 @@ namespace Domain.Service.Characters
         {
             _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
             _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
+            _inventory.UpdateTurn();
         }
 
         public void AddMoney(int value)

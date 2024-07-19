@@ -24,7 +24,7 @@ namespace View.UI
             _itemViews[0].Select();
         }
 
-        public void Replace(Sprite icon, int count, string info, int index)
+        public void Replace(Sprite icon, int? count, string info, int index)
         {
             _itemViews[index].SetIcon(icon, count);
             _info[index] = info;
@@ -43,7 +43,7 @@ namespace View.UI
             if (CurrentFocus == index) _infoText.text = info;
         }
 
-        public void UpdateCount(int count, int index)
+        public void UpdateCount(int? count, int index)
         {
             _itemViews[index].SetCount(count);
         }

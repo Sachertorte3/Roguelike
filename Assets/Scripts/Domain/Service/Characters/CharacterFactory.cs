@@ -12,6 +12,8 @@ using Domain.Service.Effect;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Domain.Service.Entities;
+using Utilities;
 
 namespace Domain.Service.Characters
 {
@@ -25,7 +27,7 @@ namespace Domain.Service.Characters
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 true,
                 CharacterStatusManager.Build(100, 1, 10, false),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
+                Entity.Build(spawnPosition, EntityLayer.Middle),
                 new[]
                 {
                     new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
@@ -33,7 +35,7 @@ namespace Domain.Service.Characters
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Player, null),
+                CharacterAffiliationManager.Build(CharacterGroup.Player, null, null),
                 Aggression.AttackAnyone,
                 0,
                 true,
@@ -42,18 +44,18 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null)
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null, Id<IEntity>? id = null)
         {
             return new CharacterMemento(
                 isShiny ? "☆" + data.Name : data.Name,
                 data.CharacterType,
                 data.WanderAround,
                 CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, 8, isSlept),
-                new EntityMemento(spawnPosition, EntityLayer.Middle),
+                Entity.Build(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(data.Group, affiliation),
+                CharacterAffiliationManager.Build(data.Group, affiliation, id),
                 data.Aggression,
                 0,
                 false,

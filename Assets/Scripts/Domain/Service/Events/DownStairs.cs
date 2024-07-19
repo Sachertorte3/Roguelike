@@ -13,11 +13,13 @@ namespace Domain.Service.Events
     {
         private int _destinationMapId;
         private Entity _entity;
+        public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
 
-        public DownStairs(DownStairsMemento data)
+        public DownStairs(DownStairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             _entity = new Entity(data.Entity);
             _destinationMapId = data.DestinationMapId;
+            IsLocked = isLocked;
         }
 
         public void Dispose()
@@ -25,6 +27,7 @@ namespace Domain.Service.Events
             _entity.Dispose();
         }
 
+        public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
@@ -37,7 +40,7 @@ namespace Domain.Service.Events
 
         public EventTrigger Trigger => EventTrigger.Tread;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-        public bool CanExecuteEvent => true;
+        public bool CanExecuteEvent => !IsLocked.CurrentValue;
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {

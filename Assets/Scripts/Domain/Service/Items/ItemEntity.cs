@@ -36,6 +36,7 @@ namespace Domain.Service.Items
             _onEffectSpawned.Dispose();
         }
 
+        public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;

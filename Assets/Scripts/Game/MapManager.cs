@@ -35,6 +35,10 @@ namespace Model.Game
         public IShop? Shop => _shop;
         public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
+        private ReactiveProperty<bool> _downStairsLocked = new ReactiveProperty<bool>(true);
+        public ReadOnlyReactiveProperty<bool> DownStairsLocked => _downStairsLocked;
+        public ObservableList<ICharacter> KeyCharacters = new();
+        public IIconEntity DownStairs => EventEntityManager.DownStairs;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int playerPosition, CharacterControlInputReceiver receiver)
@@ -47,14 +51,14 @@ namespace Model.Game
             {
                 playerData = playerData with
                 {
-                    EntityData = playerData.EntityData with { Position = playerPosition }
+                    Entity = playerData.Entity with { Position = playerPosition }
                 };
             }
 
             _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager(playerData, receiver, this);
             ItemManager = new ItemManager();
-            EventEntityManager = new EventEntityManager(map.EventEntities);
+            EventEntityManager = new EventEntityManager(map.EventEntities, _downStairsLocked);
 
             _sectionData = sectionData;
 
@@ -64,7 +68,7 @@ namespace Model.Game
                 {
                     var characterData = character with
                     {
-                        EntityData = character.EntityData with
+                        Entity = character.Entity with
                         {
                             Position = FindBlankPositionFrom(playerPosition,
                                 position => !AllCharacterPositions().Contains(position))
@@ -103,6 +107,22 @@ namespace Model.Game
                     EventEntityManager.Add(_shop.Clerk);
                     _eventAreas.Add(_shop);
                 }
+            }
+
+            KeyCharacters = new(map.KeyCharacters
+                .Select(character => GetCharacterFromId(new(character)))
+                .Where(character => character != null)
+                .Cast<ICharacter>()
+            );
+            if (KeyCharacters.Any())
+            {
+                KeyCharacters.ForEach(character => _disposables.Add(character.OnDead.Subscribe(_ => KeyCharacters.Remove(character))));
+                _disposables.Add(KeyCharacters.ObserveCountChanged().Subscribe(count => Debug.Log(count)));
+                _disposables.Add(KeyCharacters.ObserveCountChanged().Where(count => count == 0).Subscribe(_ => _downStairsLocked.Value = false));
+            }
+            else
+            {
+                _downStairsLocked.Value = false;
             }
 
             var visibleArea = CharacterManager.Player.VisionRange.VisibleArea;
@@ -161,7 +181,12 @@ namespace Model.Game
             );
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_sectionData.Enemies.GetRandomItem(), position);
-
+        
+        public ICharacter? GetCharacterFromId(Id<IEntity> id)
+        {
+            var character = CharacterManager.Characters.FirstOrDefault(character => character.Id == id);
+            return character;
+        }
         public IItem? GetItemFromId(Id<IItem> id)
         {
             var itemEntity = ItemManager.Items.FirstOrDefault(item => item.Item.Id == id);
@@ -283,6 +308,7 @@ namespace Model.Game
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 EventEntityManager.Serialize(),
+                KeyCharacters.Select(character => character.Id.Value).ToList(),
                 _monsterHouse?.Serialize(),
                 _shop?.Serialize()
             );

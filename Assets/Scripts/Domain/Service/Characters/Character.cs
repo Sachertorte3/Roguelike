@@ -48,14 +48,14 @@ namespace Domain.Service.Characters
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(data.EntityData);
+            _entity = new Entity(data.Entity);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
             _inventory = new Inventory(data.Inventory);
             _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(data.Affiliation, map.Player?.Affiliation);
+            _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
@@ -217,6 +217,7 @@ namespace Domain.Service.Characters
             _direction.Dispose();
         }
 
+        public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;

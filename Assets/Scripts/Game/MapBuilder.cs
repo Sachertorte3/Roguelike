@@ -21,6 +21,7 @@ namespace Model.Game
         private readonly List<CharacterMemento> _characters;
         private readonly List<ItemEntityMemento> _items;
         private readonly EventEntitiesMemento _eventEntities;
+        private readonly List<int> _keyCharacters;
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
 
@@ -75,6 +76,7 @@ namespace Model.Game
             var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
+            _keyCharacters = _characters.Select(character => character.Entity.Id).ToList();
         }
 
         private int GetCount(int attemptCount)
@@ -105,7 +107,7 @@ namespace Model.Game
             var clerkPosition = positions.Last();
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, false, false);
             _characters.Add(clerk);
-            return Shop.Build(shopRoom, clerk.EntityData, _items.ToList());
+            return Shop.Build(shopRoom, clerk.Entity, _items.ToList());
         }
 
         private RoomMemento? CreateMonsterHouse(SectionData data, List<RectInt> rooms)
@@ -176,6 +178,7 @@ namespace Model.Game
                 _characters,
                 _items,
                 _eventEntities,
+                _keyCharacters,
                 _monsterHouse,
                 _shop
             );

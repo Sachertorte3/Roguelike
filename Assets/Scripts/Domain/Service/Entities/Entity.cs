@@ -10,6 +10,7 @@ namespace Domain.Service.Entities
 {
     internal class Entity : IDisposable, ISerializable<EntityMemento>
     {
+        public readonly Id<IEntity> Id;
         private readonly EntityLayer _layer;
         private readonly Subject<(Direction8 direction, Vector2Int destination)> _onMove = new();
         private readonly Subject<Vector2Int> _onTeleport = new();
@@ -19,6 +20,7 @@ namespace Domain.Service.Entities
 
         public Entity(EntityMemento data)
         {
+            Id = new Id<IEntity>(data.Id);
             _position = new ReactiveProperty<Vector2Int>(data.Position);
             _layer = data.Layer;
         }
@@ -39,12 +41,12 @@ namespace Domain.Service.Entities
 
         public EntityMemento Serialize()
         {
-            return new EntityMemento(_position.CurrentValue, _layer);
+            return new EntityMemento(Id.Value, _position.CurrentValue, _layer);
         }
 
         public static EntityMemento Build(Vector2Int position, EntityLayer layer)
         {
-            return new EntityMemento(position, layer);
+            return new EntityMemento(UniqueIdGenerator.Generate<IEntity>().Value, position, layer);
         }
 
         public void SetVisibility(bool visible)

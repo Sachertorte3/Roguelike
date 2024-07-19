@@ -30,6 +30,7 @@ namespace Domain.Service.Rooms
             Dispose();
         }
         public EventTrigger Trigger => EventTrigger.Touch;
+        public Id<IEntity> Id => Character.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
         public Vector2Int CurrentPosition => Character.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;

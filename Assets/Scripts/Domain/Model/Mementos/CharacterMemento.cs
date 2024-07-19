@@ -8,7 +8,7 @@ namespace Domain.Model.Character
         ICharacterType CharacterType,
         bool wanderAround,
         CharacterStatusMemento Status,
-        EntityMemento EntityData,
+        EntityMemento Entity,
         SkillMemento[] Skills,
         SkillMemento? LastSkill,
         InventoryMemento Inventory,

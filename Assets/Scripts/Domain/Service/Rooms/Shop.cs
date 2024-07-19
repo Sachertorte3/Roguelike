@@ -78,7 +78,7 @@ namespace Model.Game
         {
             return new ShopMemento(
                 new RoomMemento(Rect, hasEntered, hasEverEntered),
-                Clerk.Character.Serialize().EntityData,
+                Clerk.Character.Serialize().Entity,
                 _shopItems.Select(item => new ShopItemMemento(item.Id.Value, item.Price)).ToList(),
                 _isStolen.Value
             );

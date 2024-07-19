@@ -7,6 +7,18 @@ namespace Utilities.Algorithms
 {
     public class BlankFinder
     {
+        private static readonly List<Vector2Int> Directions = new()
+        {
+            Vector2Int.up,
+            Vector2Int.right,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.up + Vector2Int.right,
+            Vector2Int.down + Vector2Int.right,
+            Vector2Int.up + Vector2Int.left,
+            Vector2Int.down + Vector2Int.left
+        };
+
         public static Vector2Int FindBlankPosition(Func<Vector2Int, bool> isBlankFunc,
             Func<Vector2Int, bool> isFloorFunc, Vector2Int position) //FIXME Error when search results are not found
         {
@@ -23,8 +35,10 @@ namespace Utilities.Algorithms
                         return pos;
                     }
 
-                    nextPos.AddRange(DirectionMethods.AllDirections.Select(x => pos + x.Vector())
-                        .Where(x => !closedPos.Contains(x) && !nextPos.Contains(x)).Where(x => isFloorFunc(x)));
+                    nextPos.AddRange(Directions
+                        .Select(x => pos + x)
+                        .Where(x => !closedPos.Contains(x) && !nextPos.Contains(x))
+                        .Where(x => isFloorFunc(x)));
                 }
 
                 openedPos = nextPos;

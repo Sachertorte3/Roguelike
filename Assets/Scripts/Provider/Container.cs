@@ -48,6 +48,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<DamagePresenter>();
             builder.RegisterPlainEntryPoint<SoundPresenter>();
             builder.RegisterPlainEntryPoint<GroupMarkerPresenter>();
+            builder.RegisterPlainEntryPoint<KeyCharacterPresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();

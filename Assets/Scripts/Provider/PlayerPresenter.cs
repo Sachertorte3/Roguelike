@@ -17,7 +17,6 @@ namespace Provider
         public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
             StatLine statLine)
         {
-            GameObject arrow = null;
             CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
@@ -47,7 +46,6 @@ namespace Provider
                 },
                 map =>
                 {
-                    Object.Destroy(arrow);
                     _disposable.Clear();
                 });
         }

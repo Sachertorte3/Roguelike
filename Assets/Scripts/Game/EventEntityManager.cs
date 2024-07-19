@@ -1,6 +1,8 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codice.CM.Common.Merge;
 using Domain.Model.Map;
 using Domain.Service.Events;
 using Domain.Service.Items;
@@ -13,16 +15,16 @@ namespace Model.Game
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
         private readonly UpStairs _upStairs;
-        private readonly DownStairs _downStairs;
+        public readonly DownStairs DownStairs;
         private readonly List<Chest> _chests = new();
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IIconEventEntity> _eventEntitiesAndIcons = new();
         public EventEntityEvents EventEntityEvents = new();
 
-        public EventEntityManager(EventEntitiesMemento eventEntities)
+        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedDownStairs)
         {
-            _downStairs = new(eventEntities.DownStairs);
-            Add(_downStairs);
+            DownStairs = new(eventEntities.DownStairs, isLockedDownStairs);
+            Add(DownStairs);
 
             _upStairs = new(eventEntities.UpStairs);
             Add(_upStairs);
@@ -43,7 +45,7 @@ namespace Model.Game
         public EventEntitiesMemento Serialize()
         {
             return new EventEntitiesMemento(
-                _downStairs.Serialize(),
+                DownStairs.Serialize(),
                 _upStairs?.Serialize(),
                 _chests.Select(chest => chest.Serialize()).ToList()
             );

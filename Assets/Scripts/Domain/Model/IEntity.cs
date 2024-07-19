@@ -7,6 +7,7 @@ namespace Domain.Model
 {
     public interface IEntity : IDisposable
     {
+        public Id<IEntity> Id { get; }
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
         public Vector2Int CurrentPosition { get; }
         public ReadOnlyReactiveProperty<bool> Visibility { get; }

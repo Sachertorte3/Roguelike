@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using R3;
@@ -16,20 +17,20 @@ namespace Domain.Service.Characters
         private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
         private const float BaseEnemyValue = -1f; // 敵対グループの基本好感度
 
-        private readonly Dictionary<int, float> _affections;
-        private readonly int _id;
+        private readonly Dictionary<Id<IEntity>, float> _affections;
+        private readonly Id<IEntity> _id;
         private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
         private IAffiliation? _player;
 
-        public CharacterAffiliationManager(AffiliationMemento data, IAffiliation? player)
+        public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IAffiliation? player)
         {
-            _id = data.Id;
+            _id = id;
             Group = data.Group;
-            _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => x.Item1, x => x.Item2);
+            _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => new Id<IEntity>(x.Item1), x => x.Item2);
             _player = player;
         }
 
-        public int Id => _id;
+        public Id<IEntity> Id => _id;
         public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
 
         public CharacterGroup Group { get; private set; }
@@ -147,29 +148,27 @@ namespace Domain.Service.Characters
         public AffiliationMemento Serialize()
         {
             return new AffiliationMemento(
-                Id,
                 Group,
-                _affections.Select(x => (x.Key, x.Value)).ToDictionary(x => x.Item1, x => x.Item2)
+                _affections.Select(x => (x.Key.Value, x.Value)).ToDictionary(x => x.Item1, x => x.Item2)
             );
         }
 
-        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation)
+        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
 
             var affiliationDict = new Dictionary<int, float>();
-            if (affiliation != null)
+            if (affiliation != null && id != null)
             {
                 affiliationDict = new(affiliation.Affiliations);
-                affiliationDict[affiliation.Id] = 5f;
+                affiliationDict[id.Value] = 5f;
             }
             return new AffiliationMemento(
-                UniqueIdGenerator.Generate<IAffiliation>().Value,
                 group,
                 affiliationDict
             );
         }
 
-        public void ModifyAffection(int targetId, float change)
+        public void ModifyAffection(Id<IEntity> targetId, float change)
         {
             if (targetId == Id)
             {
@@ -216,7 +215,7 @@ namespace Domain.Service.Characters
             };
         }
 
-        private float GetAffection(int target)
+        private float GetAffection(Id<IEntity> target)
         {
             if (target == Id)
             {

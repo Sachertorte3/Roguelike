@@ -1,4 +1,6 @@
-﻿namespace Domain.Model.Effect
+﻿using Utilities;
+
+namespace Domain.Model.Effect
 {
-    public record OnAffectionChangedMessage(int Target, float Affection);
+    public record OnAffectionChangedMessage(Id<IEntity> Target, float Affection);
 }

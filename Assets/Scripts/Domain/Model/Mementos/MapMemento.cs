@@ -9,6 +9,7 @@ namespace Domain.Model.Map
         List<CharacterMemento> Characters,
         List<ItemEntityMemento> Items,
         EventEntitiesMemento EventEntities,
+        List<int> KeyCharacters,
         RoomMemento? MonsterHouse,
         ShopMemento? Shop
     );

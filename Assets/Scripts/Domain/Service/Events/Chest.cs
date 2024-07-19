@@ -26,6 +26,7 @@ namespace Domain.Service.Events
             .WaitForCompletion();
 
         public EventTrigger Trigger => EventTrigger.Touch;
+        public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => true;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
@@ -63,7 +64,7 @@ namespace Domain.Service.Events
 
         public static ChestMemento Build(Vector2Int position, ItemData item)
         {
-            return new ChestMemento(item, new EntityMemento(position, EntityLayer.Middle));
+            return new ChestMemento(item, Entity.Build(position, EntityLayer.Middle));
         }
     }
 }

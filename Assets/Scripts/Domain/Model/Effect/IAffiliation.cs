@@ -1,11 +1,12 @@
 ﻿using Domain.Model.Character;
 using R3;
+using Utilities;
 
 namespace Domain.Model.Effect
 {
     public interface IAffiliation : ISerializable<AffiliationMemento>
     {
-        public int Id { get; }
+        public Id<IEntity> Id { get; }
         public CharacterGroup Group { get; }
         public Observable<OnAffectionChangedMessage> OnAffectionChanged { get; }
         public bool IsAlly(IAffiliation other);

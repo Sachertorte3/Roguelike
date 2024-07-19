@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using Domain.Model;
-using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Service.Entities;
 using UnityEngine;
 
 namespace Domain.Service.Items
@@ -13,7 +13,7 @@ namespace Domain.Service.Items
         {
             return new ItemEntityMemento(
                 item.Serialize(),
-                new EntityMemento(spawnPosition, EntityLayer.Bottom)
+                Entity.Build(spawnPosition, EntityLayer.Bottom)
             );
         }
 

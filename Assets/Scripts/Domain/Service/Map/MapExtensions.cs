@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Service
 {
@@ -19,7 +20,7 @@ namespace Domain.Service
             return map.Characters.Where(character => character.IsVisible(position));
         }
 
-        public static ICharacter? GetCharacter(this IMap map, int id)
+        public static ICharacter? GetCharacter(this IMap map, Id<IEntity> id)
         {
             return map.Characters.FirstOrDefault(character => character.Affiliation.Id == id);
         }

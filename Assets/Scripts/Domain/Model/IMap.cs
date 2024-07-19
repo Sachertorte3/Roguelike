@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Effect;
@@ -15,6 +16,8 @@ namespace Domain.Model
         public IObservableCollection<IItemEntity> Items { get; }
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
         public HashSet<Vector2Int> GetAllLightPassablePositions();
+        public bool IsOverlapped(Vector2Int position, EntityLayer layer);
+        public bool IsBlank(Vector2Int position, EntityLayer layer);
         public bool IsPassable(Vector2Int position);
         public bool IsMapPassable(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
@@ -24,5 +27,6 @@ namespace Domain.Model
         public void Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null, bool? isSleeped=null, bool? isShiney=null);
+        public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
     }
 }

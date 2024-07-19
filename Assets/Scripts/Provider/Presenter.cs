@@ -15,7 +15,6 @@ namespace Provider
         public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
         {
             LoggerInit();
-            ObjectsManager.GetObjectsByType<SpriteView>();
             gameManager.LoadMap(1);
         }
 

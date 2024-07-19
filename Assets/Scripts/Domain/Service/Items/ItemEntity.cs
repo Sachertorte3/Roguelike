@@ -80,6 +80,11 @@ namespace Domain.Service.Items
                     Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
                 await Item.Use(actor, CurrentPosition, direction, map, true);
             }
+            if (map.IsOverlapped(CurrentPosition, Layer))
+            {
+                var position = map.FindBlankPositionFrom(CurrentPosition, position => map.IsBlank(position, Layer));
+                _entity.Teleport(position);
+            }
         }
 
         ~ItemEntity()

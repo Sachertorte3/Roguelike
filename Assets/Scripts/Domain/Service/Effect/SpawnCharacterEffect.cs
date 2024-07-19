@@ -37,11 +37,7 @@ namespace Domain.Service.Effect
                 {
                     map.SpawnEnemy(
                         Character,
-                        BlankFinder.FindBlankPosition(
-                            map.IsPassable,
-                            map.IsMapPassable,
-                            position
-                        ),
+                        position,
                         actor.Affiliation,
                         false,
                         InheritsShiney ? actor.IsShiney : null

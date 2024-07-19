@@ -96,7 +96,7 @@ namespace Model.Game
             {
                 var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Clerk.Position);
                 if (clerk == null && !map.Shop.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Clerk, map.Shop.Room.Room.RectRange().Where(IsPassable).GetAtRandom(), false, false), this);
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Clerk, BlankPositions().In(map.Shop.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop, clerk, this);
@@ -146,13 +146,13 @@ namespace Model.Game
             }
         }
 
-        public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, position);
+        public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Bottom)));
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSleeped = null, bool? isShiney = null)
         {
             return CharacterManager.SpawnCharacter(
                 CharacterFactory.BuildCharacter(
                     enemy,
-                    position,
+                    FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Middle)),
                     isSleeped ?? Random.value < _sectionData.SleepChance,
                     isShiney ?? Random.value < _sectionData.ShineyChance,
                     affiliation?.Serialize()
@@ -224,9 +224,12 @@ namespace Model.Game
             return TilemapViewer.GetAllPassablePositions();
         }
 
+        public bool IsOverlapped(Vector2Int position, EntityLayer layer) => AllEntities().On(layer).Get().Count(entity => entity.CurrentPosition == position) > 1;
+        public bool IsBlank(Vector2Int position, EntityLayer layer) => BlankPositions().On(layer).Get().Contains(position);
+
         public bool IsPassable(Vector2Int position)
         {
-            return IsMapPassable(position) && !GetAllEntityPositionsAt(EntityLayer.Middle).Contains(position);
+            return IsMapPassable(position) && !AllEntities().On(EntityLayer.Middle).GetPositions().Contains(position);
         }
 
         public bool IsMapPassable(Vector2Int position)
@@ -373,7 +376,7 @@ namespace Model.Game
             {
                 return new(Map, Entities, Layer, area);
             }
-            private IEnumerable<T> Get()
+            public IEnumerable<T> Get()
             {
                 var result = Entities;
                 if (Layer.HasValue)
@@ -413,7 +416,7 @@ namespace Model.Game
             if (item != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
-                ItemManager.SpawnItem(item, Player.CurrentPosition);
+                ItemManager.SpawnItem(item, FindBlankPositionFrom(Player.CurrentPosition, position => IsBlank(position, EntityLayer.Bottom)));
             }
             Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
         }

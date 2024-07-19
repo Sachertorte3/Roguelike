@@ -44,11 +44,11 @@ namespace Domain.Service.Events
             gameManager.LoadMap(_destinationMapId);
         }
 
-        public void SetVisiblity(bool visiblity)
+        public void SetVisibility(bool visibility)
         {
-            _entity.SetVisibility(visiblity);
+            _entity.SetVisibility(visibility);
         }
-        
+
         public void Destroy()
         {
             _entity.Destroy();

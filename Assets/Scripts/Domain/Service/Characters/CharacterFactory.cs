@@ -42,13 +42,13 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSleeped, bool isShiney, AffiliationMemento? affiliation=null)
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null)
         {
             return new CharacterMemento(
-                isShiney ? "☆" + data.Name : data.Name,
+                isShiny ? "☆" + data.Name : data.Name,
                 data.CharacterType,
                 data.WanderAround,
-                CharacterStatusManager.Build(isShiney ? data.Hp*3 : data.Hp, 0, 8, isSleeped),
+                CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, 8, isSlept),
                 new EntityMemento(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
@@ -57,12 +57,12 @@ namespace Domain.Service.Characters
                 data.Aggression,
                 0,
                 false,
-                isShiney,
+                isShiny,
                 data.IsBoss
             );
         }
 
-        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControllInputReceiver receiver,
+        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver,
             ReactiveProperty<bool> canIgnoreWall, IMap world)
         {
             return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, world);

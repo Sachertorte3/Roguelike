@@ -8,7 +8,7 @@ namespace View.UI
         [SerializeField] private TMP_Text _moneyText;
         [SerializeField] private TMP_Text _purchaseText;
         [SerializeField] private TMP_Text _saleText;
-        public void SetVisiblity(bool isVisible)
+        public void SetVisibility(bool isVisible)
         {
             gameObject.SetActive(isVisible);
         }

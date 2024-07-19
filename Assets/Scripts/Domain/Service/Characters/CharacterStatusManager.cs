@@ -108,7 +108,7 @@ namespace Domain.Service.Characters
         {
             _stats.Hp.AddMaxMultiplier(value);
         }
-        
+
         public void AddHpNaturalRecoveryValue(float value)
         {
             _stats.HpNaturalRecoveryAmount.AddValue(value);
@@ -128,7 +128,7 @@ namespace Domain.Service.Characters
         {
             _stats.Hp.RemoveMaxMultiplier(value);
         }
-        
+
         public void RemoveHpNaturalRecoveryValue(float value)
         {
             _stats.HpNaturalRecoveryAmount.AddValue(-value);
@@ -149,14 +149,14 @@ namespace Domain.Service.Characters
             _visionRange.RemoveClairvoyantFlags();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSleeped)
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSlept)
         {
             var conditions = new List<ConditionMemento>();
-            if (isSleeped)
+            if (isSlept)
             {
                 conditions.Add(
                     Condition.Build(
-                        new Sleeped(),
+                        new Slept(),
                         new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)
                     )
                 );

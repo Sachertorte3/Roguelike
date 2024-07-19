@@ -14,9 +14,9 @@ namespace Domain.Service.Characters.Behavior
     internal sealed class PlayerBehavior : ICharacterBehavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
-        private readonly CharacterControllInputReceiver _receiver;
+        private readonly CharacterControlInputReceiver _receiver;
 
-        public PlayerBehavior(CharacterControllInputReceiver receiver)
+        public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
             _receiver = receiver;
         }

@@ -59,7 +59,7 @@ namespace Domain.Service.Characters
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
-            IsShiney = data.IsShiney;
+            IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
 
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
@@ -71,7 +71,7 @@ namespace Domain.Service.Characters
         private ICharacterBehavior Behavior { get; }
         public Entity Entity => _entity;
         public bool IsLeader { get; init; }
-        public bool IsShiney { get; init; }
+        public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;
         public int Money => _money;
@@ -225,9 +225,9 @@ namespace Domain.Service.Characters
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
-        public void SetVisiblity(bool visiblity)
+        public void SetVisibility(bool visibility)
         {
-            _entity.SetVisibility(visiblity);
+            _entity.SetVisibility(visibility);
         }
 
         public void Destroy()
@@ -254,7 +254,7 @@ namespace Domain.Service.Characters
                 Aggression,
                 _money,
                 IsLeader,
-                IsShiney,
+                IsShiny,
                 IsBoss
             );
         }

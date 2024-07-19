@@ -44,11 +44,11 @@ namespace Domain.Service.Items
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
-        public void SetVisiblity(bool visiblity)
+        public void SetVisibility(bool visibility)
         {
-            _entity.SetVisibility(visiblity);
+            _entity.SetVisibility(visibility);
         }
-        
+
         public void Destroy()
         {
             _entity.Destroy();

@@ -13,10 +13,10 @@ namespace Model.Game
         private TurnController _turnController;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
-        private CharacterControllInputReceiver _receiver;
+        private CharacterControlInputReceiver _receiver;
 
         [Inject]
-        public GameManager(World world, GameInput input, CharacterControllInputReceiver receiver)
+        public GameManager(World world, GameInput input, CharacterControlInputReceiver receiver)
         {
             _world = world;
             _turnController = new TurnController(input);

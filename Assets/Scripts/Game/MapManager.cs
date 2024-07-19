@@ -37,7 +37,7 @@ namespace Model.Game
         public RectInt? ShopRect => _shop?.Rect;
 
         public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int playerPosition, CharacterControllInputReceiver receiver)
+            Vector2Int playerPosition, CharacterControlInputReceiver receiver)
         {
             if (playerData == null)
             {
@@ -109,7 +109,7 @@ namespace Model.Game
             _tilemap.SetTilesKnown(visibleArea, true);
 
             foreach (var entity in Entities)
-                entity.SetVisiblity(visibleArea.Contains(entity.CurrentPosition));
+                entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
         }
 
         public ICharacter? Player => CharacterManager?.Player;
@@ -147,14 +147,14 @@ namespace Model.Game
         }
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Bottom)));
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSleeped = null, bool? isShiney = null)
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null)
         {
             return CharacterManager.SpawnCharacter(
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Middle)),
-                    isSleeped ?? Random.value < _sectionData.SleepChance,
-                    isShiney ?? Random.value < _sectionData.ShineyChance,
+                    isSlept ?? Random.value < _sectionData.SleepChance,
+                    isShiny ?? Random.value < _sectionData.ShinyChance,
                     affiliation?.Serialize()
                 ),
                 this
@@ -295,7 +295,7 @@ namespace Model.Game
                 _tilemap.SetTilesKnown(areaChanged.Message.NewArea, true);
 
                 foreach (var entity in Entities)
-                    entity.SetVisiblity(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
+                    entity.SetVisibility(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
             }).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
@@ -337,7 +337,7 @@ namespace Model.Game
                 ((IEntityGroupEvents)ItemManager.ItemEntityEvents).OnPositionChanged,
                 ((IEntityGroupEvents)EventEntityManager.EventEntityEvents).OnPositionChanged
             ).Subscribe(positionChanged =>
-                positionChanged.Entity.SetVisiblity(Player.IsVisible(positionChanged.Message.Position))
+                positionChanged.Entity.SetVisibility(Player.IsVisible(positionChanged.Message.Position))
             ).AddTo(_disposables);
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
@@ -399,7 +399,7 @@ namespace Model.Game
         public EntityFilter<IItemEntity> AllItem() => new(this, ItemManager.Items, null, null);
         public EntityFilter<ICharacter> AllCharacter() => new(this, CharacterManager.Characters, null, null);
         public EntityFilter<IEventEntity> AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null);
-        public HashSet<Vector2Int> AllItemPositions() =>  ItemManager.GetAllItemPositions();
+        public HashSet<Vector2Int> AllItemPositions() => ItemManager.GetAllItemPositions();
         public HashSet<Vector2Int> AllCharacterPositions() => CharacterManager.GetAllCharacterPositions();
         public HashSet<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area) => AllCharacter().In(area).GetEntities();

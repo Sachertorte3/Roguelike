@@ -5,7 +5,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Sleeped : IConditionData
+    internal class Slept : IConditionData
     {
         public string Name => "睡眠";
         public ParticleType ParticleType => ParticleType.Sleep;

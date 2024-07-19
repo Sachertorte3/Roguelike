@@ -23,11 +23,11 @@ namespace Model.Game
         private int _activeMapId = 0;
         private DungeonData _dungeonData;
         private Dictionary<int, MapMemento> _maps = new();
-        private CharacterControllInputReceiver _receiver;
+        private CharacterControlInputReceiver _receiver;
         public int ActiveMapIndex = 0;
 
         [Inject]
-        public World(CharacterControllInputReceiver receiver, DungeonData dungeonData)
+        public World(CharacterControlInputReceiver receiver, DungeonData dungeonData)
         {
             Globals.World = this;
             _receiver = receiver;

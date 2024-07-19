@@ -71,8 +71,8 @@ namespace Provider
             ).AddTo(characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
-            if (character.IsShiney)
-                particleController.Add(ParticleType.ShineyStar);
+            if (character.IsShiny)
+                particleController.Add(ParticleType.ShinyStar);
             character.StatusManager.Conditions.SubscribeToAll(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)

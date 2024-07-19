@@ -30,7 +30,7 @@ namespace Utilities
                 ParticleType.PoisoningBubble => "effect_state_poisoning_2",
                 ParticleType.PowerUp => "effect_state_powerUp",
                 ParticleType.Relieve => "effect_state_relieve",
-                ParticleType.ShineyStar => "effect_state_shineyStar",
+                ParticleType.ShinyStar => "effect_state_shinyStar",
                 ParticleType.Sleep => "effect_state_sleep",
                 ParticleType.SlowDown => "effect_state_slowDown",
                 ParticleType.Stuned => "effect_state_stuned",

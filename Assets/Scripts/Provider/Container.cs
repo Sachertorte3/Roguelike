@@ -21,7 +21,7 @@ namespace Provider
             builder.Register<InputReceiver>(Lifetime.Singleton);
             builder.Register<GameInput>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
-            builder.Register<CharacterControllInputReceiver>(Lifetime.Singleton);
+            builder.Register<CharacterControlInputReceiver>(Lifetime.Singleton);
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);

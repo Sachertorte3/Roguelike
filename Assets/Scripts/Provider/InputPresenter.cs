@@ -13,7 +13,7 @@ namespace Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControllInputReceiver actionReceiver,
+        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
             World world, InventoryView inventoryView)
         {
             receiver.OnMovePerformed

@@ -48,11 +48,11 @@ namespace Domain.Service.Rooms
             Character.Affiliation.OnCharacterAttacked(thief.Affiliation, Character.Affiliation, 1f);
         }
 
-        public void SetVisiblity(bool visiblity)
+        public void SetVisibility(bool visibility)
         {
-            Character.SetVisiblity(visiblity);
+            Character.SetVisibility(visibility);
         }
-        
+
         public void Destroy()
         {
             Character.Destroy();

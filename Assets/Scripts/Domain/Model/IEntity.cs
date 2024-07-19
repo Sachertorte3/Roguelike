@@ -14,7 +14,7 @@ namespace Domain.Model
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Observable<Unit> OnDestroyed { get; }
-        public void SetVisiblity(bool visiblity);
+        public void SetVisibility(bool visibility);
         public void Destroy();
     }
 }

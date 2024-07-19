@@ -19,7 +19,7 @@
         PoisoningBubble,
         PowerUp,
         Relieve,
-        ShineyStar,
+        ShinyStar,
         Sleep,
         SlowDown,
         Stuned,

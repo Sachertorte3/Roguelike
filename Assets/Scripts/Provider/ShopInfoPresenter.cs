@@ -20,7 +20,7 @@ namespace Provider
                 {
                     _disposable.Add(map.Shop.IsInside.Subscribe(isInside =>
                     {
-                        shopInfoView.SetVisiblity(isInside);
+                        shopInfoView.SetVisibility(isInside);
                     }));
                     _disposable.Add(Observable.EveryUpdate().Subscribe(_ =>
                     {

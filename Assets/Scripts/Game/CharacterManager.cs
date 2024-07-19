@@ -20,7 +20,7 @@ namespace Model.Game
         public readonly CharacterEvents PlayerEvents = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
-        public CharacterManager(CharacterMemento playerData, CharacterControllInputReceiver receiver, IMap map)
+        public CharacterManager(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());

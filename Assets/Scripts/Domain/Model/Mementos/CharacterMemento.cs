@@ -16,7 +16,7 @@ namespace Domain.Model.Character
         Aggression Aggression,
         int Money,
         bool IsLeader,
-        bool IsShiney,
+        bool IsShiny,
         bool IsBoss
     );
 }

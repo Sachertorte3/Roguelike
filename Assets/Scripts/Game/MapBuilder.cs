@@ -70,13 +70,13 @@ namespace Model.Game
                     upStairsPosition = positions.TakeAndRemove(1).First();
                 }
             }
-            
+
             var downStairs = DownStairs.Build(downStairsPosition.Value, nextMapId);
             var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
         }
-        
+
         private int GetCount(int attemptCount)
         {
             var probability = 0.5f;
@@ -114,7 +114,7 @@ namespace Model.Game
 
             var monsterHouseRoom = rooms.GetAtRandom();
             rooms.Remove(monsterHouseRoom);
-            
+
             var positions = monsterHouseRoom.RectRange().GetAtRandom(5).ToList();
             foreach (var position in positions.Take(5))
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
@@ -126,7 +126,7 @@ namespace Model.Game
         {
             foreach (var position in positions)
             {
-                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.SleepChance, Random.value < data.ShineyChance);
+                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, Random.value < data.SleepChance, Random.value < data.ShinyChance);
                 _characters.Add(character);
             }
         }

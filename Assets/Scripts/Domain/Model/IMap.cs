@@ -26,7 +26,7 @@ namespace Domain.Model
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public void Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation=null, bool? isSleeped=null, bool? isShiney=null);
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null);
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
     }
 }

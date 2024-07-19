@@ -55,7 +55,7 @@ namespace Domain.Model.Character
         public UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world);
         public UniTask<int> GainHp(int value);
 
-        public void SetVisiblity(bool visiblity);
+        public void SetVisibility(bool visibility);
         public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);
         public UniTask<int> LoseHp(int value);

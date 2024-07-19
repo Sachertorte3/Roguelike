@@ -46,9 +46,9 @@ namespace Domain.Service.Events
             _entity.Dispose();
         }
 
-        public void SetVisiblity(bool visiblity)
+        public void SetVisibility(bool visibility)
         {
-            _entity.SetVisibility(visiblity);
+            _entity.SetVisibility(visibility);
         }
 
         public void Destroy()

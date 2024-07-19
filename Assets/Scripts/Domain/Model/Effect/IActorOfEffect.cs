@@ -6,7 +6,7 @@ namespace Domain.Model.Effect
 {
     public interface IActorOfEffect : IHasAffiliation
     {
-        public bool IsShiney { get; }
+        public bool IsShiny { get; }
         public string GetName(IHasAffiliation player);
         public Vector2Int CurrentPosition { get; }
         public Aggression Aggression { get; }

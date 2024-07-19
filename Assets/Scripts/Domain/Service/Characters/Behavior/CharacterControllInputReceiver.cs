@@ -7,7 +7,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public class CharacterControllInputReceiver
+    public class CharacterControlInputReceiver
     {
         private readonly InventoryIndexReceiver _inventoryIndexReceiver = new();
         private readonly Subject<Unit> _onActionRead = new();

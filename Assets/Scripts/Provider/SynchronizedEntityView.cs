@@ -54,7 +54,6 @@ namespace Provider
             Settings.ThrowMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.RegisterComponent();
             spriteView.transform.position = (Vector3Int)entity.CurrentPosition;
             entity.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }

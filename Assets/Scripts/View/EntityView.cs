@@ -36,6 +36,7 @@ namespace View
 
         public void Teleport(Vector2Int position)
         {
+            _disposable.Disposable = null;
             transform.position = (Vector3Int)position;
         }
 
@@ -44,7 +45,7 @@ namespace View
             if (_isVisible)
             {
                 var position = (Vector3Int)destination - (Vector3Int)direction.Vector();
-                Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f *
+                _disposable.Disposable = Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f *
                         0.75f / frame))
                     .Take(frame)
                     .Index()
@@ -54,7 +55,7 @@ namespace View
                             transform.position =
                                 Vector3.Lerp(position, (Vector3Int)destination, (l + 1) / (float)frame);
                         },
-                        _ => _onMoveFinished.OnNext(Unit.Default)).AddTo(this);
+                        _ => _onMoveFinished.OnNext(Unit.Default));
             }
             else
             {

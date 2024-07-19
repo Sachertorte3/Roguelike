@@ -15,7 +15,7 @@ MonoBehaviour:
   Sections:
   - Depth: 1
     PrefixChance: 0.2
-    ShineyChance: 0.474
+    ShineyChance: 0
     SleepChance: 0.5
     ShopChance: 0
     MonsterHouseChance: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
+      - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
         Weight: 1
     Materials:
       items:

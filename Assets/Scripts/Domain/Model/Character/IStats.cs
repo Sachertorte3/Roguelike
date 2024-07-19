@@ -8,6 +8,7 @@ namespace Domain.Model.Character
         public int CurrentHp { get; }
         public ReadOnlyReactiveProperty<int> MaxHp { get; }
         public int CurrentMaxHp { get; }
+        public float CurrentAttackMultiplier { get; }
         public ReadOnlyReactiveProperty<float> ViewRangeValue { get; }
         public float CurrentViewRange { get; }
     }

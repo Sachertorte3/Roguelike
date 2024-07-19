@@ -28,7 +28,7 @@ namespace Domain.Service.Characters
         public CharacterStatusManager(string name, CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
             _name = name;
-            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.ViewRange);
+            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.AttackMultiplier, data.ViewRange);
             _conditions = new CharacterConditions(this, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
@@ -46,6 +46,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento(
                 _stats.Hp.GetData(),
                 _stats.HpNaturalRecoveryAmount.GetData(),
+                _stats.AttackMultiplier.GetData(),
                 _stats.ViewRange.GetData(),
                 _visionRange.ClairvoyantFlags,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
@@ -113,6 +114,11 @@ namespace Domain.Service.Characters
         {
             _stats.HpNaturalRecoveryAmount.AddValue(value);
         }
+        
+        public void AddAttackMultiplierValue(float value)
+        {
+            _stats.AttackMultiplier.AddValue(value);
+        }
 
         public void AddViewRangeMultiplier(float value)
         {
@@ -132,6 +138,11 @@ namespace Domain.Service.Characters
         public void RemoveHpNaturalRecoveryValue(float value)
         {
             _stats.HpNaturalRecoveryAmount.AddValue(-value);
+        }
+
+        public void RemoveAttackMultiplierValue(float value)
+        {
+            _stats.AttackMultiplier.AddValue(-value);
         }
 
         public void RemoveViewRangeMultiplier(float value)
@@ -164,6 +175,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento(
                 new ResourceData(new StatData(maxHp), maxHp),
                 new StatData(hpNaturalRecoveryAmount),
+                new StatData(1f),
                 new StatData(viewRange),
                 0,
                 conditions.ToArray()

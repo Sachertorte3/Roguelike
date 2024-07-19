@@ -28,6 +28,8 @@ namespace Domain.Model
             [ShowIf("@ShopChance > 0")] public RarityWeightTable<ItemData> ShopItems;
             [ShowIf("@ShopChance > 0"), Required] public EnemyData Clerk;
             public Table<EnemyData> Enemies;
+            public bool existBoss;
+            [ShowIf("existBoss"), Required] public EnemyData Boss;
             public Table<MaterialData> Materials;
             public Table<WeaponMold> WeaponMolds;
             [ShowIf("@PrefixChance > 0")] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();

@@ -17,15 +17,15 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
-  - RemovalCondition:
+  - Condition:
+      rid: 4425517265317527593
+    RemovalCondition:
       RemoveByElapsedTurn: 1
       Duration: 1
       RemoveByDamage: 0
       Probability: 0
       RemoveByEnemyNearby: 0
-    Probability: 0.1
-    Condition:
-      rid: 4425517265317527593
+    Probability: 0.25
   references:
     version: 2
     RefIds:

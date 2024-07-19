@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30D3\u30C3\u30B0\u30E4\u30C9\u30AB\u30EA"
+  m_EditorClassIdentifier: 
+  Name: "\u30D3\u30C3\u30B0\u30E4\u30C9\u30AB\u30EA"
+  Group: 1
+  CharacterType:
+    rid: 4425516923575599116
+  IsBoss: 1
+  Hp: 25
+  Aggression: 1
+  WanderAround: 1
+  Skills:
+  - Area:
+      rid: 2541219158355345434
+    Effect:
+      rid: 4425516923575599108
+    Position:
+      rid: 2541219158355345416
+    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2541219158355345416
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345434
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Radius: 1
+    - rid: 4425516923575599108
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 5
+        CriticalRate: 0
+        AdditionalConditions: []
+    - rid: 4425516923575599116
+      type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 2

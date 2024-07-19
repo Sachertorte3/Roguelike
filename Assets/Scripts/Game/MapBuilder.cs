@@ -27,9 +27,10 @@ namespace Model.Game
 
         public MapBuilder(TilemapMemento tilemapData, SectionData data, int nextMapId, int prevMapId)
         {
-            _tilemap = new Tilemap(tilemapData);
-            _characters = new List<CharacterMemento>();
-            _items = new List<ItemEntityMemento>();
+            _tilemap = new(tilemapData);
+            _characters = new();
+            _items = new();
+            _keyCharacters = new();
             var chests = new List<ChestMemento>();
 
             var rooms = _tilemap.Rooms.ToList();
@@ -42,6 +43,7 @@ namespace Model.Game
 
             RectInt downStairsRoom = rooms.GetAtRandom();
             RectInt upStairsRoom = rooms.GetAtRandom();
+            RectInt? bossRoom = data.existBoss ? rooms.GetAtRandom() : null;
 
             foreach (var room in rooms)
             {
@@ -49,7 +51,7 @@ namespace Model.Game
                 var itemCount = GetCount(data.Room.ItemCount);
                 var weaponCount = GetCount(data.Room.WeaponCount);
                 var chestCount = Random.value < data.Room.ChestChance ? 1 : 0;
-                var sum = characterCount + itemCount + weaponCount + chestCount + 2;
+                var sum = characterCount + itemCount + weaponCount + chestCount + 3;
 
                 var positions = room.RectRange().GetAtRandom(sum).ToList();
                 var characterPositions = positions.TakeAndRemove(characterCount);
@@ -62,6 +64,12 @@ namespace Model.Game
                 AddWeaponsToRoom(data, weaponPositions);
                 AddChestsToRoom(data, chestPositions, chests);
 
+                if (room == bossRoom)
+                {
+                    var boss = CharacterFactory.BuildCharacter(data.Boss, positions.TakeAndRemove(1).First(), false, false);
+                    _characters.Add(boss);
+                    _keyCharacters.Add(boss.Entity.Id);
+                }
                 if (room == downStairsRoom)
                 {
                     downStairsPosition = positions.TakeAndRemove(1).First();
@@ -76,7 +84,6 @@ namespace Model.Game
             var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
-            _keyCharacters = _characters.Select(character => character.Entity.Id).ToList();
         }
 
         private int GetCount(int attemptCount)

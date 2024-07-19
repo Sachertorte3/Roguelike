@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Message;
 using ObservableCollections;
@@ -19,9 +20,11 @@ namespace Domain.Service.Items
         private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
+        private IHasCondition _hasCondition;
 
-        public Inventory(InventoryMemento data)
+        public Inventory(InventoryMemento data, IHasCondition hasCondition)
         {
+            _hasCondition = hasCondition;
             _disposable = OnItemChanged.Subscribe(itemChanged =>
                 {
                     _disposables[itemChanged.Index].Clear();
@@ -41,10 +44,9 @@ namespace Domain.Service.Items
                 }
             );
 
-            foreach (var item in data.Items)
+            for (var i=0; i<MaxItems; i++)
             {
-                if (item != null)
-                    _items[_items.IndexOf(null)] = new Item(item);
+                _items[i] = data.Items[i] != null? new Item(data.Items[i]) : null;
             }
         }
 
@@ -59,6 +61,19 @@ namespace Domain.Service.Items
 
         public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
+
+        public void UpdateTurn()
+        {
+            foreach (var item in _items)
+            {
+                if (item == null)
+                    continue;
+                foreach (var condition in item.PassiveConditions)
+                {
+                    condition.Persist(_hasCondition);
+                }
+            }
+        }
 
         public bool HasEmptySpace()
         {
@@ -91,6 +106,16 @@ namespace Domain.Service.Items
         {
             var removed = _items[index];
             _items[index] = item;
+            if (item != null)
+            {
+                foreach (var condition in item.PassiveConditions)
+                    condition.Inflict(_hasCondition);
+            }
+            if (removed != null)
+            {
+                foreach (var condition in removed.PassiveConditions)
+                    condition.Delete(_hasCondition);
+            }
             return removed;
         }
 

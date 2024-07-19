@@ -21,7 +21,7 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int count)
+        public void SetIcon(Sprite icon, int? count)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
@@ -35,9 +35,12 @@ namespace View.UI
             RemoveCount();
         }
 
-        public void SetCount(int count)
+        public void SetCount(int? count)
         {
-            _text.text = count.ToString();
+            if (count.HasValue)
+                _text.text = count.ToString();
+            else
+                _text.text = "";
         }
 
         public void RemoveCount()

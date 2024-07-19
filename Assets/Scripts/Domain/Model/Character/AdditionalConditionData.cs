@@ -12,9 +12,9 @@ namespace Domain.Model.Character
     [Serializable]
     public class AdditionalConditionData : IHasInfo
     {
+        [Required] [SerializeReference] public IConditionData Condition;
         [Required] public RemovalConditionData RemovalCondition;
         [Range(0, 1)] public float Probability;
-        [Required] [SerializeReference] public IConditionData Condition;
 
         public AdditionalConditionData(IConditionData condition, RemovalConditionData removalCondition,
             float probability)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Domain.Model.Character;
+using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Item;
@@ -27,7 +28,8 @@ namespace Domain.Service
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
                         new List<AdditionalConditionData>())
                 ),
-                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification)
+                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
+                new List<IConditionData>()
             );
         }
 
@@ -50,7 +52,8 @@ namespace Domain.Service
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
                         prefix.AdditionalConditions)
                 ),
-                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification)
+                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
+                new List<IConditionData>()
             );
         }
     }

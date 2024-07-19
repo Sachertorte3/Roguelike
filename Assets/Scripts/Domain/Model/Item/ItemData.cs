@@ -2,6 +2,12 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Domain.Model.Effect;
+using System.Collections.Generic;
+using Domain.Model.Character;
+using Domain.Model.Condition;
+
+
+
 
 
 #if UNITY_EDITOR
@@ -28,10 +34,11 @@ namespace Domain.Model.Item
         [ShowIf("EffectsOnUse")] public SkillDataOnUse? SkillOnUse;
         [ShowIf("EffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
+        [SerializeReference] public List<IConditionData> PassiveConditions;
         [ReadOnly][Required] private string _name = "";
 
         public ItemData(string name, Sprite icon, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, int usageLimit)
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, int usageLimit, List<IConditionData> conditions)
         {
             _name = name;
             Icon = icon;
@@ -41,6 +48,7 @@ namespace Domain.Model.Item
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
             UsageLimit = usageLimit;
+            PassiveConditions = conditions;
         }
 
         public string Name => _name.SetColored(Rarity.GetColor());
@@ -85,7 +93,12 @@ namespace Domain.Model.Item
                     }
                 }
 
-                info += $"使用可能回数: {UsageLimit}";
+                info += $"使用可能回数: {UsageLimit}\n";
+            }
+
+            foreach (var condition in PassiveConditions)
+            {
+                info += $"パッシブ効果: {condition.Name}\n";
             }
 
             return info;

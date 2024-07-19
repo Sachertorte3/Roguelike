@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
-using Domain.Model.Effect;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
@@ -10,6 +11,7 @@ using Domain.Service.Effect;
 using R3;
 using UnityEngine;
 using Utilities;
+using Domain.Model.Condition;
 
 namespace Domain.Service.Items
 {
@@ -20,6 +22,7 @@ namespace Domain.Service.Items
         private readonly bool _isSameSkill;
         private readonly int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
+        private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
 
         public Item(ItemData data, ItemState state = ItemState.None)
@@ -41,6 +44,7 @@ namespace Domain.Service.Items
 
             _maxUsages = data.UsageLimit;
             _remainingUsages = new ReactiveProperty<int>(data.UsageLimit);
+            _conditions = data.PassiveConditions;
         }
 
         public Item(ItemMemento data)
@@ -62,6 +66,7 @@ namespace Domain.Service.Items
 
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
+            _conditions = data.Conditions;
         }
 
         public string Name { get; init; }
@@ -76,6 +81,7 @@ namespace Domain.Service.Items
         private bool _usable => EffectsOnUse || EffectsOnThrow;
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
+        public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
 
         public ItemMemento Serialize()
@@ -86,10 +92,11 @@ namespace Domain.Service.Items
                 Icon,
                 State,
                 _basePrice,
+                SkillOnUse?.Serialize(),
+                SkillOnThrow?.Serialize(),
                 _maxUsages,
                 _remainingUsages.CurrentValue,
-                SkillOnUse?.Serialize(),
-                SkillOnThrow?.Serialize()
+                _conditions
             );
         }
 
@@ -158,7 +165,12 @@ namespace Domain.Service.Items
                     }
                 }
 
-                info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}";
+                info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
+            }
+
+            foreach (var condition in PassiveConditions)
+            {
+                info += $"パッシブ効果: {condition.Name}\n";
             }
 
             return info;

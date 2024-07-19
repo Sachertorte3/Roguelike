@@ -24,12 +24,10 @@ using Random = UnityEngine.Random;
 
 namespace Model.Game
 {
-    public class MapManager : IDisposable, ISerializable<MapMemento>, IMapViewer, IMap, IMapManager
+    public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
     {
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
-        private HashSet<Vector2Int> _allCharacterPositions = new();
-        private HashSet<Vector2Int> _allItemPositions = new();
         private SectionData _sectionData;
         private List<IEventArea> _eventAreas = new();
         private MonsterHouse? _monsterHouse;
@@ -115,7 +113,6 @@ namespace Model.Game
         }
 
         public ICharacter? Player => CharacterManager?.Player;
-
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
@@ -149,10 +146,7 @@ namespace Model.Game
             }
         }
 
-        public IItemEntity SpawnItem(IItem item, Vector2Int position)
-        {
-            return ItemManager.SpawnItem(item, position);
-        }
+        public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, position);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSleeped = null, bool? isShiney = null)
         {
             return CharacterManager.SpawnCharacter(
@@ -166,27 +160,7 @@ namespace Model.Game
                 this
             );
         }
-        public ICharacter SpawnRandomEnemy(Vector2Int position)
-        {
-            return SpawnEnemy(_sectionData.Enemies.GetRandomItem(), position);
-        }
-
-        /// <summary>
-        ///     Generates and returns a list of characters currently located within the given positions.
-        /// </summary>
-        /// <param name="area"></param>
-        /// <returns></returns>
-        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area)
-        {
-            return Characters.Where(character => area.Contains(character.Position.CurrentValue))
-                .ToHashSet();
-        }
-
-        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area)
-        {
-            return Items.Where(item => area.Contains(item.Position.CurrentValue))
-                .ToHashSet();
-        }
+        public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_sectionData.Enemies.GetRandomItem(), position);
 
         public IItem? GetItemFromId(Id<IItem> id)
         {
@@ -389,17 +363,17 @@ namespace Model.Game
             _tilemap.RemoveWalls(positions);
         }
 
-        public record EntityFilter(MapManager Map, IEnumerable<IEntity> Entities, EntityLayer? Layer, IEnumerable<Vector2Int>? Area)
+        public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer? Layer, IEnumerable<Vector2Int>? Area) where T : IEntity
         {
-            public EntityFilter On(EntityLayer layer)
+            public EntityFilter<T> On(EntityLayer layer)
             {
                 return new(Map, Entities, layer, Area);
             }
-            public EntityFilter In(IEnumerable<Vector2Int> area)
+            public EntityFilter<T> In(IEnumerable<Vector2Int> area)
             {
                 return new(Map, Entities, Layer, area);
             }
-            private IEnumerable<IEntity> Get()
+            private IEnumerable<T> Get()
             {
                 var result = Entities;
                 if (Layer.HasValue)
@@ -408,7 +382,7 @@ namespace Model.Game
                     result = result.Where(entity => Area.Contains(entity.CurrentPosition));
                 return result.ToHashSet();
             }
-            public HashSet<IEntity> GetEntities()
+            public HashSet<T> GetEntities()
             {
                 return Get().ToHashSet();
             }
@@ -418,34 +392,35 @@ namespace Model.Game
             }
         }
 
-        public EntityFilter AllEntities() => new(this, Entities, null, null);
-        public EntityFilter AllItem() => new(this, ItemManager.Items, null, null);
-        public EntityFilter AllCharacter() => new(this, CharacterManager.Characters, null, null);
-        public EntityFilter AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null);
+        public EntityFilter<IEntity> AllEntities() => new(this, Entities, null, null);
+        public EntityFilter<IItemEntity> AllItem() => new(this, ItemManager.Items, null, null);
+        public EntityFilter<ICharacter> AllCharacter() => new(this, CharacterManager.Characters, null, null);
+        public EntityFilter<IEventEntity> AllEventEntity() => new(this, EventEntityManager.EventEntities, null, null);
         public HashSet<Vector2Int> AllItemPositions() =>  ItemManager.GetAllItemPositions();
         public HashSet<Vector2Int> AllCharacterPositions() => CharacterManager.GetAllCharacterPositions();
-        public IEnumerable<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
+        public HashSet<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
+        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area) => AllCharacter().In(area).GetEntities();
+        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area) => AllItem().In(area).GetEntities();
 
         public void HandleItemDrop(int inventoryIndex)
         {
+            var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
+            if (itemEntity != null)
+            {
+                GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
+            }
             var item = Player.Inventory.GetItem(inventoryIndex);
             if (item != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
-                var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
-                if (itemEntity != null)
-                {
-                    GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
-                }
-
-                Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
                 ItemManager.SpawnItem(item, Player.CurrentPosition);
             }
+            Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
         }
 
         /// <summary>
         ///     Gets a character that follows the player when moving from one map to another.
-        ///     Does not include the players themselves.
+        ///     Does not include the player themselves.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ICharacter> GetFollowingCharacters()

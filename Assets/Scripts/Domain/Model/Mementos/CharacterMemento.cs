@@ -17,6 +17,8 @@ namespace Domain.Model.Character
         int Money,
         bool IsLeader,
         bool IsShiny,
-        bool IsBoss
+        bool IsBoss,
+        bool CanPickUp,
+        bool CanUseItem
     );
 }

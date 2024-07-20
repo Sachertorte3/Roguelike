@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 25
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 2541219158355345434

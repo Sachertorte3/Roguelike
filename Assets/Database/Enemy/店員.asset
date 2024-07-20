@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: "\u5E97\u54E1"
   Group: 2
+  CharacterType:
+    rid: 4425517307579858946
   IsBoss: 0
   Hp: 3
   Aggression: 1
   WanderAround: 0
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 4425516923575599109
@@ -26,21 +31,20 @@ MonoBehaviour:
     Position:
       rid: 2541219106150416412
     Log: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F\u3002"
-  AdditionalConditions:
-  - RemovalCondition:
-      RemoveByElapsedTurn: 1
-      Duration: 3
-      RemoveByDamage: 0
-      Probability: 0
-      RemoveByEnemyNearby: 0
-    Probability: 0.2
-    Condition:
-      rid: 4425516923575599112
-  CharacterType:
-    rid: 4425517307579858946
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416412
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -55,10 +59,6 @@ MonoBehaviour:
         Power: 8
         CriticalRate: 1
         AdditionalConditions: []
-    - rid: 4425516923575599112
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data:
-        Power: 1
     - rid: 4425517307579858946
       type: {class: Witch, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

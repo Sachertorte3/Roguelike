@@ -17,7 +17,7 @@ namespace Domain.Model.Action
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
         public UniTask UseSkill(ISkill skill, Direction8 direction, IMap world);
-        public UniTask UseItem(int itemIndex, Direction8 direction, IMap world);
-        public UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world);
+        public UniTask UseItem(IItem item, Direction8 direction, IMap world);
+        public UniTask ThrowItem(IItem item, Direction8 direction, IMap world);
     }
 }

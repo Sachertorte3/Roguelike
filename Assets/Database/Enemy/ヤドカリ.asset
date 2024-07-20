@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 5
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 2541219158355345415
@@ -28,9 +31,20 @@ MonoBehaviour:
     Position:
       rid: 2541219158355345416
     Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219158355345415
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

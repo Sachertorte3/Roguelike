@@ -1,11 +1,12 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Item;
 using Utilities;
 
 namespace Domain.Service.Action
 {
-    internal record ThrowItem(int ItemIndex, Direction8 Direction) : IAction
+    internal record ThrowItem(IItem Item, Direction8 Direction) : IAction
     {
         public bool Doable(IActor actor, IMap world)
         {
@@ -14,7 +15,7 @@ namespace Domain.Service.Action
 
         public async UniTask Do(IActor actor, IMap world, IInput input)
         {
-            await actor.ThrowItem(ItemIndex, Direction, world);
+            await actor.ThrowItem(Item, Direction, world);
         }
 
         public float Evaluate(IActor actor, IMap world)
@@ -24,7 +25,7 @@ namespace Domain.Service.Action
 
         public string Info()
         {
-            return $"ThrowItem: ItemIndex:{ItemIndex}, Direction:{Direction}";
+            return $"ThrowItem: Item:{Item.Info()}, Direction:{Direction}";
         }
     }
 }

@@ -21,6 +21,8 @@ MonoBehaviour:
   Aggression: 1
   WanderAround: 1
   MoveSpeed: 3
+  CanPickUp: 1
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 4425516923575599109

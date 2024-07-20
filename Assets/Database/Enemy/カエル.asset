@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
   m_Name: "\u30AB\u30A8\u30EB"
   m_EditorClassIdentifier: 
-  Name: "\u30B9\u30CD\u30FC\u30AF 1"
+  Name: "\u30AB\u30A8\u30EB"
   Group: 1
   CharacterType:
     rid: 2541219158355345417
@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 8
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 2541219158355345418
@@ -28,9 +31,20 @@ MonoBehaviour:
     Position:
       rid: 2541219106150416414
     Log: "\u306F\u6C34\u3092\u5439\u304D\u51FA\u3057\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416414
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

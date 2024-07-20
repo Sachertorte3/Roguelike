@@ -51,8 +51,8 @@ namespace Domain.Model.Character
         public void DoNothing();
         public UniTask Move(Direction8 direction, IInput input);
         public UniTask UseSkill(ISkill skill, Direction8 direction, IMap map);
-        public UniTask UseItem(int itemIndex, Direction8 direction, IMap map);
-        public UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world);
+        public UniTask UseItem(IItem item, Direction8 direction, IMap map);
+        public UniTask ThrowItem(IItem item, Direction8 direction, IMap world);
         public UniTask<int> GainHp(int value);
 
         public void SetVisibility(bool visibility);

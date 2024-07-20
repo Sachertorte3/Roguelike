@@ -72,15 +72,16 @@ namespace Domain.Service.Characters.Behavior
                         if (item == null)
                             action = new UseSkill(character.Skills[0], character.CurrentDirection);
                         else
-                            action = new UseItem(itemIndex, character.CurrentDirection);
+                            action = new UseItem(item, character.CurrentDirection);
 
                         if (action.Doable(character, world)) return action;
                         break;
                     case 2:
                         itemIndex = firstCompletedTask.result3;
-                        if (character.Inventory.GetItem(itemIndex) != null)
+                        item = character.Inventory.GetItem(itemIndex);
+                        if (item != null)
                         {
-                            action = new ThrowItem(itemIndex, character.CurrentDirection);
+                            action = new ThrowItem(item, character.CurrentDirection);
                             if (action.Doable(character, world)) return action;
                         }
 

@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 10
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 2541219158355345408
@@ -28,9 +31,20 @@ MonoBehaviour:
     Position:
       rid: 2541219158355345410
     Log: "\u306F\u6BD2\u91DD\u3092\u7A81\u304D\u7ACB\u3066\u3066\u304D\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219158355345408
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
@@ -42,15 +56,15 @@ MonoBehaviour:
         Power: 2
         CriticalRate: 0
         AdditionalConditions:
-        - RemovalCondition:
+        - Condition:
+            rid: 2541219158355345423
+          RemovalCondition:
             RemoveByElapsedTurn: 1
             Duration: 5
             RemoveByDamage: 0
             Probability: 0
             RemoveByEnemyNearby: 0
           Probability: 0.5
-          Condition:
-            rid: 2541219158355345423
     - rid: 2541219158355345410
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

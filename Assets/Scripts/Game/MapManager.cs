@@ -181,7 +181,7 @@ namespace Model.Game
             );
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_sectionData.Enemies.GetRandomItem(), position);
-        
+
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {
             var character = CharacterManager.Characters.FirstOrDefault(character => character.Id == id);
@@ -316,6 +316,11 @@ namespace Model.Game
 
         private void SetRules()
         {
+            CharacterManager.CharacterEvents.OnDead.Subscribe(dead =>
+            {
+                DropAllItem(dead.Character);
+            }).AddTo(_disposables);
+
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 _tilemap.SetTilesKnown(areaChanged.Message.NewArea, true);
@@ -340,19 +345,26 @@ namespace Model.Game
                 {
                     eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
+            }).AddTo(_disposables);
 
-                if (positionChanged.Character.Inventory.HasEmptySpace())
+            CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
+            {
+                if (positionChanged.Character.CanPickUp)
                 {
-                    var item = ItemManager.TryPickUp(positionChanged.Message.Position);
-                    if (item != null)
+                    if (positionChanged.Character.Inventory.HasEmptySpace())
                     {
-                        if (positionChanged.Character.TryPickUp(item.Item))
+                        var item = ItemManager.TryPickUp(positionChanged.Message.Position, positionChanged.Character == Player);
+                        if (item != null)
                         {
-                            GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
-                        }
-                        else
-                        {
-                            Log.Error("cannot pick up item");
+                            if (positionChanged.Character.TryPickUp(item.Item))
+                            {
+                                if (positionChanged.Character == Player)
+                                    GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
+                            }
+                            else
+                            {
+                                Log.Error("cannot pick up item");
+                            }
                         }
                     }
                 }
@@ -438,13 +450,22 @@ namespace Model.Game
             {
                 GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
             }
-            var item = Player.Inventory.GetItem(inventoryIndex);
+            var item = Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
             if (item != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
                 ItemManager.SpawnItem(item, FindBlankPositionFrom(Player.CurrentPosition, position => IsBlank(position, EntityLayer.Bottom)));
             }
-            Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
+        }
+
+        public void DropAllItem(ICharacter character)
+        {
+            for (var index = 0; index < character.Inventory.MaxItemCount; index++)
+            {
+                var item = character.ReplaceInventory(null, index);
+                if (item != null)
+                    ItemManager.SpawnItem(item, FindBlankPositionFrom(character.CurrentPosition, position => IsBlank(position, EntityLayer.Bottom)));
+            }
         }
 
         /// <summary>

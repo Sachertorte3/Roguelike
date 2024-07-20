@@ -16,7 +16,7 @@ namespace Domain.Model.Character
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [ReadOnly] [Required] public string Name = "";
+        [ReadOnly][Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Enemy;
         [SerializeReference] public ICharacterType CharacterType;
         public bool IsBoss = false;
@@ -24,6 +24,8 @@ namespace Domain.Model.Character
         public Aggression Aggression = Aggression.AvoidAllies;
         public bool WanderAround = true;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
+        public bool CanPickUp = false;
+        public bool CanUseItem = false;
         public SkillData[] Skills;
         public bool HasLastSkill = false;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
@@ -35,28 +37,5 @@ namespace Domain.Model.Character
             AssetDatabase.SaveAssets();
         }
 #endif
-    }
-    public enum MoveSpeed
-    {
-        Quarter,
-        Half,
-        Normal,
-        Double,
-        Quadruple
-    }
-    public static class MoveSpeedExtensions
-    {
-        public static float ToWaitTime(this MoveSpeed moveSpeed)
-        {
-            return moveSpeed switch
-            {
-                MoveSpeed.Quarter => 4,
-                MoveSpeed.Half => 2,
-                MoveSpeed.Normal => 1,
-                MoveSpeed.Double => 0.5f,
-                MoveSpeed.Quadruple => 0.25f,
-                _ => throw new ArgumentException("Invalid MoveSpeed")
-            };
-        }
     }
 }

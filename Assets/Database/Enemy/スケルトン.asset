@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 10
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 2541219158355345408
@@ -35,9 +38,20 @@ MonoBehaviour:
     Position:
       rid: 2541219106150416436
     Log: "\u306F\u9AA8\u3092\u6295\u3052\u3064\u3051\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416434
       type: {class: Skeleton, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

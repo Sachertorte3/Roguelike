@@ -76,15 +76,20 @@ namespace Model.Game
             return _items.FirstOrDefault(item => item.CurrentPosition == position);
         }
 
-        public IItemEntity? TryPickUp(Vector2Int position)
+        public IItemEntity? TryPickUp(Vector2Int position, bool pickUpShopItem = false)
         {
             var item = GetItemAt(position);
-            if (item != null)
+            if (item == null)
+                return null;
+
+            if (pickUpShopItem || item.Item.State != ItemState.ShopItem)
             {
                 _items.Remove(item);
                 ItemEntityEvents.Remove(item);
+                return item;
             }
-            return item;
+            else
+                return null;
         }
     }
 }

@@ -61,6 +61,8 @@ namespace Domain.Service.Characters
             IsLeader = data.IsLeader;
             IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
+            CanPickUp = data.CanPickUp;
+            CanUseItem = data.CanUseItem;
 
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
             _map = map;
@@ -73,6 +75,8 @@ namespace Domain.Service.Characters
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
+        public bool CanPickUp { get; init; }
+        public bool CanUseItem { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;
         public int Money => _money;
 
@@ -158,11 +162,8 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseItem(int itemIndex, Direction8 direction, IMap map)
+        public async UniTask UseItem(IItem item, Direction8 direction, IMap map)
         {
-            var item = _inventory.GetItem(itemIndex);
-            if (item == null)
-                throw new Exception("item is null");
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info()}\ndirection:{direction}");
             Turn(direction);
 
@@ -185,11 +186,8 @@ namespace Domain.Service.Characters
             }
         }
 
-        public async UniTask ThrowItem(int itemIndex, Direction8 direction, IMap world)
+        public async UniTask ThrowItem(IItem item, Direction8 direction, IMap world)
         {
-            var item = _inventory.Remove(itemIndex);
-            if (item == null)
-                throw new Exception("item is null");
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
@@ -256,7 +254,9 @@ namespace Domain.Service.Characters
                 _money,
                 IsLeader,
                 IsShiny,
-                IsBoss
+                IsBoss,
+                CanPickUp,
+                CanUseItem
             );
         }
 

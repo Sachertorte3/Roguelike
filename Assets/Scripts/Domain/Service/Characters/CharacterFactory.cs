@@ -40,7 +40,9 @@ namespace Domain.Service.Characters
                 0,
                 true,
                 false,
-                false
+                false,
+                true,
+                true
             );
         }
 
@@ -60,7 +62,9 @@ namespace Domain.Service.Characters
                 0,
                 false,
                 isShiny,
-                data.IsBoss
+                data.IsBoss,
+                data.CanPickUp,
+                data.CanUseItem
             );
         }
 

@@ -20,6 +20,9 @@ MonoBehaviour:
   Hp: 10
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
   Skills:
   - Area:
       rid: 4425516923575599106
@@ -55,7 +58,7 @@ MonoBehaviour:
       data:
         Character: {fileID: 11400000, guid: 8e4567adaed9b084690cd389f06f6c18, type: 2}
         Count: 2
-        InheritsShiney: 1
+        InheritsShiny: 0
     - rid: 2541219158355345427
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

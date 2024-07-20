@@ -13,7 +13,9 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, IMap world)
         {
             return GenerateMoveActionsDoable(character, world).Cast<IAction>()
-                .Concat(GenerateUseSkillActionsDoable(character, world));
+                .Concat(GenerateUseSkillActionsDoable(character, world))
+                .Concat(GenerateUseItemActionsDoable(character, world))
+                .Concat(GenerateThrowItemActionsDoable(character, world));
         }
 
         private IEnumerable<Move> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
@@ -84,6 +86,28 @@ namespace Domain.Service.Characters.Behavior
                 .SelectMany(
                     skill => DirectionMethods.AllDirections
                         .Select(direction => new UseSkill(skill, direction))
+                        .Where(move => move.Doable(character, world))
+                )
+                .Where(action => action.Doable(character, world));
+        }
+
+        private IEnumerable<UseItem> GenerateUseItemActionsDoable(IHasBehavior character, IMap world)
+        {
+            return character.Inventory.AllItems
+                .SelectMany(
+                    item => DirectionMethods.AllDirections
+                        .Select(direction => new UseItem(item, direction))
+                        .Where(move => move.Doable(character, world))
+                )
+                .Where(action => action.Doable(character, world));
+        }
+
+        private IEnumerable<ThrowItem> GenerateThrowItemActionsDoable(IHasBehavior character, IMap world)
+        {
+            return character.Inventory.AllItems
+                .SelectMany(
+                    item => DirectionMethods.AllDirections
+                        .Select(direction => new ThrowItem(item, direction))
                         .Where(move => move.Doable(character, world))
                 )
                 .Where(action => action.Doable(character, world));

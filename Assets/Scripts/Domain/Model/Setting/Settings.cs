@@ -19,6 +19,7 @@ namespace Domain.Model.Setting
         private static readonly Slider _lowHpThresholdPercentage = new("低HP警告閾値[%]", 1, 100, 25);
         private static readonly CheckBox _ignoreWall = new("壁貫通", false);
         private static readonly CheckBox _intelligentDash = new("スマートダッシュ", true);
+        private static readonly CheckBox _autoPickUpShopItem = new("店のアイテムを自動で拾う", true);
         private static readonly Slider _dashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
 
         public static ReactiveProperty<int> BGMVolume => _BGMVolume.OnValueChanged;
@@ -35,6 +36,7 @@ namespace Domain.Model.Setting
         public static ReactiveProperty<int> LowHpThresholdPercentage => _lowHpThresholdPercentage.OnValueChanged;
         public static ReactiveProperty<bool> IgnoreWall => _ignoreWall.OnValueChanged;
         public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;
+        public static ReactiveProperty<bool> AutoPickUpShopItem => _autoPickUpShopItem.OnValueChanged;
         public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
 
         public static List<IOptionInput> GetOptions()

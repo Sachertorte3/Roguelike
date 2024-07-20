@@ -7,6 +7,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Entities;
@@ -353,7 +354,7 @@ namespace Model.Game
                 {
                     if (positionChanged.Character.Inventory.HasEmptySpace())
                     {
-                        var item = ItemManager.TryPickUp(positionChanged.Message.Position, positionChanged.Character == Player);
+                        var item = ItemManager.TryPickUp(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
                         if (item != null)
                         {
                             if (positionChanged.Character.TryPickUp(item.Item))
@@ -445,7 +446,7 @@ namespace Model.Game
 
         public void HandleItemDrop(int inventoryIndex)
         {
-            var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition);
+            var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition, true);
             if (itemEntity != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");

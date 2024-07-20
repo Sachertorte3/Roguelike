@@ -99,54 +99,58 @@ namespace Domain.Service.Characters
             _conditions.UpdateTurn(this, enemyVisible);
         }
 
-        public void AddMaxHpValue(float value)
+        public void AddStatValue(StatType type, float value)
         {
-            _stats.Hp.AddMaxValue(value);
+            switch (type)
+            {
+                case StatType.MaxHp:
+                    _stats.Hp.AddMaxValue(value);
+                    break;
+                case StatType.HpNaturalRecovery:
+                    _stats.HpNaturalRecoveryAmount.AddValue(value);
+                    break;
+                case StatType.AttackMultiplier:
+                    _stats.AttackMultiplier.AddValue(value);
+                    break;
+                case StatType.ViewRange:
+                    _stats.ViewRange.AddValue(value);
+                    break;
+                case StatType.WaitTime:
+                    _stats.WaitTime.AddMaxValue(value);
+                    break;
+            }
         }
 
-        public void AddMaxHpMultiplier(float value)
+        public void RemoveStatValue(StatType type, float value)
         {
-            _stats.Hp.AddMaxMultiplier(value);
+            AddStatValue(type, -value);
         }
 
-        public void AddHpNaturalRecoveryValue(float value)
+        public void AddStatMultiplier(StatType type, float value)
         {
-            _stats.HpNaturalRecoveryAmount.AddValue(value);
-        }
-        
-        public void AddAttackMultiplierValue(float value)
-        {
-            _stats.AttackMultiplier.AddValue(value);
-        }
-
-        public void AddViewRangeMultiplier(float value)
-        {
-            _stats.ViewRange.AddMultiplier(value);
-        }
-
-        public void RemoveMaxHpValue(float value)
-        {
-            _stats.Hp.RemoveMaxValue(value);
-        }
-
-        public void RemoveMaxHpMultiplier(float value)
-        {
-            _stats.Hp.RemoveMaxMultiplier(value);
+            switch (type)
+            {
+                case StatType.MaxHp:
+                    _stats.Hp.AddMaxMultiplier(value);
+                    break;
+                case StatType.HpNaturalRecovery:
+                    _stats.HpNaturalRecoveryAmount.AddMultiplier(value);
+                    break;
+                case StatType.AttackMultiplier:
+                    _stats.AttackMultiplier.AddMultiplier(value);
+                    break;
+                case StatType.ViewRange:
+                    _stats.ViewRange.AddMultiplier(value);
+                    break;
+                case StatType.WaitTime:
+                    _stats.WaitTime.AddMaxMultiplier(value);
+                    break;
+            }
         }
 
-        public void RemoveHpNaturalRecoveryValue(float value)
+        public void RemoveStatMultiplier(StatType type, float value)
         {
-            _stats.HpNaturalRecoveryAmount.AddValue(-value);
-        }
-
-        public void RemoveAttackMultiplierValue(float value)
-        {
-            _stats.AttackMultiplier.AddValue(-value);
-        }
-
-        public void RemoveViewRangeMultiplier(float value)
-        {
-            _stats.ViewRange.AddMultiplier(-value);
+            AddStatMultiplier(type, -value);
         }
 
         public void AddClairvoyantFlags()

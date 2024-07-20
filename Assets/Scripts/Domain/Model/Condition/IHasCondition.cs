@@ -4,21 +4,23 @@ namespace Domain.Model.Condition
 {
     public interface IHasCondition
     {
-        public void AddMaxHpValue(float value);
-        public void AddMaxHpMultiplier(float value);
-        public void AddHpNaturalRecoveryValue(float value);
-        public void AddAttackMultiplierValue(float value);
-        public void AddViewRangeMultiplier(float value);
-        public void RemoveMaxHpValue(float value);
-        public void RemoveMaxHpMultiplier(float value);
-        public void RemoveHpNaturalRecoveryValue(float value);
-        public void RemoveAttackMultiplierValue(float value);
-        public void RemoveViewRangeMultiplier(float value);
+        public void AddStatValue(StatType type, float value);
+        public void RemoveStatValue(StatType type, float value);
+        public void AddStatMultiplier(StatType type, float value);
+        public void RemoveStatMultiplier(StatType type, float value);
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
         public int LoseHp(int value, bool notifyOnlyActualLoss = false);
         public void AddWaitTime(float value);
         public void ResetWaitTime();
         public bool IsWaitTimeFull();
+    }
+    public enum StatType
+    {
+        MaxHp,
+        HpNaturalRecovery,
+        AttackMultiplier,
+        ViewRange,
+        WaitTime
     }
 }

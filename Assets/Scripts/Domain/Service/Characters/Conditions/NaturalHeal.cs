@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.AddHpNaturalRecoveryValue(Power);
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,7 +27,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.RemoveHpNaturalRecoveryValue(Power);
+            hasCondition.RemoveStatValue(StatType.HpNaturalRecovery, Power);
         }
     }
 }

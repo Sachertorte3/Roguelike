@@ -170,11 +170,19 @@ namespace Model.Game
         {
             foreach (var position in positions)
             {
-                var material = data.Materials.GetRandomItem();
-                var mold = data.WeaponMolds.GetRandomItem();
-                var prefix = data.WeaponPrefixes.GetRandomItem();
-                var weapon = WeaponFactory.Create(prefix, material, mold);
-                chests.Add(Chest.Build(position, weapon));
+                if (Random.value < data.WeaponChanceInChest)
+                {
+                    var material = data.Materials.GetRandomItem();
+                    var mold = data.WeaponMolds.GetRandomItem();
+                    var prefix = data.WeaponPrefixes.GetRandomItem();
+                    var weapon = WeaponFactory.Create(prefix, material, mold);
+                    chests.Add(Chest.Build(position, weapon));
+                }
+                else
+                {
+                    var item = data.ChestItems.GetRandomItem();
+                    chests.Add(Chest.Build(position, item));
+                }
             }
         }
 

@@ -1,5 +1,4 @@
 #nullable enable
-using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using ObservableCollections;
 using R3;

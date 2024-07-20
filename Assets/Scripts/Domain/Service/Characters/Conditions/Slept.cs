@@ -15,7 +15,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.RemoveViewRangeMultiplier(0.25f);
+            hasCondition.RemoveStatMultiplier(StatType.ViewRange, 0.25f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,7 +25,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.AddViewRangeMultiplier(0.25f);
+            hasCondition.AddStatMultiplier(StatType.ViewRange, 0.25f);
         }
     }
 }

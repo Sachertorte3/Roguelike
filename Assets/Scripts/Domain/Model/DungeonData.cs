@@ -25,6 +25,8 @@ namespace Domain.Model
             [Required] public FieldBluePrint Field;
             public RoomData Room;
             public RarityWeightTable<ItemData> Items;
+            [ShowIf("@Room.ChestChance > 0"), Range(0, 1)] public float WeaponChanceInChest;
+            [ShowIf("@Room.ChestChance > 0")] public RarityWeightTable<ItemData> ChestItems;
             [ShowIf("@ShopChance > 0")] public RarityWeightTable<ItemData> ShopItems;
             [ShowIf("@ShopChance > 0"), Required] public EnemyData Clerk;
             public Table<EnemyData> Enemies;

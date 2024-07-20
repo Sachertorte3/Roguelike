@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.AddAttackMultiplierValue(AddedMultiplier);
+            hasCondition.AddStatMultiplier(StatType.AttackMultiplier, AddedMultiplier);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,7 +27,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.RemoveAttackMultiplierValue(AddedMultiplier);
+            hasCondition.RemoveStatMultiplier(StatType.AttackMultiplier, AddedMultiplier);
         }
     }
 }

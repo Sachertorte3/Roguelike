@@ -32,7 +32,7 @@ namespace Domain.Model.Item
                 Rarity.Uncommon => Colors.Green,
                 Rarity.Rare => Colors.SkyBlue,
                 Rarity.Epic => Colors.Purple,
-                Rarity.Legendary => Colors.Yellow,
+                Rarity.Legendary => Colors.Gold,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

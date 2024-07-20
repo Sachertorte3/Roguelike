@@ -6,7 +6,7 @@ namespace Domain.Model.Character
 {
     public interface IDiscoveredTargetBehavior
     {
-        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world);
     }
 }

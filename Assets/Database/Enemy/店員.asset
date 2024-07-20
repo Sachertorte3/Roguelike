@@ -17,10 +17,10 @@ MonoBehaviour:
   CharacterType:
     rid: 4425517307579858946
   IsBoss: 0
-  Hp: 3
+  Hp: 256
   Aggression: 1
   WanderAround: 0
-  MoveSpeed: 2
+  MoveSpeed: 3
   CanPickUp: 0
   CanUseItem: 0
   Skills:

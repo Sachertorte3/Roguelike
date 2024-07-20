@@ -8,6 +8,8 @@ using Utilities;
 using Domain.Model.Character;
 using Domain.Model.Action;
 using Domain.Model;
+using Domain.Service.Action;
+using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
@@ -139,35 +141,79 @@ namespace Domain.Service.Characters.Behavior
             if (_lastTargetPosition != null) //目指す座標がある
             {
                 Log.Debug($"[Think] Target exists.");
-                var actions = _chase.GenerateActionsDoable(character, _lastTargetPosition.Value, world);
-
-                var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
-                foreach (var actionTemp in validActions)
-                {
-                    Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
-                }
-
-                var action = await UniTask.FromResult(validActions.MaxByOrDefault(
-                    action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
-                    new DoNothing()));
-                return action;
             }
             else
             {
                 Log.Debug($"[Think] Wandering around.");
-                var actions = _wander.GenerateActionsDoable(character, world);
-
-                var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
-                foreach (var actionTemp in validActions)
-                {
-                    Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
-                }
-
-                var action = await UniTask.FromResult(validActions.MaxByOrDefault(
-                    action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
-                    new DoNothing()));
-                return action;
             }
+
+            var actions = GenerateActionsDoable(character, _lastTargetPosition, world);
+
+            var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
+            foreach (var actionTemp in validActions)
+            {
+                Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
+            }
+
+            var action = await UniTask.FromResult(validActions.MaxByOrDefault(
+                action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
+                new DoNothing()));
+            return action;
+
+        }
+
+        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int? targetPosition,
+            IMap world)
+        {
+            var actions = new List<IAction>();
+            if (targetPosition != null)
+                actions.AddRange(_chase.GenerateMoveActionsDoable(character, targetPosition.Value, world));
+            else
+                actions.AddRange(_wander.GenerateMoveActionsDoable(character, world));
+            actions.AddRange(GenerateUseSkillActionsDoable(character, world));
+            actions.AddRange(GenerateUseItemActionsDoable(character, world));
+            actions.AddRange(GenerateThrowItemActionsDoable(character, world));
+            return actions;
+        }
+
+        private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)
+        {
+            return character.Skills
+                .SelectMany(
+                    skill => DirectionMethods.AllDirections
+                        .Select(direction => new UseSkill(skill, direction))
+                )
+                .Where(action => action.Doable(character, world));
+        }
+
+        private IEnumerable<UseItem> GenerateUseItemActionsDoable(IHasBehavior character, IMap world)
+        {
+            if (!character.CanUseItem)
+            {
+                return Enumerable.Empty<UseItem>();
+            }
+
+            return character.Inventory.AllItems
+                .SelectMany(
+                    item => DirectionMethods.AllDirections
+                        .Select(direction => new UseItem(item, direction))
+                )
+                .Where(action => action.Doable(character, world));
+        }
+
+        private IEnumerable<ThrowItem> GenerateThrowItemActionsDoable(IHasBehavior character, IMap world)
+        {
+            if (!character.CanUseItem)
+            {
+                return Enumerable.Empty<ThrowItem>();
+            }
+
+            return character.Inventory.AllItems
+                .SelectMany(
+                    item => DirectionMethods.AllDirections
+                        .Select(direction => new ThrowItem(item, direction))
+                )
+                .Where(action => action.Doable(character, world));
         }
     }
 }

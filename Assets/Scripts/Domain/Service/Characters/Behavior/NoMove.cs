@@ -7,7 +7,7 @@ namespace Domain.Service.Characters.Behavior
 {
     public sealed class NoMove : IUndiscoveredTargetBehavior
     {
-        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
         {
             return new List<IAction>() { new DoNothing() };
         }

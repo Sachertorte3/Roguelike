@@ -26,12 +26,12 @@ namespace Domain.Service.Characters
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
                 true,
-                CharacterStatusManager.Build(100, 1, 10, 1, false),
+                CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
                 Entity.Build(spawnPosition, EntityLayer.Middle),
                 new[]
                 {
                     new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>()), "は殴りかかった")).Serialize()
+                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), "は殴りかかった")).Serialize()
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),
@@ -52,7 +52,7 @@ namespace Domain.Service.Characters
                 isShiny ? "☆" + data.Name : data.Name,
                 data.CharacterType,
                 data.WanderAround,
-                CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, 8, data.MoveSpeed.ToWaitTime(), isSlept),
+                CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity.Build(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
                 data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,

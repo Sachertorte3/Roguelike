@@ -21,12 +21,12 @@ namespace Domain.Service
                     mold.Position,
                     mold.Area,
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
-                        new List<AdditionalConditionData>())
+                        new List<AdditionalConditionData>(), 0)
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
-                        new List<AdditionalConditionData>())
+                        new List<AdditionalConditionData>(), 0)
                 ),
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
                 new List<IConditionData>()
@@ -44,13 +44,13 @@ namespace Domain.Service
                     mold.Area,
                     new AttackEffect(
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
-                        prefix.AdditionalConditions)
+                        prefix.AdditionalConditions, 0)
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
                     new AttackEffect(
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
-                        prefix.AdditionalConditions)
+                        prefix.AdditionalConditions, 0)
                 ),
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
                 new List<IConditionData>()

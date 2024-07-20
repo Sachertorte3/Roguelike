@@ -23,12 +23,10 @@ namespace Domain.Service.Characters
         private readonly Subject<int> _onHealReceived = new();
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
-        private string _name;
 
-        public CharacterStatusManager(string name, CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
+        public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
-            _name = name;
-            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.AttackMultiplier, data.ViewRange);
+            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.AttackMultiplier, data.ViewRange, data.WaitTime);
             _conditions = new CharacterConditions(this, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
@@ -48,6 +46,7 @@ namespace Domain.Service.Characters
                 _stats.HpNaturalRecoveryAmount.GetData(),
                 _stats.AttackMultiplier.GetData(),
                 _stats.ViewRange.GetData(),
+                _stats.WaitTime.GetData(),
                 _visionRange.ClairvoyantFlags,
                 _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             );
@@ -62,7 +61,7 @@ namespace Domain.Service.Characters
 
         public int GainHp(int value, bool notifyOnlyActualGain = false)
         {
-            var gainValue = _stats.Hp.Gain(value, _name);
+            var gainValue = _stats.Hp.Gain(value);
             if (notifyOnlyActualGain)
             {
                 if (gainValue > 0)
@@ -79,7 +78,7 @@ namespace Domain.Service.Characters
 
         public int LoseHp(int value, bool notifyOnlyActualLoss = false)
         {
-            var loseValue = _stats.Hp.Lose(value, _name);
+            var loseValue = _stats.Hp.Lose(value);
             if (notifyOnlyActualLoss)
             {
                 if (loseValue > 0)
@@ -160,7 +159,22 @@ namespace Domain.Service.Characters
             _visionRange.RemoveClairvoyantFlags();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, bool isSlept)
+        public void AddWaitTime(float value)
+        {
+            _stats.WaitTime.Gain(value);
+        }
+
+        public void ResetWaitTime()
+        {
+            _stats.WaitTime.Set(0);
+        }
+
+        public bool IsWaitTimeFull()
+        {
+            return _stats.WaitTime.IsFull();
+        }
+
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, float waitTime, bool isSlept)
         {
             var conditions = new List<ConditionMemento>();
             if (isSlept)
@@ -177,6 +191,7 @@ namespace Domain.Service.Characters
                 new StatData(hpNaturalRecoveryAmount),
                 new StatData(1f),
                 new StatData(viewRange),
+                new ResourceData(new StatData(waitTime), 0),
                 0,
                 conditions.ToArray()
             );

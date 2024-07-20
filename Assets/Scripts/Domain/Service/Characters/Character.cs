@@ -49,7 +49,7 @@ namespace Domain.Service.Characters
             _name = data.Name;
             CharacterType = data.CharacterType;
             _entity = new Entity(data.Entity);
-            _statusManager = new CharacterStatusManager(data.Name, data.Status, Position, map);
+            _statusManager = new CharacterStatusManager(data.Status, Position, map);
             _skills = data.Skills.Select(x => new Skill(x)).ToArray();
             _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
             _inventory = new Inventory(data.Inventory, _statusManager);

@@ -4,6 +4,8 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using Domain.Model.Effect;
+using System;
+
 
 #if UNITY_EDITOR
 using System.IO;
@@ -21,6 +23,7 @@ namespace Domain.Model.Character
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
         public bool WanderAround = true;
+        public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         public SkillData[] Skills;
         public bool HasLastSkill = false;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
@@ -32,5 +35,28 @@ namespace Domain.Model.Character
             AssetDatabase.SaveAssets();
         }
 #endif
+    }
+    public enum MoveSpeed
+    {
+        Quarter,
+        Half,
+        Normal,
+        Double,
+        Quadruple
+    }
+    public static class MoveSpeedExtensions
+    {
+        public static float ToWaitTime(this MoveSpeed moveSpeed)
+        {
+            return moveSpeed switch
+            {
+                MoveSpeed.Quarter => 4,
+                MoveSpeed.Half => 2,
+                MoveSpeed.Normal => 1,
+                MoveSpeed.Double => 0.5f,
+                MoveSpeed.Quadruple => 0.25f,
+                _ => throw new ArgumentException("Invalid MoveSpeed")
+            };
+        }
     }
 }

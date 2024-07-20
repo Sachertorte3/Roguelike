@@ -11,5 +11,7 @@ namespace Domain.Model.Character
         public float CurrentAttackMultiplier { get; }
         public ReadOnlyReactiveProperty<float> ViewRangeValue { get; }
         public float CurrentViewRange { get; }
+        public float CurrentMaxWaitTime { get; }
+        public float CurrentWaitTime { get; }
     }
 }

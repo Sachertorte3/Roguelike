@@ -17,5 +17,8 @@ namespace Domain.Model.Condition
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
         public int LoseHp(int value, bool notifyOnlyActualLoss = false);
+        public void AddWaitTime(float value);
+        public void ResetWaitTime();
+        public bool IsWaitTimeFull();
     }
 }

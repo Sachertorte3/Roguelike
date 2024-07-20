@@ -1,44 +1,44 @@
-﻿using System;
+using System;
 using R3;
 using UnityEngine;
 
 namespace Stats
 {
-    public class Resource : IDisposable
+    public class IntResource : IDisposable
     {
-        public readonly Stat _max;
-        private readonly ReactiveProperty<float> _value;
+        public readonly IntStat _max;
+        private readonly ReactiveProperty<int> _value;
 
-        public Resource(float maxValue)
+        public IntResource(int maxValue)
         {
-            _max = new Stat(maxValue);
-            _value = new ReactiveProperty<float>(maxValue);
+            _max = new IntStat(maxValue);
+            _value = new ReactiveProperty<int>(maxValue);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
-        public Resource(int maxValue, int value)
+        public IntResource(int maxValue, int value)
         {
-            _max = new Stat(maxValue);
-            _value = new ReactiveProperty<float>(value);
+            _max = new IntStat(maxValue);
+            _value = new ReactiveProperty<int>(value);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
-        public Resource(ResourceData data)
+        public IntResource(ResourceData data)
         {
-            _max = new Stat(data.Max);
-            _value = new ReactiveProperty<float>(data.Value);
+            _max = new IntStat(data.Max);
+            _value = new ReactiveProperty<int>(Mathf.RoundToInt(data.Value));
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
-        public ReadOnlyReactiveProperty<float> MaxValue => _max.Value;
-        public ReadOnlyReactiveProperty<float> Value => _value;
+        public ReadOnlyReactiveProperty<int> MaxValue => _max.Value;
+        public ReadOnlyReactiveProperty<int> Value => _value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
 
         public void Dispose()
         {
             _value.Dispose();
         }
 
-        ~Resource()
+        ~IntResource()
         {
             Dispose();
         }
@@ -53,12 +53,7 @@ namespace Stats
             _value.Value = Mathf.Clamp(Value.CurrentValue, 0, MaxValue.CurrentValue);
         }
 
-        public void Set(float value)
-        {
-            _value.Value = Mathf.Clamp(value, 0, MaxValue.CurrentValue);
-        }
-
-        public float Lose(float value)
+        public int Lose(int value)
         {
             if (value < 0)
             {
@@ -67,10 +62,10 @@ namespace Stats
 
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
-            return oldValue - _value.Value;
+            return oldValue - Value.CurrentValue;
         }
 
-        public float Gain(float value)
+        public int Gain(int value)
         {
             if (value < 0)
             {
@@ -79,7 +74,7 @@ namespace Stats
 
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, MaxValue.CurrentValue);
-            return _value.Value - oldValue;
+            return Value.CurrentValue - oldValue;
         }
 
         public void AddMaxValue(float value)
@@ -100,11 +95,6 @@ namespace Stats
         public void RemoveMaxMultiplier(float value)
         {
             _max.AddMultiplier(-value);
-        }
-
-        public bool IsFull()
-        {
-            return Value.CurrentValue >= MaxValue.CurrentValue;
         }
     }
 }

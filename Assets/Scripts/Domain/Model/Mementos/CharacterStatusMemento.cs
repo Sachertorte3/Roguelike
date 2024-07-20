@@ -7,6 +7,7 @@ namespace Domain.Model.Character
         StatData HpNaturalRecoveryAmount,
         StatData AttackMultiplier,
         StatData ViewRange,
+        ResourceData WaitTime,
         int ClairvoyantFlags,
         ConditionMemento[] Conditions
     );

@@ -20,6 +20,7 @@ MonoBehaviour:
   Hp: 3
   Aggression: 1
   WanderAround: 1
+  MoveSpeed: 3
   Skills:
   - Area:
       rid: 4425516923575599109
@@ -53,7 +54,7 @@ MonoBehaviour:
     - rid: 4425516923575599110
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 3
+        Power: 1
         CriticalRate: 0
         AdditionalConditions: []
     - rid: 6064254728247705600

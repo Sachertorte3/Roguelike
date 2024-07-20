@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Stats;
 using Unity.Logging;
 
 namespace Model.Game
@@ -16,10 +17,12 @@ namespace Model.Game
         private UniTaskCompletionSource _runCompletionSource;
         private int _turn = 1;
         private int _turnInLevel = 1;
+        private Resource _turnWaitTime { get; init; }
 
         public TurnController(GameInput input)
         {
             _input = input;
+            _turnWaitTime = new Resource(1);
         }
 
         public async void Run(IMap map)
@@ -36,17 +39,35 @@ namespace Model.Game
                 
                 map.UpdateTurn(_turn);
                 var characters = map.Characters.ToList();
+                var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime -character.StatusManager.Stats.CurrentWaitTime);
+                
+                if (_turnWaitTime.IsFull())
+                {
+                    _turnWaitTime.Set(0);
+                }
+                _turnWaitTime.Gain(minWaitTime);
+                
                 foreach (var character in characters)
                 {
-                    character.UpdateTurn();
-                    if (character.CanAct && !character.StatusManager.IsDead)
+                    if (_turnWaitTime.IsFull())
                     {
-                        Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
-                        await character.DoNextAction(map, _input);
+                        character.UpdateTurn();
                     }
-                    else
+                    
+                    character.StatusManager.AddWaitTime(minWaitTime);
+                    if (character.StatusManager.IsWaitTimeFull())
                     {
-                        Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
+                        character.StatusManager.ResetWaitTime();
+
+                        if (character.CanAct && !character.StatusManager.IsDead)
+                        {
+                            Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
+                            await character.DoNextAction(map, _input);
+                        }
+                        else
+                        {
+                            Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
+                        }
                     }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)

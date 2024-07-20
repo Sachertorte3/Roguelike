@@ -7,18 +7,20 @@ namespace Domain.Service.Characters.Stats
 {
     internal class CharacterStats : IDisposable, IStats
     {
-        public CharacterStats(ResourceData hp, StatData hpNaturalRecoveryAmount, StatData attackMultiplier, StatData viewRange)
+        public CharacterStats(ResourceData hp, StatData hpNaturalRecoveryAmount, StatData attackMultiplier, StatData viewRange, ResourceData waitTime)
         {
-            Hp = new Resource(hp);
+            Hp = new IntResource(hp);
             HpNaturalRecoveryAmount = new IntStat(hpNaturalRecoveryAmount);
             AttackMultiplier = new Stat(attackMultiplier);
             ViewRange = new Stat(viewRange);
+            WaitTime = new Resource(waitTime);
         }
 
-        public Resource Hp { get; init; }
+        public IntResource Hp { get; init; }
         public IntStat HpNaturalRecoveryAmount { get; init; }
         public Stat AttackMultiplier { get; init; }
         public Stat ViewRange { get; init; }
+        public Resource WaitTime { get; init; }
 
         public void Dispose()
         {
@@ -26,6 +28,7 @@ namespace Domain.Service.Characters.Stats
             HpNaturalRecoveryAmount.Dispose();
             AttackMultiplier.Dispose();
             ViewRange.Dispose();
+            WaitTime.Dispose();
         }
 
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
@@ -38,5 +41,7 @@ namespace Domain.Service.Characters.Stats
         public float CurrentAttackMultiplier => AttackMultiplier.CurrentValue;
         public ReadOnlyReactiveProperty<float> ViewRangeValue => ViewRange.Value;
         public float CurrentViewRange => ViewRange.CurrentValue;
+        public float CurrentMaxWaitTime => WaitTime.MaxValue.CurrentValue;
+        public float CurrentWaitTime => WaitTime.Value.CurrentValue;
     }
 }

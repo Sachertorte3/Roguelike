@@ -21,7 +21,7 @@ MonoBehaviour:
   Aggression: 1
   WanderAround: 1
   MoveSpeed: 3
-  CanPickUp: 1
+  CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Area:

@@ -21,8 +21,8 @@ MonoBehaviour:
   Aggression: 1
   WanderAround: 1
   MoveSpeed: 2
-  CanPickUp: 0
-  CanUseItem: 0
+  CanPickUp: 1
+  CanUseItem: 1
   Skills:
   - Area:
       rid: 2541219158355345408
@@ -77,7 +77,7 @@ MonoBehaviour:
     - rid: 2541219158355345409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 4
+        Power: 3
         CriticalRate: 0
         AdditionalConditions: []
     - rid: 2541219158355345410

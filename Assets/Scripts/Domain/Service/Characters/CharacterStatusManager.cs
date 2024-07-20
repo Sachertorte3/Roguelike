@@ -178,7 +178,7 @@ namespace Domain.Service.Characters
             return _stats.WaitTime.IsFull();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, float viewRange, float waitTime, bool isSlept)
         {
             var conditions = new List<ConditionMemento>();
             if (isSlept)
@@ -193,7 +193,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento(
                 new ResourceData(new StatData(maxHp), maxHp),
                 new StatData(hpNaturalRecoveryAmount),
-                new StatData(1f),
+                new StatData(attackMultiplier),
                 new StatData(viewRange),
                 new ResourceData(new StatData(waitTime), 0),
                 0,

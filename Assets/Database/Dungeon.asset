@@ -27,9 +27,7 @@ MonoBehaviour:
       CharacterCount: 3
     Items:
       items:
-      - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
-      - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
-      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
     WeaponChanceInChest: 0.5
     ChestItems:
       items:
@@ -47,7 +45,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+      - Item: {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
         Weight: 1
     existBoss: 0
     Boss: {fileID: 0}
@@ -68,6 +66,8 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 6cd5c19ac0e883c40bc6152522b5c698, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 8e05eeaadc1776346b7d862c5efd0c32, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 9eeab018ebdbcc14c87a0aa7a9b7c4e7, type: 2}
         Weight: 1
     WeaponPrefixes:
       items:

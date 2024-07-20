@@ -16,12 +16,14 @@ namespace Domain.Service.Effect
     {
         [MinValue(1)] public int Power;
         [Range(0, 1)] public float CriticalRate;
+        public int BlowAwayDistance;
         public List<AdditionalConditionData> AdditionalConditions = new();
 
-        public AttackEffect(int power, List<AdditionalConditionData> additionalConditions)
+        public AttackEffect(int power, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
         {
             Power = power;
             AdditionalConditions = additionalConditions;
+            BlowAwayDistance = blowAwayDistance;
         }
 
         public Color Color => Colors.Red;
@@ -46,6 +48,10 @@ namespace Domain.Service.Effect
                 {
                     target.AddCondition(condition.Condition, condition.RemovalCondition);
                 }
+            }
+            if (BlowAwayDistance > 0)
+            {
+                await target.BlowAway(DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, BlowAwayDistance, map);
             }
         }
 

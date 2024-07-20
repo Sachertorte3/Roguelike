@@ -58,6 +58,7 @@ MonoBehaviour:
       data:
         Power: 5
         CriticalRate: 0
+        BlowAwayDistance: 1
         AdditionalConditions: []
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}

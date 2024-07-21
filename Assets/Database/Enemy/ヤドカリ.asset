@@ -17,7 +17,7 @@ MonoBehaviour:
   CharacterType:
     rid: 4425516923575599116
   IsBoss: 0
-  Hp: 5
+  Hp: 4
   Aggression: 1
   WanderAround: 1
   MoveSpeed: 2
@@ -58,6 +58,7 @@ MonoBehaviour:
       data:
         Power: 2
         CriticalRate: 0
+        BlowAwayDistance: 0
         AdditionalConditions: []
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}

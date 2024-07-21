@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Domain.Model
 {
-    public partial class DungeonData
+    public partial class DungeonBluePrintData
     {
         [Serializable]
         public class RoomData

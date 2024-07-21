@@ -12,7 +12,7 @@ namespace Provider
 {
     internal class Container : LifetimeScope
     {
-        [SerializeField] private DungeonData _dungeonData;
+        [SerializeField] private DungeonBluePrintData _dungeonData;
 
         protected override void Configure(IContainerBuilder builder)
         {

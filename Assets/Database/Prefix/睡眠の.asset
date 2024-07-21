@@ -18,7 +18,7 @@ MonoBehaviour:
   UsageLimitMagnification: 1
   AdditionalConditions:
   - Condition:
-      rid: 2541219064542658561
+      rid: 2541219158355345466
     RemovalCondition:
       RemoveByElapsedTurn: 1
       Duration: 3
@@ -29,7 +29,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 2541219064542658561
-      type: {class: Sleeped, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 2541219158355345466
+      type: {class: Slept, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 

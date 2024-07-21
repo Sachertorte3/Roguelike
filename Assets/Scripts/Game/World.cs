@@ -5,15 +5,12 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
-using Domain.Service;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Map;
 using R3;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using VContainer;
-using static Domain.Model.DungeonData;
 
 namespace Model.Game
 {
@@ -21,13 +18,13 @@ namespace Model.Game
     {
         private ReactiveProperty<MapManager?> _activeMap = new();
         private int _activeMapId = 0;
-        private DungeonData _dungeonData;
+        private DungeonBluePrintData _dungeonData;
         private Dictionary<int, MapMemento> _maps = new();
         private CharacterControlInputReceiver _receiver;
         public int ActiveMapIndex = 0;
 
         [Inject]
-        public World(CharacterControlInputReceiver receiver, DungeonData dungeonData)
+        public World(CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonData)
         {
             Globals.World = this;
             _receiver = receiver;
@@ -37,21 +34,6 @@ namespace Model.Game
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
-        private SectionData GetSectionData(int level)
-        {
-            var currentDepth = 0;
-            foreach (var section in _dungeonData.Sections)
-            {
-                currentDepth += section.Depth;
-                if (level <= currentDepth)
-                {
-                    return section;
-                }
-            }
-
-            throw new InvalidOperationException("指定されたレベルに対応するセクションが見つかりません。");
-        }
-
         private MapMemento GetMapMemento(int mapId)
         {
             if (_maps.ContainsKey(mapId))
@@ -60,8 +42,8 @@ namespace Model.Game
             }
             else
             {
-                var sectionData = GetSectionData(mapId);
-                return new MapBuilder(Tilemap.Build(sectionData.Field), sectionData, mapId + 1, mapId - 1).Build();
+                var dungeonData = _dungeonData.CreateMapData(mapId);
+                return new MapBuilder(Tilemap.Build(dungeonData.Field), dungeonData, mapId + 1, mapId - 1).Build();
             }
         }
 
@@ -91,7 +73,7 @@ namespace Model.Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, GetSectionData(mapId), playerData, characters, initialPosition, _receiver);
+            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), playerData, characters, initialPosition, _receiver);
 
             _activeMapId = mapId;
             _activeMap.Value = map;

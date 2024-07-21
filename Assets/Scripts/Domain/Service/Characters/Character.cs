@@ -188,6 +188,7 @@ namespace Domain.Service.Characters
 
         public async UniTask ThrowItem(IItem item, Direction8 direction, IMap world)
         {
+            _inventory.Remove(item);
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);

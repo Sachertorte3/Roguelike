@@ -34,13 +34,15 @@ namespace Domain.Service.Effect
         {
             if (Random.value < CriticalRate)
             {
-                GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{Power * 2}のダメージ</color>");
-                await target.LoseHp(Formula.Calc(actor, Power * 2));
+                var damage = Formula.Calc(actor, Power * 2);
+                GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
+                await target.LoseHp(damage);
             }
             else
             {
-                GameLog.Add($"{target.GetName(map.Player)}に{Power}のダメージ");
-                await target.LoseHp(Formula.Calc(actor, Power));
+                var damage = Formula.Calc(actor, Power);
+                GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
+                await target.LoseHp(damage);
             }
             foreach (var condition in AdditionalConditions)
             {

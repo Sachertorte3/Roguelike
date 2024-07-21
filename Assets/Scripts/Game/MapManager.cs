@@ -20,7 +20,7 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Algorithms;
-using static Domain.Model.DungeonData;
+using static Domain.Model.DungeonBluePrintData;
 using Random = UnityEngine.Random;
 
 namespace Model.Game
@@ -29,7 +29,7 @@ namespace Model.Game
     {
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
-        private SectionData _sectionData;
+        private DungeonMapData _dungeonData;
         private List<IEventArea> _eventAreas = new();
         private MonsterHouse? _monsterHouse;
         private Shop? _shop;
@@ -41,7 +41,7 @@ namespace Model.Game
         public ObservableList<ICharacter> KeyCharacters = new();
         public IIconEntity DownStairs => EventEntityManager.DownStairs;
 
-        public MapManager(MapMemento map, SectionData sectionData, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
+        public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int playerPosition, CharacterControlInputReceiver receiver)
         {
             if (playerData == null)
@@ -61,7 +61,7 @@ namespace Model.Game
             ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(map.EventEntities, _downStairsLocked);
 
-            _sectionData = sectionData;
+            _dungeonData = data;
 
             if (partyMembers != null)
             {
@@ -101,7 +101,7 @@ namespace Model.Game
             {
                 var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Clerk.Position);
                 if (clerk == null && !map.Shop.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_sectionData.Clerk, BlankPositions().In(map.Shop.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop, clerk, this);
@@ -174,14 +174,14 @@ namespace Model.Game
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Middle)),
-                    isSlept ?? Random.value < _sectionData.SleepChance,
-                    isShiny ?? Random.value < _sectionData.ShinyChance,
+                    isSlept ?? Random.value < _dungeonData.SleepChance,
+                    isShiny ?? Random.value < _dungeonData.ShinyChance,
                     affiliation?.Serialize()
                 ),
                 this
             );
         }
-        public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_sectionData.Enemies.GetRandomItem(), position);
+        public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position);
 
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {

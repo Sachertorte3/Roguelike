@@ -124,6 +124,14 @@ namespace Domain.Service.Items
             return Replace(null, index);
         }
 
+        public IItem? Remove(IItem item)
+        {
+            var index = _items.IndexOf(item);
+            if (index < 0)
+                return null;
+            return Replace(null, index);
+        }
+
         public void RepairAll()
         {
             foreach (var item in _items)

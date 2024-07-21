@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30D3\u30C3\u30B0\u30B9\u30CD\u30FC\u30AF"
+  m_EditorClassIdentifier: 
+  Name: "\u30D3\u30C3\u30B0\u30B9\u30CD\u30FC\u30AF"
+  Group: 1
+  CharacterType:
+    rid: 2541219238315819024
+  IsBoss: 1
+  Hp: 60
+  Aggression: 3
+  WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
+  Skills:
+  - Area:
+      rid: 2541219238315819015
+    Effect:
+      rid: 2541219238315819016
+    Position:
+      rid: 2541219238315819017
+    Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
+  - Area:
+      rid: 2541219238315819023
+    Effect:
+      rid: 2541219238315819020
+    Position:
+      rid: 2541219238315819021
+    Log: "\u306F\u5C3B\u5C3E\u3092\u632F\u3063\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    Log: 
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2541219238315819015
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219238315819016
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 5
+        CriticalRate: 0
+        BlowAwayDistance: 0
+        AdditionalConditions:
+        - Condition:
+            rid: 2541219238315819018
+          RemovalCondition:
+            RemoveByElapsedTurn: 1
+            Duration: 1
+            RemoveByDamage: 0
+            Probability: 0
+            RemoveByEnemyNearby: 0
+          Probability: 0.2
+    - rid: 2541219238315819017
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219238315819018
+      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 
+    - rid: 2541219238315819020
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 4
+        CriticalRate: 0
+        BlowAwayDistance: 1
+        AdditionalConditions: []
+    - rid: 2541219238315819021
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219238315819023
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Radius: 2
+    - rid: 2541219238315819024
+      type: {class: Snake, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0

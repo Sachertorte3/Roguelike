@@ -17,7 +17,7 @@ MonoBehaviour:
   CharacterType:
     rid: 6064254728247705600
   IsBoss: 0
-  Hp: 3
+  Hp: 5
   Aggression: 1
   WanderAround: 1
   MoveSpeed: 3
@@ -56,8 +56,9 @@ MonoBehaviour:
     - rid: 4425516923575599110
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 2
         CriticalRate: 0
+        BlowAwayDistance: 0
         AdditionalConditions: []
     - rid: 6064254728247705600
       type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}

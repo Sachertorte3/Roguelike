@@ -32,4 +32,4 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 2541219064542658561
-      type: {class: Sleeped, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      type: {class: Slept, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}

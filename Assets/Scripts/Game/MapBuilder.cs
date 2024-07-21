@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service;
@@ -10,7 +11,7 @@ using Domain.Service.Items;
 using Domain.Service.Map;
 using UnityEngine;
 using Utilities;
-using static Domain.Model.DungeonData;
+using static Domain.Model.DungeonBluePrintData;
 using Random = UnityEngine.Random;
 
 namespace Model.Game
@@ -25,7 +26,7 @@ namespace Model.Game
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
 
-        public MapBuilder(TilemapMemento tilemapData, SectionData data, int nextMapId, int prevMapId)
+        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, int nextMapId, int prevMapId)
         {
             _tilemap = new(tilemapData);
             _characters = new();
@@ -47,11 +48,12 @@ namespace Model.Game
 
             foreach (var room in rooms)
             {
-                var characterCount = GetCount(data.Room.CharacterCount);
-                var itemCount = GetCount(data.Room.ItemCount);
-                var weaponCount = GetCount(data.Room.WeaponCount);
-                var chestCount = Random.value < data.Room.ChestChance ? 1 : 0;
-                var sum = characterCount + itemCount + weaponCount + chestCount + 3;
+                var characterCount = GetCount(data.CharacterCount);
+                var itemCount = GetCount(data.ItemCount);
+                var weaponCount = GetCount(data.WeaponCount);
+                var chestCount = Random.value < data.ChestChance ? 1 : 0;
+                var bossCount = data.existBoss ? data.Boss.Count : 0;
+                var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 2;
 
                 var positions = room.RectRange().GetAtRandom(sum).ToList();
                 var characterPositions = positions.TakeAndRemove(characterCount);
@@ -66,9 +68,12 @@ namespace Model.Game
 
                 if (room == bossRoom)
                 {
-                    var boss = CharacterFactory.BuildCharacter(data.Boss, positions.TakeAndRemove(1).First(), false, false);
-                    _characters.Add(boss);
-                    _keyCharacters.Add(boss.Entity.Id);
+                    foreach (var bossData in data.Boss)
+                    {
+                        var boss = CharacterFactory.BuildCharacter(bossData, positions.TakeAndRemove(1).First(), false, false);
+                        _characters.Add(boss);
+                        _keyCharacters.Add(boss.Entity.Id);
+                    }
                 }
                 if (room == downStairsRoom)
                 {
@@ -100,7 +105,7 @@ namespace Model.Game
             return count;
         }
 
-        private ShopMemento? CreateShop(SectionData data, List<RectInt> rooms)
+        private ShopMemento? CreateShop(DungeonMapData data, List<RectInt> rooms)
         {
             if (Random.value >= data.ShopChance || rooms.Count() <= 1) return null;
 
@@ -117,7 +122,7 @@ namespace Model.Game
             return Shop.Build(shopRoom, clerk.Entity, _items.ToList());
         }
 
-        private RoomMemento? CreateMonsterHouse(SectionData data, List<RectInt> rooms)
+        private RoomMemento? CreateMonsterHouse(DungeonMapData data, List<RectInt> rooms)
         {
             if (Random.value >= data.MonsterHouseChance || rooms.Count() <= 1) return null;
 
@@ -131,7 +136,7 @@ namespace Model.Game
             return MonsterHouse.Build(monsterHouseRoom);
         }
 
-        private void AddCharactersToRoom(SectionData data, List<Vector2Int> positions)
+        private void AddCharactersToRoom(DungeonMapData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
             {
@@ -140,13 +145,13 @@ namespace Model.Game
             }
         }
 
-        private void AddItemsToRoom(SectionData data, List<Vector2Int> positions)
+        private void AddItemsToRoom(DungeonMapData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
                 _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
         }
 
-        private void AddWeaponsToRoom(SectionData data, List<Vector2Int> positions)
+        private void AddWeaponsToRoom(DungeonMapData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
             {
@@ -166,7 +171,7 @@ namespace Model.Game
             }
         }
 
-        private void AddChestsToRoom(SectionData data, List<Vector2Int> positions, List<ChestMemento> chests)
+        private void AddChestsToRoom(DungeonMapData data, List<Vector2Int> positions, List<ChestMemento> chests)
         {
             foreach (var position in positions)
             {

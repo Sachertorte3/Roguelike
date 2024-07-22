@@ -49,7 +49,7 @@ MonoBehaviour:
       data:
         RemovalCondition:
           RemoveByElapsedTurn: 1
-          Duration: 30
+          Duration: 50
           RemoveByDamage: 0
           Probability: 0
           RemoveByEnemyNearby: 0

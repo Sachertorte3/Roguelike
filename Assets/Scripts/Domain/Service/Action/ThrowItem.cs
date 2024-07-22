@@ -20,7 +20,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap world)
         {
-            return 0;
+            return actor.EvaluateThrow(Item, Direction, world);
         }
 
         public string Info()

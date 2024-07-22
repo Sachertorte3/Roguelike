@@ -106,14 +106,15 @@ namespace Domain.Service.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IPassableChecker world)
+        public bool CanMove(Direction8 direction, IPassableChecker map) => CanMove(CurrentPosition, direction, map);
+        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
             return _canIgnoreWall
                 ? true
-                : world.IsPassable(Position.CurrentValue + direction.Vector())
+                : map.IsPassable(position + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (world.IsPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       world.IsPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (map.IsPassable(position + direction.Rotate45Clockwise().Vector()) &&
+                       map.IsPassable(position + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
@@ -151,6 +152,11 @@ namespace Domain.Service.Characters
         {
             Log.Debug($"[Action]{_name}:UseSkill\n{skill.Info()}\ndirection:{direction}");
             Turn(direction);
+            for (var i = 0; i < skill.RushDistance; i++)
+            {
+                if (CanMove(direction, map))
+                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+            }
             _onEffectSpawned.OnNext(
                 new OnEffectSpawnedMessage(skill.GetArea(this, CurrentPosition, CurrentDirection, map), skill.Color));
             if (_entity.VisibleByPlayer.CurrentValue)
@@ -200,6 +206,11 @@ namespace Domain.Service.Characters
                 await itemEntity.Throw(this, direction, world);
 
             State = CharacterState.Wait;
+        }
+
+        public float EvaluateThrow(IItem item, Direction8 direction, IMap world)
+        {
+            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, world);
         }
 
         public UniTask<int> GainHp(int value)

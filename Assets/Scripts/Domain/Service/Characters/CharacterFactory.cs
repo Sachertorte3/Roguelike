@@ -31,7 +31,7 @@ namespace Domain.Service.Characters
                 new[]
                 {
                     new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), "は殴りかかった")).Serialize()
+                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")).Serialize()
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),

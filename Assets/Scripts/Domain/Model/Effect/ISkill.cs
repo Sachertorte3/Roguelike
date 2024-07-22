@@ -9,6 +9,7 @@ namespace Domain.Model.Effect
     public interface ISkill : ISerializable<SkillMemento>, IHasInfo
     {
         public Color Color { get; }
+        public int RushDistance { get; }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map);

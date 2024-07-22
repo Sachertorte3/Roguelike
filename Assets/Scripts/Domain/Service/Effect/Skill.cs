@@ -10,6 +10,7 @@ using UnityEngine;
 using Utilities;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
+using Domain.Service.Characters;
 
 namespace Domain.Service.Effect
 {
@@ -17,17 +18,19 @@ namespace Domain.Service.Effect
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
-        private readonly string _info;
-        private readonly string? _log;
         private readonly IEffectPosition _position;
+        public int RushDistance { get; private set; }
+        private readonly string? _log;
+        private readonly string _info;
 
         public Skill(SkillData data)
         {
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
-            _info = data.Info();
+            RushDistance = data.RushDistance;
             _log = data.Log;
+            _info = data.Info();
         }
 
         public Skill(SkillDataOnUse data)
@@ -35,6 +38,7 @@ namespace Domain.Service.Effect
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
+            RushDistance = 0;
             _info = data.Info();
         }
 
@@ -43,6 +47,7 @@ namespace Domain.Service.Effect
             _position = new AtFeet();
             _area = data.Area;
             _effect = data.Effect;
+            RushDistance = 0;
             _info = data.Info();
         }
 
@@ -51,6 +56,7 @@ namespace Domain.Service.Effect
             _position = data.Position;
             _area = data.Area;
             _effect = data.Effect;
+            RushDistance = data.RushDistance;
             _info = data.Info;
             _log = data.Log;
         }
@@ -59,7 +65,7 @@ namespace Domain.Service.Effect
 
         public SkillMemento Serialize()
         {
-            return new SkillMemento(_position, _area, _effect, _info, _log);
+            return new SkillMemento(_position, _area, _effect, RushDistance, _info, _log);
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
@@ -107,6 +113,11 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            for (int i = 0; i < RushDistance; i++)
+            {
+                if (actor.CanMove(position, direction, map))
+                    position += direction.Vector();
+            }
             var spawnPositions = _position.Get(actor, position, direction, map);
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
             var characters = map.GetCharactersInArea(area.ToHashSet());

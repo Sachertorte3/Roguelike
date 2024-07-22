@@ -8,6 +8,7 @@ namespace Domain.Model.Character
         IEffectPosition Position,
         IArea Area,
         IEffect Effect,
+        int RushDistance,
         string Info,
         string? Log
     );

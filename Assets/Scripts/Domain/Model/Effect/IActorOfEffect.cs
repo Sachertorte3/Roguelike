@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Effect
 {
@@ -9,6 +10,7 @@ namespace Domain.Model.Effect
         public bool IsShiny { get; }
         public string GetName(IHasAffiliation player);
         public Vector2Int CurrentPosition { get; }
+        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
         public UniTask<int> GainHp(int value);
         public float AttackMultiplier { get; }

@@ -30,6 +30,7 @@ MonoBehaviour:
       rid: 4425516923575599108
     Position:
       rid: 2541219158355345416
+    RushDistance: 0
     Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
   HasLastSkill: 0
   LastSkill:
@@ -39,6 +40,7 @@ MonoBehaviour:
       rid: -2
     Position:
       rid: -2
+    RushDistance: 0
     Log: 
   references:
     version: 2

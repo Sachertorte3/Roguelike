@@ -87,6 +87,23 @@ namespace Domain.Service.Items
                 _entity.Teleport(position);
             }
         }
+        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, IMap map)
+        {
+            if (item.SkillOnThrow == null)
+                return 0;
+
+            while (map.IsPassable(position + direction.Vector()))
+            {
+                position += direction.Vector();
+            }
+
+            if (map.IsMapPassable(position + direction.Vector()))
+            {
+                position += direction.Vector();
+            }
+
+            return item.SkillOnThrow.Evaluate(actor, position, direction, map);
+        }
 
         ~ItemEntity()
         {

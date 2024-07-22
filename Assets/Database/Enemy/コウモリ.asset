@@ -30,6 +30,7 @@ MonoBehaviour:
       rid: 4425516923575599110
     Position:
       rid: 2541219106150416413
+    RushDistance: 0
     Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
   HasLastSkill: 0
   LastSkill:
@@ -39,6 +40,7 @@ MonoBehaviour:
       rid: -2
     Position:
       rid: -2
+    RushDistance: 0
     Log: 
   references:
     version: 2
@@ -58,7 +60,7 @@ MonoBehaviour:
       data:
         Power: 2
         CriticalRate: 0
-        BlowAwayDistance: 0
+        BlowAwayDistance: 2
         AdditionalConditions: []
     - rid: 6064254728247705600
       type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}

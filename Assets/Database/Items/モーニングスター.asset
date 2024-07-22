@@ -15,8 +15,9 @@ MonoBehaviour:
   Icon: {fileID: -1231767279, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 3
   Price: 100
-  EffectsOnUse: 1
-  EffectsOnThrow: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
+  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -27,16 +28,14 @@ MonoBehaviour:
       rid: 2541219106150416405
   SkillOnThrow:
     Area:
-      rid: -2
+      rid: 2541219281251860483
     Effect:
-      rid: -2
+      rid: 2541219158355345460
   UsageLimit: 10
   PassiveConditions: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2541219106150416405
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -52,3 +51,6 @@ MonoBehaviour:
       data:
         ContainsSelf: 0
         Radius: 1
+    - rid: 2541219281251860483
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 

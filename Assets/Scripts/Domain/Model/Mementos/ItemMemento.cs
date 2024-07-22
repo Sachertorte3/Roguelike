@@ -14,6 +14,7 @@ namespace Domain.Model.Character
         int Price,
         SkillMemento? SkillOnUse,
         SkillMemento? SkillOnThrow,
+        bool UseOnDeath,
         int MaxUsages,
         int RemainingUsages,
         List<IConditionData> Conditions

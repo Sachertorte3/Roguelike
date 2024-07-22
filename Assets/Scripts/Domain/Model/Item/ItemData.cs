@@ -24,27 +24,29 @@ namespace Domain.Model.Item
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public int Price = 100;
-        public bool EffectsOnUse = true;
-        public bool EffectsOnThrow = false;
+        public bool SpawnEffectsOnUse = true;
+        public bool SpawnEffectsOnThrow = false;
+        [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath = false;
 
-        [ShowIf("@EffectsOnUse && EffectsOnThrow")]
+        [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow")]
         [SerializeField]
         public bool IsSameSkill = false;
 
-        [ShowIf("EffectsOnUse")] public SkillDataOnUse? SkillOnUse;
-        [ShowIf("EffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
+        [ShowIf("SpawnEffectsOnUse")] public SkillDataOnUse? SkillOnUse;
+        [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         [SerializeReference] public List<IConditionData> PassiveConditions;
         [ReadOnly][Required] private string _name = "";
 
         public ItemData(string name, Sprite icon, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, int usageLimit, List<IConditionData> conditions)
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         {
             _name = name;
             Icon = icon;
             _rarity = rarity;
-            EffectsOnUse = skillOnUse != null;
-            EffectsOnThrow = skillOnThrow != null;
+            SpawnEffectsOnUse = skillOnUse != null;
+            SpawnEffectsOnThrow = skillOnThrow != null;
+            UseOnDeath = useOnDeath;
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
             UsageLimit = usageLimit;
@@ -52,7 +54,7 @@ namespace Domain.Model.Item
         }
 
         public string Name => _name.SetColored(Rarity.GetColor());
-        private bool _usable => EffectsOnUse || EffectsOnThrow;
+        private bool _usable => SpawnEffectsOnUse || SpawnEffectsOnThrow;
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -60,7 +62,12 @@ namespace Domain.Model.Item
             _name = Path.GetFileNameWithoutExtension(assetPath);
             AssetDatabase.SaveAssets();
 
-            if (!(EffectsOnUse && EffectsOnThrow))
+            if (!SpawnEffectsOnUse)
+            {
+                UseOnDeath = false;
+            }
+
+            if (!(SpawnEffectsOnUse && SpawnEffectsOnThrow))
             {
                 IsSameSkill = false;
             }
@@ -82,18 +89,23 @@ namespace Domain.Model.Item
                 }
                 else
                 {
-                    if (EffectsOnUse)
+                    if (SpawnEffectsOnUse)
                     {
                         info += $"[使用時]\n{SkillOnUse.Info()}\n";
                     }
 
-                    if (EffectsOnThrow)
+                    if (SpawnEffectsOnThrow)
                     {
                         info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
                     }
                 }
 
                 info += $"使用可能回数: {UsageLimit}\n";
+            }
+
+            if (UseOnDeath)
+            {
+                info += "死亡時に自動的に使用される\n";
             }
 
             foreach (var condition in PassiveConditions)

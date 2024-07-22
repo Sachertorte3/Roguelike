@@ -28,6 +28,7 @@ namespace Domain.Service
                     new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification),
                         new List<AdditionalConditionData>(), 0)
                 ),
+                false,
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
                 new List<IConditionData>()
             );
@@ -52,6 +53,7 @@ namespace Domain.Service
                         Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification),
                         prefix.AdditionalConditions, 0)
                 ),
+                false,
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
                 new List<IConditionData>()
             );

@@ -10,7 +10,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap world)
         {
-            return Item.EffectsOnUse;
+            return Item.SpawnEffectWhenUsed;
         }
 
         public async UniTask Do(IActor actor, IMap world, IInput input)

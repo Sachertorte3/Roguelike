@@ -84,6 +84,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
       - {fileID: 11400000, guid: 39691e5dea321a64fbb7e0cd664d6261, type: 2}
       - {fileID: 11400000, guid: f2a6d946be267f342b2e6213d596b6fa, type: 2}
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
     WeaponChanceInChest: 0.8
     ChestItems:
       items:
@@ -100,6 +101,8 @@ MonoBehaviour:
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
         Weight: 1
     Materials:
       items:

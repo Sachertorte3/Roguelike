@@ -15,37 +15,40 @@ MonoBehaviour:
   Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 3
   Price: 100
-  EffectsOnUse: 1
-  EffectsOnThrow: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
+  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425517220030054406
+      rid: 2541219281251860481
     Effect:
       rid: 4425516923575599125
     Position:
       rid: 2541219106150416400
   SkillOnThrow:
     Area:
-      rid: -2
+      rid: 2541219281251860482
     Effect:
-      rid: -2
+      rid: 4425516923575599125
   UsageLimit: 10
+  PassiveConditions: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2541219106150416400
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219281251860481
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219281251860482
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599125
       type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 5
         Rate: 0.6
-    - rid: 4425517220030054406
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1

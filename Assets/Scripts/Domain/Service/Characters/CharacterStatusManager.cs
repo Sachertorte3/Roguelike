@@ -31,8 +31,6 @@ namespace Domain.Service.Characters
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
 
-        public Observable<Unit> OnDead => Stats.HpValue.Where(value => value <= 0).AsUnitObservable();
-
         public void Dispose()
         {
             _stats.Dispose();

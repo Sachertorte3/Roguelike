@@ -42,6 +42,7 @@ namespace Domain.Service.Characters
         private string _name = "Character";
         private readonly IDisposable _disposable;
         private IMap _map;
+        private readonly Subject<Unit> _onDead = new();
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
             IMap map)
@@ -92,7 +93,6 @@ namespace Domain.Service.Characters
         public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
-        public Observable<Unit> OnDead => _statusManager.OnDead;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public ICharacterType CharacterType { get; init; }
         public IStatusManager StatusManager => _statusManager;
@@ -234,6 +234,7 @@ namespace Domain.Service.Characters
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
+        public Observable<Unit> OnDead => _onDead;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public void SetVisibility(bool visibility)
@@ -296,8 +297,22 @@ namespace Domain.Service.Characters
         public async UniTask<int> LoseHp(int value)
         {
             var result = _statusManager.LoseHp(value);
-            if (_statusManager.IsDead && _lastSkill != null)
-                await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+            if (_statusManager.IsDead)
+            {
+                foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
+                {
+                    await UseItem(item, CurrentDirection, _map);
+                    if (!_statusManager.IsDead)
+                        break;
+                }
+            }
+            
+            if (_statusManager.IsDead)
+            {
+                if (_lastSkill != null)
+                    await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+                _onDead.OnNext(Unit.Default);
+            }
             return result;
         }
 

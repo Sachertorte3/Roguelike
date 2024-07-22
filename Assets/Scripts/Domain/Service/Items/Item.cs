@@ -32,15 +32,16 @@ namespace Domain.Service.Items
             Icon = data.Icon;
             State = state;
             _basePrice = data.Price;
-            if (data.EffectsOnUse)
+            if (data.SpawnEffectsOnUse)
             {
                 SkillOnUse = new Skill(data.SkillOnUse);
             }
 
-            if (data.EffectsOnThrow)
+            if (data.SpawnEffectsOnThrow)
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
+            UseOnDeath = data.UseOnDeath;
 
             _maxUsages = data.UsageLimit;
             _remainingUsages = new ReactiveProperty<int>(data.UsageLimit);
@@ -63,6 +64,7 @@ namespace Domain.Service.Items
             {
                 SkillOnThrow = new Skill(data.SkillOnThrow);
             }
+            UseOnDeath = data.UseOnDeath;
 
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
@@ -72,13 +74,13 @@ namespace Domain.Service.Items
         public string Name { get; init; }
         public Sprite Icon { get; init; }
         public ItemState State { get; private set; }
-        public bool EffectsOnThrow => SkillOnThrow != null;
-        public bool EffectsOnUse => SkillOnUse != null;
+        public bool SpawnEffectWhenThrown => SkillOnThrow != null;
+        public bool SpawnEffectWhenUsed => SkillOnUse != null;
+        public bool UseOnDeath { get; init; }
         public int Price => Mathf.RoundToInt(_basePrice * _remainingUsages.CurrentValue / _maxUsages);
         public ISkill? SkillOnThrow { get; init; }
         public ISkill? SkillOnUse { get; init; }
-
-        private bool _usable => EffectsOnUse || EffectsOnThrow;
+        private bool _usable => SpawnEffectWhenUsed || SpawnEffectWhenThrown;
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
@@ -94,6 +96,7 @@ namespace Domain.Service.Items
                 _basePrice,
                 SkillOnUse?.Serialize(),
                 SkillOnThrow?.Serialize(),
+                UseOnDeath,
                 _maxUsages,
                 _remainingUsages.CurrentValue,
                 _conditions
@@ -166,6 +169,11 @@ namespace Domain.Service.Items
                 }
 
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
+            }
+
+            if (UseOnDeath)
+            {
+                info += "死亡時に自動的に使用される\n";
             }
 
             foreach (var condition in PassiveConditions)

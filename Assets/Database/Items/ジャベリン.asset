@@ -15,8 +15,9 @@ MonoBehaviour:
   Icon: {fileID: -1778536866, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 1
   Price: 100
-  EffectsOnUse: 1
-  EffectsOnThrow: 1
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
+  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -59,4 +60,4 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        Length: 1
+        Length: 2

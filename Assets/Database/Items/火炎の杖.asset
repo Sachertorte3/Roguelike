@@ -15,8 +15,9 @@ MonoBehaviour:
   Icon: {fileID: 1954880249, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 2
   Price: 100
-  EffectsOnUse: 1
-  EffectsOnThrow: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 0
+  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -31,6 +32,7 @@ MonoBehaviour:
     Effect:
       rid: -2
   UsageLimit: 8
+  PassiveConditions: []
   references:
     version: 2
     RefIds:
@@ -45,6 +47,7 @@ MonoBehaviour:
       data:
         Power: 5
         CriticalRate: 0
+        BlowAwayDistance: 0
         AdditionalConditions: []
     - rid: 4425517232088416258
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

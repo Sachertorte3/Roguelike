@@ -17,9 +17,10 @@ namespace Domain.Model.Item
         public string Name { get; }
         public Sprite Icon { get; }
         public ItemState State { get; }
-        public bool EffectsOnUse => SkillOnUse != null;
-        public bool EffectsOnThrow => SkillOnThrow != null;
-        public bool Usable => EffectsOnUse || EffectsOnUse;
+        public bool SpawnEffectWhenUsed => SkillOnUse != null;
+        public bool SpawnEffectWhenThrown => SkillOnThrow != null;
+        public bool Usable => SpawnEffectWhenUsed || SpawnEffectWhenUsed;
+        public bool UseOnDeath { get; }
         public int Price { get; }
         public ISkill? SkillOnThrow { get; }
         public ISkill? SkillOnUse { get; }

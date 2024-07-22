@@ -15,9 +15,10 @@ MonoBehaviour:
   Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 0
   Price: 100
-  EffectsOnUse: 1
-  EffectsOnThrow: 1
-  IsSameSkill: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
+  UseOnDeath: 0
+  IsSameSkill: 1
   SkillOnUse:
     Area:
       rid: 4425516923575599127
@@ -31,7 +32,7 @@ MonoBehaviour:
     Effect:
       rid: 4425517307579858944
   UsageLimit: 1
-  Conditions: []
+  PassiveConditions: []
   references:
     version: 2
     RefIds:

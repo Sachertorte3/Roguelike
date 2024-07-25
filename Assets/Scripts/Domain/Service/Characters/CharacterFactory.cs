@@ -30,8 +30,10 @@ namespace Domain.Service.Characters
                 Entity.Build(spawnPosition, EntityLayer.Middle),
                 new[]
                 {
-                    new Skill(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")).Serialize()
+                    CharacterSkill.Build(Skill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
+                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                        0
+                    )
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),
@@ -54,8 +56,8 @@ namespace Domain.Service.Characters
                 data.Behavior,
                 CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity.Build(spawnPosition, EntityLayer.Middle),
-                data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),
-                data.HasLastSkill ? new Skill(data.LastSkill).Serialize() : null,
+                data.Skills.Select(x => CharacterSkill.Build(Skill.Build(x.Skill), x.CoolTime)).ToArray(),
+                data.HasLastSkill ? Skill.Build(data.LastSkill) : null,
                 new InventoryMemento(new ItemMemento[10]),
                 CharacterAffiliationManager.Build(data.Group, affiliation, id),
                 data.Aggression,

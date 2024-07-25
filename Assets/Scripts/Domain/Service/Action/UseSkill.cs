@@ -6,11 +6,11 @@ using Utilities;
 
 namespace Domain.Service.Action
 {
-    internal record UseSkill(ISkill Skill, Direction8 Direction) : IAction
+    internal record UseSkill(ICharacterSkill Skill, Direction8 Direction) : IAction
     {
         public bool Doable(IActor actor, IMap world)
         {
-            return true;
+            return Skill.IsUsable();
         }
 
         public async UniTask Do(IActor actor, IMap world, IInput input)

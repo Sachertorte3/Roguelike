@@ -9,7 +9,6 @@ using Domain.Model.Character;
 using Domain.Model.Action;
 using Domain.Model;
 using Domain.Service.Action;
-using Sirenix.OdinInspector;
 
 namespace Domain.Service.Characters.Behavior
 {

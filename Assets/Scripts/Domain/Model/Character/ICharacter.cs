@@ -39,7 +39,7 @@ namespace Domain.Model.Character
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Vector2Int CurrentPosition { get; }
-        public ISkill[] Skills { get; }
+        public ICharacterSkill[] Skills { get; }
 
         public IVisionRange VisionRange { get; }
         public int CurrentMaxHp { get; }
@@ -50,7 +50,7 @@ namespace Domain.Model.Character
         public void Turn(Direction8 direction);
         public void DoNothing();
         public UniTask Move(Direction8 direction, IInput input);
-        public UniTask UseSkill(ISkill skill, Direction8 direction, IMap map);
+        public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
         public UniTask UseItem(IItem item, Direction8 direction, IMap map);
         public UniTask ThrowItem(IItem item, Direction8 direction, IMap world);
         public UniTask<int> GainHp(int value);

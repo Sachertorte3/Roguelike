@@ -8,7 +8,7 @@ namespace Domain.Model.Character
     {
         public bool CanPickUp { get; }
         public bool CanUseItem { get; }
-        public ISkill[] Skills { get; }
+        public ICharacterSkill[] Skills { get; }
         public IInventory Inventory { get; }
         public IVisionRange VisionRange { get; }
         public int CurrentHp { get; }

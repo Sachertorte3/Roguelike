@@ -26,7 +26,7 @@ namespace Domain.Model.Character
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         public bool CanPickUp = false;
         public bool CanUseItem = false;
-        public SkillData[] Skills;
+        public EnemySkillData[] Skills;
         public bool HasLastSkill = false;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
 #if UNITY_EDITOR
@@ -37,5 +37,11 @@ namespace Domain.Model.Character
             AssetDatabase.SaveAssets();
         }
 #endif
+    }
+    [Serializable]
+    public class EnemySkillData
+    {
+        [Required] public SkillData Skill;
+        [MinValue(0)] public int CoolTime;
     }
 }

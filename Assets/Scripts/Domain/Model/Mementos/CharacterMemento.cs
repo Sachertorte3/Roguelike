@@ -9,7 +9,7 @@ namespace Domain.Model.Character
         BehaviorData Behavior,
         CharacterStatusMemento Status,
         EntityMemento Entity,
-        SkillMemento[] Skills,
+        CharacterSkillMemento[] Skills,
         SkillMemento? LastSkill,
         InventoryMemento Inventory,
         AffiliationMemento Affiliation,

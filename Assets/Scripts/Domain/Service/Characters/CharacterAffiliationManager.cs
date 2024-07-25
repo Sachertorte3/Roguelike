@@ -206,10 +206,10 @@ namespace Domain.Service.Characters
 
             return (Group, target.Group) switch
             {
-                (CharacterGroup.Player, CharacterGroup.Player) => BaseAllyValue,
-                (CharacterGroup.Player, CharacterGroup.Enemy) => BaseEnemyValue,
-                (CharacterGroup.Enemy, CharacterGroup.Player) => BaseEnemyValue,
-                (CharacterGroup.Enemy, CharacterGroup.Enemy) => 0,
+                (CharacterGroup.Human, CharacterGroup.Human) => BaseAllyValue,
+                (CharacterGroup.Human, CharacterGroup.Monster) => BaseEnemyValue,
+                (CharacterGroup.Monster, CharacterGroup.Human) => BaseEnemyValue,
+                (CharacterGroup.Monster, CharacterGroup.Monster) => 0,
                 (CharacterGroup.Neutral, _) => 0,
                 _ => 0
             };

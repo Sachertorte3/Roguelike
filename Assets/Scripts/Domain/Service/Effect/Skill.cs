@@ -68,6 +68,11 @@ namespace Domain.Service.Effect
             return new SkillMemento(_position, _area, _effect, RushDistance, _info, _log);
         }
 
+        public static SkillMemento Build(SkillData data)
+        {
+            return new SkillMemento(data.Position, data.Area, data.Effect, data.RushDistance, data.Info(), data.Log);
+        }
+
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map)
         {

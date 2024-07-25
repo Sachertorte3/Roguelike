@@ -17,4 +17,9 @@ namespace Domain.Model.Effect
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map);
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world);
     }
+    public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill
+    {
+        public void UpdateTurn();
+        public bool IsUsable();
+    }
 }

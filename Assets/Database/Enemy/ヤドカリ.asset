@@ -22,24 +22,29 @@ MonoBehaviour:
   Behavior:
     wanderAround: 1
     Default: 1
+    PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
     distanceTopBound: 5
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
     UseBottomBound: 0
     distanceBottomBound: 3
     lessThanBottomBound: 3
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 2541219158355345415
-    Effect:
-      rid: 4425516923575599108
-    Position:
-      rid: 2541219158355345416
-    RushDistance: 0
-    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  - Skill:
+      Area:
+        rid: 2541219281251860487
+      Effect:
+        rid: 2541219281251860488
+      Position:
+        rid: 2541219281251860489
+      RushDistance: 0
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -55,21 +60,21 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219158355345415
+    - rid: 2541219281251860487
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 2541219158355345416
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 4425516923575599108
+    - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         Power: 2
         CriticalRate: 0
         BlowAwayDistance: 0
         AdditionalConditions: []
+    - rid: 2541219281251860489
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

@@ -34,7 +34,7 @@ namespace Domain.Service.Characters
         private readonly Inventory _inventory;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
-        private readonly ISkill[] _skills;
+        private readonly CharacterSkill[] _skills;
         private readonly ISkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         private bool _canIgnoreWall;
@@ -51,7 +51,7 @@ namespace Domain.Service.Characters
             CharacterType = data.CharacterType;
             _entity = new Entity(data.Entity);
             _statusManager = new CharacterStatusManager(data.Status, Position, map);
-            _skills = data.Skills.Select(x => new Skill(x)).ToArray();
+            _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
             _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
             _inventory = new Inventory(data.Inventory, _statusManager);
             Behavior = behavior;
@@ -148,7 +148,7 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
-        public async UniTask UseSkill(ISkill skill, Direction8 direction, IMap map)
+        public async UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map)
         {
             Log.Debug($"[Action]{_name}:UseSkill\n{skill.Info()}\ndirection:{direction}");
             Turn(direction);
@@ -247,7 +247,7 @@ namespace Domain.Service.Characters
             _entity.Destroy();
         }
 
-        public ISkill[] Skills => _skills;
+        public ICharacterSkill[] Skills => _skills;
 
         public IVisionRange VisionRange => _statusManager.VisionRange;
 
@@ -383,6 +383,7 @@ namespace Domain.Service.Characters
             _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
             _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
             _inventory.UpdateTurn();
+            _skills.ForEach(x => x.UpdateTurn());
         }
 
         public void AddMoney(int value)
@@ -436,6 +437,52 @@ namespace Domain.Service.Characters
                 default:
                     throw new InvalidOperationException();
             }
+        }
+    }
+    public class CharacterSkill : ICharacterSkill
+    {
+        public ISkill _skill { get; }
+        private int _coolTime { get; }
+        public Color Color => _skill.Color;
+        public int RushDistance => _skill.RushDistance;
+        private int _remainingCoolTime;
+        public CharacterSkill(CharacterSkillMemento data)
+        {
+            _skill = new Skill(data.Skill);
+            _coolTime = data.CoolTime;
+            _remainingCoolTime = data.RemainingTurn;
+        }
+        public CharacterSkillMemento Serialize()
+        {
+            return new CharacterSkillMemento(_skill.Serialize(), _coolTime, _remainingCoolTime);
+        }
+        public static CharacterSkillMemento Build(SkillMemento skill, int coolTime)
+        {
+            return new CharacterSkillMemento(skill, coolTime, 0);
+        }
+        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
+            _skill.GetArea(actor, position, direction, map);
+        SkillMemento ISerializable<SkillMemento>.Serialize() => _skill.Serialize();
+        public string Info() => _skill.Info();
+        public async UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
+        {
+            _remainingCoolTime = _coolTime+1;
+            await _skill.Use(actor, position, direction, map);
+        }
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
+        {
+            return _skill.Evaluate(actor, position, direction, world);
+        }
+        public void UpdateTurn()
+        {
+            if (_remainingCoolTime > 0)
+            {
+                _remainingCoolTime--;
+            }
+        }
+        public bool IsUsable()
+        {
+            return _remainingCoolTime <= 0;
         }
     }
 }

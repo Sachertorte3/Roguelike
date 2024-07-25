@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Domain.Model.Character
 {
-    public interface IDiscoveredTargetBehavior
+    public interface IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world);

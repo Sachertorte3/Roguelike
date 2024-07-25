@@ -256,7 +256,7 @@ namespace Domain.Service.Characters
             return new CharacterMemento(
                 _name,
                 CharacterType,
-                Behavior.WanderAround,
+                Behavior.BehaviorData,
                 _statusManager.Serialize(),
                 _entity.Serialize(),
                 _skills.Select(x => x.Serialize()).ToArray(),

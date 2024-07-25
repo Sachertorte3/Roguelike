@@ -19,7 +19,15 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 4
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 5
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 3
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0

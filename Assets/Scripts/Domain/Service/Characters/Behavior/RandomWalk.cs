@@ -8,7 +8,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class RandomWalk : IUndiscoveredTargetBehavior
+    internal sealed class RandomWalk : IBehaviorWhenUndiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
         {

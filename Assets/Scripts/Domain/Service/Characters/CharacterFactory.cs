@@ -35,7 +35,7 @@ namespace Domain.Service.Characters
                 },
                 null,
                 new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Player, null, null),
+                CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
                 Aggression.AttackAnyone,
                 0,
                 true,

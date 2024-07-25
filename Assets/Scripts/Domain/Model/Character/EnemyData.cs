@@ -17,7 +17,7 @@ namespace Domain.Model.Character
     public class EnemyData : ScriptableObject
     {
         [ReadOnly][Required] public string Name = "";
-        public CharacterGroup Group = CharacterGroup.Enemy;
+        public CharacterGroup Group = CharacterGroup.Monster;
         [SerializeReference] public ICharacterType CharacterType;
         public bool IsBoss = false;
         [MinValue(1)] public int Hp;

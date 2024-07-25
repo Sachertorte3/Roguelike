@@ -20,7 +20,6 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Algorithms;
-using static Domain.Model.DungeonBluePrintData;
 using Random = UnityEngine.Random;
 
 namespace Model.Game
@@ -197,17 +196,22 @@ namespace Model.Game
 
         public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character)
         {
-            return Characters.Where(c => c.IsAlly(character)).Select(c => c.CurrentPosition);
+            return GetCharacterPositions(character, CharacterRelation.Ally);
         }
 
         public IEnumerable<Vector2Int> GetNeutralPositions(IHasAffiliation character)
         {
-            return Characters.Where(c => c.IsNeutral(character)).Select(c => c.CurrentPosition);
+            return GetCharacterPositions(character, CharacterRelation.Neutral);
         }
 
         public IEnumerable<Vector2Int> GetEnemyPositions(IHasAffiliation character)
         {
-            return Characters.Where(c => c.IsEnemy(character)).Select(c => c.CurrentPosition);
+            return GetCharacterPositions(character, CharacterRelation.Enemy);
+        }
+
+        public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character, CharacterRelation relation)
+        {
+            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition);
         }
 
         public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer)

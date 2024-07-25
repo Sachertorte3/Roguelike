@@ -2,8 +2,8 @@
 {
     public enum CharacterGroup
     {
-        Player,
-        Enemy,
+        Human,
+        Monster,
         Neutral
     }
 }

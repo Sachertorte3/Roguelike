@@ -5,9 +5,9 @@ using Domain.Model.Character;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public interface ICharacterBehavior
+    public interface  ICharacterBehavior
     {
-        public bool WanderAround { get; }
+        public BehaviorData BehaviorData { get; }
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input);
     }
 }

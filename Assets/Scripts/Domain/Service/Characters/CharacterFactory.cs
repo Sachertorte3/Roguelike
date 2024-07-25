@@ -25,7 +25,7 @@ namespace Domain.Service.Characters
                 Name,
                 new Human(Addressables
                     .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                true,
+                new BehaviorData(),
                 CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
                 Entity.Build(spawnPosition, EntityLayer.Middle),
                 new[]
@@ -51,7 +51,7 @@ namespace Domain.Service.Characters
             return new CharacterMemento(
                 isShiny ? "☆" + data.Name : data.Name,
                 data.CharacterType,
-                data.WanderAround,
+                data.Behavior,
                 CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity.Build(spawnPosition, EntityLayer.Middle),
                 data.Skills.Select(x => new Skill(x).Serialize()).ToArray(),

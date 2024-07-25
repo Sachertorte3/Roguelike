@@ -11,5 +11,6 @@ namespace Domain.Model.Character
         public ISkill[] Skills { get; }
         public IInventory Inventory { get; }
         public IVisionRange VisionRange { get; }
+        public int CurrentHp { get; }
     }
 }

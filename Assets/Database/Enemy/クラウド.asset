@@ -19,7 +19,18 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 4
   Aggression: 4
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 5
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 1
+    distanceBottomBound: 3
+    lessThanBottomBound: 3
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 1
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
@@ -30,6 +41,7 @@ MonoBehaviour:
       rid: 4425516923575599108
     Position:
       rid: 2541219246146060305
+    RushDistance: 0
     Log: "\u306F\u95C7\u306E\u529B\u3092\u653E\u51FA\u3057\u305F\u3002"
   HasLastSkill: 0
   LastSkill:
@@ -39,6 +51,7 @@ MonoBehaviour:
       rid: -2
     Position:
       rid: -2
+    RushDistance: 0
     Log: 
   references:
     version: 2

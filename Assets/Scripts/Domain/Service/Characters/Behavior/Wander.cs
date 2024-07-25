@@ -4,11 +4,12 @@ using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Service.Action;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Wander : IUndiscoveredTargetBehavior
+    internal sealed class Wander : IBehaviorWhenUndiscoveringTarget, IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
         {
@@ -70,6 +71,11 @@ namespace Domain.Service.Characters.Behavior
             }
 
             return directions.Select(direction => new Move(direction.Key, direction.Value));
+        }
+
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition, IMap world)
+        {
+            return GenerateMoveActionsDoable(character, world);
         }
     }
 }

@@ -11,7 +11,7 @@ using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Chase : IDiscoveredTargetBehavior
+    internal sealed class Chase : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)

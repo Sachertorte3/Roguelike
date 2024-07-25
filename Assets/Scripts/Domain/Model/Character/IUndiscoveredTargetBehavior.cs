@@ -3,7 +3,7 @@ using Domain.Model.Action;
 
 namespace Domain.Model.Character
 {
-    public interface IUndiscoveredTargetBehavior
+    public interface IBehaviorWhenUndiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world);
     }

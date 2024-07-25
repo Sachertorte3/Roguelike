@@ -68,7 +68,7 @@ namespace Model.Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.wanderAround), new ReactiveProperty<bool>(false), map));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior), new ReactiveProperty<bool>(false), map));
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

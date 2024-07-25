@@ -9,24 +9,52 @@ using Domain.Model.Character;
 using Domain.Model.Action;
 using Domain.Model;
 using Domain.Service.Action;
+using Sirenix.OdinInspector;
 
 namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
-        private readonly IDiscoveredTargetBehavior _chase = new Chase();
-        private readonly IUndiscoveredTargetBehavior _wander;
+        private readonly IBehaviorWhenUndiscoveringTarget _wander;
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
 
-        public EnemyBehavior(bool wanderAround)
+        private readonly IBehaviorWhenDiscoveringTarget _default;
+        private readonly bool _prioritizeMovement = false;
+        private readonly float _distanceTopBound = float.PositiveInfinity;
+        private readonly IBehaviorWhenDiscoveringTarget? _greaterThanTopBound = null;
+        private readonly bool _prioritizeMovementWhenDistanceGreaterThanTopBound = false;
+        private readonly float _distanceBottomBound = float.NegativeInfinity;
+        private readonly IBehaviorWhenDiscoveringTarget? _lessThanBottomBound = null;
+        private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound = false;
+        public BehaviorData BehaviorData { get; init; }
+
+        public EnemyBehavior(BehaviorData data)
         {
-            if (wanderAround)
+            BehaviorData = data;
+            if (data.wanderAround)
+            {
                 _wander = new Wander();
+            }
             else
+            {
                 _wander = new NoMove();
-            WanderAround = wanderAround;
+            }
+            _default = data.Default.ToDiscoveredTargetBehavior();
+            _prioritizeMovement = data.PrioritizeMovement;
+            if (data.UseTopBound)
+            {
+                _distanceTopBound = data.distanceTopBound;
+                _greaterThanTopBound = data.greaterThanTopBound.ToDiscoveredTargetBehavior();
+                _prioritizeMovementWhenDistanceGreaterThanTopBound = data.PrioritizeMovementWhenDistanceGreaterThanTopBound;
+            }
+            if (data.UseBottomBound)
+            {
+                _distanceBottomBound = data.distanceBottomBound;
+                _lessThanBottomBound = data.lessThanBottomBound.ToDiscoveredTargetBehavior();
+                _prioritizeMovementWhenDistanceLessThanBottomBound = data.PrioritizeMovementWhenDistanceLessThanBottomBound;
+            }
         }
 
         public bool WanderAround { get; init; }
@@ -68,7 +96,27 @@ namespace Domain.Service.Characters.Behavior
                 Log.Debug($"[Think] Wandering around.");
             }
 
-            var actions = GenerateActionsDoable(character, _lastTargetPosition, world);
+            var actions = new List<IAction>();
+            if (PrioritizeMovement(character, _lastTargetPosition))
+            {
+                actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, world));
+                if (!actions.Any(action => action.Evaluate(character, world) > 0))
+                {
+                    actions.AddRange(GenerateUseSkillActionsDoable(character, world));
+                    actions.AddRange(GenerateUseItemActionsDoable(character, world));
+                    actions.AddRange(GenerateThrowItemActionsDoable(character, world));
+                }
+            }
+            else
+            {
+                actions.AddRange(GenerateUseSkillActionsDoable(character, world));
+                actions.AddRange(GenerateUseItemActionsDoable(character, world));
+                actions.AddRange(GenerateThrowItemActionsDoable(character, world));
+                if (!actions.Any(action => action.Evaluate(character, world) > 0))
+                {
+                    actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, world));
+                }
+            }
 
             var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
             foreach (var actionTemp in validActions)
@@ -105,18 +153,46 @@ namespace Domain.Service.Characters.Behavior
                     _lastTargetPosition : null;
         }
 
-        public IEnumerable<IAction> GenerateActionsDoable(IHasBehavior character, Vector2Int? targetPosition,
+        private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
+        {
+            var distance = Mathf.Max(Mathf.Abs(character.CurrentPosition.x - targetPosition.x), Mathf.Abs(character.CurrentPosition.y - targetPosition.y));
+            return distance;
+        }
+
+        public IBehaviorWhenDiscoveringTarget GetDiscoveredTargetBehavior(IHasBehavior character, Vector2Int targetPosition)
+        {
+            var distance = GetDistance(character, targetPosition);
+            if (_greaterThanTopBound != null && distance > _distanceTopBound)
+                return _greaterThanTopBound;
+            if (_lessThanBottomBound != null && distance < _distanceBottomBound)
+                return _lessThanBottomBound;
+            return _default;
+        }
+
+        public bool PrioritizeMovement(IHasBehavior character, Vector2Int? targetPosition)
+        {
+            if (targetPosition == null)
+                return _prioritizeMovement;
+            var distance = GetDistance(character, targetPosition.Value);
+            if (distance > _distanceTopBound)
+                return _prioritizeMovementWhenDistanceGreaterThanTopBound;
+            if (distance < _distanceBottomBound)
+                return _prioritizeMovementWhenDistanceLessThanBottomBound;
+            return _prioritizeMovement;
+        }
+
+        private IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int? targetPosition,
             IMap world)
         {
-            var actions = new List<IAction>();
             if (targetPosition != null)
-                actions.AddRange(_chase.GenerateMoveActionsDoable(character, targetPosition.Value, world));
+            {
+                return GetDiscoveredTargetBehavior(character, targetPosition.Value)
+                    .GenerateMoveActionsDoable(character, targetPosition.Value, world);
+            }
             else
-                actions.AddRange(_wander.GenerateMoveActionsDoable(character, world));
-            actions.AddRange(GenerateUseSkillActionsDoable(character, world));
-            actions.AddRange(GenerateUseItemActionsDoable(character, world));
-            actions.AddRange(GenerateThrowItemActionsDoable(character, world));
-            return actions;
+            {
+                return _wander.GenerateMoveActionsDoable(character, world);
+            }
         }
 
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)

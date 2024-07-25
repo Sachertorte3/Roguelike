@@ -22,7 +22,7 @@ namespace Domain.Model.Character
         public bool IsBoss = false;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
-        public bool WanderAround = true;
+        public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         public bool CanPickUp = false;
         public bool CanUseItem = false;

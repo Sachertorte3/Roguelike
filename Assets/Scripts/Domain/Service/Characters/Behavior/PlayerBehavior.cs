@@ -15,6 +15,7 @@ namespace Domain.Service.Characters.Behavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControlInputReceiver _receiver;
+        public BehaviorData BehaviorData => new BehaviorData();
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {

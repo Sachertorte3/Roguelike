@@ -17,19 +17,5 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
-  - RemovalCondition:
-      RemoveByElapsedTurn: 1
-      Duration: 5
-      RemoveByDamage: 0
-      Probability: 0
-      RemoveByEnemyNearby: 0
+  - Condition: {fileID: 11400000, guid: 96584de854caadf40a738a0adbc649aa, type: 2}
     Probability: 0.5
-    Condition:
-      rid: 4425517175658250242
-  references:
-    version: 2
-    RefIds:
-    - rid: 4425517175658250242
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data:
-        Power: 1

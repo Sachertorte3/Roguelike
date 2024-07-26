@@ -42,10 +42,10 @@ MonoBehaviour:
     - rid: 2541219158355345460
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 7
-        CriticalRate: 0
-        BlowAwayDistance: 1
-        AdditionalConditions: []
+        _power: 7
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219158355345461
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

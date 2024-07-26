@@ -17,18 +17,5 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
-  - Condition:
-      rid: 4425517265317527593
-    RemovalCondition:
-      RemoveByElapsedTurn: 1
-      Duration: 3
-      RemoveByDamage: 0
-      Probability: 0
-      RemoveByEnemyNearby: 0
+  - Condition: {fileID: 11400000, guid: 4c79db49692457246abe86d94ca29fbe, type: 2}
     Probability: 0.25
-  references:
-    version: 2
-    RefIds:
-    - rid: 4425517265317527593
-      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 

@@ -14,16 +14,17 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : IEffect
     {
-        [MinValue(1)] public int Power;
-        [Range(0, 1)] public float CriticalRate;
-        public int BlowAwayDistance;
-        public List<AdditionalConditionData> AdditionalConditions = new();
+        [MinValue(1), SerializeField] private int _power;
+        [Range(0, 1), SerializeField] private float _criticalRate;
+        [SerializeField] private int _blowAwayDistance;
+        [SerializeField] private List<AdditionalConditionData> _additionalConditions = new();
 
-        public AttackEffect(int power, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
+        public AttackEffect(int power, float criticalRate, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
         {
-            Power = power;
-            AdditionalConditions = additionalConditions;
-            BlowAwayDistance = blowAwayDistance;
+            _power = power;
+            _criticalRate = criticalRate;
+            _additionalConditions = additionalConditions;
+            _blowAwayDistance = blowAwayDistance;
         }
 
         public Color Color => Colors.Red;
@@ -32,43 +33,43 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            if (Random.value < CriticalRate)
+            if (Random.value < _criticalRate)
             {
-                var damage = Formula.Calc(actor, Power * 2);
+                var damage = Formula.Calc(actor, _power * 2);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
                 await target.LoseHp(damage);
             }
             else
             {
-                var damage = Formula.Calc(actor, Power);
+                var damage = Formula.Calc(actor, _power);
                 GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
                 await target.LoseHp(damage);
             }
-            foreach (var condition in AdditionalConditions)
+            foreach (var condition in _additionalConditions)
             {
                 if (Random.value < condition.Probability)
                 {
-                    target.AddCondition(condition.Condition, condition.RemovalCondition);
+                    target.AddCondition(condition.Condition.Condition, condition.Condition.RemovalCondition);
                 }
             }
-            if (BlowAwayDistance > 0)
+            if (_blowAwayDistance > 0)
             {
-                await target.BlowAway(DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, BlowAwayDistance, map);
+                await target.BlowAway(DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, _blowAwayDistance, map);
             }
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, Power)) / target.CurrentMaxHp);
+            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp);
         }
 
         public string Info()
         {
-            var info = $"攻撃\n威力: {Power}";
-            if (AdditionalConditions.Count > 0)
+            var info = $"攻撃\n威力: {_power}";
+            if (_additionalConditions.Count > 0)
             {
                 info += "\n追加状態付与:";
-                foreach (var condition in AdditionalConditions)
+                foreach (var condition in _additionalConditions)
                 {
                     info += $"\n{condition.Info()}";
                 }

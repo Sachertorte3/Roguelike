@@ -49,14 +49,4 @@ MonoBehaviour:
     - rid: 4425516923575599137
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        RemovalCondition:
-          RemoveByElapsedTurn: 1
-          Duration: 10
-          RemoveByDamage: 0
-          Probability: 0
-          RemoveByEnemyNearby: 0
-        Condition:
-          rid: 4425516923575599138
-    - rid: 4425516923575599138
-      type: {class: Confused, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
+        _condition: {fileID: 11400000, guid: 16e91a4ac492c324ab98cbe5560964fe, type: 2}

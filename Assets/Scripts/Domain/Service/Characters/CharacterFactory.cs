@@ -31,7 +31,7 @@ namespace Domain.Service.Characters
                 new[]
                 {
                     CharacterSkill.Build(Skill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                        new AttackEffect(1, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },

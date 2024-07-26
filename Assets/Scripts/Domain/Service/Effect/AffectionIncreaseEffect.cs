@@ -10,11 +10,11 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AffectionIncreaseEffect : IEffect
     {
-        [MinValue(1)] public float Power;
+        [MinValue(1), SerializeField] private float _power;
 
         public AffectionIncreaseEffect(float power)
         {
-            Power = power;
+            _power = power;
         }
 
         public Color Color => Colors.HotPink;
@@ -28,12 +28,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Power;
+            return _power;
         }
 
         public string Info()
         {
-            return $"好感度上昇\n威力: {Power}";
+            return $"好感度上昇\n威力: {_power}";
         }
     }
 }

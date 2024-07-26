@@ -19,18 +19,32 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 10
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 2541219158355345408
-    Effect:
-      rid: 2541219158355345409
-    Position:
-      rid: 2541219158355345410
-    Log: "\u306F\u6BD2\u91DD\u3092\u7A81\u304D\u7ACB\u3066\u3066\u304D\u305F\u3002"
+  - Skill:
+      Area:
+        rid: 2541219281251860500
+      Effect:
+        rid: 2541219281251860502
+      Position:
+        rid: 2541219281251860503
+      RushDistance: 0
+      Log: "\u306F\u6BD2\u91DD\u3067\u7A81\u304D\u523A\u3057\u305F\u3002"
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -39,40 +53,31 @@ MonoBehaviour:
       rid: -2
     Position:
       rid: -2
+    RushDistance: 0
     Log: 
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219158355345408
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
-    - rid: 2541219158355345409
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 2
-        CriticalRate: 0
-        AdditionalConditions:
-        - Condition:
-            rid: 2541219158355345423
-          RemovalCondition:
-            RemoveByElapsedTurn: 1
-            Duration: 5
-            RemoveByDamage: 0
-            Probability: 0
-            RemoveByEnemyNearby: 0
-          Probability: 0.5
-    - rid: 2541219158355345410
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219158355345422
       type: {class: Scorpion, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219158355345423
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 2541219281251860500
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        Power: 1
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219281251860502
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 4
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions:
+        - Condition: {fileID: 11400000, guid: 96584de854caadf40a738a0adbc649aa, type: 2}
+          Probability: 0.5
+    - rid: 2541219281251860503
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

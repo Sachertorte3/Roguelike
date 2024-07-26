@@ -10,11 +10,11 @@ namespace Domain.Service.Effect
     [Serializable]
     public class BlowAwayEffect : IEffect
     {
-        [MinValue(1)] public int Distance;
+        [MinValue(1), SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
-            Distance = distance;
+            _distance = distance;
         }
 
         public Color Color => Colors.LightGreen;
@@ -25,7 +25,7 @@ namespace Domain.Service.Effect
         {
             await target.BlowAway(
                 DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value,
-                Distance, map);
+                _distance, map);
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

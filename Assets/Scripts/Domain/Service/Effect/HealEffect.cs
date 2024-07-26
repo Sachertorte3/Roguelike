@@ -11,11 +11,11 @@ namespace Domain.Service.Effect
     [Serializable]
     public class HealEffect : IEffect
     {
-        [MinValue(1)] public int Power;
+        [MinValue(1), SerializeField] private int _power;
 
         public HealEffect(int power)
         {
-            Power = power;
+            _power = power;
         }
 
         public Color Color => Colors.Green;
@@ -24,7 +24,7 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            var value = Formula.Calc(actor, Power);
+            var value = Formula.Calc(actor, _power);
             GameLog.Add($"{target.GetName(map.Player)}は{value}回復");
             await target.GainHp(value);
         }
@@ -32,13 +32,13 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return Mathf.Min(1,
-                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, Power)) /
+                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, _power)) /
                 target.CurrentMaxHp);
         }
 
         public string Info()
         {
-            return $"回復\n威力: {Power}";
+            return $"回復\n威力: {_power}";
         }
     }
 }

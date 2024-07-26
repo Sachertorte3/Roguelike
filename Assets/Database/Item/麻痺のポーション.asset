@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30CF\u30FC\u30C8"
+  m_Name: "\u9EBB\u75FA\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 0
+  Icon: {fileID: -136529006, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 1
   Price: 100
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
@@ -21,28 +21,28 @@ MonoBehaviour:
   IsSameSkill: 1
   SkillOnUse:
     Area:
-      rid: 4425516923575599127
+      rid: 4425516923575599143
     Effect:
-      rid: 4425517307579858944
+      rid: 4425516923575599144
     Position:
-      rid: 2541219106150416402
+      rid: 2541219106150416411
   SkillOnThrow:
     Area:
-      rid: 4425516923575599127
+      rid: 4425516923575599143
     Effect:
-      rid: 4425517307579858944
+      rid: 4425516923575599144
   UsageLimit: 1
   PassiveConditions: []
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416402
+    - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599127
+    - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425517307579858944
-      type: {class: AffectionIncreaseEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 4425516923575599144
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 1
+        _condition: {fileID: 11400000, guid: 4c79db49692457246abe86d94ca29fbe, type: 2}

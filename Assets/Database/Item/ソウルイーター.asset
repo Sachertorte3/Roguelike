@@ -50,5 +50,5 @@ MonoBehaviour:
     - rid: 4425516923575599125
       type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 5
-        Rate: 0.6
+        _power: 5
+        _rate: 0

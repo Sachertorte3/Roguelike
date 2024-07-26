@@ -10,7 +10,6 @@ using UnityEngine;
 using Utilities;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
-using Domain.Service.Characters;
 
 namespace Domain.Service.Effect
 {

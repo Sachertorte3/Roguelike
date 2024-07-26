@@ -19,18 +19,32 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 5
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 4425516923575599106
-    Effect:
-      rid: 4425516923575599108
-    Position:
-      rid: 2541219106150416414
-    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  - Skill:
+      Area:
+        rid: 2541219281251860504
+      Effect:
+        rid: 2541219281251860505
+      Position:
+        rid: 2541219281251860506
+      RushDistance: 0
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+    CoolTime: 0
   HasLastSkill: 1
   LastSkill:
     Area:
@@ -39,13 +53,11 @@ MonoBehaviour:
       rid: 2541219158355345426
     Position:
       rid: 2541219158355345427
+    RushDistance: 0
     Log: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219158355345424
       type: {class: Slime, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
@@ -53,23 +65,27 @@ MonoBehaviour:
     - rid: 2541219158355345426
       type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Character: {fileID: 11400000, guid: aee44ab5753c1bd4494656f8a0267010, type: 2}
-        Count: 2
-        InheritsShiny: 0
+        _character: {fileID: 11400000, guid: aee44ab5753c1bd4494656f8a0267010, type: 2}
+        _count: 2
+        _inheritsShiny: 1
     - rid: 2541219158355345427
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 2541219158355345432
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599106
+    - rid: 2541219281251860504
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 4425516923575599108
+    - rid: 2541219281251860505
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 3
-        CriticalRate: 0
-        AdditionalConditions: []
+        _power: 4
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 2541219281251860506
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

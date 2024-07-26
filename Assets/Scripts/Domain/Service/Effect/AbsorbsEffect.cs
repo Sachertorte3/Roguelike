@@ -10,13 +10,13 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AbsorbsEffect : IEffect
     {
-        [MinValue(1)] public int Power;
-        [Range(0, 1)] public float Rate;
+        [MinValue(1), SerializeField] private int _power;
+        [Range(0, 1), SerializeField] private float _rate;
 
         public AbsorbsEffect(int power, float rate)
         {
-            Power = power;
-            Rate = rate;
+            _power = power;
+            _rate = rate;
         }
 
         public Color Color => Colors.Yellow;
@@ -25,19 +25,19 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            var value = Formula.Calc(actor, Power);
+            var value = Formula.Calc(actor, _power);
             var loseValue = await target.LoseHp(value);
-            await actor.GainHp(Mathf.RoundToInt(loseValue * Rate));
+            await actor.GainHp(Mathf.RoundToInt(loseValue * _rate));
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, Power)) / target.CurrentMaxHp);
+            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp);
         }
 
         public string Info()
         {
-            return $"HP吸収\n威力: {Power}\n吸収割合: {Rate * 100}%";
+            return $"HP吸収\n威力: {_power}\n吸収割合: {_rate * 100}%";
         }
     }
 }

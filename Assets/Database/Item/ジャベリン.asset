@@ -42,17 +42,17 @@ MonoBehaviour:
     - rid: 2541219246146060318
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 6
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
+        _power: 6
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219246146060319
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 12
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
+        _power: 12
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219246146060320
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

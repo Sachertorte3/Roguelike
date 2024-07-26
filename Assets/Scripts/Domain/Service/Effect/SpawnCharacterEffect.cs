@@ -14,15 +14,15 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnCharacterEffect : IEffect
     {
-        [Required] public EnemyData Character;
-        [MinValue(1)] public int Count;
-        public bool InheritsShiny;
+        [Required, SerializeField] private EnemyData _character;
+        [MinValue(1), SerializeField] private int _count;
+        [SerializeField] private bool _inheritsShiny;
 
         public SpawnCharacterEffect(EnemyData character, int count, bool inheritsShiny)
         {
-            Character = character;
-            Count = count;
-            InheritsShiny = inheritsShiny;
+            _character = character;
+            _count = count;
+            _inheritsShiny = inheritsShiny;
         }
 
         public Color Color => Colors.MediumPurple;
@@ -33,14 +33,14 @@ namespace Domain.Service.Effect
         {
             foreach (var position in positions)
             {
-                for (var i = 0; i < Count; i++)
+                for (var i = 0; i < _count; i++)
                 {
                     map.SpawnEnemy(
-                        Character,
+                        _character,
                         position,
                         actor.Affiliation,
                         false,
-                        InheritsShiny ? actor.IsShiny : null
+                        _inheritsShiny ? actor.IsShiny : null
                     );
                 }
             }
@@ -54,7 +54,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"召喚: {Character.Name}\n{Count}体";
+            return $"召喚: {_character.Name}\n{_count}体";
         }
     }
 }

@@ -68,10 +68,10 @@ MonoBehaviour:
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 2
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
+        _power: 3
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219281251860489
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

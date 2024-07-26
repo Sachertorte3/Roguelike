@@ -1,6 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Domain.Model.Condition;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -11,22 +11,20 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AddConditionEffect : IEffect
     {
-        [Required] public RemovalConditionData RemovalCondition;
-        [SerializeReference] [Required] public IConditionData Condition;
+        [Required, SerializeField] private ConditionTemplate _condition;
 
-        public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
+        public AddConditionEffect(ConditionTemplate condition)
         {
-            Condition = condition;
-            RemovalCondition = removalCondition;
+            _condition = condition;
         }
 
         public Color Color => Colors.Purple;
 
-        public Impact Impact => Condition.Impact;
+        public Impact Impact => _condition.Condition.Impact;
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            target.AddCondition(Condition, RemovalCondition);
+            target.AddCondition(_condition.Condition, _condition.RemovalCondition);
             return UniTask.CompletedTask;
         }
 
@@ -37,7 +35,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"状態付与: {Condition.Name}";
+            return $"状態付与: {_condition.Condition.Name}";
         }
     }
 }

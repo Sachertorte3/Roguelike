@@ -10,7 +10,6 @@ namespace Domain.Service.Effect
     public class RepairEffect : IEffect
     {
         public Color Color => Colors.Brown;
-
         public Impact Impact => Impact.Beneficial;
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
@@ -60,7 +61,10 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp);
+            return
+                Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp) * (1 + _criticalRate) +
+                _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Evaluate(target)) +
+                _blowAwayDistance * 0.1f;
         }
 
         public string Info()

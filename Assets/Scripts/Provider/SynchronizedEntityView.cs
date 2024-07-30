@@ -4,7 +4,6 @@ using Domain.Model;
 using Domain.Model.Setting;
 using R3;
 using UnityEngine;
-using Utilities.ObjectsManager;
 using View;
 using Object = UnityEngine.Object;
 

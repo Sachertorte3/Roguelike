@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Model.Character;
+using Domain.Model.Condition;
 using R3;
 using Stats;
 
@@ -43,5 +44,71 @@ namespace Domain.Service.Characters.Stats
         public float CurrentViewRange => ViewRange.CurrentValue;
         public float CurrentMaxWaitTime => WaitTime.MaxValue.CurrentValue;
         public float CurrentWaitTime => WaitTime.Value.CurrentValue;
+        public float GetStatValue(StatType type)
+        {
+            return type switch
+            {
+                StatType.MaxHp => CurrentMaxHp,
+                StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
+                StatType.AttackMultiplier => CurrentAttackMultiplier,
+                StatType.ViewRange => CurrentViewRange,
+                StatType.WaitTime => CurrentWaitTime,
+                _ => throw new ArgumentException($"Invalid stat type: {type}"),
+            };
+        }
+
+        public void AddStatValue(StatType type, float value)
+        {
+            switch (type)
+            {
+                case StatType.MaxHp:
+                    Hp.AddMaxValue(value);
+                    break;
+                case StatType.HpNaturalRecovery:
+                    HpNaturalRecoveryAmount.AddValue(value);
+                    break;
+                case StatType.AttackMultiplier:
+                    AttackMultiplier.AddValue(value);
+                    break;
+                case StatType.ViewRange:
+                    ViewRange.AddValue(value);
+                    break;
+                case StatType.WaitTime:
+                    WaitTime.AddMaxValue(value);
+                    break;
+            }
+        }
+
+        public void RemoveStatValue(StatType type, float value)
+        {
+            AddStatValue(type, -value);
+        }
+
+        public void AddStatMultiplier(StatType type, float value)
+        {
+            switch (type)
+            {
+                case StatType.MaxHp:
+                    Hp.AddMaxMultiplier(value);
+                    break;
+                case StatType.HpNaturalRecovery:
+                    HpNaturalRecoveryAmount.AddMultiplier(value);
+                    break;
+                case StatType.AttackMultiplier:
+                    AttackMultiplier.AddMultiplier(value);
+                    break;
+                case StatType.ViewRange:
+                    ViewRange.AddMultiplier(value);
+                    break;
+                case StatType.WaitTime:
+                    WaitTime.AddMaxMultiplier(value);
+                    break;
+            }
+        }
+
+        public void RemoveStatMultiplier(StatType type, float value)
+        {
+            AddStatMultiplier(type, -value);
+        }
     }
 }

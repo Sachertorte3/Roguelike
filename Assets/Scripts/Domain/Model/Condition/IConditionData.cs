@@ -14,5 +14,6 @@ namespace Domain.Model.Condition
         public void Inflict(IHasCondition hasCondition);
         public UniTask Persist(IHasCondition hasCondition);
         public void Delete(IHasCondition hasCondition);
+        public float Evaluate(ITargetOfEffect target);
     }
 }

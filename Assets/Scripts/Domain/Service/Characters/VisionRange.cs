@@ -12,7 +12,7 @@ namespace Domain.Service.Characters
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
         private readonly ReactiveProperty<int> _clairvoyantFlags;
-        private bool _isClairvoyant => _clairvoyantFlags.Value > 0;
+        public bool IsClairvoyant => _clairvoyantFlags.Value > 0;
         private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
@@ -57,7 +57,7 @@ namespace Domain.Service.Characters
 
         private HashSet<Vector2Int> Calc(Vector2Int position, IMap map, float range)
         {
-            if (_isClairvoyant)
+            if (IsClairvoyant)
                 return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
             else
                 return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);

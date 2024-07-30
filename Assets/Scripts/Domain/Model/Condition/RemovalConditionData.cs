@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using Domain.Model.Effect;
 using Sirenix.OdinInspector;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Domain.Model.Condition
@@ -38,6 +35,31 @@ namespace Domain.Model.Condition
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
                    (RemoveByDamage && Random.value < Probability) ||
                    (RemoveByEnemyNearby && enemyVisible);
+        }
+        public float EvaluateTurn()
+        {
+            float estimatedTurns = float.MaxValue;
+
+            if (RemoveByElapsedTurn)
+            {
+                estimatedTurns = Duration;
+            }
+
+            if (RemoveByDamage)
+            {
+                float damageTurns = 1 / Probability;
+                if (damageTurns < estimatedTurns)
+                {
+                    estimatedTurns = damageTurns;
+                }
+            }
+
+            if (RemoveByEnemyNearby)
+            {
+                estimatedTurns = 0;
+            }
+
+            return estimatedTurns;
         }
     }
 }

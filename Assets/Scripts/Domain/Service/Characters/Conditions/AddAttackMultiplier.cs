@@ -29,5 +29,10 @@ namespace Domain.Service.Characters.Conditions
         {
             hasCondition.RemoveStatMultiplier(StatType.AttackMultiplier, AddedMultiplier);
         }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return 0.05f * target.GetStatValue(StatType.AttackMultiplier);
+        }
     }
 }

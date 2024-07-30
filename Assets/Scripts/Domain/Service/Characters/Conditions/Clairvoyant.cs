@@ -27,5 +27,10 @@ namespace Domain.Service.Characters.Conditions
         {
             hasCondition.RemoveClairvoyantFlags();
         }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return target.IsClairvoyant ? 0 : 0.1f;
+        }
     }
 }

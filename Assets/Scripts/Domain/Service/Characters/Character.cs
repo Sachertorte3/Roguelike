@@ -67,6 +67,26 @@ namespace Domain.Service.Characters
 
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
             _map = map;
+
+            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ => 
+            {
+                if (_statusManager.IsDead)
+                {
+                    foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
+                    {
+                        await UseItem(item, CurrentDirection, _map);
+                        if (!_statusManager.IsDead)
+                            break;
+                    }
+                }
+                
+                if (_statusManager.IsDead)
+                {
+                if (_lastSkill != null)
+                    await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+                    _onDead.OnNext(Unit.Default);
+                }
+            });
         }
 
         public bool CanAct => _statusManager.Conditions.All(condition => condition.CanAct);
@@ -213,9 +233,9 @@ namespace Domain.Service.Characters
             return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, world);
         }
 
-        public UniTask<int> GainHp(int value)
+        public int GainHp(int value)
         {
-            return UniTask.FromResult(_statusManager.GainHp(value));
+            return _statusManager.GainHp(value);
         }
 
         public void Dispose()
@@ -295,26 +315,9 @@ namespace Domain.Service.Characters
         public int CurrentHp => _statusManager.Stats.CurrentHp;
         public float AttackMultiplier => _statusManager.Stats.CurrentAttackMultiplier;
 
-        public async UniTask<int> LoseHp(int value)
+        public int LoseHp(int value)
         {
-            var result = _statusManager.LoseHp(value);
-            if (_statusManager.IsDead)
-            {
-                foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
-                {
-                    await UseItem(item, CurrentDirection, _map);
-                    if (!_statusManager.IsDead)
-                        break;
-                }
-            }
-            
-            if (_statusManager.IsDead)
-            {
-                if (_lastSkill != null)
-                    await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
-                _onDead.OnNext(Unit.Default);
-            }
-            return result;
+            return _statusManager.LoseHp(value);
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

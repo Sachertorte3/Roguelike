@@ -93,7 +93,10 @@ namespace Domain.Service.Characters
 
         public void UpdateTurn(bool enemyVisible)
         {
-            GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
+            if (_stats.HpNaturalRecoveryAmount.CurrentValue > 0)
+                GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
+            else
+                LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             _conditions.UpdateTurn(this, enemyVisible);
         }
 

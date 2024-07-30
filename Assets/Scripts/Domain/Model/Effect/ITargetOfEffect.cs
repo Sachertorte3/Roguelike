@@ -20,14 +20,14 @@ namespace Domain.Model.Effect
         /// </summary>
         /// <param name="value">The amount of damage to take</param>
         /// <returns>The actual amount of HP reduced</returns>
-        public UniTask<int> LoseHp(int value);
+        public int LoseHp(int value);
 
         /// <summary>
         /// Recovers HP
         /// </summary>
         /// <param name="value">The amount of HP to recover</param>
         /// <returns>The actual amount of HP recovered</returns>
-        public UniTask<int> GainHp(int value);
+        public int GainHp(int value);
 
         public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);

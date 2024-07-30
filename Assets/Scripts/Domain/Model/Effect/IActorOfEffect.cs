@@ -12,7 +12,7 @@ namespace Domain.Model.Effect
         public Vector2Int CurrentPosition { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
-        public UniTask<int> GainHp(int value);
+        public int GainHp(int value);
         public float AttackMultiplier { get; }
     }
 }

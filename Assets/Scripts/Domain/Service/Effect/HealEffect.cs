@@ -22,11 +22,12 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Beneficial;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
             var value = Formula.Calc(actor, _power);
             GameLog.Add($"{target.GetName(map.Player)}は{value}回復");
-            await target.GainHp(value);
+            target.GainHp(value);
+            return UniTask.CompletedTask;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

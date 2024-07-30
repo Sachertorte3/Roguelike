@@ -57,9 +57,8 @@ namespace Stats
         {
             if (value < 0)
             {
-                return -Gain(-value);
+                throw new ArgumentException("Value cannot be negative");
             }
-
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
             return oldValue - Value.CurrentValue;
@@ -69,9 +68,8 @@ namespace Stats
         {
             if (value < 0)
             {
-                return -Lose(-value);
+                throw new ArgumentException("Value cannot be negative");
             }
-
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, MaxValue.CurrentValue);
             return Value.CurrentValue - oldValue;

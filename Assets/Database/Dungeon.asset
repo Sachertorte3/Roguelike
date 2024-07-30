@@ -97,6 +97,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -180,6 +181,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -259,6 +261,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -338,6 +341,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:

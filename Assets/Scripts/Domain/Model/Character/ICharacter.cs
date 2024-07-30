@@ -53,12 +53,12 @@ namespace Domain.Model.Character
         public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
         public UniTask UseItem(IItem item, Direction8 direction, IMap map);
         public UniTask ThrowItem(IItem item, Direction8 direction, IMap world);
-        public UniTask<int> GainHp(int value);
 
         public void SetVisibility(bool visibility);
         public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
         public void Teleport(Vector2Int position);
-        public UniTask<int> LoseHp(int value);
+        public int GainHp(int value);
+        public int LoseHp(int value);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
         public UniTask ForceMove(Direction8 direction, IInput input);
         public void WasAttackedBy(IActorOfEffect actor, float impact);

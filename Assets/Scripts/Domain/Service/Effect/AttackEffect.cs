@@ -38,13 +38,13 @@ namespace Domain.Service.Effect
             {
                 var damage = Formula.Calc(actor, _power * 2);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
-                await target.LoseHp(damage);
+                target.LoseHp(damage);
             }
             else
             {
                 var damage = Formula.Calc(actor, _power);
                 GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
-                await target.LoseHp(damage);
+                target.LoseHp(damage);
             }
             foreach (var condition in _additionalConditions)
             {

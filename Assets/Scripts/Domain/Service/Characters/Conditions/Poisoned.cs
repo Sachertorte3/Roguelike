@@ -19,16 +19,14 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, -Power);
         }
 
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            hasCondition.LoseHp(Power);
-            return UniTask.CompletedTask;
-        }
+        public UniTask Persist(IHasCondition hasCondition) => UniTask.CompletedTask;
 
         public void Delete(IHasCondition hasCondition)
         {
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public float Evaluate(ITargetOfEffect target)

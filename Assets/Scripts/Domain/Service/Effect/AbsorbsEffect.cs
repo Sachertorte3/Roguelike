@@ -23,11 +23,12 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
             var value = Formula.Calc(actor, _power);
-            var loseValue = await target.LoseHp(value);
-            await actor.GainHp(Mathf.RoundToInt(loseValue * _rate));
+            var loseValue = target.LoseHp(value);
+            actor.GainHp(Mathf.RoundToInt(loseValue * _rate));
+            return UniTask.CompletedTask;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

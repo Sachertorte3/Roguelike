@@ -97,59 +97,11 @@ namespace Domain.Service.Characters
             _conditions.UpdateTurn(this, enemyVisible);
         }
 
-        public void AddStatValue(StatType type, float value)
-        {
-            switch (type)
-            {
-                case StatType.MaxHp:
-                    _stats.Hp.AddMaxValue(value);
-                    break;
-                case StatType.HpNaturalRecovery:
-                    _stats.HpNaturalRecoveryAmount.AddValue(value);
-                    break;
-                case StatType.AttackMultiplier:
-                    _stats.AttackMultiplier.AddValue(value);
-                    break;
-                case StatType.ViewRange:
-                    _stats.ViewRange.AddValue(value);
-                    break;
-                case StatType.WaitTime:
-                    _stats.WaitTime.AddMaxValue(value);
-                    break;
-            }
-        }
-
-        public void RemoveStatValue(StatType type, float value)
-        {
-            AddStatValue(type, -value);
-        }
-
-        public void AddStatMultiplier(StatType type, float value)
-        {
-            switch (type)
-            {
-                case StatType.MaxHp:
-                    _stats.Hp.AddMaxMultiplier(value);
-                    break;
-                case StatType.HpNaturalRecovery:
-                    _stats.HpNaturalRecoveryAmount.AddMultiplier(value);
-                    break;
-                case StatType.AttackMultiplier:
-                    _stats.AttackMultiplier.AddMultiplier(value);
-                    break;
-                case StatType.ViewRange:
-                    _stats.ViewRange.AddMultiplier(value);
-                    break;
-                case StatType.WaitTime:
-                    _stats.WaitTime.AddMaxMultiplier(value);
-                    break;
-            }
-        }
-
-        public void RemoveStatMultiplier(StatType type, float value)
-        {
-            AddStatMultiplier(type, -value);
-        }
+        public float GetStatValue(StatType type) => _stats.GetStatValue(type);
+        public void AddStatValue(StatType type, float value) => _stats.AddStatValue(type, value);
+        public void RemoveStatValue(StatType type, float value) => _stats.RemoveStatValue(type, value);
+        public void AddStatMultiplier(StatType type, float value) => _stats.AddStatMultiplier(type, value);
+        public void RemoveStatMultiplier(StatType type, float value) => _stats.RemoveStatMultiplier(type, value);
 
         public void AddClairvoyantFlags()
         {

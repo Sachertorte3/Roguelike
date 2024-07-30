@@ -69,8 +69,9 @@ namespace Domain.Service.Characters
             _map = map;
         }
 
-        private bool _canAct => _statusManager.Conditions.All(condition => condition.CanAct);
-        private bool _isConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
+        public bool CanAct => _statusManager.Conditions.All(condition => condition.CanAct);
+        public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
+        public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
         private ICharacterBehavior Behavior { get; }
         public Entity Entity => _entity;
         public bool IsLeader { get; init; }
@@ -90,7 +91,6 @@ namespace Domain.Service.Characters
             return _name.SetColored(Colors.SkyBlue);
         }
 
-        public bool CanAct => _canAct;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
@@ -290,6 +290,7 @@ namespace Domain.Service.Characters
             State = CharacterState.Wait;
         }
 
+        public float GetStatValue(StatType statType) => _statusManager.GetStatValue(statType);
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
         public float AttackMultiplier => _statusManager.Stats.CurrentAttackMultiplier;
@@ -348,7 +349,7 @@ namespace Domain.Service.Characters
         {
             State = CharacterState.Think;
             var action = await Behavior.GenerateNextAction(this, world, input);
-            if (_isConfused)
+            if (IsConfused)
             {
                 action = RegenerateConfuseAction(this, world, action);
             }

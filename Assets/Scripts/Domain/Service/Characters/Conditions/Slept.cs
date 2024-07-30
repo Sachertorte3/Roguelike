@@ -27,5 +27,10 @@ namespace Domain.Service.Characters.Conditions
         {
             hasCondition.AddStatMultiplier(StatType.ViewRange, 0.25f);
         }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return target.CanAct ? 0 : 0.3f;
+        }
     }
 }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -28,6 +29,11 @@ namespace Domain.Service.Characters.Conditions
         public void Delete(IHasCondition hasCondition)
         {
             hasCondition.RemoveStatValue(StatType.HpNaturalRecovery, Power);
+        }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return (float)Power / target.CurrentMaxHp;
         }
     }
 }

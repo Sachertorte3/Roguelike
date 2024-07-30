@@ -25,5 +25,10 @@ namespace Domain.Service.Characters.Conditions
         public void Delete(IHasCondition hasCondition)
         {
         }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return target.IsConfused ? 0 : 0.2f;
+        }
     }
 }

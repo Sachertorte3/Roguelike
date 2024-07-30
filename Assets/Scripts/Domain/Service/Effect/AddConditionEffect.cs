@@ -30,7 +30,7 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 1;
+            return _condition.Evaluate(target);
         }
 
         public string Info()

@@ -30,5 +30,10 @@ namespace Domain.Service.Characters.Conditions
         public void Delete(IHasCondition hasCondition)
         {
         }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return (float)Power / 100;
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities.ObjectsManager;
 
 namespace View
 {
@@ -18,7 +17,6 @@ namespace View
                 var spawnedEffect = Object.Instantiate(_effect);
                 spawnedEffect.transform.position = (Vector3Int)position;
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
-                spawnedEffect.GetComponent<SpriteView>().RegisterComponent();
             }
         }
     }

@@ -28,7 +28,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CanAct ? 0 : 0.3f;
+            return target.CanAct ? 0.3f : 0;
         }
     }
 }

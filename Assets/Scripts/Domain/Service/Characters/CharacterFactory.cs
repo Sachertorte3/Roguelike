@@ -11,7 +11,6 @@ using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Domain.Service.Entities;
 using Utilities;
 
@@ -21,53 +20,62 @@ namespace Domain.Service.Characters
     {
         public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
         {
-            return new CharacterMemento(
-                Name,
-                new Human(Addressables
-                    .LoadAssetAsync<Texture>("Assets/Images/Characters/Chara_Hero1_USM.png").WaitForCompletion()),
-                new BehaviorData(),
-                CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
-                Entity.Build(spawnPosition, EntityLayer.Middle),
-                new[]
+            return new CharacterMemento
+            {
+                Name = Name,
+                CharacterType = new Human("Chara_Hero1_USM"),
+                Behavior = new BehaviorData(),
+                Status = CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
+                Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
+                Direction = Direction8.Down,    
+                Skills = new[]
                 {
                     CharacterSkill.Build(Skill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
                         new AttackEffect(1, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },
-                null,
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
-                Aggression.AttackAnyone,
-                0,
-                true,
-                false,
-                false,
-                true,
-                true
-            );
+                LastSkill = new(null),
+                Inventory = new InventoryMemento
+                {
+                    Items = EnumerableExtension.CreateNewInstances<NullableSerializable<ItemMemento>>(10).ToArray()
+                },
+                Affiliation = CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
+                Aggression = Aggression.AttackAnyone,
+                Money = 0,
+                IsLeader = true,
+                IsShiny = false,
+                IsBoss = false,
+                CanPickUp = true,
+                CanUseItem = true,
+            };
         }
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null, Id<IEntity>? id = null)
         {
-            return new CharacterMemento(
-                isShiny ? "☆" + data.Name : data.Name,
-                data.CharacterType,
-                data.Behavior,
-                CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
-                Entity.Build(spawnPosition, EntityLayer.Middle),
-                data.Skills.Select(x => CharacterSkill.Build(Skill.Build(x.Skill), x.CoolTime)).ToArray(),
-                data.HasLastSkill ? Skill.Build(data.LastSkill) : null,
-                new InventoryMemento(new ItemMemento[10]),
-                CharacterAffiliationManager.Build(data.Group, affiliation, id),
-                data.Aggression,
-                0,
-                false,
-                isShiny,
-                data.IsBoss,
-                data.CanPickUp,
-                data.CanUseItem
-            );
+            return new CharacterMemento
+            {
+                Name = isShiny ? "☆" + data.Name : data.Name,
+                CharacterType = data.CharacterType,
+                Behavior = data.Behavior,
+                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
+                Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
+                Direction = Direction8.Down,
+                Skills = data.Skills.Select(x => CharacterSkill.Build(Skill.Build(x.Skill), x.CoolTime)).ToArray(),
+                LastSkill = new NullableSerializable<SkillMemento>(data.HasLastSkill ? Skill.Build(data.LastSkill) : null),
+                Inventory = new InventoryMemento
+                {
+                    Items = EnumerableExtension.CreateNewInstances<NullableSerializable<ItemMemento>>(10).ToArray()
+                },
+                Affiliation = CharacterAffiliationManager.Build(data.Group, affiliation, id),
+                Aggression = data.Aggression,
+                Money = 0,
+                IsLeader = false,
+                IsShiny = isShiny,
+                IsBoss = data.IsBoss,
+                CanPickUp = data.CanPickUp,
+                CanUseItem = data.CanUseItem
+            };
         }
 
         public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver,

@@ -2,16 +2,34 @@
 
 namespace Domain.Model.Map
 {
-    public record TileData
+    public class TileData : ISerializable<TileMemento>
     {
-        public TileData(TileCategory TileType, bool IsKnown)
+        public readonly TileCategory TileType;
+        public bool IsKnown { get; private set; }
+
+        public TileData(TileMemento memento)
         {
-            this.TileType = TileType;
-            this.IsKnown = IsKnown;
+            TileType = memento.TileType;
+            IsKnown = memento.IsKnown;
         }
 
-        public TileCategory TileType { get; }
-        public bool IsKnown { get; private set; }
+        public TileMemento Serialize()
+        {
+            return new TileMemento
+            {
+                TileType = TileType,
+                IsKnown = IsKnown
+            };
+        }
+         
+        public static TileMemento Build(TileCategory tileType, bool isKnown)
+        {
+            return new TileMemento
+            {
+                TileType = tileType,
+                IsKnown = isKnown
+            };
+        }
 
         public bool IsPassable()
         {

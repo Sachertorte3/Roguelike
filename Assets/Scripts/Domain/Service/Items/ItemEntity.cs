@@ -57,10 +57,11 @@ namespace Domain.Service.Items
 
         public ItemEntityMemento Serialize()
         {
-            return new ItemEntityMemento(
-                Item.Serialize(),
-                _entity.Serialize()
-            );
+            return new ItemEntityMemento
+            {
+                Item = Item.Serialize(),
+                Entity = _entity.Serialize()
+            };
         }
 
         public async UniTask Throw(IActor actor, Direction8 direction, IMap map)

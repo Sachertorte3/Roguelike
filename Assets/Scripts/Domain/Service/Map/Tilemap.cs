@@ -23,10 +23,10 @@ namespace Domain.Service.Map
 
         public Tilemap(TilemapMemento memento)
         {
-            Width = memento.Tiles.GetLength(0);
-            Height = memento.Tiles.GetLength(1);
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
-                .ToDictionary(x => x, x => memento.Tiles[x.x, x.y]));
+            Width = memento.Width;
+            Height = memento.Tiles.Length / Width;
+            _tiles = new ObservableDictionary<Vector2Int, TileData>(memento.Tiles.ToList().Select((x, index) => (new Vector2Int(index % Width, index / Width), new TileData(x)))
+                .ToDictionary(x => x.Item1, x => x.Item2));
 
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
@@ -44,7 +44,7 @@ namespace Domain.Service.Map
                 }
             });
 
-            Rooms = new ReadOnlyCollection<RectInt>(memento.Rooms);
+            Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
         }
 
         public Tilemap(int width, int height)
@@ -52,7 +52,7 @@ namespace Domain.Service.Map
             Width = width;
             Height = height;
             _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
-                .ToDictionary(x => x, _ => new TileData(TileCategory.Blank, false)));
+                .ToDictionary(x => x, _ => new TileData(TileData.Build(TileCategory.Blank, false))));
             _tiles.ObserveReplace()
                 .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
         }
@@ -69,16 +69,18 @@ namespace Domain.Service.Map
 
         public TilemapMemento Serialize()
         {
-            var tiles = new TileData[Width, Height];
+            var tiles = new TileMemento[Width * Height];
             foreach (var (position, tile) in _tiles)
             {
-                tiles[position.x, position.y] = tile;
+                tiles[position.x + position.y * Width] = tile.Serialize();
             }
 
-            return new TilemapMemento(
-                tiles,
-                Rooms.ToList()
-            );
+            return new TilemapMemento
+            {
+                Width = Width,
+                Tiles = tiles,
+                Rooms = Rooms.ToArray()
+            };
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
@@ -103,7 +105,9 @@ namespace Domain.Service.Map
         public static TilemapMemento Build(FieldBluePrint bluePrint)
         {
             var field = FieldBuilder.Build(bluePrint);
-            var tiles = new TileData[field.Grid.Size.x+2, field.Grid.Size.y+2];
+            var width = field.Grid.Size.x + 2;
+            var height = field.Grid.Size.y + 2;
+            var tiles = new TileMemento[width * height];
             var rooms = field.Rooms.Select(room => room.Rect).Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
 
             for (var x = -1; x < field.Grid.Size.x + 1; x++)
@@ -122,11 +126,16 @@ namespace Domain.Service.Map
                             ? TileCategory.Wall
                             : TileCategory.Floor;
                     }
-                    tiles[x+1, y+1] = new TileData(tileType, false);
+                    tiles[x + 1 + (y + 1) * width] = TileData.Build(tileType, false);
                 }
             }
 
-            return new TilemapMemento(tiles, rooms.ToList());
+            return new TilemapMemento
+            {
+                Width = width,
+                Tiles = tiles,
+                Rooms = rooms.ToArray()
+            };
         }
 
         ~Tilemap()
@@ -170,7 +179,7 @@ namespace Domain.Service.Map
             var changedPositions = positions.Where(position => Get(position).TileType == TileCategory.Wall);
             foreach (var position in changedPositions)
             {
-                _tiles[position] = new TileData(TileCategory.Floor, false);
+                _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));
             }
             _onTilesChanged.OnNext(changedPositions.Select(position => (position, Get(position))));
         }

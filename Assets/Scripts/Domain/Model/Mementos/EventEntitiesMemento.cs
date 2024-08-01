@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Domain.Model.Map
 {
-    public record EventEntitiesMemento
-    (
-        DownStairsMemento DownStairs,
-        UpStairsMemento UpStairs,
-        List<ChestMemento> Chests
-    );
+    [Serializable]
+    public class EventEntitiesMemento
+    {
+        public DownStairsMemento DownStairs;
+        public UpStairsMemento UpStairs;
+        public List<ChestMemento> Chests;
+    }
 }

@@ -1,10 +1,14 @@
-﻿using Domain.Model.Condition;
+﻿using System;
+using Domain.Model.Condition;
+using UnityEngine;
 
 namespace Domain.Model.Character
 {
-    public record ConditionMemento(
-        IConditionData Condition,
-        RemovalConditionData RemovalCondition,
-        int ElapsedTurns
-    );
+    [Serializable]
+    public class ConditionMemento
+    {
+        [SerializeReference] public IConditionData Condition;
+        public RemovalConditionData RemovalCondition;
+        public int ElapsedTurns;
+    }
 }

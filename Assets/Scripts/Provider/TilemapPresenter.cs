@@ -27,8 +27,6 @@ namespace Provider
                     }
 
                     var mapSize = mapLoaded.TilemapViewer.Rect;
-                    Debug.Log(mapSize);
-                    var unbreakableWall = new TileData(TileCategory.UnbreakableWall, false);
                     for (int x = mapSize.x-1; x <= mapSize.x + mapSize.width; x++)
                     {
                         tileView.SetUnbreakableWall(new Vector2Int(x, -1));

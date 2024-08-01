@@ -59,18 +59,20 @@ namespace Domain.Service.Events
 
         public DownStairsMemento Serialize()
         {
-            return new DownStairsMemento(
-                _destinationMapId,
-                _entity.Serialize()
-            );
+            return new DownStairsMemento
+            {
+                DestinationMapId = _destinationMapId,
+                Entity = _entity.Serialize()
+            };
         }
 
         public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
         {
-            return new DownStairsMemento(
-                destinationMapId,
-                Entity.Build(position, EntityLayer.Bottom)
-            );
+            return new DownStairsMemento
+            {
+                DestinationMapId = destinationMapId,
+                Entity = Entity.Build(position, EntityLayer.Bottom)
+            };
         }
 
         ~DownStairs()

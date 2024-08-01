@@ -193,15 +193,16 @@ namespace Model.Game
 
         public MapMemento Build()
         {
-            return new MapMemento(
-                _tilemap.Serialize(),
-                _characters,
-                _items,
-                _eventEntities,
-                _keyCharacters,
-                _monsterHouse,
-                _shop
-            );
+            return new MapMemento
+            {
+                Tilemap = _tilemap.Serialize(),
+                Characters = _characters,
+                Items = _items,
+                EventEntities = _eventEntities,
+                KeyCharacters = _keyCharacters,
+                MonsterHouse = new(_monsterHouse),
+                Shop = new(_shop)
+            };
         }
     }
 }

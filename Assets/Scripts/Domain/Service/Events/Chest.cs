@@ -14,11 +14,11 @@ namespace Domain.Service.Events
     public class Chest : ISerializable<ChestMemento>, IIconEventEntity
     {
         private Entity _entity;
-        private ItemData _item;
+        private Item _item;
 
         public Chest(ChestMemento memento)
         {
-            _item = memento.Item;
+            _item = new Item(memento.Item);
             _entity = new Entity(memento.Entity);
         }
 
@@ -38,7 +38,7 @@ namespace Domain.Service.Events
 
         public void DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            mapManager.SpawnItem(new Item(_item), CurrentPosition);
+            mapManager.SpawnItem(_item, CurrentPosition);
             mapManager.RemoveEventEntity(this);
         }
 
@@ -59,12 +59,20 @@ namespace Domain.Service.Events
 
         public ChestMemento Serialize()
         {
-            return new ChestMemento(_item, _entity.Serialize());
+            return new ChestMemento
+            {
+                Item = _item.Serialize(),
+                Entity = _entity.Serialize()
+            };
         }
 
         public static ChestMemento Build(Vector2Int position, ItemData item)
         {
-            return new ChestMemento(item, Entity.Build(position, EntityLayer.Middle));
+            return new ChestMemento
+            {
+                Item = new Item(item).Serialize(),
+                Entity = Entity.Build(position, EntityLayer.Middle)
+            };
         }
     }
 }

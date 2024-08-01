@@ -49,10 +49,7 @@ namespace Model.Game
             }
             else
             {
-                playerData = playerData with
-                {
-                    Entity = playerData.Entity with { Position = playerPosition }
-                };
+                playerData.Entity.Position = playerPosition;
             }
 
             _tilemap = new Tilemap(map.Tilemap);
@@ -66,15 +63,9 @@ namespace Model.Game
             {
                 foreach (var character in partyMembers)
                 {
-                    var characterData = character with
-                    {
-                        Entity = character.Entity with
-                        {
-                            Position = FindBlankPositionFrom(playerPosition,
-                                position => !AllCharacterPositions().Contains(position))
-                        }
-                    };
-                    CharacterManager.SpawnCharacter(characterData, this);
+                    character.Entity.Position = FindBlankPositionFrom(playerPosition,
+                                position => !AllCharacterPositions().Contains(position));
+                    CharacterManager.SpawnCharacter(character, this);
                 }
             }
 
@@ -90,20 +81,20 @@ namespace Model.Game
 
             SetRules();
 
-            if (map.MonsterHouse != null)
+            if (map.MonsterHouse.HasValue)
             {
-                _monsterHouse = new MonsterHouse(map.MonsterHouse);
+                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value);
                 _eventAreas.Add(_monsterHouse);
             }
 
-            if (map.Shop != null)
+            if (map.Shop.HasValue)
             {
-                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Clerk.Position);
-                if (clerk == null && !map.Shop.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
+                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Value.Clerk.Position);
+                if (clerk == null && !map.Shop.Value.IsStolen)
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
                 if (clerk != null)
                 {
-                    _shop = new Shop(map.Shop, clerk, this);
+                    _shop = new Shop(map.Shop.Value, clerk, this);
                     EventEntityManager.Add(_shop.Clerk);
                     _eventAreas.Add(_shop);
                 }
@@ -308,15 +299,16 @@ namespace Model.Game
             var characters = Characters.ToList();
             characters.Remove(Player);
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
-            return new MapMemento(
-                _tilemap.Serialize(),
-                characters.Select(character => character.Serialize()).ToList(),
-                ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                EventEntityManager.Serialize(),
-                KeyCharacters.Select(character => character.Id.Value).ToList(),
-                _monsterHouse?.Serialize(),
-                _shop?.Serialize()
-            );
+            return new MapMemento
+            {
+                Tilemap = _tilemap.Serialize(),
+                Characters = characters.Select(character => character.Serialize()).ToList(),
+                Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                EventEntities = EventEntityManager.Serialize(),
+                KeyCharacters = KeyCharacters.Select(character => character.Id.Value).ToList(),
+                MonsterHouse = new(_monsterHouse?.Serialize()),
+                Shop = new(_shop?.Serialize())
+            };
         }
 
         private void SetRules()

@@ -26,7 +26,7 @@ namespace Domain.Model.Effect
 
         public string Info()
         {
-            var info = $"効果: {Effect.Info()}\n範囲: {Area.Info()}";
+            var info = $"効果: {Effect.Info()}\n発動位置: {Position.Info()}\n範囲: {Area.Info()}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
             return info;

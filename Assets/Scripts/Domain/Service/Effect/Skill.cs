@@ -10,7 +10,6 @@ using UnityEngine;
 using Utilities;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
-using Unity.Logging;
 
 namespace Domain.Service.Effect
 {
@@ -21,7 +20,6 @@ namespace Domain.Service.Effect
         private readonly IEffectPosition _position;
         public int RushDistance { get; private set; }
         private readonly string? _log;
-        private readonly string _info;
 
         public Skill(SkillData data)
         {
@@ -30,7 +28,6 @@ namespace Domain.Service.Effect
             _effect = data.Effect;
             RushDistance = data.RushDistance;
             _log = data.Log;
-            _info = data.Info();
         }
 
         public Skill(SkillDataOnUse data)
@@ -39,7 +36,6 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effect = data.Effect;
             RushDistance = 0;
-            _info = data.Info();
         }
 
         public Skill(SkillDataOnThrow data)
@@ -48,7 +44,6 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effect = data.Effect;
             RushDistance = 0;
-            _info = data.Info();
         }
 
         public Skill(SkillMemento data)
@@ -57,7 +52,6 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effect = data.Effect;
             RushDistance = data.RushDistance;
-            _info = data.Info;
             _log = data.Log;
         }
 
@@ -71,7 +65,6 @@ namespace Domain.Service.Effect
                 Area = _area,
                 Effect = _effect,
                 RushDistance = RushDistance,
-                Info = _info,
                 Log = _log
             };
         }
@@ -84,7 +77,6 @@ namespace Domain.Service.Effect
                 Area = data.Area,
                 Effect = data.Effect,
                 RushDistance = data.RushDistance,
-                Info = data.Info(),
                 Log = data.Log
             };
         }
@@ -192,7 +184,10 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return _info;
+            var info = $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}";
+            if (RushDistance > 0)
+                info += $"\n突進距離: {RushDistance}";
+            return info;
         }
     }
 }

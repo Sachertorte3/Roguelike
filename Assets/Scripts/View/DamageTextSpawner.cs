@@ -1,4 +1,5 @@
 using TMPro;
+using UI;
 using UnityEngine;
 
 namespace View
@@ -43,6 +44,14 @@ namespace View
             }
 
             text.color = color;
+        }
+
+        public void DeleteAllText()
+        {
+            foreach (var text in canvas.GetComponentsInChildren<DamageText>())
+            {
+                Destroy(text.gameObject);
+            }
         }
     }
 }

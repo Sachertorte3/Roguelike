@@ -27,7 +27,7 @@ namespace Domain.Service.Map.Tests
         public void IndexTest1(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
-            Assert.AreEqual(new TileData(TileCategory.Blank, false), map.Get(position));
+            Assert.AreEqual(new TileData(TileData.Build(TileCategory.Blank, false)), map.Get(position));
         }
 
         [TestCaseSource(nameof(IndexTest2Cases))]

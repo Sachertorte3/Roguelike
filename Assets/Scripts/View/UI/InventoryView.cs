@@ -2,6 +2,7 @@
 using R3;
 using Sirenix.Utilities;
 using TMPro;
+using Unity.Logging;
 using UnityEngine;
 
 namespace View.UI
@@ -18,7 +19,9 @@ namespace View.UI
 
         private void Awake()
         {
-            for (var i = 0; i < _itemViews.Length; i++) _itemViews[i] = Instantiate(_itemViewPrefab, transform);
+            for (var i = 0; i < _itemViews.Length; i++)
+                if (_itemViews[i] == null)
+                    _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
             OnFocusChanged.Subscribe(index => { _infoText.text = _info[index]; }).AddTo(this);
             _itemViews[0].Select();
@@ -26,6 +29,8 @@ namespace View.UI
 
         public void Replace(Sprite icon, int? count, string info, int index)
         {
+            if (_itemViews[index] == null)
+                _itemViews[index] = Instantiate(_itemViewPrefab, transform);
             _itemViews[index].SetIcon(icon, count);
             _info[index] = info;
             UpdateInfo(info, index);
@@ -33,6 +38,8 @@ namespace View.UI
 
         public void Remove(int index)
         {
+            if (_itemViews[index] == null)
+                _itemViews[index] = Instantiate(_itemViewPrefab, transform);
             _itemViews[index].Remove();
             UpdateInfo("", index);
         }

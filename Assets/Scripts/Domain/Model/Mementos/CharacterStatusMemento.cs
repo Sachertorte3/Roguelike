@@ -1,14 +1,17 @@
-﻿using Stats;
+﻿using System;
+using Stats;
 
 namespace Domain.Model.Character
 {
-    public record CharacterStatusMemento(
-        ResourceData Hp,
-        StatData HpNaturalRecoveryAmount,
-        StatData AttackMultiplier,
-        StatData ViewRange,
-        ResourceData WaitTime,
-        int ClairvoyantFlags,
-        ConditionMemento[] Conditions
-    );
+    [Serializable]
+    public class CharacterStatusMemento
+    {
+        public ResourceData Hp;
+        public StatData HpNaturalRecoveryAmount;
+        public StatData AttackMultiplier;
+        public StatData ViewRange;
+        public ResourceData WaitTime;
+        public int ClairvoyantFlags;
+        public ConditionMemento[] Conditions;
+    }
 }

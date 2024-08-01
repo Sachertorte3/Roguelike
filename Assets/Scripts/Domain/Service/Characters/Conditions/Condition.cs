@@ -23,7 +23,12 @@ namespace Domain.Service.Characters.Conditions
 
         public ConditionMemento Serialize()
         {
-            return new ConditionMemento(_condition, _removalCondition, _elapsedTurn);
+            return new ConditionMemento
+            {
+                Condition = _condition,
+                RemovalCondition = _removalCondition,
+                ElapsedTurns = _elapsedTurn
+            };
         }
 
         public void Inflict(IHasCondition hasCondition)
@@ -49,7 +54,12 @@ namespace Domain.Service.Characters.Conditions
 
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
         {
-            return new ConditionMemento(condition, removalCondition, 0);
+            return new ConditionMemento
+            {
+                Condition = condition,
+                RemovalCondition = removalCondition,
+                ElapsedTurns = 0
+            };
         }
     }
 }

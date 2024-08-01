@@ -19,13 +19,16 @@ namespace Provider
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     bgmManager.NormalBGM();
-                    _disposable.Add(map.IsStolen.Subscribe(isStolen =>
+                    if (map.IsStolen != null)
                     {
-                        if (isStolen)
+                        _disposable.Add(map.IsStolen.Subscribe(isStolen =>
                         {
-                            bgmManager.StolenBGM();
-                        }
-                    }));
+                            if (isStolen)
+                            {
+                                bgmManager.StolenBGM();
+                            }
+                        }));
+                    }
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnPickUpItem.Subscribe(itemChanged =>
                     {
                         seManager.PickupSE();

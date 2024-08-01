@@ -4,9 +4,6 @@ using UnityEngine;
 using Domain.Model.Condition;
 using System;
 
-#if UNITY_EDITOR
-#endif
-
 namespace Domain.Model.Character
 {
     [Serializable]

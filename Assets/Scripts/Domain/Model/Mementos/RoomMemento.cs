@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Domain.Model.Map
 {
-    public record RoomMemento(
-        RectInt Room,
-        bool hasEntered,
-        bool hasEverEntered
-    );
+    [Serializable]
+    public class RoomMemento
+    {
+        public RectInt Room;
+        public bool hasEntered;
+        public bool hasEverEntered;
+    }
 }

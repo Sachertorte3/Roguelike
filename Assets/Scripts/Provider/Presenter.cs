@@ -13,7 +13,7 @@ namespace Provider
         public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
         {
             LoggerInit();
-            gameManager.LoadMap(1);
+            gameManager.Load();
         }
 
         private void LoggerInit()
@@ -34,7 +34,7 @@ namespace Provider
                 .SyncMode.FullSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.UnityEditorConsole(
-                    minLevel: LogLevel.Info,
+                    minLevel: LogLevel.Debug,
                     captureStackTrace: true);
 
         private static LoggerConfig DevelopmentConfiguration()

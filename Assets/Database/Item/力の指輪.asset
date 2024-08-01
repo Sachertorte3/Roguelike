@@ -15,8 +15,9 @@ MonoBehaviour:
   Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 3
   Price: 1000
-  EffectsOnUse: 0
-  EffectsOnThrow: 0
+  SpawnEffectsOnUse: 0
+  SpawnEffectsOnThrow: 0
+  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -49,14 +50,4 @@ MonoBehaviour:
     - rid: 4425516923575599144
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        RemovalCondition:
-          RemoveByElapsedTurn: 1
-          Duration: 5
-          RemoveByDamage: 0
-          Probability: 0
-          RemoveByEnemyNearby: 0
-        Condition:
-          rid: 4425516923575599145
-    - rid: 4425516923575599145
-      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
+        _condition: {fileID: 0}

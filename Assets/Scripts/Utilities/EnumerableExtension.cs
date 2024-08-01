@@ -173,7 +173,7 @@ namespace Utilities
             return result;
         }
 
-        public static IEnumerable<T> CreateArrayWithNewInstances<T>(int count) where T : new()
+        public static IEnumerable<T> CreateNewInstances<T>(int count) where T : new()
         {
             return Enumerable.Range(0, count).Select(_ => new T());
         }

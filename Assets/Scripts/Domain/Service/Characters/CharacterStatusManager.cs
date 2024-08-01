@@ -39,15 +39,16 @@ namespace Domain.Service.Characters
 
         public CharacterStatusMemento Serialize()
         {
-            return new CharacterStatusMemento(
-                _stats.Hp.GetData(),
-                _stats.HpNaturalRecoveryAmount.GetData(),
-                _stats.AttackMultiplier.GetData(),
-                _stats.ViewRange.GetData(),
-                _stats.WaitTime.GetData(),
-                _visionRange.ClairvoyantFlags,
-                _conditions.Conditions.Select(x => x.Serialize()).ToArray()
-            );
+            return new CharacterStatusMemento
+            {
+                Hp = _stats.Hp.GetData(),
+                HpNaturalRecoveryAmount = _stats.HpNaturalRecoveryAmount.GetData(),
+                AttackMultiplier = _stats.AttackMultiplier.GetData(),
+                ViewRange = _stats.ViewRange.GetData(),
+                WaitTime = _stats.WaitTime.GetData(),
+                ClairvoyantFlags = _visionRange.ClairvoyantFlags,
+                Conditions = _conditions.Conditions.Select(x => x.Serialize()).ToArray()
+            };
         }
 
         public IStats Stats => _stats;
@@ -143,15 +144,16 @@ namespace Domain.Service.Characters
                     )
                 );
             }
-            return new CharacterStatusMemento(
-                new ResourceData(new StatData(maxHp), maxHp),
-                new StatData(hpNaturalRecoveryAmount),
-                new StatData(attackMultiplier),
-                new StatData(viewRange),
-                new ResourceData(new StatData(waitTime), 0),
-                0,
-                conditions.ToArray()
-            );
+            return new CharacterStatusMemento
+            {
+                Hp = new ResourceData(new StatData(maxHp), maxHp),
+                HpNaturalRecoveryAmount = new StatData(hpNaturalRecoveryAmount),
+                AttackMultiplier = new StatData(attackMultiplier),
+                ViewRange = new StatData(viewRange),
+                WaitTime = new ResourceData(new StatData(waitTime), 0),
+                ClairvoyantFlags = 0,
+                Conditions = conditions.ToArray()
+            };
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

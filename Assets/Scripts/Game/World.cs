@@ -10,26 +10,69 @@ using Domain.Service.Map;
 using R3;
 using Unity.Logging;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using VContainer;
 
 namespace Model.Game
 {
-    public class World
+    public class World : ISerializable<WorldMemento>
     {
         private ReactiveProperty<MapManager?> _activeMap = new();
         private int _activeMapId = 0;
         private DungeonBluePrintData _dungeonData;
         private Dictionary<int, MapMemento> _maps = new();
         private CharacterControlInputReceiver _receiver;
-        public int ActiveMapIndex = 0;
 
         [Inject]
         public World(CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonData)
         {
             Globals.World = this;
             _receiver = receiver;
-
             _dungeonData = dungeonData;
+        }
+
+        public void CreateNew(DungeonBluePrintData dungeonData)
+        {
+            _dungeonData = dungeonData;
+            _maps = new();
+            _activeMapId = 0;
+            _activeMap.Value = null;
+        }
+
+        public MapManager LoadWorld(WorldMemento memento)
+        {
+            _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/Dungeon/{memento.DungeonDataName}.asset").WaitForCompletion();
+            _maps = memento.Maps;
+            
+            var mapId = memento.ActiveMapId;
+
+            Log.Debug($"LoadMap mapId:{mapId}");
+            var mapMemento = GetMapMemento(mapId);
+
+            if (_activeMap.CurrentValue != null)
+            {
+                _activeMap.CurrentValue.Dispose();
+            }
+
+            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), memento.Player, new(), memento.Player.Entity.Position, _receiver);
+
+            _activeMapId = mapId;
+            _activeMap.Value = map;
+
+            return map;
+        }
+
+        public WorldMemento Serialize()
+        {
+            _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
+            var playerData = _activeMap.CurrentValue.Player.Serialize();
+            return new WorldMemento
+            {
+                DungeonDataName = _dungeonData.name,
+                Player = playerData,
+                Maps = new(_maps),
+                ActiveMapId = _activeMapId
+            };
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;

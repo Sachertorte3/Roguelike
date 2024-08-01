@@ -29,7 +29,7 @@ namespace Domain.Service.Characters
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
-        private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
+        private readonly ReactiveProperty<Direction8> _direction;
         private readonly Entity _entity;
         private readonly Inventory _inventory;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
@@ -49,14 +49,15 @@ namespace Domain.Service.Characters
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(data.Entity);
-            _statusManager = new CharacterStatusManager(data.Status, Position, map);
+            _entity = new(data.Entity);
+            _direction = new(data.Direction);
+            _statusManager = new(data.Status, Position, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
-            _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
-            _inventory = new Inventory(data.Inventory, _statusManager);
+            _lastSkill = data.LastSkill.HasValue ? new Skill(data.LastSkill.Value) : null;
+            _inventory = new(data.Inventory, _statusManager);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
+            _affiliationManager = new(Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
@@ -273,24 +274,26 @@ namespace Domain.Service.Characters
 
         public CharacterMemento Serialize()
         {
-            return new CharacterMemento(
-                _name,
-                CharacterType,
-                Behavior.BehaviorData,
-                _statusManager.Serialize(),
-                _entity.Serialize(),
-                _skills.Select(x => x.Serialize()).ToArray(),
-                _lastSkill?.Serialize(),
-                _inventory.Serialize(),
-                _affiliationManager.Serialize(),
-                Aggression,
-                _money,
-                IsLeader,
-                IsShiny,
-                IsBoss,
-                CanPickUp,
-                CanUseItem
-            );
+            return new CharacterMemento
+            {
+                Name = _name,
+                CharacterType = CharacterType,
+                Behavior = Behavior.BehaviorData,
+                Status = _statusManager.Serialize(),
+                Entity = _entity.Serialize(),
+                Direction = _direction.CurrentValue,
+                Skills = _skills.Select(x => x.Serialize()).ToArray(),
+                LastSkill = new(_lastSkill?.Serialize()),
+                Inventory = _inventory.Serialize(),
+                Affiliation = _affiliationManager.Serialize(),
+                Aggression = Aggression,
+                Money = _money,
+                IsLeader = IsLeader,
+                IsShiny = IsShiny,
+                IsBoss = IsBoss,
+                CanPickUp = CanPickUp,
+                CanUseItem = CanUseItem
+            };
         }
 
         public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
@@ -458,11 +461,21 @@ namespace Domain.Service.Characters
         }
         public CharacterSkillMemento Serialize()
         {
-            return new CharacterSkillMemento(_skill.Serialize(), _coolTime, _remainingCoolTime);
+            return new CharacterSkillMemento
+            {
+                Skill = _skill.Serialize(),
+                CoolTime = _coolTime,
+                RemainingTurn = _remainingCoolTime
+            };
         }
         public static CharacterSkillMemento Build(SkillMemento skill, int coolTime)
         {
-            return new CharacterSkillMemento(skill, coolTime, 0);
+            return new CharacterSkillMemento
+            {
+                Skill = skill,
+                CoolTime = coolTime,
+                RemainingTurn = 0
+            };
         }
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
             _skill.GetArea(actor, position, direction, map);

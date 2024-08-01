@@ -12,6 +12,8 @@ using R3;
 using UnityEngine;
 using Utilities;
 using Domain.Model.Condition;
+using System.Linq;
+using UnityEngine.AddressableAssets;
 
 namespace Domain.Service.Items
 {
@@ -52,23 +54,23 @@ namespace Domain.Service.Items
         {
             Id = new Id<IItem>(data.Id);
             Name = data.Name;
-            Icon = data.Icon;
+            Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
             State = data.State;
             _basePrice = data.Price;
-            if (data.SkillOnUse != null)
+            if (data.SkillOnUse.HasValue)
             {
-                SkillOnUse = new Skill(data.SkillOnUse);
+                SkillOnUse = new Skill(data.SkillOnUse.Value);
             }
 
-            if (data.SkillOnThrow != null)
+            if (data.SkillOnThrow.HasValue)
             {
-                SkillOnThrow = new Skill(data.SkillOnThrow);
+                SkillOnThrow = new Skill(data.SkillOnThrow.Value);
             }
             UseOnDeath = data.UseOnDeath;
 
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
-            _conditions = data.Conditions;
+            _conditions = data.Conditions.ToList();
         }
 
         public string Name { get; init; }
@@ -88,19 +90,20 @@ namespace Domain.Service.Items
 
         public ItemMemento Serialize()
         {
-            return new ItemMemento(
-                Id.Value,
-                Name,
-                Icon,
-                State,
-                _basePrice,
-                SkillOnUse?.Serialize(),
-                SkillOnThrow?.Serialize(),
-                UseOnDeath,
-                _maxUsages,
-                _remainingUsages.CurrentValue,
-                _conditions
-            );
+            return new ItemMemento
+            {
+                Id = Id.Value,
+                Name = Name,
+                IconName = Icon.name,
+                State = State,
+                Price = _basePrice,
+                SkillOnUse = new(SkillOnUse?.Serialize()),
+                SkillOnThrow = new(SkillOnThrow?.Serialize()),
+                UseOnDeath = UseOnDeath,
+                MaxUsages = _maxUsages,
+                RemainingUsages = _remainingUsages.CurrentValue,
+                Conditions = _conditions.ToArray()
+            };
         }
 
         public void SetState(ItemState state)

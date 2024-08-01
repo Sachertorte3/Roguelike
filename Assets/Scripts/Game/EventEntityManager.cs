@@ -36,19 +36,21 @@ namespace Model.Game
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
         {
-            return new EventEntitiesMemento(
-                downStairs,
-                upStairs,
-                chests.ToList()
-            );
+            return new EventEntitiesMemento
+            {
+                DownStairs = downStairs,
+                UpStairs = upStairs,
+                Chests = chests.ToList()
+            };
         }
         public EventEntitiesMemento Serialize()
         {
-            return new EventEntitiesMemento(
-                DownStairs.Serialize(),
-                _upStairs?.Serialize(),
-                _chests.Select(chest => chest.Serialize()).ToList()
-            );
+            return new EventEntitiesMemento
+            {
+                DownStairs = DownStairs.Serialize(),
+                UpStairs = _upStairs?.Serialize(),
+                Chests = _chests.Select(chest => chest.Serialize()).ToList()
+            };
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;

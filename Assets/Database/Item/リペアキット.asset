@@ -45,17 +45,7 @@ MonoBehaviour:
     - rid: 4425516923575599144
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        RemovalCondition:
-          RemoveByElapsedTurn: 1
-          Duration: 5
-          RemoveByDamage: 0
-          Probability: 0
-          RemoveByEnemyNearby: 0
-        Condition:
-          rid: 4425516923575599145
-    - rid: 4425516923575599145
-      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
+        _condition: {fileID: 0}
     - rid: 4425517307579858945
       type: {class: RepairEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 

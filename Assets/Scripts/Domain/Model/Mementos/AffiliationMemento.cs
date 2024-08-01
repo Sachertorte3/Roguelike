@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Domain.Model.Effect;
 
 namespace Domain.Model.Character
 {
-    public record AffiliationMemento(
-        CharacterGroup Group,
-        Dictionary<int, float> Affiliations
-    );
+    [Serializable]
+    public class AffiliationMemento
+    {
+        public CharacterGroup Group;
+        public SerializableDictionary<int, float> Affiliations;
+    }
 }

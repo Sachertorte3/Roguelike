@@ -3,17 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Domain.Model.Effect;
 using System.Collections.Generic;
-using Domain.Model.Character;
 using Domain.Model.Condition;
-
-
-
-
-
-#if UNITY_EDITOR
-using UnityEditor;
-using System.IO;
-#endif
 
 namespace Domain.Model.Item
 {
@@ -36,12 +26,11 @@ namespace Domain.Model.Item
         [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         [SerializeReference] public List<IConditionData> PassiveConditions;
-        [ReadOnly][Required] private string _name = "";
 
-        public ItemData(string name, Sprite icon, Rarity rarity,
+        public ItemData(string itemName, Sprite icon, Rarity rarity,
             SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         {
-            _name = name;
+            name = itemName;
             Icon = icon;
             _rarity = rarity;
             SpawnEffectsOnUse = skillOnUse != null;
@@ -53,15 +42,11 @@ namespace Domain.Model.Item
             PassiveConditions = conditions;
         }
 
-        public string Name => _name.SetColored(Rarity.GetColor());
+        public string Name => name.SetColored(Rarity.GetColor());
         private bool _usable => SpawnEffectsOnUse || SpawnEffectsOnThrow;
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
-            _name = Path.GetFileNameWithoutExtension(assetPath);
-            AssetDatabase.SaveAssets();
-
             if (!SpawnEffectsOnUse)
             {
                 UseOnDeath = false;

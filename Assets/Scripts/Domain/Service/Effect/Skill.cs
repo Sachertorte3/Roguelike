@@ -10,6 +10,7 @@ using UnityEngine;
 using Utilities;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
+using Unity.Logging;
 
 namespace Domain.Service.Effect
 {
@@ -64,12 +65,28 @@ namespace Domain.Service.Effect
 
         public SkillMemento Serialize()
         {
-            return new SkillMemento(_position, _area, _effect, RushDistance, _info, _log);
+            return new SkillMemento
+            {
+                Position = _position,
+                Area = _area,
+                Effect = _effect,
+                RushDistance = RushDistance,
+                Info = _info,
+                Log = _log
+            };
         }
 
         public static SkillMemento Build(SkillData data)
         {
-            return new SkillMemento(data.Position, data.Area, data.Effect, data.RushDistance, data.Info(), data.Log);
+            return new SkillMemento
+            {
+                Position = data.Position,
+                Area = data.Area,
+                Effect = data.Effect,
+                RushDistance = data.RushDistance,
+                Info = data.Info(),
+                Log = data.Log
+            };
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,

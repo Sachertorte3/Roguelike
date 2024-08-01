@@ -16,6 +16,7 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
+                    damageTextSpawner.DeleteAllText();
                     _disposable.Add(map.CharacterManager.PlayerEvents.OnDamageReceived.Subscribe(damageChanged =>
                     {
                         var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 /

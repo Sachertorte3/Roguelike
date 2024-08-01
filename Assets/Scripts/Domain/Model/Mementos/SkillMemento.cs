@@ -13,7 +13,6 @@ namespace Domain.Model.Character
         [SerializeReference] public IArea Area;
         [SerializeReference] public IEffect Effect;
         public int RushDistance;
-        public string Info;
         public string? Log;
     }
 }

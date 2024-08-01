@@ -81,7 +81,6 @@ namespace Model.Game
                 }
 
                 Globals.GameManager.Save();
-                //Globals.GameManager.Load();
 
                 await characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));

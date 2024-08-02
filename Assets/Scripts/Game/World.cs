@@ -41,7 +41,7 @@ namespace Model.Game
 
         public MapManager LoadWorld(WorldMemento memento)
         {
-            _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/Dungeon/{memento.DungeonDataName}.asset").WaitForCompletion();
+            _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
             _maps = memento.Maps;
             
             var mapId = memento.ActiveMapId;

@@ -19,25 +19,42 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 20
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 2541219246146060295
-    Effect:
-      rid: 4425516923575599108
-    Position:
-      rid: 2541219106150416414
-    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-  - Area:
-      rid: 2541219246146060298
-    Effect:
-      rid: 2541219246146060300
-    Position:
-      rid: 2541219246146060299
-    Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
+  - Skill:
+      Area:
+        rid: 7729039033147064324
+      Effect:
+        rid: 7729039033147064325
+      Position:
+        rid: 7729039033147064326
+      RushDistance: 0
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+    CoolTime: 0
+  - Skill:
+      Area:
+        rid: 7729039033147064327
+      Effect:
+        rid: 7729039033147064329
+      Position:
+        rid: 7729039033147064328
+      RushDistance: 0
+      Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -46,39 +63,49 @@ MonoBehaviour:
       rid: 2541219246146060296
     Position:
       rid: 2541219246146060297
+    RushDistance: 0
     Log: "\u306F\u7206\u767A\u3057\u305F\u3002"
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219246146060294
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 1
         Radius: 2
-    - rid: 2541219246146060295
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
     - rid: 2541219246146060296
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 8
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
+        _power: 0
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219246146060297
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219246146060298
+    - rid: 2541219246146060303
+      type: {class: Shield, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0
+    - rid: 7729039033147064324
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 2541219246146060299
+    - rid: 7729039033147064325
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 5
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 7729039033147064326
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 7729039033147064327
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 7729039033147064328
       type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
         NumberOfTarget: 1
@@ -86,18 +113,7 @@ MonoBehaviour:
         TargetEnemy: 0
         TargetNeutral: 1
         TargetSelf: 0
-    - rid: 2541219246146060300
+    - rid: 7729039033147064329
       type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Power: 8
-    - rid: 2541219246146060303
-      type: {class: Shield, ns: Domain.Model.Character.Type, asm: Domain.Model}
-      data:
-        Type: 0
-    - rid: 4425516923575599108
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 6
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
+        _power: 8

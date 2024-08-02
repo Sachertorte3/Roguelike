@@ -19,18 +19,32 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 5
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 2541219158355345415
-    Effect:
-      rid: 2541219158355345420
-    Position:
-      rid: 2541219158355345416
-    Log: "\u306F\u6BD2\u3092\u5439\u304D\u51FA\u3057\u305F\u3002"
+  - Skill:
+      Area:
+        rid: -2
+      Effect:
+        rid: 7729039033147064320
+      Position:
+        rid: -2
+      RushDistance: 0
+      Log: 
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -39,36 +53,18 @@ MonoBehaviour:
       rid: -2
     Position:
       rid: -2
+    RushDistance: 0
     Log: 
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219158355345415
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 2
-    - rid: 2541219158355345416
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219158355345419
       type: {class: Mushroom, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219158355345420
+    - rid: 7729039033147064320
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        RemovalCondition:
-          RemoveByElapsedTurn: 1
-          Duration: 5
-          RemoveByDamage: 0
-          Probability: 0
-          RemoveByEnemyNearby: 0
-        Condition:
-          rid: 2541219158355345421
-    - rid: 2541219158355345421
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data:
-        Power: 1
+        _name: "\u6BD2"

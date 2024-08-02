@@ -19,18 +19,32 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 6
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
-      rid: 4425516923575599106
-    Effect:
-      rid: 4425516923575599108
-    Position:
-      rid: 2541219106150416414
-    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  - Skill:
+      Area:
+        rid: -2
+      Effect:
+        rid: -2
+      Position:
+        rid: -2
+      RushDistance: 0
+      Log: 
+    CoolTime: 0
   HasLastSkill: 1
   LastSkill:
     Area:
@@ -39,22 +53,23 @@ MonoBehaviour:
       rid: 2541219158355345426
     Position:
       rid: 2541219158355345427
+    RushDistance: 0
     Log: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219158355345425
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 2541219158355345426
       type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        Character: {fileID: 11400000, guid: f55365a5b2e92814593b1b47597022fb, type: 2}
-        Count: 2
-        InheritsShiny: 0
+        _character:
+          _name: "\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7"
+        _count: 2
+        _inheritsShiny: 0
     - rid: 2541219158355345427
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -62,14 +77,3 @@ MonoBehaviour:
       type: {class: SlimeSmall, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 4425516923575599106
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
-    - rid: 4425516923575599108
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 4
-        CriticalRate: 0
-        AdditionalConditions: []

@@ -26,6 +26,7 @@ namespace Provider
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.RegisterComponent(_dungeonData);
+            builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
@@ -39,7 +40,8 @@ namespace Provider
             builder.RegisterComponentInHierarchy<FlushController>();
             builder.RegisterComponentInHierarchy<BGMManager>();
             builder.RegisterComponentInHierarchy<SEManager>();
-
+            
+            builder.RegisterPlainEntryPoint<DungeonInfoPresenter>();
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();

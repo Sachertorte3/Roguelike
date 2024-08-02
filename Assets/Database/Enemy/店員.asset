@@ -20,7 +20,7 @@ MonoBehaviour:
   Hp: 256
   Aggression: 1
   Behavior:
-    wanderAround: 1
+    wanderAround: 0
     Default: 1
     PrioritizeMovement: 0
     UseTopBound: 0

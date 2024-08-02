@@ -54,7 +54,7 @@ namespace Model.Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), memento.Player, new(), memento.Player.Entity.Position, _receiver);
+            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), memento.Player, new(), memento.Player.Entity.Position, _receiver, mapId);
 
             _activeMapId = mapId;
             _activeMap.Value = map;
@@ -116,7 +116,7 @@ namespace Model.Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), playerData, characters, initialPosition, _receiver);
+            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), playerData, characters, initialPosition, _receiver, mapId);
 
             _activeMapId = mapId;
             _activeMap.Value = map;

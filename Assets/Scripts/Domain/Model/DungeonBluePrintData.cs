@@ -79,6 +79,7 @@ namespace Domain.Model
             var sectionData = GetSectionData(level);
             var floorData = GetFloorData(level);
             return new DungeonMapData(
+                name,
                 floorData.Field,
                 sectionData.Items,
                 sectionData.Materials,

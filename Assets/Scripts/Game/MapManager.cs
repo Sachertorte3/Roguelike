@@ -26,6 +26,8 @@ namespace Model.Game
 {
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
     {
+        public string Name => _dungeonData.Name;
+        public readonly int Floor;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -41,8 +43,9 @@ namespace Model.Game
         public IIconEntity DownStairs => EventEntityManager.DownStairs;
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int playerPosition, CharacterControlInputReceiver receiver)
+            Vector2Int playerPosition, CharacterControlInputReceiver receiver, int floor)
         {
+            Floor = floor;
             if (playerData == null)
             {
                 playerData = CharacterFactory.BuildPlayer("Player", playerPosition);

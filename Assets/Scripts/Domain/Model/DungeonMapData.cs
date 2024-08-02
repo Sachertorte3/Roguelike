@@ -6,6 +6,7 @@ using RandomDungeonWithBluePrint;
 namespace Domain.Model
 {
     public record DungeonMapData(
+        string Name,
         FieldBluePrint Field,
         RarityWeightTable<ItemData> Items,
         Table<MaterialData> Materials,

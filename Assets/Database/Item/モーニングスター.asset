@@ -44,7 +44,7 @@ MonoBehaviour:
       data:
         _power: 7
         _criticalRate: 0
-        _blowAwayDistance: 0
+        _blowAwayDistance: 1
         _additionalConditions: []
     - rid: 2541219158355345461
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

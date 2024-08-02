@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30B9\u30CD\u30FC\u30AF"
+  m_Name: "\u30B5\u30BD\u30EA"
   m_EditorClassIdentifier: 
-  Name: "\u30B9\u30CD\u30FC\u30AF"
+  Name: "\u30B5\u30BD\u30EA"
   Group: 1
   CharacterType:
-    rid: 2541219106150416432
+    rid: 2541219158355345422
   IsBoss: 0
-  Hp: 7
+  Hp: 10
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -37,13 +37,13 @@ MonoBehaviour:
   Skills:
   - Skill:
       Area:
-        rid: 2541219281251860492
+        rid: 2541219281251860500
       Effect:
-        rid: 2541219281251860493
+        rid: 2541219281251860502
       Position:
-        rid: 2541219281251860495
+        rid: 2541219281251860503
       RushDistance: 0
-      Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
+      Log: "\u306F\u6BD2\u91DD\u3067\u7A81\u304D\u523A\u3057\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -60,24 +60,25 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416432
-      type: {class: Snake, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345422
+      type: {class: Scorpion, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219281251860492
+    - rid: 2541219281251860500
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 2541219281251860493
+    - rid: 2541219281251860502
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _power: 4
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions:
-        - Condition: {fileID: 11400000, guid: 4c79db49692457246abe86d94ca29fbe, type: 2}
-          Probability: 0.1
-    - rid: 2541219281251860495
+        - Condition:
+            _name: "\u6BD2"
+          Probability: 0.5
+    - rid: 2541219281251860503
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

@@ -50,7 +50,7 @@ namespace Domain.Service.Effect
             {
                 if (Random.value < condition.Probability)
                 {
-                    target.AddCondition(condition.Condition.Condition, condition.Condition.RemovalCondition);
+                    target.AddCondition(condition.Condition.Value.Condition, condition.Condition.Value.RemovalCondition);
                 }
             }
             if (_blowAwayDistance > 0)
@@ -63,7 +63,7 @@ namespace Domain.Service.Effect
         {
             return
                 Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp) * (1 + _criticalRate) +
-                _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Evaluate(target)) +
+                _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.Evaluate(target)) +
                 _blowAwayDistance * 0.1f;
         }
 

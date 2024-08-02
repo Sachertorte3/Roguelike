@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30B5\u30BD\u30EA"
+  m_Name: "\u30B9\u30E9\u30A4\u30E0"
   m_EditorClassIdentifier: 
-  Name: "\u30B5\u30BD\u30EA"
+  Name: "\u30B9\u30E9\u30A4\u30E0"
   Group: 1
   CharacterType:
-    rid: 2541219158355345422
+    rid: 2541219158355345424
   IsBoss: 0
-  Hp: 10
+  Hp: 5
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -37,47 +37,56 @@ MonoBehaviour:
   Skills:
   - Skill:
       Area:
-        rid: 2541219281251860500
+        rid: 2541219281251860504
       Effect:
-        rid: 2541219281251860502
+        rid: 2541219281251860505
       Position:
-        rid: 2541219281251860503
+        rid: 2541219281251860506
       RushDistance: 0
-      Log: "\u306F\u6BD2\u91DD\u3067\u7A81\u304D\u523A\u3057\u305F\u3002"
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
     CoolTime: 0
-  HasLastSkill: 0
+  HasLastSkill: 1
   LastSkill:
     Area:
-      rid: -2
+      rid: 2541219158355345432
     Effect:
-      rid: -2
+      rid: 2541219158355345426
     Position:
-      rid: -2
+      rid: 2541219158355345427
     RushDistance: 0
-    Log: 
+    Log: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 2541219158355345422
-      type: {class: Scorpion, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345424
+      type: {class: Slime, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 0
-    - rid: 2541219281251860500
+        Type: 2
+    - rid: 2541219158355345426
+      type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _character:
+          _name: "\u3061\u3073\u30B9\u30E9\u30A4\u30E0"
+        _count: 2
+        _inheritsShiny: 1
+    - rid: 2541219158355345427
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345432
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 2541219281251860504
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 2541219281251860502
+    - rid: 2541219281251860505
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _power: 4
         _criticalRate: 0
         _blowAwayDistance: 0
-        _additionalConditions:
-        - Condition: {fileID: 11400000, guid: 96584de854caadf40a738a0adbc649aa, type: 2}
-          Probability: 0.5
-    - rid: 2541219281251860503
+        _additionalConditions: []
+    - rid: 2541219281251860506
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

@@ -42,6 +42,7 @@ namespace View
 
         public void Move(Vector2Int destination, Direction8 direction)
         {
+            _disposable.Disposable = null;
             if (_isVisible)
             {
                 var position = (Vector3Int)destination - (Vector3Int)direction.Vector();

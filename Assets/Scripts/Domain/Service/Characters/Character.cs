@@ -105,8 +105,12 @@ namespace Domain.Service.Characters
 
         public string GetName(IHasAffiliation player)
         {
+            if (!Visibility.CurrentValue)
+            {
+                return "何者か";
+            }
             if (Affiliation.IsAlly(player.Affiliation))
-                return _name.SetColored(Colors.Green);
+                    return _name.SetColored(Colors.Green);
             else if (Affiliation.IsEnemy(player.Affiliation))
                 return _name.SetColored(Colors.Red);
             return _name.SetColored(Colors.SkyBlue);
@@ -219,7 +223,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
-            GameLog.Add($"<color=blue>{_name}</color>は{item.Name}を投げた");
+            GameLog.Add($"{GetName(world.Player)}は{item.Name}を投げた");
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));

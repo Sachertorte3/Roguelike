@@ -90,7 +90,7 @@ namespace Domain.Service.Effect
 
         public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (_log != null)
+            if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
             var spawnPositions = _position.Get(actor, position, direction, map);
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));

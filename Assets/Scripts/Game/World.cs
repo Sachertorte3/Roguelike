@@ -21,6 +21,7 @@ namespace Model.Game
         private int _activeMapId = 0;
         private DungeonBluePrintData _dungeonData;
         private Dictionary<int, MapMemento> _maps = new();
+        private HashSet<int> _updatedMapIds = new();
         private CharacterControlInputReceiver _receiver;
 
         [Inject]
@@ -36,6 +37,7 @@ namespace Model.Game
             _dungeonData = dungeonData;
             _maps = new();
             _activeMapId = 0;
+            _updatedMapIds = new();
             _activeMap.Value = null;
         }
 
@@ -45,6 +47,7 @@ namespace Model.Game
             _maps = memento.Maps;
             
             var mapId = memento.ActiveMapId;
+            _updatedMapIds = new HashSet<int> { mapId };
 
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
@@ -75,6 +78,47 @@ namespace Model.Game
             };
         }
 
+        [Serializable]
+        public class SaveData
+        {
+            public string DungeonDataName;
+            public CharacterMemento Player;
+            public int ActiveMapId;
+            public List<int> MapIds;
+        }
+
+        public SaveData SerializeSaveData()
+        {
+            return new SaveData
+            {
+                DungeonDataName = _dungeonData.name,
+                Player = _activeMap.CurrentValue.Player.Serialize(),
+                ActiveMapId = _activeMapId,
+                MapIds = _maps.Keys.ToList()
+            };
+        }
+
+        public Dictionary<int, MapMemento> SerializeUpdatedMaps()
+        {
+            _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
+            var updatedMaps = _updatedMapIds.ToDictionary(mapId => mapId, mapId => _maps[mapId]);
+            _updatedMapIds = new HashSet<int> { _activeMapId };
+            return updatedMaps;
+        }
+
+        public static WorldMemento Build(SaveData saveData, Dictionary<int, MapMemento> maps)
+        {
+            if (saveData.MapIds.Except(maps.Keys).Any())
+                throw new ArgumentException("Map count is not match");
+            return new WorldMemento
+            {
+                DungeonDataName = saveData.DungeonDataName,
+                Player = saveData.Player,
+                Maps = new(maps),
+                ActiveMapId = saveData.ActiveMapId
+            };
+        }
+
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
         private MapMemento GetMapMemento(int mapId)
@@ -94,6 +138,7 @@ namespace Model.Game
         {
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
+            _updatedMapIds.Add(mapId);
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;

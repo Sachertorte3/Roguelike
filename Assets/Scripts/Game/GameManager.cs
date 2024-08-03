@@ -6,6 +6,9 @@ using Domain.Service.Events;
 using Unity.Logging;
 using VContainer;
 using UnityEngine;
+using static Model.Game.World;
+using System.Collections.Generic;
+using Domain.Model.Map;
 
 namespace Model.Game
 {
@@ -41,9 +44,17 @@ namespace Model.Game
 
         public void Save()
         {
-            var world = _world.Serialize();
-            var str = JsonUtility.ToJson(world);
-            System.IO.File.WriteAllText("world_data.json", str);
+            Log.Debug("Start Save");
+            var saveData = _world.SerializeSaveData();
+            var saveDataStr = JsonUtility.ToJson(saveData);
+            System.IO.File.WriteAllText("save.json", saveDataStr);
+            var updatedMaps = _world.SerializeUpdatedMaps();
+            foreach (var map in updatedMaps)
+            {
+                var mapStr = JsonUtility.ToJson(map.Value);
+                System.IO.File.WriteAllText($"map_{map.Key}.json", mapStr);
+            }
+            Log.Debug("End Save");
         }
 
         public async void Load()
@@ -52,11 +63,18 @@ namespace Model.Game
             _receiver.Enable(false);
             await _turnController.Stop();
             MapManager map = null;
-            if (System.IO.File.Exists("world_data.json"))
+            if (System.IO.File.Exists("save.json"))
             {
-                var str = System.IO.File.ReadAllText("world_data.json");
-                var world = JsonUtility.FromJson<WorldMemento>(str);
-                map = _world.LoadWorld(world);
+                var str = System.IO.File.ReadAllText("save.json");
+                var saveData = JsonUtility.FromJson<SaveData>(str);
+                var maps = new Dictionary<int, MapMemento>();
+                foreach (var mapId in saveData.MapIds)
+                {
+                    var mapStr = System.IO.File.ReadAllText($"map_{mapId}.json");
+                    var mapMemento = JsonUtility.FromJson<MapMemento>(mapStr);
+                    maps.Add(mapId, mapMemento);
+                }
+                map = _world.LoadWorld(Build(saveData, maps));
             }
             else
             {

@@ -4,9 +4,9 @@ namespace Domain.Service.Items
 {
     public class InventoryIndexReceiver
     {
-        public int Index { get; private set; } = -1;
+        public int? Index { get; private set; }
 
-        public void SetIndex(int index)
+        public void SetIndex(int? index)
         {
             Index = index;
         }

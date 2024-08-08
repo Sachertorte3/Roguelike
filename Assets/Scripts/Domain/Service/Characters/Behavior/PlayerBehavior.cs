@@ -67,7 +67,7 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case 1:
                         var itemIndex = firstCompletedTask.result2;
-                        var item = character.Inventory.GetItem(itemIndex);
+                        var item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         IAction action;
 
                         if (item == null)
@@ -79,7 +79,7 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case 2:
                         itemIndex = firstCompletedTask.result3;
-                        item = character.Inventory.GetItem(itemIndex);
+                        item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         if (item != null)
                         {
                             action = new ThrowItem(item, character.CurrentDirection);

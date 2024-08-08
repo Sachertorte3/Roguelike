@@ -17,5 +17,6 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalConditions:
-  - Condition: {fileID: 11400000, guid: bb248398d9f4a0c46a7b88f054edd425, type: 2}
+  - Condition:
+      _name: "\u30B9\u30BF\u30F3"
     Probability: 0.25

@@ -16,8 +16,8 @@ namespace Domain.Model.Map
         public List<ItemEntityMemento> Items;
         public EventEntitiesMemento EventEntities;
         public List<int> KeyCharacters;
-        public NullableSerializable<RoomMemento> MonsterHouse;
-        public NullableSerializable<ShopMemento> Shop;
+        public Option<RoomMemento> MonsterHouse;
+        public Option<ShopMemento> Shop;
     }
 }
 namespace Domain.Model

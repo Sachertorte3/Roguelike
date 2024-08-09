@@ -27,6 +27,7 @@ namespace Domain.Model.Character
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned { get; }
         public Observable<Unit> OnDead { get; }
         public Observable<Unit> OnPickUpItem { get; }
+        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect { get; }
         public ICharacterType CharacterType { get; init; }
         public IStatusManager StatusManager { get; }
         public Aggression Aggression { get; }

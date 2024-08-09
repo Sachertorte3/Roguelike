@@ -35,7 +35,7 @@ namespace Domain.Service.Characters
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
         private readonly CharacterSkill[] _skills;
-        private readonly ISkill? _lastSkill;
+        private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         private bool _canIgnoreWall;
         private int _money;
@@ -53,7 +53,7 @@ namespace Domain.Service.Characters
             _direction = new(data.Direction);
             _statusManager = new(data.Status, Position, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
-            _lastSkill = data.LastSkill.HasValue ? new Skill(data.LastSkill.Value) : null;
+            _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
             _inventory = new(data.Inventory, _statusManager);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
@@ -69,7 +69,7 @@ namespace Domain.Service.Characters
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
             _map = map;
 
-            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ => 
+            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ =>
             {
                 if (_statusManager.IsDead)
                 {
@@ -80,11 +80,11 @@ namespace Domain.Service.Characters
                             break;
                     }
                 }
-                
+
                 if (_statusManager.IsDead)
                 {
-                if (_lastSkill != null)
-                    await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+                    if (_lastSkill != null)
+                        await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
                     _onDead.OnNext(Unit.Default);
                 }
             });
@@ -110,7 +110,7 @@ namespace Domain.Service.Characters
                 return "何者か";
             }
             if (Affiliation.IsAlly(player.Affiliation))
-                    return _name.SetColored(Colors.Green);
+                return _name.SetColored(Colors.Green);
             else if (Affiliation.IsEnemy(player.Affiliation))
                 return _name.SetColored(Colors.Red);
             return _name.SetColored(Colors.SkyBlue);
@@ -119,7 +119,9 @@ namespace Domain.Service.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
+        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect => Behavior.IsWaitingItemSelect;
         public ICharacterType CharacterType { get; init; }
+        public IItemSelecter ItemSelecter => Behavior;
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -198,17 +200,20 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info()}\ndirection:{direction}");
             Turn(direction);
 
-            if (item.SkillOnUse != null)
+            if (item.CanActivateWhenUsed)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.Name}を使った");
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                    item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
-                if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, map, false),
-                        UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-                else
-                    await item.Use(this, CurrentPosition, direction, map, false);
-
+                var isSuccess = false;
+                isSuccess = await item.Use(this, CurrentPosition, direction, map);
+                if (isSuccess && item.SkillOnUse.Value is SpawnEffectSkill spawnEffect)
+                {
+                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
+                        spawnEffect.GetArea(this, CurrentPosition, CurrentDirection, map),
+                        spawnEffect.Color)
+                    );
+                    if (_entity.VisibleByPlayer.CurrentValue)
+                        await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+                }
                 State = CharacterState.Wait;
             }
             else
@@ -452,14 +457,14 @@ namespace Domain.Service.Characters
     }
     public class CharacterSkill : ICharacterSkill
     {
-        public ISkill _skill { get; }
+        public SpawnEffectSkill _skill { get; }
         private int _coolTime { get; }
         public Color Color => _skill.Color;
         public int RushDistance => _skill.RushDistance;
         private int _remainingCoolTime;
         public CharacterSkill(CharacterSkillMemento data)
         {
-            _skill = new Skill(data.Skill);
+            _skill = new SpawnEffectSkill(data.Skill);
             _coolTime = data.CoolTime;
             _remainingCoolTime = data.RemainingTurn;
         }
@@ -483,14 +488,13 @@ namespace Domain.Service.Characters
         }
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
             _skill.GetArea(actor, position, direction, map);
-        SkillMemento ISerializable<SkillMemento>.Serialize() => _skill.Serialize();
         public string Info() => _skill.Info();
-        public async UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
+        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            _remainingCoolTime = _coolTime+1;
-            await _skill.Use(actor, position, direction, map);
+            _remainingCoolTime = _coolTime + 1;
+            return _skill.Use(actor, position, direction, map);
         }
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
+        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return _skill.Evaluate(actor, position, direction, world);
         }

@@ -90,7 +90,7 @@ namespace Domain.Service.Items
         {
             return new InventoryMemento
             {
-                Items = _items.Select(x => new NullableSerializable<ItemMemento>(x?.Serialize())).ToArray()
+                Items = _items.Select(x => new Option<ItemMemento>(x?.Serialize())).ToArray()
             };
         }
 

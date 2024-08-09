@@ -27,10 +27,10 @@ namespace Domain.Service.Characters
                 Behavior = new BehaviorData(),
                 Status = CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
-                Direction = Direction8.Down,    
+                Direction = Direction8.Down,
                 Skills = new[]
                 {
-                    CharacterSkill.Build(Skill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
+                    CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
                         new AttackEffect(1, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
@@ -38,7 +38,7 @@ namespace Domain.Service.Characters
                 LastSkill = new(null),
                 Inventory = new InventoryMemento
                 {
-                    Items = EnumerableExtension.CreateNewInstances<NullableSerializable<ItemMemento>>(10).ToArray()
+                    Items = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 },
                 Affiliation = CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
                 Aggression = Aggression.AttackAnyone,
@@ -61,11 +61,11 @@ namespace Domain.Service.Characters
                 Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
-                Skills = data.Skills.Select(x => CharacterSkill.Build(Skill.Build(x.Skill), x.CoolTime)).ToArray(),
-                LastSkill = new NullableSerializable<SkillMemento>(data.HasLastSkill ? Skill.Build(data.LastSkill) : null),
+                Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
+                LastSkill = new Option<SkillMemento>(data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null),
                 Inventory = new InventoryMemento
                 {
-                    Items = EnumerableExtension.CreateNewInstances<NullableSerializable<ItemMemento>>(10).ToArray()
+                    Items = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 },
                 Affiliation = CharacterAffiliationManager.Build(data.Group, affiliation, id),
                 Aggression = data.Aggression,

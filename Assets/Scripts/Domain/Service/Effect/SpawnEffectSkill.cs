@@ -10,10 +10,11 @@ using UnityEngine;
 using Utilities;
 using Domain.Service.Logs;
 using Domain.Model.Effect.Position;
+using Domain.Model.Action;
 
 namespace Domain.Service.Effect
 {
-    public class Skill : ISkill
+    public class SpawnEffectSkill : ISerializable<SkillMemento>, ISkill
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
@@ -21,7 +22,7 @@ namespace Domain.Service.Effect
         public int RushDistance { get; private set; }
         private readonly string? _log;
 
-        public Skill(SkillData data)
+        public SpawnEffectSkill(SkillData data)
         {
             _position = data.Position;
             _area = data.Area;
@@ -30,7 +31,7 @@ namespace Domain.Service.Effect
             _log = data.Log;
         }
 
-        public Skill(SkillDataOnUse data)
+        public SpawnEffectSkill(SkillDataOnUse data)
         {
             _position = data.Position;
             _area = data.Area;
@@ -38,7 +39,7 @@ namespace Domain.Service.Effect
             RushDistance = 0;
         }
 
-        public Skill(SkillDataOnThrow data)
+        public SpawnEffectSkill(SkillDataOnThrow data)
         {
             _position = new AtFeet();
             _area = data.Area;
@@ -46,7 +47,7 @@ namespace Domain.Service.Effect
             RushDistance = 0;
         }
 
-        public Skill(SkillMemento data)
+        public SpawnEffectSkill(SkillMemento data)
         {
             _position = data.Position;
             _area = data.Area;
@@ -88,7 +89,7 @@ namespace Domain.Service.Effect
             return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
         }
 
-        public UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
+        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
@@ -121,10 +122,10 @@ namespace Domain.Service.Effect
                     _effect.Apply(actor, target, map);
                 });
             _effect.Apply(actor, area, map);
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(true);
         }
 
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
+        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             for (int i = 0; i < RushDistance; i++)
             {

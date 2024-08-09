@@ -36,6 +36,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
             builder.RegisterComponentInHierarchy<ShopInfoView>();
+            builder.RegisterComponentInHierarchy<ItemSelectText>();
             builder.RegisterComponentInHierarchy<DamageTextSpawner>();
             builder.RegisterComponentInHierarchy<FlushController>();
             builder.RegisterComponentInHierarchy<BGMManager>();
@@ -54,6 +55,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
+            builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
         }
     }

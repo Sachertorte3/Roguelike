@@ -14,8 +14,9 @@ namespace Domain.Model.Character
         public string IconName;
         public ItemState State;
         public int Price;
-        public NullableSerializable<SkillMemento> SkillOnUse;
-        public NullableSerializable<SkillMemento> SkillOnThrow;
+        public Option<ISkillMemento> SkillOnUse;
+        public Option<ISkillMemento> SkillOnThrow;
+        public bool IsSameSkill;
         public bool UseOnDeath;
         public int MaxUsages;
         public int RemainingUsages;

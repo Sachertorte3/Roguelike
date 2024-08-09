@@ -15,9 +15,10 @@ MonoBehaviour:
   Icon: {fileID: 1954880249, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 2
   Price: 100
+  EffectType: 1
+  UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 0
-  UseOnDeath: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -41,7 +42,8 @@ MonoBehaviour:
     - rid: 2541219106150416407
       type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
-        Icon: {fileID: -503745, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+        Icon:
+          _name: 
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

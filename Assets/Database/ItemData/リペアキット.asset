@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: "\u30EA\u30DA\u30A2\u30AD\u30C3\u30C8"
   m_EditorClassIdentifier: 
   Icon: {fileID: 11433948, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 3
+  _rarity: 0
   Price: 100
-  SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 0
+  EffectType: 2
   UseOnDeath: 0
+  SpawnEffectsOnUse: 0
+  SpawnEffectsOnThrow: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -31,6 +32,8 @@ MonoBehaviour:
       rid: 4425516923575599143
     Effect:
       rid: 4425516923575599144
+  AffectItem:
+    rid: 4274950900600012800
   UsageLimit: 1
   PassiveConditions: []
   references:
@@ -39,13 +42,17 @@ MonoBehaviour:
     - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 4274950900600012800
+      type: {class: Repair, ns: , asm: Domain.Service}
+      data: 
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599144
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _condition: {fileID: 0}
+        _condition:
+          _name: 
     - rid: 4425517307579858945
       type: {class: RepairEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 

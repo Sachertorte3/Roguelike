@@ -4,8 +4,10 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Setting;
 using Domain.Service.Action;
+using R3;
 using Unity.Logging;
 using Utilities;
 
@@ -16,6 +18,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControlInputReceiver _receiver;
         public BehaviorData BehaviorData => new BehaviorData();
+        private readonly ReactiveProperty<bool> _waitingItemSelect = new();
+        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect => _waitingItemSelect;
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
@@ -96,6 +100,13 @@ namespace Domain.Service.Characters.Behavior
                 throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
                 firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             }
+        }
+        public async UniTask<IItem?> SelectItem(IInventory inventory)
+        {
+            _waitingItemSelect.Value = true;
+            var index = await _receiver.OnUseItemActionReceived.WaitAsync();
+            _waitingItemSelect.Value = false;
+            return index == null ? null : inventory.GetItem(index.Value);
         }
     }
 }

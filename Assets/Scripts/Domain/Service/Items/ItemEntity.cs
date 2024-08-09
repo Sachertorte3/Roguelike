@@ -6,6 +6,7 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Message;
 using Domain.Model.Setting;
+using Domain.Service.Effect;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
@@ -76,11 +77,16 @@ namespace Domain.Service.Items
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
 
-            if (Item.SkillOnThrow != null)
+            if (Item.CanActivateWhenThrown)
             {
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                    Item.SkillOnThrow.GetArea(actor, CurrentPosition, direction, map), Item.SkillOnThrow.Color));
-                await Item.Use(actor, CurrentPosition, direction, map, true);
+                var isUsed = await Item.UseWhenThrown(actor, CurrentPosition, direction, map);
+                if (isUsed && Item.SkillOnThrow.Value is SpawnEffectSkill spawnEffect)
+                {
+                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
+                        spawnEffect.GetArea(actor, CurrentPosition, direction, map),
+                        spawnEffect.Color)
+                    );
+                }
             }
             if (map.IsOverlapped(CurrentPosition, Layer))
             {
@@ -90,7 +96,7 @@ namespace Domain.Service.Items
         }
         public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, IMap map)
         {
-            if (item.SkillOnThrow == null)
+            if (item.CanActivateWhenThrown)
                 return 0;
 
             while (map.IsPassable(position + direction.Vector()))
@@ -103,7 +109,7 @@ namespace Domain.Service.Items
                 position += direction.Vector();
             }
 
-            return item.SkillOnThrow.Evaluate(actor, position, direction, map);
+            return item.EvaluateWhenThrown(actor, position, direction, map);
         }
 
         ~ItemEntity()

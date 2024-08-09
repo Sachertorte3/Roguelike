@@ -14,9 +14,11 @@ namespace Domain.Model.Item
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public int Price = 100;
-        public bool SpawnEffectsOnUse = true;
-        public bool SpawnEffectsOnThrow = false;
+        public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
+        #region spawn effect
         [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath = false;
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnUse = true;
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnThrow = false;
 
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow")]
         [SerializeField]
@@ -24,22 +26,35 @@ namespace Domain.Model.Item
 
         [ShowIf("SpawnEffectsOnUse")] public SkillDataOnUse? SkillOnUse;
         [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
+        #endregion
+        #region item target
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget"), SerializeReference, Required] public IItemEffect? ItemEffect;
+        #endregion
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
-        public ItemData(string itemName, Sprite icon, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+        private ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         {
             name = itemName;
             Icon = icon;
             _rarity = rarity;
-            SpawnEffectsOnUse = skillOnUse != null;
-            SpawnEffectsOnThrow = skillOnThrow != null;
             UseOnDeath = useOnDeath;
-            SkillOnUse = skillOnUse;
-            SkillOnThrow = skillOnThrow;
             UsageLimit = usageLimit;
             PassiveConditions = conditions;
+        }
+        public ItemData(string itemName, Sprite icon, Rarity rarity,
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool useOnDeath, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
+        {
+            EffectType = ItemEffectType.SpawnEffect;
+            SpawnEffectsOnUse = skillOnUse != null;
+            SpawnEffectsOnThrow = skillOnThrow != null;
+            SkillOnUse = skillOnUse;
+            SkillOnThrow = skillOnThrow;
+        }
+        public ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, IItemEffect itemEffect, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
+        {
+            EffectType = ItemEffectType.ItemTarget;
+            ItemEffect = itemEffect;
         }
 
         public string Name => name.SetColored(Rarity.GetColor());
@@ -47,6 +62,22 @@ namespace Domain.Model.Item
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            switch (EffectType)
+            {
+                case ItemEffectType.None:
+                    SpawnEffectsOnUse = false;
+                    SpawnEffectsOnThrow = false;
+                    ItemEffect = null;
+                    break;
+                case ItemEffectType.SpawnEffect:
+                    ItemEffect = null;
+                    break;
+                case ItemEffectType.ItemTarget:
+                    SpawnEffectsOnUse = false;
+                    SpawnEffectsOnThrow = false;
+                    break;
+            }
+
             if (!SpawnEffectsOnUse)
             {
                 UseOnDeath = false;
@@ -100,10 +131,5 @@ namespace Domain.Model.Item
 
             return info;
         }
-    }
-
-    public interface IHasRarity
-    {
-        Rarity Rarity { get; }
     }
 }

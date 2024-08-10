@@ -4,6 +4,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Action;
 using Domain.Model.Item;
+using System.Linq;
 
 namespace Domain.Service.Effect
 {
@@ -34,8 +35,9 @@ namespace Domain.Service.Effect
 
         public async UniTask<bool> Use(IActor actor, IItem item)
         {
-            var selfIndex = actor.Inventory.GetItemIndex(item);
-            var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, selfIndex);
+            var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(actor.Inventory);
+            disabledItemIndexes = disabledItemIndexes.Append(actor.Inventory.GetItemIndex(item));
+            var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
             if (selectedItem != null)
                 _itemEffect.Apply(selectedItem);
             return selectedItem != null;

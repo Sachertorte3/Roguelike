@@ -55,6 +55,7 @@ namespace Domain.Service.Items
         public bool UseOnDeath { get; init; }
         public int Price => Mathf.RoundToInt(_basePrice * _remainingUsages.CurrentValue / _maxUsages);
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
+        public int MaxUsages => _maxUsages;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;

@@ -27,6 +27,7 @@ namespace Domain.Model.Item
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public bool IsDisabled { get; }
+        public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }

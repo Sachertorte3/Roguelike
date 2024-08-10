@@ -391,7 +391,7 @@ namespace Model.Game
 
         public void UpdateTurn(int turn)
         {
-            if (turn % 30 == 0)
+            if (turn % 100 == 0)
             {
                 var positions = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())

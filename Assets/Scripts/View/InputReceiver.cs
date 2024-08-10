@@ -39,6 +39,8 @@ namespace View
         public Observable<Unit> OnDropPerformed => _actions.Field.Drop.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnQuickSave => _actions.Field.QuickSave.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnQuickLoad => _actions.Field.QuickLoad.AsObservable().Select(context => Unit.Default);
 
         public void Dispose()
         {

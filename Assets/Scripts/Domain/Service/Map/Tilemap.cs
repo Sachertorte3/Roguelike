@@ -18,6 +18,7 @@ namespace Domain.Service.Map
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
+        private TilemapMemento _mementoCache;
         public readonly int Height;
         public readonly int Width;
 
@@ -28,8 +29,15 @@ namespace Domain.Service.Map
             _tiles = new ObservableDictionary<Vector2Int, TileData>(memento.Tiles.ToList().Select((x, index) => (new Vector2Int(index % Width, index / Width), new TileData(x)))
                 .ToDictionary(x => x.Item1, x => x.Item2));
 
+            Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
+
             _tiles.ObserveReplace()
-                .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
+                .Subscribe(context =>
+                {
+                    _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) });
+                    UpdateMementoCache();
+                }
+            );
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
 
             OnTilesChanged.Subscribe(changeTiles =>
@@ -43,8 +51,7 @@ namespace Domain.Service.Map
                     ResetMask(position);
                 }
             });
-
-            Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
+            UpdateMementoCache();
         }
 
         public Tilemap(int width, int height)
@@ -67,7 +74,7 @@ namespace Domain.Service.Map
             _onTilesKnownChanged.Dispose();
         }
 
-        public TilemapMemento Serialize()
+        private void UpdateMementoCache()
         {
             var tiles = new TileMemento[Width * Height];
             foreach (var (position, tile) in _tiles)
@@ -75,12 +82,17 @@ namespace Domain.Service.Map
                 tiles[position.x + position.y * Width] = tile.Serialize();
             }
 
-            return new TilemapMemento
+            _mementoCache = new TilemapMemento
             {
                 Width = Width,
                 Tiles = tiles,
                 Rooms = Rooms.ToArray()
             };
+        }
+
+        public TilemapMemento Serialize()
+        {
+            return _mementoCache;
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;

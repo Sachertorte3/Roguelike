@@ -14,7 +14,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            World world, InventoryView inventoryView)
+            GameManager gameManager, World world, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -44,6 +44,9 @@ namespace Provider
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
             inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
+
+            receiver.OnQuickSave.Subscribe(_ => gameManager.Save());
+            receiver.OnQuickLoad.Subscribe(_ => gameManager.Load());
         }
     }
 }

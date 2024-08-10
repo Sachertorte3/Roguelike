@@ -195,28 +195,40 @@ namespace Domain.Service.Items
         public async UniTask<bool> ActivateWhenUse(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return await SkillOnUse.SelectOrDefault(
-                skill => skill.Use(actor, position, direction, world),
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Use(actor, this)
+                ),
                 UniTask.FromResult(false)
             );
         }
         public async UniTask<bool> ActivateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return await SkillOnThrow.SelectOrDefault(
-                skill => skill.Use(actor, position, direction, world),
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Use(actor, this)
+                ),
                 UniTask.FromResult(false)
             );
         }
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return SkillOnUse.SelectOrDefault(
-                skill => skill.Evaluate(actor, position, direction, world),
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                ),
                 0
             );
         }
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return SkillOnThrow.SelectOrDefault(
-                skill => skill.Evaluate(actor, position, direction, world),
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                ),
                 0
             );
         }

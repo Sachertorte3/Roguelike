@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System.Linq;
 using R3;
 using Sirenix.Utilities;
 using TMPro;
@@ -55,6 +56,18 @@ namespace View.UI
         public void UpdateCount(int? count, int index)
         {
             _itemViews[index].SetCount(count);
+        }
+
+        public void DisableItems(int[] disabledItemIndexes)
+        {
+            foreach (var index in disabledItemIndexes)
+                _itemViews[index].Disable();
+        }
+
+        public void EnableAllItems()
+        {
+            foreach (var view in _itemViews)
+                view.Enable();
         }
     }
 }

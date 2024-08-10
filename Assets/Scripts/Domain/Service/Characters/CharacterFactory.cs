@@ -62,7 +62,7 @@ namespace Domain.Service.Characters
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
-                LastSkill = new Option<SkillMemento>(data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null),
+                LastSkill = new Option<SpawnEffectSkillMemento>(data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null),
                 Inventory = new InventoryMemento
                 {
                     Items = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()

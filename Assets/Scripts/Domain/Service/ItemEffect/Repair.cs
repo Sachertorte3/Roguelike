@@ -6,5 +6,5 @@ public class Repair : IItemEffect
     {
         item.Repair();
     }
-    public string Info() => "Repair";
+    public string Info() => "修理";
 }

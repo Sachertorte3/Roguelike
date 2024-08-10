@@ -47,5 +47,15 @@ namespace View.UI
         {
             _text.text = "";
         }
+
+        public void Disable()
+        {
+            _icon.color = Color.gray;
+        }
+
+        public void Enable()
+        {
+            _icon.color = Color.white;
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Domain.Model.Character
         public EntityMemento Entity;
         public Direction8 Direction;
         public CharacterSkillMemento[] Skills;
-        public Option<SkillMemento> LastSkill;
+        public Option<SpawnEffectSkillMemento> LastSkill;
         public InventoryMemento Inventory;
         public AffiliationMemento Affiliation;
         public Aggression Aggression;

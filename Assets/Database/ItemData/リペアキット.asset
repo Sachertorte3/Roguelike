@@ -32,8 +32,8 @@ MonoBehaviour:
       rid: 4425516923575599143
     Effect:
       rid: 4425516923575599144
-  AffectItem:
-    rid: 4274950900600012800
+  ItemEffect:
+    rid: 4274950900600012802
   UsageLimit: 1
   PassiveConditions: []
   references:
@@ -42,7 +42,7 @@ MonoBehaviour:
     - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4274950900600012800
+    - rid: 4274950900600012802
       type: {class: Repair, ns: , asm: Domain.Service}
       data: 
     - rid: 4425516923575599143

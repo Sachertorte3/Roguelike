@@ -14,5 +14,6 @@ namespace Domain.Model.Item
         public Observable<OnItemUpdated> OnItemUpdated { get; }
         public bool HasEmptySpace();
         public IItem? GetItem(int index);
+        public int GetItemIndex(IItem item);
     }
 }

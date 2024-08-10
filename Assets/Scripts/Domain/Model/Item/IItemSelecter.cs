@@ -5,6 +5,6 @@ namespace Domain.Model.Item
 {
     public interface IItemSelecter
     {
-        public UniTask<IItem?> SelectItem(IInventory inventory);
+        public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds);
     }
 }

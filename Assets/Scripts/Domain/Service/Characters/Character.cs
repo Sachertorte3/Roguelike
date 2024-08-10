@@ -119,7 +119,7 @@ namespace Domain.Service.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
-        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect => Behavior.IsWaitingItemSelect;
+        public Observable<OnItemSelectMessage> OnItemSelect => Behavior.OnItemSelect;
         public ICharacterType CharacterType { get; init; }
         public IItemSelecter ItemSelecter => Behavior;
         public IStatusManager StatusManager => _statusManager;
@@ -477,7 +477,7 @@ namespace Domain.Service.Characters
                 RemainingTurn = _remainingCoolTime
             };
         }
-        public static CharacterSkillMemento Build(SkillMemento skill, int coolTime)
+        public static CharacterSkillMemento Build(SpawnEffectSkillMemento skill, int coolTime)
         {
             return new CharacterSkillMemento
             {

@@ -14,7 +14,7 @@ using Domain.Model.Action;
 
 namespace Domain.Service.Effect
 {
-    public class SpawnEffectSkill : ISerializable<SkillMemento>, ISkill
+    public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
     {
         private readonly IArea _area;
         private readonly IEffect _effect;
@@ -47,7 +47,7 @@ namespace Domain.Service.Effect
             RushDistance = 0;
         }
 
-        public SpawnEffectSkill(SkillMemento data)
+        public SpawnEffectSkill(SpawnEffectSkillMemento data)
         {
             _position = data.Position;
             _area = data.Area;
@@ -58,9 +58,9 @@ namespace Domain.Service.Effect
 
         public Color Color => _effect.Color;
 
-        public SkillMemento Serialize()
+        public SpawnEffectSkillMemento Serialize()
         {
-            return new SkillMemento
+            return new SpawnEffectSkillMemento
             {
                 Position = _position,
                 Area = _area,
@@ -70,9 +70,9 @@ namespace Domain.Service.Effect
             };
         }
 
-        public static SkillMemento Build(SkillData data)
+        public static SpawnEffectSkillMemento Build(SkillData data)
         {
-            return new SkillMemento
+            return new SpawnEffectSkillMemento
             {
                 Position = data.Position,
                 Area = data.Area,

@@ -1,10 +1,7 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using UnityEngine;
-using Utilities;
 using Domain.Model.Action;
 using Domain.Model.Item;
 
@@ -35,15 +32,16 @@ namespace Domain.Service.Effect
             };
         }
 
-        public async UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public async UniTask<bool> Use(IActor actor, IItem item)
         {
-            var item = await actor.ItemSelecter.SelectItem(actor.Inventory);
-            if (item != null)
-                _itemEffect.Apply(item);
-            return item != null;
+            var selfIndex = actor.Inventory.GetItemIndex(item);
+            var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, selfIndex);
+            if (selectedItem != null)
+                _itemEffect.Apply(selectedItem);
+            return selectedItem != null;
         }
 
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public float Evaluate(IActor actor, IItem item)
         {
             return 0;
         }

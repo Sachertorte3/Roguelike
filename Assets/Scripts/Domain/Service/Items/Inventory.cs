@@ -86,6 +86,11 @@ namespace Domain.Service.Items
             return _items[index];
         }
 
+        public int GetItemIndex(IItem item)
+        {
+            return _items.IndexOf(item);
+        }
+
         public InventoryMemento Serialize()
         {
             return new InventoryMemento

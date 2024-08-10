@@ -9,7 +9,7 @@ namespace Domain.Model.Character
 {
     public interface ISkillMemento { }
     [Serializable]
-    public class SkillMemento : ISkillMemento
+    public class SpawnEffectSkillMemento : ISkillMemento
     {
         [SerializeReference] public IEffectPosition Position;
         [SerializeReference] public IArea Area;

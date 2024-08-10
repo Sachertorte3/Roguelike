@@ -10,7 +10,7 @@ namespace Domain.Service.Characters.Behavior
     public interface  ICharacterBehavior : IItemSelecter
     {
         public BehaviorData BehaviorData { get; }
-        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect { get; }
+        public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input);
     }
 }

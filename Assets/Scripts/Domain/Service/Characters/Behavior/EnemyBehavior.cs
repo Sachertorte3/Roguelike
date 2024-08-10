@@ -16,7 +16,7 @@ namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
-        public ReadOnlyReactiveProperty<bool> IsWaitingItemSelect { get; init; } = new ReactiveProperty<bool>(false);
+        public Observable<OnItemSelectMessage> OnItemSelect { get; init; } = new Subject<OnItemSelectMessage>();
         private readonly IBehaviorWhenUndiscoveringTarget _wander;
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
@@ -237,7 +237,7 @@ namespace Domain.Service.Characters.Behavior
                 .Where(action => action.Doable(character, world));
         }
 
-        public UniTask<IItem?> SelectItem(IInventory inventory)
+        public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
         {
             return UniTask.FromResult<IItem?>(null);
         }

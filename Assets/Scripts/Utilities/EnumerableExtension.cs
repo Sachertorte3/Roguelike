@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,6 +15,11 @@ namespace Utilities
             {
                 action(item);
             }
+        }
+
+        public static IEnumerable<(T item, int index)> Index<T>(this IEnumerable<T> ie)
+        {
+            return ie.Select((item, index) => (item, index));
         }
 
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)

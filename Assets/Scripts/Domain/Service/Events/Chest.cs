@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Item;
@@ -36,10 +37,11 @@ namespace Domain.Service.Events
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
-        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
+        public UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
             mapManager.SpawnItem(_item, CurrentPosition);
             mapManager.RemoveEventEntity(this);
+            return UniTask.CompletedTask;
         }
 
         public void Dispose()

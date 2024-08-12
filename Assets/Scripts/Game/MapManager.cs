@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
@@ -41,6 +42,7 @@ namespace Model.Game
         public ReadOnlyReactiveProperty<bool> DownStairsLocked => _downStairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
         public IIconEntity DownStairs => EventEntityManager.DownStairs;
+        public bool IsEventExecuting { get; private set; }
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
             Vector2Int playerPosition, CharacterControlInputReceiver receiver, int floor)
@@ -277,7 +279,7 @@ namespace Model.Game
                 return (route.Last() - to).sqrMagnitude <= 2;
         }
 
-        public void Touch(Vector2Int position)
+        public async UniTask Touch(Vector2Int position)
         {
             var eventEntity = EventEntities
                 .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
@@ -285,7 +287,20 @@ namespace Model.Game
                 .Where(eventEntity => eventEntity.CanExecuteEvent)
                 .FirstOrDefault();
             if (eventEntity != null)
-                eventEntity.DoEvent(Globals.GameManager, this);
+                await eventEntity.DoEvent(Globals.GameManager, this);
+            else
+                Log.Info($"I tried touch position {position} event but there was no event there.");
+        }
+
+        public async UniTask StepOn(Vector2Int position)
+        {
+            var eventEntity = EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .FirstOrDefault();
+            if (eventEntity != null)
+                await eventEntity.DoEvent(Globals.GameManager, this);
             else
                 Log.Info($"I tried touch position {position} event but there was no event there.");
         }
@@ -329,8 +344,9 @@ namespace Model.Game
                     entity.SetVisibility(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
             }).AddTo(_disposables);
 
-            CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
+            CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
+                IsEventExecuting = true;
                 var eventEntity = EventEntities
                     .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
                     .Where(eventEntity => eventEntity.CurrentPosition == positionChanged.Message.Position)
@@ -338,13 +354,14 @@ namespace Model.Game
                     .FirstOrDefault();
                 if (eventEntity != null)
                 {
-                    eventEntity.DoEvent(Globals.GameManager, this);
+                    await eventEntity.DoEvent(Globals.GameManager, this);
                 }
 
                 foreach (var eventArea in _eventAreas)
                 {
                     eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
+                IsEventExecuting = false;
             }).AddTo(_disposables);
 
             CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>

@@ -14,6 +14,7 @@ using Unity.Logging;
 using Domain.Service.Characters.Conditions;
 using Domain.Model.Condition;
 using Domain.Model.Item;
+using Cysharp.Threading.Tasks;
 
 namespace Model.Game
 {
@@ -30,7 +31,7 @@ namespace Model.Game
             Clerk = new Clerk(
                 clerk,
                 () => CanExecute && GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0,
-                mapManager => Purchase(mapManager)
+                mapManager => { Purchase(mapManager); return UniTask.CompletedTask; }
             );
 
             if (data.IsStolen)

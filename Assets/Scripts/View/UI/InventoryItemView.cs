@@ -51,11 +51,13 @@ namespace View.UI
         public void Disable()
         {
             _icon.color = Color.gray;
+            interactable = false;
         }
 
         public void Enable()
         {
             _icon.color = Color.white;
+            interactable = true;
         }
     }
 }

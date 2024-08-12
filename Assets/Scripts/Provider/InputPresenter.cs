@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
 using Model.Game;
 using R3;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            GameManager gameManager, World world, InventoryView inventoryView)
+            ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -44,6 +45,12 @@ namespace Provider
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
             inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
+
+            choiceReceiver.OnShownChoice.Subscribe(async message =>
+            {
+                var index = await menuController.GetChoice(message.text, message.choices);
+                choiceReceiver.SetChoicedIndex(index);
+            });
 
             receiver.OnQuickSave.Subscribe(_ => gameManager.Save());
             receiver.OnQuickLoad.Subscribe(_ => gameManager.Load());

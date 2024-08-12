@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Map;
 using Domain.Service.Entities;
@@ -42,9 +43,13 @@ namespace Domain.Service.Events
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => !IsLocked.CurrentValue;
 
-        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
+        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            gameManager.LoadMap(_destinationMapId);
+            var choice = await gameManager.GetChoice("階段を見つけた", "下る", "やめる");
+            if (choice == 0)
+            {
+                gameManager.LoadMap(_destinationMapId);
+            }
         }
 
         public void SetVisibility(bool visibility)

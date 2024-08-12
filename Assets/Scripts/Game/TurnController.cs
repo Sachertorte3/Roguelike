@@ -71,6 +71,8 @@ namespace Model.Game
                         }
                     }
 
+                    await UniTask.WaitWhile(() => map.IsEventExecuting);
+
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         _isRunning = false;

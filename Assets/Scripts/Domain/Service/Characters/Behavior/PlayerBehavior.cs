@@ -62,7 +62,7 @@ namespace Domain.Service.Characters.Behavior
                                 return move;
                             else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
                             {
-                                world.Touch(character.CurrentPosition + move.Direction.Vector());
+                                await world.Touch(character.CurrentPosition + move.Direction.Vector());
                                 return new DoNothing();
                             }
                             else if (swap.Doable(character, world))

@@ -9,6 +9,7 @@ using UnityEngine;
 using static Model.Game.World;
 using System.Collections.Generic;
 using Domain.Model.Map;
+using Cysharp.Threading.Tasks;
 
 namespace Model.Game
 {
@@ -18,17 +19,24 @@ namespace Model.Game
         private readonly TurnController _turnController;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
+        private readonly ChoiceReceiver _choiceReceiver;
         private readonly CharacterControlInputReceiver _receiver;
         private readonly DungeonBluePrintData _dungeonBluePrintData;
 
         [Inject]
-        public GameManager(World world, GameInput input, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
+        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
         {
             _world = world;
             _turnController = new TurnController(input);
+            _choiceReceiver = choiceReceiver;
             _receiver = receiver;
             _dungeonBluePrintData = dungeonBluePrintData;
             Globals.GameManager = this;
+        }
+
+        public async UniTask<int> GetChoice(string text, params string[] choices)
+        {
+            return await _choiceReceiver.GetChoice(text, choices);
         }
 
         public async void LoadMap(int mapId)

@@ -69,5 +69,11 @@ namespace View.UI
             foreach (var view in _itemViews)
                 view.Enable();
         }
+
+        public void DisableAllItems()
+        {
+            foreach (var view in _itemViews)
+                view.Disable();
+        }
     }
 }

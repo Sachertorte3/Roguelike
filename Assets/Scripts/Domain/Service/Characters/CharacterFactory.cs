@@ -25,13 +25,13 @@ namespace Domain.Service.Characters
                 Name = Name,
                 CharacterType = new Human("Chara_Hero1_USM"),
                 Behavior = new BehaviorData(),
-                Status = CharacterStatusManager.Build(100, 1, 1, 10, 1, false),
+                Status = CharacterStatusManager.Build(100, 1, 1, new(), new(), 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = new[]
                 {
                     CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(1, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                        new AttackEffect(new List<ElementPower> { new ElementPower(Element.Physical, 1) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },
@@ -58,7 +58,7 @@ namespace Domain.Service.Characters
                 Name = isShiny ? "☆" + data.Name : data.Name,
                 CharacterType = data.CharacterType,
                 Behavior = data.Behavior,
-                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, 8, data.MoveSpeed.ToWaitTime(), isSlept),
+                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),

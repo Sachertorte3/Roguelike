@@ -32,11 +32,15 @@ MonoBehaviour:
       rid: 4425516923575599143
     Effect:
       rid: 4425516923575599144
+  ItemEffect:
+    rid: -2
   UsageLimit: 1
   PassiveConditions: []
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416404
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

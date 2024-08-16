@@ -26,7 +26,7 @@ namespace Domain.Service.Characters
 
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
-            _stats = new CharacterStats(data.Hp, data.HpNaturalRecoveryAmount, data.AttackMultiplier, data.ViewRange, data.WaitTime);
+            _stats = new CharacterStats(data.Stats);
             _conditions = new CharacterConditions(this, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
         }
@@ -41,11 +41,7 @@ namespace Domain.Service.Characters
         {
             return new CharacterStatusMemento
             {
-                Hp = _stats.Hp.GetData(),
-                HpNaturalRecoveryAmount = _stats.HpNaturalRecoveryAmount.GetData(),
-                AttackMultiplier = _stats.AttackMultiplier.GetData(),
-                ViewRange = _stats.ViewRange.GetData(),
-                WaitTime = _stats.WaitTime.GetData(),
+                Stats = _stats.Serialize(),
                 ClairvoyantFlags = _visionRange.ClairvoyantFlags,
                 Conditions = _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             };
@@ -106,7 +102,8 @@ namespace Domain.Service.Characters
         public void RemoveStatValue(StatType type, float value) => _stats.RemoveStatValue(type, value);
         public void AddStatMultiplier(StatType type, float value) => _stats.AddStatMultiplier(type, value);
         public void RemoveStatMultiplier(StatType type, float value) => _stats.RemoveStatMultiplier(type, value);
-
+        public void AddElementAttackMultiplier(Element element, float value) => _stats.AddElementAttackMultiplier(element, value);
+        public void RemoveElementAttackMultiplier(Element element, float value) => _stats.RemoveElementAttackMultiplier(element, value);
         public void AddClairvoyantFlags()
         {
             _visionRange.AddClairvoyantFlags();
@@ -132,7 +129,7 @@ namespace Domain.Service.Characters
             return _stats.WaitTime.IsFull();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
         {
             var conditions = new List<ConditionMemento>();
             if (isSlept)
@@ -146,11 +143,7 @@ namespace Domain.Service.Characters
             }
             return new CharacterStatusMemento
             {
-                Hp = new ResourceData(new StatData(maxHp), maxHp),
-                HpNaturalRecoveryAmount = new StatData(hpNaturalRecoveryAmount),
-                AttackMultiplier = new StatData(attackMultiplier),
-                ViewRange = new StatData(viewRange),
-                WaitTime = new ResourceData(new StatData(waitTime), 0),
+                Stats = CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, attackMultiplier, elementAttackMultiplier, elementDamageRateMultiplier, viewRange, waitTime, isSlept),
                 ClairvoyantFlags = 0,
                 Conditions = conditions.ToArray()
             };

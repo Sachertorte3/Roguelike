@@ -57,6 +57,7 @@ MonoBehaviour:
     Items:
       items:
       - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
     WeaponChanceInChest: 0.8
     ChestItems:
       items:

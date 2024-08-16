@@ -17,6 +17,47 @@ namespace Utilities
             }
         }
 
+        public static Enumerator GetEnumerator(this Enum bits)
+        {
+            return new Enumerator(bits);
+        }
+        public struct Enumerator
+        {
+            private int bits;
+            private int count;
+            private int position;
+            public Enumerator(Enum bits)
+            {
+                this.bits = Convert.ToInt32(bits);
+                count = NumOfBits(this.bits);
+                position = -1;
+            }
+            public bool MoveNext()
+            {
+                while (0 < count)
+                {
+                    ++position;
+                    if ((bits & 1) != 0)
+                    {
+                        --count;
+                        bits >>= 1;
+                        return true;
+                    }
+                    bits >>= 1;
+                }
+                return false;
+            }
+            public int Current => 1 << position;
+        }
+        public static int NumOfBits(int bits)
+        {
+            bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
+            bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
+            bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
+            bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
+            return (bits & 0x0000ffff) + (bits >> 16 & 0x0000ffff);
+        }
+
         public static IEnumerable<(T item, int index)> Index<T>(this IEnumerable<T> ie)
         {
             return ie.Select((item, index) => (item, index));

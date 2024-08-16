@@ -20,13 +20,23 @@ namespace Domain.Service
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification), 0,
-                        new List<AdditionalConditionData>(), 0)
+                    new AttackEffect(new List<ElementPower> {
+                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                        },
+                        0,
+                        new List<AdditionalConditionData>(),
+                        0
+                    )
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(Mathf.RoundToInt(material.Power * mold.PowerMagnification), 0,
-                        new List<AdditionalConditionData>(), 0)
+                    new AttackEffect(new List<ElementPower> {
+                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                        },
+                        0,
+                        new List<AdditionalConditionData>(),
+                        0
+                    )
                 ),
                 false,
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
@@ -44,13 +54,19 @@ namespace Domain.Service
                     mold.Position,
                     mold.Area,
                     new AttackEffect(
-                        Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification), 0,
+                        new List<ElementPower> {
+                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                        },
+                        0,
                         prefix.AdditionalConditions, 0)
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
                     new AttackEffect(
-                        Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification), 0,
+                        new List<ElementPower> {
+                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                        },
+                        0,
                         prefix.AdditionalConditions, 0)
                 ),
                 false,

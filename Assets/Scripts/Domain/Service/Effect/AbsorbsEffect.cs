@@ -1,7 +1,8 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -10,12 +11,12 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AbsorbsEffect : IEffect
     {
-        [MinValue(1), SerializeField] private int _power;
+        [SerializeField] private List<ElementPower> _elementPowers;
         [Range(0, 1), SerializeField] private float _rate;
 
-        public AbsorbsEffect(int power, float rate)
+        public AbsorbsEffect(List<ElementPower> elementPowers, float rate)
         {
-            _power = power;
+            _elementPowers = elementPowers;
             _rate = rate;
         }
 
@@ -25,7 +26,7 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            var value = Formula.Calc(actor, _power);
+            var value = Formula.Calc(actor, target, _elementPowers);
             var loseValue = target.LoseHp(value);
             actor.GainHp(Mathf.RoundToInt(loseValue * _rate));
             return UniTask.CompletedTask;
@@ -33,12 +34,16 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp);
+            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
+
         }
 
         public string Info()
         {
-            return $"HP吸収\n威力: {_power}\n吸収割合: {_rate * 100}%";
+            var info = "HP吸収\n威力: ";
+            info += string.Join(" ", _elementPowers.Select(e => e.Info()));
+            info += $"\n吸収割合: {_rate * 100}%";
+            return info;
         }
     }
 }

@@ -55,6 +55,8 @@ MonoBehaviour:
       rid: -2
     RushDistance: 0
     Log: 
+  ElementDamageRateMultiplier:
+    data: []
   references:
     version: 2
     RefIds:
@@ -69,6 +71,7 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _power: 3
+        _element: 0
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

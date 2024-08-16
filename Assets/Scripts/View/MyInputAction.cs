@@ -612,6 +612,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""1d7f1ad1-1fec-4d57-8d1e-2cac9d223026"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""2511b5c2-c3df-4f75-b026-32a4d6b2f9e7"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",

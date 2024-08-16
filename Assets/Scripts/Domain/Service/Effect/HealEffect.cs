@@ -24,7 +24,7 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
         {
-            var value = Formula.Calc(actor, _power);
+            var value = Formula.CalcHeal(_power);
             GameLog.Add($"{target.GetName(map.Player)}は{value}回復");
             target.GainHp(value);
             return UniTask.CompletedTask;
@@ -33,7 +33,7 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return Mathf.Min(1,
-                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.Calc(actor, _power)) /
+                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.CalcHeal(_power)) /
                 target.CurrentMaxHp);
         }
 

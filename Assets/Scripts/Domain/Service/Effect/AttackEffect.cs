@@ -15,14 +15,14 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : IEffect
     {
-        [MinValue(1), SerializeField] private int _power;
+        [RequiredListLength(1), SerializeField] private List<ElementPower> _elementPowers;
         [Range(0, 1), SerializeField] private float _criticalRate;
         [SerializeField] private int _blowAwayDistance;
         [SerializeField] private List<AdditionalConditionData> _additionalConditions = new();
 
-        public AttackEffect(int power, float criticalRate, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
+        public AttackEffect(List<ElementPower> elementPowers, float criticalRate, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
         {
-            _power = power;
+            _elementPowers = elementPowers;
             _criticalRate = criticalRate;
             _additionalConditions = additionalConditions;
             _blowAwayDistance = blowAwayDistance;
@@ -36,13 +36,13 @@ namespace Domain.Service.Effect
         {
             if (Random.value < _criticalRate)
             {
-                var damage = Formula.Calc(actor, _power * 2);
+                var damage = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
                 target.LoseHp(damage);
             }
             else
             {
-                var damage = Formula.Calc(actor, _power);
+                var damage = Formula.Calc(actor, target, _elementPowers);
                 GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
                 target.LoseHp(damage);
             }
@@ -62,14 +62,22 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return
-                Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, _power)) / target.CurrentMaxHp) * (1 + _criticalRate) +
+                Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp) * (1 + _criticalRate) +
                 _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.Evaluate(target)) +
                 _blowAwayDistance * 0.1f;
         }
 
         public string Info()
         {
-            var info = $"攻撃\n威力: {_power}";
+            var info = $"攻撃\n威力: {string.Join(" ", _elementPowers.Select(e => e.Info()))}";
+            if (_criticalRate > 0)
+            {
+                info += $"\nクリティカル: {_criticalRate:P0}";
+            }
+            if (_blowAwayDistance > 0)
+            {
+                info += $"\n吹き飛ばし: {_blowAwayDistance}";
+            }
             if (_additionalConditions.Count > 0)
             {
                 info += "\n追加状態付与:";

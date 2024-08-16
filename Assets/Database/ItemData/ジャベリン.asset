@@ -32,25 +32,33 @@ MonoBehaviour:
       rid: 2541219246146060320
     Effect:
       rid: 2541219246146060319
+  ItemEffect:
+    rid: -2
   UsageLimit: 15
   PassiveConditions: []
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416400
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 2541219246146060318
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 6
+        _elementPowers:
+        - _element: 0
+          _power: 6
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []
     - rid: 2541219246146060319
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 12
+        _elementPowers:
+        - _element: 0
+          _power: 9
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

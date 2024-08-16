@@ -32,6 +32,8 @@ MonoBehaviour:
       rid: -2
     Effect:
       rid: -2
+  ItemEffect:
+    rid: -2
   UsageLimit: 5
   PassiveConditions: []
   references:
@@ -53,7 +55,9 @@ MonoBehaviour:
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 5
+        _elementPowers:
+        - _element: 3
+          _power: 5
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

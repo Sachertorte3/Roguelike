@@ -325,7 +325,8 @@ namespace Domain.Service.Characters
         public float GetStatValue(StatType statType) => _statusManager.GetStatValue(statType);
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
-        public float AttackMultiplier => _statusManager.Stats.CurrentAttackMultiplier;
+        public float GetElementAttackMultiplier(Element element) => _statusManager.Stats.GetElementAttackMultiplier(element);
+        public float GetElementDamageRateMultiplier(Element element) => _statusManager.Stats.GetElementDamageRateMultiplier(element);
 
         public int LoseHp(int value)
         {

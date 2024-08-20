@@ -203,17 +203,24 @@ namespace Domain.Service.Characters
             if (item.CanActivateWhenUsed)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.Name}を使った");
-                var isSuccess = false;
-                isSuccess = await item.Use(this, CurrentPosition, direction, map);
-                if (isSuccess && item.SkillOnUse.Value is SpawnEffectSkill spawnEffect)
-                {
-                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffect.GetArea(this, CurrentPosition, CurrentDirection, map),
-                        spawnEffect.Color)
-                    );
-                    if (_entity.VisibleByPlayer.CurrentValue)
-                        await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
-                }
+                await item.SkillOnUse.Expect("skill on use is null").Match(
+                    async spawnEffect =>
+                    {
+                        var area = spawnEffect.GetArea(this, CurrentPosition, CurrentDirection, map);
+                        var isSuccess = await item.Use(this, CurrentPosition, direction, map);
+
+                        if (isSuccess)
+                        {
+                            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(area, spawnEffect.Color));
+                            if (_entity.VisibleByPlayer.CurrentValue)
+                                await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+                        }
+                    },
+                    async itemTarget =>
+                    {
+                        await item.Use(this, CurrentPosition, direction, map);
+                    }
+                );
                 State = CharacterState.Wait;
             }
             else

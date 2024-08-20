@@ -70,8 +70,9 @@ MonoBehaviour:
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 3
-        _element: 0
+        _elementPowers:
+        - _element: 0
+          _power: 3
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

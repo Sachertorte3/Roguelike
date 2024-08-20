@@ -1,4 +1,5 @@
 #nullable enable
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using System;
@@ -13,6 +14,15 @@ namespace Domain.Service.Effect
             {
                 SpawnEffectSkill spawnEffectSkill => spawnEffectSkillFunc(spawnEffectSkill),
                 ItemTargetSkill itemTargetSkill => itemTargetSkillFunc(itemTargetSkill),
+                _ => throw new ArgumentException("Invalid skill type")
+            };
+        }
+        public static async UniTask<TResult> Match<TResult>(this ISkill skill, Func<SpawnEffectSkill, UniTask<TResult>> spawnEffectSkillFunc, Func<ItemTargetSkill, UniTask<TResult>> itemTargetSkillFunc)
+        {
+            return skill switch
+            {
+                SpawnEffectSkill spawnEffectSkill => await spawnEffectSkillFunc(spawnEffectSkill),
+                ItemTargetSkill itemTargetSkill => await itemTargetSkillFunc(itemTargetSkill),
                 _ => throw new ArgumentException("Invalid skill type")
             };
         }

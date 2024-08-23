@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Service.Logs;
@@ -35,6 +36,17 @@ namespace Domain.Service.Effect
             return Mathf.Min(1,
                 Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.CalcHeal(_power)) /
                 target.CurrentMaxHp);
+        }
+
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>
+            {
+                new UpgradeSkill(
+                    () => _power += 1,
+                    1
+                )
+            };
         }
 
         public string Info()

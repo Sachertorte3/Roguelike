@@ -19,6 +19,7 @@ MonoBehaviour:
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
+  IsSameEffect: 1
   IsSameSkill: 0
   SkillOnUse:
     Area:

@@ -23,6 +23,15 @@ namespace Domain.Model.Effect.Area
                 .Select(i => position + direction.Vector() * i);
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill> {
+                new UpgradeSkill(() => {
+                    Length += 1;
+                }, 1)
+            };
+        }
+
         public string Info()
         {
             return $"直線 長さ{Length}マス{(ContainsSelf ? "(原点含む)" : "")}";

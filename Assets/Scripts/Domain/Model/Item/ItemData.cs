@@ -20,9 +20,10 @@ namespace Domain.Model.Item
         [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnUse = true;
         [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnThrow = false;
 
+        [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow && !IsSameSkill")]
+        public bool IsSameEffect;
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow")]
-        [SerializeField]
-        public bool IsSameSkill = false;
+        public bool IsSameSkill;
 
         [ShowIf("SpawnEffectsOnUse")] public SkillDataOnUse? SkillOnUse;
         [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
@@ -43,11 +44,13 @@ namespace Domain.Model.Item
             PassiveConditions = conditions;
         }
         public ItemData(string itemName, Sprite icon, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool useOnDeath, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill, bool useOnDeath, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.SpawnEffect;
             SpawnEffectsOnUse = skillOnUse != null;
             SpawnEffectsOnThrow = skillOnThrow != null;
+            IsSameEffect = isSameEffect;
+            IsSameSkill = isSameSkill;
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
         }
@@ -85,7 +88,13 @@ namespace Domain.Model.Item
 
             if (!(SpawnEffectsOnUse && SpawnEffectsOnThrow))
             {
+                IsSameEffect = false;
                 IsSameSkill = false;
+            }
+
+            if (IsSameEffect && SkillOnUse != null && SkillOnThrow != null)
+            {
+                SkillOnThrow.Effect = SkillOnUse.Effect;
             }
 
             if (IsSameSkill && SkillOnUse != null)

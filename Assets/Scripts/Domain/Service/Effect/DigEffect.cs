@@ -25,6 +25,11 @@ namespace Domain.Service.Effect
             return 1;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
             return $"壁堀り";

@@ -5,6 +5,7 @@ using Domain.Model.Effect;
 using Domain.Model.Action;
 using Domain.Model.Item;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Domain.Service.Effect
 {
@@ -47,6 +48,8 @@ namespace Domain.Service.Effect
         {
             return 0;
         }
+
+        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade) => new List<UpgradeSkill>();
 
         public string Info()
         {

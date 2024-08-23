@@ -26,6 +26,11 @@ namespace Domain.Model.Effect.Position
             return new[] { pos };
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
             return "着弾地点";

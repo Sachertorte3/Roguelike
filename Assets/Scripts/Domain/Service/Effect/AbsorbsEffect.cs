@@ -38,6 +38,26 @@ namespace Domain.Service.Effect
 
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            var upgrades = new List<UpgradeSkill>();
+            foreach (var elementPower in _elementPowers)
+            {
+                upgrades.Add(new UpgradeSkill(
+                    () => elementPower.Upgrade(2),
+                    2
+                ));
+            }
+            if (_rate < 0.9f)
+            {
+                upgrades.Add(new UpgradeSkill(
+                    () => _rate += 0.1f,
+                    1
+                ));
+            }
+            return upgrades;
+        }
+
         public string Info()
         {
             var info = "HP吸収\n威力: ";

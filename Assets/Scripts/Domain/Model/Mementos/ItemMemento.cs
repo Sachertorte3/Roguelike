@@ -13,10 +13,12 @@ namespace Domain.Model.Character
         public string Name;
         public string IconName;
         public ItemState State;
+        public int UpgradeCount;
         public int Price;
         public Option<ISkillMemento> SkillOnUse;
         public Option<ISkillMemento> SkillOnThrow;
-        public bool IsSameSkill;
+        public bool HasSameEffect;
+        public bool HasSameSkill;
         public bool UseOnDeath;
         public int MaxUsages;
         public int RemainingUsages;

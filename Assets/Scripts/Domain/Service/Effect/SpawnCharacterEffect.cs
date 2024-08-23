@@ -51,6 +51,11 @@ namespace Domain.Service.Effect
             return 0;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
             return $"召喚: {_character.Value.Name}\n{_count}体";

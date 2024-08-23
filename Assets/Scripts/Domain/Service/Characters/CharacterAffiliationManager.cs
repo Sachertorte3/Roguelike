@@ -147,10 +147,11 @@ namespace Domain.Service.Characters
 
         public AffiliationMemento Serialize()
         {
-            return new AffiliationMemento(
-                Group,
-                _affections.Select(x => (x.Key.Value, x.Value)).ToDictionary(x => x.Item1, x => x.Item2)
-            );
+            return new AffiliationMemento
+            {
+                Group = Group,
+                Affiliations = new(_affections.Select(x => (x.Key.Value, x.Value)).ToDictionary(x => x.Item1, x => x.Item2))
+            };
         }
 
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
@@ -162,10 +163,11 @@ namespace Domain.Service.Characters
                 affiliationDict = new(affiliation.Affiliations);
                 affiliationDict[id.Value] = 5f;
             }
-            return new AffiliationMemento(
-                group,
-                affiliationDict
-            );
+            return new AffiliationMemento
+            {
+                Group = group,
+                Affiliations = new(affiliationDict)
+            };
         }
 
         public void ModifyAffection(Id<IEntity> targetId, float change)

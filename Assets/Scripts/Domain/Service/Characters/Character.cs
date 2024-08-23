@@ -29,13 +29,13 @@ namespace Domain.Service.Characters
     {
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
-        private readonly ReactiveProperty<Direction8> _direction = new(Direction8.Down);
+        private readonly ReactiveProperty<Direction8> _direction;
         private readonly Entity _entity;
         private readonly Inventory _inventory;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly Subject<Unit> _onPickUpItem = new();
         private readonly CharacterSkill[] _skills;
-        private readonly ISkill? _lastSkill;
+        private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         private bool _canIgnoreWall;
         private int _money;
@@ -49,14 +49,15 @@ namespace Domain.Service.Characters
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(data.Entity);
-            _statusManager = new CharacterStatusManager(data.Status, Position, map);
+            _entity = new(data.Entity);
+            _direction = new(data.Direction);
+            _statusManager = new(data.Status, Position, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
-            _lastSkill = data.LastSkill != null ? new Skill(data.LastSkill) : null;
-            _inventory = new Inventory(data.Inventory, _statusManager);
+            _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
+            _inventory = new(data.Inventory, _statusManager);
             Behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
-            _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
+            _affiliationManager = new(Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
@@ -68,7 +69,7 @@ namespace Domain.Service.Characters
             _disposable = OnDead.Subscribe(_ => Entity.Destroy());
             _map = map;
 
-            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ => 
+            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ =>
             {
                 if (_statusManager.IsDead)
                 {
@@ -79,11 +80,11 @@ namespace Domain.Service.Characters
                             break;
                     }
                 }
-                
+
                 if (_statusManager.IsDead)
                 {
-                if (_lastSkill != null)
-                    await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+                    if (_lastSkill != null)
+                        await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
                     _onDead.OnNext(Unit.Default);
                 }
             });
@@ -104,6 +105,10 @@ namespace Domain.Service.Characters
 
         public string GetName(IHasAffiliation player)
         {
+            if (!Visibility.CurrentValue)
+            {
+                return "何者か";
+            }
             if (Affiliation.IsAlly(player.Affiliation))
                 return _name.SetColored(Colors.Green);
             else if (Affiliation.IsEnemy(player.Affiliation))
@@ -114,7 +119,9 @@ namespace Domain.Service.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
+        public Observable<OnItemSelectMessage> OnItemSelect => Behavior.OnItemSelect;
         public ICharacterType CharacterType { get; init; }
+        public IItemSelecter ItemSelecter => Behavior;
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -193,17 +200,27 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info()}\ndirection:{direction}");
             Turn(direction);
 
-            if (item.SkillOnUse != null)
+            if (item.CanActivateWhenUsed)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.Name}を使った");
-                _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                    item.SkillOnUse.GetArea(this, CurrentPosition, CurrentDirection, map), item.SkillOnUse.Color));
-                if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.WhenAll(item.Use(this, CurrentPosition, direction, map, false),
-                        UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-                else
-                    await item.Use(this, CurrentPosition, direction, map, false);
+                await item.SkillOnUse.Expect("skill on use is null").Match(
+                    async spawnEffect =>
+                    {
+                        var area = spawnEffect.GetArea(this, CurrentPosition, CurrentDirection, map);
+                        var isSuccess = await item.Use(this, CurrentPosition, direction, map);
 
+                        if (isSuccess)
+                        {
+                            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(area, spawnEffect.Color));
+                            if (_entity.VisibleByPlayer.CurrentValue)
+                                await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+                        }
+                    },
+                    async itemTarget =>
+                    {
+                        await item.Use(this, CurrentPosition, direction, map);
+                    }
+                );
                 State = CharacterState.Wait;
             }
             else
@@ -218,7 +235,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             var itemEntity = world.SpawnItem(item, CurrentPosition);
-            GameLog.Add($"<color=blue>{_name}</color>は{item.Name}を投げた");
+            GameLog.Add($"{GetName(world.Player)}は{item.Name}を投げた");
             if (_entity.VisibleByPlayer.CurrentValue)
                 await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
                     UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
@@ -273,24 +290,26 @@ namespace Domain.Service.Characters
 
         public CharacterMemento Serialize()
         {
-            return new CharacterMemento(
-                _name,
-                CharacterType,
-                Behavior.BehaviorData,
-                _statusManager.Serialize(),
-                _entity.Serialize(),
-                _skills.Select(x => x.Serialize()).ToArray(),
-                _lastSkill?.Serialize(),
-                _inventory.Serialize(),
-                _affiliationManager.Serialize(),
-                Aggression,
-                _money,
-                IsLeader,
-                IsShiny,
-                IsBoss,
-                CanPickUp,
-                CanUseItem
-            );
+            return new CharacterMemento
+            {
+                Name = _name,
+                CharacterType = CharacterType,
+                Behavior = Behavior.BehaviorData,
+                Status = _statusManager.Serialize(),
+                Entity = _entity.Serialize(),
+                Direction = _direction.CurrentValue,
+                Skills = _skills.Select(x => x.Serialize()).ToArray(),
+                LastSkill = new(_lastSkill?.Serialize()),
+                Inventory = _inventory.Serialize(),
+                Affiliation = _affiliationManager.Serialize(),
+                Aggression = Aggression,
+                Money = _money,
+                IsLeader = IsLeader,
+                IsShiny = IsShiny,
+                IsBoss = IsBoss,
+                CanPickUp = CanPickUp,
+                CanUseItem = CanUseItem
+            };
         }
 
         public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
@@ -313,7 +332,8 @@ namespace Domain.Service.Characters
         public float GetStatValue(StatType statType) => _statusManager.GetStatValue(statType);
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
-        public float AttackMultiplier => _statusManager.Stats.CurrentAttackMultiplier;
+        public float GetElementAttackMultiplier(Element element) => _statusManager.Stats.GetElementAttackMultiplier(element);
+        public float GetElementDamageRateMultiplier(Element element) => _statusManager.Stats.GetElementDamageRateMultiplier(element);
 
         public int LoseHp(int value)
         {
@@ -441,52 +461,6 @@ namespace Domain.Service.Characters
                 default:
                     throw new InvalidOperationException();
             }
-        }
-    }
-    public class CharacterSkill : ICharacterSkill
-    {
-        public ISkill _skill { get; }
-        private int _coolTime { get; }
-        public Color Color => _skill.Color;
-        public int RushDistance => _skill.RushDistance;
-        private int _remainingCoolTime;
-        public CharacterSkill(CharacterSkillMemento data)
-        {
-            _skill = new Skill(data.Skill);
-            _coolTime = data.CoolTime;
-            _remainingCoolTime = data.RemainingTurn;
-        }
-        public CharacterSkillMemento Serialize()
-        {
-            return new CharacterSkillMemento(_skill.Serialize(), _coolTime, _remainingCoolTime);
-        }
-        public static CharacterSkillMemento Build(SkillMemento skill, int coolTime)
-        {
-            return new CharacterSkillMemento(skill, coolTime, 0);
-        }
-        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
-            _skill.GetArea(actor, position, direction, map);
-        SkillMemento ISerializable<SkillMemento>.Serialize() => _skill.Serialize();
-        public string Info() => _skill.Info();
-        public async UniTask Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
-        {
-            _remainingCoolTime = _coolTime+1;
-            await _skill.Use(actor, position, direction, map);
-        }
-        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
-        {
-            return _skill.Evaluate(actor, position, direction, world);
-        }
-        public void UpdateTurn()
-        {
-            if (_remainingCoolTime > 0)
-            {
-                _remainingCoolTime--;
-            }
-        }
-        public bool IsUsable()
-        {
-            return _remainingCoolTime <= 0;
         }
     }
 }

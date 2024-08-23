@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using Domain.Model.Effect;
 using System;
+using System.Collections.Generic;
+
 
 
 #if UNITY_EDITOR
@@ -29,6 +31,7 @@ namespace Domain.Model.Character
         public EnemySkillData[] Skills;
         public bool HasLastSkill = false;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
+        public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
 #if UNITY_EDITOR
         private void OnValidate()
         {

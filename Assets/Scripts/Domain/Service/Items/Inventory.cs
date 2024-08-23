@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
@@ -16,7 +17,7 @@ namespace Domain.Service.Items
     {
         private const int MaxItems = 10;
         private readonly IDisposable _disposable;
-        private readonly CompositeDisposable[] _disposables = EnumerableExtension.CreateArrayWithNewInstances<CompositeDisposable>(MaxItems).ToArray();
+        private readonly CompositeDisposable[] _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(MaxItems).ToArray();
         private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
@@ -44,9 +45,9 @@ namespace Domain.Service.Items
                 }
             );
 
-            for (var i=0; i<MaxItems; i++)
+            for (var i = 0; i < MaxItems; i++)
             {
-                _items[i] = data.Items[i] != null? new Item(data.Items[i]) : null;
+                _items[i] = data.Items[i].Select(item => new Item(item)).Value;
             }
         }
 
@@ -85,9 +86,17 @@ namespace Domain.Service.Items
             return _items[index];
         }
 
+        public int GetItemIndex(IItem item)
+        {
+            return _items.IndexOf(item);
+        }
+
         public InventoryMemento Serialize()
         {
-            return new InventoryMemento(_items.Select(x => x?.Serialize()).ToArray());
+            return new InventoryMemento
+            {
+                Items = _items.Select(x => new Option<ItemMemento>(x?.Serialize())).ToArray()
+            };
         }
 
         public bool TryAdd(IItem item)

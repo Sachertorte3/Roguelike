@@ -7,5 +7,6 @@ namespace Domain.Model.Effect.Area
     public interface IArea : IHasInfo
     {
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction);
+        public IEnumerable<UpgradeSkill> GenerateUpgrades();
     }
 }

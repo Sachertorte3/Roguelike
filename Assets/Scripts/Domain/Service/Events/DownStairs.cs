@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Map;
 using Domain.Service.Entities;
@@ -42,9 +43,13 @@ namespace Domain.Service.Events
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => !IsLocked.CurrentValue;
 
-        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
+        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            gameManager.LoadMap(_destinationMapId);
+            var choice = await gameManager.GetChoice("階段を見つけた", "下る", "やめる");
+            if (choice == 0)
+            {
+                gameManager.LoadMap(_destinationMapId);
+            }
         }
 
         public void SetVisibility(bool visibility)
@@ -59,18 +64,20 @@ namespace Domain.Service.Events
 
         public DownStairsMemento Serialize()
         {
-            return new DownStairsMemento(
-                _destinationMapId,
-                _entity.Serialize()
-            );
+            return new DownStairsMemento
+            {
+                DestinationMapId = _destinationMapId,
+                Entity = _entity.Serialize()
+            };
         }
 
         public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
         {
-            return new DownStairsMemento(
-                destinationMapId,
-                Entity.Build(position, EntityLayer.Bottom)
-            );
+            return new DownStairsMemento
+            {
+                DestinationMapId = destinationMapId,
+                Entity = Entity.Build(position, EntityLayer.Bottom)
+            };
         }
 
         ~DownStairs()

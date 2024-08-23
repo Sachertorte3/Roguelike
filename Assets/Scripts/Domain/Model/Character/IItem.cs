@@ -17,20 +17,25 @@ namespace Domain.Model.Item
         public string Name { get; }
         public Sprite Icon { get; }
         public ItemState State { get; }
-        public bool SpawnEffectWhenUsed => SkillOnUse != null;
-        public bool SpawnEffectWhenThrown => SkillOnThrow != null;
-        public bool Usable => SpawnEffectWhenUsed || SpawnEffectWhenUsed;
         public bool UseOnDeath { get; }
         public int Price { get; }
-        public ISkill? SkillOnThrow { get; }
-        public ISkill? SkillOnUse { get; }
+        public bool CanActivateWhenUsed { get; }
+        public bool CanActivateWhenThrown { get; }
+        public Option<ISkill> SkillOnUse { get; }
+        public Option<ISkill> SkillOnThrow { get; }
+        public bool Usable => CanActivateWhenUsed || CanActivateWhenThrown;
+        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public bool IsDisabled { get; }
+        public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public void SetState(ItemState state);
-        public UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world, bool isThrown);
+        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public UniTask<bool> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public void Repair();
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public bool CanUpgrade();
+        public void Upgrade();
     }
 }

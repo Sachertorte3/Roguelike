@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Service.Events;
@@ -13,9 +14,9 @@ namespace Domain.Service.Rooms
         public readonly ICharacter Character;
         private readonly Func<bool> _canExecuteEvent;
         public bool CanExecuteEvent => _canExecuteEvent();
-        private readonly Action<IMapManager> _doEvent;
+        private readonly Func<IMapManager, UniTask> _doEvent;
 
-        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Action<IMapManager> doEvent)
+        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IMapManager, UniTask> doEvent)
         {
             Character = character;
             _canExecuteEvent = canExecuteEvent;
@@ -39,9 +40,9 @@ namespace Domain.Service.Rooms
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
 
-        public void DoEvent(IGameManager gameManager, IMapManager mapManager)
+        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            _doEvent(mapManager);
+            await _doEvent(mapManager);
         }
 
         public void ReducesFavorabilityTowardsThief(ICharacter thief)

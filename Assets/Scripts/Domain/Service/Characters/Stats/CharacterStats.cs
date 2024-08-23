@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using R3;
@@ -6,30 +9,76 @@ using Stats;
 
 namespace Domain.Service.Characters.Stats
 {
-    internal class CharacterStats : IDisposable, IStats
+    internal class CharacterStats : IDisposable, ISerializable<CharacterStatsMemento>, IStats
     {
-        public CharacterStats(ResourceData hp, StatData hpNaturalRecoveryAmount, StatData attackMultiplier, StatData viewRange, ResourceData waitTime)
+        public CharacterStats(CharacterStatsMemento memento)
         {
-            Hp = new IntResource(hp);
-            HpNaturalRecoveryAmount = new IntStat(hpNaturalRecoveryAmount);
-            AttackMultiplier = new Stat(attackMultiplier);
-            ViewRange = new Stat(viewRange);
-            WaitTime = new Resource(waitTime);
+            Hp = new IntResource(memento.Hp);
+            HpNaturalRecoveryAmount = new IntStat(memento.HpNaturalRecoveryAmount);
+            ElementAttackMultiplier = memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            ElementDamageRateMultiplier = memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            ViewRange = new Stat(memento.ViewRange);
+            WaitTime = new Resource(memento.WaitTime);
+            foreach (Element element in Enum.GetValues(typeof(Element)))
+            {
+                if (!ElementAttackMultiplier.ContainsKey(element))
+                {
+                    ElementAttackMultiplier[element] = new Stat(1);
+                }
+                if (!ElementDamageRateMultiplier.ContainsKey(element))
+                {
+                    ElementDamageRateMultiplier[element] = new Stat(1);
+                }
+            }
+        }
+
+        public CharacterStatsMemento Serialize()
+        {
+            return new CharacterStatsMemento
+            {
+                Hp = Hp.GetData(),
+                HpNaturalRecoveryAmount = HpNaturalRecoveryAmount.GetData(),
+                ElementAttackMultiplier = new(ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                ElementDamageRateMultiplier = new(ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                ViewRange = ViewRange.GetData(),
+                WaitTime = WaitTime.GetData(),
+            };
+        }
+
+        public static CharacterStatsMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
+        {
+            return new CharacterStatsMemento
+            {
+                Hp = new ResourceData(new StatData(maxHp), maxHp),
+                HpNaturalRecoveryAmount = new StatData(hpNaturalRecoveryAmount),
+                ElementAttackMultiplier = new SerializableDictionary<Element, StatData>(elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                ElementDamageRateMultiplier = new SerializableDictionary<Element, StatData>(elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                ViewRange = new StatData(viewRange),
+                WaitTime = new ResourceData(new StatData(waitTime), waitTime),
+            };
         }
 
         public IntResource Hp { get; init; }
         public IntStat HpNaturalRecoveryAmount { get; init; }
-        public Stat AttackMultiplier { get; init; }
         public Stat ViewRange { get; init; }
         public Resource WaitTime { get; init; }
+        public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
+        public Dictionary<Element, Stat> ElementDamageRateMultiplier { get; init; }
 
         public void Dispose()
         {
             Hp.Dispose();
             HpNaturalRecoveryAmount.Dispose();
-            AttackMultiplier.Dispose();
             ViewRange.Dispose();
             WaitTime.Dispose();
+            foreach (var element in ElementAttackMultiplier.Values)
+            {
+                element.Dispose();
+            }
+            foreach (var element in ElementDamageRateMultiplier.Values)
+            {
+                element.Dispose();
+            }
         }
 
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
@@ -38,23 +87,31 @@ namespace Domain.Service.Characters.Stats
         public int CurrentMaxHp => Hp.MaxValue.CurrentValue;
         public ReadOnlyReactiveProperty<int> HpNaturalRecoveryAmountValue => HpNaturalRecoveryAmount.Value;
         public int CurrentHpNaturalRecoveryAmount => HpNaturalRecoveryAmount.CurrentValue;
-        public ReadOnlyReactiveProperty<float> AttackMultiplierValue => AttackMultiplier.Value;
-        public float CurrentAttackMultiplier => AttackMultiplier.CurrentValue;
         public ReadOnlyReactiveProperty<float> ViewRangeValue => ViewRange.Value;
         public float CurrentViewRange => ViewRange.CurrentValue;
         public float CurrentMaxWaitTime => WaitTime.MaxValue.CurrentValue;
         public float CurrentWaitTime => WaitTime.Value.CurrentValue;
+
         public float GetStatValue(StatType type)
         {
             return type switch
             {
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
-                StatType.AttackMultiplier => CurrentAttackMultiplier,
                 StatType.ViewRange => CurrentViewRange,
                 StatType.WaitTime => CurrentWaitTime,
                 _ => throw new ArgumentException($"Invalid stat type: {type}"),
             };
+        }
+
+        public float GetElementAttackMultiplier(Element element)
+        {
+            return ElementAttackMultiplier[element].CurrentValue;
+        }
+
+        public float GetElementDamageRateMultiplier(Element element)
+        {
+            return ElementDamageRateMultiplier[element].CurrentValue;
         }
 
         public void AddStatValue(StatType type, float value)
@@ -67,9 +124,6 @@ namespace Domain.Service.Characters.Stats
                 case StatType.HpNaturalRecovery:
                     HpNaturalRecoveryAmount.AddValue(value);
                     break;
-                case StatType.AttackMultiplier:
-                    AttackMultiplier.AddValue(value);
-                    break;
                 case StatType.ViewRange:
                     ViewRange.AddValue(value);
                     break;
@@ -79,9 +133,29 @@ namespace Domain.Service.Characters.Stats
             }
         }
 
+        public void AddElementAttackMultiplier(Element element, float value)
+        {
+            ElementAttackMultiplier[element].AddValue(value);
+        }
+
+        public void AddElementDamageRateMultiplier(Element element, float value)
+        {
+            ElementDamageRateMultiplier[element].AddValue(value);
+        }
+
         public void RemoveStatValue(StatType type, float value)
         {
             AddStatValue(type, -value);
+        }
+
+        public void RemoveElementAttackMultiplier(Element element, float value)
+        {
+            ElementAttackMultiplier[element].AddValue(-value);
+        }
+
+        public void RemoveElementDamageRateMultiplier(Element element, float value)
+        {
+            ElementDamageRateMultiplier[element].AddValue(-value);
         }
 
         public void AddStatMultiplier(StatType type, float value)
@@ -94,9 +168,6 @@ namespace Domain.Service.Characters.Stats
                 case StatType.HpNaturalRecovery:
                     HpNaturalRecoveryAmount.AddMultiplier(value);
                     break;
-                case StatType.AttackMultiplier:
-                    AttackMultiplier.AddMultiplier(value);
-                    break;
                 case StatType.ViewRange:
                     ViewRange.AddMultiplier(value);
                     break;
@@ -106,9 +177,29 @@ namespace Domain.Service.Characters.Stats
             }
         }
 
+        public void AddElementAttackMultiplierMultiplier(Element element, float value)
+        {
+            ElementAttackMultiplier[element].AddMultiplier(value);
+        }
+
+        public void AddElementDamageRateMultiplierMultiplier(Element element, float value)
+        {
+            ElementDamageRateMultiplier[element].AddMultiplier(value);
+        }
+
         public void RemoveStatMultiplier(StatType type, float value)
         {
             AddStatMultiplier(type, -value);
+        }
+
+        public void RemoveElementAttackMultiplierMultiplier(Element element, float value)
+        {
+            AddElementAttackMultiplierMultiplier(element, -value);
+        }
+
+        public void RemoveElementDamageRateMultiplierMultiplier(Element element, float value)
+        {
+            AddElementDamageRateMultiplierMultiplier(element, -value);
         }
     }
 }

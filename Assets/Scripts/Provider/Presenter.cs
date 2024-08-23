@@ -13,7 +13,7 @@ namespace Provider
         public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
         {
             LoggerInit();
-            gameManager.LoadMap(1);
+            gameManager.Load();
         }
 
         private void LoggerInit()

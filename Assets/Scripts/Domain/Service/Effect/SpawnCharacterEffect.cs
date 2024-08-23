@@ -7,20 +7,19 @@ using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Utilities.Algorithms;
 
 namespace Domain.Service.Effect
 {
     [Serializable]
     public class SpawnCharacterEffect : IEffect
     {
-        [Required, SerializeField] private EnemyData _character;
+        [Required, SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
         [MinValue(1), SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
         public SpawnCharacterEffect(EnemyData character, int count, bool inheritsShiny)
         {
-            _character = character;
+            _character = new(character);
             _count = count;
             _inheritsShiny = inheritsShiny;
         }
@@ -36,7 +35,7 @@ namespace Domain.Service.Effect
                 for (var i = 0; i < _count; i++)
                 {
                     map.SpawnEnemy(
-                        _character,
+                        _character.Value,
                         position,
                         actor.Affiliation,
                         false,
@@ -52,9 +51,14 @@ namespace Domain.Service.Effect
             return 0;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
-            return $"召喚: {_character.Name}\n{_count}体";
+            return $"召喚: {_character.Value.Name}\n{_count}体";
         }
     }
 }

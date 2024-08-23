@@ -41,12 +41,22 @@ namespace Domain.Service.Entities
 
         public EntityMemento Serialize()
         {
-            return new EntityMemento(Id.Value, _position.CurrentValue, _layer);
+            return new EntityMemento
+            {
+                Id = Id.Value,
+                Position = _position.CurrentValue,
+                Layer = _layer
+            };
         }
 
         public static EntityMemento Build(Vector2Int position, EntityLayer layer)
         {
-            return new EntityMemento(UniqueIdGenerator.Generate<IEntity>().Value, position, layer);
+            return new EntityMemento
+            {
+                Id = UniqueIdGenerator.Generate<IEntity>().Value,
+                Position = position,
+                Layer = layer
+            };
         }
 
         public void SetVisibility(bool visible)

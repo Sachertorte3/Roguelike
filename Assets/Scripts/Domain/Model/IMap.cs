@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -11,6 +12,7 @@ namespace Domain.Model
 {
     public interface IMap : IPassableChecker, IEffectMap
     {
+        public bool IsEventExecuting { get; }
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
@@ -24,7 +26,7 @@ namespace Domain.Model
         public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
-        public void Touch(Vector2Int position);
+        public UniTask Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null);
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);

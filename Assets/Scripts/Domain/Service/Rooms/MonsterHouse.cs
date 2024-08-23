@@ -14,12 +14,22 @@ namespace Model.Game
 
         public static RoomMemento Build(RectInt rect)
         {
-            return new RoomMemento(rect, false, false);
+            return new RoomMemento
+            {
+                Room = rect,
+                hasEntered = false,
+                hasEverEntered = false
+            };
         }
 
         public override RoomMemento Serialize()
         {
-            return new RoomMemento(Rect, hasEntered, hasEverEntered);
+            return new RoomMemento
+            {
+                Room = Rect,
+                hasEntered = hasEntered,
+                hasEverEntered = hasEverEntered
+            };
         }
 
         protected override void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)

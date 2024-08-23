@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using UnityEngine;
 using Utilities;
@@ -9,12 +10,13 @@ namespace Domain.Model.Effect
     {
         public string GetName(IHasAffiliation player);
         public float GetStatValue(StatType type);
+        public float GetElementAttackMultiplier(Element element);
+        public float GetElementDamageRateMultiplier(Element element);
         public bool IsClairvoyant { get; }
         public bool IsConfused { get; }
         public bool CanAct { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
-
         /// <summary>
         /// Takes damage
         /// </summary>

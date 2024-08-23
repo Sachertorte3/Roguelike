@@ -7,7 +7,7 @@ namespace Domain.Model.Effect.Position
 {
     public class ProjectileImpact : IEffectPosition
     {
-        [Required] public Sprite Icon;
+        [Required] public IconSerializable Icon;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map)
@@ -24,6 +24,11 @@ namespace Domain.Model.Effect.Position
             }
 
             return new[] { pos };
+        }
+
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
         }
 
         public string Info()

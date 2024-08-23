@@ -1,6 +1,10 @@
-﻿namespace Domain.Model.Character
+﻿using System;
+
+namespace Domain.Model.Character
 {
-    public record InventoryMemento(
-        ItemMemento?[] Items
-    );
+    [Serializable]
+    public class InventoryMemento
+    {
+        public Option<ItemMemento>[] Items;
+    }
 }

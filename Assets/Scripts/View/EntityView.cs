@@ -8,13 +8,10 @@ namespace View
     [RequireComponent(typeof(SpriteView))]
     public class EntityView : MonoBehaviour
     {
-        private const int frame = 16;
         private int MoveMilliseconds = 1000;
         private int DashMilliseconds = 1000;
-        private readonly Subject<Unit> _onMoveFinished = new();
         private Func<bool> _isDash;
         private SpriteView _view;
-        public Observable<Unit> OnMoveFinished => _onMoveFinished;
         private bool _isVisible => _view.GetVisibility();
         private SerialDisposable _disposable = new();
 
@@ -42,20 +39,21 @@ namespace View
 
         public void Move(Vector2Int destination, Direction8 direction)
         {
+            _disposable.Disposable = null;
             if (_isVisible)
             {
                 var position = (Vector3Int)destination - (Vector3Int)direction.Vector();
-                _disposable.Disposable = Observable.Interval(TimeSpan.FromSeconds((_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f *
-                        0.75f / frame))
-                    .Take(frame)
-                    .Index()
-                    .Subscribe(
-                        l =>
-                        {
-                            transform.position =
-                                Vector3.Lerp(position, (Vector3Int)destination, (l + 1) / (float)frame);
-                        },
-                        _ => _onMoveFinished.OnNext(Unit.Default));
+                var elapsedTime = 0f;
+                var totalDuration = (_isDash() ? DashMilliseconds : MoveMilliseconds) / 1000f;
+
+                _disposable.Disposable = Observable.EveryUpdate()
+                    .TakeWhile(_ => elapsedTime < totalDuration)
+                    .Subscribe(_ =>
+                    {
+                        elapsedTime += Time.deltaTime;
+                        var t = Mathf.Clamp01(elapsedTime / totalDuration);
+                        transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
+                    }).AddTo(this);
             }
             else
             {

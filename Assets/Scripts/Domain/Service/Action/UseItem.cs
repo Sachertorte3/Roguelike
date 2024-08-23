@@ -10,7 +10,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap world)
         {
-            return Item.SpawnEffectWhenUsed;
+            return Item.CanActivateWhenUsed;
         }
 
         public async UniTask Do(IActor actor, IMap world, IInput input)
@@ -20,7 +20,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap world)
         {
-            return Item.Evaluate(actor, actor.CurrentPosition, Direction, world);
+            return Item.EvaluateWhenUsed(actor, actor.CurrentPosition, Direction, world);
         }
 
         public string Info()

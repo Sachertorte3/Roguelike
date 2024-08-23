@@ -1,9 +1,12 @@
-﻿using Domain.Model.Character;
+﻿using System;
+using Domain.Model.Character;
 
 namespace Domain.Model.Map
 {
-    public record UpStairsMemento(
-        int DestinationMapId,
-        EntityMemento Entity
-    );
+    [Serializable]
+    public class UpStairsMemento
+    {
+        public int DestinationMapId;
+        public EntityMemento Entity;
+    }
 }

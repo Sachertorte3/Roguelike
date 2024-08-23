@@ -49,8 +49,8 @@ namespace Provider
             entityView.Construct(_inputReceiver);
             entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
             entity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
+            Settings.MoveMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
+            Settings.DashMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.transform.position = (Vector3Int)entity.CurrentPosition;

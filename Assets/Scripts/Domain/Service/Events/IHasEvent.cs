@@ -1,8 +1,10 @@
-﻿namespace Domain.Service.Events
+﻿using Cysharp.Threading.Tasks;
+
+namespace Domain.Service.Events
 {
     public interface IHasEvent
     {
         public bool CanExecuteEvent { get; }
-        public void DoEvent(IGameManager gameManager, IMapManager mapManager);
+        public UniTask DoEvent(IGameManager gameManager, IMapManager mapManager);
     }
 }

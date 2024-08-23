@@ -1,9 +1,12 @@
-﻿using Domain.Model.Character;
+﻿using System;
+using Domain.Model.Character;
 
 namespace Domain.Model.Map
 {
-    public record ItemEntityMemento(
-        ItemMemento Item,
-        EntityMemento Entity
-    );
+    [Serializable]
+    public class ItemEntityMemento
+    {
+        public ItemMemento Item;
+        public EntityMemento Entity;
+    }
 }

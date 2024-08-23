@@ -6,6 +6,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Stats;
 using Unity.Logging;
+using UnityEngine;
 
 namespace Model.Game
 {
@@ -70,6 +71,8 @@ namespace Model.Game
                         }
                     }
 
+                    await UniTask.WaitWhile(() => map.IsEventExecuting);
+
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         _isRunning = false;
@@ -79,8 +82,11 @@ namespace Model.Game
                     }
                 }
 
+                Globals.GameManager.Save();
+
                 await characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
+
                 _turn++;
                 _turnInLevel++;
             }

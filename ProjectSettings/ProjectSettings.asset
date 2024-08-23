@@ -668,7 +668,13 @@ PlayerSettings:
   windowsGamepadBackendHint: 0
   cloudProjectId: d1796657-f237-476f-9a27-cf19a74b6e49
   framebufferDepthMemorylessMode: 0
-  qualitySettingsNames: []
+  qualitySettingsNames:
+  - Very Low
+  - Low
+  - Medium
+  - High
+  - Very High
+  - Ultra
   projectName: LogRogue
   organizationId: ice245
   cloudEnabled: 0

@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u5E97\u54E1"
+  m_EditorClassIdentifier: 
+  Name: "\u5E97\u54E1"
+  Group: 2
+  CharacterType:
+    rid: 4425517307579858946
+  IsBoss: 0
+  Hp: 256
+  Aggression: 1
+  Behavior:
+    wanderAround: 0
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+  MoveSpeed: 3
+  CanPickUp: 0
+  CanUseItem: 0
+  Skills:
+  - Skill:
+      Area:
+        rid: 2541219281251860524
+      Effect:
+        rid: 2541219281251860525
+      Position:
+        rid: 2541219281251860526
+      RushDistance: 0
+      Log: "\u306F\u6025\u6240\u7A81\u304D\u3092\u653E\u3063\u305F\u3002"
+    CoolTime: 1
+  - Skill:
+      Area:
+        rid: 2541219281251860528
+      Effect:
+        rid: 2541219281251860529
+      Position:
+        rid: 2541219281251860530
+      RushDistance: 0
+      Log: "\u306F\u706B\u3092\u5439\u3044\u305F\u3002"
+    CoolTime: 1
+  - Skill:
+      Area:
+        rid: 2541219281251860531
+      Effect:
+        rid: 2541219281251860532
+      Position:
+        rid: 2541219281251860533
+      RushDistance: 0
+      Log: "\u306F\u8DB3\u6255\u3044\u3092\u653E\u3063\u305F\u3002"
+    CoolTime: 2
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    RushDistance: 0
+    Log: 
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2541219281251860524
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219281251860525
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 20
+        _criticalRate: 1
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 2541219281251860526
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219281251860528
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Radius: 4
+    - rid: 2541219281251860529
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 18
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 2541219281251860530
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219281251860531
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Radius: 1
+    - rid: 2541219281251860532
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 25
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions:
+        - Condition: {fileID: 11400000, guid: bb248398d9f4a0c46a7b88f054edd425, type: 2}
+          Probability: 1
+    - rid: 2541219281251860533
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 4425517307579858946
+      type: {class: Witch, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0

@@ -1,16 +1,15 @@
 using System;
-using UnityEngine;
 
 namespace Domain.Model.Character.Type
 {
     [Serializable]
     public record Human : ICharacterType
     {
-        public Texture Texture;
+        public string TextureName;
 
-        public Human(Texture texture)
+        public Human(string textureName)
         {
-            Texture = texture;
+            TextureName = textureName;
         }
 
         public string TypeName()
@@ -20,7 +19,7 @@ namespace Domain.Model.Character.Type
 
         public string SubtypeName()
         {
-            return Texture.name;
+            return TextureName;
         }
     }
 }

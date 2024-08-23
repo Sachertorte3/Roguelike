@@ -9,11 +9,14 @@ using Domain.Model.Character;
 using Domain.Model.Action;
 using Domain.Model;
 using Domain.Service.Action;
+using Domain.Model.Item;
+using R3;
 
 namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
+        public Observable<OnItemSelectMessage> OnItemSelect { get; init; } = new Subject<OnItemSelectMessage>();
         private readonly IBehaviorWhenUndiscoveringTarget _wander;
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
@@ -67,8 +70,8 @@ namespace Domain.Service.Characters.Behavior
             var visibleEnemies = visibleCharacters.Where(c => character.IsEnemy(c));
             var visibleLeaders = visibleCharacters.Where(c => character.IsAlly(c) && c.IsLeader);
 
-            var targetedEnemy = GetTargetedEnemy(visibleEnemies, world);
-            var targetedLeader = GetTargetedLeader(visibleLeaders, world);
+            var targetedEnemy = GetTargetedEnemy(character, visibleEnemies, world);
+            var targetedLeader = GetTargetedLeader(character, visibleLeaders, world);
             if (targetedEnemy != null)
             {
                 Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(world.Player)}.");
@@ -129,14 +132,14 @@ namespace Domain.Service.Characters.Behavior
             return action;
         }
 
-        public ICharacter? GetTargetedEnemy(IEnumerable<ICharacter> visibleEnemies, IMap map)
+        public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies, IMap map)
         {
             if (visibleEnemies.Contains(_lastTarget))
                 return _lastTarget;
             return visibleEnemies.FirstOrDefault();
         }
 
-        public ICharacter? GetTargetedLeader(IEnumerable<ICharacter> visibleLeaders, IMap map)
+        public ICharacter? GetTargetedLeader(IHasBehavior character, IEnumerable<ICharacter> visibleLeaders, IMap map)
         {
             if (visibleLeaders.Contains(_lastTarget))
                 return _lastTarget;
@@ -152,7 +155,7 @@ namespace Domain.Service.Characters.Behavior
                     _lastTargetPosition : null;
         }
 
-        private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
+            private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
         {
             var distance = Mathf.Max(Mathf.Abs(character.CurrentPosition.x - targetPosition.x), Mathf.Abs(character.CurrentPosition.y - targetPosition.y));
             return distance;
@@ -232,6 +235,11 @@ namespace Domain.Service.Characters.Behavior
                         .Select(direction => new ThrowItem(item, direction))
                 )
                 .Where(action => action.Doable(character, world));
+        }
+
+        public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+        {
+            return UniTask.FromResult<IItem?>(null);
         }
     }
 }

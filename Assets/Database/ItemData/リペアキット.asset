@@ -19,6 +19,7 @@ MonoBehaviour:
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
   SpawnEffectsOnThrow: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -33,7 +34,7 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599144
   ItemEffect:
-    rid: 4274950900600012802
+    rid: 4274951156413235201
   UsageLimit: 1
   PassiveConditions: []
   references:
@@ -42,7 +43,7 @@ MonoBehaviour:
     - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4274950900600012802
+    - rid: 4274951156413235201
       type: {class: Repair, ns: , asm: Domain.Service}
       data: 
     - rid: 4425516923575599143

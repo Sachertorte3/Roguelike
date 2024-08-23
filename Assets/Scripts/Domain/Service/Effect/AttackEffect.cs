@@ -67,6 +67,33 @@ namespace Domain.Service.Effect
                 _blowAwayDistance * 0.1f;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            var upgrades = new List<UpgradeSkill>();
+            foreach (var elementPower in _elementPowers)
+            {
+                upgrades.Add(new UpgradeSkill(
+                    () => elementPower.Upgrade(2),
+                    2
+                ));
+            }
+            if (_criticalRate > 0 && _criticalRate < 0.9f)
+            {
+                upgrades.Add(new UpgradeSkill(
+                    () => _criticalRate += 0.1f,
+                    1
+                ));
+            }
+            if (_blowAwayDistance > 0)
+            {
+                upgrades.Add(new UpgradeSkill(
+                    () => _blowAwayDistance += 1,
+                    1
+                ));
+            }
+            return upgrades;
+        }
+
         public string Info()
         {
             var info = $"攻撃\n威力: {string.Join(" ", _elementPowers.Select(e => e.Info()))}";

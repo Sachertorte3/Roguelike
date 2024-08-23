@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
@@ -29,6 +30,11 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _power;
+        }
+
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
         }
 
         public string Info()

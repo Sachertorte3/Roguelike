@@ -38,6 +38,8 @@ namespace Domain.Service
                         0
                     )
                 ),
+                true,
+                false,
                 false,
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
                 new List<IConditionData>()
@@ -69,6 +71,8 @@ namespace Domain.Service
                         0,
                         prefix.AdditionalConditions, 0)
                 ),
+                true,
+                false,
                 false,
                 Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
                 new List<IConditionData>()

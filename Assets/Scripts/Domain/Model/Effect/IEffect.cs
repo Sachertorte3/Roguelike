@@ -11,5 +11,6 @@ namespace Domain.Model.Effect
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map) => UniTask.CompletedTask;
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
+        public IEnumerable<UpgradeSkill> GenerateUpgrades();
     }
 }

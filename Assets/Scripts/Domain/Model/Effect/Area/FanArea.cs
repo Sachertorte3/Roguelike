@@ -66,6 +66,15 @@ namespace Domain.Model.Effect.Area
             return area;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill> {
+                new UpgradeSkill(() => {
+                    Radius += 1;
+                }, 1)
+            };
+        }
+
         public string Info()
         {
             return $"扇形(90°) 半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";

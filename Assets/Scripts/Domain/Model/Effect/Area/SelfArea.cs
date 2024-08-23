@@ -16,6 +16,11 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
             return "その場";

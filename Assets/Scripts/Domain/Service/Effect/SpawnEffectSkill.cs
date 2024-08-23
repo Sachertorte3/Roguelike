@@ -22,38 +22,27 @@ namespace Domain.Service.Effect
         public int RushDistance { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(SkillData data)
+        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, string? log)
         {
-            _position = data.Position;
-            _area = data.Area;
-            _effect = data.Effect;
-            RushDistance = data.RushDistance;
-            _log = data.Log;
+            _position = position;
+            _area = area;
+            _effect = effect;
+            RushDistance = rushDistance;
+            _log = log;
+        }
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.RushDistance, data.Log)
+        {
         }
 
-        public SpawnEffectSkill(SkillDataOnUse data)
+        public SpawnEffectSkill CreateSkillWithEffect(SpawnEffectSkillMemento data)
         {
-            _position = data.Position;
-            _area = data.Area;
-            _effect = data.Effect;
-            RushDistance = 0;
-        }
-
-        public SpawnEffectSkill(SkillDataOnThrow data)
-        {
-            _position = new AtFeet();
-            _area = data.Area;
-            _effect = data.Effect;
-            RushDistance = 0;
-        }
-
-        public SpawnEffectSkill(SpawnEffectSkillMemento data)
-        {
-            _position = data.Position;
-            _area = data.Area;
-            _effect = data.Effect;
-            RushDistance = data.RushDistance;
-            _log = data.Log;
+            return new SpawnEffectSkill(
+                data.Position,
+                data.Area,
+                _effect,
+                data.RushDistance,
+                data.Log
+            );
         }
 
         public Color Color => _effect.Color;
@@ -79,6 +68,30 @@ namespace Domain.Service.Effect
                 Effect = data.Effect,
                 RushDistance = data.RushDistance,
                 Log = data.Log
+            };
+        }
+
+        public static SpawnEffectSkillMemento Build(SkillDataOnUse data)
+        {
+            return new SpawnEffectSkillMemento
+            {
+                Position = data.Position,
+                Area = data.Area,
+                Effect = data.Effect,
+                RushDistance = 0,
+                Log = ""
+            };
+        }
+
+        public static SpawnEffectSkillMemento Build(SkillDataOnThrow data)
+        {
+            return new SpawnEffectSkillMemento
+            {
+                Position = new AtFeet(),
+                Area = data.Area,
+                Effect = data.Effect,
+                RushDistance = 0,
+                Log = ""
             };
         }
 
@@ -181,6 +194,17 @@ namespace Domain.Service.Effect
             }
 
             return totalEvaluation;
+        }
+
+        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade = false)
+        {
+            if (ignoreEffectUpgrade)
+                return _position.GenerateUpgrades()
+                    .Concat(_area.GenerateUpgrades());
+            else
+                return _effect.GenerateUpgrades()
+                    .Concat(_position.GenerateUpgrades())
+                    .Concat(_area.GenerateUpgrades());
         }
 
         public string Info()

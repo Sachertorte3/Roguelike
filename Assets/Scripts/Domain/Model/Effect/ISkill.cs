@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
@@ -7,8 +8,20 @@ using Utilities;
 
 namespace Domain.Model.Effect
 {
+    public class UpgradeSkill
+    {
+        private readonly System.Action _action;
+        public readonly int Cost;
+        public UpgradeSkill(System.Action action, int cost)
+        {
+            _action = action;
+            Cost = cost;
+        }
+        public void Do() => _action();
+    }
     public interface ISkill : IHasInfo
     {
+        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade);
     }
     public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill
     {

@@ -10,53 +10,49 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30BD\u30A6\u30EB\u30A4\u30FC\u30BF\u30FC"
+  m_Name: "\u30A2\u30C3\u30D7\u30B0\u30EC\u30FC\u30C9\u30D1\u30FC\u30C4"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 3
+  Icon: {fileID: -2022920677, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 0
   Price: 100
-  EffectType: 1
+  EffectType: 2
   UseOnDeath: 0
-  SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 1
-  IsSameEffect: 1
+  SpawnEffectsOnUse: 0
+  SpawnEffectsOnThrow: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 2541219281251860481
+      rid: 4425516923575599143
     Effect:
-      rid: 4425516923575599125
+      rid: -2
     Position:
-      rid: 2541219106150416400
+      rid: 2541219106150416403
   SkillOnThrow:
     Area:
-      rid: 2541219281251860482
+      rid: 4425516923575599143
     Effect:
-      rid: 4425516923575599125
+      rid: 4425516923575599144
   ItemEffect:
-    rid: -2
-  UsageLimit: 10
+    rid: 4274951156413235202
+  UsageLimit: 1
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416400
+    - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219281251860481
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
-    - rid: 2541219281251860482
+    - rid: 4274951156413235202
+      type: {class: UpgradeItem, ns: , asm: Domain.Service}
+      data: 
+    - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599125
-      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 4425516923575599144
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _elementPowers:
-        - _element: 0
-          _power: 5
-        _rate: 0
+        _condition:
+          _name: 

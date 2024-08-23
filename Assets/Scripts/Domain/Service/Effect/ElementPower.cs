@@ -20,6 +20,11 @@ namespace Domain.Service.Effect
             _power = power;
         }
 
+        public void Upgrade(int value)
+        {
+            _power += value;
+        }
+
         public string Info()
         {
             return $"[{Element}] {Power}";

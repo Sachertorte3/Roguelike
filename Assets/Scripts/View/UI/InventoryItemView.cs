@@ -47,5 +47,17 @@ namespace View.UI
         {
             _text.text = "";
         }
+
+        public void Disable()
+        {
+            _icon.color = Color.gray;
+            interactable = false;
+        }
+
+        public void Enable()
+        {
+            _icon.color = Color.white;
+            interactable = true;
+        }
     }
 }

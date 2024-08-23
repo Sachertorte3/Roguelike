@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
@@ -33,9 +34,20 @@ namespace Domain.Service.Effect
             return 0;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>
+            {
+                new UpgradeSkill(
+                    () => _distance += 1,
+                    1
+                )
+            };
+        }
+
         public string Info()
         {
-            return "吹き飛ばし";
+            return $"吹き飛ばし{_distance}マス";
         }
     }
 }

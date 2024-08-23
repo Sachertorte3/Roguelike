@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 
 namespace Domain.Model.Condition
 {
@@ -8,6 +9,8 @@ namespace Domain.Model.Condition
         public void RemoveStatValue(StatType type, float value);
         public void AddStatMultiplier(StatType type, float value);
         public void RemoveStatMultiplier(StatType type, float value);
+        public void AddElementAttackMultiplier(Element element, float value);
+        public void RemoveElementAttackMultiplier(Element element, float value);
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
         public int LoseHp(int value, bool notifyOnlyActualLoss = false);
@@ -19,7 +22,6 @@ namespace Domain.Model.Condition
     {
         MaxHp,
         HpNaturalRecovery,
-        AttackMultiplier,
         ViewRange,
         WaitTime
     }

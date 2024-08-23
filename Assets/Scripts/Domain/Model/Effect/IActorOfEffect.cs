@@ -13,6 +13,6 @@ namespace Domain.Model.Effect
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
         public int GainHp(int value);
-        public float AttackMultiplier { get; }
+        public float GetElementAttackMultiplier(Element element);
     }
 }

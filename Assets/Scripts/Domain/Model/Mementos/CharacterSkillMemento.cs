@@ -1,9 +1,13 @@
 #nullable enable
+using System;
+
 namespace Domain.Model.Character
 {
-    public record CharacterSkillMemento(
-        SkillMemento Skill,
-        int CoolTime,
-        int RemainingTurn
-    );
+    [Serializable]
+    public class CharacterSkillMemento
+    {
+        public SpawnEffectSkillMemento Skill;
+        public int CoolTime;
+        public int RemainingTurn;
+    }
 }

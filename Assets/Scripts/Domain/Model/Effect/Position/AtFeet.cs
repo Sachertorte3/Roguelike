@@ -12,6 +12,11 @@ namespace Domain.Model.Effect.Position
             yield return position;
         }
 
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        {
+            return new List<UpgradeSkill>();
+        }
+
         public string Info()
         {
             return "その場";

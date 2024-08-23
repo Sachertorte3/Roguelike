@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Domain.Model.Character
 {
-    public record EntityMemento(
-        int Id,
-        Vector2Int Position,
-        EntityLayer Layer
-    );
+    [Serializable]
+    public class EntityMemento
+    {
+        public int Id;
+        public Vector2Int Position;
+        public EntityLayer Layer;
+    }
 }

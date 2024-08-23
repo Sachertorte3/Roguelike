@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
 using Model.Game;
 using UnityEngine;
 using Utilities;
@@ -21,11 +22,13 @@ namespace Provider
             builder.Register<InputReceiver>(Lifetime.Singleton);
             builder.Register<GameInput>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
+            builder.Register<ChoiceReceiver>(Lifetime.Singleton);
             builder.Register<CharacterControlInputReceiver>(Lifetime.Singleton);
             builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.RegisterComponent(_dungeonData);
+            builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<TileMaskController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
@@ -35,11 +38,13 @@ namespace Provider
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
             builder.RegisterComponentInHierarchy<ShopInfoView>();
+            builder.RegisterComponentInHierarchy<ItemSelectText>();
             builder.RegisterComponentInHierarchy<DamageTextSpawner>();
             builder.RegisterComponentInHierarchy<FlushController>();
             builder.RegisterComponentInHierarchy<BGMManager>();
             builder.RegisterComponentInHierarchy<SEManager>();
-
+            
+            builder.RegisterPlainEntryPoint<DungeonInfoPresenter>();
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
@@ -52,6 +57,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
+            builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
         }
     }

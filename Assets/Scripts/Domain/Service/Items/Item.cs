@@ -5,102 +5,137 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
-using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;
 using Utilities;
 using Domain.Model.Condition;
+using System.Linq;
+using UnityEngine.AddressableAssets;
+using Domain.Model.Effect;
 
 namespace Domain.Service.Items
 {
     public class Item : IItem
     {
         public Id<IItem> Id { get; init; }
+        private string _name;
         private readonly int _basePrice;
-        private readonly bool _isSameSkill;
-        private readonly int _maxUsages;
+        private int _upgradeCount;
+        private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
+        private readonly Option<ISkill> _skillOnUse;
+        private readonly Option<ISkill> _skillOnThrow;
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
 
-        public Item(ItemData data, ItemState state = ItemState.None)
-        {
-            Id = UniqueIdGenerator.Generate<IItem>();
-            Name = data.Name;
-            Icon = data.Icon;
-            State = state;
-            _basePrice = data.Price;
-            if (data.SpawnEffectsOnUse)
-            {
-                SkillOnUse = new Skill(data.SkillOnUse);
-            }
-
-            if (data.SpawnEffectsOnThrow)
-            {
-                SkillOnThrow = new Skill(data.SkillOnThrow);
-            }
-            UseOnDeath = data.UseOnDeath;
-
-            _maxUsages = data.UsageLimit;
-            _remainingUsages = new ReactiveProperty<int>(data.UsageLimit);
-            _conditions = data.PassiveConditions;
-        }
-
+        public Item(ItemData data) : this(Build(data)) { }
         public Item(ItemMemento data)
         {
             Id = new Id<IItem>(data.Id);
-            Name = data.Name;
-            Icon = data.Icon;
+            _name = data.Name;
+            Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
+            _upgradeCount = data.UpgradeCount;
             State = data.State;
             _basePrice = data.Price;
-            if (data.SkillOnUse != null)
-            {
-                SkillOnUse = new Skill(data.SkillOnUse);
-            }
-
-            if (data.SkillOnThrow != null)
-            {
-                SkillOnThrow = new Skill(data.SkillOnThrow);
-            }
+            _skillOnUse = data.SkillOnUse.Select(skill => skill.Deserialize());
+            _skillOnThrow = data.SkillOnThrow.Select(skill => skill.Match(
+                spawnEffectSkillMemento =>
+                {
+                    if (data.HasSameEffect)
+                    {
+                        return _skillOnUse.Expect("SkillOnUse is null").Match(
+                            spawnEffectSkill => spawnEffectSkill.CreateSkillWithEffect(spawnEffectSkillMemento),
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        );
+                    }
+                    return new SpawnEffectSkill(spawnEffectSkillMemento);
+                },
+                itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
+            ));
+            _hasSameEffect = data.HasSameEffect;
+            _hasSameSkill = data.HasSameSkill;
             UseOnDeath = data.UseOnDeath;
-
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
-            _conditions = data.Conditions;
+            _conditions = data.Conditions.ToList();
         }
 
-        public string Name { get; init; }
+        public string Name => _upgradeCount > 0 ? $"{_name} +{_upgradeCount}" : _name;
         public Sprite Icon { get; init; }
         public ItemState State { get; private set; }
-        public bool SpawnEffectWhenThrown => SkillOnThrow != null;
-        public bool SpawnEffectWhenUsed => SkillOnUse != null;
+        public bool CanActivateWhenUsed => SkillOnUse.HasValue;
+        public bool CanActivateWhenThrown => SkillOnThrow.HasValue;
+        public Option<ISkill> SkillOnUse => _skillOnUse;
+        public Option<ISkill> SkillOnThrow => _hasSameSkill ? _skillOnUse : _skillOnThrow;
+        private readonly bool _hasSameEffect;
+        private readonly bool _hasSameSkill;
+        private bool _usable => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool UseOnDeath { get; init; }
         public int Price => Mathf.RoundToInt(_basePrice * _remainingUsages.CurrentValue / _maxUsages);
-        public ISkill? SkillOnThrow { get; init; }
-        public ISkill? SkillOnUse { get; init; }
-        private bool _usable => SpawnEffectWhenUsed || SpawnEffectWhenThrown;
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
+        public int MaxUsages => _maxUsages;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
 
         public ItemMemento Serialize()
         {
-            return new ItemMemento(
-                Id.Value,
-                Name,
-                Icon,
-                State,
-                _basePrice,
-                SkillOnUse?.Serialize(),
-                SkillOnThrow?.Serialize(),
-                UseOnDeath,
-                _maxUsages,
-                _remainingUsages.CurrentValue,
-                _conditions
-            );
+            return new ItemMemento
+            {
+                Id = Id.Value,
+                Name = _name,
+                IconName = Icon.name,
+                UpgradeCount = _upgradeCount,
+                State = State,
+                Price = _basePrice,
+                SkillOnUse = _skillOnUse.Select(skill => skill.Serialize()),
+                SkillOnThrow = _skillOnThrow.Select(skill => skill.Serialize()),
+                HasSameEffect = _hasSameEffect,
+                HasSameSkill = _hasSameSkill,
+                UseOnDeath = UseOnDeath,
+                MaxUsages = _maxUsages,
+                RemainingUsages = _remainingUsages.CurrentValue,
+                Conditions = _conditions.ToArray()
+            };
+        }
+
+        public static ItemMemento Build(ItemData data, ItemState state = ItemState.None)
+        {
+            var skillOnUse = data.EffectType switch
+            {
+                ItemEffectType.SpawnEffect => data.SpawnEffectsOnUse ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse) : null,
+                ItemEffectType.ItemTarget => (ISkillMemento)new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
+                _ => null
+            };
+            ISkillMemento? skillOnThrow;
+            if (data.IsSameSkill)
+            {
+                skillOnThrow = null;
+            }
+            else
+            {
+                skillOnThrow = data.SpawnEffectsOnThrow ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow) : null;
+            }
+
+            return new ItemMemento
+            {
+                Id = UniqueIdGenerator.Generate<IItem>().Value,
+                Name = data.Name,
+                IconName = data.Icon.name,
+                UpgradeCount = 0,
+                State = state,
+                Price = data.Price,
+                SkillOnUse = new(skillOnUse),
+                SkillOnThrow = new(skillOnThrow),
+                HasSameEffect = data.IsSameEffect,
+                HasSameSkill = data.IsSameSkill,
+                UseOnDeath = data.UseOnDeath,
+                MaxUsages = data.UsageLimit,
+                RemainingUsages = data.UsageLimit,
+                Conditions = data.PassiveConditions.ToArray()
+            };
         }
 
         public void SetState(ItemState state)
@@ -109,26 +144,66 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public async UniTask Use(IActor actor, Vector2Int position, Direction8 direction, IMap world, bool isThrown)
+        public async UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            _remainingUsages.Value -= 1;
-            if (State == ItemState.ShopItem)
+            var isSuccess = await SkillOnUse.SelectOrDefault(
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Use(actor, this)
+                ),
+                UniTask.FromResult(false)
+            );
+            if (isSuccess)
             {
-                State = ItemState.UsedShopItem;
+                _remainingUsages.Value -= 1;
+                if (State == ItemState.ShopItem)
+                {
+                    State = ItemState.UsedShopItem;
+                }
+                _onItemUpdated.OnNext(Unit.Default);
             }
-            _onItemUpdated.OnNext(Unit.Default);
-            if (isThrown)
+            return isSuccess;
+        }
+        public async UniTask<bool> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        {
+            var isSuccess = await SkillOnThrow.SelectOrDefault(
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Use(actor, this)
+                ),
+                UniTask.FromResult(false)
+            );
+            if (isSuccess)
             {
-                if (SkillOnThrow == null)
-                    throw new InvalidOperationException("SkillOnThrow is null");
-                await SkillOnThrow.Use(actor, position, direction, world);
+                _remainingUsages.Value -= 1;
+                if (State == ItemState.ShopItem)
+                {
+                    State = ItemState.UsedShopItem;
+                }
+                _onItemUpdated.OnNext(Unit.Default);
             }
-            else
-            {
-                if (SkillOnUse == null)
-                    throw new InvalidOperationException("SkillOnUse is null");
-                await SkillOnUse.Use(actor, position, direction, world);
-            }
+            return isSuccess;
+        }
+
+        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        {
+            return SkillOnUse.SelectOrDefault(
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                ),
+                0
+            );
+        }
+        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        {
+            return SkillOnThrow.SelectOrDefault(
+                skill => skill.Match(
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                ),
+                0
+            );
         }
 
         public void Repair()
@@ -137,11 +212,39 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public IEnumerable<UpgradeSkill> GenerateUpgrades()
         {
-            if (SkillOnUse == null)
-                throw new InvalidOperationException("SkillOnUse is null");
-            return SkillOnUse.Evaluate(actor, position, direction, world);
+            var upgrades = new List<UpgradeSkill>();
+            if (_maxUsages > 1)
+            {
+                upgrades.Add(
+                    new UpgradeSkill(
+                    () =>
+                    {
+                        _maxUsages += 1;
+                        _remainingUsages.Value += 1;
+                    },
+                    1
+                ));
+            }
+            if (SkillOnUse.HasValue)
+            {
+                upgrades.AddRange(SkillOnUse.Expect("SkillOnUse is null").GenerateUpgrades(false));
+            }
+            if (SkillOnThrow.HasValue)
+            {
+                upgrades.AddRange(SkillOnThrow.Expect("SkillOnThrow is null").GenerateUpgrades(_hasSameEffect));
+            }
+            return upgrades;
+        }
+
+        public bool CanUpgrade() => GenerateUpgrades().Any();
+
+        public void Upgrade()
+        {
+            GenerateUpgrades().GetAtRandom().Do();
+            _upgradeCount += 1;
+            _onItemUpdated.OnNext(Unit.Default);
         }
 
         public string Info()
@@ -149,25 +252,16 @@ namespace Domain.Service.Items
             var info = $"{State.GetDescription()}{Name}\n価格: {Price}\n";
             if (_usable)
             {
-                if (_isSameSkill)
+                if (_hasSameSkill)
                 {
-                    if (SkillOnUse == null)
-                        throw new InvalidOperationException("SkillOnUse is null");
-                    info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
+                    info += $"[使用・投擲時]\n{SkillOnUse.Expect("SkillOnUse is null").Info()}\n";
                 }
                 else
                 {
-                    if (SkillOnUse != null)
-                    {
-                        info += $"[使用時]\n{SkillOnUse.Info()}\n";
-                    }
+                    info += SkillOnUse.SelectOrDefault(skill => $"[使用時]\n{skill.Info()}\n", "");
 
-                    if (SkillOnThrow != null)
-                    {
-                        info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
-                    }
+                    info += SkillOnThrow.SelectOrDefault(skill => $"[投擲時]\n{skill.Info()}\n", "");
                 }
-
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
             }
 

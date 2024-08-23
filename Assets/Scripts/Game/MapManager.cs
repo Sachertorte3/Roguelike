@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
@@ -26,6 +27,8 @@ namespace Model.Game
 {
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
     {
+        public string Name => _dungeonData.Name;
+        public readonly int Floor;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -39,20 +42,19 @@ namespace Model.Game
         public ReadOnlyReactiveProperty<bool> DownStairsLocked => _downStairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
         public IIconEntity DownStairs => EventEntityManager.DownStairs;
+        public bool IsEventExecuting { get; private set; }
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int playerPosition, CharacterControlInputReceiver receiver)
+            Vector2Int playerPosition, CharacterControlInputReceiver receiver, int floor)
         {
+            Floor = floor;
             if (playerData == null)
             {
                 playerData = CharacterFactory.BuildPlayer("Player", playerPosition);
             }
             else
             {
-                playerData = playerData with
-                {
-                    Entity = playerData.Entity with { Position = playerPosition }
-                };
+                playerData.Entity.Position = playerPosition;
             }
 
             _tilemap = new Tilemap(map.Tilemap);
@@ -66,15 +68,9 @@ namespace Model.Game
             {
                 foreach (var character in partyMembers)
                 {
-                    var characterData = character with
-                    {
-                        Entity = character.Entity with
-                        {
-                            Position = FindBlankPositionFrom(playerPosition,
-                                position => !AllCharacterPositions().Contains(position))
-                        }
-                    };
-                    CharacterManager.SpawnCharacter(characterData, this);
+                    character.Entity.Position = FindBlankPositionFrom(playerPosition,
+                                position => !AllCharacterPositions().Contains(position));
+                    CharacterManager.SpawnCharacter(character, this);
                 }
             }
 
@@ -90,20 +86,20 @@ namespace Model.Game
 
             SetRules();
 
-            if (map.MonsterHouse != null)
+            if (map.MonsterHouse.HasValue)
             {
-                _monsterHouse = new MonsterHouse(map.MonsterHouse);
+                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value);
                 _eventAreas.Add(_monsterHouse);
             }
 
-            if (map.Shop != null)
+            if (map.Shop.HasValue)
             {
-                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Clerk.Position);
-                if (clerk == null && !map.Shop.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
+                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Value.Clerk.Position);
+                if (clerk == null && !map.Shop.Value.IsStolen)
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
                 if (clerk != null)
                 {
-                    _shop = new Shop(map.Shop, clerk, this);
+                    _shop = new Shop(map.Shop.Value, clerk, this);
                     EventEntityManager.Add(_shop.Clerk);
                     _eventAreas.Add(_shop);
                 }
@@ -283,7 +279,7 @@ namespace Model.Game
                 return (route.Last() - to).sqrMagnitude <= 2;
         }
 
-        public void Touch(Vector2Int position)
+        public async UniTask Touch(Vector2Int position)
         {
             var eventEntity = EventEntities
                 .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
@@ -291,7 +287,20 @@ namespace Model.Game
                 .Where(eventEntity => eventEntity.CanExecuteEvent)
                 .FirstOrDefault();
             if (eventEntity != null)
-                eventEntity.DoEvent(Globals.GameManager, this);
+                await eventEntity.DoEvent(Globals.GameManager, this);
+            else
+                Log.Info($"I tried touch position {position} event but there was no event there.");
+        }
+
+        public async UniTask StepOn(Vector2Int position)
+        {
+            var eventEntity = EventEntities
+                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
+                .Where(eventEntity => eventEntity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .FirstOrDefault();
+            if (eventEntity != null)
+                await eventEntity.DoEvent(Globals.GameManager, this);
             else
                 Log.Info($"I tried touch position {position} event but there was no event there.");
         }
@@ -308,15 +317,16 @@ namespace Model.Game
             var characters = Characters.ToList();
             characters.Remove(Player);
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
-            return new MapMemento(
-                _tilemap.Serialize(),
-                characters.Select(character => character.Serialize()).ToList(),
-                ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                EventEntityManager.Serialize(),
-                KeyCharacters.Select(character => character.Id.Value).ToList(),
-                _monsterHouse?.Serialize(),
-                _shop?.Serialize()
-            );
+            return new MapMemento
+            {
+                Tilemap = _tilemap.Serialize(),
+                Characters = characters.Select(character => character.Serialize()).ToList(),
+                Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                EventEntities = EventEntityManager.Serialize(),
+                KeyCharacters = KeyCharacters.Select(character => character.Id.Value).ToList(),
+                MonsterHouse = new(_monsterHouse?.Serialize()),
+                Shop = new(_shop?.Serialize())
+            };
         }
 
         private void SetRules()
@@ -334,8 +344,9 @@ namespace Model.Game
                     entity.SetVisibility(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
             }).AddTo(_disposables);
 
-            CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(positionChanged =>
+            CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
+                IsEventExecuting = true;
                 var eventEntity = EventEntities
                     .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
                     .Where(eventEntity => eventEntity.CurrentPosition == positionChanged.Message.Position)
@@ -343,13 +354,14 @@ namespace Model.Game
                     .FirstOrDefault();
                 if (eventEntity != null)
                 {
-                    eventEntity.DoEvent(Globals.GameManager, this);
+                    await eventEntity.DoEvent(Globals.GameManager, this);
                 }
 
                 foreach (var eventArea in _eventAreas)
                 {
                     eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
+                IsEventExecuting = false;
             }).AddTo(_disposables);
 
             CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
@@ -396,7 +408,7 @@ namespace Model.Game
 
         public void UpdateTurn(int turn)
         {
-            if (turn % 30 == 0)
+            if (turn % 100 == 0)
             {
                 var positions = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())

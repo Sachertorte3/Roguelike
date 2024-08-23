@@ -1,11 +1,14 @@
 ﻿#nullable enable
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Setting;
 using Domain.Service.Action;
+using R3;
 using Unity.Logging;
 using Utilities;
 
@@ -16,6 +19,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControlInputReceiver _receiver;
         public BehaviorData BehaviorData => new BehaviorData();
+        private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
+        public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
@@ -57,7 +62,7 @@ namespace Domain.Service.Characters.Behavior
                                 return move;
                             else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
                             {
-                                world.Touch(character.CurrentPosition + move.Direction.Vector());
+                                await world.Touch(character.CurrentPosition + move.Direction.Vector());
                                 return new DoNothing();
                             }
                             else if (swap.Doable(character, world))
@@ -67,7 +72,7 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case 1:
                         var itemIndex = firstCompletedTask.result2;
-                        var item = character.Inventory.GetItem(itemIndex);
+                        var item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         IAction action;
 
                         if (item == null)
@@ -79,7 +84,7 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case 2:
                         itemIndex = firstCompletedTask.result3;
-                        item = character.Inventory.GetItem(itemIndex);
+                        item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         if (item != null)
                         {
                             action = new ThrowItem(item, character.CurrentDirection);
@@ -96,6 +101,19 @@ namespace Domain.Service.Characters.Behavior
                 throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
                 firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             }
+        }
+        public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+        {
+            _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
+
+            int? index;
+            do
+            {
+                index = await _receiver.OnUseItemActionReceived.WaitAsync();
+            } while (index.HasValue && disabledItemIds.Contains(index.Value));
+
+            _onItemSelect.OnNext(new OnItemSelectMessage(false, new int[0]));
+            return index == null ? null : inventory.GetItem(index.Value);
         }
     }
 }

@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Domain.Model.Character;
-using Domain.Model.Character.Type;
 using Domain.Model.Map;
-using UnityEngine;
 
 namespace Domain.Model.Map
 {

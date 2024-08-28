@@ -11,7 +11,6 @@ using Domain.Service.Items;
 using Domain.Service.Map;
 using UnityEngine;
 using Utilities;
-using static Domain.Model.DungeonBluePrintData;
 using Random = UnityEngine.Random;
 
 namespace Model.Game

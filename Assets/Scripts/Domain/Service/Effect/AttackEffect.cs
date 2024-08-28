@@ -62,9 +62,9 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return
-                Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp) * (1 + _criticalRate) +
+                (Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp) * (1 + _criticalRate)) +
                 _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.Evaluate(target)) +
-                _blowAwayDistance * 0.1f;
+                (_blowAwayDistance * 0.1f);
         }
 
         public Dictionary<UpgradePath, System.Action> _GetUpgrades()

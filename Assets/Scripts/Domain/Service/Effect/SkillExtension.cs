@@ -1,8 +1,8 @@
 #nullable enable
+using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using System;
 
 namespace Domain.Service.Effect
 {

@@ -22,7 +22,7 @@ namespace Domain.Service.Characters
 
         public static HashSet<Vector2Int> ComputeFullVisibility(HashSet<Vector2Int> passables)
         {
-            HashSet<Vector2Int> result = new HashSet<Vector2Int>(passables);
+            HashSet<Vector2Int> result = new(passables);
             foreach (var pos in passables)
             {
                 for (int dx = -1; dx <= 1; dx++)
@@ -68,8 +68,8 @@ namespace Domain.Service.Characters
                 var xc = currentCol;
                 for (var yc = currentCol; yc >= 0; yc--)
                 {
-                    Vector2Int pos = new(origin.x + xc * txfrm.xx + yc * txfrm.xy,
-                        origin.y + xc * txfrm.yx + yc * txfrm.yy);
+                    Vector2Int pos = new(origin.x + (xc * txfrm.xx) + (yc * txfrm.xy),
+                        origin.y + (xc * txfrm.yx) + (yc * txfrm.yy));
 
                     var leftBlockSlope = (yc + 0.5f) / (xc - 0.5f);
                     var rightBlockSlope = (yc - 0.5f) / (xc + 0.5f);

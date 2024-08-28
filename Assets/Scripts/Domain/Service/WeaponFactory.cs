@@ -21,7 +21,7 @@ namespace Domain.Service
                     mold.Position,
                     mold.Area,
                     new AttackEffect(new List<ElementPower> {
-                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
                         },
                         0,
                         new List<AdditionalConditionData>(),
@@ -31,7 +31,7 @@ namespace Domain.Service
                 new SkillDataOnThrow(
                     new SelfArea(),
                     new AttackEffect(new List<ElementPower> {
-                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
                         },
                         0,
                         new List<AdditionalConditionData>(),
@@ -57,7 +57,7 @@ namespace Domain.Service
                     mold.Area,
                     new AttackEffect(
                         new List<ElementPower> {
-                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
                         prefix.AdditionalConditions, 0)
@@ -66,7 +66,7 @@ namespace Domain.Service
                     new SelfArea(),
                     new AttackEffect(
                         new List<ElementPower> {
-                            new ElementPower(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
                         prefix.AdditionalConditions, 0)

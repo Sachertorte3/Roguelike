@@ -1,15 +1,15 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Unity.Logging;
-using VContainer;
 using UnityEngine;
+using VContainer;
 using static Model.Game.World;
-using System.Collections.Generic;
-using Domain.Model.Map;
-using Cysharp.Threading.Tasks;
 
 namespace Model.Game
 {

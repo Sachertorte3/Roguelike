@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEngine;
 using Domain.Model.Effect;
 using System;
-using System.Collections.Generic;
 
 
 

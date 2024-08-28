@@ -1,11 +1,11 @@
 #nullable enable
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Model.Action;
 using Domain.Model.Item;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Domain.Service.Effect
 {

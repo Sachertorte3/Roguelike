@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Domain.Service.Action;
 using Domain.Service.Items;
 using R3;

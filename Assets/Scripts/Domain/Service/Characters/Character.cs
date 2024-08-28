@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Item;
+using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Characters.Behavior;
@@ -19,9 +22,6 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Domain.Model.Action;
-using Domain.Model.Message;
-using Domain.Model.Item;
 
 namespace Domain.Service.Characters
 {

@@ -7,7 +7,7 @@ using R3;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public interface  ICharacterBehavior : IItemSelecter
+    public interface ICharacterBehavior : IItemSelecter
     {
         public BehaviorData BehaviorData { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }

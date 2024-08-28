@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Service.Effect;
 using UnityEngine;
 using Utilities;
-using Domain.Model.Action;
 
 namespace Domain.Service.Characters
 {

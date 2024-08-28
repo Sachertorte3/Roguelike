@@ -28,7 +28,8 @@ namespace Domain.Model.Effect.Area
         }
 
         public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
-            new Dictionary<UpgradePath, System.Action> {
+            new()
+            {
                 { new UpgradePath("Radius"), () => Radius += 1 }
             };
 

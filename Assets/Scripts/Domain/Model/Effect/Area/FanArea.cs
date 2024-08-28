@@ -32,9 +32,9 @@ namespace Domain.Model.Effect.Area
                     {
                         for (var j = -i; j <= i; j++)
                         {
-                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
+                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + i * deltaVec + j * perpVec);
+                                area.Add(position + (i * deltaVec) + (j * perpVec));
                             }
                         }
                     }
@@ -49,13 +49,13 @@ namespace Domain.Model.Effect.Area
                     var anticlockwiseVec = direction.Rotate45AntiClockwise().Vector();
                     for (var i = 1; i <= Radius; i++)
                     {
-                        area.Add(position + i * clockwiseVec);
+                        area.Add(position + (i * clockwiseVec));
                         for (var j = 1; j <= Radius; j++)
                         {
-                            area.Add(position + j * anticlockwiseVec);
-                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
+                            area.Add(position + (j * anticlockwiseVec));
+                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + i * clockwiseVec + j * anticlockwiseVec);
+                                area.Add(position + (i * clockwiseVec) + (j * anticlockwiseVec));
                             }
                         }
                     }
@@ -67,7 +67,8 @@ namespace Domain.Model.Effect.Area
         }
 
         public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
-            new Dictionary<UpgradePath, System.Action> {
+            new()
+            {
                 { new UpgradePath("Radius"), () => Radius += 1 }
             };
 

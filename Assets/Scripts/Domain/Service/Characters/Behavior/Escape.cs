@@ -16,7 +16,7 @@ namespace Domain.Service.Characters.Behavior
         {
             var relativePosition = character.CurrentPosition - targetPosition;
             var directions = DirectionMethods.NearDirectionsFromVector(relativePosition);
-            var moves = new List<Move> { new Move(directions[0], 0.02f), new Move(directions[1], 0.005f), new Move(directions[2], 0.005f) };
+            var moves = new List<Move> { new(directions[0], 0.02f), new(directions[1], 0.005f), new(directions[2], 0.005f) };
             return moves.Where(move => move.Doable(character, world));
         }
     }

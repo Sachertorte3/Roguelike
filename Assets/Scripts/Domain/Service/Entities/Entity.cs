@@ -1,10 +1,10 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using R3;
 using UnityEngine;
 using Utilities;
-using Domain.Model;
 
 namespace Domain.Service.Entities
 {

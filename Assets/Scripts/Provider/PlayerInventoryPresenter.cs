@@ -21,7 +21,7 @@ namespace Provider
                         if (itemChanged.NewValue != null)
                             inventoryView.Replace(
                                 itemChanged.NewValue.Icon,
-                                itemChanged.NewValue.Usable? itemChanged.NewValue.RemainingUses.CurrentValue : null,
+                                itemChanged.NewValue.Usable ? itemChanged.NewValue.RemainingUses.CurrentValue : null,
                                 itemChanged.NewValue.Info(), itemChanged.Index);
                         else
                             inventoryView.Remove(itemChanged.Index);
@@ -29,7 +29,7 @@ namespace Provider
                     _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
                         inventoryView.UpdateCount(
-                            itemUpdated.Item.Usable? itemUpdated.Item.RemainingUses.CurrentValue : null,
+                            itemUpdated.Item.Usable ? itemUpdated.Item.RemainingUses.CurrentValue : null,
                             itemUpdated.Index);
                         inventoryView.UpdateInfo(itemUpdated.Item.Info(), itemUpdated.Index);
                     }));
@@ -39,7 +39,7 @@ namespace Provider
                         if (item != null)
                             inventoryView.Replace(
                                 item.Icon,
-                                item.Usable? item.RemainingUses.CurrentValue : null,
+                                item.Usable ? item.RemainingUses.CurrentValue : null,
                                 item.Info(),
                                 i);
                         else

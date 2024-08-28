@@ -1,7 +1,4 @@
-﻿using System;
-using Domain.Model;
-using Domain.Service.Entities;
-using R3;
+﻿using Domain.Model;
 
 namespace Domain.Service.Events
 {

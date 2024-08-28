@@ -27,22 +27,22 @@ namespace Provider
                     }
 
                     var mapSize = mapLoaded.TilemapViewer.Rect;
-                    for (int x = mapSize.x-1; x <= mapSize.x + mapSize.width; x++)
+                    for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
                     {
                         tileView.SetUnbreakableWall(new Vector2Int(x, -1));
                         tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height));
                     }
-                    for (int y = mapSize.y-1; y <= mapSize.y + mapSize.height; y++)
+                    for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
                     {
                         tileView.SetUnbreakableWall(new Vector2Int(-1, y));
                         tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y));
                     }
-                    for (int x = mapSize.x-1; x <= mapSize.x + mapSize.width; x++)
+                    for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
                     {
                         tileMask.SetTileTransparent(new Vector2Int(x, -1));
                         tileMask.SetTileTransparent(new Vector2Int(x, mapSize.y + mapSize.height));
                     }
-                    for (int y = mapSize.y-1; y <= mapSize.y + mapSize.height; y++)
+                    for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
                     {
                         tileMask.SetTileTransparent(new Vector2Int(-1, y));
                         tileMask.SetTileTransparent(new Vector2Int(mapSize.x + mapSize.width, y));

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -31,7 +30,8 @@ namespace Domain.Model.Effect.Position
         }
 
         public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
-            new Dictionary<UpgradePath, System.Action> {
+            new()
+            {
                 { new UpgradePath("NumberOfTarget"), () => NumberOfTarget += 1 }
             };
 

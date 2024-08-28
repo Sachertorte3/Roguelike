@@ -1,8 +1,6 @@
 ﻿#nullable enable
-using System;
 using Domain.Model.Setting;
 using Domain.Service.Logs;
-using Model.Game;
 using R3;
 using VContainer;
 using View.UI;

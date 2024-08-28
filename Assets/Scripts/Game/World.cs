@@ -45,7 +45,7 @@ namespace Model.Game
         {
             _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
             _maps = memento.Maps;
-            
+
             var mapId = memento.ActiveMapId;
             _updatedMapIds = new HashSet<int> { mapId };
 

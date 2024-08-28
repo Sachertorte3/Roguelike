@@ -14,7 +14,7 @@ namespace View.UI
             }
             else
             {
-                _floorText.text = $"{name} {1-floor}F";
+                _floorText.text = $"{name} {1 - floor}F";
             }
         }
     }

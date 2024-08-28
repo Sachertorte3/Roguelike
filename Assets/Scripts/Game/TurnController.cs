@@ -37,24 +37,24 @@ namespace Model.Game
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
-                
+
                 map.UpdateTurn(_turn);
                 var characters = map.Characters.ToList();
-                var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime -character.StatusManager.Stats.CurrentWaitTime);
-                
+                var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+
                 if (_turnWaitTime.IsFull())
                 {
                     _turnWaitTime.Set(0);
                 }
                 _turnWaitTime.Gain(minWaitTime);
-                
+
                 foreach (var character in characters)
                 {
                     if (_turnWaitTime.IsFull())
                     {
                         character.UpdateTurn();
                     }
-                    
+
                     character.StatusManager.AddWaitTime(minWaitTime);
                     if (character.StatusManager.IsWaitTimeFull())
                     {

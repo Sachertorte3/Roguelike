@@ -14,7 +14,7 @@ namespace Domain.Model.Item
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/WeaponPrefix")]
     public class WeaponPrefix : ScriptableObject, IHasRarity
     {
-        [ReadOnly] [Required] public string Name;
+        [ReadOnly][Required] public string Name;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         [MinValue(0)] public float PowerMagnification = 1;

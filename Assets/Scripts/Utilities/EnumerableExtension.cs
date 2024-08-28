@@ -51,11 +51,11 @@ namespace Utilities
         }
         public static int NumOfBits(int bits)
         {
-            bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
-            bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
-            bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
-            bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
-            return (bits & 0x0000ffff) + (bits >> 16 & 0x0000ffff);
+            bits = (bits & 0x55555555) + ((bits >> 1) & 0x55555555);
+            bits = (bits & 0x33333333) + ((bits >> 2) & 0x33333333);
+            bits = (bits & 0x0f0f0f0f) + ((bits >> 4) & 0x0f0f0f0f);
+            bits = (bits & 0x00ff00ff) + ((bits >> 8) & 0x00ff00ff);
+            return (bits & 0x0000ffff) + ((bits >> 16) & 0x0000ffff);
         }
 
         public static IEnumerable<(T item, int index)> Index<T>(this IEnumerable<T> ie)
@@ -74,7 +74,7 @@ namespace Utilities
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
                 for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                    if (x * x + y * y <= radius * radius)
+                    if ((x * x) + (y * y) <= radius * radius)
                         yield return new Vector2Int(x, y) + center;
         }
 

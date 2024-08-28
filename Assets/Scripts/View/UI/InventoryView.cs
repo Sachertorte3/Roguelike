@@ -9,7 +9,7 @@ namespace View.UI
 {
     public class InventoryView : MonoBehaviour
     {
-        const int InventorySize = 10;
+        private const int InventorySize = 10;
         [SerializeField] private InventoryItemView _itemViewPrefab;
         [SerializeField] private TMP_Text _infoText;
         [SerializeField] private Sprite _emptyIcon;

@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Domain.Model.Character;
+﻿using Domain.Model.Character;
 using UnityEngine;
 using Utilities;
 

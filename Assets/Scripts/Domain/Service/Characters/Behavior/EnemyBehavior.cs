@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
-using Unity.Logging;
-using Utilities;
-using Domain.Model.Character;
-using Domain.Model.Action;
 using Domain.Model;
-using Domain.Service.Action;
+using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Item;
+using Domain.Service.Action;
 using R3;
+using Unity.Logging;
+using UnityEngine;
+using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
@@ -155,7 +155,7 @@ namespace Domain.Service.Characters.Behavior
                     _lastTargetPosition : null;
         }
 
-            private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
+        private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
         {
             var distance = Mathf.Max(Mathf.Abs(character.CurrentPosition.x - targetPosition.x), Mathf.Abs(character.CurrentPosition.y - targetPosition.y));
             return distance;

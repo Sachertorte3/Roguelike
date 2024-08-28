@@ -11,7 +11,6 @@ using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
-using Stats;
 using UnityEngine;
 
 namespace Domain.Service.Characters

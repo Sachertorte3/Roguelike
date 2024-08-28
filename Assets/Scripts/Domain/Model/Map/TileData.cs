@@ -21,7 +21,7 @@ namespace Domain.Model.Map
                 IsKnown = IsKnown
             };
         }
-         
+
         public static TileMemento Build(TileCategory tileType, bool isKnown)
         {
             return new TileMemento

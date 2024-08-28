@@ -18,7 +18,7 @@ namespace Domain.Service.Characters.Behavior
     {
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControlInputReceiver _receiver;
-        public BehaviorData BehaviorData => new BehaviorData();
+        public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
 

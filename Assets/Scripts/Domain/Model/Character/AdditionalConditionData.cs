@@ -1,8 +1,8 @@
 #nullable enable
+using System;
+using Domain.Model.Condition;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Domain.Model.Condition;
-using System;
 
 namespace Domain.Model.Character
 {

@@ -1,5 +1,4 @@
-﻿using ObservableCollections;
-using R3;
+﻿using R3;
 
 namespace Domain.Service.Logs
 {

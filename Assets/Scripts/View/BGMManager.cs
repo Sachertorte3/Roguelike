@@ -1,5 +1,5 @@
-using UnityEngine;
 using Unity.Logging;
+using UnityEngine;
 
 namespace View
 {

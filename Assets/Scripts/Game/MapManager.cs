@@ -38,7 +38,7 @@ namespace Model.Game
         public IShop? Shop => _shop;
         public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
-        private ReactiveProperty<bool> _downStairsLocked = new ReactiveProperty<bool>(true);
+        private ReactiveProperty<bool> _downStairsLocked = new(true);
         public ReadOnlyReactiveProperty<bool> DownStairsLocked => _downStairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
         public IIconEntity DownStairs => EventEntityManager.DownStairs;

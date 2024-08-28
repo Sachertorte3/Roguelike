@@ -75,7 +75,7 @@ namespace Domain.Service.Map
             var tiles = new TileMemento[Width * Height];
             foreach (var (position, tile) in _tiles)
             {
-                tiles[position.x + position.y * Width] = tile.Serialize();
+                tiles[position.x + (position.y * Width)] = tile.Serialize();
             }
 
             _mementoCache = new TilemapMemento
@@ -134,7 +134,7 @@ namespace Domain.Service.Map
                             ? TileCategory.Wall
                             : TileCategory.Floor;
                     }
-                    tiles[x + 1 + (y + 1) * width] = TileData.Build(tileType, false);
+                    tiles[x + 1 + ((y + 1) * width)] = TileData.Build(tileType, false);
                 }
             }
 

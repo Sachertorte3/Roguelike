@@ -28,7 +28,7 @@ namespace Model.Game
 
             foreach (var chest in eventEntities.Chests)
                 Add(new Chest(chest));
-            
+
             EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
         public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)

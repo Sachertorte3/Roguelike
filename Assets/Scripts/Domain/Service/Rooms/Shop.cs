@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
-using Domain.Model.Map;
-using Domain.Service.Events;
-using Domain.Service.Rooms;
-using UnityEngine;
-using Utilities;
-using R3;
-using Domain.Service.Logs;
-using Unity.Logging;
-using Domain.Service.Characters.Conditions;
 using Domain.Model.Condition;
 using Domain.Model.Item;
-using Cysharp.Threading.Tasks;
+using Domain.Model.Map;
+using Domain.Service.Characters.Conditions;
+using Domain.Service.Events;
+using Domain.Service.Logs;
+using Domain.Service.Rooms;
+using R3;
+using Unity.Logging;
+using UnityEngine;
+using Utilities;
 
 namespace Model.Game
 {
@@ -22,15 +22,15 @@ namespace Model.Game
     {
         public readonly Clerk Clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);
-        private HashSet<ShopItemCache> _shopItems = new HashSet<ShopItemCache>();
-        private ReactiveProperty<bool> _isStolen = new ReactiveProperty<bool>(false);
+        private HashSet<ShopItemCache> _shopItems = new();
+        private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
         public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
         {
             Clerk = new Clerk(
                 clerk,
-                () => CanExecute && GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0,
+                () => (CanExecute && GetSalePrice(mapManager) > 0) || GetPurchasePrice(mapManager) > 0,
                 mapManager => { Purchase(mapManager); return UniTask.CompletedTask; }
             );
 

@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions

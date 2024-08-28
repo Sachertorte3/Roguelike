@@ -43,7 +43,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<FlushController>();
             builder.RegisterComponentInHierarchy<BGMManager>();
             builder.RegisterComponentInHierarchy<SEManager>();
-            
+
             builder.RegisterPlainEntryPoint<DungeonInfoPresenter>();
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();

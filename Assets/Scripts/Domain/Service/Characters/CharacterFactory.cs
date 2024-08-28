@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Effect.Area;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;
+using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
+using Domain.Service.Entities;
 using R3;
 using UnityEngine;
-using Domain.Service.Entities;
 using Utilities;
 
 namespace Domain.Service.Characters
@@ -31,7 +31,7 @@ namespace Domain.Service.Characters
                 Skills = new[]
                 {
                     CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(), new LineArea(1, false),
-                        new AttackEffect(new List<ElementPower> { new ElementPower(Element.Physical, 1) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                        new AttackEffect(new List<ElementPower> { new(Element.Physical, 1) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },

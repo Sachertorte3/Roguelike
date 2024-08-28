@@ -23,14 +23,10 @@ namespace Domain.Model.Effect.Area
                 .Select(i => position + direction.Vector() * i);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill> {
-                new UpgradeSkill(() => {
-                    Length += 1;
-                }, 1)
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+            new Dictionary<UpgradePath, System.Action> {
+                { new UpgradePath("Length"), () => Length += 1 }
             };
-        }
 
         public string Info()
         {

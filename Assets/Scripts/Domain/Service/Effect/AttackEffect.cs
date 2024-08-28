@@ -67,29 +67,20 @@ namespace Domain.Service.Effect
                 _blowAwayDistance * 0.1f;
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
         {
-            var upgrades = new List<UpgradeSkill>();
+            var upgrades = new Dictionary<UpgradePath, System.Action>();
             foreach (var elementPower in _elementPowers)
             {
-                upgrades.Add(new UpgradeSkill(
-                    () => elementPower.Upgrade(2),
-                    2
-                ));
+                upgrades.Add(new UpgradePath("ElementPowers", elementPower.Element.ToString()), () => elementPower.Upgrade(2));
             }
             if (_criticalRate > 0 && _criticalRate < 0.9f)
             {
-                upgrades.Add(new UpgradeSkill(
-                    () => _criticalRate += 0.1f,
-                    1
-                ));
+                upgrades.Add(new UpgradePath("CriticalRate"), () => _criticalRate += 0.1f);
             }
             if (_blowAwayDistance > 0)
             {
-                upgrades.Add(new UpgradeSkill(
-                    () => _blowAwayDistance += 1,
-                    1
-                ));
+                upgrades.Add(new UpgradePath("BlowAwayDistance"), () => _blowAwayDistance += 1);
             }
             return upgrades;
         }

@@ -34,16 +34,10 @@ namespace Domain.Service.Effect
             return 0;
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new()
         {
-            return new List<UpgradeSkill>
-            {
-                new UpgradeSkill(
-                    () => _distance += 1,
-                    1
-                )
-            };
-        }
+            { new UpgradePath("Distance"), () => _distance += 1 }
+        };
 
         public string Info()
         {

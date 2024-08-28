@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -29,15 +30,10 @@ namespace Domain.Model.Effect.Position
             return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill> {
-                new UpgradeSkill(
-                    () => { NumberOfTarget += 1; },
-                    1
-                )
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+            new Dictionary<UpgradePath, System.Action> {
+                { new UpgradePath("NumberOfTarget"), () => NumberOfTarget += 1 }
             };
-        }
 
         public string Info()
         {
@@ -52,12 +48,12 @@ namespace Domain.Model.Effect.Position
                 if (TargetAlly) targets.Add("味方");
                 if (TargetNeutral) targets.Add("中立");
                 if (TargetEnemy) targets.Add("敵");
-                
+
                 info += string.Join("、", targets);
             }
             if (TargetSelf) info += "（自分含む）";
             info += $"を{NumberOfTarget}体";
-            
+
             return info;
         }
     }

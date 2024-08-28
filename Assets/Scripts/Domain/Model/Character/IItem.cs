@@ -11,7 +11,7 @@ using Utilities;
 
 namespace Domain.Model.Item
 {
-    public interface IItem : ISerializable<ItemMemento>, IHasInfo
+    public interface IItem : ISerializable<ItemMemento>, IHasInfo, IHasUpgrades
     {
         public Id<IItem> Id { get; }
         public string Name { get; }

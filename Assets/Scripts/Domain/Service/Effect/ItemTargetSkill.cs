@@ -49,7 +49,7 @@ namespace Domain.Service.Effect
             return 0;
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade) => new List<UpgradeSkill>();
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
 
         public string Info()
         {

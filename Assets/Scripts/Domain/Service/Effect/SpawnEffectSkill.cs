@@ -196,15 +196,22 @@ namespace Domain.Service.Effect
             return totalEvaluation;
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade = false)
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
         {
-            if (ignoreEffectUpgrade)
-                return _position.GenerateUpgrades()
-                    .Concat(_area.GenerateUpgrades());
-            else
-                return _effect.GenerateUpgrades()
-                    .Concat(_position.GenerateUpgrades())
-                    .Concat(_area.GenerateUpgrades());
+            var upgrades = new Dictionary<UpgradePath, System.Action>();
+            foreach (var path in _effect.GenerateUpgradePaths())
+            {
+                upgrades[UpgradePath.Join("Effect", path)] = () => _effect.ApplyUpgrade(path);
+            }
+            foreach (var path in _position.GenerateUpgradePaths())
+            {
+                upgrades[UpgradePath.Join("Position", path)] = () => _position.ApplyUpgrade(path);
+            }
+            foreach (var path in _area.GenerateUpgradePaths())
+            {
+                upgrades[UpgradePath.Join("Area", path)] = () => _area.ApplyUpgrade(path);
+            }
+            return upgrades;
         }
 
         public string Info()

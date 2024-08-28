@@ -31,13 +31,6 @@ namespace Domain.Service.Map
 
             Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
 
-            _tiles.ObserveReplace()
-                .Subscribe(context =>
-                {
-                    _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) });
-                    UpdateMementoCache();
-                }
-            );
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
 
             OnTilesChanged.Subscribe(changeTiles =>
@@ -50,6 +43,11 @@ namespace Domain.Service.Map
                         _allPassablePositionsSet.Remove(position);
                     ResetMask(position);
                 }
+                UpdateMementoCache();
+            });
+            OnTilesKnownChanged.Subscribe(changeTiles =>
+            {
+                UpdateMementoCache();
             });
             UpdateMementoCache();
         }
@@ -60,8 +58,6 @@ namespace Domain.Service.Map
             Height = height;
             _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
                 .ToDictionary(x => x, _ => new TileData(TileData.Build(TileCategory.Blank, false))));
-            _tiles.ObserveReplace()
-                .Subscribe(context => _onTilesChanged.OnNext(new[] { (context.NewValue.Key, context.NewValue.Value) }));
         }
 
         public ReadOnlyCollection<RectInt> Rooms { get; init; }

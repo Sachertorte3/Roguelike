@@ -38,22 +38,22 @@ namespace Domain.Service.Effect
 
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
         {
-            var upgrades = new List<UpgradeSkill>();
+            var upgrades = new Dictionary<UpgradePath, System.Action>();
             foreach (var elementPower in _elementPowers)
             {
-                upgrades.Add(new UpgradeSkill(
-                    () => elementPower.Upgrade(2),
-                    2
-                ));
+                upgrades.Add(
+                    new UpgradePath("ElementPower", elementPower.Element.ToString()),
+                    () => elementPower.Upgrade(2)
+                );
             }
             if (_rate < 0.9f)
             {
-                upgrades.Add(new UpgradeSkill(
-                    () => _rate += 0.1f,
-                    1
-                ));
+                upgrades.Add(
+                    new UpgradePath("Rate"),
+                    () => _rate += 0.1f
+                );
             }
             return upgrades;
         }

@@ -16,10 +16,7 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill>();
-        }
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
 
         public string Info()
         {

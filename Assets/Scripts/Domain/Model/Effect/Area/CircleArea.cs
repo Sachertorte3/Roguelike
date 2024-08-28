@@ -27,18 +27,14 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill> {
-                new UpgradeSkill(() => {
-                    Radius += 1;
-                }, 1)
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+            new Dictionary<UpgradePath, System.Action> {
+                { new UpgradePath("Radius"), () => Radius += 1 }
             };
-        }
 
         public string Info()
         {
-            return $"円　半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";
+            return $"円 半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";
         }
     }
 }

@@ -212,37 +212,47 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
         {
-            var upgrades = new List<UpgradeSkill>();
+            var upgrades = new Dictionary<UpgradePath, System.Action>();
             if (_maxUsages > 1)
             {
                 upgrades.Add(
-                    new UpgradeSkill(
-                    () =>
-                    {
-                        _maxUsages += 1;
-                        _remainingUsages.Value += 1;
-                    },
-                    1
-                ));
+                    new UpgradePath("MaxUsages"),
+                    () => _maxUsages += 1
+                );
             }
             if (SkillOnUse.HasValue)
             {
-                upgrades.AddRange(SkillOnUse.Expect("SkillOnUse is null").GenerateUpgrades(false));
+                var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null")._GetUpgrades();
+                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnUse"));
+                foreach (var upgrade in skillUpgrades)
+                {
+                    upgrades.Add(upgrade.Key, upgrade.Value);
+                }
             }
             if (SkillOnThrow.HasValue)
             {
-                upgrades.AddRange(SkillOnThrow.Expect("SkillOnThrow is null").GenerateUpgrades(_hasSameEffect));
+                var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null")._GetUpgrades();
+                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnThrow"));
+                foreach (var upgrade in skillUpgrades)
+                {
+                    if (_hasSameEffect && upgrade.Key.Contains("Effect"))
+                    {
+                        continue;
+                    }
+                    upgrades.Add(upgrade.Key, upgrade.Value);
+                }
             }
             return upgrades;
         }
 
-        public bool CanUpgrade() => GenerateUpgrades().Any();
+        public bool CanUpgrade() => _GetUpgrades().Any();
 
         public void Upgrade()
         {
-            GenerateUpgrades().GetAtRandom().Do();
+            var upgrade = _GetUpgrades().GetAtRandom().Value;
+            upgrade();
             _upgradeCount += 1;
             _onItemUpdated.OnNext(Unit.Default);
         }

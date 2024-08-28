@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using UnityEngine;
@@ -26,10 +27,7 @@ namespace Domain.Model.Effect.Position
             return new[] { pos };
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill>();
-        }
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
 
         public string Info()
         {

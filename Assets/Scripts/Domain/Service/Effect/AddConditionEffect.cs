@@ -36,10 +36,7 @@ namespace Domain.Service.Effect
             return _condition.Value.Evaluate(target);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill>();
-        }
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
 
         public string Info()
         {

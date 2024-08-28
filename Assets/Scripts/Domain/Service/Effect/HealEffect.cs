@@ -38,16 +38,10 @@ namespace Domain.Service.Effect
                 target.CurrentMaxHp);
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new()
         {
-            return new List<UpgradeSkill>
-            {
-                new UpgradeSkill(
-                    () => _power += 1,
-                    1
-                )
-            };
-        }
+            { new UpgradePath("Power"), () => _power += 1 }
+        };
 
         public string Info()
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
@@ -12,10 +13,7 @@ namespace Domain.Model.Effect.Position
             yield return position;
         }
 
-        public IEnumerable<UpgradeSkill> GenerateUpgrades()
-        {
-            return new List<UpgradeSkill>();
-        }
+        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
 
         public string Info()
         {

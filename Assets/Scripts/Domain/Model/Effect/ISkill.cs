@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Character;
@@ -8,20 +10,47 @@ using Utilities;
 
 namespace Domain.Model.Effect
 {
-    public class UpgradeSkill
+    public record UpgradePath
     {
-        private readonly System.Action _action;
-        public readonly int Cost;
-        public UpgradeSkill(System.Action action, int cost)
+        private string _path;
+        public UpgradePath(params string[] path)
         {
-            _action = action;
-            Cost = cost;
+            _path = Path.Combine(path);
         }
-        public void Do() => _action();
+        public void Prepend(string prefix)
+        {
+            _path = Path.Combine(prefix, _path);
+        }
+        public string Pop()
+        {
+            var segments = _path.Split(Path.DirectorySeparatorChar);
+            var firstSegment = segments.First();
+            _path = Path.Combine(segments[1..]);
+            return firstSegment;
+        }
+        public static UpgradePath Join(UpgradePath path1, UpgradePath path2)
+        {
+            return new UpgradePath(Path.Combine(path1._path, path2._path));
+        }
+
+        public static UpgradePath Join(string path1, UpgradePath path2)
+        {
+            return new UpgradePath(Path.Combine(path1, path2._path));
+        }
+
+        public static UpgradePath Join(UpgradePath path1, string path2)
+        {
+            return new UpgradePath(Path.Combine(path1._path, path2));
+        }
+
+        public bool Contains(string segment)
+        {
+            return _path.Split(Path.DirectorySeparatorChar).Contains(segment);
+        }
     }
-    public interface ISkill : IHasInfo
+    public record UpgradeData(UpgradePath UpgradePath, System.Action apply);
+    public interface ISkill : IHasInfo, IHasUpgrades
     {
-        public IEnumerable<UpgradeSkill> GenerateUpgrades(bool ignoreEffectUpgrade);
     }
     public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill
     {

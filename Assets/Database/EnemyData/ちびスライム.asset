@@ -55,13 +55,19 @@ MonoBehaviour:
       rid: 2541219158355345427
     RushDistance: 0
     Log: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
     - rid: 2541219158355345426
       type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _character: {fileID: 0}
+        _character:
+          _name: 
         _count: 0
         _inheritsShiny: 0
     - rid: 2541219158355345427
@@ -82,7 +88,9 @@ MonoBehaviour:
     - rid: 2541219281251860508
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 2
+        _elementPowers:
+        - _element: 0
+          _power: 2
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

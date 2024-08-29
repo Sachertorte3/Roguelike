@@ -15,7 +15,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : IEffect
     {
-        [RequiredListLength(1), SerializeField] private List<ElementPower> _elementPowers;
+        [RequiredListLength(1, null), SerializeField] private List<ElementPower> _elementPowers;
         [Range(0, 1), SerializeField] private float _criticalRate;
         [SerializeField] private int _blowAwayDistance;
         [SerializeField] private List<AdditionalConditionData> _additionalConditions = new();

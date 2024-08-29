@@ -66,10 +66,10 @@ namespace Domain.Model.Effect.Area
             return area;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("Radius"), () => Radius += 1 }
+                { new UpgradePath("Radius"), new UpgradeData("半径+1", () => Radius += 1) }
             };
 
         public string Info()

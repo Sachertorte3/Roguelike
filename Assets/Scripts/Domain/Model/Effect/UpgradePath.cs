@@ -11,6 +11,10 @@ namespace Domain.Model.Effect
         {
             _path = Path.Combine(path);
         }
+        public override string ToString()
+        {
+            return _path;
+        }
         public void Prepend(string prefix)
         {
             _path = Path.Combine(prefix, _path);

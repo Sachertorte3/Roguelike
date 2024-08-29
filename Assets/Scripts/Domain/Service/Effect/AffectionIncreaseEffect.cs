@@ -32,7 +32,7 @@ namespace Domain.Service.Effect
             return _power;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

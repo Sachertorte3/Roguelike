@@ -29,10 +29,10 @@ namespace Domain.Model.Effect.Position
             return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("NumberOfTarget"), () => NumberOfTarget += 1 }
+                { new UpgradePath("NumberOfTarget"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
             };
 
         public string Info()

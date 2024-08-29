@@ -12,7 +12,7 @@ namespace Domain.Model.Effect.Position
             yield return position;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

@@ -34,9 +34,9 @@ namespace Domain.Service.Effect
             return 0;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
-            { new UpgradePath("Distance"), () => _distance += 1 }
+            { new UpgradePath("Distance"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
         };
 
         public string Info()

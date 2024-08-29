@@ -26,7 +26,7 @@ namespace Domain.Model.Effect.Position
             return new[] { pos };
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

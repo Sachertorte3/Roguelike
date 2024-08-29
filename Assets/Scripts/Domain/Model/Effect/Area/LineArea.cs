@@ -26,7 +26,7 @@ namespace Domain.Model.Effect.Area
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("Length"), new UpgradeData("長さ+1", () => Length += 1) }
+                { new UpgradePath("長さ"), new UpgradeData("長さ+1", () => Length += 1) }
             };
 
         public string Info()

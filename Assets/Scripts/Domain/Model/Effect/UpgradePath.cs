@@ -41,9 +41,9 @@ namespace Domain.Model.Effect
             return new UpgradePath(Path.Combine(path1._path, path2));
         }
 
-        public bool Contains(string segment)
+        public bool Contains(string path)
         {
-            return _path.Split(Path.DirectorySeparatorChar).Contains(segment);
+            return _path.Contains(path);
         }
     }
 }

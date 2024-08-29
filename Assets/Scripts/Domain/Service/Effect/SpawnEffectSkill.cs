@@ -201,15 +201,15 @@ namespace Domain.Service.Effect
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var path in _effect.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Effect", path)] = _effect.GetUpgrades()[path];
+                upgrades[UpgradePath.Join("効果", path)] = _effect.GetUpgrades()[path];
             }
             foreach (var path in _position.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Position", path)] = _position.GetUpgrades()[path];
+                upgrades[UpgradePath.Join("発動位置", path)] = _position.GetUpgrades()[path];
             }
             foreach (var path in _area.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Area", path)] = _area.GetUpgrades()[path];
+                upgrades[UpgradePath.Join("範囲", path)] = _area.GetUpgrades()[path];
             }
             return upgrades;
         }

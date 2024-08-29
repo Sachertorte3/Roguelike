@@ -32,7 +32,7 @@ namespace Domain.Model.Effect.Position
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("NumberOfTarget"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
+                { new UpgradePath("対象数"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
             };
 
         public string Info()

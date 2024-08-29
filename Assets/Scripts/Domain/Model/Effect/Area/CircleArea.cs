@@ -30,7 +30,7 @@ namespace Domain.Model.Effect.Area
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("Radius"), new UpgradeData("半径+1", () => Radius += 1) }
+                { new UpgradePath("半径"), new UpgradeData("半径+1", () => Radius += 1) }
             };
 
         public string Info()

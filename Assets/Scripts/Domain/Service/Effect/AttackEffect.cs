@@ -72,15 +72,15 @@ namespace Domain.Service.Effect
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var elementPower in _elementPowers)
             {
-                upgrades.Add(new UpgradePath("ElementPowers", elementPower.Element.ToString()), new UpgradeData($"[{elementPower.Element}]威力+2", () => elementPower.Upgrade(2)));
+                upgrades.Add(new UpgradePath("威力", elementPower.Element.ToString()), new UpgradeData($"[{elementPower.Element}]威力+2", () => elementPower.Upgrade(2)));
             }
             if (_criticalRate > 0 && _criticalRate < 0.9f)
             {
-                upgrades.Add(new UpgradePath("CriticalRate"), new UpgradeData("クリティカル率+10%", () => _criticalRate += 0.1f));
+                upgrades.Add(new UpgradePath("クリティカル率"), new UpgradeData("クリティカル率+10%", () => _criticalRate += 0.1f));
             }
             if (_blowAwayDistance > 0)
             {
-                upgrades.Add(new UpgradePath("BlowAwayDistance"), new UpgradeData("吹き飛ばし距離+1", () => _blowAwayDistance += 1));
+                upgrades.Add(new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _blowAwayDistance += 1));
             }
             return upgrades;
         }

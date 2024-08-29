@@ -21,18 +21,6 @@ MonoBehaviour:
   SpawnEffectsOnThrow: 0
   IsSameEffect: 0
   IsSameSkill: 0
-  SkillOnUse:
-    Area:
-      rid: 4425516923575599143
-    Effect:
-      rid: 4425517307579858945
-    Position:
-      rid: 2541219106150416403
-  SkillOnThrow:
-    Area:
-      rid: 4425516923575599143
-    Effect:
-      rid: 4425516923575599144
   ItemEffect:
     rid: 4274951156413235201
   UsageLimit: 1

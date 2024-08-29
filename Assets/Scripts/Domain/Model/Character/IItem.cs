@@ -35,7 +35,7 @@ namespace Domain.Model.Item
         public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public UniTask<bool> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public void Repair();
-        public bool CanUpgrade();
-        public void Upgrade();
+        public bool CanUpgrade(string filter = "");
+        public void Upgrade(string filter = "");
     }
 }

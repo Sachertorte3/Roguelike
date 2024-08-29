@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace Domain.Model.Character
         public string Name;
         public string IconName;
         public ItemState State;
-        public int UpgradeCount;
+        public List<string> UpgradePaths;
         public int Price;
         public Option<ISkillMemento> SkillOnUse;
         public Option<ISkillMemento> SkillOnThrow;

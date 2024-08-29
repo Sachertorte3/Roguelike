@@ -49,7 +49,7 @@ namespace Domain.Service.Effect
             return 0;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

@@ -54,7 +54,7 @@ namespace Domain.Service.Characters
         {
             return _skill.Evaluate(actor, position, direction, world);
         }
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => _skill._GetUpgrades();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => _skill.GetUpgrades();
         public void UpdateTurn()
         {
             if (_remainingCoolTime > 0)

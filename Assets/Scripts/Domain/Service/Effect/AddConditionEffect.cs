@@ -36,7 +36,7 @@ namespace Domain.Service.Effect
             return _condition.Value.Evaluate(target);
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

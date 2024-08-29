@@ -16,7 +16,7 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

@@ -23,10 +23,10 @@ namespace Domain.Model.Effect.Area
                 .Select(i => position + (direction.Vector() * i));
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() =>
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {
-                { new UpgradePath("Length"), () => Length += 1 }
+                { new UpgradePath("Length"), new UpgradeData("長さ+1", () => Length += 1) }
             };
 
         public string Info()

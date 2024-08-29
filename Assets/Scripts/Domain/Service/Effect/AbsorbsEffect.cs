@@ -38,21 +38,21 @@ namespace Domain.Service.Effect
 
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, System.Action>();
+            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var elementPower in _elementPowers)
             {
                 upgrades.Add(
                     new UpgradePath("ElementPower", elementPower.Element.ToString()),
-                    () => elementPower.Upgrade(2)
+                    new UpgradeData($"[{elementPower.Element}]威力+2", () => elementPower.Upgrade(2))
                 );
             }
             if (_rate < 0.9f)
             {
                 upgrades.Add(
                     new UpgradePath("Rate"),
-                    () => _rate += 0.1f
+                    new UpgradeData("吸収割合+10%", () => _rate += 0.1f)
                 );
             }
             return upgrades;

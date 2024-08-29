@@ -40,6 +40,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -56,4 +58,3 @@ MonoBehaviour:
           _name: 
     - rid: 4425517307579858945
       type: {class: RepairEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 

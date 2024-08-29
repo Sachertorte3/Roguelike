@@ -196,20 +196,20 @@ namespace Domain.Service.Effect
             return totalEvaluation;
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, System.Action>();
+            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var path in _effect.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Effect", path)] = () => _effect.ApplyUpgrade(path);
+                upgrades[UpgradePath.Join("Effect", path)] = _effect.GetUpgrades()[path];
             }
             foreach (var path in _position.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Position", path)] = () => _position.ApplyUpgrade(path);
+                upgrades[UpgradePath.Join("Position", path)] = _position.GetUpgrades()[path];
             }
             foreach (var path in _area.GenerateUpgradePaths())
             {
-                upgrades[UpgradePath.Join("Area", path)] = () => _area.ApplyUpgrade(path);
+                upgrades[UpgradePath.Join("Area", path)] = _area.GetUpgrades()[path];
             }
             return upgrades;
         }

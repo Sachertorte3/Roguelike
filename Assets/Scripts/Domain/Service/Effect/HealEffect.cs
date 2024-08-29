@@ -38,9 +38,9 @@ namespace Domain.Service.Effect
                 target.CurrentMaxHp);
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades() => new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
-            { new UpgradePath("Power"), () => _power += 1 }
+            { new UpgradePath("Power"), new UpgradeData("回復量+1", () => _power += 1) }
         };
 
         public string Info()

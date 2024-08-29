@@ -22,7 +22,7 @@ namespace Domain.Service.Items
         public Id<IItem> Id { get; init; }
         private string _name;
         private readonly int _basePrice;
-        private int _upgradeCount;
+        private readonly List<UpgradePath> _upgradePaths;
         private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
         private readonly Option<ISkill> _skillOnUse;
@@ -36,7 +36,7 @@ namespace Domain.Service.Items
             Id = new Id<IItem>(data.Id);
             _name = data.Name;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
-            _upgradeCount = data.UpgradeCount;
+            _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
             State = data.State;
             _basePrice = data.Price;
             _skillOnUse = data.SkillOnUse.Select(skill => skill.Deserialize());
@@ -62,7 +62,7 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string Name => _upgradeCount > 0 ? $"{_name} +{_upgradeCount}" : _name;
+        public string Name => _upgradePaths.Count > 0 ? $"{_name} +{_upgradePaths.Count}" : _name;
         public Sprite Icon { get; init; }
         public ItemState State { get; private set; }
         public bool CanActivateWhenUsed => SkillOnUse.HasValue;
@@ -87,7 +87,7 @@ namespace Domain.Service.Items
                 Id = Id.Value,
                 Name = _name,
                 IconName = Icon.name,
-                UpgradeCount = _upgradeCount,
+                UpgradePaths = _upgradePaths.Select(path => path.ToString()).ToList(),
                 State = State,
                 Price = _basePrice,
                 SkillOnUse = _skillOnUse.Select(skill => skill.Serialize()),
@@ -124,7 +124,7 @@ namespace Domain.Service.Items
                 Id = UniqueIdGenerator.Generate<IItem>().Value,
                 Name = data.Name,
                 IconName = data.Icon.name,
-                UpgradeCount = 0,
+                UpgradePaths = new(),
                 State = state,
                 Price = data.Price,
                 SkillOnUse = new(skillOnUse),
@@ -212,19 +212,19 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public Dictionary<UpgradePath, System.Action> _GetUpgrades()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, System.Action>();
+            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             if (_maxUsages > 1)
             {
                 upgrades.Add(
                     new UpgradePath("MaxUsages"),
-                    () => _maxUsages += 1
+                    new UpgradeData("使用可能回数+1", () => _maxUsages += 1)
                 );
             }
             if (SkillOnUse.HasValue)
             {
-                var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null")._GetUpgrades();
+                var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null").GetUpgrades();
                 skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnUse"));
                 foreach (var upgrade in skillUpgrades)
                 {
@@ -233,7 +233,7 @@ namespace Domain.Service.Items
             }
             if (SkillOnThrow.HasValue)
             {
-                var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null")._GetUpgrades();
+                var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null").GetUpgrades();
                 skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnThrow"));
                 foreach (var upgrade in skillUpgrades)
                 {
@@ -247,13 +247,13 @@ namespace Domain.Service.Items
             return upgrades;
         }
 
-        public bool CanUpgrade() => _GetUpgrades().Any();
+        public bool CanUpgrade() => GetUpgrades().Any();
 
         public void Upgrade()
         {
-            var upgrade = _GetUpgrades().GetAtRandom().Value;
-            upgrade();
-            _upgradeCount += 1;
+            var (path, upgrade) = GetUpgrades().GetAtRandom();
+            upgrade.Upgrade();
+            _upgradePaths.Add(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
@@ -278,6 +278,11 @@ namespace Domain.Service.Items
             if (UseOnDeath)
             {
                 info += "死亡時に自動的に使用される\n";
+            }
+
+            foreach (var path in _upgradePaths)
+            {
+                info += $"アップグレード: {GetUpgrades()[path].Description}\n";
             }
 
             foreach (var condition in PassiveConditions)

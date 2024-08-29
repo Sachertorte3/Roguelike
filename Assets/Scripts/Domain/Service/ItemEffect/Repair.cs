@@ -2,16 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Item;
 
-public class Repair : IItemEffect
+namespace Domain.Service.ItemEffect
 {
-    public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory)
+    public class Repair : IItemEffect
     {
-        var disabledItems = inventory.AllItems.Where(item => item.RemainingUses.CurrentValue == item.MaxUsages);
-        return disabledItems.Select(item => inventory.GetItemIndex(item));
+        public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory)
+        {
+            var disabledItems = inventory.AllItems.Where(item => item.RemainingUses.CurrentValue == item.MaxUsages);
+            return disabledItems.Select(item => inventory.GetItemIndex(item));
+        }
+        public void Apply(IItem item)
+        {
+            item.Repair();
+        }
+        public string Info() => "修理";
     }
-    public void Apply(IItem item)
-    {
-        item.Repair();
-    }
-    public string Info() => "修理";
 }

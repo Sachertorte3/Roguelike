@@ -36,7 +36,7 @@ namespace Domain.Service.Effect
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
-            { new UpgradePath("Distance"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
+            { new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
         };
 
         public string Info()

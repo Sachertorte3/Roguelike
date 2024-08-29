@@ -218,14 +218,14 @@ namespace Domain.Service.Items
             if (_maxUsages > 1)
             {
                 upgrades.Add(
-                    new UpgradePath("MaxUsages"),
+                    new UpgradePath("使用可能回数"),
                     new UpgradeData("使用可能回数+1", () => _maxUsages += 1)
                 );
             }
             if (SkillOnUse.HasValue)
             {
                 var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null").GetUpgrades();
-                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnUse"));
+                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("使用時"));
                 foreach (var upgrade in skillUpgrades)
                 {
                     upgrades.Add(upgrade.Key, upgrade.Value);
@@ -234,10 +234,10 @@ namespace Domain.Service.Items
             if (SkillOnThrow.HasValue)
             {
                 var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null").GetUpgrades();
-                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("SkillOnThrow"));
+                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("投擲時"));
                 foreach (var upgrade in skillUpgrades)
                 {
-                    if (_hasSameEffect && upgrade.Key.Contains("Effect"))
+                    if (_hasSameEffect && upgrade.Key.Contains("効果"))
                     {
                         continue;
                     }
@@ -247,11 +247,19 @@ namespace Domain.Service.Items
             return upgrades;
         }
 
-        public bool CanUpgrade() => GetUpgrades().Any();
-
-        public void Upgrade()
+        public bool CanUpgrade(string filter = "")
         {
-            var (path, upgrade) = GetUpgrades().GetAtRandom();
+            var upgrades = GetUpgrades();
+            if (filter == "")
+            {
+                return upgrades.Any();
+            }
+            return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
+        }
+
+        public void Upgrade(string filter = "")
+        {
+            var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
             upgrade.Upgrade();
             _upgradePaths.Add(path);
             _onItemUpdated.OnNext(Unit.Default);

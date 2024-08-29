@@ -34,7 +34,7 @@ MonoBehaviour:
     Effect:
       rid: 4425516923575599144
   ItemEffect:
-    rid: 4274951156413235202
+    rid: 4274951336697528324
   UsageLimit: 1
   PassiveConditions: []
   references:
@@ -45,9 +45,10 @@ MonoBehaviour:
     - rid: 2541219106150416403
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4274951156413235202
-      type: {class: UpgradeItem, ns: , asm: Domain.Service}
-      data: 
+    - rid: 4274951336697528324
+      type: {class: UpgradeItem, ns: Domain.Service.ItemEffect, asm: Domain.Service}
+      data:
+        _filter: 
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

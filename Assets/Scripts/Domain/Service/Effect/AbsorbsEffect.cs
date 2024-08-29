@@ -44,14 +44,14 @@ namespace Domain.Service.Effect
             foreach (var elementPower in _elementPowers)
             {
                 upgrades.Add(
-                    new UpgradePath("ElementPower", elementPower.Element.ToString()),
+                    new UpgradePath("威力", elementPower.Element.ToString()),
                     new UpgradeData($"[{elementPower.Element}]威力+2", () => elementPower.Upgrade(2))
                 );
             }
             if (_rate < 0.9f)
             {
                 upgrades.Add(
-                    new UpgradePath("Rate"),
+                    new UpgradePath("吸収割合"),
                     new UpgradeData("吸収割合+10%", () => _rate += 0.1f)
                 );
             }

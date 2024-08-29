@@ -10,6 +10,7 @@ using Domain.Model.Effect.Position;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
 using Domain.Service.Entities;
+using Domain.Service.Items;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -53,6 +54,15 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null, Id<IEntity>? id = null)
         {
+            var inventory = new InventoryMemento
+            {
+                Items = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
+            };
+            if (Random.value < data.DropItemRate)
+            {
+                var dropItem = data.DropItemTable.GetRandomItem();
+                inventory.Items[0] = new Option<ItemMemento>(Item.Build(dropItem));
+            }
             return new CharacterMemento
             {
                 Name = isShiny ? "☆" + data.Name : data.Name,
@@ -63,10 +73,7 @@ namespace Domain.Service.Characters
                 Direction = Direction8.Down,
                 Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
                 LastSkill = new Option<SpawnEffectSkillMemento>(data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null),
-                Inventory = new InventoryMemento
-                {
-                    Items = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
-                },
+                Inventory = inventory,
                 Affiliation = CharacterAffiliationManager.Build(data.Group, affiliation, id),
                 Aggression = data.Aggression,
                 Money = 0,

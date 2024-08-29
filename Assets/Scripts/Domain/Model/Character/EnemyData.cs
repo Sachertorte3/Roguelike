@@ -5,8 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Domain.Model.Effect;
 using System;
-
-
+using Domain.Model.Item;
 
 #if UNITY_EDITOR
 using System.IO;
@@ -31,6 +30,8 @@ namespace Domain.Model.Character
         public bool HasLastSkill = false;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
+        [Range(0, 1)] public float DropItemRate = 0;
+        [ShowIf("@DropItemRate > 0")] public Table<ItemData> DropItemTable;
 #if UNITY_EDITOR
         private void OnValidate()
         {

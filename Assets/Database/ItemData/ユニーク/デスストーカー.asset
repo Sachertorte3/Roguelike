@@ -10,55 +10,58 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u96FB\u6483\u306E\u6756"
+  m_Name: "\u30C7\u30B9\u30B9\u30C8\u30FC\u30AB\u30FC"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -1506255561, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 678230710, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 2
   Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 0
-  IsSameEffect: 0
+  SpawnEffectsOnThrow: 1
+  IsSameEffect: 1
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425517220030054408
+      rid: 4274951336697528325
     Effect:
-      rid: 4425517220030054409
+      rid: 4274951336697528331
     Position:
-      rid: 2541219106150416410
+      rid: 4274951336697528327
   SkillOnThrow:
     Area:
-      rid: -2
+      rid: 4274951336697528328
     Effect:
-      rid: -2
+      rid: 4274951336697528331
   ItemEffect:
     rid: -2
-  UsageLimit: 5
+  UsageLimit: 10
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416410
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+    - rid: 4274951336697528325
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        NumberOfTarget: 1
-        TargetAlly: 0
-        TargetEnemy: 1
-        TargetNeutral: 0
-        TargetSelf: 0
-    - rid: 4425517220030054408
+        ContainsSelf: 0
+        Length: 1
+    - rid: 4274951336697528327
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 4274951336697528328
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425517220030054409
+    - rid: 4274951336697528331
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 3
-          _power: 5
+        - _element: 0
+          _power: 2
         _criticalRate: 0
         _blowAwayDistance: 0
-        _additionalConditions: []
+        _additionalConditions:
+        - Condition:
+            _name: "\u6BD2"
+          Probability: 1

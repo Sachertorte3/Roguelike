@@ -55,6 +55,15 @@ MonoBehaviour:
       rid: -2
     RushDistance: 0
     Log: 
+  ElementDamageRateMultiplier:
+    data:
+    - Key: 4
+      Value: 2
+  DropItemRate: 0.05
+  DropItemTable:
+    items:
+    - Item: {fileID: 11400000, guid: 741ad8c6dab58b84c83d8c7423fd4bd6, type: 2}
+      Weight: 1
   references:
     version: 2
     RefIds:
@@ -68,9 +77,11 @@ MonoBehaviour:
     - rid: 2541219281251860491
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 2
+        _elementPowers:
+        - _element: 0
+          _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 0
+        _blowAwayDistance: 5
         _additionalConditions: []
     - rid: 2541219281251860496
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

@@ -119,7 +119,7 @@ namespace Domain.Service.Items
                 skillOnThrow = data.SpawnEffectsOnThrow ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow) : null;
             }
 
-            return new ItemMemento
+            var memento = new ItemMemento
             {
                 Id = UniqueIdGenerator.Generate<IItem>().Value,
                 Name = data.Name,
@@ -136,6 +136,8 @@ namespace Domain.Service.Items
                 RemainingUsages = data.UsageLimit,
                 Conditions = data.PassiveConditions.ToArray()
             };
+            var json = JsonUtility.ToJson(memento);
+            return JsonUtility.FromJson<ItemMemento>(json);
         }
 
         public void SetState(ItemState state)
@@ -219,7 +221,7 @@ namespace Domain.Service.Items
             {
                 upgrades.Add(
                     new UpgradePath("使用可能回数"),
-                    new UpgradeData("使用可能回数+1", () => _maxUsages += 1)
+                    new UpgradeData("使用可能回数+1", () => { _maxUsages += 1; _remainingUsages.Value += 1; })
                 );
             }
             if (SkillOnUse.HasValue)

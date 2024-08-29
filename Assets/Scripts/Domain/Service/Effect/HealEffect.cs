@@ -40,7 +40,7 @@ namespace Domain.Service.Effect
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
-            { new UpgradePath("回復量"), new UpgradeData("回復量+1", () => _power += 1) }
+            { new UpgradePath("回復量"), new UpgradeData("回復量+3", () => _power += 3) }
         };
 
         public string Info()

@@ -81,7 +81,7 @@ MonoBehaviour:
         - _element: 0
           _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 5
+        _blowAwayDistance: 0
         _additionalConditions: []
     - rid: 2541219281251860496
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

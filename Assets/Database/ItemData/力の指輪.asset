@@ -19,6 +19,7 @@ MonoBehaviour:
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
   SpawnEffectsOnThrow: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
@@ -48,7 +49,7 @@ MonoBehaviour:
     - rid: 2541219158355345437
       type: {class: AddAttackMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Element: 1
+        Element: 0
         AddedMultiplier: 0.2
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

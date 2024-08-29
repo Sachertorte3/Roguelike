@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30D6\u30E9\u30C3\u30C7\u30A3\u30D5\u30A1\u30F3\u30B0"
+  m_Name: "\u30AF\u30EA\u30B9\u30BF\u30EB\u30BD\u30FC\u30C9"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 2056912580, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1273478994, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 2
   Price: 100
   EffectType: 1
@@ -25,17 +25,17 @@ MonoBehaviour:
     Area:
       rid: 4274951336697528325
     Effect:
-      rid: 4274951336697528330
+      rid: 4274951336697528329
     Position:
       rid: 4274951336697528327
   SkillOnThrow:
     Area:
       rid: 4274951336697528328
     Effect:
-      rid: 4274951336697528330
+      rid: 4274951336697528329
   ItemEffect:
     rid: -2
-  UsageLimit: 20
+  UsageLimit: 3
   PassiveConditions: []
   references:
     version: 2
@@ -53,10 +53,12 @@ MonoBehaviour:
     - rid: 4274951336697528328
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4274951336697528330
-      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 4274951336697528329
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
         - _element: 0
-          _power: 4
-        _rate: 0.5
+          _power: 7
+        _criticalRate: 1
+        _blowAwayDistance: 0
+        _additionalConditions: []

@@ -221,7 +221,7 @@ namespace Domain.Service.Items
             {
                 upgrades.Add(
                     new UpgradePath("使用可能回数"),
-                    new UpgradeData("使用可能回数+1", () => { _maxUsages += 1; _remainingUsages.Value += 1; })
+                    new UpgradeData("使用可能回数+5", () => { _maxUsages += 5; _remainingUsages.Value += 5; })
                 );
             }
             if (SkillOnUse.HasValue)

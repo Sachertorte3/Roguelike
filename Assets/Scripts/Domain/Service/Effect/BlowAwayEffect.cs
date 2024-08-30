@@ -31,7 +31,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0;
+            return _distance * 0.05f;
+        }
+
+        public float EvaluateDamage()
+        {
+            return _distance;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()

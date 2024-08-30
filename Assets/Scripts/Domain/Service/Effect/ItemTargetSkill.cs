@@ -49,6 +49,11 @@ namespace Domain.Service.Effect
             return 0;
         }
 
+        public float EvaluatePrice()
+        {
+            return _itemEffect.EvaluatePrice();
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

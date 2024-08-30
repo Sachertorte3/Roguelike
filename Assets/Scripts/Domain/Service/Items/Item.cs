@@ -8,6 +8,7 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Effect.Position;
 using Domain.Model.Item;
 using Domain.Service.Effect;
 using R3;
@@ -21,7 +22,6 @@ namespace Domain.Service.Items
     {
         public Id<IItem> Id { get; init; }
         private string _name;
-        private readonly int _basePrice;
         private readonly List<UpgradePath> _upgradePaths;
         private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
@@ -38,7 +38,6 @@ namespace Domain.Service.Items
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
             State = data.State;
-            _basePrice = data.Price;
             _skillOnUse = data.SkillOnUse.Select(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Select(skill => skill.Match(
                 spawnEffectSkillMemento =>
@@ -73,7 +72,7 @@ namespace Domain.Service.Items
         private readonly bool _hasSameSkill;
         private bool _usable => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool UseOnDeath { get; init; }
-        public int Price => Mathf.RoundToInt(_basePrice * _remainingUsages.CurrentValue / _maxUsages);
+        public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public int MaxUsages => _maxUsages;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
@@ -89,7 +88,6 @@ namespace Domain.Service.Items
                 IconName = Icon.name,
                 UpgradePaths = _upgradePaths.Select(path => path.ToString()).ToList(),
                 State = State,
-                Price = _basePrice,
                 SkillOnUse = _skillOnUse.Select(skill => skill.Serialize()),
                 SkillOnThrow = _skillOnThrow.Select(skill => skill.Serialize()),
                 HasSameEffect = _hasSameEffect,
@@ -126,7 +124,6 @@ namespace Domain.Service.Items
                 IconName = data.Icon.name,
                 UpgradePaths = new(),
                 State = state,
-                Price = data.Price,
                 SkillOnUse = new(skillOnUse),
                 SkillOnThrow = new(skillOnThrow),
                 HasSameEffect = data.IsSameEffect,
@@ -206,6 +203,15 @@ namespace Domain.Service.Items
                 ),
                 0
             );
+        }
+        
+        public float EvaluatePrice()
+        {
+            var priceOnUse = SkillOnUse.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * (UseOnDeath ? 5 : 1);
+            var priceOnThrow = SkillOnThrow.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * new ProjectileImpact().EvaluateHitProbability();
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
+            price += _conditions.Sum(condition => condition.EvaluateDamage()) * 100;
+            return price;
         }
 
         public void Repair()

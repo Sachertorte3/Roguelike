@@ -24,6 +24,11 @@ namespace Domain.Service.Effect
             return 1;
         }
 
+        public float EvaluateDamage()
+        {
+            return 100;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

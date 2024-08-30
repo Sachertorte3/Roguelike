@@ -29,6 +29,11 @@ namespace Domain.Model.Effect.Position
             return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
         }
 
+        public float EvaluateHitProbability()
+        {
+            return NumberOfTarget * 50;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {

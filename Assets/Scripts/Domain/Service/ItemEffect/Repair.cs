@@ -15,6 +15,7 @@ namespace Domain.Service.ItemEffect
         {
             item.Repair();
         }
+        public float EvaluatePrice() => 500;
         public string Info() => "修理";
     }
 }

@@ -38,6 +38,11 @@ namespace Domain.Service.Effect
                 target.CurrentMaxHp);
         }
 
+        public float EvaluateDamage()
+        {
+            return Formula.EvaluateHeal(_power);
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
             { new UpgradePath("回復量"), new UpgradeData("回復量+3", () => _power += 3) }

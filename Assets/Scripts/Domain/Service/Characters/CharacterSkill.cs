@@ -54,6 +54,7 @@ namespace Domain.Service.Characters
         {
             return _skill.Evaluate(actor, position, direction, world);
         }
+        public float EvaluatePrice() => _skill.EvaluatePrice();
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => _skill.GetUpgrades();
         public void UpdateTurn()
         {

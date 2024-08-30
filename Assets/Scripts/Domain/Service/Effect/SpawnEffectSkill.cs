@@ -196,6 +196,15 @@ namespace Domain.Service.Effect
             return totalEvaluation;
         }
 
+        public float EvaluatePrice()
+        {
+            var price = 0f;
+            price += _effect.EvaluateDamage();
+            price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
+            price *= _area.EvaluateArea();
+            return price;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();

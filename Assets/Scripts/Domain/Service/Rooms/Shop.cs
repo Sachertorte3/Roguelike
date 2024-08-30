@@ -9,6 +9,7 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Rooms;
 using R3;
@@ -79,7 +80,7 @@ namespace Model.Game
                 Items = items.Select(item => new ShopItemMemento
                 {
                     Id = item.Item.Id,
-                    Price = item.Item.Price
+                    Price = new Item(item.Item).Price
                 }).ToList(),
                 IsStolen = false
             };

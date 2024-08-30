@@ -66,6 +66,11 @@ namespace Domain.Model.Effect.Area
             return area;
         }
 
+        public float EvaluateArea()
+        {
+            return Mathf.PI * Radius * Radius / 4;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {

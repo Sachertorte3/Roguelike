@@ -18,10 +18,18 @@ namespace Domain.Service.Effect
             }
             return Mathf.RoundToInt(elementDamages.Sum() * (isCritical ? 2 : 1));
         }
+        public static int EvaluateDamage(List<ElementPower> powers, bool isCritical = false)
+        {
+            return Mathf.RoundToInt(powers.Sum(power => power.Power) * (isCritical ? 2 : 1));
+        }
         public static int CalcHeal(int power)
         {
             var baseHeal = power;
             return Mathf.RoundToInt(baseHeal);
+        }
+        public static int EvaluateHeal(int power)
+        {
+            return Mathf.RoundToInt(power);
         }
     }
 }

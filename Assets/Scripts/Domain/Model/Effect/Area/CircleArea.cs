@@ -27,6 +27,11 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
+        public float EvaluateArea()
+        {
+            return Mathf.PI * Radius * (Radius + 1);
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {

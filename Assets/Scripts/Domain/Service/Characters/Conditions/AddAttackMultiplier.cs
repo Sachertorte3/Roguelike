@@ -36,5 +36,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return 0.05f * target.GetElementAttackMultiplier(Element);
         }
+
+        public float EvaluateDamage()
+        {
+            return 20 * AddedMultiplier;
+        }
     }
 }

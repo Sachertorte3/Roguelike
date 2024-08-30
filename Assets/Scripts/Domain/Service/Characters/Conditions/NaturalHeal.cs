@@ -34,5 +34,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return (float)Power / target.CurrentMaxHp;
         }
+
+        public float EvaluateDamage()
+        {
+            return Power;
+        }
     }
 }

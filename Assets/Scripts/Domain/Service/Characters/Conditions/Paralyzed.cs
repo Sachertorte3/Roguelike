@@ -30,5 +30,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return target.CanAct ? 0.3f : 0;
         }
+
+        public float EvaluateDamage()
+        {
+            return 5;
+        }
     }
 }

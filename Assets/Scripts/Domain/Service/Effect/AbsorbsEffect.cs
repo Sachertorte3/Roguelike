@@ -35,7 +35,11 @@ namespace Domain.Service.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
+        }
 
+        public float EvaluateDamage()
+        {
+            return Formula.EvaluateDamage(_elementPowers) * (1 + _rate);
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()

@@ -34,15 +34,8 @@ MonoBehaviour:
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 4274951156413235201
-      type: {class: Repair, ns: , asm: Domain.Service}
+      type: {class: Repair, ns: Domain.Service.ItemEffect, asm: Domain.Service}
       data: 
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599144
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: 
-    - rid: 4425517307579858945
-      type: {class: RepairEffect, ns: Domain.Service.Effect, asm: Domain.Service}

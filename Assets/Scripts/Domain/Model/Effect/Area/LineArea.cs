@@ -23,6 +23,11 @@ namespace Domain.Model.Effect.Area
                 .Select(i => position + (direction.Vector() * i));
         }
 
+        public float EvaluateArea()
+        {
+            return Length;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
             new()
             {

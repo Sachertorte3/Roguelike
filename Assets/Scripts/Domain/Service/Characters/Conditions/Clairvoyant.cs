@@ -32,5 +32,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return target.IsClairvoyant ? 0 : 0.1f;
         }
+
+        public float EvaluateDamage()
+        {
+            return 10;
+        }
     }
 }

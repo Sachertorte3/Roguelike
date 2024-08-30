@@ -12,6 +12,11 @@ namespace Domain.Model.Effect.Position
             yield return position;
         }
 
+        public float EvaluateHitProbability()
+        {
+            return 1;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

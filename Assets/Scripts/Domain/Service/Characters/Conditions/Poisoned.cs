@@ -33,5 +33,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return (float)Power / 100;
         }
+
+        public float EvaluateDamage()
+        {
+            return Power;
+        }
     }
 }

@@ -36,6 +36,11 @@ namespace Domain.Service.Effect
             return _condition.Value.Evaluate(target);
         }
 
+        public float EvaluateDamage()
+        {
+            return _condition.Value.EvaluateDamage();
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

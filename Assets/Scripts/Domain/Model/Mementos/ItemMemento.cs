@@ -15,7 +15,6 @@ namespace Domain.Model.Character
         public string IconName;
         public ItemState State;
         public List<string> UpgradePaths;
-        public int Price;
         public Option<ISkillMemento> SkillOnUse;
         public Option<ISkillMemento> SkillOnThrow;
         public bool HasSameEffect;

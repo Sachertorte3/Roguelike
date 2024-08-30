@@ -16,6 +16,11 @@ namespace Domain.Model.Effect.Area
             return Get(position);
         }
 
+        public float EvaluateArea()
+        {
+            return 1;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

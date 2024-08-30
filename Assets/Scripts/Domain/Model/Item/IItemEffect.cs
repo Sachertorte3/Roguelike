@@ -7,5 +7,6 @@ namespace Domain.Model.Item
     {
         public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory);
         public void Apply(IItem item);
+        public float EvaluatePrice();
     }
 }

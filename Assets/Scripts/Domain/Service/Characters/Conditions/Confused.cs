@@ -30,5 +30,10 @@ namespace Domain.Service.Characters.Conditions
         {
             return target.IsConfused ? 0 : 0.2f;
         }
+
+        public float EvaluateDamage()
+        {
+            return 2;
+        }
     }
 }

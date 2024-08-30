@@ -13,7 +13,6 @@ namespace Domain.Model.Item
         [Required] public Sprite Icon;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
-        public int Price = 100;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
         #region spawn effect
         [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath = false;

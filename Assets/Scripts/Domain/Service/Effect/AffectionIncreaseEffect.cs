@@ -32,6 +32,11 @@ namespace Domain.Service.Effect
             return _power;
         }
 
+        public float EvaluateDamage()
+        {
+            return 100;
+        }
+
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()

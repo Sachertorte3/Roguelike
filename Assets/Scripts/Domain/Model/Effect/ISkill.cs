@@ -9,6 +9,7 @@ namespace Domain.Model.Effect
 {
     public interface ISkill : IHasInfo, IHasUpgrades
     {
+        public float EvaluatePrice();
     }
     public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill
     {

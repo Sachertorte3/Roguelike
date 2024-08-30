@@ -19,6 +19,7 @@ namespace Domain.Service.ItemEffect
         {
             item.Upgrade(_filter);
         }
+        public float EvaluatePrice() => 1000;
         public string Info() => _filter != "" ? $"強化({_filter})" : "強化(ランダム)";
     }
 }

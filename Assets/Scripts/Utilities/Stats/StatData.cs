@@ -7,12 +7,14 @@ namespace Stats
     {
         public float BaseValue;
         public float AdditiveValue;
-        public float MultiplicativeValue;
-        public StatData(float baseValue, float additiveValue=0, float multiplicativeValue=1)
+        public float AdditiveMultiplier;
+        public float MultiplicativeMultiplier;
+        public StatData(float baseValue, float additiveValue=0, float additiveMultiplier=1, float multiplicativeMultiplier=1)
         {
             BaseValue = baseValue;
             AdditiveValue = additiveValue;
-            MultiplicativeValue = multiplicativeValue;
+            AdditiveMultiplier = additiveMultiplier;
+            MultiplicativeMultiplier = multiplicativeMultiplier;
         }
     }
     [Serializable]

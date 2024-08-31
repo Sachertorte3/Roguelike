@@ -6,7 +6,7 @@ namespace Stats
 {
     public class Resource : IDisposable
     {
-        public readonly Stat _max;
+        private readonly Stat _max;
         private readonly ReactiveProperty<float> _value;
 
         public Resource(float maxValue)
@@ -92,6 +92,11 @@ namespace Stats
             _max.AddMultiplier(value);
         }
 
+        public void MultiplyMaxValue(float value)
+        {
+            _max.Multiply(value);
+        }
+
         public void RemoveMaxValue(float value)
         {
             _max.AddValue(-value);
@@ -100,6 +105,11 @@ namespace Stats
         public void RemoveMaxMultiplier(float value)
         {
             _max.AddMultiplier(-value);
+        }
+        
+        public void DivideMaxValue(float value)
+        {
+            _max.Divide(value);
         }
 
         public bool IsFull()

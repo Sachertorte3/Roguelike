@@ -99,7 +99,6 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
-                StatType.WaitTime => CurrentWaitTime,
                 _ => throw new ArgumentException($"Invalid stat type: {type}"),
             };
         }
@@ -126,9 +125,6 @@ namespace Domain.Service.Characters.Stats
                     break;
                 case StatType.ViewRange:
                     ViewRange.AddValue(value);
-                    break;
-                case StatType.WaitTime:
-                    WaitTime.AddMaxValue(value);
                     break;
             }
         }
@@ -170,9 +166,6 @@ namespace Domain.Service.Characters.Stats
                     break;
                 case StatType.ViewRange:
                     ViewRange.AddMultiplier(value);
-                    break;
-                case StatType.WaitTime:
-                    WaitTime.AddMaxMultiplier(value);
                     break;
             }
         }

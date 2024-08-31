@@ -16,12 +16,13 @@ namespace Domain.Model.Condition
         public void AddWaitTime(float value);
         public void ResetWaitTime();
         public bool IsWaitTimeFull();
+        public void MultiplySpeed(float value);
+        public void DivideSpeed(float value);
     }
     public enum StatType
     {
         MaxHp,
         HpNaturalRecovery,
-        ViewRange,
-        WaitTime
+        ViewRange
     }
 }

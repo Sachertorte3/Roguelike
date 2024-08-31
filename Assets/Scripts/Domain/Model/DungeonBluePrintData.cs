@@ -12,6 +12,9 @@ namespace Domain.Model
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
     public partial class DungeonBluePrintData : ScriptableObject
     {
+        public MasterItemDataBase MasterItemDataBase;
+        public ItemCategoryWeight SpawnItem;
+        public ItemCategoryWeight ChestItem;
         public Table<WeaponMold> WeaponMolds;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         [RequiredListLength(1, null)] public List<SectionData> Sections;
@@ -21,10 +24,8 @@ namespace Domain.Model
         {
             public int Depth => Floors.Sum(floor => floor.Depth);
             [RequiredListLength(1, null)] public List<FloorData> Floors;
-            public RarityWeightTable<ItemData> Items;
             private bool _existChest => Floors.Max(floor => floor.Room.ChestChance) > 0;
-            [ShowIf("@_existChest"), Range(0, 1)] public float WeaponChanceInChest;
-            [ShowIf("@_existChest")] public RarityWeightTable<ItemData> ChestItems;
+            [ShowIf("@_existChest"), Required] public float WeaponChanceInChest;
             private bool _existShop => Floors.Max(floor => floor.ShopChance) > 0;
             [ShowIf("@_existShop"), Required] public RarityWeightTable<ItemData> ShopItems;
             [ShowIf("@_existShop"), Required] public EnemyData Clerk;
@@ -81,11 +82,11 @@ namespace Domain.Model
             return new DungeonMapData(
                 name,
                 floorData.Field,
-                sectionData.Items,
+                new ItemTable(MasterItemDataBase, SpawnItem),
                 sectionData.Materials,
                 WeaponMolds,
                 WeaponPrefixes,
-                sectionData.ChestItems,
+                new ItemTable(MasterItemDataBase, ChestItem),
                 sectionData.ShopItems,
                 sectionData.Enemies,
                 floorData.PrefixChance,

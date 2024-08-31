@@ -57,7 +57,7 @@ namespace Domain.Model.Effect.Position
                 info += string.Join("、", targets);
             }
             if (TargetSelf) info += "（自分含む）";
-            info += $"を{NumberOfTarget}体";
+            info += $"{NumberOfTarget}体";
 
             return info;
         }

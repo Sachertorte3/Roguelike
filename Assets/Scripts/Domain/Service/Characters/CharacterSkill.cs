@@ -44,7 +44,7 @@ namespace Domain.Service.Characters
         }
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
             _skill.GetArea(actor, position, direction, map);
-        public string Info() => _skill.Info();
+        public string Info() => _skill.InfoOnUse();
         public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             _remainingCoolTime = _coolTime + 1;

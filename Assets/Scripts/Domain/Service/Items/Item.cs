@@ -280,13 +280,22 @@ namespace Domain.Service.Items
             {
                 if (_hasSameSkill)
                 {
-                    info += $"[使用・投擲時]\n{SkillOnUse.Expect("SkillOnUse is null").Info()}\n";
+                    info += $"[使用・投擲時]\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
+                        spawnEffectSkill => $"{spawnEffectSkill.InfoOnUse()}\n",
+                        itemTargetSkill => $"{itemTargetSkill.Info()}\n"
+                    ) + "\n";
                 }
                 else
                 {
-                    info += SkillOnUse.SelectOrDefault(skill => $"[使用時]\n{skill.Info()}\n", "");
+                    info += SkillOnUse.SelectOrDefault(skill => $"[使用時]\n" + skill.Match(
+                        spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
+                        itemTargetSkill => itemTargetSkill.Info()
+                    ) + "\n", "");
 
-                    info += SkillOnThrow.SelectOrDefault(skill => $"[投擲時]\n{skill.Info()}\n", "");
+                    info += SkillOnThrow.SelectOrDefault(skill => skill.Match(
+                        spawnEffectSkill => $"[投擲時]\n{spawnEffectSkill.InfoOnThrow(_hasSameEffect)}\n",
+                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                    ), "");
                 }
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
             }

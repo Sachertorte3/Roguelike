@@ -223,11 +223,18 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
-        public string Info()
+        public string InfoOnUse()
         {
             var info = $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
+            return info;
+        }
+        public string InfoOnThrow(bool omitEffects = false)
+        {
+            var info = "";
+            info += $"効果: {(omitEffects ? "使用時と同じ" : _effect.Info())}\n";
+            info += $"範囲: {_area.Info()}";
             return info;
         }
     }

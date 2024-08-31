@@ -12,7 +12,7 @@ using UnityEditor;
 namespace Domain.Model
 {
     [Serializable]
-    public class Table<T>
+    public class Table<T> : ITable<T>
     {
         [RequiredListLength(1, null)]
         [SerializeField]

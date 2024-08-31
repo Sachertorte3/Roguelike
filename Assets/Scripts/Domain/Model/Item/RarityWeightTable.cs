@@ -11,7 +11,7 @@ using UnityEditor;
 namespace Domain.Model.Item
 {
     [Serializable]
-    public class RarityWeightTable<T> where T : IHasRarity
+    public class RarityWeightTable<T> : ITable<T> where T : IHasRarity
     {
         [RequiredListLength(1, null)]
         [SerializeField]

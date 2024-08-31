@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: "\u30BD\u30FC\u30C9"
   Icon: {fileID: -85647645, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   PowerMagnification: 1.2
-  UsageLimit: 12
+  UsageLimit: 18
   Area:
     rid: 4425516878087061505
   Position:

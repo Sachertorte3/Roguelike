@@ -112,6 +112,15 @@ namespace Domain.Service.Characters
         {
             _visionRange.RemoveClairvoyantFlags();
         }
+        public void MultiplySpeed(float value)
+        {
+            _stats.WaitTime.DivideMaxValue(value);
+        }
+
+        public void DivideSpeed(float value)
+        {
+            _stats.WaitTime.MultiplyMaxValue(value);
+        }
 
         public void AddWaitTime(float value)
         {

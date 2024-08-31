@@ -75,6 +75,11 @@ MonoBehaviour:
       rid: -2
     RushDistance: 0
     Log: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
@@ -88,7 +93,9 @@ MonoBehaviour:
     - rid: 2541219281251860525
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 20
+        _elementPowers:
+        - _element: 0
+          _power: 25
         _criticalRate: 1
         _blowAwayDistance: 0
         _additionalConditions: []
@@ -103,7 +110,9 @@ MonoBehaviour:
     - rid: 2541219281251860529
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 18
+        _elementPowers:
+        - _element: 1
+          _power: 20
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []
@@ -118,11 +127,14 @@ MonoBehaviour:
     - rid: 2541219281251860532
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 25
+        _elementPowers:
+        - _element: 0
+          _power: 15
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions:
-        - Condition: {fileID: 11400000, guid: bb248398d9f4a0c46a7b88f054edd425, type: 2}
+        - Condition:
+            _name: "\u30B9\u30BF\u30F3"
           Probability: 1
     - rid: 2541219281251860533
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

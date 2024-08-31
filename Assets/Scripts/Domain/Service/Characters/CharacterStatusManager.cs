@@ -11,6 +11,7 @@ using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
+using Stats;
 using UnityEngine;
 
 namespace Domain.Service.Characters
@@ -22,12 +23,14 @@ namespace Domain.Service.Characters
         private readonly Subject<int> _onHealReceived = new();
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
+        private readonly FlagStat _overDriveFlags;
 
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
         {
             _stats = new CharacterStats(data.Stats);
             _conditions = new CharacterConditions(this, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
+            _overDriveFlags = new FlagStat(data.OverDriveFlags);
         }
 
         public void Dispose()
@@ -42,6 +45,7 @@ namespace Domain.Service.Characters
             {
                 Stats = _stats.Serialize(),
                 ClairvoyantFlags = _visionRange.ClairvoyantFlags,
+                OverDriveFlags = _overDriveFlags.CurrentFlags,
                 Conditions = _conditions.Conditions.Select(x => x.Serialize()).ToArray()
             };
         }
@@ -49,6 +53,7 @@ namespace Domain.Service.Characters
         public IStats Stats => _stats;
         public IVisionRange VisionRange => _visionRange;
         public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
+        public bool IsOverDrive => _overDriveFlags.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -101,25 +106,25 @@ namespace Domain.Service.Characters
         public void RemoveStatValue(StatType type, float value) => _stats.RemoveStatValue(type, value);
         public void AddStatMultiplier(StatType type, float value) => _stats.AddStatMultiplier(type, value);
         public void RemoveStatMultiplier(StatType type, float value) => _stats.RemoveStatMultiplier(type, value);
+        public void MultiplyStat(StatType type, float value) => _stats.MultiplyStat(type, value);
+        public void DivideStat(StatType type, float value) => _stats.DivideStat(type, value);
         public void AddElementAttackMultiplier(Element element, float value) => _stats.AddElementAttackMultiplier(element, value);
         public void RemoveElementAttackMultiplier(Element element, float value) => _stats.RemoveElementAttackMultiplier(element, value);
         public void AddClairvoyantFlags()
         {
             _visionRange.AddClairvoyantFlags();
         }
-
         public void RemoveClairvoyantFlags()
         {
             _visionRange.RemoveClairvoyantFlags();
         }
-        public void MultiplySpeed(float value)
+        public void AddOverDriveFlags()
         {
-            _stats.WaitTime.DivideMaxValue(value);
+            _overDriveFlags.AddFlags();
         }
-
-        public void DivideSpeed(float value)
+        public void RemoveOverDriveFlags()
         {
-            _stats.WaitTime.MultiplyMaxValue(value);
+            _overDriveFlags.RemoveFlags();
         }
 
         public void AddWaitTime(float value)

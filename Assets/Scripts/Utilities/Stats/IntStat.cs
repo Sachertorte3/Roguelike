@@ -46,5 +46,10 @@ namespace Stats
         {
             _stat.AddMultiplier(multiplier);
         }
+
+        public void Multiply(float multiplier)
+        {
+            _stat.Multiply(multiplier);
+        }
     }
 }

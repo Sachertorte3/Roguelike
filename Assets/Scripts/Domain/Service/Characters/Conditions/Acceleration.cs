@@ -15,7 +15,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.MultiplySpeed(2);
+            hasCondition.MultiplyStat(StatType.WaitTime, 0.5f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,7 +25,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.DivideSpeed(2);
+            hasCondition.DivideStat(StatType.WaitTime, 0.5f);
         }
 
         public float Evaluate(ITargetOfEffect target)

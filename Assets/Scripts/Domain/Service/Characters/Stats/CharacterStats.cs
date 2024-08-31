@@ -126,6 +126,9 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddValue(value);
                     break;
+                case StatType.WaitTime:
+                    WaitTime.AddMaxValue(value);
+                    break;
             }
         }
 
@@ -167,6 +170,9 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddMultiplier(value);
                     break;
+                case StatType.WaitTime:
+                    WaitTime.AddMaxMultiplier(value);
+                    break;
             }
         }
 
@@ -193,6 +199,50 @@ namespace Domain.Service.Characters.Stats
         public void RemoveElementDamageRateMultiplierMultiplier(Element element, float value)
         {
             AddElementDamageRateMultiplierMultiplier(element, -value);
+        }
+
+        public void MultiplyStat(StatType type, float value)
+        {
+            switch (type)
+            {
+                case StatType.MaxHp:
+                    Hp.MultiplyMaxValue(value);
+                    break;
+                case StatType.HpNaturalRecovery:
+                    HpNaturalRecoveryAmount.Multiply(value);
+                    break;
+                case StatType.ViewRange:
+                    ViewRange.Multiply(value);
+                    break;
+                case StatType.WaitTime:
+                    WaitTime.MultiplyMaxValue(value);
+                    break;
+            }
+        }
+
+        public void MultiplyElementAttackMultiplier(Element element, float value)
+        {
+            ElementAttackMultiplier[element].Multiply(value);
+        }
+
+        public void MultiplyElementDamageRateMultiplier(Element element, float value)
+        {
+            ElementDamageRateMultiplier[element].Multiply(value);
+        }
+
+        public void DivideStat(StatType type, float value)
+        {
+            MultiplyStat(type, 1 / value);
+        }
+
+        public void DivideElementAttackMultiplier(Element element, float value)
+        {
+            MultiplyElementAttackMultiplier(element, 1 / value);
+        }
+
+        public void DivideElementDamageRateMultiplier(Element element, float value)
+        {
+            MultiplyElementDamageRateMultiplier(element, 1 / value);
         }
     }
 }

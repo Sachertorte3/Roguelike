@@ -8,21 +8,24 @@ namespace Domain.Model.Condition
         public void RemoveStatValue(StatType type, float value);
         public void AddStatMultiplier(StatType type, float value);
         public void RemoveStatMultiplier(StatType type, float value);
+        public void MultiplyStat(StatType type, float value);
+        public void DivideStat(StatType type, float value);
         public void AddElementAttackMultiplier(Element element, float value);
         public void RemoveElementAttackMultiplier(Element element, float value);
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
+        public void AddOverDriveFlags();
+        public void RemoveOverDriveFlags();
         public int LoseHp(int value, bool notifyOnlyActualLoss = false);
         public void AddWaitTime(float value);
         public void ResetWaitTime();
         public bool IsWaitTimeFull();
-        public void MultiplySpeed(float value);
-        public void DivideSpeed(float value);
     }
     public enum StatType
     {
         MaxHp,
         HpNaturalRecovery,
-        ViewRange
+        ViewRange,
+        WaitTime
     }
 }

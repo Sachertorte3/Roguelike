@@ -109,7 +109,7 @@ namespace Stats
         
         public void DivideMaxValue(float value)
         {
-            _max.Divide(value);
+            _max.Multiply(1 / value);
         }
 
         public bool IsFull()

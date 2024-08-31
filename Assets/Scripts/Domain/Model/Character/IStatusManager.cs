@@ -9,6 +9,7 @@ namespace Domain.Model.Character
     {
         public IStats Stats { get; }
         public bool IsDead { get; }
+        public bool IsOverDrive { get; }
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }

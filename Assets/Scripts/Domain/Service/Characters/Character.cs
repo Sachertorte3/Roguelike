@@ -91,6 +91,7 @@ namespace Domain.Service.Characters
         }
 
         public bool CanAct => _statusManager.Conditions.All(condition => condition.CanAct);
+        public bool IsOverDrive => _statusManager.IsOverDrive;
         public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
         public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
         private ICharacterBehavior Behavior { get; }

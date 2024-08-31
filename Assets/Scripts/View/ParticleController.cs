@@ -12,6 +12,9 @@ namespace View
 
         public void Add(ParticleType particleType)
         {
+            if (particleType == ParticleType.None)
+                return;
+
             if (_particles.ContainsKey(particleType))
             {
                 _particleCounter[particleType]++;
@@ -28,6 +31,9 @@ namespace View
 
         public void Remove(ParticleType particleType)
         {
+            if (particleType == ParticleType.None)
+                return;
+
             if (_particleCounter[particleType] > 1)
             {
                 _particleCounter[particleType]--;

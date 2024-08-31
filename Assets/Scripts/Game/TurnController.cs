@@ -40,6 +40,10 @@ namespace Model.Game
 
                 map.UpdateTurn(_turn);
                 var characters = map.Characters.ToList();
+                if (characters.Any(character => character.StatusManager.IsOverDrive))
+                {
+                    characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
+                }
                 var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
 
                 if (_turnWaitTime.IsFull())
@@ -50,6 +54,9 @@ namespace Model.Game
 
                 foreach (var character in characters)
                 {
+                    if (characters.Any(character => character.StatusManager.IsOverDrive) && !character.StatusManager.IsOverDrive)
+                        continue;
+
                     if (_turnWaitTime.IsFull())
                     {
                         character.UpdateTurn();

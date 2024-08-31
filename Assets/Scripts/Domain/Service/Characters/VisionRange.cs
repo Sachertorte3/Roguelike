@@ -3,6 +3,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Message;
 using R3;
+using Stats;
 using UnityEngine;
 
 namespace Domain.Service.Characters
@@ -11,8 +12,8 @@ namespace Domain.Service.Characters
     {
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
-        private readonly ReactiveProperty<int> _clairvoyantFlags;
-        public bool IsClairvoyant => _clairvoyantFlags.Value > 0;
+        private readonly FlagStat _clairvoyantFlags;
+        public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
         private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
@@ -20,27 +21,26 @@ namespace Domain.Service.Characters
         {
             _position = position;
             _range = range;
-            _clairvoyantFlags = new ReactiveProperty<int>(clairvoyantFlags);
+            _clairvoyantFlags = new FlagStat(clairvoyantFlags);
             _position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
             _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, range)));
             _clairvoyantFlags
-                .Select(flags => flags > 0)
-                .DistinctUntilChanged()
+                .Value
                 .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, world, _range.CurrentValue)));
         }
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
-        public int ClairvoyantFlags => _clairvoyantFlags.Value;
+        public int ClairvoyantFlags => _clairvoyantFlags.CurrentFlags;
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
         public void AddClairvoyantFlags()
         {
-            _clairvoyantFlags.Value++;
+            _clairvoyantFlags.AddFlags();
         }
 
         public void RemoveClairvoyantFlags()
         {
-            _clairvoyantFlags.Value--;
+            _clairvoyantFlags.RemoveFlags();
         }
 
         public void Refresh(IMap map)

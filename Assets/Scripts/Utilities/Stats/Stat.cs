@@ -70,12 +70,6 @@ namespace Stats
             SetValue();
         }
 
-        public void Divide(float value)
-        {
-            _multiplicativeMultiplier /= value;
-            SetValue();
-        }
-
         private void SetValue()
         {
             _value.Value = (_baseValue + _additiveValue) * _additiveMultiplier * _multiplicativeMultiplier;

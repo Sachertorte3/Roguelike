@@ -2,6 +2,7 @@
 {
     public enum ParticleType
     {
+        None,
         Blind,
         Blood,
         BloodRage,

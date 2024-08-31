@@ -226,8 +226,12 @@ namespace Domain.Service.Items
             if (_maxUsages > 1)
             {
                 upgrades.Add(
-                    new UpgradePath("使用可能回数"),
-                    new UpgradeData("使用可能回数+5", () => { _maxUsages += 5; _remainingUsages.Value += 5; })
+                    new UpgradePath("使用可能回数[小]"),
+                    new UpgradeData("使用可能回数[小]", () => { _maxUsages += 3; _remainingUsages.Value += 3; })
+                );
+                upgrades.Add(
+                    new UpgradePath("使用可能回数[大]"),
+                    new UpgradeData("使用可能回数[大]", () => { _maxUsages += 5; _remainingUsages.Value += 5; })
                 );
             }
             if (SkillOnUse.HasValue)

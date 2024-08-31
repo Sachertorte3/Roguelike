@@ -55,12 +55,12 @@ namespace Model.Game
             Log.Debug("Start Save");
             var saveData = _world.SerializeSaveData();
             var saveDataStr = JsonUtility.ToJson(saveData);
-            System.IO.File.WriteAllText("save.json", saveDataStr);
+            System.IO.File.WriteAllText("Save/save.json", saveDataStr);
             var updatedMaps = _world.SerializeUpdatedMaps();
             foreach (var map in updatedMaps)
             {
                 var mapStr = JsonUtility.ToJson(map.Value);
-                System.IO.File.WriteAllText($"map_{map.Key}.json", mapStr);
+                System.IO.File.WriteAllText($"Save/map_{map.Key}.json", mapStr);
             }
             Log.Debug("End Save");
         }
@@ -71,14 +71,14 @@ namespace Model.Game
             _receiver.Enable(false);
             await _turnController.Stop();
             MapManager map = null;
-            if (System.IO.File.Exists("save.json"))
+            if (System.IO.File.Exists("Save/save.json"))
             {
-                var str = System.IO.File.ReadAllText("save.json");
+                var str = System.IO.File.ReadAllText("Save/save.json");
                 var saveData = JsonUtility.FromJson<SaveData>(str);
                 var maps = new Dictionary<int, MapMemento>();
                 foreach (var mapId in saveData.MapIds)
                 {
-                    var mapStr = System.IO.File.ReadAllText($"map_{mapId}.json");
+                    var mapStr = System.IO.File.ReadAllText($"Save/map_{mapId}.json");
                     var mapMemento = JsonUtility.FromJson<MapMemento>(mapStr);
                     maps.Add(mapId, mapMemento);
                 }

@@ -47,10 +47,10 @@ namespace Domain.Service.Effect
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var elementPower in _elementPowers)
             {
-                upgrades.Add(
-                    new UpgradePath("威力", elementPower.Element.ToString()),
-                    new UpgradeData($"[{elementPower.Element}]威力+2", () => elementPower.Upgrade(2))
-                );
+                foreach (var upgrade in elementPower.GetUpgrades())
+                {
+                    upgrades.Add(upgrade.Key, upgrade.Value);
+                }
             }
             if (_rate < 0.9f)
             {

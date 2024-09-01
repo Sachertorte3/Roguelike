@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u304D\u306E\u3053"
+  m_Name: "\u30AB\u30A8\u30EB"
   m_EditorClassIdentifier: 
-  Name: "\u304D\u306E\u3053"
+  Name: "\u30AB\u30A8\u30EB"
   Group: 1
   CharacterType:
-    rid: 2541219158355345419
+    rid: 2541219158355345417
   IsBoss: 0
-  Hp: 5
+  Hp: 8
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -37,14 +37,14 @@ MonoBehaviour:
   Skills:
   - Skill:
       Area:
-        rid: -2
+        rid: 4274951402137321475
       Effect:
-        rid: 7729039033147064320
+        rid: 4274951402137321476
       Position:
-        rid: -2
+        rid: 4274951402137321477
       RushDistance: 0
-      Log: 
-    CoolTime: 0
+      Log: "\u306F\u6C34\u6D41\u30AB\u30C3\u30BF\u30FC\u3092\u653E\u3063\u305F\u3002"
+    CoolTime: 1
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -55,16 +55,34 @@ MonoBehaviour:
       rid: -2
     RushDistance: 0
     Log: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219158355345419
-      type: {class: Mushroom, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345417
+      type: {class: Frog, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 7729039033147064320
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 4274951402137321475
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        _name: "\u6BD2"
+        ContainsSelf: 0
+        Length: 5
+    - rid: 4274951402137321476
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 2
+          _power: 5
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 4274951402137321477
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

@@ -27,7 +27,7 @@ MonoBehaviour:
       type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
         Icon:
-          _name: 
+          _name: icons_full_16_539
     - rid: 2541219106150416421
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

@@ -13,6 +13,7 @@ using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Entities;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Map;
 using ObservableCollections;
@@ -61,6 +62,7 @@ namespace Model.Game
             CharacterManager = new CharacterManager(playerData, receiver, this);
             ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(map.EventEntities, _downStairsLocked);
+            ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
 
             _dungeonData = data;
 
@@ -132,14 +134,17 @@ namespace Model.Game
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
+        public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities => ThrowAnimationEntityManager.ThrowAnimationEntities;
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
+        public ThrowAnimationEntityManager ThrowAnimationEntityManager { get; init; }
 
         public void Dispose()
         {
             CharacterManager.Dispose();
             ItemManager.Dispose();
             EventEntities.ForEach(eventEntity => eventEntity.Dispose());
+            ThrowAnimationEntities.ForEach(throwAnimationEntity => throwAnimationEntity.Dispose());
             _disposables.Dispose();
             Debug.Log("MapManager Disposed");
         }
@@ -159,6 +164,9 @@ namespace Model.Game
 
                 foreach (var eventEntity in EventEntities)
                     yield return eventEntity;
+
+                foreach (var throwAnimationEntity in ThrowAnimationEntities)
+                    yield return throwAnimationEntity;
             }
         }
 
@@ -177,7 +185,13 @@ namespace Model.Game
             );
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position);
-
+        public async UniTask ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction)
+        {
+            var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
+            ThrowAnimationEntityManager.Add(throwAnimationEntity);
+            await throwAnimationEntity.Throw(direction, this);
+            throwAnimationEntity.Destroy();
+        }
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {
             var character = CharacterManager.Characters.FirstOrDefault(character => character.Id == id);
@@ -390,7 +404,8 @@ namespace Model.Game
             Observable.Merge(
                 ((IEntityGroupEvents)CharacterManager.CharacterEvents).OnPositionChanged,
                 ((IEntityGroupEvents)ItemManager.ItemEntityEvents).OnPositionChanged,
-                ((IEntityGroupEvents)EventEntityManager.EventEntityEvents).OnPositionChanged
+                ((IEntityGroupEvents)EventEntityManager.EventEntityEvents).OnPositionChanged,
+                ((IEntityGroupEvents)ThrowAnimationEntityManager.EntityEvents).OnPositionChanged
             ).Subscribe(positionChanged =>
                 positionChanged.Entity.SetVisibility(Player.IsVisible(positionChanged.Message.Position))
             ).AddTo(_disposables);

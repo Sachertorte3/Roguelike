@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u6B6A\u3093\u3060\u61D0\u4E2D\u6642\u8A08"
   m_EditorClassIdentifier: 
   Icon: {fileID: -1732882176, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 0
+  _rarity: 4
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1

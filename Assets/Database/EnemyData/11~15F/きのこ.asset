@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30B9\u30CD\u30FC\u30AF"
+  m_Name: "\u304D\u306E\u3053"
   m_EditorClassIdentifier: 
-  Name: "\u30B9\u30CD\u30FC\u30AF"
+  Name: "\u304D\u306E\u3053"
   Group: 1
   CharacterType:
-    rid: 2541219106150416432
+    rid: 2541219158355345419
   IsBoss: 0
-  Hp: 7
+  Hp: 5
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -37,14 +37,14 @@ MonoBehaviour:
   Skills:
   - Skill:
       Area:
-        rid: 2541219281251860492
+        rid: 4274951402137321473
       Effect:
-        rid: 2541219281251860493
+        rid: 7729039033147064320
       Position:
-        rid: 2541219281251860495
+        rid: 4274951402137321474
       RushDistance: 0
-      Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
-    CoolTime: 0
+      Log: "\u306F\u6BD2\u6DB2\u3092\u5410\u3044\u305F\u3002"
+    CoolTime: 2
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -57,35 +57,28 @@ MonoBehaviour:
     Log: 
   ElementDamageRateMultiplier:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
-    items:
-    - Item: {fileID: 11400000, guid: ad1e9b5ff56f79b4eb94b02d030649f3, type: 2}
-      Weight: 1
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416432
-      type: {class: Snake, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345419
+      type: {class: Mushroom, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219281251860492
+    - rid: 4274951402137321473
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        Length: 1
-    - rid: 2541219281251860493
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers: []
-        _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions:
-        - Condition:
-            _name: "\u9EBB\u75FA"
-          Probability: 0.1
-    - rid: 2541219281251860495
+        Length: 2
+    - rid: 4274951402137321474
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 7729039033147064320
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u6BD2"

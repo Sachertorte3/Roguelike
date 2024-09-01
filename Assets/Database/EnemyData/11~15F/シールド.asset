@@ -65,6 +65,11 @@ MonoBehaviour:
       rid: 2541219246146060297
     RushDistance: 0
     Log: "\u306F\u7206\u767A\u3057\u305F\u3002"
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
@@ -76,7 +81,7 @@ MonoBehaviour:
     - rid: 2541219246146060296
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 0
+        _elementPowers: []
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []
@@ -95,7 +100,9 @@ MonoBehaviour:
     - rid: 7729039033147064325
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 5
+        _elementPowers:
+        - _element: 0
+          _power: 4
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []

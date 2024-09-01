@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Assets.Scripts.View
+namespace View
 {
     public class ParticleController : MonoBehaviour
     {
-        Dictionary<ParticleType, GameObject> _particles = new();
-        Dictionary<ParticleType, int> _particleCounter = new();
+        private Dictionary<ParticleType, int> _particleCounter = new();
+        private Dictionary<ParticleType, GameObject> _particles = new();
 
         public void Add(ParticleType particleType)
         {
+            if (particleType == ParticleType.None)
+                return;
+
             if (_particles.ContainsKey(particleType))
             {
                 _particleCounter[particleType]++;
@@ -28,6 +31,9 @@ namespace Assets.Scripts.View
 
         public void Remove(ParticleType particleType)
         {
+            if (particleType == ParticleType.None)
+                return;
+
             if (_particleCounter[particleType] > 1)
             {
                 _particleCounter[particleType]--;

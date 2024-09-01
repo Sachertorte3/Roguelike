@@ -1,5 +1,6 @@
 ﻿#nullable enable
-using Model.Characters;
+using Domain.Model.Setting;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -13,33 +14,40 @@ namespace Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(CharacterManager characterManager, SynchronizedCharacterView characters,
-            SynchronizedItemView _, InventoryView inventoryView, StatLine statLine, CameraFollowTarget camera)
+        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
+            StatLine statLine)
         {
-            var playerView = characters.Get(characterManager.Player);
+            CompositeDisposable _disposable = new();
+            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+                {
+                    var playerView = characters.Get(map.Player);
 
-            var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
-                .WaitForCompletion();
-            var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
-            arrow.GetComponent<CharacterArrow>().Constract(playerView);
+                    var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
+                        .WaitForCompletion();
+                    var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
+                    arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-            characterManager.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
-            {
-                if (itemChanged.NewValue != null)
-                    inventoryView.Replace(itemChanged.NewValue.Icon, itemChanged.NewValue.RemainingUses.CurrentValue,
-                        itemChanged.NewValue.Info, itemChanged.Index);
-                else
-                    inventoryView.Remove(itemChanged.Index);
-            });
-            characterManager.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
-            {
-                inventoryView.UpdateCount(itemUpdated.Item.RemainingUses.CurrentValue, itemUpdated.Index);
-            });
-
-            Observable.Merge(characterManager.Player.Stats.HpValue, characterManager.Player.Stats.MaxHp)
-                .Subscribe(_ => statLine.SetValue(characterManager.Player.Stats.MaxHp.CurrentValue, characterManager.Player.Stats.HpValue.CurrentValue));
-
-            camera.SetTarget(playerView.gameObject);
+                    _disposable.Add(Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                        .Subscribe(_ =>
+                        {
+                            var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 /
+                                                        map.Player.StatusManager.Stats.MaxHp.CurrentValue;
+                            statLine.SetValue(map.Player.StatusManager.Stats.MaxHp.CurrentValue,
+                                map.Player.StatusManager.Stats.HpValue.CurrentValue);
+                            if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                            {
+                                statLine.SetTextColor(Color.red);
+                            }
+                            else
+                            {
+                                statLine.SetTextColor(Color.white);
+                            }
+                        }));
+                },
+                map =>
+                {
+                    _disposable.Clear();
+                });
         }
     }
 }

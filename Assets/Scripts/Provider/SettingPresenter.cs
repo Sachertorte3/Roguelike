@@ -1,5 +1,5 @@
 ﻿using System;
-using Model.Setting;
+using Domain.Model.Setting;
 using R3;
 using Unity.Logging;
 using VContainer;

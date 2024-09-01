@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u3061\u3073\u30B9\u30E9\u30A4\u30E0"
+  m_EditorClassIdentifier: 
+  Name: "\u3061\u3073\u30B9\u30E9\u30A4\u30E0"
+  Group: 1
+  CharacterType:
+    rid: 2541219158355345428
+  IsBoss: 0
+  Hp: 3
+  Aggression: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
+  Skills:
+  - Skill:
+      Area:
+        rid: 2541219281251860507
+      Effect:
+        rid: 2541219281251860508
+      Position:
+        rid: 2541219281251860509
+      RushDistance: 0
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+    CoolTime: 0
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: 2541219158355345433
+    Effect:
+      rid: 2541219158355345426
+    Position:
+      rid: 2541219158355345427
+    RushDistance: 0
+    Log: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2541219158355345426
+      type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _character:
+          _name: 
+        _count: 0
+        _inheritsShiny: 0
+    - rid: 2541219158355345427
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345428
+      type: {class: SlimeSmall, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 5
+    - rid: 2541219158355345433
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 2541219281251860507
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219281251860508
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 2
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 2541219281251860509
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

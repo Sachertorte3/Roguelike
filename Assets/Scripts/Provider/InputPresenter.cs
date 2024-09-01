@@ -1,8 +1,7 @@
 ﻿#nullable enable
-using Model;
-using Model.Characters;
-using Model.Characters.Behavior;
-using Model.Items;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
+using Model.Game;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -15,8 +14,8 @@ namespace Provider
     public class InputPresenter
     {
         [Inject]
-        public InputPresenter(InputReceiver receiver, CharacterControllInputReceiver actionReceiver,
-            CharacterManager characterManager, ItemManager itemManager, InventoryView inventoryView)
+        public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
+            ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController, InventoryView inventoryView)
         {
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
@@ -32,22 +31,29 @@ namespace Provider
                     var direction = DirectionMethods.FromVector(vector);
                     actionReceiver.SetMoveInput(direction, false);
                 });
-            receiver.OnAttackPerformed.Subscribe(_ => { actionReceiver.SetAttackInput(); });
-            receiver.OnThrowPerformed.Subscribe(_ => { actionReceiver.SetThrowInput(); });
+            receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
+            receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ =>
             {
-                var item = characterManager.Player.Inventory.GetItem(inventoryView.CurrentFocus);
-                if (item != null)
+                if (inventoryView.CurrentFocus.HasValue)
                 {
-                    var itemEntity = itemManager.TryPickUp(characterManager.Player.CurrentPosition);
-                    characterManager.Player.ReplaceInventory(itemEntity?.Item, inventoryView.CurrentFocus);
-                    itemManager.SpawnItem(item, characterManager.Player.CurrentPosition);
+                    world.HandleItemDrop(inventoryView.CurrentFocus.Value);
                 }
             });
-            inventoryView.OnFocusChanged.Subscribe(index => { actionReceiver.SetInventoryIndex(index); });
 
-            Globals.IsDash = () => receiver.IsDash;
-            Globals.IsNoMove = () => receiver.IsNoMove;
+            receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
+            receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
+
+            inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
+
+            choiceReceiver.OnShownChoice.Subscribe(async message =>
+            {
+                var index = await menuController.GetChoice(message.text, message.choices);
+                choiceReceiver.SetChoicedIndex(index);
+            });
+
+            receiver.OnQuickSave.Subscribe(_ => gameManager.Save());
+            receiver.OnQuickLoad.Subscribe(_ => gameManager.Load());
         }
     }
 }

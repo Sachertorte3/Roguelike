@@ -1,73 +1,66 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
-using BidirectionalMap;
-using Model.Characters;
-using Model.Items;
-using Model.Setting;
+using System.Linq;
+using Domain.Model;
+using Domain.Model.Setting;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Utilities.ObjectsManager;
+using Utilities;
+using VContainer;
 using View;
-using Object = UnityEngine.Object;
 
 namespace Provider
 {
-    public class SynchronizedItemView
+    public class SynchronizedItemView : SynchronizedEntityView<IItemEntity, EntityView>, IDisposable
     {
+        private readonly SerialDisposable _disposable = new();
         private readonly EffectViewSpawner _effectViewSpawner;
-        private Func<HashSet<Vector2Int>> _getVisibleArea;
-        private readonly InputReceiver _inputReceiver;
+        protected override InputReceiver _inputReceiver { get; init; }
+        private readonly World _world;
+        protected override EntityView GetEntityView(EntityView view) => view;
 
-        private readonly GameObject _itemViewPrefab =
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion();
-
-        private readonly BiMap<ItemEntity, EntityView> itemViewDict = new();
-
-        public SynchronizedItemView(EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver,
-            ItemManager itemManager, CharacterManager characterManager)
+        [Inject]
+        public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
         {
             _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
-            _getVisibleArea = characterManager.Player.Area.Get;
+            _world = world;
 
-            itemManager.OnItemAdded.Subscribe(item => { Add(item); });
-            itemManager.OnItemRemoved.Subscribe(item => { Remove(item); });
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map => _disposable.Disposable = map.Items.SubscribeToAll(Add, Remove),
+                map => map.Items.ForEach(item => Remove(item))
+            );
         }
 
-        public void Add(ItemEntity item)
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
+
+        public void Dispose()
         {
-            var entityView = Object.Instantiate(_itemViewPrefab).GetComponent<EntityView>();
-            entityView.Construct(_inputReceiver);
-            item.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction));
-            item.OnSpawnEffect.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill, Settings.EffectDisplayTime.Value));
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.MoveMilliseconds = value);
-            Settings.ThrowMilliseconds.Subscribe(value => entityView.DashMilliseconds = value);
+            _disposable.Dispose();
+        }
+
+        ~SynchronizedItemView()
+        {
+            Dispose();
+        }
+
+        protected override void InitializeView(IItemEntity item, EntityView entityView)
+        {
+            item.OnEffectSpawned.Subscribe(useSkill =>
+                    _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
+                        useSkill.Color, Settings.EffectDisplayTime.Value))
+                .AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.GetComponent<SpriteView>().RegisterComponent();
-            spriteView.transform.position = (Vector3Int)item.CurrentPosition;
-            spriteView.GetComponent<SpriteRenderer>().sprite = item.Item.Icon;
-            item.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility));
-            itemViewDict.Add(item, entityView);
+            spriteView.GetComponent<SpriteRenderer>().sprite = item.Icon;
         }
 
-        public void Remove(ItemEntity item)
+        protected override void CleanupView(IItemEntity item, EntityView view)
         {
-            Object.Destroy(itemViewDict.Forward[item].gameObject);
-            itemViewDict.Remove(item);
-        }
-
-        public ItemEntity Get(EntityView view)
-        {
-            return itemViewDict.Reverse[view];
-        }
-
-        public EntityView Get(ItemEntity item)
-        {
-            return itemViewDict.Forward[item];
         }
     }
 }

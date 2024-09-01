@@ -1,0 +1,31 @@
+﻿using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Action;
+using Domain.Model.Effect;
+using Utilities;
+
+namespace Domain.Service.Action
+{
+    internal record UseSkill(ICharacterSkill Skill, Direction8 Direction) : IAction
+    {
+        public bool Doable(IActor actor, IMap world)
+        {
+            return Skill.IsUsable();
+        }
+
+        public async UniTask Do(IActor actor, IMap world, IInput input)
+        {
+            await actor.UseSkill(Skill, Direction, world);
+        }
+
+        public float Evaluate(IActor actor, IMap world)
+        {
+            return Skill.Evaluate(actor, actor.CurrentPosition, Direction, world);
+        }
+
+        public string Info()
+        {
+            return $"UseSkill: \nSkill{Skill.Info()}\nDirection:{Direction}";
+        }
+    }
+}

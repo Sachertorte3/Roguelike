@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
-using Utilities;
 
 namespace View
 {
@@ -15,24 +13,19 @@ namespace View
             _tilemap.SetColor(new Vector3Int(position.x, position.y, 0), color);
         }
 
-        public void SetTilesTransparent(IEnumerable<Vector2Int> positions)
+        public void SetTileTransparent(Vector2Int position)
         {
-            foreach (var position in positions) SetTileColor(position, Color.clear);
+            SetTileColor(position, Color.clear);
         }
 
-        public void SetTilesTranslucent(IEnumerable<Vector2Int> positions)
+        public void SetTileTranslucent(Vector2Int position)
         {
-            foreach (var position in positions) SetTileColor(position, new Color(1f, 1f, 1f, 0.5f));
+            SetTileColor(position, new Color(1f, 1f, 1f, 0.5f));
         }
 
-        public void SetTilesVisible(IEnumerable<Vector2Int> positions)
+        public void SetTileVisible(Vector2Int position)
         {
-            foreach (var position in positions) SetTileColor(position, Color.white);
-        }
-
-        public void ResetMask(Vector2Int position)
-        {
-            SetTilesTransparent(new RectInt(position - new Vector2Int(1, 1), new Vector2Int(3, 3)).RectRange());
+            SetTileColor(position, Color.white);
         }
     }
 }

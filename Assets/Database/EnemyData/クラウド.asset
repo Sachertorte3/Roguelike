@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30AF\u30E9\u30A6\u30C9"
+  m_EditorClassIdentifier: 
+  Name: "\u30AF\u30E9\u30A6\u30C9"
+  Group: 1
+  CharacterType:
+    rid: 2541219246146060288
+  IsBoss: 0
+  Hp: 4
+  Aggression: 4
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 5
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 1
+    distanceBottomBound: 3
+    lessThanBottomBound: 3
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
+  Skills:
+  - Area:
+      rid: 2541219246146060302
+    Effect:
+      rid: 4425516923575599108
+    Position:
+      rid: 2541219246146060305
+    RushDistance: 0
+    Log: "\u306F\u95C7\u306E\u529B\u3092\u653E\u51FA\u3057\u305F\u3002"
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    RushDistance: 0
+    Log: 
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2541219246146060288
+      type: {class: Cloud, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0
+    - rid: 2541219246146060302
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 2541219246146060305
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        NumberOfTarget: 1
+        TargetAlly: 0
+        TargetEnemy: 1
+        TargetNeutral: 0
+        TargetSelf: 0
+    - rid: 4425516923575599108
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 2
+        CriticalRate: 0
+        BlowAwayDistance: 0
+        AdditionalConditions: []

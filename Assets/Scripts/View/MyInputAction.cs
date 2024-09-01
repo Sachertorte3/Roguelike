@@ -89,6 +89,24 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSave"",
+                    ""type"": ""Button"",
+                    ""id"": ""6528f799-56a3-48fc-82af-33f1d4b252f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickLoad"",
+                    ""type"": ""Button"",
+                    ""id"": ""3f2fb42b-0075-4a69-b887-6b3924aeec11"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -210,6 +228,28 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e0184f5-4ff7-42f6-9d0f-f7fa5a74ceb0"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c44a4750-3f34-41a3-95ad-f7591d981576"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickLoad"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -572,6 +612,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""1d7f1ad1-1fec-4d57-8d1e-2cac9d223026"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""2511b5c2-c3df-4f75-b026-32a4d6b2f9e7"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
@@ -727,6 +778,8 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_TurnOnly = m_Field.FindAction("TurnOnly", throwIfNotFound: true);
         m_Field_Drop = m_Field.FindAction("Drop", throwIfNotFound: true);
         m_Field_Throw = m_Field.FindAction("Throw", throwIfNotFound: true);
+        m_Field_QuickSave = m_Field.FindAction("QuickSave", throwIfNotFound: true);
+        m_Field_QuickLoad = m_Field.FindAction("QuickLoad", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -810,6 +863,8 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_TurnOnly;
     private readonly InputAction m_Field_Drop;
     private readonly InputAction m_Field_Throw;
+    private readonly InputAction m_Field_QuickSave;
+    private readonly InputAction m_Field_QuickLoad;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
@@ -821,6 +876,8 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         public InputAction @TurnOnly => m_Wrapper.m_Field_TurnOnly;
         public InputAction @Drop => m_Wrapper.m_Field_Drop;
         public InputAction @Throw => m_Wrapper.m_Field_Throw;
+        public InputAction @QuickSave => m_Wrapper.m_Field_QuickSave;
+        public InputAction @QuickLoad => m_Wrapper.m_Field_QuickLoad;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -851,6 +908,12 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Throw.started += instance.OnThrow;
             @Throw.performed += instance.OnThrow;
             @Throw.canceled += instance.OnThrow;
+            @QuickSave.started += instance.OnQuickSave;
+            @QuickSave.performed += instance.OnQuickSave;
+            @QuickSave.canceled += instance.OnQuickSave;
+            @QuickLoad.started += instance.OnQuickLoad;
+            @QuickLoad.performed += instance.OnQuickLoad;
+            @QuickLoad.canceled += instance.OnQuickLoad;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -876,6 +939,12 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Throw.started -= instance.OnThrow;
             @Throw.performed -= instance.OnThrow;
             @Throw.canceled -= instance.OnThrow;
+            @QuickSave.started -= instance.OnQuickSave;
+            @QuickSave.performed -= instance.OnQuickSave;
+            @QuickSave.canceled -= instance.OnQuickSave;
+            @QuickLoad.started -= instance.OnQuickLoad;
+            @QuickLoad.performed -= instance.OnQuickLoad;
+            @QuickLoad.canceled -= instance.OnQuickLoad;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -1066,6 +1135,8 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         void OnTurnOnly(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
+        void OnQuickSave(InputAction.CallbackContext context);
+        void OnQuickLoad(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

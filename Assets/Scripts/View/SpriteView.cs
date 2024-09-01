@@ -21,6 +21,21 @@ namespace View
         {
             _isVisible = visible;
             GetComponent<SpriteRenderer>().enabled = visible;
+            foreach (var child in transform.GetComponentsInChildren<SpriteRenderer>())
+            {
+                child.enabled = visible;
+            }
+            foreach (var child in transform.GetComponentsInChildren<MeshRenderer>())
+            {
+                child.enabled = visible;
+            }
+            foreach (var child in transform.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (visible)
+                    child.Play();
+                else
+                    child.Stop();
+            }
         }
     }
 }

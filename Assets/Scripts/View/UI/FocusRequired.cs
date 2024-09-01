@@ -18,7 +18,7 @@ namespace View.UI
 
         private void Update()
         {
-            if (EventSystem.current? EventSystem.current.currentSelectedGameObject != PreviousSelection : false)
+            if (EventSystem.current ? EventSystem.current.currentSelectedGameObject != PreviousSelection : false)
             {
                 if (EventSystem.current.currentSelectedGameObject == null)
                     EventSystem.current.SetSelectedGameObject(PreviousSelection);

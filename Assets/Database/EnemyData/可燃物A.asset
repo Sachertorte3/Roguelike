@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u53EF\u71C3\u7269A"
+  m_EditorClassIdentifier: 
+  Name: "\u53EF\u71C3\u7269A"
+  Group: 1
+  CharacterType:
+    rid: 2541219246146060293
+  IsBoss: 0
+  Hp: 1
+  Aggression: 1
+  WanderAround: 1
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 0
+  Skills:
+  - Area:
+      rid: 2541219246146060295
+    Effect:
+      rid: 4425516923575599108
+    Position:
+      rid: 2541219106150416414
+    Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+  HasLastSkill: 1
+  LastSkill:
+    Area:
+      rid: 2541219246146060294
+    Effect:
+      rid: 2541219246146060296
+    Position:
+      rid: 2541219246146060297
+    Log: "\u306F\u7206\u767A\u3057\u305F\u3002"
+  references:
+    version: 2
+    RefIds:
+    - rid: 2541219106150416414
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219246146060293
+      type: {class: Potion, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        Type: 0
+    - rid: 2541219246146060294
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 1
+        Radius: 2
+    - rid: 2541219246146060295
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1
+    - rid: 2541219246146060296
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 10
+        CriticalRate: 0
+        BlowAwayDistance: 0
+        AdditionalConditions:
+        - Condition:
+            rid: 2541219246146060306
+          RemovalCondition:
+            RemoveByElapsedTurn: 1
+            Duration: 8
+            RemoveByDamage: 0
+            Probability: 0
+            RemoveByEnemyNearby: 0
+          Probability: 0
+    - rid: 2541219246146060297
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219246146060306
+      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        Power: 1
+    - rid: 4425516923575599108
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        Power: 3
+        CriticalRate: 0
+        BlowAwayDistance: 0
+        AdditionalConditions: []

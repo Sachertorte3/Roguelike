@@ -10,7 +10,7 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
+        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2)
         {
             LoggerInit();
             gameManager.Load();

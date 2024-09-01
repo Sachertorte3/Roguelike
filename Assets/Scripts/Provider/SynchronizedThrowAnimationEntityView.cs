@@ -1,0 +1,55 @@
+#nullable enable
+using System;
+using Domain.Service.Items;
+using Model.Game;
+using R3;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Utilities;
+using VContainer;
+using View;
+
+namespace Provider
+{
+    public class SynchronizedThrowAnimationEntityView : SynchronizedEntityView<ThrowAnimationEntity, EntityView>, IDisposable
+    {
+        private readonly SerialDisposable _disposable = new();
+        protected override InputReceiver _inputReceiver { get; init; }
+        protected override EntityView GetEntityView(EntityView view) => view;
+
+        [Inject]
+        public SynchronizedThrowAnimationEntityView(World world, InputReceiver inputReceiver)
+        {
+            _inputReceiver = inputReceiver;
+
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map => _disposable.Disposable = map.ThrowAnimationEntities.SubscribeToAll(Add, Remove),
+                map => map.ThrowAnimationEntities.ForEach(entity => Remove(entity))
+            );
+        }
+
+        protected override EntityView _viewPrefab =>
+            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
+        }
+
+        ~SynchronizedThrowAnimationEntityView()
+        {
+            Dispose();
+        }
+
+        protected override void InitializeView(ThrowAnimationEntity eventEntity, EntityView entityView)
+        {
+            var spriteView = entityView.GetComponent<SpriteView>();
+            spriteView.GetComponent<SpriteRenderer>().sprite = eventEntity.Icon;
+        }
+
+        protected override void CleanupView(ThrowAnimationEntity item, EntityView view)
+        {
+        }
+    }
+}

@@ -8,6 +8,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Service.Items;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
@@ -102,12 +103,18 @@ namespace Domain.Service.Effect
             return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
         }
 
-        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public async UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
+
             var spawnPositions = _position.Get(actor, position, direction, map);
+            if (_position is ProjectileImpact projectileImpact)
+            {
+                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction);
+            }
             var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
+
             map.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
                 {
@@ -134,8 +141,8 @@ namespace Domain.Service.Effect
 
                     _effect.Apply(actor, target, map);
                 });
-            _effect.Apply(actor, area, map);
-            return UniTask.FromResult(true);
+            await _effect.Apply(actor, area, map);
+            return true;
         }
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)

@@ -42,10 +42,8 @@ namespace Domain.Service.Characters
                 RemainingTurn = 0
             };
         }
-        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction, IEffectMap map) =>
-            _skill.GetArea(actor, position, direction, map);
         public string Info() => _skill.InfoOnUse();
-        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             _remainingCoolTime = _coolTime + 1;
             return _skill.Use(actor, position, direction, map);

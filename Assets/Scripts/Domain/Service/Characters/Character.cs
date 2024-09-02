@@ -185,13 +185,16 @@ namespace Domain.Service.Characters
                 if (CanMove(direction, map))
                     await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
-            _onEffectSpawned.OnNext(
-                new OnEffectSpawnedMessage(skill.GetArea(this, CurrentPosition, CurrentDirection, map), skill.Color));
-            if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(skill.Use(this, CurrentPosition, direction, map),
-                    UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-            else
-                await skill.Use(this, CurrentPosition, direction, map);
+            
+            var result = await skill.Use(this, CurrentPosition, direction, map);
+            
+            if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+            {
+                _onEffectSpawned.OnNext(
+                    new OnEffectSpawnedMessage(spawnEffectResult.Area, spawnEffectResult.Color));
+                if (_entity.VisibleByPlayer.CurrentValue)
+                    await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+            }
 
             State = CharacterState.Wait;
         }
@@ -207,12 +210,11 @@ namespace Domain.Service.Characters
                 await item.SkillOnUse.Expect("skill on use is null").Match(
                     async spawnEffect =>
                     {
-                        var area = spawnEffect.GetArea(this, CurrentPosition, CurrentDirection, map);
-                        var isSuccess = await item.Use(this, CurrentPosition, direction, map);
+                        var result = await item.Use(this, CurrentPosition, direction, map);
 
-                        if (isSuccess)
+                        if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
                         {
-                            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(area, spawnEffect.Color));
+                            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(spawnEffectResult.Area, spawnEffect.Color));
                             if (_entity.VisibleByPlayer.CurrentValue)
                                 await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
                         }

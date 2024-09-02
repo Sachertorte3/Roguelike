@@ -5,6 +5,7 @@ using Domain.Model.Message;
 using R3;
 using Stats;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Service.Characters
 {

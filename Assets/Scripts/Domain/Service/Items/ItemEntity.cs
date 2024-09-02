@@ -79,13 +79,13 @@ namespace Domain.Service.Items
 
             if (Item.CanActivateWhenThrown)
             {
-                var isUsed = await Item.UseWhenThrown(actor, CurrentPosition, direction, map);
-                if (isUsed && Item.SkillOnThrow.Value is SpawnEffectSkill spawnEffect)
+                var result = await Item.UseWhenThrown(actor, CurrentPosition, direction, map);
+                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
                 {
                     _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffect.GetArea(actor, CurrentPosition, direction, map),
-                        spawnEffect.Color)
-                    );
+                        spawnEffectResult.Area,
+                        spawnEffectResult.Color
+                    ));
                 }
             }
             if (map.IsOverlapped(CurrentPosition, Layer))

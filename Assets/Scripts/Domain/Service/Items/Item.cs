@@ -143,16 +143,13 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public async UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            var isSuccess = await SkillOnUse.SelectOrDefault(
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
-                    itemTargetSkill => itemTargetSkill.Use(actor, this)
-                ),
-                UniTask.FromResult(false)
+            var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
+                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                itemTargetSkill => itemTargetSkill.Use(actor, this)
             );
-            if (isSuccess)
+            if (result.IsSuccess)
             {
                 _remainingUsages.Value -= 1;
                 if (State == ItemState.ShopItem)
@@ -161,18 +158,15 @@ namespace Domain.Service.Items
                 }
                 _onItemUpdated.OnNext(Unit.Default);
             }
-            return isSuccess;
+            return result;
         }
-        public async UniTask<bool> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public async UniTask<ISkillResult> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            var isSuccess = await SkillOnThrow.SelectOrDefault(
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
-                    itemTargetSkill => itemTargetSkill.Use(actor, this)
-                ),
-                UniTask.FromResult(false)
+            var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
+                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                itemTargetSkill => itemTargetSkill.Use(actor, this)
             );
-            if (isSuccess)
+            if (result.IsSuccess)
             {
                 _remainingUsages.Value -= 1;
                 if (State == ItemState.ShopItem)
@@ -181,7 +175,7 @@ namespace Domain.Service.Items
                 }
                 _onItemUpdated.OnNext(Unit.Default);
             }
-            return isSuccess;
+            return result;
         }
 
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world)

@@ -8,7 +8,6 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
-using Domain.Service.Items;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
@@ -96,24 +95,23 @@ namespace Domain.Service.Effect
             };
         }
 
-        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
+        private IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IMap map)
         {
             var spawnPositions = _position.Get(actor, position, direction, map);
-            return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
+            return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
         }
 
-        public async UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
 
-            var spawnPositions = _position.Get(actor, position, direction, map);
             if (_position is ProjectileImpact projectileImpact)
             {
                 await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction);
             }
-            var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
+            var area = GetArea(actor, position, direction, map);
 
             map.GetCharactersInArea(area.ToHashSet())
                 .ForEach(target =>
@@ -142,7 +140,7 @@ namespace Domain.Service.Effect
                     _effect.Apply(actor, target, map);
                 });
             await _effect.Apply(actor, area, map);
-            return true;
+            return SpawnEffectSkillResult.Success(Color, area);
         }
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
@@ -152,8 +150,7 @@ namespace Domain.Service.Effect
                 if (actor.CanMove(position, direction, map))
                     position += direction.Vector();
             }
-            var spawnPositions = _position.Get(actor, position, direction, map);
-            var area = spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction));
+            var area = GetArea(actor, position, direction, map);
             var characters = map.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
             var totalEvaluation = 0f;

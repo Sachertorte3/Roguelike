@@ -4,9 +4,9 @@ using System.Linq;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace Domain.Service.Characters
+namespace Utilities
 {
-    internal static class ViewCalculator
+    public static class ViewCalculator
     {
         private static readonly OctantTransform[] s_octantTransform =
         {

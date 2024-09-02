@@ -34,14 +34,17 @@ namespace Domain.Service.Effect
             };
         }
 
-        public async UniTask<bool> Use(IActor actor, IItem item)
+        public async UniTask<ISkillResult> Use(IActor actor, IItem item)
         {
             var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(actor.Inventory);
             disabledItemIndexes = disabledItemIndexes.Append(actor.Inventory.GetItemIndex(item));
             var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
             if (selectedItem != null)
+            {
                 _itemEffect.Apply(selectedItem);
-            return selectedItem != null;
+                return ItemTargetSkillResult.Success;
+            }
+            return ItemTargetSkillResult.Failed;
         }
 
         public float Evaluate(IActor actor, IItem item)

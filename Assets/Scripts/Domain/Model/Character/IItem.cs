@@ -32,8 +32,8 @@ namespace Domain.Model.Item
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public void SetState(ItemState state);
-        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
-        public UniTask<bool> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public UniTask<ISkillResult> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
         public void Repair();
         public bool CanUpgrade(string filter = "");
         public void Upgrade(string filter = "");

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Character;
@@ -13,9 +12,7 @@ namespace Domain.Model.Effect
         public bool IsUsable();
         public Color Color { get; }
         public int RushDistance { get; }
-        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map);
-        public UniTask<bool> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
+        public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world);
     }
 }

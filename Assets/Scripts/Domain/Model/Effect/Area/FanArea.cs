@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -8,15 +9,17 @@ namespace Domain.Model.Effect.Area
     public class FanArea : IDirectionalArea
     {
         public bool ContainsSelf;
+        public bool CanIgnoreWalls;
         [MinValue(1)] public int Radius;
 
-        public FanArea(int radius, bool containsSelf)
+        public FanArea(int radius, bool containsSelf, bool canIgnoreWalls)
         {
             Radius = radius;
             ContainsSelf = containsSelf;
+            CanIgnoreWalls = canIgnoreWalls;
         }
 
-        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction, IMap map)
         {
             var area = new List<Vector2Int>();
 
@@ -63,7 +66,10 @@ namespace Domain.Model.Effect.Area
                     break;
             }
 
-            return area;
+            if (CanIgnoreWalls)
+                return area;
+            var reachable = ViewCalculator.ComputeSquare(map.GetAllPassablePositions(), position, Radius + 0.5f);
+            return area.Where(p => reachable.Contains(p));
         }
 
         public float EvaluateArea()

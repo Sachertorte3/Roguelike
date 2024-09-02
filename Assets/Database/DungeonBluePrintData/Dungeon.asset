@@ -87,9 +87,9 @@ MonoBehaviour:
       PrefixChance: 0
       ShinyChance: 0
       SleepChance: 0
-      ShopChance: 0
+      ShopChance: 1
       MonsterHouseChance: 0
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       Room:
         ChestChance: 0
         ItemCount: 5

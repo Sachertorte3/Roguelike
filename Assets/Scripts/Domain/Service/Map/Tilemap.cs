@@ -174,7 +174,7 @@ namespace Domain.Service.Map
 
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
         {
-            var changedPositions = positions.Select(position => (position, Get(position))).Where(pair => pair.Item2.IsKnown != isKnown);
+            var changedPositions = positions.Select(position => (position, Get(position))).Where(pair => pair.Item2.IsKnown != isKnown).ToList();
             foreach (var (_, tile) in changedPositions)
             {
                 tile.SetKnown(isKnown);
@@ -184,7 +184,7 @@ namespace Domain.Service.Map
 
         public void RemoveWalls(IEnumerable<Vector2Int> positions)
         {
-            var changedPositions = positions.Where(position => Get(position).TileType == TileCategory.Wall);
+            var changedPositions = positions.Where(position => Get(position).TileType == TileCategory.Wall).ToList();
             foreach (var position in changedPositions)
             {
                 _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));

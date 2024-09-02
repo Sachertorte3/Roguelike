@@ -24,7 +24,7 @@ MonoBehaviour:
     Area:
       rid: 4425516923575599124
     Effect:
-      rid: 8824446334317363257
+      rid: 861543276871942144
     Position:
       rid: 2541219106150416399
   SkillOnThrow:
@@ -41,6 +41,9 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 861543276871942144
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
     - rid: 2541219106150416399
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -49,6 +52,3 @@ MonoBehaviour:
       data:
         ContainsSelf: 0
         Length: 1
-    - rid: 8824446334317363257
-      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 

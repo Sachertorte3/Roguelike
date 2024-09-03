@@ -3,6 +3,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Memento;
 
 namespace Domain.Service.Effect
 {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
-using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;

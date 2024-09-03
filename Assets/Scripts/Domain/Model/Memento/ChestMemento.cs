@@ -1,12 +1,12 @@
 ﻿using System;
 using Domain.Model.Character;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
-    public class DownStairsMemento
+    public class ChestMemento
     {
-        public int DestinationMapId;
+        public ItemMemento Item;
         public EntityMemento Entity;
     }
 }

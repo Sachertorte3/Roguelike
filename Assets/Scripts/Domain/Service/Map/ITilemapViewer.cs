@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 

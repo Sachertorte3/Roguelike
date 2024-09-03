@@ -10,5 +10,6 @@ namespace Domain.Model
         public RarityWeightTable<ItemData> Weapons;
         public RarityWeightTable<ItemData> Artifacts;
         public RarityWeightTable<ItemData> UpgradeMaterials;
+        public Table<ShopItemData> ShopItems;
     }
 }

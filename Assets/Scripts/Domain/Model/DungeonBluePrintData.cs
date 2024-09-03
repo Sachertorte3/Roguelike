@@ -9,6 +9,11 @@ using UnityEngine;
 
 namespace Domain.Model
 {
+    [Serializable]
+    public class ShopItemData
+    {
+        public RarityWeightTable<ItemData> Items;
+    }
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
     public partial class DungeonBluePrintData : ScriptableObject
     {
@@ -27,7 +32,6 @@ namespace Domain.Model
             private bool _existChest => Floors.Max(floor => floor.Room.ChestChance) > 0;
             [ShowIf("@_existChest"), Required] public float WeaponChanceInChest;
             private bool _existShop => Floors.Max(floor => floor.ShopChance) > 0;
-            [ShowIf("@_existShop"), Required] public RarityWeightTable<ItemData> ShopItems;
             [ShowIf("@_existShop"), Required] public EnemyData Clerk;
             public Table<EnemyData> Enemies;
             public Table<MaterialData> Materials;
@@ -87,7 +91,7 @@ namespace Domain.Model
                 WeaponMolds,
                 WeaponPrefixes,
                 new ItemTable(MasterItemDataBase, ChestItem),
-                sectionData.ShopItems,
+                MasterItemDataBase.ShopItems,
                 sectionData.Enemies,
                 floorData.PrefixChance,
                 floorData.ShinyChance,

@@ -1,7 +1,7 @@
 ﻿using System;
 using Domain.Model.Character;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class UpStairsMemento

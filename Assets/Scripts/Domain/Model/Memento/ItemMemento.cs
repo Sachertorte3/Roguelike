@@ -5,7 +5,7 @@ using Domain.Model.Condition;
 using Domain.Model.Item;
 using UnityEngine;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class ItemMemento

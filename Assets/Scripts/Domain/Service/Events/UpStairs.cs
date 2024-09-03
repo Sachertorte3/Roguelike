@@ -1,8 +1,8 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Map;
 using Domain.Service.Entities;
+using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: -1506255561, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   _rarity: 2
-  Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -35,7 +34,7 @@ MonoBehaviour:
       rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 5
+  UsageLimit: 10
   PassiveConditions: []
   references:
     version: 2

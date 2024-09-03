@@ -45,7 +45,10 @@ namespace Domain.Model.Effect.Area
 
         public string Info()
         {
-            return $"円 半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";
+            var info = $"円 半径{Radius}マス";
+            if (ContainsSelf) info += "(原点含む)";
+            if (CanIgnoreWalls) info += "(壁無視)";
+            return info;
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Domain.Model.Effect.Area
 
         public float EvaluateArea()
         {
-            return Mathf.PI * Radius * Radius / 4;
+            return Mathf.PI * Radius * (Radius + 1) / 4;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
@@ -85,7 +85,10 @@ namespace Domain.Model.Effect.Area
 
         public string Info()
         {
-            return $"扇形(90°) 半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";
+            var info = $"扇形(90°) 半径{Radius}マス";
+            if (ContainsSelf) info += "(原点含む)";
+            if (CanIgnoreWalls) info += "(壁無視)";
+            return info;
         }
     }
 }

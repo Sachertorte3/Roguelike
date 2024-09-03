@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class EntityMemento

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;

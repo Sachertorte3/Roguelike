@@ -17,7 +17,7 @@ namespace Provider
             {
                 if (map.Shop != null)
                 {
-                    disposable.Add(map.Shop.IsInside.Subscribe(isInside =>
+                    disposable.Add(map.Shop.IsInside.SubscribeToAll(isInside =>
                     {
                         shopInfoView.SetVisibility(isInside);
                     }));

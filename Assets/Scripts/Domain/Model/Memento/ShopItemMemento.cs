@@ -1,6 +1,6 @@
 using System;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class ShopItemMemento

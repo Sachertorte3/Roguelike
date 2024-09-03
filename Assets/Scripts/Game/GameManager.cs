@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Unity.Logging;

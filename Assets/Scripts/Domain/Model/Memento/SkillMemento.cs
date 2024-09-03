@@ -5,7 +5,7 @@ using Domain.Model.Effect.Area;
 using Domain.Model.Item;
 using UnityEngine;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     public interface ISkillMemento { }
     [Serializable]

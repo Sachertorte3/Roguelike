@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service;
 using Domain.Service.Characters;
 using Domain.Service.Events;
@@ -111,9 +113,11 @@ namespace Model.Game
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
 
+            var shopItems = data.ShopItems.GetRandomItem().Items;
+
             var positions = shopRoom.RectRange().GetAtRandom(6).ToList();
             foreach (var position in positions.Take(5))
-                _items.Add(ItemFactory.Build(position, new Item(data.ShopItems.GetRandomItem())));
+                _items.Add(ItemFactory.Build(position, Item.Build(shopItems.GetRandomItem(), ItemState.ShopItem)));
 
             var clerkPosition = positions.Last();
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, false, false);
@@ -130,7 +134,7 @@ namespace Model.Game
 
             var positions = monsterHouseRoom.RectRange().GetAtRandom(5).ToList();
             foreach (var position in positions.Take(5))
-                _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+                _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
 
             return MonsterHouse.Build(monsterHouseRoom);
         }
@@ -147,7 +151,7 @@ namespace Model.Game
         private void AddItemsToRoom(DungeonMapData data, List<Vector2Int> positions)
         {
             foreach (var position in positions)
-                _items.Add(ItemFactory.Build(position, new Item(data.Items.GetRandomItem())));
+                _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
         }
 
         private void AddWeaponsToRoom(DungeonMapData data, List<Vector2Int> positions)
@@ -160,12 +164,12 @@ namespace Model.Game
                 {
                     var prefix = data.WeaponPrefixes.GetRandomItem();
                     var weapon = WeaponFactory.Create(prefix, material, mold);
-                    _items.Add(ItemFactory.Build(position, new Item(weapon)));
+                    _items.Add(ItemFactory.Build(position, Item.Build(weapon)));
                 }
                 else
                 {
                     var weapon = WeaponFactory.Create(material, mold);
-                    _items.Add(ItemFactory.Build(position, new Item(weapon)));
+                    _items.Add(ItemFactory.Build(position, Item.Build(weapon)));
                 }
             }
         }

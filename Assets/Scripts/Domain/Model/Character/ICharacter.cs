@@ -7,6 +7,7 @@ using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Memento;
 using Domain.Model.Message;
 using R3;
 using UnityEngine;

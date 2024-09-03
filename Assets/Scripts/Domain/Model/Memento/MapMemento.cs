@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Map;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class MapMemento
@@ -16,15 +16,5 @@ namespace Domain.Model.Map
         public List<int> KeyCharacters;
         public Option<RoomMemento> MonsterHouse;
         public Option<ShopMemento> Shop;
-    }
-}
-namespace Domain.Model
-{
-    public class WorldMemento
-    {
-        public string DungeonDataName;
-        public CharacterMemento Player;
-        public SerializableDictionary<int, MapMemento> Maps;
-        public int ActiveMapId;
     }
 }

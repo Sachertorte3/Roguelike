@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Memento;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using ObservableCollections;

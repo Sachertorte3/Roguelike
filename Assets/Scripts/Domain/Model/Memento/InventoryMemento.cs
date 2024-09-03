@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class InventoryMemento

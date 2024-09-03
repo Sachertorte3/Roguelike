@@ -1,7 +1,7 @@
 ﻿using System;
 using Domain.Model.Effect;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class AffiliationMemento

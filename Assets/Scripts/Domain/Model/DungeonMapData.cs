@@ -13,7 +13,7 @@ namespace Domain.Model
         ITable<WeaponMold> WeaponMolds,
         ITable<WeaponPrefix> WeaponPrefixes,
         ITable<ItemData> ChestItems,
-        ITable<ItemData> ShopItems,
+        ITable<ShopItemData> ShopItems,
         Table<EnemyData> Enemies,
         float PrefixChance,
         float ShinyChance,

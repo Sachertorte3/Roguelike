@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
-using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Memento;
 
 namespace Domain.Service.Effect
 {

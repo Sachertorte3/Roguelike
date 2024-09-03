@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class EventEntitiesMemento

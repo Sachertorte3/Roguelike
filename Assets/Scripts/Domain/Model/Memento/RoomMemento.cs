@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class RoomMemento

@@ -7,6 +7,7 @@ using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Events;
 using Domain.Service.Items;
@@ -41,19 +42,7 @@ namespace Model.Game
                 return;
             }
 
-            var itemsInRoom = GetItemsInRoom(mapManager);
-            var itemMementosInRoom = itemsInRoom.Select(item => item.Id);
-            foreach (var item in data.Items)
-            {
-                if (!itemMementosInRoom.Contains(new Id<IItem>(item.Id)))
-                {
-                    Debug.Log(itemsInRoom.Count());
-                    Debug.Log(data.Items.Count);
-                    throw new Exception("ItemNotFound: I can't find an item that should be in the shop.");
-                }
-            }
-
-            SetShopItems(itemsInRoom);
+            _shopItems = data.Items.Select(item => new ShopItemCache(new Id<IItem>(item.Id), item.Price)).ToHashSet();
         }
 
         public void Dispose()

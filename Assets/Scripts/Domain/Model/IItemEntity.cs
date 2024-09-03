@@ -3,7 +3,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Item;
-using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Model.Message;
 using R3;
 using Utilities;

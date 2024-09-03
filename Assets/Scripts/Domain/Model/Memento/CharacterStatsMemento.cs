@@ -1,7 +1,8 @@
 using System;
+using Domain.Model.Character;
 using Stats;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class CharacterStatsMemento

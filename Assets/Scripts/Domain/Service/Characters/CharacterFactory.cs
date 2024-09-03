@@ -7,6 +7,7 @@ using Domain.Model.Character.Type;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
 using Domain.Service.Entities;

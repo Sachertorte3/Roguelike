@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Domain.Model.Memento;
 
 namespace Domain.Model.Map
 {

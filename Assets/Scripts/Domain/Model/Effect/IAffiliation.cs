@@ -1,4 +1,5 @@
 ﻿using Domain.Model.Character;
+using Domain.Model.Memento;
 using R3;
 using Utilities;
 

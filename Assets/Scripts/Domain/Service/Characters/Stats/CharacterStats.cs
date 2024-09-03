@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Memento;
 using R3;
 using Stats;
 

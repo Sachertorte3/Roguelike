@@ -2,6 +2,7 @@
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using Utilities;

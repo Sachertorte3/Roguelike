@@ -1,4 +1,5 @@
 using Domain.Model.Condition;
+using Domain.Model.Memento;
 using Utilities;
 
 namespace Domain.Model.Character

@@ -1,10 +1,11 @@
 #nullable enable
 using System;
+using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class CharacterMemento

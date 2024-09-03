@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;

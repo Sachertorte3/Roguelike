@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Item;
-using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;
@@ -49,7 +49,7 @@ namespace Model.Game
 
         public IItemEntity SpawnItem(IItem item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item));
+            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item.Serialize()));
             AddItem(itemEntity);
             return itemEntity;
         }

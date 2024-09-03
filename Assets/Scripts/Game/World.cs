@@ -5,6 +5,7 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Map;
 using R3;

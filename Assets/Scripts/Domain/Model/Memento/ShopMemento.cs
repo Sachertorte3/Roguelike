@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Model.Character;
+using Domain.Model.Memento;
 
-namespace Domain.Model.Map
+namespace Domain.Model.Memento
 {
     [Serializable]
     public class ShopMemento

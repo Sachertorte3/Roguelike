@@ -1,10 +1,12 @@
+using Domain.Model.Map;
+
 namespace Domain.Model.Memento
 {
     public class WorldMemento
     {
-        public string DungeonDataName;
+        public SerializableDictionary<string, DungeonMemento> Dungeons;
         public CharacterMemento Player;
         public SerializableDictionary<int, MapMemento> Maps;
-        public int ActiveMapId;
+        public Location CurrentLocation;
     }
 }

@@ -29,7 +29,7 @@ namespace Model.Game
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
     {
         public string Name => _dungeonData.Name;
-        public readonly int Floor;
+        public readonly int Level;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -46,9 +46,9 @@ namespace Model.Game
         public bool IsEventExecuting { get; private set; }
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int playerPosition, CharacterControlInputReceiver receiver, int floor)
+            Vector2Int playerPosition, CharacterControlInputReceiver receiver, int level)
         {
-            Floor = floor;
+            Level = level;
             if (playerData == null)
             {
                 playerData = CharacterFactory.BuildPlayer("Player", playerPosition);

@@ -40,12 +40,12 @@ namespace Model.Game
             return await _choiceReceiver.GetChoice(text, choices);
         }
 
-        public async void LoadMap(int mapId)
+        public async void LoadMap(Location location)
         {
             Log.Debug("Start LoadMap");
             _receiver.Enable(false);
             await _turnController.Stop();
-            var map = _world.LoadMap(mapId);
+            var map = _world.LoadMap(location);
             _turnController.Run(map);
             _receiver.Enable(true);
             Log.Debug("End LoadMap");
@@ -54,15 +54,9 @@ namespace Model.Game
         public void Save()
         {
             Log.Debug("Start Save");
-            var saveData = _world.SerializeSaveData();
+            var saveData = _world.Serialize();
             var saveDataStr = JsonUtility.ToJson(saveData);
             System.IO.File.WriteAllText("Save/save.json", saveDataStr);
-            var updatedMaps = _world.SerializeUpdatedMaps();
-            foreach (var map in updatedMaps)
-            {
-                var mapStr = JsonUtility.ToJson(map.Value);
-                System.IO.File.WriteAllText($"Save/map_{map.Key}.json", mapStr);
-            }
             Log.Debug("End Save");
         }
 
@@ -75,20 +69,13 @@ namespace Model.Game
             if (System.IO.File.Exists("Save/save.json"))
             {
                 var str = System.IO.File.ReadAllText("Save/save.json");
-                var saveData = JsonUtility.FromJson<SaveData>(str);
-                var maps = new Dictionary<int, MapMemento>();
-                foreach (var mapId in saveData.MapIds)
-                {
-                    var mapStr = System.IO.File.ReadAllText($"Save/map_{mapId}.json");
-                    var mapMemento = JsonUtility.FromJson<MapMemento>(mapStr);
-                    maps.Add(mapId, mapMemento);
-                }
-                map = _world.LoadWorld(Build(saveData, maps));
+                var saveData = JsonUtility.FromJson<WorldMemento>(str);
+                map = _world.LoadWorld(saveData);
             }
             else
             {
                 _world.CreateNew(_dungeonBluePrintData);
-                map = _world.LoadMap(1);
+                map = _world.LoadMap(new Location("Dungeon", 1));
             }
             _turnController.Run(map);
             _receiver.Enable(true);

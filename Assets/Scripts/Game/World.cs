@@ -11,7 +11,7 @@ using Domain.Service.Map;
 using R3;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using Utilities;
 using VContainer;
 
 namespace Model.Game
@@ -19,48 +19,49 @@ namespace Model.Game
     public class World : ISerializable<WorldMemento>
     {
         private ReactiveProperty<MapManager?> _activeMap = new();
-        private int _activeMapId = 0;
-        private DungeonBluePrintData _dungeonData;
-        private Dictionary<int, MapMemento> _maps = new();
-        private HashSet<int> _updatedMapIds = new();
+        private Location _activeLocation;
+        private Dungeon _activeDungeon => _dungeons[_activeLocation.MapName];
+        private Id<MapManager> _activeMapId => GetMapId(_activeLocation);
+        private Dictionary<Id<MapManager>, MapMemento> _maps = new();
+        private HashSet<Id<MapManager>> _updatedMapIds = new();
         private CharacterControlInputReceiver _receiver;
+        private Dictionary<string, Dungeon> _dungeons = new();
 
         [Inject]
         public World(CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonData)
         {
             Globals.World = this;
             _receiver = receiver;
-            _dungeonData = dungeonData;
+            _dungeons[dungeonData.name] = new(Dungeon.Build(dungeonData));
         }
 
         public void CreateNew(DungeonBluePrintData dungeonData)
         {
-            _dungeonData = dungeonData;
+            _dungeons[dungeonData.name] = new(Dungeon.Build(dungeonData));
             _maps = new();
-            _activeMapId = 0;
             _updatedMapIds = new();
             _activeMap.Value = null;
         }
 
         public MapManager LoadWorld(WorldMemento memento)
         {
-            _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
-            _maps = memento.Maps;
+            _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
+            _maps = memento.Maps.ToDictionary(map => new Id<MapManager>(map.Key), map => map.Value);
 
-            var mapId = memento.ActiveMapId;
-            _updatedMapIds = new HashSet<int> { mapId };
+            var mapId = GetMapId(memento.CurrentLocation);
+            _updatedMapIds = new HashSet<Id<MapManager>> { mapId };
 
             Log.Debug($"LoadMap mapId:{mapId}");
-            var mapMemento = GetMapMemento(mapId);
+            var mapMemento = GetMapMemento(memento.CurrentLocation);
 
             if (_activeMap.CurrentValue != null)
             {
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), memento.Player, new(), memento.Player.Entity.Position, _receiver, mapId);
+            MapManager map = new(mapMemento, _dungeons[memento.CurrentLocation.MapName].CreateMapData(memento.CurrentLocation.Level), memento.Player, new(), memento.Player.Entity.Position, _receiver, memento.CurrentLocation.Level);
 
-            _activeMapId = mapId;
+            _activeLocation = memento.CurrentLocation;
             _activeMap.Value = map;
 
             return map;
@@ -72,74 +73,35 @@ namespace Model.Game
             var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
             {
-                DungeonDataName = _dungeonData.name,
+                Dungeons = new(_dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize())),
                 Player = playerData,
-                Maps = new(_maps),
-                ActiveMapId = _activeMapId
-            };
-        }
-
-        [Serializable]
-        public class SaveData
-        {
-            public string DungeonDataName;
-            public CharacterMemento Player;
-            public int ActiveMapId;
-            public List<int> MapIds;
-        }
-
-        public SaveData SerializeSaveData()
-        {
-            return new SaveData
-            {
-                DungeonDataName = _dungeonData.name,
-                Player = _activeMap.CurrentValue.Player.Serialize(),
-                ActiveMapId = _activeMapId,
-                MapIds = _maps.Keys.ToList()
-            };
-        }
-
-        public Dictionary<int, MapMemento> SerializeUpdatedMaps()
-        {
-            _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
-            var updatedMaps = _updatedMapIds.ToDictionary(mapId => mapId, mapId => _maps[mapId]);
-            _updatedMapIds = new HashSet<int> { _activeMapId };
-            return updatedMaps;
-        }
-
-        public static WorldMemento Build(SaveData saveData, Dictionary<int, MapMemento> maps)
-        {
-            if (saveData.MapIds.Except(maps.Keys).Any())
-                throw new ArgumentException("Map count is not match");
-            return new WorldMemento
-            {
-                DungeonDataName = saveData.DungeonDataName,
-                Player = saveData.Player,
-                Maps = new(maps),
-                ActiveMapId = saveData.ActiveMapId
+                Maps = new(_maps.ToDictionary(map => map.Key.Value, map => map.Value)),
+                CurrentLocation = _activeLocation
             };
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
-        private MapMemento GetMapMemento(int mapId)
+        private Id<MapManager> GetMapId(Location location)
         {
-            if (_maps.ContainsKey(mapId))
+            return _dungeons[location.MapName].GetMapId(location.Level);
+        }
+        private MapMemento GetMapMemento(Location location)
+        {
+            var mapId = _dungeons[location.MapName].GetMapId(location.Level);
+            if (!_maps.ContainsKey(mapId))
             {
-                return _maps[mapId];
+                var dungeonData = _dungeons[location.MapName].CreateMapData(location.Level);
+                _maps[mapId] = new MapBuilder(Tilemap.Build(dungeonData.Field), dungeonData, location.Level).Build();
             }
-            else
-            {
-                var dungeonData = _dungeonData.CreateMapData(mapId);
-                return new MapBuilder(Tilemap.Build(dungeonData.Field), dungeonData, mapId + 1, mapId - 1).Build();
-            }
+            return _maps[mapId];
         }
 
-        public MapManager LoadMap(int mapId)
+        public MapManager LoadMap(Location location)
         {
-            Log.Debug($"LoadMap mapId:{mapId}");
-            var mapMemento = GetMapMemento(mapId);
-            _updatedMapIds.Add(mapId);
+            Log.Debug($"LoadMap location:{location}");
+            var mapMemento = GetMapMemento(location);
+            _updatedMapIds.Add(GetMapId(location));
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;
@@ -150,21 +112,22 @@ namespace Model.Game
                 playerData = _activeMap.CurrentValue.Player.Serialize();
                 characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize())
                     .ToList();
-                if (_activeMapId < mapId) // 下り階段から上り階段へ
-                {
-                    initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
-                }
-                else if (_activeMapId > mapId) // 上り階段から下り階段へ
+
+                if (location.Level < _activeLocation.Level)
                 {
                     initialPosition = mapMemento.EventEntities.DownStairs.Entity.Position;
+                }
+                else if (location.Level > _activeLocation.Level)
+                {
+                    initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
                 }
 
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeonData.CreateMapData(mapId), playerData, characters, initialPosition, _receiver, mapId);
+            MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData, characters, initialPosition, _receiver, location.Level);
 
-            _activeMapId = mapId;
+            _activeLocation = location;
             _activeMap.Value = map;
             return map;
         }

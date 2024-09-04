@@ -7,18 +7,19 @@ using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Domain.Model.Map;
 
 namespace Domain.Service.Events
 {
     public class UpStairs : IDisposable, ISerializable<UpStairsMemento>, IIconEventEntity
     {
-        private int _destinationMapId;
+        private int _destinationLevel;
         private Entity _entity;
 
         public UpStairs(UpStairsMemento data)
         {
             _entity = new Entity(data.Entity);
-            _destinationMapId = data.DestinationMapId;
+            _destinationLevel = data.DestinationLevel;
         }
 
         public void Dispose()
@@ -45,7 +46,7 @@ namespace Domain.Service.Events
         {
             if (await gameManager.GetChoice("階段を見つけた", "登る", "やめる") == 0)
             {
-                gameManager.LoadMap(_destinationMapId);
+                gameManager.LoadMap(new Location("Dungeon", _destinationLevel));
             }
         }
 
@@ -63,16 +64,16 @@ namespace Domain.Service.Events
         {
             return new UpStairsMemento
             {
-                DestinationMapId = _destinationMapId,
+                DestinationLevel = _destinationLevel,
                 Entity = _entity.Serialize()
             };
         }
 
-        public static UpStairsMemento Build(Vector2Int position, int destinationMapId)
+        public static UpStairsMemento Build(Vector2Int position, int level)
         {
             return new UpStairsMemento
             {
-                DestinationMapId = destinationMapId,
+                DestinationLevel = level,
                 Entity = Entity.Build(position, EntityLayer.Bottom)
             };
         }

@@ -13,14 +13,14 @@ namespace Domain.Service.Events
 {
     public class DownStairs : IDisposable, ISerializable<DownStairsMemento>, IIconEventEntity
     {
-        private int _destinationMapId;
+        private int _destinationLevel;
         private Entity _entity;
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
 
         public DownStairs(DownStairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             _entity = new Entity(data.Entity);
-            _destinationMapId = data.DestinationMapId;
+            _destinationLevel = data.DestinationLevel;
             IsLocked = isLocked;
         }
 
@@ -49,7 +49,7 @@ namespace Domain.Service.Events
             var choice = await gameManager.GetChoice("階段を見つけた", "下る", "やめる");
             if (choice == 0)
             {
-                gameManager.LoadMap(_destinationMapId);
+                gameManager.LoadMap(new Location("Dungeon", _destinationLevel));
             }
         }
 
@@ -67,16 +67,16 @@ namespace Domain.Service.Events
         {
             return new DownStairsMemento
             {
-                DestinationMapId = _destinationMapId,
+                DestinationLevel = _destinationLevel,
                 Entity = _entity.Serialize()
             };
         }
 
-        public static DownStairsMemento Build(Vector2Int position, int destinationMapId)
+        public static DownStairsMemento Build(Vector2Int position, int level)
         {
             return new DownStairsMemento
             {
-                DestinationMapId = destinationMapId,
+                DestinationLevel = level,
                 Entity = Entity.Build(position, EntityLayer.Bottom)
             };
         }

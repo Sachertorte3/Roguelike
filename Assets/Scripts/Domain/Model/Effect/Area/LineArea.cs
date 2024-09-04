@@ -25,9 +25,9 @@ namespace Domain.Model.Effect.Area
                 .Select(i => position + (direction.Vector() * i));
             foreach (var pos in area)
             {
+                yield return pos;
                 if (!CanIgnoreWalls && !map.IsPassable(pos))
                     break;
-                yield return pos;
             }
         }
 

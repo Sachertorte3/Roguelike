@@ -27,7 +27,7 @@ namespace Model.Game
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
 
-        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, int nextMapId, int prevMapId)
+        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, int level)
         {
             _tilemap = new(tilemapData);
             _characters = new();
@@ -86,8 +86,8 @@ namespace Model.Game
                 }
             }
 
-            var downStairs = DownStairs.Build(downStairsPosition.Value, nextMapId);
-            var upStairs = UpStairs.Build(upStairsPosition.Value, prevMapId);
+            var downStairs = DownStairs.Build(downStairsPosition.Value, level+1);
+            var upStairs = UpStairs.Build(upStairsPosition.Value, level-1);
 
             _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
         }

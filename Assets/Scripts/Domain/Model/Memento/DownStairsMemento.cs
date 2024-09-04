@@ -6,7 +6,7 @@ namespace Domain.Model.Memento
     [Serializable]
     public class DownStairsMemento
     {
-        public int DestinationMapId;
+        public int DestinationLevel;
         public EntityMemento Entity;
     }
 }

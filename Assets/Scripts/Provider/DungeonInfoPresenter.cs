@@ -13,7 +13,7 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
-                dungeonInfoView.SetInfo(map.Name, map.Floor);
+                dungeonInfoView.SetInfo(map.Name, map.Level);
             });
         }
     }

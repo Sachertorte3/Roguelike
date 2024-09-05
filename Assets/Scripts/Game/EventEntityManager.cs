@@ -11,32 +11,27 @@ namespace Model.Game
 {
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
-        private readonly UpStairs _upStairs;
-        public readonly DownStairs DownStairs;
+        public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IIconEventEntity> _eventEntitiesAndIcons = new();
         public EventEntityEvents EventEntityEvents = new();
 
-        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedDownStairs)
+        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
-            DownStairs = new(eventEntities.DownStairs, isLockedDownStairs);
-            Add(DownStairs);
-
-            _upStairs = new(eventEntities.UpStairs);
-            Add(_upStairs);
+            foreach (var stairs in eventEntities.Stairs)
+                Add(new Stairs(stairs, isLockedStairs));
 
             foreach (var chest in eventEntities.Chests)
                 Add(new Chest(chest));
 
             EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
-        public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
+        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests)
         {
             return new EventEntitiesMemento
             {
-                DownStairs = downStairs,
-                UpStairs = upStairs,
+                Stairs = stairs.ToList(),
                 Chests = chests.ToList()
             };
         }
@@ -44,8 +39,7 @@ namespace Model.Game
         {
             return new EventEntitiesMemento
             {
-                DownStairs = DownStairs.Serialize(),
-                UpStairs = _upStairs?.Serialize(),
+                Stairs = Stairs.Select(stairs => stairs.Serialize()).ToList(),
                 Chests = _chests.Select(chest => chest.Serialize()).ToList()
             };
         }
@@ -59,6 +53,14 @@ namespace Model.Game
             _eventEntities.Add(chest);
             _eventEntitiesAndIcons.Add(chest);
             EventEntityEvents.Add(chest);
+        }
+
+        public void Add(Stairs stairs)
+        {
+            Stairs.Add(stairs);
+            _eventEntities.Add(stairs);
+            _eventEntitiesAndIcons.Add(stairs);
+            EventEntityEvents.Add(stairs);
         }
 
         public void Add(IEventEntity eventEntity)

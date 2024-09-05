@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -22,26 +23,27 @@ namespace Model.Game
         private readonly Tilemap _tilemap;
         private readonly List<CharacterMemento> _characters;
         private readonly List<ItemEntityMemento> _items;
-        private readonly EventEntitiesMemento _eventEntities;
-        private readonly List<int> _keyCharacters;
+        private readonly List<StairsMemento> _stairs;
+        private readonly List<ChestMemento> _chests;
+        private readonly List<Id<IEntity>> _keyCharacters;
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
+        private readonly Vector2Int _upStairPosition;
+        private readonly Vector2Int _downStairPosition;
 
-        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, int level)
+        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data)
         {
             _tilemap = new(tilemapData);
             _characters = new();
             _items = new();
             _keyCharacters = new();
-            var chests = new List<ChestMemento>();
+            _stairs = new();
+            _chests = new();
 
             var rooms = _tilemap.Rooms.ToList();
 
             _shop = CreateShop(data, rooms);
             _monsterHouse = CreateMonsterHouse(data, rooms);
-
-            Vector2Int? downStairsPosition = null;
-            Vector2Int? upStairsPosition = null;
 
             RectInt downStairsRoom = rooms.GetAtRandom();
             RectInt upStairsRoom = rooms.GetAtRandom();
@@ -65,7 +67,7 @@ namespace Model.Game
                 AddCharactersToRoom(data, characterPositions);
                 AddItemsToRoom(data, itemPositions);
                 AddWeaponsToRoom(data, weaponPositions);
-                AddChestsToRoom(data, chestPositions, chests);
+                AddChestsToRoom(data, chestPositions, _chests);
 
                 if (room == bossRoom)
                 {
@@ -73,23 +75,18 @@ namespace Model.Game
                     {
                         var boss = CharacterFactory.BuildCharacter(bossData, positions.TakeAndRemove(1).First(), false, false);
                         _characters.Add(boss);
-                        _keyCharacters.Add(boss.Entity.Id);
+                        _keyCharacters.Add(new(boss.Entity.Id));
                     }
                 }
                 if (room == downStairsRoom)
                 {
-                    downStairsPosition = positions.TakeAndRemove(1).First();
+                    _downStairPosition = positions.TakeAndRemove(1).First();
                 }
                 if (room == upStairsRoom)
                 {
-                    upStairsPosition = positions.TakeAndRemove(1).First();
+                    _upStairPosition = positions.TakeAndRemove(1).First();
                 }
             }
-
-            var downStairs = DownStairs.Build(downStairsPosition.Value, level+1);
-            var upStairs = UpStairs.Build(upStairsPosition.Value, level-1);
-
-            _eventEntities = EventEntityManager.Build(downStairs, upStairs, chests);
         }
 
         private int GetCount(int attemptCount)
@@ -194,6 +191,22 @@ namespace Model.Game
             }
         }
 
+        public void AddUpStairs(DungeonMapData data, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId)
+        {
+            if (upStairsId != null && upStairsDestinationId != null)
+                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, upStairsId, new(data.Name, level - 1), upStairsDestinationId));
+            else
+                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, new(data.Name, level - 1)));
+        }
+
+        public void AddDownStairs(DungeonMapData data, int level, Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
+        {
+            if (downStairsId != null && downStairsDestinationId != null)
+                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, downStairsId, new(data.Name, level + 1), downStairsDestinationId));
+            else
+                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, new(data.Name, level + 1)));
+        }
+
         public MapMemento Build()
         {
             return new MapMemento
@@ -201,8 +214,8 @@ namespace Model.Game
                 Tilemap = _tilemap.Serialize(),
                 Characters = _characters,
                 Items = _items,
-                EventEntities = _eventEntities,
-                KeyCharacters = _keyCharacters,
+                EventEntities = EventEntityManager.Build(_stairs, _chests),
+                KeyCharacters = _keyCharacters.Select(key => key.ToString()).ToList(),
                 MonsterHouse = new(_monsterHouse),
                 Shop = new(_shop)
             };

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
@@ -9,6 +10,7 @@ using R3;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
+using Unity.Logging;
 using static RandomDungeonWithBluePrint.Constants;
 
 namespace Domain.Service.Map
@@ -103,7 +105,7 @@ namespace Domain.Service.Map
 
         public bool IsPassable(Vector2Int position)
         {
-            return Get(position).IsPassable();
+            return Get(position).Match(tile => tile.IsPassable(), () => false);
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -154,18 +156,18 @@ namespace Domain.Service.Map
 
         public bool IsPositionInsideMap(Vector2Int position)
         {
-            return position.x >= 0 && position.x < Width && position.y >= 0 && position.y < Height;
+            return _tiles.ContainsKey(position);
         }
 
-        public TileData Get(Vector2Int position)
+        public Option<TileData> Get(Vector2Int position)
         {
             if (!IsPositionInsideMap(position))
             {
-                throw new ArgumentOutOfRangeException(
-                    $"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
+                Log.Info($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
+                return Option<TileData>.None;
             }
 
-            return _tiles[position];
+            return new(_tiles[position]);
         }
 
         private IEnumerable<Vector2Int> FindAllPassablePositions()
@@ -175,22 +177,32 @@ namespace Domain.Service.Map
 
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
         {
-            var changedPositions = positions.Select(position => (position, Get(position))).Where(pair => pair.Item2.IsKnown != isKnown).ToList();
-            foreach (var (_, tile) in changedPositions)
+            var changedPositions = positions
+                .Select(position => (position, Get(position)))
+                .Where(pair => pair.Item2.Match(tile => tile.IsKnown != isKnown, () => false))
+                .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
+            var result = new List<(Vector2Int position, TileData tileData)>();
+            foreach (var (position, tile) in changedPositions)
             {
                 tile.SetKnown(isKnown);
+                result.Add((position, tile));
             }
-            _onTilesKnownChanged.OnNext(changedPositions);
+            _onTilesKnownChanged.OnNext(result);
         }
 
         public void RemoveWalls(IEnumerable<Vector2Int> positions)
         {
-            var changedPositions = positions.Where(position => Get(position).TileType == TileCategory.Wall).ToList();
-            foreach (var position in changedPositions)
+            var changedPositions = positions
+                .Select(position => (position, Get(position)))
+                .Where(pair => pair.Item2.Match(tile => tile.TileType == TileCategory.Wall, () => false))
+                .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
+            var result = new List<(Vector2Int position, TileData tileData)>();
+            foreach (var (position, tile) in changedPositions)
             {
                 _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));
+                result.Add((position, _tiles[position]));
             }
-            _onTilesChanged.OnNext(changedPositions.Select(position => (position, Get(position))));
+            _onTilesChanged.OnNext(result);
         }
 
         public void ResetMask(Vector2Int position)

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u6C37\u7D50\u306E\u6756"
+  m_Name: "\u7761\u7720\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 2127405813, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 2
+  Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 3
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -22,11 +22,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 861543310686683143
+      rid: 4425516923575599136
     Effect:
-      rid: 4425517220030054409
+      rid: 861543331897802753
     Position:
-      rid: 861543310686683136
+      rid: 2541219106150416406
   SkillOnThrow:
     Area:
       rid: -2
@@ -34,28 +34,24 @@ MonoBehaviour:
       rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 25
+  UsageLimit: 1
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543310686683136
+    - rid: 861543331897802753
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u7761\u7720"
+    - rid: 2541219106150416406
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 861543310686683143
-      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 4425516923575599136
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        CanIgnoreWalls: 0
-        Radius: 3
-    - rid: 4425517220030054409
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers:
-        - _element: 2
-          _power: 10
-        _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
+        CanIgnoreWalls: 1
+        Radius: 10

@@ -7,6 +7,7 @@ using Domain.Model.Condition;
 using Domain.Model.Memento;
 using R3;
 using Stats;
+using Utilities;
 
 namespace Domain.Service.Characters.Stats
 {

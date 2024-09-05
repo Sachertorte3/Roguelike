@@ -7,4 +7,9 @@
         UnbreakableWall,
         Blank
     }
+    public interface IMovementEntity : IEntity
+    {
+        MovementEntityType Type { get; }
+        Location Destination { get; }
+    }
 }

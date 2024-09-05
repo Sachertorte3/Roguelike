@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
     [Serializable]
     public class ItemMemento
     {
-        public int Id;
+        public string Id;
         public string Name;
         public string IconName;
         public ItemState State;

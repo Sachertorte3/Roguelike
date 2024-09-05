@@ -1,4 +1,5 @@
 ﻿using System;
+using Utilities;
 
 namespace Domain.Model.Memento
 {

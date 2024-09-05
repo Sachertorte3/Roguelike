@@ -83,7 +83,7 @@ namespace Domain.Service.Items
         {
             return new ItemMemento
             {
-                Id = Id.Value,
+                Id = Id.ToString(),
                 Name = _name,
                 IconName = Icon.name,
                 UpgradePaths = _upgradePaths.Select(path => path.ToString()).ToList(),
@@ -119,7 +119,7 @@ namespace Domain.Service.Items
 
             var memento = new ItemMemento
             {
-                Id = UniqueIdGenerator.Generate<IItem>().Value,
+                Id = Id<IItem>.Generate().ToString(),
                 Name = data.Name,
                 IconName = data.Icon.name,
                 UpgradePaths = new(),
@@ -328,7 +328,8 @@ namespace Domain.Service.Items
 
         public override int GetHashCode()
         {
-            return Id.Value;
+            return Id.Value.GetHashCode();
+
         }
     }
 }

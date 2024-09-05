@@ -1,14 +1,24 @@
+#nullable enable
 using System;
 
 namespace Utilities
 {
-    public static class UniqueIdGenerator
+    [Serializable]
+    public class Id<T>
     {
-        private static int _id = new Random().Next();
-        public static Id<T> Generate<T>()
+        public Guid Value { get; }
+        public Id(Guid value) => Value = value;
+        public Id(string value) => Value = Guid.Parse(value);
+        public static Id<T> Generate() => new(Guid.NewGuid());
+        public override string ToString() => Value.ToString();
+        public static bool operator ==(Id<T>? a, Id<T>? b)
         {
-            return new Id<T>(unchecked(_id++));
+            if (a is null && b is null) return true;
+            if (a is null || b is null) return false;
+            return a.Value == b.Value;
         }
+        public static bool operator !=(Id<T>? a, Id<T>? b) => !(a == b);
+        public override bool Equals(object? obj) => obj is Id<T> id && Value == id.Value;
+        public override int GetHashCode() => Value.GetHashCode();
     }
-    public record Id<T>(int Value);
 }

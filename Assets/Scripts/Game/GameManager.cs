@@ -9,8 +9,8 @@ using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Unity.Logging;
 using UnityEngine;
+using Utilities;
 using VContainer;
-using static Model.Game.World;
 
 namespace Model.Game
 {
@@ -40,12 +40,12 @@ namespace Model.Game
             return await _choiceReceiver.GetChoice(text, choices);
         }
 
-        public async void LoadMap(Location location)
+        public async void LoadMap(Location location, Id<IEntity> destination)
         {
             Log.Debug("Start LoadMap");
             _receiver.Enable(false);
             await _turnController.Stop();
-            var map = _world.LoadMap(location);
+            var map = _world.LoadMap(location, destination);
             _turnController.Run(map);
             _receiver.Enable(true);
             Log.Debug("End LoadMap");
@@ -55,6 +55,14 @@ namespace Model.Game
         {
             Log.Debug("Start Save");
             var saveData = _world.Serialize();
+            Debug.Log($"saveData:");
+            foreach (var map in saveData.Maps)
+            {
+                foreach (var character in map.Value.KeyCharacters)
+                {
+                    Debug.Log($"keyCharacter:{character}");
+                }
+            }
             var saveDataStr = JsonUtility.ToJson(saveData);
             System.IO.File.WriteAllText("Save/save.json", saveDataStr);
             Log.Debug("End Save");
@@ -75,7 +83,7 @@ namespace Model.Game
             else
             {
                 _world.CreateNew(_dungeonBluePrintData);
-                map = _world.LoadMap(new Location("Dungeon", 1));
+                map = _world.LoadMap(new Location("Dungeon", 1), null);
             }
             _turnController.Run(map);
             _receiver.Enable(true);

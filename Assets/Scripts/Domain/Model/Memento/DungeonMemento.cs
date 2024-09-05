@@ -1,4 +1,5 @@
 using System;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -6,6 +7,6 @@ namespace Domain.Model.Memento
     public class DungeonMemento
     {
         public string DungeonDataName;
-        public SerializableDictionary<int, int> MapIds;
+        public SerializableDictionary<int, string> MapIds;
     }
 }

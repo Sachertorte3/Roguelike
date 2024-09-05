@@ -43,7 +43,7 @@ namespace Domain.Service.Entities
         {
             return new EntityMemento
             {
-                Id = Id.Value,
+                Id = Id.ToString(),
                 Position = _position.CurrentValue,
                 Layer = _layer
             };
@@ -53,7 +53,17 @@ namespace Domain.Service.Entities
         {
             return new EntityMemento
             {
-                Id = UniqueIdGenerator.Generate<IEntity>().Value,
+                Id = Id<IEntity>.Generate().ToString(),
+                Position = position,
+                Layer = layer
+            };
+        }
+
+        public static EntityMemento Build(Id<IEntity> id, Vector2Int position, EntityLayer layer)
+        {
+            return new EntityMemento
+            {
+                Id = id.ToString(),
                 Position = position,
                 Layer = layer
             };

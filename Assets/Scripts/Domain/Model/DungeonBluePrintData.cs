@@ -50,6 +50,11 @@ namespace Domain.Model
             public bool existBoss;
             [ShowIf("existBoss"), Required] public List<EnemyData> Boss;
         }
+        public bool ExistLevel(int level)
+        {
+            var Depth = Sections.Sum(section => section.Depth);
+            return 0 < level && level <= Depth;
+        }
         private SectionData GetSectionData(int level)
         {
             var currentDepth = 0;

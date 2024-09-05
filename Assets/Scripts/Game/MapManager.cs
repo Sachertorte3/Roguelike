@@ -7,6 +7,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
@@ -39,29 +40,36 @@ namespace Model.Game
         public IShop? Shop => _shop;
         public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
-        private ReactiveProperty<bool> _downStairsLocked = new(true);
-        public ReadOnlyReactiveProperty<bool> DownStairsLocked => _downStairsLocked;
+        private ReactiveProperty<bool> _stairsLocked = new(true);
+        public ReadOnlyReactiveProperty<bool> DownStairsLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
-        public IIconEntity DownStairs => EventEntityManager.DownStairs;
+        public IIconEntity DownStairs => EventEntityManager.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
         public bool IsEventExecuting { get; private set; }
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
-            Vector2Int playerPosition, CharacterControlInputReceiver receiver, int level)
+            Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
         {
             Level = level;
+            
+            _tilemap = new Tilemap(map.Tilemap);
+
+            if (playerPosition == null)
+            {
+                playerPosition = _tilemap.GetAllPassablePositions().GetAtRandom();
+            }
+
             if (playerData == null)
             {
-                playerData = CharacterFactory.BuildPlayer("Player", playerPosition);
+                playerData = CharacterFactory.BuildPlayer("Player", playerPosition.Value);
             }
             else
             {
-                playerData.Entity.Position = playerPosition;
+                playerData.Entity.Position = playerPosition.Value;
             }
 
-            _tilemap = new Tilemap(map.Tilemap);
             CharacterManager = new CharacterManager(playerData, receiver, this);
             ItemManager = new ItemManager();
-            EventEntityManager = new EventEntityManager(map.EventEntities, _downStairsLocked);
+            EventEntityManager = new EventEntityManager(map.EventEntities, _stairsLocked);
             ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
 
             _dungeonData = data;
@@ -70,7 +78,7 @@ namespace Model.Game
             {
                 foreach (var character in partyMembers)
                 {
-                    character.Entity.Position = FindBlankPositionFrom(playerPosition,
+                    character.Entity.Position = FindBlankPositionFrom(playerPosition.Value,
                                 position => !AllCharacterPositions().Contains(position));
                     CharacterManager.SpawnCharacter(character, this);
                 }
@@ -108,19 +116,24 @@ namespace Model.Game
             }
 
             KeyCharacters = new(map.KeyCharacters
-                .Select(character => GetCharacterFromId(new(character)))
+                .Select(character => GetCharacterFromId(new Id<IEntity>(character)))
                 .Where(character => character != null)
                 .Cast<ICharacter>()
             );
+            foreach (var keyCharacter in map.KeyCharacters)
+            {
+                Debug.Log($"keyCharacter:{keyCharacter}");
+                Debug.Log($"keyCharacter.Id:{GetCharacterFromId(new Id<IEntity>(keyCharacter))}");
+            }
             if (KeyCharacters.Any())
             {
                 KeyCharacters.ForEach(character => _disposables.Add(character.OnDead.Subscribe(_ => KeyCharacters.Remove(character))));
                 _disposables.Add(KeyCharacters.ObserveCountChanged().Subscribe(count => Debug.Log(count)));
-                _disposables.Add(KeyCharacters.ObserveCountChanged().Where(count => count == 0).Subscribe(_ => _downStairsLocked.Value = false));
+                _disposables.Add(KeyCharacters.ObserveCountChanged().Where(count => count == 0).Subscribe(_ => _stairsLocked.Value = false));
             }
             else
             {
-                _downStairsLocked.Value = false;
+                _stairsLocked.Value = false;
             }
 
             var visibleArea = CharacterManager.Player.VisionRange.VisibleArea;
@@ -337,7 +350,7 @@ namespace Model.Game
                 Characters = characters.Select(character => character.Serialize()).ToList(),
                 Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 EventEntities = EventEntityManager.Serialize(),
-                KeyCharacters = KeyCharacters.Select(character => character.Id.Value).ToList(),
+                KeyCharacters = KeyCharacters.Select(character => character.Id.ToString()).ToList(),
                 MonsterHouse = new(_monsterHouse?.Serialize()),
                 Shop = new(_shop?.Serialize())
             };

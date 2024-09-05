@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -157,7 +158,7 @@ namespace Domain.Service.Characters
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
 
-            var affiliationDict = new Dictionary<int, float>();
+            var affiliationDict = new Dictionary<Guid, float>();
             if (affiliation != null && id != null)
             {
                 affiliationDict = new(affiliation.Affiliations);

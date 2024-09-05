@@ -1,8 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Domain.Model.Character;
-using Domain.Model.Map;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -13,7 +12,7 @@ namespace Domain.Model.Memento
         public List<CharacterMemento> Characters;
         public List<ItemEntityMemento> Items;
         public EventEntitiesMemento EventEntities;
-        public List<int> KeyCharacters;
+        public List<string> KeyCharacters;
         public Option<RoomMemento> MonsterHouse;
         public Option<ShopMemento> Shop;
     }

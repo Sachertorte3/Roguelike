@@ -6,8 +6,7 @@ namespace Domain.Model.Memento
     [Serializable]
     public class EventEntitiesMemento
     {
-        public DownStairsMemento DownStairs;
-        public UpStairsMemento UpStairs;
+        public List<StairsMemento> Stairs;
         public List<ChestMemento> Chests;
     }
 }

@@ -1,7 +1,8 @@
 #nullable enable
 using System;
 using UnityEngine;
-namespace Domain.Model
+
+namespace Utilities
 {
     [Serializable]
     public class Option<T>
@@ -24,6 +25,8 @@ namespace Domain.Model
             Value = default;
         }
 
+        public static Option<T> None => new();
+
         public Option(T? value)
         {
             Value = value;
@@ -38,7 +41,7 @@ namespace Domain.Model
             return value!;
         }
 
-        public T Unwrap<TResult>()
+        public T Unwrap()
         {
             return Expect("Value is null");
         }

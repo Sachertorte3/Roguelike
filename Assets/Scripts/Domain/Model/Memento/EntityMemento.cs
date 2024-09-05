@@ -6,7 +6,7 @@ namespace Domain.Model.Memento
     [Serializable]
     public class EntityMemento
     {
-        public int Id;
+        public string Id;
         public Vector2Int Position;
         public EntityLayer Layer;
     }

@@ -1,6 +1,7 @@
 using System;
 using Domain.Model.Character;
 using Stats;
+using Utilities;
 
 namespace Domain.Model.Memento
 {

@@ -3,7 +3,8 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-namespace Domain.Model
+
+namespace Utilities
 {
     [Serializable]
     public class IconSerializable

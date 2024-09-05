@@ -88,7 +88,7 @@ namespace Model.Game
                 Clerk = Clerk.Character.Serialize().Entity,
                 Items = _shopItems.Select(item => new ShopItemMemento
                 {
-                    Id = item.Id.Value,
+                    Id = item.Id.ToString(),
                     Price = item.Price
                 }).ToList(),
                 IsStolen = _isStolen.Value

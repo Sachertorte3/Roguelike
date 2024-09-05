@@ -75,7 +75,7 @@ namespace Model.Game
             {
                 Dungeons = new(_dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize())),
                 Player = playerData,
-                Maps = new(_maps.ToDictionary(map => map.Key.Value, map => map.Value)),
+                Maps = new(_maps.ToDictionary(map => map.Key.ToString(), map => map.Value)),
                 CurrentLocation = _activeLocation
             };
         }
@@ -91,13 +91,39 @@ namespace Model.Game
             var mapId = _dungeons[location.MapName].GetMapId(location.Level);
             if (!_maps.ContainsKey(mapId))
             {
-                var dungeonData = _dungeons[location.MapName].CreateMapData(location.Level);
-                _maps[mapId] = new MapBuilder(Tilemap.Build(dungeonData.Field), dungeonData, location.Level).Build();
+                Id<IEntity>? upStairsId = null;
+                Id<IEntity>? upStairsDestinationId = null;
+                Id<IEntity>? downStairsId = null;
+                Id<IEntity>? downStairsDestinationId = null;
+                if (_dungeons[location.MapName].ExistLevel(location.Level - 1))
+                {
+                    var prevMapId = _dungeons[location.MapName].GetMapId(location.Level - 1);
+                    if (_maps.ContainsKey(prevMapId))
+                    {
+                        var prevMap = _maps[prevMapId];
+                        var downStairs = prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
+                        upStairsId = new Id<IEntity>(downStairs.DestinationId);
+                        upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
+                    }
+                }
+                if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
+                {
+                    var nextMapId = _dungeons[location.MapName].GetMapId(location.Level + 1);
+                    if (_maps.ContainsKey(nextMapId))
+                    {
+                        var nextMap = _maps[nextMapId];
+                        var upStairs = nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
+                        downStairsId = new Id<IEntity>(upStairs.DestinationId);
+                        downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
+                    }
+                }
+                Debug.Log($"CreateMapManager mapId:{mapId} upStairsId:{upStairsId} upStairsDestinationId:{upStairsDestinationId} downStairsId:{downStairsId} downStairsDestinationId:{downStairsDestinationId}");
+                _maps[mapId] = _dungeons[location.MapName].CreateMapManager(location.Level, upStairsId, upStairsDestinationId, downStairsId, downStairsDestinationId);
             }
             return _maps[mapId];
         }
 
-        public MapManager LoadMap(Location location)
+        public MapManager LoadMap(Location location, Id<IEntity>? destination)
         {
             Log.Debug($"LoadMap location:{location}");
             var mapMemento = GetMapMemento(location);
@@ -105,22 +131,18 @@ namespace Model.Game
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;
-            Vector2Int initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
+            Debug.Log(destination);
+            foreach (var stairs in mapMemento.EventEntities.Stairs)
+            {
+                Debug.Log($"stairs:{stairs.Entity.Id} destination:{stairs.DestinationId}");
+            }
+            Vector2Int? initialPosition = destination != null ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity.Position : null;
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
                 characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize())
                     .ToList();
-
-                if (location.Level < _activeLocation.Level)
-                {
-                    initialPosition = mapMemento.EventEntities.DownStairs.Entity.Position;
-                }
-                else if (location.Level > _activeLocation.Level)
-                {
-                    initialPosition = mapMemento.EventEntities.UpStairs.Entity.Position;
-                }
 
                 _activeMap.CurrentValue.Dispose();
             }

@@ -70,7 +70,7 @@ namespace Domain.Service.Effect
 
         public float EvaluateDamage()
         {
-            var result = Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate) + Formula.EvaluateDamage(_elementPowers, true) * _criticalRate;
+            var result = (Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate)) + (Formula.EvaluateDamage(_elementPowers, true) * _criticalRate);
             result += _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.EvaluateDamage());
             result += new BlowAwayEffect(_blowAwayDistance).EvaluateDamage();
             return result;

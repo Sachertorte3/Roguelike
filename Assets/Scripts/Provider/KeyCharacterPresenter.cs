@@ -16,19 +16,19 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
-                    var downStairs = map.EventEntityManager.Stairs.Select(iconEntities.Get);
+                    var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
                     var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")
                         .WaitForCompletion();
-                    foreach (var stairs in downStairs)
+                    foreach (var movementEntity in movementEntities)
                     {
-                        var stairsLock = Object.Instantiate(lockPrefab, stairs.transform).GetComponent<StairsLock>();
-                        stairsLock.SetVisibility(stairs.GetComponent<SpriteRenderer>().enabled);
-                        stairsLock.SetCount(map.KeyCharacters.Count);
-                        map.KeyCharacters.ObserveCountChanged().Subscribe(count => stairsLock.SetCount(count)).AddTo(stairsLock);
-                        map.DownStairsLocked.Where(isLocked => !isLocked).Subscribe(_ =>
+                        var movementLock = Object.Instantiate(lockPrefab, movementEntity.transform).GetComponent<StairsLock>();
+                        movementLock.SetVisibility(movementEntity.GetComponent<SpriteRenderer>().enabled);
+                        movementLock.SetCount(map.KeyCharacters.Count);
+                        map.KeyCharacters.ObserveCountChanged().Subscribe(count => movementLock.SetCount(count)).AddTo(movementLock);
+                        map.MovementEntityLocked.Where(isLocked => !isLocked).Subscribe(_ =>
                         {
-                            stairsLock.UnLock();
-                        }).AddTo(stairsLock);
+                            movementLock.UnLock();
+                        }).AddTo(movementLock);
                     }
                     foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
                     {

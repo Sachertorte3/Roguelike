@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
-using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Memento;
 using Domain.Service.Effect;

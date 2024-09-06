@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Events;

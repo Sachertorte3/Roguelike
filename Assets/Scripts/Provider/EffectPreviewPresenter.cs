@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using Domain.Service.Effect;
 using Model.Game;

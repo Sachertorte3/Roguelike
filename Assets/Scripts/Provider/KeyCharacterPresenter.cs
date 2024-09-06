@@ -16,17 +16,20 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
-                    var downStairs = iconEntities.Get(map.DownStairs);
+                    var downStairs = map.EventEntityManager.Stairs.Select(iconEntities.Get);
                     var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")
                         .WaitForCompletion();
-                    var stairsLock = Object.Instantiate(lockPrefab, downStairs.transform).GetComponent<StairsLock>();
-                    stairsLock.SetVisibility(downStairs.GetComponent<SpriteRenderer>().enabled);
-                    stairsLock.SetCount(map.KeyCharacters.Count);
-                    map.KeyCharacters.ObserveCountChanged().Subscribe(count => stairsLock.SetCount(count)).AddTo(stairsLock);
-                    map.DownStairsLocked.Where(isLocked => !isLocked).Subscribe(_ =>
+                    foreach (var stairs in downStairs)
                     {
-                        stairsLock.UnLock();
-                    }).AddTo(stairsLock);
+                        var stairsLock = Object.Instantiate(lockPrefab, stairs.transform).GetComponent<StairsLock>();
+                        stairsLock.SetVisibility(stairs.GetComponent<SpriteRenderer>().enabled);
+                        stairsLock.SetCount(map.KeyCharacters.Count);
+                        map.KeyCharacters.ObserveCountChanged().Subscribe(count => stairsLock.SetCount(count)).AddTo(stairsLock);
+                        map.DownStairsLocked.Where(isLocked => !isLocked).Subscribe(_ =>
+                        {
+                            stairsLock.UnLock();
+                        }).AddTo(stairsLock);
+                    }
                     foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
                     {
                         var keyPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Key.prefab")

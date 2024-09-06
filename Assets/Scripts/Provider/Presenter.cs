@@ -3,17 +3,34 @@ using Model.Game;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using VContainer;
+using R3;
 using Logger = Unity.Logging.Logger;
+using View.UI;
+using Cysharp.Threading.Tasks;
 
 namespace Provider
 {
     public class Presenter
     {
         [Inject]
-        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2)
+        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2, MenuController menuController)
         {
             LoggerInit();
-            gameManager.Load();
+            gameManager.State.Subscribe(state =>
+            {
+                switch (state)
+                {
+                    case GameState.Title:
+                        Log.Debug("Title");
+                        menuController.TitleMenu();
+                        break;
+                    case GameState.Dungeon:
+                        Log.Debug("Dungeon");
+                        menuController.DungeonMenu();
+                        break;
+                }
+            });
+            gameManager.Title().Forget();
         }
 
         private void LoggerInit()
@@ -34,7 +51,7 @@ namespace Provider
                 .SyncMode.FullSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.UnityEditorConsole(
-                    minLevel: LogLevel.Info,
+                    minLevel: LogLevel.Debug,
                     captureStackTrace: true);
 
         private static LoggerConfig DevelopmentConfiguration()

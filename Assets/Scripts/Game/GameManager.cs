@@ -14,6 +14,11 @@ using VContainer;
 
 namespace Model.Game
 {
+    public enum GameState
+    {
+        Title,
+        Dungeon,
+    }
     public class GameManager : IGameManager
     {
         private readonly World _world;
@@ -24,6 +29,8 @@ namespace Model.Game
         private readonly CharacterControlInputReceiver _receiver;
         private readonly DungeonBluePrintData _dungeonBluePrintData;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
+        private readonly ReactiveProperty<GameState> _state = new ReactiveProperty<GameState>(GameState.Title);
+        public ReadOnlyReactiveProperty<GameState> State => _state;
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
@@ -36,7 +43,35 @@ namespace Model.Game
             Globals.GameManager = this;
         }
 
-        public async UniTask<int> GetChoice(string text, params string[] choices)
+        public async UniTask Title()
+        {
+            var map = await Load();
+            var choice = await GetChoice(null, "Continue", "New Game");
+            _state.Value = GameState.Dungeon;
+            switch (choice)
+            {
+                case 0:
+                    StartMap(map);
+                    break;
+                case 1:
+                    await NewGame();
+                    break;
+            }
+        }
+
+        public async UniTask NewGame()
+        {
+            Log.Debug("Start NewGame");
+            _receiver.Enable(false);
+            await _turnController.Stop();
+            _world.CreateNew(_dungeonBluePrintData);
+            var map = _world.LoadMap(new Location("Dungeon", 1), null);
+            _turnController.Run(map);
+            _receiver.Enable(true);
+            Log.Debug("End NewGame");
+        }
+
+        public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             return await _choiceReceiver.GetChoice(text, choices);
         }
@@ -69,7 +104,7 @@ namespace Model.Game
             Log.Debug("End Save");
         }
 
-        public async void Load()
+        public async UniTask<MapManager> Load()
         {
             Log.Debug("Start Load");
             _receiver.Enable(false);
@@ -86,9 +121,20 @@ namespace Model.Game
                 _world.CreateNew(_dungeonBluePrintData);
                 map = _world.LoadMap(new Location("Dungeon", 1), null);
             }
+            Log.Debug("End Load");
+            return map;
+        }
+
+        public void StartMap(MapManager map)
+        {
             _turnController.Run(map);
             _receiver.Enable(true);
-            Log.Debug("End Load");
+        }
+
+        public async UniTask LoadAndStart()
+        {
+            var map = await Load();
+            StartMap(map);
         }
     }
 }

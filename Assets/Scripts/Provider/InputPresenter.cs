@@ -53,7 +53,7 @@ namespace Provider
             });
 
             receiver.OnQuickSave.Subscribe(_ => gameManager.Save());
-            receiver.OnQuickLoad.Subscribe(_ => gameManager.Load());
+            receiver.OnQuickLoad.Subscribe(_ => gameManager.LoadAndStart());
         }
     }
 }

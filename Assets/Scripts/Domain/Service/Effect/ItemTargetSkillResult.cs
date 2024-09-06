@@ -10,7 +10,7 @@ namespace Domain.Service.Effect
         {
             IsSuccess = isSuccess;
         }
-        public static readonly ItemTargetSkillResult Failed = new ItemTargetSkillResult(false);
-        public static readonly ItemTargetSkillResult Success = new ItemTargetSkillResult(true);
+        public static readonly ItemTargetSkillResult Failed = new(false);
+        public static readonly ItemTargetSkillResult Success = new(true);
     }
 }

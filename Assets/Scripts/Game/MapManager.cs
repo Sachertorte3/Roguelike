@@ -7,7 +7,6 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
@@ -41,7 +40,7 @@ namespace Model.Game
         public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
         private ReactiveProperty<bool> _stairsLocked = new(true);
-        public ReadOnlyReactiveProperty<bool> DownStairsLocked => _stairsLocked;
+        public ReadOnlyReactiveProperty<bool> MovementEntityLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
         public bool IsEventExecuting { get; private set; }
 
@@ -49,7 +48,7 @@ namespace Model.Game
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
         {
             Level = level;
-            
+
             _tilemap = new Tilemap(map.Tilemap);
 
             if (playerPosition == null)

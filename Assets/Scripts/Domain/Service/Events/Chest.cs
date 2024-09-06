@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Entities;
 using Domain.Service.Items;

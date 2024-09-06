@@ -186,9 +186,9 @@ namespace Domain.Service.Characters
                 if (CanMove(direction, map))
                     await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
-            
+
             var result = await skill.Use(this, CurrentPosition, direction, map);
-            
+
             if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
             {
                 _onEffectSpawned.OnNext(

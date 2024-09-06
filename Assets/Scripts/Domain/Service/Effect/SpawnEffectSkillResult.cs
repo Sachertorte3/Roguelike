@@ -17,7 +17,7 @@ namespace Domain.Service.Effect
             Area = area;
             IsSuccess = isSuccess;
         }
-        public static readonly SpawnEffectSkillResult Failed = new SpawnEffectSkillResult(new Color(), Enumerable.Empty<Vector2Int>(), false);
-        public static SpawnEffectSkillResult Success(Color color, IEnumerable<Vector2Int> area) => new SpawnEffectSkillResult(color, area, true);
+        public static readonly SpawnEffectSkillResult Failed = new(new Color(), Enumerable.Empty<Vector2Int>(), false);
+        public static SpawnEffectSkillResult Success(Color color, IEnumerable<Vector2Int> area) => new(color, area, true);
     }
 }

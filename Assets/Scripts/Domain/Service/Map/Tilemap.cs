@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using RandomDungeonWithBluePrint;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Unity.Logging;
 using static RandomDungeonWithBluePrint.Constants;
 
 namespace Domain.Service.Map

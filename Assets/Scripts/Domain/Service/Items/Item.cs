@@ -198,7 +198,7 @@ namespace Domain.Service.Items
                 0
             );
         }
-        
+
         public float EvaluatePrice()
         {
             var priceOnUse = SkillOnUse.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * (UseOnDeath ? 5 : 1);

@@ -27,7 +27,7 @@ namespace Domain.Service.Effect
             _power += value;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new Dictionary<UpgradePath, UpgradeData>
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
         {
             {
                 new UpgradePath("威力[小]", Element.ToString()),

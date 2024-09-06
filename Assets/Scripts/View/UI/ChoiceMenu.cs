@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -15,7 +16,7 @@ namespace View.UI
         [SerializeField] private RectTransform _content;
         [SerializeField] private ChoiceButton _choiceButtonPrefab;
         private readonly List<ChoiceButton> _buttons = new();
-        public void SetChoices(string text, params string[] choices)
+        public void SetChoices(string? text, params string[] choices)
         {
             foreach (var button in _buttons)
             {
@@ -23,7 +24,11 @@ namespace View.UI
             }
             _buttons.Clear();
 
-            _text.text = text;
+            if (text != null)
+                _text.text = text;
+            else
+                _text.text = "";
+        
             foreach ((var choice, int index) in choices.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);

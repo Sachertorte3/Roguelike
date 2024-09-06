@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VContainer;
@@ -9,6 +11,7 @@ namespace View.UI
 {
     public class MenuController : MonoBehaviour
     {
+        [SerializeField] private TitleMenu _titleMenu;
         [SerializeField] private DungeonMenu _dungeonMenu;
         [SerializeField] private SettingMenu _settingMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
@@ -19,6 +22,7 @@ namespace View.UI
         public void Construct(InputReceiver inputReceiver)
         {
             _menuStack.Push(_dungeonMenu);
+            _menuStack.Push(_titleMenu);
             inputReceiver.OnMenuOpening.Subscribe(_ =>
             {
                 AddMenu(_settingMenu);
@@ -29,7 +33,7 @@ namespace View.UI
             });
         }
 
-        public async UniTask<int> GetChoice(string text, params string[] choices)
+        public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             _choiceMenu.SetChoices(text, choices);
             await UniTask.NextFrame();
@@ -41,6 +45,7 @@ namespace View.UI
 
         public void PushMenu(IMenu pushedMenu)
         {
+            Log.Info($"PushMenu: {pushedMenu}");
             var previousMenu = _menuStack.Peek();
             _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(pushedMenu));
@@ -53,6 +58,7 @@ namespace View.UI
 
         public void AddMenu(IMenu addedMenu)
         {
+            Log.Info($"AddMenu: {addedMenu}");
             var previousMenu = _menuStack.Peek();
             _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(addedMenu));
@@ -65,6 +71,7 @@ namespace View.UI
         public void PopMenu()
         {
             var poppedMenu = _menuStack.Pop();
+            Log.Info($"PopMenu: {poppedMenu}");
             var previousMenu = _menuStack.Peek();
             _selectedObject[poppedMenu] = EventSystem.current.currentSelectedGameObject;
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(previousMenu));
@@ -72,6 +79,16 @@ namespace View.UI
             previousMenu.Enable();
             poppedMenu.Hide();
             poppedMenu.Disable();
+        }
+
+        public void DungeonMenu()
+        {
+            PopMenu();
+        }
+
+        public void TitleMenu()
+        {
+            PushMenu(_titleMenu);
         }
     }
 }

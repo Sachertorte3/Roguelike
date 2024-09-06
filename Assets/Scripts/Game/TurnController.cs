@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using R3;
 using Stats;
 using Unity.Logging;
 using UnityEngine;
@@ -16,9 +17,10 @@ namespace Model.Game
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isRunning = false;
         private UniTaskCompletionSource _runCompletionSource;
-        private int _turn = 1;
+        private ReactiveProperty<int> _turn = new(1);
         private int _turnInLevel = 1;
         private Resource _turnWaitTime { get; init; }
+        public ReadOnlyReactiveProperty<int> Turn => _turn;
 
         public TurnController(GameInput input)
         {
@@ -38,7 +40,7 @@ namespace Model.Game
             {
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
 
-                map.UpdateTurn(_turn);
+                map.UpdateTurn(_turn.CurrentValue);
                 var characters = map.Characters.ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
@@ -94,7 +96,7 @@ namespace Model.Game
                 await characters.Select(character =>
                     UniTask.WaitUntil(() => character.State == CharacterState.Wait));
 
-                _turn++;
+                _turn.Value++;
                 _turnInLevel++;
             }
             _isRunning = false;

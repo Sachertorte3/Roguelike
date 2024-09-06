@@ -7,6 +7,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
+using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
@@ -23,6 +24,7 @@ namespace Model.Game
         private readonly ChoiceReceiver _choiceReceiver;
         private readonly CharacterControlInputReceiver _receiver;
         private readonly DungeonBluePrintData _dungeonBluePrintData;
+        public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)

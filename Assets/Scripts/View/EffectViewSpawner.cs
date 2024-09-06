@@ -11,13 +11,25 @@ namespace View
 
         public void Spawn(IEnumerable<Vector2Int> area, Color color, int effectDisplayMilliseconds)
         {
-            _effect.GetComponent<LifeTimer>().LifeTimeMilliseconds = effectDisplayMilliseconds;
+            foreach (var position in area)
+            {
+                var spawnedEffect = Object.Instantiate(_effect);
+                spawnedEffect.AddComponent<LifeTimer>().LifeTimeMilliseconds = effectDisplayMilliseconds;
+                spawnedEffect.transform.position = (Vector3Int)position;
+                spawnedEffect.GetComponent<SpriteRenderer>().color = color;
+            }
+        }
+        public List<GameObject> SpawnPreview(IEnumerable<Vector2Int> area, Color color)
+        {
+            var spawnedEffects = new List<GameObject>();
             foreach (var position in area)
             {
                 var spawnedEffect = Object.Instantiate(_effect);
                 spawnedEffect.transform.position = (Vector3Int)position;
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
+                spawnedEffects.Add(spawnedEffect);
             }
+            return spawnedEffects;
         }
     }
 }

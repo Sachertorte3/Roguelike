@@ -96,7 +96,7 @@ namespace Domain.Service.Effect
             };
         }
 
-        private IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+        public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map)
         {
             var spawnPositions = _position.Get(actor, position, direction, map);

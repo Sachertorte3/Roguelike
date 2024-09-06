@@ -43,7 +43,6 @@ namespace Model.Game
         private ReactiveProperty<bool> _stairsLocked = new(true);
         public ReadOnlyReactiveProperty<bool> DownStairsLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
-        public IIconEntity DownStairs => EventEntityManager.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
         public bool IsEventExecuting { get; private set; }
 
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,

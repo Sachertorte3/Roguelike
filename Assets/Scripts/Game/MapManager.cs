@@ -102,7 +102,7 @@ namespace Model.Game
 
             if (map.Shop.HasValue)
             {
-                var clerk = Characters.FirstOrDefault(character => character.CurrentPosition == map.Shop.Value.Clerk.Position);
+                var clerk = Characters.FirstOrDefault(character => character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
                 if (clerk == null && !map.Shop.Value.IsStolen)
                     clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
                 if (clerk != null)
@@ -118,11 +118,6 @@ namespace Model.Game
                 .Where(character => character != null)
                 .Cast<ICharacter>()
             );
-            foreach (var keyCharacter in map.KeyCharacters)
-            {
-                Debug.Log($"keyCharacter:{keyCharacter}");
-                Debug.Log($"keyCharacter.Id:{GetCharacterFromId(new Id<IEntity>(keyCharacter))}");
-            }
             if (KeyCharacters.Any())
             {
                 KeyCharacters.ForEach(character => _disposables.Add(character.OnDead.Subscribe(_ => KeyCharacters.Remove(character))));
@@ -341,6 +336,22 @@ namespace Model.Game
         {
             var characters = Characters.ToList();
             characters.Remove(Player);
+            return new MapMemento
+            {
+                Tilemap = _tilemap.Serialize(),
+                Characters = characters.Select(character => character.Serialize()).ToList(),
+                Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                EventEntities = EventEntityManager.Serialize(),
+                KeyCharacters = KeyCharacters.Select(character => character.Id.ToString()).ToList(),
+                MonsterHouse = new(_monsterHouse?.Serialize()),
+                Shop = new(_shop?.Serialize())
+            };
+        }
+
+        public MapMemento SerializeWithoutPartyMembers()
+        {
+            var characters = Characters.ToList();
+            characters.Remove(Player);
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento
             {
@@ -520,6 +531,7 @@ namespace Model.Game
         {
             return CharacterManager.Characters
                 .Where(character => character != Player)
+                .Where(character => !character.HasHomePosition)
                 .Where(character => character.IsAlly(Player))
                 .Where(character => character.IsVisible(Player.CurrentPosition));
         }

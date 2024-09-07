@@ -8,6 +8,6 @@ namespace Domain.Model.Memento
     public class AffiliationMemento
     {
         public CharacterGroup Group;
-        public SerializableDictionary<Guid, float> Affiliations;
+        public SerializableDictionary<string, float> Affiliations;
     }
 }

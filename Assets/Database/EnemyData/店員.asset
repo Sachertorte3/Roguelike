@@ -20,7 +20,7 @@ MonoBehaviour:
   Hp: 256
   Aggression: 1
   Behavior:
-    wanderAround: 0
+    wanderAround: 1
     Default: 1
     PrioritizeMovement: 0
     UseTopBound: 0
@@ -89,6 +89,7 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 1
     - rid: 2541219281251860525
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -106,6 +107,7 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Radius: 4
     - rid: 2541219281251860529
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -123,6 +125,7 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Radius: 1
     - rid: 2541219281251860532
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}

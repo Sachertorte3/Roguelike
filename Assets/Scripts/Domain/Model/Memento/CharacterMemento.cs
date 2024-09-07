@@ -13,6 +13,7 @@ namespace Domain.Model.Memento
         public string Name;
         [SerializeReference] public ICharacterType CharacterType;
         public BehaviorData Behavior;
+        public Option<Vector2Int> HomePosition;
         public CharacterStatusMemento Status;
         public EntityMemento Entity;
         public Direction8 Direction;

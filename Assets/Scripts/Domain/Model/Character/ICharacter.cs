@@ -20,6 +20,7 @@ namespace Domain.Model.Character
     {
         public bool IsLeader { get; }
         public bool IsBoss { get; }
+        public bool HasHomePosition { get; }
         public CharacterState State { get; }
         public int Money { get; }
         public string GetName(IHasAffiliation player);

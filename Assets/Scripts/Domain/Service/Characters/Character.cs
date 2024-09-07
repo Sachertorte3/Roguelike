@@ -56,7 +56,7 @@ namespace Domain.Service.Characters
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
             _inventory = new(data.Inventory, _statusManager);
-            Behavior = behavior;
+            _behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new(Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
@@ -95,11 +95,12 @@ namespace Domain.Service.Characters
         public bool IsOverDrive => _statusManager.IsOverDrive;
         public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
         public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
-        private ICharacterBehavior Behavior { get; }
+        private ICharacterBehavior _behavior { get; }
         public Entity Entity => _entity;
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
+        public bool HasHomePosition => _behavior.HomePosition.HasValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;
@@ -121,9 +122,9 @@ namespace Domain.Service.Characters
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
-        public Observable<OnItemSelectMessage> OnItemSelect => Behavior.OnItemSelect;
+        public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
         public ICharacterType CharacterType { get; init; }
-        public IItemSelecter ItemSelecter => Behavior;
+        public IItemSelecter ItemSelecter => _behavior;
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -298,7 +299,8 @@ namespace Domain.Service.Characters
             {
                 Name = _name,
                 CharacterType = CharacterType,
-                Behavior = Behavior.BehaviorData,
+                Behavior = _behavior.BehaviorData,
+                HomePosition = _behavior.HomePosition,
                 Status = _statusManager.Serialize(),
                 Entity = _entity.Serialize(),
                 Direction = _direction.CurrentValue,
@@ -375,7 +377,7 @@ namespace Domain.Service.Characters
         public async UniTask DoNextAction(IMap world, IInput input)
         {
             State = CharacterState.Think;
-            var action = await Behavior.GenerateNextAction(this, world, input);
+            var action = await _behavior.GenerateNextAction(this, world, input);
             if (IsConfused)
             {
                 action = RegenerateConfuseAction(this, world, action);

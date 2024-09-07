@@ -10,6 +10,7 @@ using Domain.Model.Setting;
 using Domain.Service.Action;
 using R3;
 using Unity.Logging;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Behavior
@@ -21,6 +22,7 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
+        public Option<Vector2Int> HomePosition => Option<Vector2Int>.None;
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {

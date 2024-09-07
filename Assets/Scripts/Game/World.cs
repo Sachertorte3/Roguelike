@@ -138,7 +138,7 @@ namespace Model.Game
             Vector2Int? initialPosition = destination != null ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity.Position : null;
             if (_activeMap.CurrentValue != null)
             {
-                _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
+                _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
                 characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize())
                     .ToList();

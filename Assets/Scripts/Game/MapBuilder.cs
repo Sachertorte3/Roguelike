@@ -115,7 +115,7 @@ namespace Model.Game
                 _items.Add(ItemFactory.Build(position, Item.Build(shopItems.GetRandomItem(), ItemState.ShopItem)));
 
             var clerkPosition = positions.Last();
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, false, false);
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false, hasHomePosition: true);
             _characters.Add(clerk);
             return Shop.Build(shopRoom, clerk.Entity, _items.ToList());
         }

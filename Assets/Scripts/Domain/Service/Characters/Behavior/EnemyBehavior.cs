@@ -21,6 +21,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
+        private readonly Option<Vector2Int> _homePosition;
+        public Option<Vector2Int> HomePosition => _homePosition;
 
         private readonly IBehaviorWhenDiscoveringTarget _default;
         private readonly bool _prioritizeMovement = false;
@@ -32,9 +34,11 @@ namespace Domain.Service.Characters.Behavior
         private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound = false;
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorData data)
+        public EnemyBehavior(BehaviorData data, Option<Vector2Int> homePosition)
         {
             BehaviorData = data;
+            _homePosition = homePosition;
+
             if (data.wanderAround)
             {
                 _wander = new Wander();
@@ -92,6 +96,11 @@ namespace Domain.Service.Characters.Behavior
             if (_lastTargetPosition != null) //目指す座標がある
             {
                 Log.Debug($"[Think] Target position is {_lastTargetPosition}.");
+            }
+            else if (HomePosition.HasValue)
+            {
+                Log.Debug($"[Think] Home position is {HomePosition}.");
+                _lastTargetPosition = HomePosition.Value;
             }
             else
             {

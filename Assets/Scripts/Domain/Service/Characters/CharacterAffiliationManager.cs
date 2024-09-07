@@ -151,18 +151,18 @@ namespace Domain.Service.Characters
             return new AffiliationMemento
             {
                 Group = Group,
-                Affiliations = new(_affections.Select(x => (x.Key.Value, x.Value)).ToDictionary(x => x.Item1, x => x.Item2))
+                Affiliations = new(_affections.ToDictionary(x => x.Key.ToString(), x => x.Value))
             };
         }
 
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
 
-            var affiliationDict = new Dictionary<Guid, float>();
+            var affiliationDict = new Dictionary<string, float>();
             if (affiliation != null && id != null)
             {
                 affiliationDict = new(affiliation.Affiliations);
-                affiliationDict[id.Value] = 5f;
+                affiliationDict[id.ToString()] = 5f;
             }
             return new AffiliationMemento
             {

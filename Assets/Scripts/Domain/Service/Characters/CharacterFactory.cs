@@ -27,6 +27,7 @@ namespace Domain.Service.Characters
                 Name = Name,
                 CharacterType = new Human("Chara_Hero1_USM"),
                 Behavior = new BehaviorData(),
+                HomePosition = Option<Vector2Int>.None,
                 Status = CharacterStatusManager.Build(100, 1, 1, new(), new(), 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
@@ -53,7 +54,7 @@ namespace Domain.Service.Characters
             };
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null, Id<IEntity>? id = null)
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, bool isSlept, bool isShiny, AffiliationMemento? affiliation = null, Id<IEntity>? id = null, bool? hasHomePosition = false)
         {
             var inventory = new InventoryMemento
             {
@@ -69,6 +70,7 @@ namespace Domain.Service.Characters
                 Name = isShiny ? "☆" + data.Name : data.Name,
                 CharacterType = data.CharacterType,
                 Behavior = data.Behavior,
+                HomePosition = hasHomePosition.HasValue ? new Option<Vector2Int>(spawnPosition) : Option<Vector2Int>.None,
                 Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,

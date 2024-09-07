@@ -26,6 +26,10 @@ namespace Provider
                     gameManager.Turn.AsUnitObservable()
                 ).Subscribe(_ =>
                 {
+                    if (map.Player.CurrentHp <= 0)
+                    {
+                        return;
+                    }
                     var focus = inventoryView.CurrentFocus;
                     previews.ForEach(preview => GameObject.Destroy(preview));
                     previews.Clear();

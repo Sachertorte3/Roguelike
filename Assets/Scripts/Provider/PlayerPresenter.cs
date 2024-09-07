@@ -20,6 +20,10 @@ namespace Provider
             CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
+                    if (map.Player.CurrentHp <= 0)
+                    {
+                        return;
+                    }
                     var playerView = characters.Get(map.Player);
 
                     var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")

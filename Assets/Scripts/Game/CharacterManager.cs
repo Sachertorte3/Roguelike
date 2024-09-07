@@ -34,8 +34,11 @@ namespace Model.Game
             }
 
             Player = player;
-            AddCharacter(player);
-            PlayerEvents.Add(player);
+            if (player.CurrentHp > 0)
+            {
+                AddCharacter(player);
+                PlayerEvents.Add(player);
+            }
         }
 
         public readonly ICharacter Player;

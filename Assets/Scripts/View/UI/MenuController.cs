@@ -46,11 +46,14 @@ namespace View.UI
         public void PushMenu(IMenu pushedMenu)
         {
             Log.Info($"PushMenu: {pushedMenu}");
-            var previousMenu = _menuStack.Peek();
-            _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
+            if (_menuStack.Count > 0)
+            {
+                var previousMenu = _menuStack.Peek();
+                _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
+                previousMenu.Hide();
+                previousMenu.Disable();
+            }
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(pushedMenu));
-            previousMenu.Hide();
-            previousMenu.Disable();
             pushedMenu.Show();
             pushedMenu.Enable();
             _menuStack.Push(pushedMenu);
@@ -59,10 +62,13 @@ namespace View.UI
         public void AddMenu(IMenu addedMenu)
         {
             Log.Info($"AddMenu: {addedMenu}");
-            var previousMenu = _menuStack.Peek();
-            _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
+            if (_menuStack.Count > 0)
+            {
+                var previousMenu = _menuStack.Peek();
+                _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
+                previousMenu.Disable();
+            }
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(addedMenu));
-            previousMenu.Disable();
             addedMenu.Show();
             addedMenu.Enable();
             _menuStack.Push(addedMenu);
@@ -72,11 +78,14 @@ namespace View.UI
         {
             var poppedMenu = _menuStack.Pop();
             Log.Info($"PopMenu: {poppedMenu}");
-            var previousMenu = _menuStack.Peek();
             _selectedObject[poppedMenu] = EventSystem.current.currentSelectedGameObject;
-            EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(previousMenu));
-            previousMenu.Show();
-            previousMenu.Enable();
+            if (_menuStack.Count > 0)
+            {
+                var previousMenu = _menuStack.Peek();
+                EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(previousMenu));
+                previousMenu.Show();
+                previousMenu.Enable();
+            }
             poppedMenu.Hide();
             poppedMenu.Disable();
         }
@@ -84,11 +93,6 @@ namespace View.UI
         public void DungeonMenu()
         {
             PopMenu();
-        }
-
-        public void TitleMenu()
-        {
-            PushMenu(_titleMenu);
         }
     }
 }

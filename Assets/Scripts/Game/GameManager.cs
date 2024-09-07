@@ -46,16 +46,25 @@ namespace Model.Game
         public async UniTask Title()
         {
             var map = await Load();
-            var choice = await GetChoice(null, "Continue", "New Game");
-            _state.Value = GameState.Dungeon;
-            switch (choice)
+            if (map.Player.CurrentHp > 0)
             {
-                case 0:
-                    StartMap(map);
-                    break;
-                case 1:
-                    await NewGame();
-                    break;
+                var choice = await GetChoice(null, "Continue", "New Game");
+                _state.Value = GameState.Dungeon;
+                switch (choice)
+                {
+                    case 0:
+                        StartMap(map);
+                        break;
+                    case 1:
+                        await NewGame();
+                        break;
+                }
+            }
+            else
+            {
+                var _ = await GetChoice(null, "New Game");
+                _state.Value = GameState.Dungeon;
+                await NewGame();
             }
         }
 

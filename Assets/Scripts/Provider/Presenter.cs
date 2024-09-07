@@ -22,7 +22,6 @@ namespace Provider
                 {
                     case GameState.Title:
                         Log.Debug("Title");
-                        menuController.TitleMenu();
                         break;
                     case GameState.Dungeon:
                         Log.Debug("Dungeon");

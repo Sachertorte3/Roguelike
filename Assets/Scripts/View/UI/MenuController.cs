@@ -43,6 +43,23 @@ namespace View.UI
             return selectedIndex;
         }
 
+        public void SwitchMenu(IMenu menu)
+        {
+            Log.Info($"SwitchMenu: {menu}");
+            if (_menuStack.Count > 0)
+            {
+                var previousMenu = _menuStack.Peek();
+                _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
+                previousMenu.Hide();
+                previousMenu.Disable();
+            }
+            EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(menu));
+            menu.Show();
+            menu.Enable();
+            _menuStack.Clear();
+            _menuStack.Push(menu);
+        }
+
         public void PushMenu(IMenu pushedMenu)
         {
             Log.Info($"PushMenu: {pushedMenu}");
@@ -90,9 +107,14 @@ namespace View.UI
             poppedMenu.Disable();
         }
 
+        public void TitleMenu()
+        {
+            SwitchMenu(_titleMenu);
+        }
+
         public void DungeonMenu()
         {
-            PopMenu();
+            SwitchMenu(_dungeonMenu);
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Model.Game
         public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
         private readonly ReactiveProperty<GameState> _state = new ReactiveProperty<GameState>(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
+        private readonly SerialDisposable _disposable = new();
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
@@ -45,7 +46,11 @@ namespace Model.Game
 
         public async UniTask Title()
         {
-            var map = await Load();
+            if (_world.ActiveMap.CurrentValue == null)
+            {
+                await Load();
+            }
+            var map = _world.ActiveMap.CurrentValue;
             if (map.Player.CurrentHp > 0)
             {
                 var choice = await GetChoice(null, "Continue", "New Game");
@@ -56,7 +61,8 @@ namespace Model.Game
                         StartMap(map);
                         break;
                     case 1:
-                        await NewGame();
+                        map = await CreateMap();
+                        StartMap(map);
                         break;
                 }
             }
@@ -64,20 +70,25 @@ namespace Model.Game
             {
                 var _ = await GetChoice(null, "New Game");
                 _state.Value = GameState.Dungeon;
-                await NewGame();
+                map = await CreateMap();
+                StartMap(map);
             }
+            _disposable.Disposable = map.Player.OnDestroyed.Subscribe(async _ =>
+            {
+                await StopMap();
+                Save();
+                _state.Value = GameState.Title;
+            });
         }
 
-        public async UniTask NewGame()
+        public async UniTask<MapManager> CreateMap()
         {
-            Log.Debug("Start NewGame");
-            _receiver.Enable(false);
-            await _turnController.Stop();
+            Log.Debug("Start CreateMap");
+            await StopMap();
             _world.CreateNew(_dungeonBluePrintData);
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
-            _turnController.Run(map);
-            _receiver.Enable(true);
-            Log.Debug("End NewGame");
+            Log.Debug("End CreateMap");
+            return map;
         }
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)
@@ -88,8 +99,7 @@ namespace Model.Game
         public async void LoadMap(Location location, Id<IEntity> destination)
         {
             Log.Debug("Start LoadMap");
-            _receiver.Enable(false);
-            await _turnController.Stop();
+            await StopMap();
             var map = _world.LoadMap(location, destination);
             _turnController.Run(map);
             _receiver.Enable(true);
@@ -116,8 +126,7 @@ namespace Model.Game
         public async UniTask<MapManager> Load()
         {
             Log.Debug("Start Load");
-            _receiver.Enable(false);
-            await _turnController.Stop();
+            await StopMap();
             MapManager map = null;
             if (System.IO.File.Exists("Save/save.json"))
             {
@@ -138,6 +147,12 @@ namespace Model.Game
         {
             _turnController.Run(map);
             _receiver.Enable(true);
+        }
+
+        public async UniTask StopMap()
+        {
+            _receiver.Enable(false);
+            await _turnController.Stop();
         }
 
         public async UniTask LoadAndStart()

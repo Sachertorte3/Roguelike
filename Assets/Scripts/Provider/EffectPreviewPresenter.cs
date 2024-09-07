@@ -26,13 +26,13 @@ namespace Provider
                     gameManager.Turn.AsUnitObservable()
                 ).Subscribe(_ =>
                 {
+                    previews.ForEach(preview => GameObject.Destroy(preview));
+                    previews.Clear();
                     if (map.Player.CurrentHp <= 0)
                     {
                         return;
                     }
                     var focus = inventoryView.CurrentFocus;
-                    previews.ForEach(preview => GameObject.Destroy(preview));
-                    previews.Clear();
                     if (focus != null)
                     {
                         var item = map.Player.Inventory.GetItem(focus.Value);

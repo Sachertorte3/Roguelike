@@ -48,7 +48,7 @@ namespace Domain.Service.Characters
                 return other.IsAlly(_player);
             }
 
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
+            var totalAffection = GetAffection(other);
 
             return totalAffection > AffectionAllyThreshold;
         }
@@ -65,7 +65,7 @@ namespace Domain.Service.Characters
                 return other.IsEnemy(_player);
             }
 
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
+            var totalAffection = GetAffection(other);
 
             return totalAffection < AffectionEnemyThreshold;
         }
@@ -200,6 +200,11 @@ namespace Domain.Service.Characters
             }
         }
 
+        public float GetAffection(IAffiliation target)
+        {
+            return GetAffectionByGroup(target) + GetAffectionByRelation(target.Id);
+        }
+
         private float GetAffectionByGroup(IAffiliation target)
         {
             if (target.Id == Id)
@@ -218,7 +223,7 @@ namespace Domain.Service.Characters
             };
         }
 
-        private float GetAffection(Id<IEntity> target)
+        private float GetAffectionByRelation(Id<IEntity> target)
         {
             if (target == Id)
             {

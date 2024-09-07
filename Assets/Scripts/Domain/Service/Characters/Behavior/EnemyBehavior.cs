@@ -73,9 +73,13 @@ namespace Domain.Service.Characters.Behavior
             var visibleCharacters = world.GetVisibleCharacters(character);
             var visibleEnemies = visibleCharacters.Where(c => character.IsEnemy(c));
             var visibleLeaders = visibleCharacters.Where(c => character.IsAlly(c) && c.IsLeader);
+            if (character.IsAlly(world.Player))
+            {
+                visibleLeaders = visibleLeaders.Append(world.Player);
+            }
 
-            var targetedEnemy = GetTargetedEnemy(character, visibleEnemies, world);
-            var targetedLeader = GetTargetedLeader(character, visibleLeaders, world);
+            var targetedEnemy = GetTargetedEnemy(character, visibleEnemies);
+            var targetedLeader = GetTargetedLeader(character, visibleLeaders);
             if (targetedEnemy != null)
             {
                 Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(world.Player)}.");
@@ -141,18 +145,22 @@ namespace Domain.Service.Characters.Behavior
             return action;
         }
 
-        public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies, IMap map)
+        public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies)
         {
             if (visibleEnemies.Contains(_lastTarget))
                 return _lastTarget;
-            return visibleEnemies.FirstOrDefault();
+            if (visibleEnemies.Any())
+                return visibleEnemies.MinBy(enemy => character.Affiliation.GetAffection(enemy.Affiliation));
+            return null;
         }
 
-        public ICharacter? GetTargetedLeader(IHasBehavior character, IEnumerable<ICharacter> visibleLeaders, IMap map)
+        public ICharacter? GetTargetedLeader(IHasBehavior character, IEnumerable<ICharacter> visibleLeaders)
         {
             if (visibleLeaders.Contains(_lastTarget))
                 return _lastTarget;
-            return visibleLeaders.FirstOrDefault();
+            if (visibleLeaders.Any())
+                return visibleLeaders.MaxBy(leader => character.Affiliation.GetAffection(leader.Affiliation));
+            return null;
         }
 
         public Vector2Int? GetTargetPosition(IHasBehavior character, IMap world)

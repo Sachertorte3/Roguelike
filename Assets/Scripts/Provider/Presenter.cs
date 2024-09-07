@@ -22,6 +22,8 @@ namespace Provider
                 {
                     case GameState.Title:
                         Log.Debug("Title");
+                        gameManager.Title().Forget();
+                        menuController.TitleMenu();
                         break;
                     case GameState.Dungeon:
                         Log.Debug("Dungeon");
@@ -29,7 +31,6 @@ namespace Provider
                         break;
                 }
             });
-            gameManager.Title().Forget();
         }
 
         private void LoggerInit()

@@ -71,7 +71,7 @@ namespace Model.Game
                 {
                     foreach (var bossData in data.Boss)
                     {
-                        var boss = CharacterFactory.BuildCharacter(bossData, positions.TakeAndRemove(1).First(), false, false);
+                        var boss = CharacterFactory.BuildCharacter(bossData, positions.TakeAndRemove(1).First(), isSlept: false, isShiny: false);
                         _characters.Add(boss);
                         _keyCharacters.Add(new(boss.Entity.Id));
                     }

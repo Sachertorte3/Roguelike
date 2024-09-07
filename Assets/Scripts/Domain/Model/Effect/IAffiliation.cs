@@ -10,6 +10,7 @@ namespace Domain.Model.Effect
         public CharacterGroup Group { get; }
         public Observable<OnAffectionChangedMessage> OnAffectionChanged { get; }
         public float GetAffection(IAffiliation other);
+        public void SetAffection(IAffiliation other, float affection);
         public bool IsAlly(IAffiliation other);
         public bool IsEnemy(IAffiliation other);
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact);

@@ -11,7 +11,7 @@ namespace Domain.Service.Characters.Behavior
 {
     public interface ICharacterBehavior : IItemSelecter
     {
-        public Option<Vector2Int> HomePosition { get; }
+        public StructOption<Vector2Int> HomePosition { get; }
         public BehaviorData BehaviorData { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input);

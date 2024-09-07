@@ -21,8 +21,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly float behavioralRandomness = 0.01f;
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
-        private readonly Option<Vector2Int> _homePosition;
-        public Option<Vector2Int> HomePosition => _homePosition;
+        private readonly StructOption<Vector2Int> _homePosition;
+        public StructOption<Vector2Int> HomePosition => _homePosition;
 
         private readonly IBehaviorWhenDiscoveringTarget _default;
         private readonly bool _prioritizeMovement = false;
@@ -34,7 +34,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound = false;
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorData data, Option<Vector2Int> homePosition)
+        public EnemyBehavior(BehaviorData data, StructOption<Vector2Int> homePosition)
         {
             BehaviorData = data;
             _homePosition = homePosition;

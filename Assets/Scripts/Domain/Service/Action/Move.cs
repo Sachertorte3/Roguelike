@@ -14,7 +14,7 @@ namespace Domain.Service.Action
 
         public UniTask Do(IActor actor, IMap world, IInput input)
         {
-            var _ = actor.Move(Direction, input);
+            actor.Move(Direction, input).Forget();
             return UniTask.CompletedTask;
         }
 

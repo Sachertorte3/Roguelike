@@ -47,7 +47,7 @@ namespace Domain.Service.Rooms
 
         public void ReducesFavorabilityTowardsThief(ICharacter thief)
         {
-            Character.Affiliation.OnCharacterAttacked(thief.Affiliation, Character.Affiliation, 100f);
+            Character.Affiliation.SetAffection(thief.Affiliation, -100f);
         }
 
         public void SetVisibility(bool visibility)

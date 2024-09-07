@@ -104,7 +104,7 @@ namespace Model.Game
             {
                 var clerk = Characters.FirstOrDefault(character => character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
                 if (clerk == null && !map.Shop.Value.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), false, false), this);
+                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), isSlept: false, isShiny: false, hasHomePosition: true), this);
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop.Value, clerk, this);

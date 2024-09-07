@@ -205,6 +205,16 @@ namespace Domain.Service.Characters
             return GetAffectionByGroup(target) + GetAffectionByRelation(target.Id);
         }
 
+        public void SetAffection(IAffiliation target, float affection)
+        {
+            if (target.Id == Id)
+            {
+                return;
+            }
+
+            _affections[target.Id] = affection;
+        }
+
         private float GetAffectionByGroup(IAffiliation target)
         {
             if (target.Id == Id)

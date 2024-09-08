@@ -112,11 +112,12 @@ namespace Domain.Service.Characters
             {
                 return "何者か";
             }
-            if (Affiliation.IsAlly(player.Affiliation))
-                return _name.SetColored(Colors.Green);
-            else if (Affiliation.IsEnemy(player.Affiliation))
-                return _name.SetColored(Colors.Red);
-            return _name.SetColored(Colors.SkyBlue);
+            return Affiliation.GetAffiliationType(player.Affiliation) switch
+            {
+                AffiliationType.Ally => _name.SetColored(Colors.Green),
+                AffiliationType.Enemy => _name.SetColored(Colors.Red),
+                _ => _name.SetColored(Colors.SkyBlue)
+            };
         }
 
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;

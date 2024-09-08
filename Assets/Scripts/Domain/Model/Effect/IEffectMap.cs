@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Domain.Model.Character;
 using UnityEngine;
 
 namespace Domain.Model.Effect

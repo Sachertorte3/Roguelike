@@ -1,4 +1,4 @@
-﻿namespace Domain.Model.Effect
+﻿namespace Domain.Model.Character
 {
     public interface IHasAffiliation
     {

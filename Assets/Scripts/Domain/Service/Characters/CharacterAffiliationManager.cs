@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Effect;
+using Domain.Model.Character;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
@@ -20,55 +20,53 @@ namespace Domain.Service.Characters
 
         private readonly Dictionary<Id<IEntity>, float> _affections;
         private readonly Id<IEntity> _id;
-        private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
+        private readonly Subject<OnAffiliationChangedMessage> _OnAffiliationChanged = new();
         private IAffiliation? _player;
+        private readonly Dictionary<Id<IEntity>, AffiliationType> _forcedAffiliation;
 
         public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IAffiliation? player)
         {
             _id = id;
             Group = data.Group;
-            _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => new Id<IEntity>(x.Item1), x => x.Item2);
+            _affections = data.Affiliations.ToDictionary(x => new Id<IEntity>(x.Key), x => x.Value);
+            _forcedAffiliation = data.ForcedAffiliations.ToDictionary(x => new Id<IEntity>(x.Key), x => x.Value);
             _player = player;
         }
 
         public Id<IEntity> Id => _id;
-        public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
+        public Observable<OnAffiliationChangedMessage> OnAffiliationChanged => _OnAffiliationChanged;
 
         public CharacterGroup Group { get; private set; }
 
-        public bool IsAlly(IAffiliation other)
+        public AffiliationType GetAffiliationType(IAffiliation other)
         {
+            if (_forcedAffiliation.ContainsKey(other.Id))
+            {
+                return _forcedAffiliation[other.Id];
+            }
+
             if (other.Id == Id)
             {
-                return true;
+                return AffiliationType.Ally;
             }
 
             if (other != _player && _player != null && IsAlly(_player))
             {
-                return other.IsAlly(_player);
+                return other.GetAffiliationType(_player);
             }
 
             var totalAffection = GetAffection(other);
 
-            return totalAffection > AffectionAllyThreshold;
+            return totalAffection switch
+            {
+                > AffectionAllyThreshold => AffiliationType.Ally,
+                < AffectionEnemyThreshold => AffiliationType.Enemy,
+                _ => AffiliationType.Neutral
+            };
         }
 
-        public bool IsEnemy(IAffiliation other)
-        {
-            if (other.Id == Id)
-            {
-                return false;
-            }
-
-            if (other != _player && _player != null && IsAlly(_player))
-            {
-                return other.IsEnemy(_player);
-            }
-
-            var totalAffection = GetAffection(other);
-
-            return totalAffection < AffectionEnemyThreshold;
-        }
+        public bool IsAlly(IAffiliation other) => GetAffiliationType(other) == AffiliationType.Ally;
+        public bool IsEnemy(IAffiliation other) => GetAffiliationType(other) == AffiliationType.Enemy;
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
         {
@@ -151,14 +149,15 @@ namespace Domain.Service.Characters
             return new AffiliationMemento
             {
                 Group = Group,
-                Affiliations = new(_affections.ToDictionary(x => x.Key.ToString(), x => x.Value))
+                Affiliations = _affections.ToSerializableDictionary(x => x.Key.ToString(), x => x.Value),
+                ForcedAffiliations = _forcedAffiliation.ToSerializableDictionary(x => x.Key.ToString(), x => x.Value)
             };
         }
 
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
 
-            var affiliationDict = new Dictionary<string, float>();
+            var affiliationDict = new SerializableDictionary<string, float>();
             if (affiliation != null && id != null)
             {
                 affiliationDict = new(affiliation.Affiliations);
@@ -167,7 +166,8 @@ namespace Domain.Service.Characters
             return new AffiliationMemento
             {
                 Group = group,
-                Affiliations = new(affiliationDict)
+                Affiliations = affiliationDict,
+                ForcedAffiliations = new()
             };
         }
 
@@ -184,7 +184,7 @@ namespace Domain.Service.Characters
             }
 
             _affections[targetId] += change;
-            _onAffectionChanged.OnNext(new OnAffectionChangedMessage(targetId, _affections[targetId]));
+            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(targetId));
         }
 
         public void UpdateTurn(IEnumerable<IAffiliation> visibleCharacters)
@@ -205,14 +205,15 @@ namespace Domain.Service.Characters
             return GetAffectionByGroup(target) + GetAffectionByRelation(target.Id);
         }
 
-        public void SetAffection(IAffiliation target, float affection)
+        public void ForceAffiliation(IAffiliation target, AffiliationType type)
         {
             if (target.Id == Id)
             {
                 return;
             }
 
-            _affections[target.Id] = affection;
+            _forcedAffiliation[target.Id] = type;
+            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target.Id));
         }
 
         private float GetAffectionByGroup(IAffiliation target)

@@ -47,8 +47,8 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnHealReceivedMessage Message)> OnHealReceived =>
             _events.GetObservable<OnHealReceivedMessage>();
 
-        public Observable<(ICharacter Character, OnAffectionChangedMessage Message)> OnAffectionChanged =>
-            _events.GetObservable<OnAffectionChangedMessage>();
+        public Observable<(ICharacter Character, OnAffiliationChangedMessage Message)> OnAffiliationChanged =>
+            _events.GetObservable<OnAffiliationChangedMessage>();
 
         public void Dispose()
         {
@@ -90,7 +90,7 @@ namespace Domain.Service.Characters
                 character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
             _events.Add(character,
                 character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
-            _events.Add(character, character.Affiliation.OnAffectionChanged);
+            _events.Add(character, character.Affiliation.OnAffiliationChanged);
         }
 
         public void Remove(ICharacter character)

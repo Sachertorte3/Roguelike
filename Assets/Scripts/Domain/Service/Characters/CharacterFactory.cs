@@ -34,7 +34,7 @@ namespace Domain.Service.Characters
                 Skills = new[]
                 {
                     CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(), new LineArea(1, false, false),
-                        new AttackEffect(new List<ElementPower> { new(Element.Physical, 1) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                        new AttackEffect(new List<ElementPower> { new(Element.Physical, 3) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },

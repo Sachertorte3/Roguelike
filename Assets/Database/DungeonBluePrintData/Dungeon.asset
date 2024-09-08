@@ -44,11 +44,13 @@ MonoBehaviour:
       - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
       - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
       - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+      - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
     Artifacts:
       items:
       - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
       - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
       - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
+      - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
     UpgradeMaterials:
       items:
       - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
@@ -76,6 +78,7 @@ MonoBehaviour:
             - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
             - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
             - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+            - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
         Weight: 1
       - Item:
           Items:

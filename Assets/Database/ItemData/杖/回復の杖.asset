@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u56DE\u5FA9\u306E\u6756"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 3
+  Icon: {fileID: 1712336753, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 2
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -22,11 +22,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 861543420369829888
+      rid: 861543420369829894
     Effect:
-      rid: 861543420369829892
+      rid: 861543420369829895
     Position:
-      rid: 861543420369829889
+      rid: 861543420369829896
   SkillOnThrow:
     Area:
       rid: -2
@@ -41,16 +41,16 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543420369829888
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 861543420369829894
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1
+    - rid: 861543420369829895
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 20
+    - rid: 861543420369829896
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 861543420369829889
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        Icon:
-          _name: icons_full_16_132
-    - rid: 861543420369829892
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u920D\u8DB3"

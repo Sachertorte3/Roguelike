@@ -33,7 +33,9 @@ namespace Domain.Model.Effect.Area
 
         public float EvaluateArea()
         {
-            return Length;
+            if (CanIgnoreWalls)
+                return Mathf.Sqrt(Length) * 2 - 1;
+            return Mathf.Sqrt(Length);
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>

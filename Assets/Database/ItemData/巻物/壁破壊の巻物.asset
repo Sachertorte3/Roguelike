@@ -52,4 +52,4 @@ MonoBehaviour:
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 1
-        Radius: 10
+        Radius: 8

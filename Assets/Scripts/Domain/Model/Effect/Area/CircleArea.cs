@@ -34,7 +34,9 @@ namespace Domain.Model.Effect.Area
 
         public float EvaluateArea()
         {
-            return Mathf.PI * Radius * (Radius + 1);
+            if (CanIgnoreWalls)
+                return (Radius + 1) * 3;
+            return (Radius + 1) * 2;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>

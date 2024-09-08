@@ -10,7 +10,7 @@ namespace Utilities
     public class ScriptableObjectSerializable<T> where T : ScriptableObject
     {
         [ShowInInspector, OnValueChanged("OnValidate")] private T _value;
-        [HideInInspector, SerializeField] private string _name;
+        [ReadOnly, SerializeField] private string _name;
 
         public T Value
         {

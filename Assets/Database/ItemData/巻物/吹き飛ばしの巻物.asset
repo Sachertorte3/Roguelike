@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
+  m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1233723462, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 1
+  Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 2
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -22,11 +22,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 861543420369829888
+      rid: 4425516923575599136
     Effect:
-      rid: 4425516923575599132
+      rid: 861543420369829890
     Position:
-      rid: 861543420369829889
+      rid: 2541219106150416406
   SkillOnThrow:
     Area:
       rid: -2
@@ -34,22 +34,23 @@ MonoBehaviour:
       rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 20
+  UsageLimit: 1
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543420369829888
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 861543420369829889
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        Icon:
-          _name: icons_full_16_159
-    - rid: 4425516923575599132
+    - rid: 861543420369829890
       type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _distance: 5
+        _distance: 10
+    - rid: 2541219106150416406
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 4425516923575599136
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Radius: 8

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
+  m_Name: "\u56DE\u5FA9\u306E\u6756"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1233723462, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 1
+  Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 3
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -24,7 +24,7 @@ MonoBehaviour:
     Area:
       rid: 861543420369829888
     Effect:
-      rid: 4425516923575599132
+      rid: 861543420369829892
     Position:
       rid: 861543420369829889
   SkillOnThrow:
@@ -34,7 +34,7 @@ MonoBehaviour:
       rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 20
+  UsageLimit: 10
   PassiveConditions: []
   references:
     version: 2
@@ -48,8 +48,9 @@ MonoBehaviour:
       type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
         Icon:
-          _name: icons_full_16_159
-    - rid: 4425516923575599132
-      type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+          _name: icons_full_16_132
+    - rid: 861543420369829892
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _distance: 5
+        _condition:
+          _name: "\u920D\u8DB3"

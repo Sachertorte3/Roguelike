@@ -53,5 +53,5 @@ MonoBehaviour:
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        CanIgnoreWalls: 1
-        Radius: 10
+        CanIgnoreWalls: 0
+        Radius: 8

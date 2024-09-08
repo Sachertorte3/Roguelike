@@ -115,6 +115,8 @@ namespace Domain.Service.Effect
             var area = GetArea(actor, position, direction, map);
 
             map.GetCharactersInArea(area.ToHashSet())
+                .OrderBy(target => Vector2.Distance(target.CurrentPosition, actor.CurrentPosition))
+                .Reverse()
                 .ForEach(target =>
                 {
                     if (_effect.Impact == Impact.Harmful)

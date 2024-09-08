@@ -72,9 +72,9 @@ namespace Model.Game
             var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
             {
-                Dungeons = new(_dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize())),
+                Dungeons = _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
                 Player = playerData,
-                Maps = new(_maps.ToDictionary(map => map.Key.ToString(), map => map.Value)),
+                Maps = _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
                 CurrentLocation = _activeLocation
             };
         }
@@ -130,11 +130,6 @@ namespace Model.Game
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;
-            Debug.Log(destination);
-            foreach (var stairs in mapMemento.EventEntities.Stairs)
-            {
-                Debug.Log($"stairs:{stairs.Entity.Id} destination:{stairs.DestinationId}");
-            }
             Vector2Int? initialPosition = destination != null ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity.Position : null;
             if (_activeMap.CurrentValue != null)
             {

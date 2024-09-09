@@ -1,12 +1,9 @@
 #nullable enable
 using System;
-using Cysharp.Threading.Tasks;
-using Domain.Model.Action;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;
 using R3;
-using Utilities;
 
 namespace Domain.Model
 {
@@ -15,7 +12,5 @@ namespace Domain.Model
         public IItem Item { get; }
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned { get; }
         public Observable<Unit> OnDisabled { get; }
-
-        public UniTask Throw(IActor actor, Direction8 direction, IMap map);
     }
 }

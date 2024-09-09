@@ -27,7 +27,7 @@ namespace Domain.Service.Items
             _entity = new Entity(Entity.Build(position, EntityLayer.Middle));
             Icon = icon;
         }
-        public async UniTask Throw(Direction8 direction, IMap map)
+        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map)
         {
             while (map.IsPassable(CurrentPosition + direction.Vector()))
             {
@@ -38,6 +38,7 @@ namespace Domain.Service.Items
             {
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
             }
+            return CurrentPosition;
         }
 
         public void SetVisibility(bool visibility)

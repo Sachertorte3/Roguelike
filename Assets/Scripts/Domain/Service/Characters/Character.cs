@@ -235,18 +235,30 @@ namespace Domain.Service.Characters
             }
         }
 
-        public async UniTask ThrowItem(IItem item, Direction8 direction, IMap world)
+        public async UniTask ThrowItem(IItem item, Direction8 direction, IMap map)
         {
             _inventory.Remove(item);
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
-            var itemEntity = world.SpawnItem(item, CurrentPosition);
-            GameLog.Add($"{GetName(world.Player)}は{item.Name}を投げた");
+            GameLog.Add($"{GetName(map.Player)}は{item.Name}を投げた");
+            var destination = ItemEntity.GetThrowDestination(CurrentPosition, direction, map);
             if (_entity.VisibleByPlayer.CurrentValue)
-                await UniTask.WhenAll(itemEntity.Throw(this, direction, world),
-                    UniTask.Delay(Settings.EffectDisplayTime.CurrentValue));
-            else
-                await itemEntity.Throw(this, direction, world);
+            {
+                await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction);
+            }
+            if (item.CanActivateWhenThrown)
+            {
+                var result = await item.UseWhenThrown(this, destination, direction, map);
+                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+                {
+                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
+                        spawnEffectResult.Area,
+                        spawnEffectResult.Color
+                    ));
+                }
+            }
+            destination = map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom));
+            map.SpawnItem(item, destination);
 
             State = CharacterState.Wait;
         }

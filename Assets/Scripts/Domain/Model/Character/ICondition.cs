@@ -13,5 +13,6 @@ namespace Domain.Model.Character
         public void Delete(IHasCondition hasCondition);
         public void UpdateTurn(IHasCondition hasCondition);
         public bool ShouldDelete(bool enemyVisible);
+        public bool ShouldDeleteByDamage();
     }
 }

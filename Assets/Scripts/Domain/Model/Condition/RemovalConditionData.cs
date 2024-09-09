@@ -33,8 +33,11 @@ namespace Domain.Model.Condition
         public bool IsFinished(int elapsedTurns, bool enemyVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByDamage && Random.value < Probability) ||
                    (RemoveByEnemyNearby && enemyVisible);
+        }
+        public bool IsFinishedByDamage()
+        {
+            return RemoveByDamage && Random.value < Probability;
         }
         public float EvaluateTurn()
         {

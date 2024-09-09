@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -30,12 +31,12 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return 0.1f;
+            return CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 20;
+            return 20f;
         }
     }
 }

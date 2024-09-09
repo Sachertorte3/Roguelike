@@ -7,7 +7,7 @@ using Domain.Model.Item;
 using Domain.Service.Effect;
 using UnityEngine;
 
-namespace Domain.Service
+namespace Domain.Service.Items
 {
     public static class WeaponFactory
     {

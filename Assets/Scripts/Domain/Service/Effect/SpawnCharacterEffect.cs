@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -48,12 +49,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0;
+            return 50f / CommonSenseParameters.MonsterMaxHealth;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 50;
+            return 50f;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();

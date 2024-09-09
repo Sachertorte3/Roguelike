@@ -32,7 +32,7 @@ namespace Domain.Service.Effect
             return _power;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return 100;
         }

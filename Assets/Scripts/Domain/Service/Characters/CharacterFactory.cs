@@ -7,6 +7,7 @@ using Domain.Model.Character.Type;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Evaluation;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
@@ -28,7 +29,7 @@ namespace Domain.Service.Characters
                 CharacterType = new Human("Chara_Hero1_USM"),
                 Behavior = new BehaviorData(),
                 HomePosition = StructOption<Vector2Int>.None,
-                Status = CharacterStatusManager.Build(100, 1, 1, new(), new(), 10, 1, false),
+                Status = CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 1, 1, new(), new(), 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = new[]

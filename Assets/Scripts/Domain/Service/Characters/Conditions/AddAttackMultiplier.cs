@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using Utilities;
 
@@ -34,12 +35,12 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return 0.05f * target.GetElementAttackMultiplier(Element);
+            return CommonSenseParameters.AttacksPerTurn * CommonSenseParameters.HpReductionPerTurn * AddedMultiplier;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 20 * AddedMultiplier;
+            return CommonSenseParameters.AttacksPerTurn * CommonSenseParameters.DamagePerAttack * AddedMultiplier;
         }
     }
 }

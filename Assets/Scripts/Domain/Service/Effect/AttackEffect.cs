@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -64,15 +65,15 @@ namespace Domain.Service.Effect
             var result = Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp) * (1 - _criticalRate);
             result += Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers, true)) / target.CurrentMaxHp) * _criticalRate;
             result += _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.Evaluate(target));
-            result += _blowAwayDistance * 0.1f;
+            result += CommonSenseParameters.BlowAwayEvaluate(_blowAwayDistance);
             return result;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             var result = (Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate)) + (Formula.EvaluateDamage(_elementPowers, true) * _criticalRate);
             result += _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.EvaluateDamage());
-            result += new BlowAwayEffect(_blowAwayDistance).EvaluateDamage();
+            result += CommonSenseParameters.BlowAwayPrice(_blowAwayDistance);
             return result;
         }
 

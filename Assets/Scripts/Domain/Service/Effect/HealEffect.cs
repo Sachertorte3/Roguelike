@@ -38,7 +38,7 @@ namespace Domain.Service.Effect
                 target.CurrentMaxHp);
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return Formula.EvaluateHeal(_power);
         }

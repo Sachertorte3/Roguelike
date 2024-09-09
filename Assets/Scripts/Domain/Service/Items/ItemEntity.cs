@@ -5,8 +5,6 @@ using Domain.Model.Action;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;
-using Domain.Model.Setting;
-using Domain.Service.Effect;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
@@ -65,51 +63,31 @@ namespace Domain.Service.Items
             };
         }
 
-        public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
+        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, IMap map)
         {
-            while (map.IsPassable(CurrentPosition + direction.Vector()))
+            var result = position;
+
+            while (map.IsPassable(result + direction.Vector()))
             {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+                result += direction.Vector();
             }
 
-            if (map.IsMapPassable(CurrentPosition + direction.Vector()))
+            if (map.IsMapPassable(position + direction.Vector()))
             {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+                result += direction.Vector();
             }
 
-            if (Item.CanActivateWhenThrown)
-            {
-                var result = await Item.UseWhenThrown(actor, CurrentPosition, direction, map);
-                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
-                {
-                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffectResult.Area,
-                        spawnEffectResult.Color
-                    ));
-                }
-            }
-            if (map.IsOverlapped(CurrentPosition, Layer))
-            {
-                var position = map.FindBlankPositionFrom(CurrentPosition, position => map.IsBlank(position, Layer));
-                _entity.Teleport(position);
-            }
+            return result;
         }
+
         public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, IMap map)
         {
             if (item.CanActivateWhenThrown)
                 return 0;
 
-            while (map.IsPassable(position + direction.Vector()))
-            {
-                position += direction.Vector();
-            }
+            var destination = GetThrowDestination(position, direction, map);
 
-            if (map.IsMapPassable(position + direction.Vector()))
-            {
-                position += direction.Vector();
-            }
-
-            return item.EvaluateWhenThrown(actor, position, direction, map);
+            return item.EvaluateWhenThrown(actor, destination, direction, map);
         }
 
         ~ItemEntity()

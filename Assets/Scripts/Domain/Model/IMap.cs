@@ -30,7 +30,7 @@ namespace Domain.Model
         public UniTask Touch(Vector2Int position);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null);
-        public UniTask ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction);
+        public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction);
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
     }
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
@@ -191,12 +190,13 @@ namespace Model.Game
             );
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position);
-        public async UniTask ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction)
+        public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction)
         {
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
-            await throwAnimationEntity.Throw(direction, this);
+            var destination = await throwAnimationEntity.Throw(direction, this);
             throwAnimationEntity.Destroy();
+            return destination;
         }
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {

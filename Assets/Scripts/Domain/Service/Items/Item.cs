@@ -204,7 +204,7 @@ namespace Domain.Service.Items
             var priceOnUse = SkillOnUse.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
-            price += _conditions.Sum(condition => condition.EvaluateDamage()) * 100;
+            price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             return price;
         }
 

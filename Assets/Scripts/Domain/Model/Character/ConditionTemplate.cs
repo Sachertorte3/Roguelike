@@ -20,6 +20,6 @@ namespace Domain.Model.Character
             RemovalCondition = removalCondition;
         }
         public float Evaluate(ITargetOfEffect target) => Condition.Evaluate(target) * RemovalCondition.EvaluateTurn();
-        public float EvaluateDamage() => Condition.EvaluateDamage() * RemovalCondition.EvaluateTurn();
+        public float EvaluateDamage() => Condition.EvaluatePrice() * RemovalCondition.EvaluateTurn();
     }
 }

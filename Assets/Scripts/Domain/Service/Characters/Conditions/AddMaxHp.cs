@@ -32,10 +32,10 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return 0.05f * target.GetStatValue(StatType.MaxHp);
+            return AddValue / target.GetStatValue(StatType.MaxHp);
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return AddValue;
         }

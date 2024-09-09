@@ -37,7 +37,7 @@ namespace Domain.Service.Effect
             return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return Formula.EvaluateDamage(_elementPowers) * (1 + _rate);
         }

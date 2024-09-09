@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using UnityEngine;
 using Utilities;
 
@@ -22,12 +23,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 1;
+            return 0.1f;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 15;
+            return 15f;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();

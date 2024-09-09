@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using Utilities;
 
@@ -31,10 +32,10 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return (float)Power / 100;
+            return (float)Power / CommonSenseParameters.PlayerMaxHealth;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return Power;
         }

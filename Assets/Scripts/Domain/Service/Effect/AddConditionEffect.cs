@@ -35,7 +35,7 @@ namespace Domain.Service.Effect
             return _condition.Value.Evaluate(target);
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
             return _condition.Value.EvaluateDamage();
         }

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -28,12 +29,12 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsConfused ? 0 : 0.2f;
+            return target.IsConfused ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 2;
+            return 5f;
         }
     }
 }

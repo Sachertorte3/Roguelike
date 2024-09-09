@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using UnityEngine;
 using Utilities;
 
@@ -24,9 +25,9 @@ namespace Domain.Service.Effect
             return 1;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 100;
+            return 100f;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();

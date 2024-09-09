@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -31,12 +32,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return _distance * 0.05f;
+            return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return _distance;
+            return CommonSenseParameters.BlowAwayPrice(_distance);
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -74,9 +75,7 @@ namespace Domain.Model.Effect.Area
 
         public float EvaluateArea()
         {
-            if (CanIgnoreWalls)
-                return (Radius + 1) * 1.5f;
-            return Radius + 1;
+            return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius) / 2;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>

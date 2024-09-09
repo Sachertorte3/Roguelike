@@ -42,5 +42,10 @@ namespace Domain.Service.Characters.Conditions
             _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(enemyVisible)).ToList());
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
         }
+
+        public void WasAttacked()
+        {
+            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDeleteByDamage()).ToList());
+        }
     }
 }

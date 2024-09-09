@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -21,7 +20,6 @@ namespace Domain.Service.Characters.Conditions
 
         public UniTask Persist(IHasCondition hasCondition)
         {
-            Debug.Log("sleep");
             return UniTask.CompletedTask;
         }
 

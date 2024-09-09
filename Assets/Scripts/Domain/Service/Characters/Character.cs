@@ -380,6 +380,7 @@ namespace Domain.Service.Characters
             }
 
             _affiliationManager.OnCharacterAttacked(actor.Affiliation, Affiliation, impact);
+            _statusManager.WasAttacked();
         }
 
         public void WasHealedBy(IActorOfEffect actor, float impact)

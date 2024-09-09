@@ -53,6 +53,11 @@ namespace Domain.Service.Characters.Conditions
             return _removalCondition.IsFinished(_elapsedTurn, enemyVisible);
         }
 
+        public bool ShouldDeleteByDamage()
+        {
+            return _removalCondition.IsFinishedByDamage();
+        }
+
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
         {
             return new ConditionMemento

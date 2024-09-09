@@ -102,6 +102,11 @@ namespace Domain.Service.Characters
             _conditions.UpdateTurn(this, enemyVisible);
         }
 
+        public void WasAttacked()
+        {
+            _conditions.WasAttacked();
+        }
+
         public float GetStatValue(StatType type) => _stats.GetStatValue(type);
         public void AddStatValue(StatType type, float value) => _stats.AddStatValue(type, value);
         public void RemoveStatValue(StatType type, float value) => _stats.RemoveStatValue(type, value);

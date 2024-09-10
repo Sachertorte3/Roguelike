@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Character;
 using Domain.Model.Item;
-using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities.Table;
 
-namespace Domain.Model
+namespace Domain.Model.Dungeon
 {
-    [Serializable]
-    public class ShopItemData
-    {
-        public RarityWeightTable<ItemData> Items;
-    }
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
     public partial class DungeonBluePrintData : ScriptableObject
     {
@@ -23,33 +17,6 @@ namespace Domain.Model
         public Table<WeaponMold> WeaponMolds;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         [RequiredListLength(1, null)] public List<SectionData> Sections;
-
-        [Serializable]
-        public class SectionData
-        {
-            public int Depth => Floors.Sum(floor => floor.Depth);
-            [RequiredListLength(1, null)] public List<FloorData> Floors;
-            private bool _existChest => Floors.Max(floor => floor.Room.ChestChance) > 0;
-            [ShowIf("@_existChest"), Required] public float WeaponChanceInChest;
-            private bool _existShop => Floors.Max(floor => floor.ShopChance) > 0;
-            [ShowIf("@_existShop"), Required] public EnemyData Clerk;
-            public Table<EnemyData> Enemies;
-            public Table<MaterialData> Materials;
-        }
-        [Serializable]
-        public class FloorData
-        {
-            [MinValue(1)] public int Depth;
-            [Range(0, 1)] public float PrefixChance = 0.2f;
-            [Range(0, 1)] public float ShinyChance = 0.01f;
-            [Range(0, 1)] public float SleepChance = 0.5f;
-            [Range(0, 1)] public float ShopChance = 0.1f;
-            [Range(0, 1)] public float MonsterHouseChance = 0.1f;
-            [Required] public FieldBluePrint Field;
-            public RoomData Room;
-            public bool existBoss;
-            [ShowIf("existBoss"), Required] public List<EnemyData> Boss;
-        }
         public bool ExistLevel(int level)
         {
             var Depth = Sections.Sum(section => section.Depth);
@@ -108,7 +75,7 @@ namespace Domain.Model
                 floorData.Room.ItemCount,
                 floorData.Room.WeaponCount,
                 floorData.Room.CharacterCount,
-                floorData.existBoss,
+                floorData.ExistBoss,
                 floorData.Boss,
                 sectionData.Clerk
             );

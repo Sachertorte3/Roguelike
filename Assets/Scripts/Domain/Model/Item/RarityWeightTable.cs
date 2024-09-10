@@ -4,9 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using Utilities.Table;
 
 namespace Domain.Model.Item
 {

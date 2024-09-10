@@ -10,7 +10,7 @@ namespace Utilities
     public class IconSerializable
     {
         [ShowInInspector, OnValueChanged("OnValidate")] private Sprite _value;
-        [HideInInspector, SerializeField] private string _name;
+        [ReadOnly, SerializeField] private string _name;
 
         public Sprite Value
         {

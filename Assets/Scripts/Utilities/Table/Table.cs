@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+namespace Utilities.Table
 
-namespace Domain.Model
 {
     [Serializable]
     public class Table<T> : ITable<T>

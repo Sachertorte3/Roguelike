@@ -140,20 +140,20 @@ MonoBehaviour:
   Sections:
   - Floors:
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 1
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 5
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 0
-      Boss:
-      - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
+      Template: 2
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     WeaponChanceInChest: 0.8
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
@@ -168,33 +168,35 @@ MonoBehaviour:
         Weight: 1
   - Floors:
     - Depth: 4
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 0.05
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      Room:
+      Template: 0
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
         ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
+      Template: 1
+      _prefixChance: 0
+      _shinyChance: 0
+      _sleepChance: 0
+      _shopChance: 0
+      _monsterHouseChance: 0
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 1
+      _boss:
       - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
     WeaponChanceInChest: 0.8
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -206,51 +208,52 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
         Weight: 3
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 1
   - Floors:
     - Depth: 3
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
+      Template: 0
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
         ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     - Depth: 1
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 1
-      MonsterHouseChance: 0.05
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
+      Template: 2
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
         ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
+      Template: 1
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss:
       - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
     WeaponChanceInChest: 0.8
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -266,44 +269,40 @@ MonoBehaviour:
         Weight: 1
     Materials:
       items:
-      - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
-        Weight: 3
       - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
         Weight: 1
   - Floors:
     - Depth: 4
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
+      Template: 0
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
         ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
-      - {fileID: 11400000, guid: 94c194319c4806244af0cddd6be62281, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+      Template: 1
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss:
+      - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
     WeaponChanceInChest: 0.8
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
@@ -318,44 +317,40 @@ MonoBehaviour:
         Weight: 1
     Materials:
       items:
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 3
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
         Weight: 1
   - Floors:
     - Depth: 4
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
+      Template: 0
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
         ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
+      Template: 1
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        WeaponCount: 0.2
+        CharacterCount: 1
+      _existBoss: 0
+      _boss:
       - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
     WeaponChanceInChest: 0.8
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
@@ -370,7 +365,5 @@ MonoBehaviour:
         Weight: 1
     Materials:
       items:
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
+      - Item: {fileID: 11400000, guid: fcbcb87faab7ed5439340954d0086939, type: 2}
         Weight: 1

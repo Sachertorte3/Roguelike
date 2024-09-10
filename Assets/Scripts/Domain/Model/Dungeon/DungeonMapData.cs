@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using RandomDungeonWithBluePrint;
+using Utilities.Table;
 
-namespace Domain.Model
+namespace Domain.Model.Dungeon
 {
     public record DungeonMapData(
         string Name,

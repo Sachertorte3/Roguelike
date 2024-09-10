@@ -1,7 +1,8 @@
 using System;
 using Domain.Model.Item;
+using Utilities.Table;
 
-namespace Domain.Model
+namespace Domain.Model.Dungeon
 {
     public class ItemTable : ITable<ItemData>
     {

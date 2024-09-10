@@ -7,6 +7,7 @@ using Domain.Model.Effect;
 using System;
 using Domain.Model.Item;
 using Utilities;
+using Utilities.Table;
 
 
 #if UNITY_EDITOR

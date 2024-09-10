@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Setting;

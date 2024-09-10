@@ -1,7 +1,7 @@
 using System;
 using Utilities;
 
-namespace Domain.Model
+namespace Domain.Model.Dungeon
 {
     [Serializable]
     public class ItemCategoryWeight

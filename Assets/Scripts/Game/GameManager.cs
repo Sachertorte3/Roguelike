@@ -2,6 +2,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;

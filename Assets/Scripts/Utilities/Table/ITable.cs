@@ -1,7 +1,4 @@
-#if UNITY_EDITOR
-#endif
-
-namespace Domain.Model
+namespace Utilities.Table
 {
     public interface ITable<T>
     {

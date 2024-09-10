@@ -59,7 +59,7 @@ namespace Domain.Service.Characters
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public int GainHp(int value, bool notifyOnlyActualGain = false)
+        public int GainHp(float value, bool notifyOnlyActualGain = false)
         {
             var gainValue = _stats.Hp.Gain(value);
             if (notifyOnlyActualGain)
@@ -71,12 +71,12 @@ namespace Domain.Service.Characters
             }
             else
             {
-                _onHealReceived.OnNext(value);
+                _onHealReceived.OnNext(Mathf.RoundToInt(value));
             }
             return gainValue;
         }
 
-        public int LoseHp(int value, bool notifyOnlyActualLoss = false)
+        public int LoseHp(float value, bool notifyOnlyActualLoss = false)
         {
             var loseValue = _stats.Hp.Lose(value);
             if (notifyOnlyActualLoss)
@@ -88,7 +88,7 @@ namespace Domain.Service.Characters
             }
             else
             {
-                _onDamageReceived.OnNext(value);
+                _onDamageReceived.OnNext(Mathf.RoundToInt(value));
             }
             return loseValue;
         }
@@ -148,7 +148,7 @@ namespace Domain.Service.Characters
             return _stats.WaitTime.IsFull();
         }
 
-        public static CharacterStatusMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
         {
             var conditions = new List<ConditionMemento>();
             if (isSlept)
@@ -162,7 +162,7 @@ namespace Domain.Service.Characters
             }
             return new CharacterStatusMemento
             {
-                Stats = CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, attackMultiplier, elementAttackMultiplier, elementDamageRateMultiplier, viewRange, waitTime, isSlept),
+                Stats = CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier, elementDamageRateMultiplier, viewRange, waitTime, isSlept),
                 ClairvoyantFlags = 0,
                 Conditions = conditions.ToArray()
             };

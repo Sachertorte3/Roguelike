@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -16,6 +17,7 @@ using Domain.Service.Items;
 using R3;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters
 {
@@ -29,7 +31,7 @@ namespace Domain.Service.Characters
                 CharacterType = new Human("Chara_Hero1_USM"),
                 Behavior = new BehaviorData(),
                 HomePosition = StructOption<Vector2Int>.None,
-                Status = CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 1, 1, new(), new(), 10, 1, false),
+                Status = CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.25f, new(), new(), 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = new[]
@@ -72,7 +74,7 @@ namespace Domain.Service.Characters
                 CharacterType = data.CharacterType,
                 Behavior = data.Behavior,
                 HomePosition = hasHomePosition ? new(spawnPosition) : StructOption<Vector2Int>.None,
-                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? 2 : 1, new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
+                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 3 : data.Hp, 0, isShiny ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f) : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),

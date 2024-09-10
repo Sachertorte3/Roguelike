@@ -15,7 +15,7 @@ namespace Domain.Service.Characters.Stats
         public CharacterStats(CharacterStatsMemento memento)
         {
             Hp = new IntResource(memento.Hp);
-            HpNaturalRecoveryAmount = new IntStat(memento.HpNaturalRecoveryAmount);
+            HpNaturalRecoveryAmount = new Stat(memento.HpNaturalRecoveryAmount);
             ElementAttackMultiplier = memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
             ElementDamageRateMultiplier = memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
             ViewRange = new Stat(memento.ViewRange);
@@ -46,7 +46,7 @@ namespace Domain.Service.Characters.Stats
             };
         }
 
-        public static CharacterStatsMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
         {
             return new CharacterStatsMemento
             {
@@ -60,7 +60,7 @@ namespace Domain.Service.Characters.Stats
         }
 
         public IntResource Hp { get; init; }
-        public IntStat HpNaturalRecoveryAmount { get; init; }
+        public Stat HpNaturalRecoveryAmount { get; init; }
         public Stat ViewRange { get; init; }
         public Resource WaitTime { get; init; }
         public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
@@ -86,8 +86,8 @@ namespace Domain.Service.Characters.Stats
         public int CurrentHp => Hp.Value.CurrentValue;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.MaxValue;
         public int CurrentMaxHp => Hp.MaxValue.CurrentValue;
-        public ReadOnlyReactiveProperty<int> HpNaturalRecoveryAmountValue => HpNaturalRecoveryAmount.Value;
-        public int CurrentHpNaturalRecoveryAmount => HpNaturalRecoveryAmount.CurrentValue;
+        public ReadOnlyReactiveProperty<float> HpNaturalRecoveryAmountValue => HpNaturalRecoveryAmount.Value;
+        public float CurrentHpNaturalRecoveryAmount => HpNaturalRecoveryAmount.CurrentValue;
         public ReadOnlyReactiveProperty<float> ViewRangeValue => ViewRange.Value;
         public float CurrentViewRange => ViewRange.CurrentValue;
         public float CurrentMaxWaitTime => WaitTime.MaxValue.CurrentValue;

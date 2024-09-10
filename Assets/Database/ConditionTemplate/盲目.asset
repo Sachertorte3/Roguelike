@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16097a5b2ad98e243a375f972355931f, type: 3}
-  m_Name: "\u6DF7\u4E71"
+  m_Name: "\u76F2\u76EE"
   m_EditorClassIdentifier: 
   Condition:
-    rid: 2541219281251860521
+    rid: 861543420369829898
   RemovalCondition:
     RemoveByElapsedTurn: 1
-    Duration: 8
+    Duration: 10
     RemoveByDamage: 0
     Probability: 0
     RemoveByEnemyNearby: 0
   references:
     version: 2
     RefIds:
-    - rid: 2541219281251860521
-      type: {class: Confused, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 861543420369829898
+      type: {class: Blind, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

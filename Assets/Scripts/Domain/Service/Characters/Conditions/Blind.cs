@@ -6,17 +6,17 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Slept : IConditionData
+    internal class Blind : IConditionData
     {
-        public string Name => "睡眠";
-        public ParticleType ParticleType => ParticleType.Sleep;
+        public string Name => "盲目";
+        public ParticleType ParticleType => ParticleType.Blind;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => false;
+        public bool CanAct => true;
         public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.RemoveStatMultiplier(StatType.ViewRange, 0.5f);
+            hasCondition.RemoveStatMultiplier(StatType.ViewRange, 0.8f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -26,17 +26,17 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.AddStatMultiplier(StatType.ViewRange, 0.5f);
+            hasCondition.AddStatMultiplier(StatType.ViewRange, 0.8f);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CanAct ? CommonSenseParameters.OneTurnStunEquivalentHpReduction : 0;
+            return target.CanAct ? CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2 : 0;
         }
 
         public float EvaluatePrice()
         {
-            return CommonSenseParameters.OneTurnStunEquivalentDamage;
+            return CommonSenseParameters.OneTurnStunEquivalentDamage / 2;
         }
     }
 }

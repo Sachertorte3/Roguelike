@@ -87,18 +87,10 @@ namespace Model.Game
             }
         }
 
-        private int GetCount(int attemptCount)
+        private int GetCount(float attemptCount)
         {
             var probability = 0.5f;
-            var count = 0;
-            for (int i = 0; i < attemptCount; i++)
-            {
-                if (Random.value < probability)
-                {
-                    count++;
-                }
-            }
-            return count;
+            return MathExtension.RandomBinomialApproxValue(attemptCount, probability);
         }
 
         private ShopMemento? CreateShop(DungeonMapData data, List<RectInt> rooms)

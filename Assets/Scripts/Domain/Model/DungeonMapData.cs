@@ -22,9 +22,9 @@ namespace Domain.Model
         float WeaponChanceInChest,
         float ShopChance,
         float MonsterHouseChance,
-        int ItemCount,
-        int WeaponCount,
-        int CharacterCount,
+        float ItemCount,
+        float WeaponCount,
+        float CharacterCount,
         bool existBoss,
         List<EnemyData> Boss,
         EnemyData Clerk

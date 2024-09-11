@@ -44,6 +44,17 @@ namespace Provider
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
+            var disposable = new SerialDisposable();
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
+                {
+                    if (isNoMove)
+                    {
+                        map.Player.FaceNearestCharacter(map);
+                    }
+                })
+            );
+
             inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>

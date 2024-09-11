@@ -51,6 +51,7 @@ namespace Domain.Model.Character
         public bool CanMove(Direction8 direction, IPassableChecker world);
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world);
         public void Turn(Direction8 direction);
+        public void FaceNearestCharacter(IMap map);
         public void DoNothing();
         public UniTask Move(Direction8 direction, IInput input);
         public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);

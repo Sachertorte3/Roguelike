@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u76F2\u76EE\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
   Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 0
+  _rarity: 3
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -52,6 +52,6 @@ MonoBehaviour:
     - rid: 4425516923575599136
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        ContainsSelf: 1
+        ContainsSelf: 0
         CanIgnoreWalls: 0
         Radius: 8

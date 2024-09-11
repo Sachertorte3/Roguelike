@@ -163,6 +163,21 @@ namespace Domain.Service.Characters
             _direction.Value = direction;
         }
 
+        public void FaceNearestCharacter(IMap map)
+        {
+            var nearestCharacterDirection = map.GetVisibleCharacters(this)
+                .Where(x => x != this)
+                .Select(x => (character: x, direction: DirectionMethods.FromVectorStrict(x.CurrentPosition - CurrentPosition)))
+                .Where(x => x.direction.HasValue)
+                .OrderBy(x => Vector2Extension.ChebyshevDistance(x.character.CurrentPosition, CurrentPosition))
+                .ThenByDescending(x => CurrentDirection.AngleTo(x.direction.Value).Value)
+                .FirstOrDefault().direction;
+            if (nearestCharacterDirection.HasValue)
+            {
+                Turn(nearestCharacterDirection.Value);
+            }
+        }
+
         public void DoNothing()
         {
             Log.Debug($"[Action]{_name}:DoNothing");

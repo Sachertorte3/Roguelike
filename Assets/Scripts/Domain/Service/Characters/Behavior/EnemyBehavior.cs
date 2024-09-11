@@ -172,9 +172,9 @@ namespace Domain.Service.Characters.Behavior
                     _lastTargetPosition : null;
         }
 
-        private int GetDistance(IHasBehavior character, Vector2Int targetPosition)
+        private float GetDistance(IHasBehavior character, Vector2Int targetPosition)
         {
-            var distance = Mathf.Max(Mathf.Abs(character.CurrentPosition.x - targetPosition.x), Mathf.Abs(character.CurrentPosition.y - targetPosition.y));
+            var distance = Vector2Extension.ChebyshevDistance(character.CurrentPosition, targetPosition);
             return distance;
         }
 

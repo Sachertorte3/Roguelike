@@ -75,6 +75,34 @@ namespace Utilities
             };
         }
 
+        public static Direction8? FromVectorStrict(Vector2 vector)
+        {
+            if (vector.x == 0 || vector.y == 0 || Mathf.Abs(vector.x) == Mathf.Abs(vector.y))
+            {
+                return vector switch
+                {
+                    { x: 0, y: > 0 } => Direction8.Up,
+                    { x: > 0, y: > 0 } => Direction8.UpRight,
+                    { x: > 0, y: 0 } => Direction8.Right,
+                    { x: > 0, y: < 0 } => Direction8.DownRight,
+                    { x: 0, y: < 0 } => Direction8.Down,
+                    { x: < 0, y: < 0 } => Direction8.DownLeft,
+                    { x: < 0, y: 0 } => Direction8.Left,
+                    { x: < 0, y: > 0 } => Direction8.UpLeft,
+                    _ => throw new ArgumentException()
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static Angle AngleTo(this Direction8 direction, Direction8 otherDirection)
+        {
+            return otherDirection.Angle() - direction.Angle();
+        }
+
         public static Direction8? NearestDirectionFromVector(Vector2 vector)
         {
             if (vector == Vector2.zero)

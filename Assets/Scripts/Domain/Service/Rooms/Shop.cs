@@ -27,7 +27,7 @@ namespace Model.Game
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
+        public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room, mapManager.Player.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,

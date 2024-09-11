@@ -10,12 +10,13 @@ namespace Model.Game
         protected bool hasEntered = false;
         protected bool hasEverEntered = false;
         public bool CanExecute { get; protected set; } = true;
-        private ReactiveProperty<bool> _isInside = new();
+        private ReactiveProperty<bool> _isInside;
         public ReadOnlyReactiveProperty<bool> IsInside => _isInside;
 
-        public Room(RoomMemento data)
+        public Room(RoomMemento data, Vector2Int playerPosition)
         {
             Rect = data.Room;
+            _isInside = new(Rect.Contains(playerPosition));
             hasEntered = data.hasEntered;
             hasEverEntered = data.hasEverEntered;
         }

@@ -96,7 +96,7 @@ namespace Model.Game
 
             if (map.MonsterHouse.HasValue)
             {
-                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value);
+                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value, Player.CurrentPosition);
                 _eventAreas.Add(_monsterHouse);
             }
 

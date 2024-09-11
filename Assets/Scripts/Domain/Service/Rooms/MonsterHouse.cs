@@ -8,7 +8,7 @@ namespace Model.Game
 {
     public class MonsterHouse : Room<RoomMemento>
     {
-        public MonsterHouse(RoomMemento data) : base(data)
+        public MonsterHouse(RoomMemento data, Vector2Int playerPosition) : base(data, playerPosition)
         {
         }
 

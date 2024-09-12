@@ -9,6 +9,6 @@ namespace Domain.Model.Effect
         public ICharacter Player { get; }
         public HashSet<Vector2Int> GetAllPassablePositions();
         public bool IsPassable(Vector2Int position);
-        public bool IsMapPassable(Vector2Int position);
+        public bool IsPassableOnMap(Vector2Int position);
     }
 }

@@ -9,7 +9,7 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public interface ICharacterBehavior : IItemSelecter
+    public interface ICharacterBehavior : IItemSelector
     {
         public StructOption<Vector2Int> HomePosition { get; }
         public BehaviorData BehaviorData { get; }

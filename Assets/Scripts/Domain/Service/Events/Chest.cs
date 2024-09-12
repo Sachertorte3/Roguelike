@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Service.Entities;
@@ -56,6 +57,45 @@ namespace Domain.Service.Events
         public void Destroy()
         {
             _entity.Destroy();
+        }
+
+        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
+        {
+            var result = position;
+
+            for (var i = 0; i < distance; i++)
+            {
+                if (map.IsPassable(result + direction.Vector()))
+                {
+                    result += direction.Vector();
+                }
+                else
+                {
+                    if (map.IsPassableOnMap(result + direction.Vector()))
+                    {
+                        result += direction.Vector();
+                    }
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
+            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            {
+                _entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
+                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+            }
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
         }
 
         public ChestMemento Serialize()

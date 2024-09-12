@@ -1,8 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Domain.Model.Character;
+﻿using Domain.Model.Character;
 using Domain.Model.Condition;
-using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Effect
 {
@@ -32,9 +29,6 @@ namespace Domain.Model.Effect
         /// <returns>The actual amount of HP recovered</returns>
         public int GainHp(int value);
 
-        public UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map);
-        public void Teleport(Vector2Int position);
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
-        public void RepairAllItem();
     }
 }

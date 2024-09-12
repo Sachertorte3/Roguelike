@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Effect;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Entities;
@@ -69,6 +70,16 @@ namespace Domain.Service.Events
         public void Destroy()
         {
             _entity.Destroy();
+        }
+
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
         }
 
         public StairsMemento Serialize()

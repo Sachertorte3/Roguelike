@@ -9,6 +9,7 @@ using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;
@@ -125,7 +126,7 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
         public ICharacterType CharacterType { get; init; }
-        public IItemSelecter ItemSelecter => _behavior;
+        public IItemSelector ItemSelector => _behavior;
         public IStatusManager StatusManager => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
@@ -152,10 +153,10 @@ namespace Domain.Service.Characters
         {
             return _canIgnoreWall
                 ? true
-                : world.IsMapPassable(Position.CurrentValue + direction.Vector())
+                : world.IsPassableOnMap(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (world.IsMapPassable(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       world.IsMapPassable(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (world.IsPassableOnMap(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       world.IsPassableOnMap(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -256,10 +257,14 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info()}\n direction:{direction}");
             Turn(direction);
             GameLog.Add($"{GetName(map.Player)}は{item.Name}を投げた");
-            var destination = ItemEntity.GetThrowDestination(CurrentPosition, direction, map);
-            if (_entity.VisibleByPlayer.CurrentValue)
+            var destination = ItemEntity.GetThrowDestination(CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
+            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
             {
-                await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction);
+                await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, EntityLayer.Middle);
+            }
+            if (!item.IsDisabled)
+            {
+                map.SpawnItem(item, map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
             }
             if (item.CanActivateWhenThrown)
             {
@@ -272,15 +277,13 @@ namespace Domain.Service.Characters
                     ));
                 }
             }
-            destination = map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom));
-            map.SpawnItem(item, destination);
 
             State = CharacterState.Wait;
         }
 
         public float EvaluateThrow(IItem item, Direction8 direction, IMap world)
         {
-            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, world);
+            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, world);
         }
 
         public int GainHp(int value)
@@ -346,7 +349,7 @@ namespace Domain.Service.Characters
             };
         }
 
-        public async UniTask BlowAway(Direction8 direction, int distance, IPassableChecker map)
+        public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             for (var i = 0; i < distance; i++)
             {
@@ -430,11 +433,6 @@ namespace Domain.Service.Characters
         public IItem? ReplaceInventory(IItem? item, int index)
         {
             return _inventory.Replace(item, index);
-        }
-
-        public void RepairAllItem()
-        {
-            _inventory.RepairAll();
         }
 
         public void UpdateTurn()

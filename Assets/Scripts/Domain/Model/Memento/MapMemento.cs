@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Memento
@@ -15,5 +16,6 @@ namespace Domain.Model.Memento
         public List<string> KeyCharacters;
         public Option<RoomMemento> MonsterHouse;
         public Option<ShopMemento> Shop;
+        public Vector2Int RandomBlankPosition;
     }
 }

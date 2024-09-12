@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using UnityEngine;
 using Utilities;
 
@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
         public Color Color => Colors.Black;
         public Impact Impact => Impact.Harmful;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
             target.Destroy();
             return UniTask.CompletedTask;

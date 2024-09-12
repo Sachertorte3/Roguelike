@@ -1,17 +1,15 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Item;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Action
 {
     public interface IActor : IActorOfEffect
     {
-        public Vector2Int CurrentPosition { get; }
         public Direction8 CurrentDirection { get; }
         public IInventory Inventory { get; }
-        public IItemSelecter ItemSelecter { get; }
+        public IItemSelector ItemSelector { get; }
         public void DoNothing();
         public bool CanMove(Direction8 direction, IPassableChecker world);
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world);

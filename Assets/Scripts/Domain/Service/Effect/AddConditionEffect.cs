@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -15,16 +16,11 @@ namespace Domain.Service.Effect
     {
         [Required, SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
 
-        public AddConditionEffect(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            _condition = new(new ConditionTemplate(condition, removalCondition));
-        }
-
         public Color Color => Colors.Purple;
 
         public Impact Impact => _condition.Value.Condition.Impact;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             target.AddCondition(_condition.Value.Condition, _condition.Value.RemovalCondition);
             return UniTask.CompletedTask;

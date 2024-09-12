@@ -22,7 +22,7 @@ namespace Domain.Service.Characters.Conditions
             }
 
             _disposables.Add(_conditions.ObserveAdd().Subscribe(add => add.Value.Inflict(hasCondition)));
-            _disposables.Add(_conditions.ObserveRemove().Subscribe(add => add.Value.Delete(hasCondition)));
+            _disposables.Add(_conditions.ObserveRemove().Subscribe(remove => remove.Value.Delete(hasCondition)));
         }
 
         public IObservableCollection<ICondition> Conditions => _conditions;
@@ -35,6 +35,14 @@ namespace Domain.Service.Characters.Conditions
         public void Add(IConditionData condition, RemovalConditionData removalCondition)
         {
             _conditions.Add(new Condition(condition, removalCondition));
+        }
+
+        public void Clear()
+        {
+            foreach (var condition in _conditions.ToList())
+            {
+                _conditions.Remove(condition);
+            }
         }
 
         public void UpdateTurn(IHasCondition hasCondition, bool enemyVisible)

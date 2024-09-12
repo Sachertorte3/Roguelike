@@ -1,4 +1,5 @@
-﻿using Domain.Model.Character;
+﻿using System.Collections.Generic;
+using Domain.Model.Character;
 using UnityEngine;
 using Utilities;
 
@@ -8,6 +9,7 @@ namespace Domain.Model.Effect
     {
         public bool IsShiny { get; }
         public string GetName(IHasAffiliation player);
+        public IEnumerable<Vector2Int> VisibleArea { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
         public int GainHp(int value);

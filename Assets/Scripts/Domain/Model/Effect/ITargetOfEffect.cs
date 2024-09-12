@@ -30,5 +30,6 @@ namespace Domain.Model.Effect
         public int GainHp(int value);
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
+        public void ClearCondition();
     }
 }

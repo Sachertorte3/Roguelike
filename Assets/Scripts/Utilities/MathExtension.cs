@@ -21,8 +21,8 @@ namespace Utilities
         // Box-Muller法を使用して正規分布からのサンプリングを行う
         private static float RandomNormal(float mean, float stdDev)
         {
-            float u1 = UnityEngine.Random.value; // 0から1までの適当な数字を1つ取る
-            float u2 = UnityEngine.Random.value; // もう一度、0から1までの適当な数字を1つ取る
+            float u1 = Random.value; // 0から1までの適当な数字を1つ取る
+            float u2 = Random.value; // もう一度、0から1までの適当な数字を1つ取る
 
             // Box-Muller法で乱数を取得する
             float randStdNormal = Mathf.Sqrt(-2.0f * Mathf.Log(u1)) *

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Domain.Model.Memento;
 using Domain.Service.Events;
 using Domain.Service.Logs;
@@ -32,13 +33,14 @@ namespace Model.Game
             };
         }
 
-        protected override void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
             GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
                 mapManager.SpawnRandomEnemy(mapManager.GetPassablePositionsInArea(Rect.RectRange()).GetAtRandom());
             }
+            await UniTask.Delay(1000);
         }
     }
 }

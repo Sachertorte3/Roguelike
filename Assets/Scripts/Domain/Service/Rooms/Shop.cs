@@ -163,7 +163,7 @@ namespace Model.Game
             }
         }
 
-        public void Stolen(IMapManager mapManager)
+        public async UniTask Stolen(IMapManager mapManager)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
             Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
@@ -171,22 +171,15 @@ namespace Model.Game
             MarkItemsAsStolen(mapManager);
             CanExecute = false;
             _isStolen.Value = true;
+            await UniTask.Delay(1000);
         }
 
-        protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
-                Stolen(mapManager);
-            }
-        }
-
-        protected override void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
-        {
-            foreach (var item in _shopItems)
-            {
-                Log.Debug(item.ToString());
+                await Stolen(mapManager);
             }
         }
     }

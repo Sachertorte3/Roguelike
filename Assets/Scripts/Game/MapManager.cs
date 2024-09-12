@@ -396,7 +396,7 @@ namespace Model.Game
 
                 foreach (var eventArea in _eventAreas)
                 {
-                    eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
+                    await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
                 IsEventExecuting = false;
             }).AddTo(_disposables);

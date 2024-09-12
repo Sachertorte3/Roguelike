@@ -13,7 +13,7 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
-        [MinValue(1)] public int Power = 1;
+        [MinValue(0)] public float Power;
 
         public void Inflict(IHasCondition hasCondition)
         {
@@ -32,7 +32,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return (float)Power / target.CurrentMaxHp;
+            return Power / target.CurrentMaxHp;
         }
 
         public float EvaluatePrice()

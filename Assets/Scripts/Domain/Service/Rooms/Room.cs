@@ -1,4 +1,5 @@
-﻿using Domain.Model.Memento;
+﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Memento;
 using Domain.Service.Events;
 using R3;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Model.Game
 
         public RectInt Rect { get; init; }
 
-        public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
+        public async UniTask UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
         {
             if (!CanExecute)
                 return;
@@ -31,25 +32,25 @@ namespace Model.Game
             _isInside.Value = Rect.Contains(currentPosition);
             if (_isInside.Value)
             {
-                UpdateTurnIfInside(gameManager, mapManager);
+                await UpdateTurnIfInside(gameManager, mapManager);
                 if (!hasEntered)
                 {
                     if (!hasEverEntered)
                     {
-                        FirstTimeEnter(gameManager, mapManager);
+                        await FirstTimeEnter(gameManager, mapManager);
                         hasEverEntered = true;
                     }
 
-                    EveryTimeEnter(gameManager, mapManager);
+                    await EveryTimeEnter(gameManager, mapManager);
                     hasEntered = true;
                 }
             }
             else
             {
-                UpdateTurnIfNotInside(gameManager, mapManager);
+                await UpdateTurnIfNotInside(gameManager, mapManager);
                 if (hasEntered)
                 {
-                    EveryTimeExit(gameManager, mapManager);
+                    await EveryTimeExit(gameManager, mapManager);
                     hasEntered = false;
                 }
             }
@@ -57,24 +58,29 @@ namespace Model.Game
 
         public abstract TMemento Serialize();
 
-        protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
         {
+            return UniTask.CompletedTask;
         }
     }
 }

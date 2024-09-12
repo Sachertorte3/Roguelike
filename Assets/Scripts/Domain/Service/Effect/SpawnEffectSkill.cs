@@ -153,7 +153,7 @@ namespace Domain.Service.Effect
             return SpawnEffectSkillResult.Success(Color, area);
         }
 
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
             for (int i = 0; i < RushDistance; i++)
             {

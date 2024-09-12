@@ -22,11 +22,11 @@ namespace Domain.Model.Effect.Position
             if (TargetSelf)
                 positions.Add(actor.CurrentPosition);
             if (TargetAlly)
-                positions.AddRange(map.GetAllyPositions(actor));
+                positions.AddRange(map.GetVisibleAllyPositions(actor, actor.VisibleArea));
             if (TargetNeutral)
-                positions.AddRange(map.GetNeutralPositions(actor));
+                positions.AddRange(map.GetVisibleNeutralPositions(actor, actor.VisibleArea));
             if (TargetEnemy)
-                positions.AddRange(map.GetEnemyPositions(actor));
+                positions.AddRange(map.GetVisibleEnemyPositions(actor, actor.VisibleArea));
             return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
         }
 

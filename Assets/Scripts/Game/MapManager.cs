@@ -211,24 +211,24 @@ namespace Model.Game
             return item;
         }
 
-        public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character)
+        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, CharacterRelation.Ally);
+            return GetCharacterPositions(character, visibleArea, CharacterRelation.Ally);
         }
 
-        public IEnumerable<Vector2Int> GetNeutralPositions(IHasAffiliation character)
+        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, CharacterRelation.Neutral);
+            return GetCharacterPositions(character, visibleArea, CharacterRelation.Neutral);
         }
 
-        public IEnumerable<Vector2Int> GetEnemyPositions(IHasAffiliation character)
+        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, CharacterRelation.Enemy);
+            return GetCharacterPositions(character, visibleArea, CharacterRelation.Enemy);
         }
 
-        public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character, CharacterRelation relation)
+        public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea, CharacterRelation relation)
         {
-            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition);
+            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition).Where(p => visibleArea.Contains(p));
         }
 
         public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer)

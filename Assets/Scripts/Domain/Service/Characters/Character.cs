@@ -323,6 +323,7 @@ namespace Domain.Service.Characters
         public ICharacterSkill[] Skills => _skills;
 
         public IVisionRange VisionRange => _statusManager.VisionRange;
+        public IEnumerable<Vector2Int> VisibleArea => _statusManager.VisionRange.VisibleArea;
 
         public CharacterMemento Serialize()
         {
@@ -380,6 +381,11 @@ namespace Domain.Service.Characters
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
         {
             _statusManager.AddCondition(condition, removalCondition);
+        }
+
+        public void ClearCondition()
+        {
+            _statusManager.ClearCondition();
         }
 
         public async UniTask ForceMove(Direction8 direction, IInput input)

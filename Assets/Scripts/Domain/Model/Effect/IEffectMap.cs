@@ -9,8 +9,9 @@ namespace Domain.Model.Effect
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
         public bool IsPassable(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
-        public IEnumerable<Vector2Int> GetEnemyPositions(IHasAffiliation character);
-        public IEnumerable<Vector2Int> GetNeutralPositions(IHasAffiliation character);
-        public IEnumerable<Vector2Int> GetAllyPositions(IHasAffiliation character);
+        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
+
+        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
+        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
     }
 }

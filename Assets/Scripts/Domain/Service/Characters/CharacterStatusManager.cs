@@ -172,5 +172,10 @@ namespace Domain.Service.Characters
         {
             _conditions.Add(condition, removalCondition);
         }
+
+        public void ClearCondition()
+        {
+            _conditions.Clear();
+        }
     }
 }

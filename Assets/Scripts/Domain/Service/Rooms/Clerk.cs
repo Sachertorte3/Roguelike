@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Service.Events;
 using R3;
 using UnityEngine;
@@ -58,6 +59,16 @@ namespace Domain.Service.Rooms
         public void Destroy()
         {
             Character.Destroy();
+        }
+
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return Character.BlowAway(actor, direction, distance, map);
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            Character.Teleport(position);
         }
     }
 }

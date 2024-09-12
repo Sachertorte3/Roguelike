@@ -15,7 +15,7 @@ namespace Domain.Service.Effect
         public Impact Impact => Impact.Neutral;
         public Color Color => Colors.SkyBlue;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
             var position = map.GetAllPassablePositions().GetAtRandom();
             target.Teleport(position);

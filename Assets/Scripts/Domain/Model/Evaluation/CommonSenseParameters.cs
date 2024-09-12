@@ -12,6 +12,7 @@ namespace Domain.Model.Evaluation
         public const float OneTurnStunEquivalentHpReduction = OneTurnStunEquivalentDamage / MonsterMaxHealth;
         public const float OneTurnStunEquivalentDamage = 5;
         public const float EvaluateCoefficient = 0.05f;
+        public const int ThrowDistance = 10;
 
         public static float BlowAwayPrice(int distance) => distance;
         public static float BlowAwayEvaluate(int distance) => 0.05f * distance;

@@ -38,7 +38,7 @@ namespace Domain.Service.Effect
         {
             var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(actor.Inventory);
             disabledItemIndexes = disabledItemIndexes.Append(actor.Inventory.GetItemIndex(item));
-            var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
+            var selectedItem = await actor.ItemSelector.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
             if (selectedItem != null)
             {
                 _itemEffect.Apply(selectedItem);

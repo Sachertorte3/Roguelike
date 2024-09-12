@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -33,7 +34,7 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             if (Random.value < _criticalRate)
             {
@@ -56,7 +57,7 @@ namespace Domain.Service.Effect
             }
             if (_blowAwayDistance > 0)
             {
-                await target.BlowAway(DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, _blowAwayDistance, map);
+                await target.BlowAway(actor, DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, _blowAwayDistance, map);
             }
         }
 

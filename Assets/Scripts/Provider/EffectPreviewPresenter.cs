@@ -14,7 +14,7 @@ namespace Provider
     public class EffectPreviewPresenter
     {
         [Inject]
-        public EffectPreviewPresenter(World world, EffectViewSpawner effectViewSpawner, InventoryView inventoryView)
+        public EffectPreviewPresenter(GameManager gameManager, World world, EffectViewSpawner effectViewSpawner, InventoryView inventoryView)
         {
             var serialDisposable = new SerialDisposable();
             var previews = new List<GameObject>();
@@ -24,7 +24,7 @@ namespace Provider
                     inventoryView.OnFocusChanged.AsUnitObservable(),
                     map.Player.Inventory.OnItemChanged.AsUnitObservable(),
                     map.Player.Direction.AsUnitObservable(),
-                    map.Player.Position.AsUnitObservable()
+                    gameManager.Turn.AsUnitObservable()
                 ).Subscribe(_ =>
                 {
                     previews.ForEach(preview => GameObject.Destroy(preview));

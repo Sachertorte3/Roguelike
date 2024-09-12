@@ -15,6 +15,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Unity.Logging;
 
 namespace Domain.Service.Items
 {
@@ -160,11 +161,14 @@ namespace Domain.Service.Items
             }
             return result;
         }
-        public async UniTask<ISkillResult> UseWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
         {
             var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
-                itemTargetSkill => itemTargetSkill.Use(actor, this)
+                itemTargetSkill => {
+                    Log.Error("The item is not configured to activate this type of skill when thrown.");
+                    return itemTargetSkill.Use((IActor)actor, this);
+                }
             );
             if (result.IsSuccess)
             {

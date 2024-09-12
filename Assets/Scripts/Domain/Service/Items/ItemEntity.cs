@@ -2,9 +2,11 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;
+using Domain.Service.Effect;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
@@ -54,6 +56,11 @@ namespace Domain.Service.Items
             _entity.Destroy();
         }
 
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
+        }
+
         public ItemEntityMemento Serialize()
         {
             return new ItemEntityMemento
@@ -63,31 +70,59 @@ namespace Domain.Service.Items
             };
         }
 
-        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, IMap map)
+        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
         {
             var result = position;
 
-            while (map.IsPassable(result + direction.Vector()))
+            for (var i = 0; i < distance; i++)
             {
-                result += direction.Vector();
-            }
-
-            if (map.IsMapPassable(position + direction.Vector()))
-            {
-                result += direction.Vector();
+                if (map.IsPassable(result + direction.Vector()))
+                {
+                    result += direction.Vector();
+                }
+                else
+                {
+                    if (map.IsPassableOnMap(result + direction.Vector()))
+                    {
+                        result += direction.Vector();
+                    }
+                    break;
+                }
             }
 
             return result;
         }
 
-        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, IMap map)
+        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, int distance, IMap map)
         {
             if (item.CanActivateWhenThrown)
                 return 0;
 
-            var destination = GetThrowDestination(position, direction, map);
+            var destination = GetThrowDestination(position, direction, distance, map);
 
             return item.EvaluateWhenThrown(actor, destination, direction, map);
+        }
+
+        public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
+            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            {
+                _entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
+                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+            }
+            if (Item.CanActivateWhenThrown)
+            {
+                var result = await Item.UseWhenThrown(actor, destination, direction, map);
+                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+                {
+                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
+                        spawnEffectResult.Area,
+                        spawnEffectResult.Color
+                    ));
+                }
+            }
         }
 
         ~ItemEntity()

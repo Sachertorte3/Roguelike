@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using UnityEngine;
 using Utilities;
@@ -24,7 +25,7 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             var value = Formula.Calc(actor, target, _elementPowers);
             var loseValue = target.LoseHp(value);

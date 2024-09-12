@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Beneficial;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             return UniTask.CompletedTask;
         }

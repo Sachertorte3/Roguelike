@@ -29,6 +29,7 @@ namespace Model.Game
         private readonly ShopMemento? _shop;
         private readonly Vector2Int _upStairPosition;
         private readonly Vector2Int _downStairPosition;
+        private readonly List<Vector2Int> _randomBlankPositions;
 
         public MapBuilder(TilemapMemento tilemapData, DungeonMapData data)
         {
@@ -38,6 +39,7 @@ namespace Model.Game
             _keyCharacters = new();
             _stairs = new();
             _chests = new();
+            _randomBlankPositions = new();
 
             var rooms = _tilemap.Rooms.ToList();
 
@@ -55,7 +57,7 @@ namespace Model.Game
                 var weaponCount = GetCount(data.WeaponCount);
                 var chestCount = Random.value < data.ChestChance ? 1 : 0;
                 var bossCount = data.existBoss ? data.Boss.Count : 0;
-                var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 2;
+                var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 3;
 
                 var positions = room.RectRange().GetAtRandom(sum).ToList();
                 var characterPositions = positions.TakeAndRemove(characterCount);
@@ -85,6 +87,7 @@ namespace Model.Game
                 {
                     _upStairPosition = positions.TakeAndRemove(1).First();
                 }
+                _randomBlankPositions.Add(positions.TakeAndRemove(1).First());
             }
         }
 
@@ -208,7 +211,8 @@ namespace Model.Game
                 EventEntities = EventEntityManager.Build(_stairs, _chests),
                 KeyCharacters = _keyCharacters.Select(key => key.ToString()).ToList(),
                 MonsterHouse = new(_monsterHouse),
-                Shop = new(_shop)
+                Shop = new(_shop),
+                RandomBlankPosition = _randomBlankPositions.GetAtRandom()
             };
         }
     }

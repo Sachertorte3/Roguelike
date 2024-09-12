@@ -103,45 +103,52 @@ namespace Domain.Service.Effect
             return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
         }
 
-        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
 
             if (_position is ProjectileImpact projectileImpact)
             {
-                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction);
+                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction, projectileImpact.CanHitLayer.ToArray());
             }
             var area = GetArea(actor, position, direction, map);
 
-            map.GetCharactersInArea(area.ToHashSet())
+            foreach (var target in map.GetEntitiesInArea(area.ToHashSet())
                 .OrderBy(target => Vector2.Distance(target.CurrentPosition, actor.CurrentPosition))
-                .Reverse()
-                .ForEach(target =>
+                .Reverse())
+            {
+                switch (target)
                 {
-                    if (_effect.Impact == Impact.Harmful)
-                    {
-                        var impactValue = _effect.Evaluate(actor, target);
-                        target.WasAttackedBy(actor, impactValue);
+                    case ICharacter character:
+                        if (_effect.Impact == Impact.Harmful)
+                        {
+                            var impactValue = _effect.Evaluate(actor, character);
+                            character.WasAttackedBy(actor, impactValue);
 
-                        map.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character =>
-                                character.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation,
-                                    impactValue));
-                    }
-                    else if (_effect.Impact == Impact.Beneficial)
-                    {
-                        var impactValue = _effect.Evaluate(actor, target);
-                        target.WasHealedBy(actor, impactValue);
+                            map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                .ForEach(character =>
+                                    character.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
+                                        impactValue));
+                        }
+                        else if (_effect.Impact == Impact.Beneficial)
+                        {
+                            var impactValue = _effect.Evaluate(actor, character);
+                            character.WasHealedBy(actor, impactValue);
 
-                        map.GetCharactersCanSeePosition(target.CurrentPosition)
-                            .ForEach(character =>
-                                character.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation,
-                                    impactValue));
-                    }
+                            map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                .ForEach(character =>
+                                    character.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
+                                        impactValue));
+                        }
 
-                    _effect.Apply(actor, target, map);
-                });
+                        await _effect.Apply(actor, character, map);
+                        break;
+                    default:
+                        await _effect.Apply(actor, target, map);
+                        break;
+                }
+            }
             await _effect.Apply(actor, area, map);
             return SpawnEffectSkillResult.Success(Color, area);
         }

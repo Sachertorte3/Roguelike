@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
@@ -23,9 +24,10 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
             await target.BlowAway(
+                actor,
                 DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value,
                 _distance, map);
         }

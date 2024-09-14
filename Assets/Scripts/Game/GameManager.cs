@@ -74,11 +74,14 @@ namespace Model.Game
                 map = await CreateMap();
                 StartMap(map);
             }
-            _disposable.Disposable = map.Player.OnDestroyed.Subscribe(async _ =>
+            _world.ActiveMap.Subscribe(map =>
             {
-                await StopMap();
-                Save();
-                _state.Value = GameState.Title;
+                _disposable.Disposable = map.Player.OnDestroyed.Subscribe(async _ =>
+                {
+                    await StopMap();
+                    Save();
+                    _state.Value = GameState.Title;
+                });
             });
         }
 

@@ -61,6 +61,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
             builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
+            builder.RegisterPlainEntryPoint<DebugCommands>();
         }
     }
 }

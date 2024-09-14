@@ -28,12 +28,23 @@ namespace View.UI
                 _text.text = text;
             else
                 _text.text = "";
-        
+
             foreach ((var choice, int index) in choices.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
                 button.Construct(choice, () => _selectedIndex.Value = index);
                 _buttons.Add(button);
+            }
+
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                var nav = new Navigation
+                {
+                    mode = Navigation.Mode.Explicit,
+                    selectOnUp = _buttons[(i - 1 + _buttons.Count) % _buttons.Count].GetComponent<Button>(),
+                    selectOnDown = _buttons[(i + 1) % _buttons.Count].GetComponent<Button>()
+                };
+                _buttons[i].GetComponent<Button>().navigation = nav;
             }
         }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5887544790346257049}
   - component: {fileID: 353072437012903357}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: CountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -339,7 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 1
+    m_Mode: 4
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 7408395093629783511}
   _icon: {fileID: 5185865846578477905}
-  _text: {fileID: 353072437012903357}
+  _count: {fileID: 353072437012903357}
 --- !u!224 &4965566580593340212 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4775943058898604180, guid: 867230ec57678bb4b9f36ea28533002f, type: 3}

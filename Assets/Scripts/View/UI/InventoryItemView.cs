@@ -11,7 +11,7 @@ namespace View.UI
     internal class InventoryItemView : Selectable, ISelectHandler
     {
         [SerializeField] private Image _icon;
-        [SerializeField] private TMP_Text _text;
+        [SerializeField] private TMP_Text _count;
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
 
@@ -38,14 +38,14 @@ namespace View.UI
         public void SetCount(int? count)
         {
             if (count.HasValue)
-                _text.text = count.ToString();
+                _count.text = count.ToString();
             else
-                _text.text = "";
+                _count.text = "";
         }
 
         public void RemoveCount()
         {
-            _text.text = "";
+            _count.text = "";
         }
 
         public void Disable()

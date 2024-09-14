@@ -9,6 +9,7 @@ namespace View
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
+        private bool _isMenuOpen = false;
 
         public InputReceiver()
         {
@@ -17,11 +18,13 @@ namespace View
             {
                 _actions.Field.Disable();
                 _actions.Menu.Enable();
+                _isMenuOpen = true;
             }));
             _disposables.Add(OnMenuClosing.Subscribe(_ =>
             {
                 _actions.Field.Enable();
                 _actions.Menu.Disable();
+                _isMenuOpen = false;
             }));
         }
 
@@ -50,6 +53,23 @@ namespace View
         ~InputReceiver()
         {
             Dispose();
+        }
+
+        public void Enable()
+        {
+            if (!_isMenuOpen)
+            {
+                _actions.Field.Enable();
+            }
+            else
+            {
+                _actions.Menu.Enable();
+            }
+        }
+
+        public void Disable()
+        {
+            _actions.Disable();
         }
     }
 }

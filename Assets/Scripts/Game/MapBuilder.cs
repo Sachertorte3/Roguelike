@@ -6,7 +6,6 @@ using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service;
 using Domain.Service.Characters;
 using Domain.Service.Events;
 using Domain.Service.Items;
@@ -60,6 +59,10 @@ namespace Model.Game
                 var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 3;
 
                 var positions = room.RectRange().GetAtRandom(sum).ToList();
+                if (positions.Count < sum)
+                {
+                    Debug.LogError("positions.Count < sum");
+                }
                 var characterPositions = positions.TakeAndRemove(characterCount);
                 var itemPositions = positions.TakeAndRemove(itemCount);
                 var weaponPositions = positions.TakeAndRemove(weaponCount);

@@ -114,7 +114,7 @@ namespace Domain.Service.Effect
             }
             var area = GetArea(actor, position, direction, map);
 
-            foreach (var target in map.GetEntitiesInArea(area.ToHashSet())
+            foreach (var target in map.GetEntitiesInArea(area)
                 .OrderBy(target => Vector2.Distance(target.CurrentPosition, actor.CurrentPosition))
                 .Reverse())
             {
@@ -127,8 +127,9 @@ namespace Domain.Service.Effect
                             character.WasAttackedBy(actor, impactValue);
 
                             map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                .ForEach(character =>
-                                    character.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
+                                .Where(target => target != actor && target != actor)
+                                .ForEach(c =>
+                                    c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
                                         impactValue));
                         }
                         else if (_effect.Impact == Impact.Beneficial)
@@ -137,8 +138,9 @@ namespace Domain.Service.Effect
                             character.WasHealedBy(actor, impactValue);
 
                             map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                .ForEach(character =>
-                                    character.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
+                                .Where(target => target != actor && target != actor)
+                                .ForEach(c =>
+                                    c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
                                         impactValue));
                         }
 

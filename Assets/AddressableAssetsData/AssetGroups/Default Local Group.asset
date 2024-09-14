@@ -82,6 +82,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9e3c0dc1c99c0541acfad4909ca107b
+    m_Address: "Assets/Database/ItemData/\u85AC\u8349.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5954a8ba66a98444ace7667d7ee2362
+    m_Address: "Assets/Database/ItemData/\u6B6A\u3093\u3060\u61D0\u4E2D\u6642\u8A08.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: fd84a6b010ca1364aaa4a4310d8e8d74, type: 2}
   m_SchemaSet:

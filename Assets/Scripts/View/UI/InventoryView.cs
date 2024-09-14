@@ -4,6 +4,7 @@ using R3;
 using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace View.UI
 {
@@ -28,6 +29,17 @@ namespace View.UI
             OnFocusChanged.Subscribe(index => { _infoText.text = index == null ? "" : _info[index.Value]; }).AddTo(this);
             _itemViews[0].Select();
             _itemViews[InventorySize].SetIcon(_emptyIcon, null);
+
+            for (int i = 0; i < _itemViews.Length; i++)
+            {
+                var nav = new Navigation
+                {
+                    mode = Navigation.Mode.Explicit,
+                    selectOnLeft = _itemViews[(i - 1 + _itemViews.Length) % _itemViews.Length].GetComponent<Selectable>(),
+                    selectOnRight = _itemViews[(i + 1) % _itemViews.Length].GetComponent<Selectable>()
+                };
+                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+            }
         }
 
         public void Replace(Sprite icon, int? count, string info, int index)

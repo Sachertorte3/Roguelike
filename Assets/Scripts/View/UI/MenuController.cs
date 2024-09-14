@@ -21,8 +21,6 @@ namespace View.UI
         [Inject]
         public void Construct(InputReceiver inputReceiver)
         {
-            _menuStack.Push(_dungeonMenu);
-            _menuStack.Push(_titleMenu);
             inputReceiver.OnMenuOpening.Subscribe(_ =>
             {
                 AddMenu(_settingMenu);
@@ -53,7 +51,8 @@ namespace View.UI
                 previousMenu.Hide();
                 previousMenu.Disable();
             }
-            EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(menu));
+            if (_selectedObject.ContainsKey(menu))
+                EventSystem.current.SetSelectedGameObject(_selectedObject[menu]);
             menu.Show();
             menu.Enable();
             _menuStack.Clear();

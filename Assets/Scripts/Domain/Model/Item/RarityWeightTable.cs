@@ -14,6 +14,7 @@ namespace Domain.Model.Item
         [RequiredListLength(1, null)]
         [SerializeField]
         private List<T> items = new();
+        public List<T> Items => items;
 
         public T GetRandomItem()
         {

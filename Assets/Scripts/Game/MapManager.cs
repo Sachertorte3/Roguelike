@@ -134,6 +134,11 @@ namespace Model.Game
 
             foreach (var entity in Entities)
                 entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
+
+            if (map.MonsterHouse.HasValue || map.Characters.Any(character => character.IsShiny))
+            {
+                GameLog.Add("<color=yellow>不穏な気配を感じる……</color>");
+            }
         }
 
         public ICharacter? Player => CharacterManager?.Player;
@@ -190,7 +195,7 @@ namespace Model.Game
                 this
             );
         }
-        public ICharacter SpawnRandomEnemy(Vector2Int position) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position);
+        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isShiny: isShiny);
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction, params EntityLayer[] canHitLayer)
         {
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
@@ -452,7 +457,7 @@ namespace Model.Game
             {
                 var positions = GetAllPassablePositions().Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())
-                    SpawnRandomEnemy(positions.GetAtRandom());
+                    SpawnRandomEnemy(positions.GetAtRandom(), false);
             }
         }
 

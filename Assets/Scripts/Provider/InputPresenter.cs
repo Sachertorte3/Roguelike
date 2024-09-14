@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
+using IngameDebugConsole;
 using Model.Game;
 using R3;
 using UnityEngine;
@@ -17,6 +18,14 @@ namespace Provider
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
             ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController, InventoryView inventoryView)
         {
+            Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
+                .Subscribe(x =>
+                {
+                    if (x)
+                        receiver.Disable();
+                    else
+                        receiver.Enable();
+                });
             receiver.OnMovePerformed
                 .Where(vector => vector != Vector2.zero)
                 .Subscribe(vector =>

@@ -39,7 +39,7 @@ namespace Domain.Service.Effect
                         _character.Value,
                         position,
                         actor.Affiliation,
-                        false,
+                        isSlept: false,
                         _inheritsShiny ? actor.IsShiny : null
                     );
                 }

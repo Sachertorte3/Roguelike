@@ -76,7 +76,7 @@ namespace Domain.Service.Characters
                 return;
             }
 
-            if (target == this)
+            if (target.Id == Id)
             {
                 ModifyAffection(attacker.Id, -impact); // 攻撃されると好感度が減少
             }

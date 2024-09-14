@@ -16,7 +16,7 @@ namespace Domain.Service.Events
         public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area);
         public IItem? GetItemFromId(Id<IItem> id);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
-        public ICharacter SpawnRandomEnemy(Vector2Int position);
+        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null);
         public void RemoveEventEntity(Chest entity);
     }
 }

@@ -11,6 +11,7 @@ using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Map;
 using UnityEngine;
+using Unity.Logging;
 using Utilities;
 using Random = UnityEngine.Random;
 
@@ -58,15 +59,15 @@ namespace Model.Game
                 var bossCount = data.existBoss ? data.Boss.Count : 0;
                 var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 3;
 
-                var positions = room.RectRange().GetAtRandom(sum).ToList();
+                var positions = room.RectRange().ToList();
                 if (positions.Count < sum)
                 {
-                    Debug.LogError("positions.Count < sum");
+                    Log.Error("positions.Count < sum");
                 }
-                var characterPositions = positions.TakeAndRemove(characterCount);
-                var itemPositions = positions.TakeAndRemove(itemCount);
-                var weaponPositions = positions.TakeAndRemove(weaponCount);
-                var chestPositions = positions.TakeAndRemove(chestCount);
+                var characterPositions = positions.GetAtRandomAndRemove(characterCount);
+                var itemPositions = positions.GetAtRandomAndRemove(itemCount);
+                var weaponPositions = positions.GetAtRandomAndRemove(weaponCount);
+                var chestPositions = positions.GetAtRandomAndRemove(chestCount);
 
                 AddCharactersToRoom(data, characterPositions);
                 AddItemsToRoom(data, itemPositions);
@@ -77,20 +78,20 @@ namespace Model.Game
                 {
                     foreach (var bossData in data.Boss)
                     {
-                        var boss = CharacterFactory.BuildCharacter(bossData, positions.TakeAndRemove(1).First(), isSlept: false, isShiny: false);
+                        var boss = CharacterFactory.BuildCharacter(bossData, positions.GetAtRandomAndRemove(1).First(), isSlept: false, isShiny: false);
                         _characters.Add(boss);
                         _keyCharacters.Add(new(boss.Entity.Id));
                     }
                 }
                 if (room == downStairsRoom)
                 {
-                    _downStairPosition = positions.TakeAndRemove(1).First();
+                    _downStairPosition = positions.GetAtRandomAndRemove(1).First();
                 }
                 if (room == upStairsRoom)
                 {
-                    _upStairPosition = positions.TakeAndRemove(1).First();
+                    _upStairPosition = positions.GetAtRandomAndRemove(1).First();
                 }
-                _randomBlankPositions.Add(positions.TakeAndRemove(1).First());
+                _randomBlankPositions.Add(positions.GetAtRandomAndRemove(1).First());
             }
         }
 

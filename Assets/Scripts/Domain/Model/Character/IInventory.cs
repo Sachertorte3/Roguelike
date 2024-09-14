@@ -15,5 +15,6 @@ namespace Domain.Model.Item
         public bool HasEmptySpace();
         public IItem? GetItem(int index);
         public int GetItemIndex(IItem item);
+        public bool TryAdd(IItem item);
     }
 }

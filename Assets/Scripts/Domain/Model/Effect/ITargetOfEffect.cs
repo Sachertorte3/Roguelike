@@ -5,7 +5,7 @@ namespace Domain.Model.Effect
 {
     public interface ITargetOfEffect : IEntity
     {
-        public string GetName(IHasAffiliation player);
+        public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);

@@ -8,7 +8,7 @@ namespace Domain.Model.Effect
     public interface IActorOfEffect : IHasAffiliation, IEntity
     {
         public bool IsShiny { get; }
-        public string GetName(IHasAffiliation player);
+        public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public IEnumerable<Vector2Int> VisibleArea { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }

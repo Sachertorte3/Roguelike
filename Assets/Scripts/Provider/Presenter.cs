@@ -49,8 +49,7 @@ namespace Provider
         private static LoggerConfig EditorConfiguration()
             => new LoggerConfig()
                 .SyncMode.FullSync()
-                //.RedirectUnityLogs(log:true)
-                .WriteTo.UnityEditorConsole(
+                .WriteTo.UnityDebugLog(
                     minLevel: LogLevel.Debug,
                     captureStackTrace: true);
 

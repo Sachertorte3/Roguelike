@@ -107,9 +107,9 @@ namespace Domain.Service.Characters
         public CharacterState State { get; set; } = CharacterState.Wait;
         public int Money => _money;
 
-        public string GetName(IHasAffiliation player)
+        public string GetName(IHasAffiliation player, bool ignoreVisibility = false)
         {
-            if (!Visibility.CurrentValue)
+            if (!ignoreVisibility && !Visibility.CurrentValue)
             {
                 return "何者か";
             }

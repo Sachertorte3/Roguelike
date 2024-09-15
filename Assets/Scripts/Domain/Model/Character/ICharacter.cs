@@ -23,7 +23,7 @@ namespace Domain.Model.Character
         public bool HasHomePosition { get; }
         public CharacterState State { get; }
         public int Money { get; }
-        public string GetName(IHasAffiliation player);
+        public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public bool CanAct { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned { get; }

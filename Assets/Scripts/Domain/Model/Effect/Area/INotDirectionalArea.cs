@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Domain.Model.Map;
 using UnityEngine;
 
 namespace Domain.Model.Effect.Area

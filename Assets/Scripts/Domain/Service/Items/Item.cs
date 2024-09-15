@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -16,6 +15,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 using Unity.Logging;
+using Domain.Model.Map;
 
 namespace Domain.Service.Items
 {

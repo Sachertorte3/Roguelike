@@ -5,6 +5,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -17,13 +18,6 @@ namespace Domain.Service.Effect
         [Required, SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
         [MinValue(1), SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
-
-        public SpawnCharacterEffect(EnemyData character, int count, bool inheritsShiny)
-        {
-            _character = new(character);
-            _count = count;
-            _inheritsShiny = inheritsShiny;
-        }
 
         public Color Color => Colors.MediumPurple;
 

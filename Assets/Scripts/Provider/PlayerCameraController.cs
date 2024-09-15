@@ -1,5 +1,5 @@
 #nullable enable
-using Model.Game;
+using Game;
 using UnityEngine;
 using Utilities;
 using VContainer;

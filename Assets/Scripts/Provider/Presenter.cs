@@ -1,5 +1,5 @@
 #nullable enable
-using Model.Game;
+using Game;
 using Unity.Logging;
 using Unity.Logging.Sinks;
 using VContainer;

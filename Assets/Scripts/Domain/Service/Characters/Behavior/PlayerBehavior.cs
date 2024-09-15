@@ -1,11 +1,13 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using R3;
@@ -31,7 +33,7 @@ namespace Domain.Service.Characters.Behavior
 
         public bool WanderAround => true;
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
         {
             Log.Debug("[PlayerThink] Start waiting input...");
             if (input.IsDash()) await _intelligentDashController.Wait(character, world);
@@ -59,13 +61,35 @@ namespace Domain.Service.Characters.Behavior
                                 move = _intelligentDashController.Filter(move, character, started, world, input);
 
                             var swap = new Swap(move.Direction);
+                            var eventEntity = world.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle);
                             character.Turn(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
-                            else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
+                            else if (eventEntity != null)
                             {
-                                await world.Touch(character.CurrentPosition + move.Direction.Vector());
-                                return new DoNothing();
+                                var choices = new List<string> { eventEntity.ChoiceText };
+                                if (swap.Doable(character, world))
+                                {
+                                    choices.Add("入れ替わる");
+                                }
+                                if (eventEntity.CanBeCanceled)
+                                {
+                                    choices.Add("やめる");
+                                }
+                                var choice = await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
+
+                                switch (choices[choice])
+                                {
+                                    case string choiceText when choiceText == eventEntity.ChoiceText:
+                                        await world.Touch(character.CurrentPosition + move.Direction.Vector());
+                                        return new DoNothing();
+                                    case "入れ替わる":
+                                        return swap;
+                                    case "やめる":
+                                        break;
+                                    default:
+                                        return new DoNothing();
+                                }
                             }
                             else if (swap.Doable(character, world))
                                 return swap;

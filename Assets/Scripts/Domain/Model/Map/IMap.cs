@@ -9,7 +9,7 @@ using ObservableCollections;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Model
+namespace Domain.Model.Map
 {
     public interface IMap : IPassableChecker, IEffectMap
     {
@@ -25,7 +25,7 @@ namespace Domain.Model
         public bool IsPassable(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to);
-        public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer);
+        public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public UniTask Touch(Vector2Int position);

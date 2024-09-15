@@ -1,8 +1,8 @@
 #nullable enable
-using Domain.Service.Events;
+using Domain.Model.Map;
 using R3;
 
-namespace Model.Game
+namespace Domain.Service.Rooms
 {
     public interface IShop
     {

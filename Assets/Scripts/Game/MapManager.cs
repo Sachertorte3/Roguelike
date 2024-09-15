@@ -7,6 +7,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
@@ -16,6 +17,7 @@ using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Map;
+using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using Unity.Logging;
@@ -24,7 +26,7 @@ using Utilities;
 using Utilities.Algorithms;
 using Random = UnityEngine.Random;
 
-namespace Model.Game
+namespace Game
 {
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
     {
@@ -236,14 +238,13 @@ namespace Model.Game
             return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition).Where(p => visibleArea.Contains(p));
         }
 
-        public bool IsTouchableEventEntityAt(Vector2Int position, EntityLayer layer)
+        public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer)
         {
             return EventEntities
-                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
                 .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
                 .Where(eventEntity => eventEntity.CanExecuteEvent)
-                .Any();
+                .FirstOrDefault();
         }
 
         public record PassablePositionFilter(MapManager Map, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area)
@@ -308,11 +309,7 @@ namespace Model.Game
 
         public async UniTask Touch(Vector2Int position)
         {
-            var eventEntity = EventEntities
-                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Touch)
-                .Where(eventEntity => eventEntity.CurrentPosition == position)
-                .Where(eventEntity => eventEntity.CanExecuteEvent)
-                .FirstOrDefault();
+            var eventEntity = GetEventEntityAt(position, EntityLayer.Middle);
             if (eventEntity != null)
                 await eventEntity.DoEvent(Globals.GameManager, this);
             else
@@ -321,18 +318,25 @@ namespace Model.Game
 
         public async UniTask StepOn(Vector2Int position)
         {
-            var eventEntity = EventEntities
-                .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
-                .Where(eventEntity => eventEntity.CurrentPosition == position)
-                .Where(eventEntity => eventEntity.CanExecuteEvent)
-                .FirstOrDefault();
+            var eventEntity = GetEventEntityAt(position, EntityLayer.Bottom);
             if (eventEntity != null)
-                await eventEntity.DoEvent(Globals.GameManager, this);
+            {
+                if (eventEntity.CanBeCanceled)
+                {
+                    var choice = await Globals.GameManager.GetChoice(eventEntity.ChoiceMessage, eventEntity.ChoiceText, "やめる");
+                    if (choice == 0)
+                        await eventEntity.DoEvent(Globals.GameManager, this);
+                }
+                else
+                {
+                    await eventEntity.DoEvent(Globals.GameManager, this);
+                }
+            }
             else
                 Log.Info($"I tried touch position {position} event but there was no event there.");
         }
 
-        public void RemoveEventEntity(Chest eventEntity)
+        public void RemoveEventEntity(IEventEntity eventEntity)
         {
             EventEntityManager.Remove(eventEntity);
         }
@@ -391,15 +395,7 @@ namespace Model.Game
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
                 IsEventExecuting = true;
-                var eventEntity = EventEntities
-                    .Where(eventEntity => eventEntity.Trigger == EventTrigger.Tread)
-                    .Where(eventEntity => eventEntity.CurrentPosition == positionChanged.Message.Position)
-                    .Where(eventEntity => eventEntity.CanExecuteEvent)
-                    .FirstOrDefault();
-                if (eventEntity != null)
-                {
-                    await eventEntity.DoEvent(Globals.GameManager, this);
-                }
+                await StepOn(positionChanged.Message.Position);
 
                 foreach (var eventArea in _eventAreas)
                 {

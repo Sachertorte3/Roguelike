@@ -11,6 +11,7 @@ using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Message;
 using Domain.Model.Setting;
@@ -412,10 +413,10 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        public async UniTask DoNextAction(IMap world, IInput input)
+        public async UniTask DoNextAction(IGameManager gameManager, IMap world, IInput input)
         {
             State = CharacterState.Think;
-            var action = await _behavior.GenerateNextAction(this, world, input);
+            var action = await _behavior.GenerateNextAction(this, gameManager, world, input);
             if (IsConfused)
             {
                 action = RegenerateConfuseAction(this, world, action);

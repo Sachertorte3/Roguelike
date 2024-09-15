@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Entities;
 using Domain.Service.Items;
@@ -26,7 +27,9 @@ namespace Domain.Service.Events
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
 
-        public EventTrigger Trigger => EventTrigger.Touch;
+        public string ChoiceMessage => "宝箱を見つけた";
+        public string ChoiceText => "開ける";
+        public bool CanBeCanceled => true;
         public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => true;

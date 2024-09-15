@@ -13,7 +13,7 @@ using UnityEngine;
 using Utilities;
 using VContainer;
 
-namespace Model.Game
+namespace Game
 {
     public enum GameState
     {
@@ -105,7 +105,7 @@ namespace Model.Game
             Log.Debug("Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
-            _turnController.Run(map);
+            _turnController.Run(this, map);
             _receiver.Enable(true);
             Log.Debug("End LoadMap");
         }
@@ -149,7 +149,7 @@ namespace Model.Game
 
         public void StartMap(MapManager map)
         {
-            _turnController.Run(map);
+            _turnController.Run(this, map);
             _receiver.Enable(true);
         }
 

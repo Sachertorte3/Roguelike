@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using UnityEngine;
 
 namespace Domain.Service.Characters.Behavior

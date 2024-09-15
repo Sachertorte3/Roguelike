@@ -3,21 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
-using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
-using Domain.Service.Rooms;
 using R3;
-using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Game
+namespace Domain.Service.Rooms
 {
     public class Shop : Room<ShopMemento>, IShop, IDisposable
     {
@@ -163,7 +162,7 @@ namespace Model.Game
             }
         }
 
-        public async UniTask Stolen(IMapManager mapManager)
+        public void Stolen(IMapManager mapManager)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
             Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
@@ -171,7 +170,6 @@ namespace Model.Game
             MarkItemsAsStolen(mapManager);
             CanExecute = false;
             _isStolen.Value = true;
-            await UniTask.Delay(1000);
         }
 
         protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
@@ -179,7 +177,8 @@ namespace Model.Game
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
-                await Stolen(mapManager);
+                Stolen(mapManager);
+                await UniTask.Delay(1000);
             }
         }
     }

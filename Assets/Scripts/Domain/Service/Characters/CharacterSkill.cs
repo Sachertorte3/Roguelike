@@ -1,9 +1,9 @@
 #nullable enable
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Effect;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
 using UnityEngine;

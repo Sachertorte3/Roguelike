@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 using Domain.Model;
-using Model.Game;
+using Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

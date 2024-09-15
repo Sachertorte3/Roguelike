@@ -1,10 +1,9 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Map;
 using Utilities;
 
-namespace Domain.Service.Events
+namespace Domain.Model
 {
     public interface IGameManager
     {

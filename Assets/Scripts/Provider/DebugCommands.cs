@@ -3,7 +3,7 @@ using Domain.Model.Item;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using IngameDebugConsole;
-using Model.Game;
+using Game;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Unity.Logging;
@@ -46,6 +46,16 @@ namespace Provider
                 "指定した対象のインベントリに指定したアイテムを追加します。",
                 "GiveItem",
                 this);
+            DebugLogConsole.AddCommandInstance(
+                "SpawnItem",
+                "指定した位置に指定したアイテムをスポーンします。",
+                "SpawnItem",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "SpawnEnemy",
+                "指定した位置に指定した敵をスポーンします。",
+                "SpawnEnemy",
+                this);
         }
 
         private void Test(string message)
@@ -82,9 +92,9 @@ namespace Provider
         private void ShowCharacter(ICharacter character)
         {
             var info = $"{character.GetName(_world.ActiveMap.CurrentValue.Player, true)}\n"
-            +$"Id: {character.Id}\n"
-            +$"Position: {character.Position.CurrentValue}\n"
-            +$"CharacterType: {character.CharacterType.SubtypeName()}";
+            + $"Id: {character.Id}\n"
+            + $"Position: {character.Position.CurrentValue}\n"
+            + $"CharacterType: {character.CharacterType.SubtypeName()}";
             Log.Info(info);
         }
 
@@ -117,14 +127,14 @@ namespace Provider
 
         private void GetCharacterJson(string target)
         {
-            var character = GetTarget(target);
-            if (character != null)
+            try
             {
+                var character = GetTarget(target);
                 ShowCharacterJson(character);
             }
-            else
+            catch (Exception e)
             {
-                Log.Error($"指定された位置にキャラクターが見つかりません。");
+                Log.Error(e);
             }
         }
 
@@ -144,5 +154,33 @@ namespace Provider
             }
         }
 
+        private void SpawnItem(string itemName, Vector2Int position)
+        {
+            try
+            {
+                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset").WaitForCompletion();
+                var item = new Item(itemData);
+                _world.ActiveMap.CurrentValue.SpawnItem(item, position);
+                Log.Info($"{itemName}を{position}にスポーンしました。");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void SpawnEnemy(string enemyName, Vector2Int position, bool isSlept = false, bool isShiny = false)
+        {
+            try
+            {
+                var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset").WaitForCompletion();
+                _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
+                Log.Info($"{enemyName}を{position}にスポーンしました。");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Service.Action;
 using R3;
 using Unity.Logging;
@@ -65,7 +66,7 @@ namespace Domain.Service.Characters.Behavior
 
         public bool WanderAround { get; init; }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);

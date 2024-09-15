@@ -4,12 +4,13 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using R3;
 using Stats;
 using Unity.Logging;
 using UnityEngine;
 
-namespace Model.Game
+namespace Game
 {
     public sealed class TurnController
     {
@@ -28,7 +29,7 @@ namespace Model.Game
             _turnWaitTime = new Resource(1);
         }
 
-        public async void Run(IMap map)
+        public async void Run(IGameManager gameManager, IMap map)
         {
             if (_isRunning)
                 throw new Exception("Turn is already running");
@@ -72,7 +73,7 @@ namespace Model.Game
                         if (character.CanAct && !character.StatusManager.IsDead)
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
-                            await character.DoNextAction(map, _input);
+                            await character.DoNextAction(gameManager, map, _input);
                         }
                         else
                         {

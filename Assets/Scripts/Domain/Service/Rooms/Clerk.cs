@@ -1,9 +1,10 @@
+#nullable enable
 using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Service.Events;
+using Domain.Model.Map;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -14,6 +15,9 @@ namespace Domain.Service.Rooms
     {
         public readonly ICharacter Character;
         private readonly Func<bool> _canExecuteEvent;
+        public string? ChoiceMessage => null;
+        public string ChoiceText => "代金を支払う";
+        public bool CanBeCanceled => true;
         public bool CanExecuteEvent => _canExecuteEvent();
         private readonly Func<IMapManager, UniTask> _doEvent;
 
@@ -31,7 +35,6 @@ namespace Domain.Service.Rooms
         {
             Dispose();
         }
-        public EventTrigger Trigger => EventTrigger.Touch;
         public Id<IEntity> Id => Character.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
         public Vector2Int CurrentPosition => Character.CurrentPosition;

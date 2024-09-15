@@ -26,12 +26,12 @@ namespace Domain.Service.Rooms
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room, mapManager.Player.CurrentPosition)
+        public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room, mapManager.Player.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
                 () => (CanExecute && GetSalePrice(mapManager) > 0) || GetPurchasePrice(mapManager) > 0,
-                mapManager => { Purchase(mapManager); return UniTask.CompletedTask; }
+                (_, map) => { Purchase(map); return UniTask.CompletedTask; }
             );
 
             if (data.IsStolen)
@@ -93,7 +93,7 @@ namespace Domain.Service.Rooms
             };
         }
 
-        private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
+        private IEnumerable<IItem> GetItemsInRoom(IMap mapManager)
         {
             return mapManager.GetItemsInArea(Rect.RectRange()).Select(item => item.Item);
         }
@@ -106,14 +106,14 @@ namespace Domain.Service.Rooms
                 item.SetState(ItemState.ShopItem);
             }
         }
-        private void RemoveMark(IMapManager mapManager, IEnumerable<ShopItemCache> items)
+        private void RemoveMark(IMap mapManager, IEnumerable<ShopItemCache> items)
         {
             foreach (var item in items)
             {
                 mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
             }
         }
-        private void MarkItemsAsStolen(IMapManager mapManager)
+        private void MarkItemsAsStolen(IMap mapManager)
         {
             foreach (var item in _shopItems)
             {
@@ -121,30 +121,30 @@ namespace Domain.Service.Rooms
             }
         }
 
-        private IEnumerable<ShopItemCache> GetMissingItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetMissingItems(IMap mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State == ItemState.ShopItem);
             var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
             return purchaseItems;
         }
-        public int GetPurchasePrice(IMapManager mapManager)
+        public int GetPurchasePrice(IMap mapManager)
         {
             var purchaseItems = GetMissingItems(mapManager);
             return purchaseItems.Sum(item => item.Price);
         }
 
-        private IEnumerable<ShopItemCache> GetAddedItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetAddedItems(IMap mapManager)
         {
             var saleItems = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
             return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
-        public int GetSalePrice(IMapManager mapManager)
+        public int GetSalePrice(IMap mapManager)
         {
             var saleItems = GetAddedItems(mapManager);
             return Mathf.RoundToInt(saleItems.Sum(item => item.Price) / 2f);
         }
 
-        public void Purchase(IMapManager mapManager)
+        public void Purchase(IMap mapManager)
         {
             if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
             {
@@ -162,7 +162,7 @@ namespace Domain.Service.Rooms
             }
         }
 
-        public void Stolen(IMapManager mapManager)
+        public void Stolen(IMap mapManager)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
             Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
@@ -172,7 +172,7 @@ namespace Domain.Service.Rooms
             _isStolen.Value = true;
         }
 
-        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap mapManager)
         {
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())

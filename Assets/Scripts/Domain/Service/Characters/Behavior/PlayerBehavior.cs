@@ -67,7 +67,11 @@ namespace Domain.Service.Characters.Behavior
                                 return move;
                             else if (eventEntity != null)
                             {
-                                var choices = new List<string> { eventEntity.ChoiceText };
+                                var choices = new List<string>();
+                                foreach (var eventData in eventEntity.Events)
+                                {
+                                    choices.Add(eventData.ChoiceText);
+                                }
                                 if (swap.Doable(character, world))
                                 {
                                     choices.Add("入れ替わる");
@@ -76,19 +80,20 @@ namespace Domain.Service.Characters.Behavior
                                 {
                                     choices.Add("やめる");
                                 }
-                                var choice = await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
-
-                                switch (choices[choice])
+                                var choiceIndex = 0;
+                                if (choices.Count > 1)
                                 {
-                                    case string choiceText when choiceText == eventEntity.ChoiceText:
-                                        await world.Touch(character.CurrentPosition + move.Direction.Vector());
-                                        return new DoNothing();
+                                    choiceIndex = await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
+                                }
+                                switch (choices[choiceIndex])
+                                {
                                     case "入れ替わる":
                                         return swap;
                                     case "やめる":
                                         break;
                                     default:
-                                        return new DoNothing();
+                                        await eventEntity.Events[choiceIndex].DoEvent(gameManager, world);
+                                        break;
                                 }
                             }
                             else if (swap.Doable(character, world))

@@ -34,7 +34,7 @@ namespace Domain.Service.Rooms
             };
         }
 
-        protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap mapManager)
         {
             GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)

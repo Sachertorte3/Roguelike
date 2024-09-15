@@ -28,7 +28,7 @@ using Random = UnityEngine.Random;
 
 namespace Game
 {
-    public class MapManager : IDisposable, ISerializable<MapMemento>, IMap, IMapManager
+    public class MapManager : IDisposable, ISerializable<MapMemento>, IMap
     {
         public string Name => _dungeonData.Name;
         public readonly int Level;
@@ -243,7 +243,7 @@ namespace Game
             return EventEntities
                 .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
-                .Where(eventEntity => eventEntity.CanExecuteEvent)
+                .Where(eventEntity => eventEntity.Events.Any(e => e.CanExecuteEvent()))
                 .FirstOrDefault();
         }
 
@@ -307,35 +307,6 @@ namespace Game
                 return (route.Last() - to).sqrMagnitude <= 2;
         }
 
-        public async UniTask Touch(Vector2Int position)
-        {
-            var eventEntity = GetEventEntityAt(position, EntityLayer.Middle);
-            if (eventEntity != null)
-                await eventEntity.DoEvent(Globals.GameManager, this);
-            else
-                Log.Info($"I tried touch position {position} event but there was no event there.");
-        }
-
-        public async UniTask StepOn(Vector2Int position)
-        {
-            var eventEntity = GetEventEntityAt(position, EntityLayer.Bottom);
-            if (eventEntity != null)
-            {
-                if (eventEntity.CanBeCanceled)
-                {
-                    var choice = await Globals.GameManager.GetChoice(eventEntity.ChoiceMessage, eventEntity.ChoiceText, "やめる");
-                    if (choice == 0)
-                        await eventEntity.DoEvent(Globals.GameManager, this);
-                }
-                else
-                {
-                    await eventEntity.DoEvent(Globals.GameManager, this);
-                }
-            }
-            else
-                Log.Info($"I tried touch position {position} event but there was no event there.");
-        }
-
         public void RemoveEventEntity(IEventEntity eventEntity)
         {
             EventEntityManager.Remove(eventEntity);
@@ -395,7 +366,32 @@ namespace Game
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
                 IsEventExecuting = true;
-                await StepOn(positionChanged.Message.Position);
+                var eventEntity = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
+                if (eventEntity != null)
+                {
+                    var choices = new List<string>();
+                    foreach (var eventData in eventEntity.Events)
+                    {
+                        choices.Add(eventData.ChoiceText);
+                    }
+                    if (eventEntity.CanBeCanceled)
+                    {
+                        choices.Add("やめる");
+                    }
+                    var choiceIndex = 0;
+                    if (choices.Count > 1)
+                    {
+                        choiceIndex = await Globals.GameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
+                    }
+                    switch (choices[choiceIndex])
+                    {
+                        case "やめる":
+                            break;
+                        default:
+                            await eventEntity.Events[choiceIndex].DoEvent(Globals.GameManager, this);
+                            break;
+                    }
+                }
 
                 foreach (var eventArea in _eventAreas)
                 {

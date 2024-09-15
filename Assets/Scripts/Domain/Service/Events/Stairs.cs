@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -26,6 +27,10 @@ namespace Domain.Service.Events
             Destination = data.Destination;
             DestinationId = new Id<IEntity>(data.DestinationId);
             IsLocked = isLocked;
+            _events = new()
+            {
+                new EntityEvent("進む", CanExecuteEvent, DoEvent)
+            };
         }
 
         public void Dispose()
@@ -51,14 +56,16 @@ namespace Domain.Service.Events
         };
 
         public string ChoiceMessage => "階段を見つけた";
-        public string ChoiceText => "進む";
+        private readonly List<EntityEvent> _events;
+        public IReadOnlyList<EntityEvent> Events => _events;
         public bool CanBeCanceled => true;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-        public bool CanExecuteEvent => !IsLocked.CurrentValue;
+        private bool CanExecuteEvent() => !IsLocked.CurrentValue;
 
-        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
+        private UniTask DoEvent(IGameManager gameManager, IMap mapManager)
         {
             gameManager.LoadMap(Destination, DestinationId);
+            return UniTask.CompletedTask;
         }
 
         public void SetVisibility(bool visibility)

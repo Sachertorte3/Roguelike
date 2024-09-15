@@ -25,7 +25,7 @@ namespace Domain.Service.Rooms
 
         public RectInt Rect { get; init; }
 
-        public async UniTask UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
+        public async UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int currentPosition)
         {
             if (!CanExecute)
                 return;
@@ -59,27 +59,27 @@ namespace Domain.Service.Rooms
 
         public abstract TMemento Serialize();
 
-        protected virtual UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap mapManager)
         {
             return UniTask.CompletedTask;
         }
 
-        protected virtual UniTask UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfInside(IGameManager gameManager, IMap mapManager)
         {
             return UniTask.CompletedTask;
         }
 
-        protected virtual UniTask FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask FirstTimeEnter(IGameManager gameManager, IMap mapManager)
         {
             return UniTask.CompletedTask;
         }
 
-        protected virtual UniTask EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeEnter(IGameManager gameManager, IMap mapManager)
         {
             return UniTask.CompletedTask;
         }
 
-        protected virtual UniTask EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeExit(IGameManager gameManager, IMap mapManager)
         {
             return UniTask.CompletedTask;
         }

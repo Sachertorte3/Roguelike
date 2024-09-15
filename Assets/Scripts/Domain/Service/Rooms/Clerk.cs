@@ -1,10 +1,12 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -14,18 +16,18 @@ namespace Domain.Service.Rooms
     public class Clerk : IEventEntity
     {
         public readonly ICharacter Character;
-        private readonly Func<bool> _canExecuteEvent;
         public string? ChoiceMessage => null;
-        public string ChoiceText => "代金を支払う";
+        private readonly List<EntityEvent> _events;
+        public IReadOnlyList<EntityEvent> Events => _events;
         public bool CanBeCanceled => true;
-        public bool CanExecuteEvent => _canExecuteEvent();
-        private readonly Func<IMapManager, UniTask> _doEvent;
 
-        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IMapManager, UniTask> doEvent)
+        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
-            _canExecuteEvent = canExecuteEvent;
-            _doEvent = doEvent;
+            _events = new()
+            {
+                new EntityEvent("代金を支払う", canExecuteEvent, doEvent)
+            };
         }
         public void Dispose()
         {
@@ -43,11 +45,6 @@ namespace Domain.Service.Rooms
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => Character.OnMove;
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
-
-        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
-        {
-            await _doEvent(mapManager);
-        }
 
         public void ReducesFavorabilityTowardsThief(ICharacter thief)
         {

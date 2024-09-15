@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Map;
 using R3;
 using UnityEngine;
 using Utilities;

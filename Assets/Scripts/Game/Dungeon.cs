@@ -8,7 +8,7 @@ using Domain.Service.Map;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
-namespace Model.Game
+namespace Game
 {
     public class Dungeon : ISerializable<DungeonMemento>
     {

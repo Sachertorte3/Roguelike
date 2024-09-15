@@ -3,7 +3,7 @@ using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 
-namespace Model.Game
+namespace Game
 {
     public class ThrowAnimationEntityManager
     {

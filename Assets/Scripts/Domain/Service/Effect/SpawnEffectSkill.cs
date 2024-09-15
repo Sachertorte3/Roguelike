@@ -8,6 +8,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
 using UnityEngine;

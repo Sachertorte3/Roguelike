@@ -1,6 +1,6 @@
 #nullable enable
 using System.Linq;
-using Model.Game;
+using Game;
 using ObservableCollections;
 using R3;
 using UI;

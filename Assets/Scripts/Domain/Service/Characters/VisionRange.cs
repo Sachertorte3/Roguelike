@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using Domain.Model.Message;
 using R3;
 using Stats;

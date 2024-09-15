@@ -2,6 +2,7 @@
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Utilities;
 
 namespace Domain.Service.Action

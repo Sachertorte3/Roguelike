@@ -14,8 +14,9 @@ using UnityEngine;
 using Unity.Logging;
 using Utilities;
 using Random = UnityEngine.Random;
+using Domain.Service.Rooms;
 
-namespace Model.Game
+namespace Game
 {
     public class MapBuilder
     {

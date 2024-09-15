@@ -1,6 +1,6 @@
 using Domain.Model;
 
-namespace Model.Game
+namespace Game
 {
     public class GameInput : IInput
     {

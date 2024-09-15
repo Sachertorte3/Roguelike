@@ -1,7 +1,7 @@
 ﻿using Domain.Model.Dungeon;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
-using Model.Game;
+using Game;
 using UnityEngine;
 using Utilities;
 using VContainer;

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Service
+namespace Domain.Model.Map
 {
     public static class MapExtensions
     {

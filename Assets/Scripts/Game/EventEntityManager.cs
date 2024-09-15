@@ -1,13 +1,14 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Memento;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 
-namespace Model.Game
+namespace Game
 {
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
@@ -73,16 +74,13 @@ namespace Model.Game
             EventEntityEvents.Add(eventEntity);
         }
 
-        public void Remove(Chest chest)
-        {
-            _chests.Remove(chest);
-            _eventEntities.Remove(chest);
-            _eventEntitiesAndIcons.Remove(chest);
-        }
-
         public void Remove(IEventEntity eventEntity)
         {
             _eventEntities.Remove(eventEntity);
+            if (eventEntity is Chest chest)
+            {
+                _chests.Remove(chest);
+            }
             if (eventEntity is IIconEventEntity eventEntityAndIcon)
             {
                 _eventEntitiesAndIcons.Remove(eventEntityAndIcon);

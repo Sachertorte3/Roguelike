@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;

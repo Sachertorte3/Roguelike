@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System.Linq;
 using Domain.Model.Map;
-using Model.Game;
+using Game;
 using R3;
 using UnityEngine;
 using Utilities;

@@ -14,7 +14,7 @@ using UnityEngine;
 using Utilities;
 using VContainer;
 
-namespace Model.Game
+namespace Game
 {
     public class World : ISerializable<WorldMemento>
     {

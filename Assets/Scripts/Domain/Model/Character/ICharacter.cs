@@ -7,6 +7,7 @@ using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Message;
 using R3;
@@ -63,7 +64,7 @@ namespace Domain.Model.Character
         public UniTask ForceMove(Direction8 direction, IInput input);
         public void WasAttackedBy(IActorOfEffect actor, float impact);
         public void WasHealedBy(IActorOfEffect actor, float impact);
-        public UniTask DoNextAction(IMap world, IInput input);
+        public UniTask DoNextAction(IGameManager gameManager, IMap world, IInput input);
         public bool TryPickUp(IItem item);
         public IItem? ReplaceInventory(IItem? item, int index);
         public void UpdateTurn();

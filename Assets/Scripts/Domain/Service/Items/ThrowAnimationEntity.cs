@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Map;
 using Domain.Model.Setting;
 using Domain.Service.Entities;
 using R3;

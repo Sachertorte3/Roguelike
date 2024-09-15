@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Model.Action;
+using Domain.Model.Map;
 
 namespace Domain.Model.Character
 {

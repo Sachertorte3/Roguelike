@@ -11,7 +11,7 @@ using R3;
 using UnityEngine;
 using VContainer;
 
-namespace Model.Game
+namespace Game
 {
     public sealed class ItemManager : IDisposable
     {

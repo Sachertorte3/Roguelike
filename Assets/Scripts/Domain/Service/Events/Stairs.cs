@@ -50,16 +50,15 @@ namespace Domain.Service.Events
             _ => throw new NotImplementedException()
         };
 
-        public EventTrigger Trigger => EventTrigger.Tread;
+        public string ChoiceMessage => "階段を見つけた";
+        public string ChoiceText => "進む";
+        public bool CanBeCanceled => true;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
         public bool CanExecuteEvent => !IsLocked.CurrentValue;
 
         public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            if (await gameManager.GetChoice("階段を見つけた", "進む", "やめる") == 0)
-            {
-                gameManager.LoadMap(Destination, DestinationId);
-            }
+            gameManager.LoadMap(Destination, DestinationId);
         }
 
         public void SetVisibility(bool visibility)

@@ -1,5 +1,5 @@
 using Domain.Model.Setting;
-using Model.Game;
+using Game;
 using R3;
 using Utilities;
 using VContainer;

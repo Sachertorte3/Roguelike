@@ -1,8 +1,9 @@
 using Cysharp.Threading.Tasks;
-using Domain.Service.Events;
+using Domain.Model;
+using Domain.Model.Map;
 using UnityEngine;
 
-namespace Model.Game
+namespace Domain.Service.Rooms
 {
     public interface IEventArea
     {

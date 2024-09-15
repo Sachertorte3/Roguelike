@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using Domain.Service.Effect;
-using Model.Game;
+using Game;
 using R3;
 using UnityEngine;
 using Utilities;

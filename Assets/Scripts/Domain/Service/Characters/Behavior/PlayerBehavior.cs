@@ -93,7 +93,7 @@ namespace Domain.Service.Characters.Behavior
                                         break;
                                     default:
                                         await eventEntity.Events[choiceIndex].DoEvent(gameManager, world);
-                                        break;
+                                        return new DoNothing();
                                 }
                             }
                             else if (swap.Doable(character, world))

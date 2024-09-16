@@ -444,7 +444,7 @@ namespace Domain.Service.Characters
 
         public void UpdateTurn()
         {
-            _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any(x => x.IsEnemy(this)));
+            _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any());
             _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
             _inventory.UpdateTurn();
             _skills.ForEach(x => x.UpdateTurn());

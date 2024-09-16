@@ -18,21 +18,27 @@ namespace Domain.Service.Characters.Behavior
     public sealed class EnemyBehavior : ICharacterBehavior
     {
         public Observable<OnItemSelectMessage> OnItemSelect { get; init; } = new Subject<OnItemSelectMessage>();
-        private readonly IBehaviorWhenUndiscoveringTarget _wander;
-        private readonly float behavioralRandomness = 0.01f;
+
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
         private readonly StructOption<Vector2Int> _homePosition;
         public StructOption<Vector2Int> HomePosition => _homePosition;
 
+        private readonly float behavioralRandomness = 0.01f;
+
+        private readonly IBehaviorWhenUndiscoveringTarget _wander;
+
         private readonly IBehaviorWhenDiscoveringTarget _default;
         private readonly bool _prioritizeMovement = false;
+
         private readonly float _distanceTopBound = float.PositiveInfinity;
         private readonly IBehaviorWhenDiscoveringTarget? _greaterThanTopBound = null;
         private readonly bool _prioritizeMovementWhenDistanceGreaterThanTopBound = false;
+
         private readonly float _distanceBottomBound = float.NegativeInfinity;
         private readonly IBehaviorWhenDiscoveringTarget? _lessThanBottomBound = null;
         private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound = false;
+
         public BehaviorData BehaviorData { get; init; }
 
         public EnemyBehavior(BehaviorData data, StructOption<Vector2Int> homePosition)
@@ -64,8 +70,6 @@ namespace Domain.Service.Characters.Behavior
             }
         }
 
-        public bool WanderAround { get; init; }
-
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
         {
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
@@ -81,21 +85,37 @@ namespace Domain.Service.Characters.Behavior
 
             var targetedEnemy = GetTargetedEnemy(character, visibleEnemies);
             var targetedLeader = GetTargetedLeader(character, visibleLeaders);
-            if (targetedEnemy != null)
+            var targetedPosition = GetTargetPosition(character, world);
+
+            if (BehaviorData.PrioritizeEnemiesOverLeaders)
             {
-                Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(world.Player)}.");
-                _lastTarget = targetedEnemy;
-                _lastTargetPosition = targetedEnemy.CurrentPosition;
+                if (targetedEnemy != null)
+                {
+                    DiscoverEnemy(world, targetedEnemy);
+                }
+                else if (targetedLeader != null)
+                {
+                    DiscoverLeader(world, targetedLeader);
+                }
+                else if (_lastTargetPosition.HasValue)
+                {
+                    _lastTargetPosition = GetTargetPosition(character, world);
+                }
             }
-            else if (targetedLeader != null)
+            else
             {
-                Log.Debug($"[Think] Discover Leader {targetedLeader.GetName(world.Player)}.");
-                _lastTarget = targetedLeader;
-                _lastTargetPosition = targetedLeader.CurrentPosition;
-            }
-            else if (_lastTargetPosition.HasValue)
-            {
-                _lastTargetPosition = GetTargetPosition(character, world);
+                if (targetedLeader != null)
+                {
+                    DiscoverLeader(world, targetedLeader);
+                }
+                else if (targetedEnemy != null)
+                {
+                    DiscoverEnemy(world, targetedEnemy);
+                }
+                else if (_lastTargetPosition.HasValue)
+                {
+                    _lastTargetPosition = GetTargetPosition(character, world);
+                }
             }
 
             if (_lastTargetPosition != null) //目指す座標がある
@@ -144,6 +164,20 @@ namespace Domain.Service.Characters.Behavior
                 action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
                 new DoNothing()));
             return action;
+        }
+
+        private void DiscoverLeader(IMap world, ICharacter targetedLeader)
+        {
+            Log.Debug($"[Think] Discover Leader {targetedLeader.GetName(world.Player)}.");
+            _lastTarget = targetedLeader;
+            _lastTargetPosition = targetedLeader.CurrentPosition;
+        }
+
+        private void DiscoverEnemy(IMap world, ICharacter targetedEnemy)
+        {
+            Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(world.Player)}.");
+            _lastTarget = targetedEnemy;
+            _lastTargetPosition = targetedEnemy.CurrentPosition;
         }
 
         public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies)

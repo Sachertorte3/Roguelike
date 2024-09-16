@@ -8,6 +8,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -74,6 +75,12 @@ namespace Game
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
             return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, data.HomePosition), new ReactiveProperty<bool>(false), map));
+        }
+
+        public Ally SpawnAlly(CharacterMemento data, IMap map)
+        {
+            var behavior = new EnemyBehavior(data.Behavior, data.HomePosition);
+            return new Ally(AddCharacter(_factory.CreateCharacter(data, behavior, new ReactiveProperty<bool>(false), map)), behavior, map);
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

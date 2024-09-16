@@ -4,7 +4,6 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
-using Domain.Service.Events;
 using R3;
 using UnityEngine;
 using Utilities;

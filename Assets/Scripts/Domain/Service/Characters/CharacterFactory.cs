@@ -32,7 +32,7 @@ namespace Domain.Service.Characters
                 CharacterType = new Human("Chara_Hero1_USM"),
                 Behavior = new BehaviorData(),
                 HomePosition = StructOption<Vector2Int>.None,
-                Status = CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.25f, new(), new(), 10, 1, false),
+                Status = CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f, new(), new(), 10, 1, false),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = new[]
@@ -75,7 +75,7 @@ namespace Domain.Service.Characters
                 CharacterType = data.CharacterType,
                 Behavior = data.Behavior,
                 HomePosition = hasHomePosition ? new(spawnPosition) : StructOption<Vector2Int>.None,
-                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0, isShiny ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f) : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
+                Status = CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f, isShiny ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f) : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 Entity = Entity.Build(spawnPosition, EntityLayer.Middle),
                 Direction = Direction8.Down,
                 Skills = data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),

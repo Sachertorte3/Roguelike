@@ -160,7 +160,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+      - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}
         Weight: 1
     Materials:
       items:

@@ -80,13 +80,15 @@ namespace Game
                 {
                     character.Entity.Position = FindBlankPositionFrom(playerPosition.Value,
                                 position => !AllCharacterPositions().Contains(position));
-                    CharacterManager.SpawnCharacter(character, this);
+                    var ally = CharacterManager.SpawnAlly(character, this);
+                    EventEntityManager.Add(ally);
                 }
             }
 
             foreach (var character in map.Characters)
             {
-                CharacterManager.SpawnCharacter(character, this);
+                var ally = CharacterManager.SpawnAlly(character, this);
+                EventEntityManager.Add(ally);
             }
 
             foreach (var item in map.Items)
@@ -106,7 +108,11 @@ namespace Game
             {
                 var clerk = Characters.FirstOrDefault(character => character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
                 if (clerk == null && !map.Shop.Value.IsStolen)
-                    clerk = CharacterManager.SpawnCharacter(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), isSlept: false, isShiny: false, hasHomePosition: true), this);
+                {
+                    var ally = CharacterManager.SpawnAlly(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), isSlept: false, isShiny: false, hasHomePosition: true), this);
+                    EventEntityManager.Add(ally);
+                    clerk = ally.Character;
+                }
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop.Value, clerk, this);

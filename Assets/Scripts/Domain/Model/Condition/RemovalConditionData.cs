@@ -11,7 +11,7 @@ namespace Domain.Model.Condition
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage = false;
         [ShowIf("@RemoveByDamage")] public float Probability;
-        public bool RemoveByEnemyNearby = false;
+        public bool RemoveByCharacterNearby = false;
 
         public RemovalConditionData(int duration = -1, float probability = -1, bool removeByEnemyNearby = false)
         {
@@ -27,13 +27,13 @@ namespace Domain.Model.Condition
                 Probability = probability;
             }
 
-            RemoveByEnemyNearby = removeByEnemyNearby;
+            RemoveByCharacterNearby = removeByEnemyNearby;
         }
 
-        public bool IsFinished(int elapsedTurns, bool enemyVisible)
+        public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByEnemyNearby && enemyVisible);
+                   (RemoveByCharacterNearby && characterVisible);
         }
         public bool IsFinishedByDamage()
         {
@@ -57,7 +57,7 @@ namespace Domain.Model.Condition
                 }
             }
 
-            if (RemoveByEnemyNearby)
+            if (RemoveByCharacterNearby)
             {
                 estimatedTurns = 0;
             }

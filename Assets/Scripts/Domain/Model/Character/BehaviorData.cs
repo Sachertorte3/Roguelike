@@ -18,5 +18,7 @@ namespace Domain.Model.Character
         [ShowIf("UseBottomBound"), MinValue(0)] public float distanceBottomBound = 3f;
         [ShowIf("UseBottomBound")] public MoveTypeWhenDiscoveringTarget lessThanBottomBound = MoveTypeWhenDiscoveringTarget.Chase;
         [ShowIf("UseBottomBound")] public bool PrioritizeMovementWhenDistanceLessThanBottomBound = false;
+
+        public bool PrioritizeEnemiesOverLeaders = false;
     }
 }

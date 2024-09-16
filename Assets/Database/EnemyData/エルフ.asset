@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30A8\u30EB\u30D5"
+  m_EditorClassIdentifier: 
+  Name: "\u30A8\u30EB\u30D5"
+  Group: 0
+  CharacterType:
+    rid: 861543580450947072
+  IsBoss: 0
+  Hp: 30
+  Aggression: 3
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 5
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 3
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 1
+  Skills:
+  - Skill:
+      Area:
+        rid: 2541219281251860487
+      Effect:
+        rid: 2541219281251860488
+      Position:
+        rid: 2541219281251860489
+      RushDistance: 0
+      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+    CoolTime: 0
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    RushDistance: 0
+    Log: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 861543580450947072
+      type: {class: Human, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        TextureName: Chara_Elf
+    - rid: 2541219281251860487
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1
+    - rid: 2541219281251860488
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 3
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 2541219281251860489
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 

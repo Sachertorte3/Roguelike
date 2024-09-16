@@ -48,9 +48,9 @@ namespace Domain.Service.Characters.Conditions
             _condition.Persist(hasCondition);
         }
 
-        public bool ShouldDelete(bool enemyVisible)
+        public bool ShouldDelete(bool characterVisible)
         {
-            return _removalCondition.IsFinished(_elapsedTurn, enemyVisible);
+            return _removalCondition.IsFinished(_elapsedTurn, characterVisible);
         }
 
         public bool ShouldDeleteByDamage()

@@ -1,38 +1,66 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
+using Domain.Service.Characters.Behavior;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Clerk : IEventEntity
+    public class Ally : IEventEntity
     {
         public readonly ICharacter Character;
+        public readonly EnemyBehavior Behavior;
         public string? ChoiceMessage => null;
         private readonly List<EntityEvent> _events;
         public IReadOnlyList<EntityEvent> Events => _events;
         public bool CanBeCanceled => true;
 
-        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        public Ally(ICharacter character, EnemyBehavior behavior, IMap map)
         {
             Character = character;
+            Behavior = behavior;
             _events = new()
             {
-                new EntityEvent("代金を支払う", canExecuteEvent, doEvent)
+                new EntityEvent("渡す", () => Character.CanUseItem, async (gameManager, map) =>
+                {
+                    var item = await map.Player.ItemSelector.SelectItem(map.Player.Inventory);
+                    if (item != null)
+                    {
+                        var result = character.Inventory.TryAdd(item);
+                        if (result)
+                        {
+                            var index = map.Player.Inventory.GetItemIndex(item);
+                            map.Player.ReplaceInventory(null, index);
+                            GameLog.Add($"{Character.GetName(map.Player)}に{item.Name}を渡した。");
+                        }
+                        else
+                        {
+                            GameLog.Add($"{Character.GetName(map.Player)}はこれ以上アイテムを持てない。");
+                        }
+                    }
+                }),
+                new EntityEvent("一緒に行動", () => Character.IsAlly(map.Player), async (gameManager, map) =>
+                {
+                    Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
+                }),
+                new EntityEvent("敵優先", () => Character.IsAlly(map.Player), async (gameManager, map) =>
+                {
+                    Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
+                })
             };
         }
         public void Dispose()
         {
             Character.Dispose();
         }
-        ~Clerk()
+        ~Ally()
         {
             Dispose();
         }
@@ -44,11 +72,6 @@ namespace Domain.Service.Rooms
         public Observable<(Direction8 direction, Vector2Int destination)> OnMove => Character.OnMove;
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
-
-        public void ReducesFavorabilityTowardsThief(ICharacter thief)
-        {
-            Character.Affiliation.ForceAffiliation(thief.Affiliation, AffiliationType.Enemy);
-        }
 
         public void SetVisibility(bool visibility)
         {

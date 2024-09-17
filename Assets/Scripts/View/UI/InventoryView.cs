@@ -28,7 +28,7 @@ namespace View.UI
             _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
             OnFocusChanged.Subscribe(index => { _infoText.text = index == null ? "" : _info[index.Value]; }).AddTo(this);
             _itemViews[0].Select();
-            _itemViews[InventorySize].SetIcon(_emptyIcon, null);
+            _itemViews[InventorySize].SetIcon(_emptyIcon, null, false);
 
             for (int i = 0; i < _itemViews.Length; i++)
             {
@@ -42,11 +42,11 @@ namespace View.UI
             }
         }
 
-        public void Replace(Sprite icon, int? count, string info, int index)
+        public void Replace(Sprite icon, int? count, bool isShiny, string info, int index)
         {
             if (_itemViews[index] == null)
                 _itemViews[index] = Instantiate(_itemViewPrefab, transform);
-            _itemViews[index].SetIcon(icon, count);
+            _itemViews[index].SetIcon(icon, count, isShiny);
             _info[index] = info;
             UpdateInfo(info, index);
         }

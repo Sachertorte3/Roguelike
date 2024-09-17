@@ -17,6 +17,7 @@ namespace Domain.Model.Item
         public Id<IItem> Id { get; }
         public string Name { get; }
         public Sprite Icon { get; }
+        public bool IsShiny { get; }
         public ItemState State { get; }
         public bool UseOnDeath { get; }
         public int Price { get; }

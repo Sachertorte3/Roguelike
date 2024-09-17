@@ -37,8 +37,9 @@ namespace Domain.Service.Items
             Id = new Id<IItem>(data.Id);
             _name = data.Name;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
-            _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
+            IsShiny = data.IsShiny;
             State = data.State;
+            _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
             _skillOnUse = data.SkillOnUse.Select(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Select(skill => skill.Match(
                 spawnEffectSkillMemento =>
@@ -64,6 +65,7 @@ namespace Domain.Service.Items
 
         public string Name => _upgradePaths.Count > 0 ? $"{_name} +{_upgradePaths.Count}" : _name;
         public Sprite Icon { get; init; }
+        public bool IsShiny { get; init; }
         public ItemState State { get; private set; }
         public bool CanActivateWhenUsed => SkillOnUse.HasValue;
         public bool CanActivateWhenThrown => SkillOnThrow.HasValue;
@@ -87,6 +89,7 @@ namespace Domain.Service.Items
                 Id = Id.ToString(),
                 Name = _name,
                 IconName = Icon.name,
+                IsShiny = IsShiny,
                 UpgradePaths = _upgradePaths.Select(path => path.ToString()).ToList(),
                 State = State,
                 SkillOnUse = _skillOnUse.Select(skill => skill.Serialize()),
@@ -123,6 +126,7 @@ namespace Domain.Service.Items
                 Id = Id<IItem>.Generate().ToString(),
                 Name = data.Name,
                 IconName = data.Icon.name,
+                IsShiny = data.IsShiny,
                 UpgradePaths = new(),
                 State = state,
                 SkillOnUse = new(skillOnUse),

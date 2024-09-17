@@ -92,7 +92,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &7025044471739454111
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -106,6 +106,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -159,8 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d2465ea2cebb14b8f414e4e9b7070b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveMilliseconds: 1000
-  DashMilliseconds: 1000
 --- !u!114 &8781082329821698654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,3 +172,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fb57d731eda92f45b169d5d035e45cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _sortingLayerID: -1326925671

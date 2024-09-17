@@ -1,5 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Service.Effect;
 using Game;
 using R3;
@@ -41,7 +42,7 @@ namespace Provider
                         {
                             if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                             {
-                                var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition, map.Player.CurrentDirection, map);
+                                var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition, map.Player.CurrentDirection, map, true);
                                 var color = spawnEffectSkill.Color;
                                 color.a = 0.25f;
                                 previews = effectViewSpawner.SpawnPreview(area, color);

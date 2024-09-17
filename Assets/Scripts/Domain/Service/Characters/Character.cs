@@ -263,10 +263,8 @@ namespace Domain.Service.Characters
             {
                 await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, EntityLayer.Middle);
             }
-            if (!item.IsDisabled)
-            {
-                map.SpawnItem(item, map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
-            }
+            var itemEntity = map.SpawnItem(item, map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+            item = itemEntity.Item;
             if (item.CanActivateWhenThrown)
             {
                 var result = await item.UseWhenThrown(this, destination, direction, map);

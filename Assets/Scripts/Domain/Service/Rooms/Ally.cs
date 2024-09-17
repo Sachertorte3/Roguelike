@@ -28,7 +28,7 @@ namespace Domain.Service.Rooms
             Behavior = behavior;
             _events = new()
             {
-                new EntityEvent("渡す", () => Character.CanUseItem, async (gameManager, map) =>
+                new EntityEvent("渡す", () => Character.CanUseItem && Character.IsAlly(map.Player), async (gameManager, map) =>
                 {
                     var item = await map.Player.ItemSelector.SelectItem(map.Player.Inventory);
                     if (item != null)

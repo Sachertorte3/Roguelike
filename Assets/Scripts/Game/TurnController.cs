@@ -9,6 +9,7 @@ using R3;
 using Stats;
 using Unity.Logging;
 using UnityEngine;
+using Utilities;
 
 namespace Game
 {
@@ -42,7 +43,7 @@ namespace Game
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
 
                 map.UpdateTurn(_turn.CurrentValue);
-                var characters = map.Characters.ToList();
+                var characters = map.Characters.OrderBy(c => Vector2Extension.ChebyshevDistance(c.CurrentPosition, map.Player.CurrentPosition)).ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
                     characters.RemoveAll(character => !character.StatusManager.IsOverDrive);

@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
+  m_Name: "\u30D7\u30EA\u30FC\u30B9\u30C8"
+  m_EditorClassIdentifier: 
+  Name: "\u30D7\u30EA\u30FC\u30B9\u30C8"
+  Group: 0
+  CharacterType:
+    rid: 861543580450947072
+  IsBoss: 0
+  Hp: 25
+  Aggression: 4
+  Behavior:
+    wanderAround: 1
+    Default: 3
+    PrioritizeMovement: 1
+    UseTopBound: 1
+    greaterThanTopBound: 1
+    distanceTopBound: 5
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 3
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
+  MoveSpeed: 2
+  CanPickUp: 0
+  CanUseItem: 1
+  Skills:
+  - Skill:
+      Area:
+        rid: 861543592802648074
+      Effect:
+        rid: 861543592802648066
+      Position:
+        rid: 861543592802648075
+      RushDistance: 0
+      Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
+    CoolTime: 30
+  - Skill:
+      Area:
+        rid: 861543592802648080
+      Effect:
+        rid: 861543592802648077
+      Position:
+        rid: 861543592802648079
+      RushDistance: 0
+      Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
+    CoolTime: 30
+  HasLastSkill: 0
+  LastSkill:
+    Area:
+      rid: -2
+    Effect:
+      rid: -2
+    Position:
+      rid: -2
+    RushDistance: 0
+    Log: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 861543580450947072
+      type: {class: Human, ns: Domain.Model.Character.Type, asm: Domain.Model}
+      data:
+        TextureName: Chara_Priest2_USM
+    - rid: 861543592802648066
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 10
+    - rid: 861543592802648074
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 1
+        CanIgnoreWalls: 0
+        Radius: 1
+    - rid: 861543592802648075
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 861543592802648077
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 12
+    - rid: 861543592802648079
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        NumberOfTarget: 1
+        TargetAlly: 1
+        TargetEnemy: 0
+        TargetNeutral: 0
+        TargetSelf: 0
+    - rid: 861543592802648080
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 

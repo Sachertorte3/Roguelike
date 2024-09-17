@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities;
 
 namespace View.UI
 {
@@ -12,6 +13,7 @@ namespace View.UI
     {
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _count;
+        private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
 
@@ -21,11 +23,12 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count)
+        public void SetIcon(Sprite icon, int? count, bool isShiny)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
             SetCount(count);
+            SetShiny(isShiny);
         }
 
         public void Remove()
@@ -33,6 +36,15 @@ namespace View.UI
             _icon.sprite = null;
             _icon.enabled = false;
             RemoveCount();
+            SetShiny(false);
+        }
+
+        public void SetShiny(bool isShiny)
+        {
+            if (isShiny)
+                _particles.Add(ParticleType.ShinyStar);
+            else
+                _particles.Clear();
         }
 
         public void SetCount(int? count)

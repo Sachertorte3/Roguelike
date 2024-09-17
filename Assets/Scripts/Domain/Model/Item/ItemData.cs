@@ -11,6 +11,7 @@ namespace Domain.Model.Item
     public class ItemData : ScriptableObject, IHasInfo, IHasRarity
     {
         [Required] public Sprite Icon;
+        public bool IsShiny;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
@@ -33,17 +34,19 @@ namespace Domain.Model.Item
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
-        private ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         {
             name = itemName;
             Icon = icon;
+            IsShiny = isShiny;
             _rarity = rarity;
             UseOnDeath = useOnDeath;
             UsageLimit = usageLimit;
             PassiveConditions = conditions;
         }
-        public ItemData(string itemName, Sprite icon, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill, bool useOnDeath, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
+        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity,
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.SpawnEffect;
             SpawnEffectsOnUse = skillOnUse != null;
@@ -53,7 +56,8 @@ namespace Domain.Model.Item
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
         }
-        public ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, IItemEffect itemEffect, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
+        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, IItemEffect itemEffect, int usageLimit, List<IConditionData> conditions)
+        : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.ItemTarget;
             ItemEffect = itemEffect;

@@ -16,6 +16,7 @@ namespace Domain.Service.Items
             return new ItemData(
                 material.Name + mold.Name,
                 mold.Icon,
+                false,
                 Rarity.Common,
                 new SkillDataOnUse(
                     mold.Position,
@@ -51,6 +52,7 @@ namespace Domain.Service.Items
             return new ItemData(
                 prefix.Name + material.Name + mold.Name,
                 mold.Icon,
+                false,
                 prefix.Rarity,
                 new SkillDataOnUse(
                     mold.Position,

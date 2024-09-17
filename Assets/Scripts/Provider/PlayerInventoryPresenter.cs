@@ -19,10 +19,15 @@ namespace Provider
                     _disposables.Add(map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
                         if (itemChanged.NewValue != null)
+                        {
+                            var newItem = itemChanged.NewValue;
                             inventoryView.Replace(
-                                itemChanged.NewValue.Icon,
-                                itemChanged.NewValue.Usable ? itemChanged.NewValue.RemainingUses.CurrentValue : null,
-                                itemChanged.NewValue.Info(), itemChanged.Index);
+                                newItem.Icon,
+                                newItem.Usable ? newItem.RemainingUses.CurrentValue : null,
+                                newItem.IsShiny,
+                                newItem.Info(),
+                                itemChanged.Index);
+                        }
                         else
                             inventoryView.Remove(itemChanged.Index);
                     }));
@@ -40,6 +45,7 @@ namespace Provider
                             inventoryView.Replace(
                                 item.Icon,
                                 item.Usable ? item.RemainingUses.CurrentValue : null,
+                                item.IsShiny,
                                 item.Info(),
                                 i);
                         else

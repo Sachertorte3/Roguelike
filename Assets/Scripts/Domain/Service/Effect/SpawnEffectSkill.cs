@@ -98,10 +98,18 @@ namespace Domain.Service.Effect
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IMap map)
+            IMap map, bool onlyVisible=false)
         {
             var spawnPositions = _position.Get(actor, position, direction, map);
-            return spawnPositions.SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
+            if (onlyVisible)
+            {
+                return spawnPositions
+                    .Where(actor.VisibleArea.Contains)
+                    .SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map))
+                    .Where(actor.VisibleArea.Contains);
+            }
+            return spawnPositions
+                .SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
         }
 
         public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
@@ -163,7 +171,7 @@ namespace Domain.Service.Effect
                 if (actor.CanMove(position, direction, map))
                     position += direction.Vector();
             }
-            var area = GetArea(actor, position, direction, map);
+            var area = GetArea(actor, position, direction, map, true);
             var characters = map.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
             var totalEvaluation = 0f;

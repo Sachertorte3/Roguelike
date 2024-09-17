@@ -13,9 +13,9 @@ namespace Domain.Service.Characters
 {
     public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {
-        private const float AffectionAllyThreshold = 1f; // 味方と見なす好感度の閾値
+        private const float AffectionAllyThreshold = 2f; // 味方と見なす好感度の閾値
         private const float AffectionEnemyThreshold = 0f; // 敵と見なす好感度の閾値
-        private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
+        private const float BaseAllyValue = 1f; // 味方グループの基本好感度
         private const float BaseEnemyValue = -1f; // 敵対グループの基本好感度
 
         private readonly Dictionary<Id<IEntity>, float> _affections;

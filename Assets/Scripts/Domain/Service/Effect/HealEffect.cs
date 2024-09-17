@@ -35,9 +35,20 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1,
-                Mathf.Min(target.CurrentMaxHp - target.CurrentHp, (float)Formula.CalcHeal(_power)) /
-                target.CurrentMaxHp);
+            var lostRatio = (float)(target.CurrentMaxHp - target.CurrentHp) / target.CurrentMaxHp;
+            var healRatio = (float)Formula.CalcHeal(_power) / target.CurrentMaxHp;
+            if (lostRatio >= healRatio)
+            {
+                return healRatio;
+            }
+            else if (lostRatio > 0.5f)
+            {
+                return lostRatio;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public float EvaluatePrice()

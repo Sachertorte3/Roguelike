@@ -68,13 +68,18 @@ namespace Domain.Service.Characters.Behavior
                             else if (eventEntity != null)
                             {
                                 var choices = new List<string>();
-                                foreach (var eventData in eventEntity.Events)
-                                {
-                                    choices.Add(eventData.ChoiceText);
-                                }
+                                var firstChoiceIndex = 0;
                                 if (swap.Doable(character, world))
                                 {
                                     choices.Add("入れ替わる");
+                                    firstChoiceIndex += 1;
+                                }
+                                foreach (var eventData in eventEntity.Events)
+                                {
+                                    if (eventData.CanExecuteEvent())
+                                    {
+                                        choices.Add(eventData.ChoiceText);
+                                    }
                                 }
                                 if (eventEntity.CanBeCanceled)
                                 {
@@ -92,7 +97,9 @@ namespace Domain.Service.Characters.Behavior
                                     case "やめる":
                                         break;
                                     default:
-                                        await eventEntity.Events[choiceIndex].DoEvent(gameManager, world);
+                                        await eventEntity
+                                            .Events[choiceIndex - firstChoiceIndex]
+                                            .DoEvent(gameManager, world);
                                         return new DoNothing();
                                 }
                             }

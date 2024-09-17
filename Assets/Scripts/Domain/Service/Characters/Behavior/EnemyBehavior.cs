@@ -28,6 +28,7 @@ namespace Domain.Service.Characters.Behavior
 
         private readonly IBehaviorWhenUndiscoveringTarget _wander;
 
+        private readonly IBehaviorWhenDiscoveringTarget _discoveringLeader = new Chase();
         private readonly IBehaviorWhenDiscoveringTarget _default;
         private readonly bool _prioritizeMovement = false;
 
@@ -182,7 +183,7 @@ namespace Domain.Service.Characters.Behavior
 
         public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies)
         {
-            if (visibleEnemies.Contains(_lastTarget))
+            if (_lastTargetPosition.HasValue && GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is not Escape && visibleEnemies.Contains(_lastTarget))
                 return _lastTarget;
             if (visibleEnemies.Any())
                 return visibleEnemies.MinBy(enemy => character.Affiliation.GetAffection(enemy.Affiliation));
@@ -200,11 +201,12 @@ namespace Domain.Service.Characters.Behavior
 
         public Vector2Int? GetTargetPosition(IHasBehavior character, IMap world)
         {
-            return
-                _lastTargetPosition != null
+            if (_lastTargetPosition == null)
+                return null;
+            return GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is Chase
                 && character.CurrentPosition != _lastTargetPosition
                 && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value) ?
-                    _lastTargetPosition : null;
+                _lastTargetPosition : null;
         }
 
         private float GetDistance(IHasBehavior character, Vector2Int targetPosition)
@@ -215,6 +217,9 @@ namespace Domain.Service.Characters.Behavior
 
         public IBehaviorWhenDiscoveringTarget GetDiscoveredTargetBehavior(IHasBehavior character, Vector2Int targetPosition)
         {
+            if (_lastTarget != null && character.IsAlly(_lastTarget) && _lastTarget.IsLeader)
+                return _discoveringLeader;
+
             var distance = GetDistance(character, targetPosition);
             if (_greaterThanTopBound != null && distance > _distanceTopBound)
                 return _greaterThanTopBound;

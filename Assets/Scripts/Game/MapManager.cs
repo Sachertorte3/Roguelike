@@ -74,6 +74,12 @@ namespace Game
 
             _dungeonData = data;
 
+            foreach (var character in map.Characters)
+            {
+                var ally = CharacterManager.SpawnAlly(character, this);
+                EventEntityManager.Add(ally);
+            }
+
             if (partyMembers != null)
             {
                 foreach (var character in partyMembers)
@@ -83,12 +89,6 @@ namespace Game
                     var ally = CharacterManager.SpawnAlly(character, this);
                     EventEntityManager.Add(ally);
                 }
-            }
-
-            foreach (var character in map.Characters)
-            {
-                var ally = CharacterManager.SpawnAlly(character, this);
-                EventEntityManager.Add(ally);
             }
 
             foreach (var item in map.Items)
@@ -143,7 +143,8 @@ namespace Game
             foreach (var entity in Entities)
                 entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
 
-            if (map.MonsterHouse.HasValue || map.Characters.Any(character => character.IsShiny))
+            if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.hasEverEntered)
+            || map.Characters.Any(character => character.IsShiny))
             {
                 GameLog.Add("<color=yellow>不穏な気配を感じる……</color>");
             }
@@ -192,7 +193,7 @@ namespace Game
         public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Bottom)));
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null)
         {
-            return CharacterManager.SpawnCharacter(
+            var ally = CharacterManager.SpawnAlly(
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Middle)),
@@ -202,6 +203,8 @@ namespace Game
                 ),
                 this
             );
+            EventEntityManager.Add(ally);
+            return ally.Character;
         }
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isShiny: isShiny);
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction, params EntityLayer[] canHitLayer)

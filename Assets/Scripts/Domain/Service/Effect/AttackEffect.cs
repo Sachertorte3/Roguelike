@@ -57,7 +57,9 @@ namespace Domain.Service.Effect
             }
             if (_blowAwayDistance > 0)
             {
-                await target.BlowAway(actor, DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value, _blowAwayDistance, map);
+                var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+                if (direction.HasValue)
+                    await target.BlowAway(actor, direction.Value, _blowAwayDistance, map);
             }
         }
 

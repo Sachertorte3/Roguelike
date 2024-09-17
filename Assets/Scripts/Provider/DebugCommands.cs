@@ -70,7 +70,7 @@ namespace Provider
 
         private ICharacter GetTarget(string target)
         {
-            if (target == "player")
+            if (target == "Player" || target == "player")
             {
                 return _world.ActiveMap.CurrentValue.Player;
             }
@@ -145,8 +145,14 @@ namespace Provider
                 var character = GetTarget(target);
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset").WaitForCompletion();
                 var item = new Item(itemData);
-                character.Inventory.TryAdd(item);
-                Log.Info($"{itemName}を{target}のインベントリに追加しました。");
+                if (character.Inventory.TryAdd(item))
+                {
+                    Log.Info($"{itemName}を{target}のインベントリに追加しました。");
+                }
+                else
+                {
+                    Log.Info($"{target}のインベントリは一杯です。");
+                }
             }
             catch (Exception e)
             {

@@ -184,6 +184,10 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
+            if (UseOnDeath && _remainingUsages.CurrentValue <= 1)
+            {
+                return 0;
+            }
             return SkillOnUse.SelectOrDefault(
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),

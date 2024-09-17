@@ -31,19 +31,20 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 3
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
   CanPickUp: 0
   CanUseItem: 1
   Skills:
   - Skill:
       Area:
-        rid: 2541219281251860487
+        rid: 861543592802648064
       Effect:
         rid: 2541219281251860488
       Position:
-        rid: 2541219281251860489
+        rid: 861543592802648065
       RushDistance: 0
-      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+      Log: "\u306F\u77E2\u3092\u653E\u3063\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -69,21 +70,21 @@ MonoBehaviour:
       type: {class: Human, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         TextureName: Chara_Elf
-    - rid: 2541219281251860487
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 861543592802648064
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 861543592802648065
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
-        ContainsSelf: 0
-        CanIgnoreWalls: 0
-        Length: 1
+        Icon:
+          _name: icons_full_16_539
+        CanHitLayer: 01000000
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
         - _element: 0
-          _power: 3
+          _power: 5
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []
-    - rid: 2541219281251860489
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 

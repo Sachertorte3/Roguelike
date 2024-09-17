@@ -27,10 +27,9 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
-            await target.BlowAway(
-                actor,
-                DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value,
-                _distance, map);
+            var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+            if (direction.HasValue)
+                await target.BlowAway(actor, direction.Value, _distance, map);
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

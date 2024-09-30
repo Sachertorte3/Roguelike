@@ -40,8 +40,8 @@ namespace Domain.Service.Items
             IsShiny = data.IsShiny;
             State = data.State;
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
-            _skillOnUse = data.SkillOnUse.Select(skill => skill.Deserialize());
-            _skillOnThrow = data.SkillOnThrow.Select(skill => skill.Match(
+            _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
+            _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
                 spawnEffectSkillMemento =>
                 {
                     if (data.HasSameEffect)
@@ -92,8 +92,8 @@ namespace Domain.Service.Items
                 isShiny: IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
                 state: State,
-                skillOnUse: _skillOnUse.Select(skill => skill.Serialize()),
-                skillOnThrow: _skillOnThrow.Select(skill => skill.Serialize()),
+                skillOnUse: _skillOnUse.Map(skill => skill.Serialize()),
+                skillOnThrow: _skillOnThrow.Map(skill => skill.Serialize()),
                 hasSameEffect: _hasSameEffect,
                 hasSameSkill: _hasSameSkill,
                 useOnDeath: UseOnDeath,
@@ -121,7 +121,7 @@ namespace Domain.Service.Items
                 skillOnThrow = data.SpawnEffectsOnThrow ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow) : null;
             }
 
-            var memento = new ItemMemento
+            return new ItemMemento
             (
                 id: Id<IItem>.Generate().ToString(),
                 name: data.Name,
@@ -129,8 +129,8 @@ namespace Domain.Service.Items
                 isShiny: data.IsShiny,
                 upgradePaths: new(),
                 state: state,
-                skillOnUse: new(skillOnUse),
-                skillOnThrow: new(skillOnThrow),
+                skillOnUse: skillOnUse.ToOption(),
+                skillOnThrow: skillOnThrow.ToOption(),
                 hasSameEffect: data.IsSameEffect,
                 hasSameSkill: data.IsSameSkill,
                 useOnDeath: data.UseOnDeath,
@@ -138,8 +138,6 @@ namespace Domain.Service.Items
                 remainingUsages: data.UsageLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
-            var json = JsonUtility.ToJson(memento);
-            return JsonUtility.FromJson<ItemMemento>(json);
         }
 
         public void SetState(ItemState state)
@@ -192,29 +190,29 @@ namespace Domain.Service.Items
             {
                 return 0;
             }
-            return SkillOnUse.SelectOrDefault(
+            return SkillOnUse.MapOr(
+                0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
                     itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
-                ),
-                0
+                )
             );
         }
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
-            return SkillOnThrow.SelectOrDefault(
+            return SkillOnThrow.MapOr(
+                0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
                     itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
-                ),
-                0
+                )
             );
         }
 
         public float EvaluatePrice()
         {
-            var priceOnUse = SkillOnUse.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * (UseOnDeath ? 5 : 1);
-            var priceOnThrow = SkillOnThrow.SelectOrDefault(skill => skill.EvaluatePrice(), 0) * new ProjectileImpact().EvaluateHitProbability();
+            var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
+            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) * new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             return price;
@@ -297,15 +295,19 @@ namespace Domain.Service.Items
                 }
                 else
                 {
-                    info += SkillOnUse.SelectOrDefault(skill => $"[使用時]\n" + skill.Match(
-                        spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
-                        itemTargetSkill => itemTargetSkill.Info()
-                    ) + "\n", "");
+                    info += SkillOnUse.MapOr(
+                        "",
+                        skill => $"[使用時]\n" + skill.Match(
+                            spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
+                            itemTargetSkill => itemTargetSkill.Info()
+                    ) + "\n");
 
-                    info += SkillOnThrow.SelectOrDefault(skill => skill.Match(
-                        spawnEffectSkill => $"[投擲時]\n{spawnEffectSkill.InfoOnThrow(_hasSameEffect)}\n",
-                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                    ), "");
+                    info += SkillOnThrow.MapOr(
+                        "",
+                        skill => skill.Match(
+                            spawnEffectSkill => $"[投擲時]\n{spawnEffectSkill.InfoOnThrow(_hasSameEffect)}\n",
+                            itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                    ));
                 }
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
             }

@@ -34,7 +34,7 @@ namespace Provider
             );
         }
 
-        protected override EntityView _viewPrefab =>
+        protected override EntityView ViewPrefab(IItemEntity _) =>
             Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
 

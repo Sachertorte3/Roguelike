@@ -24,7 +24,7 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
-        public StructOption<Vector2Int> HomePosition => StructOption<Vector2Int>.None;
+        public Option<Vector2Int> HomePosition => Option<Vector2Int>.None;
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {

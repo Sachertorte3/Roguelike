@@ -104,7 +104,7 @@ namespace Domain.Service.Map
 
         public bool IsPassable(Vector2Int position)
         {
-            return Get(position).Match(tile => tile.IsPassable(), () => false);
+            return Get(position).MapOr(false, tile => tile.IsPassable());
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -166,7 +166,7 @@ namespace Domain.Service.Map
                 return Option<TileData>.None;
             }
 
-            return new(_tiles[position]);
+            return Option.Some(_tiles[position]);
         }
 
         private IEnumerable<Vector2Int> FindAllPassablePositions()
@@ -178,7 +178,7 @@ namespace Domain.Service.Map
         {
             var changedPositions = positions
                 .Select(position => (position, Get(position)))
-                .Where(pair => pair.Item2.Match(tile => tile.IsKnown != isKnown, () => false))
+                .Where(pair => pair.Item2.MapOr(false, tile => tile.IsKnown != isKnown))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
             var result = new List<(Vector2Int position, TileData tileData)>();
             foreach (var (position, tile) in changedPositions)
@@ -193,7 +193,7 @@ namespace Domain.Service.Map
         {
             var changedPositions = positions
                 .Select(position => (position, Get(position)))
-                .Where(pair => pair.Item2.Match(tile => tile.TileType == TileCategory.Wall, () => false))
+                .Where(pair => pair.Item2.MapOr(false, tile => tile.TileType == TileCategory.Wall))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
             var result = new List<(Vector2Int position, TileData tileData)>();
             foreach (var (position, tile) in changedPositions)

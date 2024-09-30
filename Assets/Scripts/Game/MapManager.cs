@@ -112,7 +112,8 @@ namespace Game
                 var clerk = Characters.FirstOrDefault(character => character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
                 if (clerk == null && !map.Shop.Value.IsStolen)
                 {
-                    var ally = CharacterManager.SpawnAlly(CharacterFactory.BuildCharacter(_dungeonData.Clerk, BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom(), isSlept: false, isShiny: false, hasHomePosition: true), this);
+                    var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();
+                    var ally = CharacterManager.SpawnAlly(CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: clerkPosition), this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
                 }
@@ -156,7 +157,6 @@ namespace Game
         public ICharacter? Player => CharacterManager?.Player;
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
-        public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => EventEntityManager.EventEntitiesAndIcons;
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities => ThrowAnimationEntityManager.ThrowAnimationEntities;
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
@@ -200,9 +200,9 @@ namespace Game
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => IsBlank(position, EntityLayer.Middle)),
-                    isSlept ?? Random.value < _dungeonData.SleepChance,
-                    isShiny ?? Random.value < _dungeonData.ShinyChance,
-                    affiliation?.Serialize()
+                    isSlept: isSlept ?? Random.value < _dungeonData.SleepChance,
+                    isShiny: isShiny ?? Random.value < _dungeonData.ShinyChance,
+                    affiliation: affiliation?.Serialize()
                 ),
                 this
             );
@@ -337,8 +337,8 @@ namespace Game
                 items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 eventEntities: EventEntityManager.Serialize(),
                 keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                monsterHouse: new(_monsterHouse?.Serialize()),
-                shop: new(_shop?.Serialize()),
+                monsterHouse: _monsterHouse.ToOption().Map(x => x.Serialize()),
+                shop: _shop.ToOption().Map(x => x.Serialize()),
                 randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
             );
         }
@@ -355,8 +355,8 @@ namespace Game
                 items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 eventEntities: EventEntityManager.Serialize(),
                 keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                monsterHouse: new(_monsterHouse?.Serialize()),
-                shop: new(_shop?.Serialize()),
+                monsterHouse: _monsterHouse.ToOption().Map(x => x.Serialize()),
+                shop: _shop.ToOption().Map(x => x.Serialize()),
                 randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
             );
         }

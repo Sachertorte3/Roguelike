@@ -139,16 +139,23 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 3b4f31dabf5cd1242beb71ef0a112de4, type: 2}
     - {fileID: 11400000, guid: 321f7f5d414d0054d9efa3ee4688df9d, type: 2}
     - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+  Npcs:
+    items:
+    - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 932a468b28bc5904182a8c42d183162c, type: 2}
+      Weight: 1
   Sections:
   - Floors:
     - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 2
+      Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+      Template: 3
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -179,6 +186,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -194,6 +202,7 @@ MonoBehaviour:
       _sleepChance: 0
       _shopChance: 0
       _monsterHouseChance: 0
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -221,6 +230,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -236,6 +246,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -251,6 +262,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -284,6 +296,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -299,6 +312,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -332,6 +346,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1
@@ -347,6 +362,7 @@ MonoBehaviour:
       _sleepChance: 0.5
       _shopChance: 0.1
       _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
       _room:
         ChestChance: 0.1
         ItemCount: 1

@@ -28,6 +28,7 @@ namespace Domain.Model.Dungeon
         public const float DefaultSleepChance = 0.5f;
         public const float DefaultShopChance = 0.1f;
         public const float DefaultMonsterHouseChance = 0.1f;
+        public const float DefaultRestRoomChance = 0.1f;
         public readonly RoomData DefaultRoom = new RoomData(0, 1, 0.2f, 1);
         public readonly RoomData EmptyRoom = new RoomData(0, 0, 0, 0);
 
@@ -36,6 +37,7 @@ namespace Domain.Model.Dungeon
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _sleepChance = DefaultSleepChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shopChance = DefaultShopChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _monsterHouseChance = DefaultMonsterHouseChance;
+        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _restRoomChance = DefaultRestRoomChance;
         [ShowIf("IsCustom"), SerializeField] private RoomData _room;
         [ShowIf("IsCustom"), SerializeField] private bool _existBoss;
         [ShowIf("@(IsCustom && ExistBoss) || IsBoss"), SerializeField, RequiredListLength(1, null)] private List<EnemyData> _boss;
@@ -78,6 +80,14 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Boss => 0,
             FloorTemplates.Shop => DefaultMonsterHouseChance,
             FloorTemplates.Custom => _monsterHouseChance,
+            _ => throw new NotImplementedException()
+        };
+        public float RestRoomChance => Template switch
+        {
+            FloorTemplates.Default => DefaultRestRoomChance,
+            FloorTemplates.Boss => 0,
+            FloorTemplates.Shop => DefaultRestRoomChance,
+            FloorTemplates.Custom => _restRoomChance,
             _ => throw new NotImplementedException()
         };
         public RoomData Room => Template switch

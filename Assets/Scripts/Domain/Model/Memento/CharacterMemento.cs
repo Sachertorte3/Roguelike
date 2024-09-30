@@ -13,7 +13,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeReference] public ICharacterType CharacterType { get; private set; }
         [field: SerializeField] public BehaviorData Behavior { get; private set; }
-        [field: SerializeField] public StructOption<Vector2Int> HomePosition { get; private set; }
+        [field: SerializeField] public Option<Vector2Int> HomePosition { get; private set; }
         [field: SerializeField] public CharacterStatusMemento Status { get; private set; }
         [field: SerializeField] public EntityMemento Entity { get; private set; }
         [field: SerializeField] public Direction8 Direction { get; private set; }
@@ -32,7 +32,7 @@ namespace Domain.Model.Memento
             string name,
             ICharacterType characterType,
             BehaviorData behavior,
-            StructOption<Vector2Int> homePosition,
+            Option<Vector2Int> homePosition,
             CharacterStatusMemento status,
             EntityMemento entity,
             Direction8 direction,
@@ -72,7 +72,7 @@ namespace Domain.Model.Memento
             string? name = null,
             ICharacterType? characterType = null,
             BehaviorData? behavior = null,
-            StructOption<Vector2Int>? homePosition = null,
+            Option<Vector2Int>? homePosition = null,
             CharacterStatusMemento? status = null,
             EntityMemento? entity = null,
             Direction8? direction = null,

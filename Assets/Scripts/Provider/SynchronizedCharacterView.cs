@@ -33,7 +33,7 @@ namespace Provider
             );
         }
 
-        protected override CharacterView _viewPrefab => Addressables
+        protected override CharacterView ViewPrefab(ICharacter _) => Addressables
             .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
             .GetComponent<CharacterView>();
 

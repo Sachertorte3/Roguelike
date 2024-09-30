@@ -336,7 +336,7 @@ namespace Domain.Service.Characters
                 entity: _entity.Serialize(),
                 direction: _direction.CurrentValue,
                 skills: _skills.Select(x => x.Serialize()).ToArray(),
-                lastSkill: new(_lastSkill?.Serialize()),
+                lastSkill: _lastSkill.ToOption().Map(x => x.Serialize()),
                 inventory: _inventory.Serialize(),
                 affiliation: _affiliationManager.Serialize(),
                 aggression: Aggression,

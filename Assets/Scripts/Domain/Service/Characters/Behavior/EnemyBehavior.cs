@@ -134,6 +134,17 @@ namespace Domain.Service.Characters.Behavior
                 Log.Debug($"[Think] Wandering around.");
             }
 
+            if (_lastTargetPosition != null)
+            {
+                var relativeVector = _lastTargetPosition.Value - character.CurrentPosition;
+                if (Vector2Extension.ChebyshevDistance(relativeVector) <= 1)
+                {
+                    var direction = DirectionMethods.NearestDirectionFromVector(relativeVector);
+                    if (direction.HasValue)
+                        character.Turn(direction.Value);
+                }
+            }
+
             var actions = new List<IAction>();
             if (PrioritizeMovement(character, _lastTargetPosition))
             {

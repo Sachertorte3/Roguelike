@@ -56,7 +56,7 @@ namespace Domain.Model.Item
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
         }
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, IItemEffect itemEffect, int usageLimit, List<IConditionData> conditions)
+        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.ItemTarget;

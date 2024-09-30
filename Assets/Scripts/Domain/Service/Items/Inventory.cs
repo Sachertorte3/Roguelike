@@ -93,9 +93,9 @@ namespace Domain.Service.Items
         public InventoryMemento Serialize()
         {
             return new InventoryMemento
-            {
-                Items = _items.Select(x => new Option<ItemMemento>(x?.Serialize())).ToArray()
-            };
+            (
+                items: _items.Select(x => new Option<ItemMemento>(x?.Serialize())).ToArray()
+            );
         }
 
         public bool TryAdd(IItem item)

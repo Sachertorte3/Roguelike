@@ -22,6 +22,7 @@ using ObservableCollections;
 using R3;
 using Unity.Logging;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Utilities;
 using Utilities.Algorithms;
 using Random = UnityEngine.Random;
@@ -64,7 +65,7 @@ namespace Game
             }
             else
             {
-                playerData.Entity.Position = playerPosition.Value;
+                playerData = playerData.ReplacePosition(playerPosition.Value);
             }
 
             CharacterManager = new CharacterManager(playerData, receiver, this);
@@ -84,8 +85,10 @@ namespace Game
             {
                 foreach (var character in partyMembers)
                 {
-                    character.Entity.Position = FindBlankPositionFrom(playerPosition.Value,
-                                position => !AllCharacterPositions().Contains(position));
+                    character.Entity.CopyWith(
+                        position: FindBlankPositionFrom(playerPosition.Value,
+                                position => !AllCharacterPositions().Contains(position))
+                    );
                     var ally = CharacterManager.SpawnAlly(character, this);
                     EventEntityManager.Add(ally);
                 }
@@ -143,7 +146,7 @@ namespace Game
             foreach (var entity in Entities)
                 entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
 
-            if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.hasEverEntered)
+            if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
             || map.Characters.Any(character => character.IsShiny))
             {
                 GameLog.Add("<color=yellow>不穏な気配を感じる……</color>");
@@ -328,16 +331,16 @@ namespace Game
             var characters = Characters.ToList();
             characters.Remove(Player);
             return new MapMemento
-            {
-                Tilemap = _tilemap.Serialize(),
-                Characters = characters.Select(character => character.Serialize()).ToList(),
-                Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                EventEntities = EventEntityManager.Serialize(),
-                KeyCharacters = KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                MonsterHouse = new(_monsterHouse?.Serialize()),
-                Shop = new(_shop?.Serialize()),
-                RandomBlankPosition = GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
-            };
+            (
+                tilemap: _tilemap.Serialize(),
+                characters: characters.Select(character => character.Serialize()).ToList(),
+                items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                eventEntities: EventEntityManager.Serialize(),
+                keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
+                monsterHouse: new(_monsterHouse?.Serialize()),
+                shop: new(_shop?.Serialize()),
+                randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
+            );
         }
 
         public MapMemento SerializeWithoutPartyMembers()
@@ -346,15 +349,16 @@ namespace Game
             characters.Remove(Player);
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento
-            {
-                Tilemap = _tilemap.Serialize(),
-                Characters = characters.Select(character => character.Serialize()).ToList(),
-                Items = ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                EventEntities = EventEntityManager.Serialize(),
-                KeyCharacters = KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                MonsterHouse = new(_monsterHouse?.Serialize()),
-                Shop = new(_shop?.Serialize())
-            };
+            (
+                tilemap: _tilemap.Serialize(),
+                characters: characters.Select(character => character.Serialize()).ToList(),
+                items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                eventEntities: EventEntityManager.Serialize(),
+                keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
+                monsterHouse: new(_monsterHouse?.Serialize()),
+                shop: new(_shop?.Serialize()),
+                randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
+            );
         }
 
         private void SetRules()

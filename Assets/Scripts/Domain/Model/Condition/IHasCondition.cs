@@ -14,6 +14,8 @@ namespace Domain.Model.Condition
         public void RemoveElementAttackMultiplier(Element element, float value);
         public void AddClairvoyantFlags();
         public void RemoveClairvoyantFlags();
+        public void AddBlindFlags();
+        public void RemoveBlindFlags();
         public void AddOverDriveFlags();
         public void RemoveOverDriveFlags();
         public int LoseHp(float value, bool notifyOnlyActualLoss = false);

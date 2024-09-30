@@ -56,41 +56,41 @@ namespace Domain.Service.Rooms
         public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
         {
             return new ShopMemento
-            {
-                Room = new RoomMemento
-                {
-                    Room = rect,
-                    hasEntered = false,
-                    hasEverEntered = false
-                },
-                Clerk = entity,
-                Items = items.Select(item => new ShopItemMemento
-                {
-                    Id = item.Item.Id,
-                    Price = new Item(item.Item).Price
-                }).ToList(),
-                IsStolen = false
-            };
+            (
+                room: new RoomMemento
+                (
+                    room: rect,
+                    hasEntered: false,
+                    hasEverEntered: false
+                ),
+                clerk: entity,
+                items: items.Select(item => new ShopItemMemento
+                (
+                    id: item.Item.Id,
+                    price: new Item(item.Item).Price
+                )).ToList(),
+                isStolen: false
+            );
         }
 
         public override ShopMemento Serialize()
         {
             return new ShopMemento
-            {
-                Room = new RoomMemento
-                {
-                    Room = Rect,
-                    hasEntered = hasEntered,
-                    hasEverEntered = hasEverEntered
-                },
-                Clerk = Clerk.Character.Serialize().Entity,
-                Items = _shopItems.Select(item => new ShopItemMemento
-                {
-                    Id = item.Id.ToString(),
-                    Price = item.Price
-                }).ToList(),
-                IsStolen = _isStolen.Value
-            };
+            (
+                room: new RoomMemento
+                (
+                    room: Rect,
+                    hasEntered: hasEntered,
+                    hasEverEntered: hasEverEntered
+                ),
+                clerk: Clerk.Character.Serialize().Entity,
+                items: _shopItems.Select(item => new ShopItemMemento
+                (
+                    id: item.Id.ToString(),
+                    price: item.Price
+                )).ToList(),
+                isStolen: _isStolen.Value
+            );
         }
 
         private IEnumerable<IItem> GetItemsInRoom(IMap mapManager)

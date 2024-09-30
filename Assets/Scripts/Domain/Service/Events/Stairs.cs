@@ -25,7 +25,7 @@ namespace Domain.Service.Events
             Type = data.Type;
             _entity = new Entity(data.Entity);
             Destination = data.Destination;
-            DestinationId = new Id<IEntity>(data.DestinationId);
+            DestinationId = data.DestinationId;
             IsLocked = isLocked;
             _events = new()
             {
@@ -91,23 +91,23 @@ namespace Domain.Service.Events
         public StairsMemento Serialize()
         {
             return new StairsMemento
-            {
-                Type = Type,
-                Destination = Destination,
-                Entity = _entity.Serialize(),
-                DestinationId = DestinationId.ToString()
-            };
+            (
+                type: Type,
+                destination: Destination,
+                entity: _entity.Serialize(),
+                destinationId: DestinationId
+            );
         }
 
         public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IEntity> id, Location destination, Id<IEntity> destinationId)
         {
             return new StairsMemento
-            {
-                Type = type,
-                Destination = destination,
-                Entity = Entity.Build(id, position, EntityLayer.Bottom),
-                DestinationId = destinationId.ToString()
-            };
+            (
+                type: type,
+                destination: destination,
+                entity: Entity.Build(id, position, EntityLayer.Bottom),
+                destinationId: destinationId
+            );
         }
 
         public static StairsMemento Build(MovementEntityType type, Vector2Int position, Location destination)

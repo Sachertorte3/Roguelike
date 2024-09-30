@@ -81,11 +81,11 @@ namespace Domain.Service.Map
             }
 
             _mementoCache = new TilemapMemento
-            {
-                Width = Width,
-                Tiles = tiles,
-                Rooms = Rooms.ToArray()
-            };
+            (
+                width: Width,
+                tiles: tiles,
+                rooms: Rooms.ToArray()
+            );
         }
 
         public TilemapMemento Serialize()
@@ -141,11 +141,11 @@ namespace Domain.Service.Map
             }
 
             return new TilemapMemento
-            {
-                Width = width,
-                Tiles = tiles,
-                Rooms = rooms.ToArray()
-            };
+            (
+                width: width,
+                tiles: tiles,
+                rooms: rooms.ToArray()
+            );
         }
 
         ~Tilemap()

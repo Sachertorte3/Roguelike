@@ -11,15 +11,27 @@ namespace Domain.Model.Memento
     [Serializable]
     public class SpawnEffectSkillMemento : ISkillMemento
     {
-        [SerializeReference] public IEffectPosition Position;
-        [SerializeReference] public IArea Area;
-        [SerializeReference] public IEffect Effect;
-        public int RushDistance;
-        public string Log;
+        [field: SerializeReference] public IEffectPosition Position { get; private set; }
+        [field: SerializeReference] public IArea Area { get; private set; }
+        [field: SerializeReference] public IEffect Effect { get; private set; }
+        [field: SerializeField] public int RushDistance { get; private set; }
+        [field: SerializeField] public string Log { get; private set; }
+        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, IEffect effect, int rushDistance, string log)
+        {
+            Position = position;
+            Area = area;
+            Effect = effect;
+            RushDistance = rushDistance;
+            Log = log;
+        }
     }
     [Serializable]
     public class ItemTargetSkillMemento : ISkillMemento
     {
-        [SerializeReference] public IItemEffect ItemEffect;
+        [field: SerializeReference] public IItemEffect ItemEffect { get; private set; }
+        public ItemTargetSkillMemento(IItemEffect itemEffect)
+        {
+            ItemEffect = itemEffect;
+        }
     }
 }

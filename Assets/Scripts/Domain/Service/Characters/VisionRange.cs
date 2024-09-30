@@ -14,15 +14,18 @@ namespace Domain.Service.Characters
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
         private readonly FlagStat _clairvoyantFlags;
+        private readonly FlagStat _blindFlags;
         public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
+        public bool IsBlind => _blindFlags.CurrentValue;
         private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
-        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range, int clairvoyantFlags, IMap world)
+        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range, int clairvoyantFlags, int blindFlags, IMap world)
         {
             _position = position;
             _range = range;
             _clairvoyantFlags = new FlagStat(clairvoyantFlags);
+            _blindFlags = new FlagStat(blindFlags);
             _position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
             _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, range)));
             _clairvoyantFlags
@@ -32,6 +35,7 @@ namespace Domain.Service.Characters
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
         public int ClairvoyantFlags => _clairvoyantFlags.CurrentFlags;
+        public int BlindFlags => _blindFlags.CurrentFlags;
         public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
         public void AddClairvoyantFlags()
@@ -42,6 +46,16 @@ namespace Domain.Service.Characters
         public void RemoveClairvoyantFlags()
         {
             _clairvoyantFlags.RemoveFlags();
+        }
+
+        public void AddBlindFlags()
+        {
+            _blindFlags.AddFlags();
+        }
+
+        public void RemoveBlindFlags()
+        {
+            _blindFlags.RemoveFlags();
         }
 
         public void Refresh(IMap map)
@@ -60,6 +74,8 @@ namespace Domain.Service.Characters
         {
             if (IsClairvoyant)
                 return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
+            else if (IsBlind)
+                return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, 1);
             else
                 return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);
         }

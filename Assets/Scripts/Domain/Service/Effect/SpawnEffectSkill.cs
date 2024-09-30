@@ -52,49 +52,49 @@ namespace Domain.Service.Effect
         public SpawnEffectSkillMemento Serialize()
         {
             return new SpawnEffectSkillMemento
-            {
-                Position = _position,
-                Area = _area,
-                Effect = _effect,
-                RushDistance = RushDistance,
-                Log = _log
-            };
+            (
+                position: _position,
+                area: _area,
+                effect: _effect,
+                rushDistance: RushDistance,
+                log: _log
+            );
         }
 
         public static SpawnEffectSkillMemento Build(SkillData data)
         {
             return new SpawnEffectSkillMemento
-            {
-                Position = data.Position,
-                Area = data.Area,
-                Effect = data.Effect,
-                RushDistance = data.RushDistance,
-                Log = data.Log
-            };
+            (
+                position: data.Position,
+                area: data.Area,
+                effect: data.Effect,
+                rushDistance: data.RushDistance,
+                log: data.Log
+            );
         }
 
         public static SpawnEffectSkillMemento Build(SkillDataOnUse data)
         {
             return new SpawnEffectSkillMemento
-            {
-                Position = data.Position,
-                Area = data.Area,
-                Effect = data.Effect,
-                RushDistance = 0,
-                Log = ""
-            };
+            (
+                position: data.Position,
+                area: data.Area,
+                effect: data.Effect,
+                rushDistance: 0,
+                log: ""
+            );
         }
 
         public static SpawnEffectSkillMemento Build(SkillDataOnThrow data)
         {
             return new SpawnEffectSkillMemento
-            {
-                Position = new AtFeet(),
-                Area = data.Area,
-                Effect = data.Effect,
-                RushDistance = 0,
-                Log = ""
-            };
+            (
+                position: new AtFeet(),
+                area: data.Area,
+                effect: data.Effect,
+                rushDistance: 0,
+                log: ""
+            );
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,

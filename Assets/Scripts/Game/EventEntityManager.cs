@@ -31,18 +31,18 @@ namespace Game
         public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests)
         {
             return new EventEntitiesMemento
-            {
-                Stairs = stairs.ToList(),
-                Chests = chests.ToList()
-            };
+            (
+                stairs: stairs.ToList(),
+                chests: chests.ToList()
+            );
         }
         public EventEntitiesMemento Serialize()
         {
             return new EventEntitiesMemento
-            {
-                Stairs = Stairs.Select(stairs => stairs.Serialize()).ToList(),
-                Chests = _chests.Select(chest => chest.Serialize()).ToList()
-            };
+            (
+                stairs: Stairs.Select(stairs => stairs.Serialize()).ToList(),
+                chests: _chests.Select(chest => chest.Serialize()).ToList()
+            );
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;

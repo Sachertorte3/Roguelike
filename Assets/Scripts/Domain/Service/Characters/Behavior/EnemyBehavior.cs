@@ -7,6 +7,7 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Action;
 using R3;
 using Unity.Logging;
@@ -43,12 +44,13 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorData data, Option<Vector2Int> homePosition)
+        public EnemyBehavior(BehaviorMemento data)
         {
-            BehaviorData = data;
-            _homePosition = homePosition;
+            BehaviorData = data.Behavior;
+            _homePosition = data.HomePosition;
+            _lastTargetPosition = data.LastTargetPosition.Value;
 
-            if (data.wanderAround)
+            if (BehaviorData.wanderAround)
             {
                 _wander = new Wander();
             }
@@ -56,24 +58,43 @@ namespace Domain.Service.Characters.Behavior
             {
                 _wander = new NoMove();
             }
-            _default = data.Default.ToDiscoveredTargetBehavior();
-            _prioritizeMovement = data.PrioritizeMovement;
-            if (data.UseTopBound)
+            _default = BehaviorData.Default.ToDiscoveredTargetBehavior();
+            _prioritizeMovement = BehaviorData.PrioritizeMovement;
+            if (BehaviorData.UseTopBound)
             {
-                _distanceTopBound = data.distanceTopBound;
-                _greaterThanTopBound = data.greaterThanTopBound.ToDiscoveredTargetBehavior();
-                _prioritizeMovementWhenDistanceGreaterThanTopBound = data.PrioritizeMovementWhenDistanceGreaterThanTopBound;
+                _distanceTopBound = BehaviorData.distanceTopBound;
+                _greaterThanTopBound = BehaviorData.greaterThanTopBound.ToDiscoveredTargetBehavior();
+                _prioritizeMovementWhenDistanceGreaterThanTopBound = BehaviorData.PrioritizeMovementWhenDistanceGreaterThanTopBound;
             }
-            if (data.UseBottomBound)
+            if (BehaviorData.UseBottomBound)
             {
-                _distanceBottomBound = data.distanceBottomBound;
-                _lessThanBottomBound = data.lessThanBottomBound.ToDiscoveredTargetBehavior();
-                _prioritizeMovementWhenDistanceLessThanBottomBound = data.PrioritizeMovementWhenDistanceLessThanBottomBound;
+                _distanceBottomBound = BehaviorData.distanceBottomBound;
+                _lessThanBottomBound = BehaviorData.lessThanBottomBound.ToDiscoveredTargetBehavior();
+                _prioritizeMovementWhenDistanceLessThanBottomBound = BehaviorData.PrioritizeMovementWhenDistanceLessThanBottomBound;
             }
+        }
+
+        public BehaviorMemento Serialize()
+        {
+            return new BehaviorMemento(
+                behavior: BehaviorData,
+                homePosition: _homePosition,
+                lastTargetPosition: _lastTargetPosition
+            );
+        }
+        
+        public static BehaviorMemento Build(BehaviorData behavior, Option<Vector2Int> homePosition)
+        {
+            return new BehaviorMemento(
+                behavior: behavior,
+                homePosition: homePosition,
+                lastTargetPosition: null
+            );
         }
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
         {
+            _lastTarget = null;
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
 
@@ -132,6 +153,7 @@ namespace Domain.Service.Characters.Behavior
             else
             {
                 Log.Debug($"[Think] Wandering around.");
+                _lastTargetPosition = null;
             }
 
             if (_lastTargetPosition != null)
@@ -195,8 +217,6 @@ namespace Domain.Service.Characters.Behavior
 
         public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies)
         {
-            if (_lastTargetPosition.HasValue && GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is not Escape && visibleEnemies.Contains(_lastTarget))
-                return _lastTarget;
             if (visibleEnemies.Any())
                 return visibleEnemies.MinBy(enemy => character.Affiliation.GetAffection(enemy.Affiliation));
             return null;
@@ -204,8 +224,6 @@ namespace Domain.Service.Characters.Behavior
 
         public ICharacter? GetTargetedLeader(IHasBehavior character, IEnumerable<ICharacter> visibleLeaders)
         {
-            if (visibleLeaders.Contains(_lastTarget))
-                return _lastTarget;
             if (visibleLeaders.Any())
                 return visibleLeaders.MaxBy(leader => character.Affiliation.GetAffection(leader.Affiliation));
             return null;

@@ -114,14 +114,6 @@ namespace Game
         {
             Log.Debug("Start Save");
             var saveData = _world.Serialize();
-            Debug.Log($"saveData:");
-            foreach (var map in saveData.Maps)
-            {
-                foreach (var character in map.Value.KeyCharacters)
-                {
-                    Debug.Log($"keyCharacter:{character}");
-                }
-            }
             var saveDataStr = JsonUtility.ToJson(saveData);
             System.IO.File.WriteAllText("Save/save.json", saveDataStr);
             Log.Debug("End Save");

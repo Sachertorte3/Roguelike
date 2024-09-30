@@ -330,8 +330,7 @@ namespace Domain.Service.Characters
             (
                 name: _name,
                 characterType: CharacterType,
-                behavior: _behavior.BehaviorData,
-                homePosition: _behavior.HomePosition,
+                behavior: _behavior.Serialize(),
                 status: _statusManager.Serialize(),
                 entity: _entity.Serialize(),
                 direction: _direction.CurrentValue,

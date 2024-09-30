@@ -311,7 +311,7 @@ namespace Game
         public bool IsReachable(Vector2Int from, Vector2Int to)
         {
             var route = new AStar(GetAllPassablePositions()).Calc(from, to);
-            if (route.Any())
+            if (!route.Any())
                 return false;
             if (IsPassable(to))
                 return route.Last() == to;

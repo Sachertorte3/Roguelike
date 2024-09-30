@@ -79,7 +79,7 @@ public class Option<T> : IEquatable<Option<T>>
     public T Unwrap() => IsSome ? value : throw new Exception($"Tried to unwrap a None<{FriendlyName(typeof(T))}>!");
     public T UnwrapOr(T def = default(T)) => IsSome ? value : def;
     public T UnwrapOr(Func<T> provider) => IsSome ? value : provider();
-    public T? UnwrapOrNull() => IsSome ? value : (T?)(object)null;
+    public T? UnwrapOrNull() => IsSome ? value : default(T?);
     
     public Option<U> Map<U>(Func<T, U> converter) => IsSome ? new Option<U>(converter(value)) : new None<U>();
     public async Task<Option<U>> Map<U>(Func<T, Task<U>> converter) => IsSome ? new Option<U>(await converter(value)) : new None<U>();

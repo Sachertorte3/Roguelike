@@ -12,8 +12,7 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeReference] public ICharacterType CharacterType { get; private set; }
-        [field: SerializeField] public BehaviorData Behavior { get; private set; }
-        [field: SerializeField] public Option<Vector2Int> HomePosition { get; private set; }
+        [field: SerializeField] public BehaviorMemento Behavior { get; private set; }
         [field: SerializeField] public CharacterStatusMemento Status { get; private set; }
         [field: SerializeField] public EntityMemento Entity { get; private set; }
         [field: SerializeField] public Direction8 Direction { get; private set; }
@@ -31,8 +30,7 @@ namespace Domain.Model.Memento
         public CharacterMemento(
             string name,
             ICharacterType characterType,
-            BehaviorData behavior,
-            Option<Vector2Int> homePosition,
+            BehaviorMemento behavior,
             CharacterStatusMemento status,
             EntityMemento entity,
             Direction8 direction,
@@ -52,7 +50,6 @@ namespace Domain.Model.Memento
             Name = name;
             CharacterType = characterType;
             Behavior = behavior;
-            HomePosition = homePosition;
             Status = status;
             Entity = entity;
             Direction = direction;
@@ -71,8 +68,7 @@ namespace Domain.Model.Memento
         public CharacterMemento CopyWith(
             string? name = null,
             ICharacterType? characterType = null,
-            BehaviorData? behavior = null,
-            Option<Vector2Int>? homePosition = null,
+            BehaviorMemento? behavior = null,
             CharacterStatusMemento? status = null,
             EntityMemento? entity = null,
             Direction8? direction = null,
@@ -93,7 +89,6 @@ namespace Domain.Model.Memento
                 name: name ?? Name,
                 characterType: characterType ?? CharacterType,
                 behavior: behavior ?? Behavior,
-                homePosition: homePosition ?? HomePosition,
                 status: status ?? Status,
                 entity: entity ?? Entity,
                 direction: direction ?? Direction,

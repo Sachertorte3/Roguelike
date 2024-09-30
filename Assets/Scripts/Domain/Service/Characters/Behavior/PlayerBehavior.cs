@@ -8,6 +8,7 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using R3;
@@ -29,6 +30,11 @@ namespace Domain.Service.Characters.Behavior
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
             _receiver = receiver;
+        }
+
+        public BehaviorMemento Serialize()
+        {
+            return new BehaviorMemento(BehaviorData, HomePosition, null);
         }
 
         public bool WanderAround => true;

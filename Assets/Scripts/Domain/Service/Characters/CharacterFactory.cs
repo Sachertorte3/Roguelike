@@ -30,8 +30,11 @@ namespace Domain.Service.Characters
             (
                 name: Name,
                 characterType: new Human("Chara_Hero1_USM"),
-                behavior: new BehaviorData(),
-                homePosition: Option<Vector2Int>.None,
+                behavior: new BehaviorMemento(
+                    behavior: new BehaviorData(),
+                    homePosition: Option<Vector2Int>.None,
+                    lastTargetPosition: null
+                ),
                 status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f, new(), new(), 10, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
@@ -73,8 +76,10 @@ namespace Domain.Service.Characters
             (
                 name: isShiny ? "☆" + data.Name : data.Name,
                 characterType: data.CharacterType,
-                behavior: data.Behavior,
-                homePosition: homePosition.ToOption(),
+                behavior: EnemyBehavior.Build(
+                    behavior: data.Behavior,
+                    homePosition: homePosition.ToOption()
+                ),
                 status: CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f, isShiny ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f) : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,

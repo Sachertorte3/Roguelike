@@ -50,7 +50,7 @@ namespace Provider
             => new LoggerConfig()
                 .SyncMode.FullSync()
                 .WriteTo.UnityDebugLog(
-                    minLevel: LogLevel.Info,
+                    minLevel: LogLevel.Debug,
                     captureStackTrace: true);
 
         private static LoggerConfig DevelopmentConfiguration()

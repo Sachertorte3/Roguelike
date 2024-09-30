@@ -12,13 +12,13 @@ namespace Provider
     public abstract class SynchronizedEntityView<T, TView> where T : IEntity where TView : Component
     {
         private readonly BiMap<T, TView> _viewDict = new();
-        protected abstract TView _viewPrefab { get; }
+        protected abstract TView ViewPrefab(T obj);
         protected abstract InputReceiver _inputReceiver { get; init; }
 
         protected abstract EntityView GetEntityView(TView view);
         public virtual void Add(T obj)
         {
-            var view = Object.Instantiate(_viewPrefab);
+            var view = Object.Instantiate(ViewPrefab(obj));
             _viewDict.Add(obj, view);
             InitializeView(obj, view);
             ConstructEntity(obj, GetEntityView(view));

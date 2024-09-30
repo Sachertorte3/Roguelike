@@ -35,7 +35,6 @@ namespace Domain.Service.Events
         public string ChoiceMessage => "宝箱を見つけた";
         private readonly List<EntityEvent> _events;
         public IReadOnlyList<EntityEvent> Events => _events;
-        public string ChoiceText => "開ける";
         public bool CanBeCanceled => true;
         public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
@@ -99,7 +98,7 @@ namespace Domain.Service.Events
             {
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom, EntityLayer.Middle)));
             }
         }
 

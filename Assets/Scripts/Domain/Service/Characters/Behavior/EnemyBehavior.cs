@@ -21,14 +21,15 @@ namespace Domain.Service.Characters.Behavior
 
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
-        private readonly StructOption<Vector2Int> _homePosition;
-        public StructOption<Vector2Int> HomePosition => _homePosition;
+        private readonly Option<Vector2Int> _homePosition;
+        public Option<Vector2Int> HomePosition => _homePosition;
 
         private readonly float behavioralRandomness = 0.01f;
 
         private readonly IBehaviorWhenUndiscoveringTarget _wander;
 
         private readonly IBehaviorWhenDiscoveringTarget _discoveringLeader = new Chase();
+        private readonly IBehaviorWhenDiscoveringTarget _returningHome = new Chase();
         private readonly IBehaviorWhenDiscoveringTarget _default;
         private readonly bool _prioritizeMovement = false;
 
@@ -42,7 +43,7 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorData data, StructOption<Vector2Int> homePosition)
+        public EnemyBehavior(BehaviorData data, Option<Vector2Int> homePosition)
         {
             BehaviorData = data;
             _homePosition = homePosition;
@@ -219,6 +220,9 @@ namespace Domain.Service.Characters.Behavior
         {
             if (_lastTarget != null && character.IsAlly(_lastTarget) && _lastTarget.IsLeader)
                 return _discoveringLeader;
+
+            if (_lastTarget == null)
+                return _returningHome;
 
             var distance = GetDistance(character, targetPosition);
             if (_greaterThanTopBound != null && distance > _distanceTopBound)

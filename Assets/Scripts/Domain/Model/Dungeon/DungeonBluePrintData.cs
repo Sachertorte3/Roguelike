@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Character;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace Domain.Model.Dungeon
         public ItemCategoryWeight ChestItem;
         public Table<WeaponMold> WeaponMolds;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
+        public Table<EnemyData> Npcs;
         [RequiredListLength(1, null)] public List<SectionData> Sections;
         public bool ExistLevel(int level)
         {
@@ -65,6 +67,7 @@ namespace Domain.Model.Dungeon
                 new ItemTable(MasterItemDataBase, ChestItem),
                 MasterItemDataBase.ShopItems,
                 sectionData.Enemies,
+                Npcs,
                 floorData.PrefixChance,
                 floorData.ShinyChance,
                 floorData.SleepChance,
@@ -72,6 +75,7 @@ namespace Domain.Model.Dungeon
                 sectionData.WeaponChanceInChest,
                 floorData.ShopChance,
                 floorData.MonsterHouseChance,
+                floorData.RestRoomChance,
                 floorData.Room.ItemCount,
                 floorData.Room.WeaponCount,
                 floorData.Room.CharacterCount,

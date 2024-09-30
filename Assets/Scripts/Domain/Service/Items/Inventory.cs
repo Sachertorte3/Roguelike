@@ -46,7 +46,7 @@ namespace Domain.Service.Items
 
             for (var i = 0; i < MaxItems; i++)
             {
-                _items[i] = data.Items[i].Select(item => new Item(item)).Value;
+                _items[i] = data.Items[i].Map(item => new Item(item)).Value;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Domain.Service.Items
         {
             return new InventoryMemento
             (
-                items: _items.Select(x => new Option<ItemMemento>(x?.Serialize())).ToArray()
+                items: _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray()
             );
         }
 

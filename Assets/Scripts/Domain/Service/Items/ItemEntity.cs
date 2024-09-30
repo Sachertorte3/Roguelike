@@ -65,10 +65,10 @@ namespace Domain.Service.Items
         public ItemEntityMemento Serialize()
         {
             return new ItemEntityMemento
-            {
-                Item = Item.Serialize(),
-                Entity = _entity.Serialize()
-            };
+            (
+                item: Item.Serialize(),
+                entity: _entity.Serialize()
+            );
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)

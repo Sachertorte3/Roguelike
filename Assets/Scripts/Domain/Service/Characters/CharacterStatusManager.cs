@@ -30,7 +30,7 @@ namespace Domain.Service.Characters
         {
             _stats = new CharacterStats(data.Stats);
             _conditions = new CharacterConditions(this, data.Conditions);
-            _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, world);
+            _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags, world);
             _overDriveFlags = new FlagStat(data.OverDriveFlags);
         }
 
@@ -43,12 +43,13 @@ namespace Domain.Service.Characters
         public CharacterStatusMemento Serialize()
         {
             return new CharacterStatusMemento
-            {
-                Stats = _stats.Serialize(),
-                ClairvoyantFlags = _visionRange.ClairvoyantFlags,
-                OverDriveFlags = _overDriveFlags.CurrentFlags,
-                Conditions = _conditions.Conditions.Select(x => x.Serialize()).ToArray()
-            };
+            (
+                stats: _stats.Serialize(),
+                clairvoyantFlags: _visionRange.ClairvoyantFlags,
+                blindFlags: _visionRange.BlindFlags,
+                overDriveFlags: _overDriveFlags.CurrentFlags,
+                conditions: _conditions.Conditions.Select(x => x.Serialize()).ToArray()
+            );
         }
 
         public IStats Stats => _stats;
@@ -124,6 +125,14 @@ namespace Domain.Service.Characters
         {
             _visionRange.RemoveClairvoyantFlags();
         }
+        public void AddBlindFlags()
+        {
+            _visionRange.AddBlindFlags();
+        }
+        public void RemoveBlindFlags()
+        {
+            _visionRange.RemoveBlindFlags();
+        }
         public void AddOverDriveFlags()
         {
             _overDriveFlags.AddFlags();
@@ -161,11 +170,13 @@ namespace Domain.Service.Characters
                 );
             }
             return new CharacterStatusMemento
-            {
-                Stats = CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier, elementDamageRateMultiplier, viewRange, waitTime, isSlept),
-                ClairvoyantFlags = 0,
-                Conditions = conditions.ToArray()
-            };
+            (
+                stats: CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier, elementDamageRateMultiplier, viewRange, waitTime, isSlept),
+                clairvoyantFlags: 0,
+                blindFlags: 0,
+                overDriveFlags: 0,
+                conditions: conditions.ToArray()
+            );
         }
 
         public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)

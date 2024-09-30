@@ -22,18 +22,18 @@ namespace Game
         public DungeonMemento Serialize()
         {
             return new DungeonMemento
-            {
-                DungeonDataName = _dungeonData.name,
-                MapIds = new(_mapIds.ToDictionary(mapIds => mapIds.Key, mapIds => mapIds.Value.ToString())),
-            };
+            (
+                dungeonDataName: _dungeonData.name,
+                mapIds: new(_mapIds.ToDictionary(mapIds => mapIds.Key, mapIds => mapIds.Value.ToString()))
+            );
         }
         public static DungeonMemento Build(DungeonBluePrintData _dungeonData)
         {
             return new DungeonMemento
-            {
-                DungeonDataName = _dungeonData.name,
-                MapIds = new(),
-            };
+            (
+                dungeonDataName: _dungeonData.name,
+                mapIds: new()
+            );
         }
         public bool ExistLevel(int level) => _dungeonData.ExistLevel(level);
         public Id<MapManager> GetMapId(int level)

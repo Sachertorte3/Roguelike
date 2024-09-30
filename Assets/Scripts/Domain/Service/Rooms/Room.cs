@@ -19,8 +19,8 @@ namespace Domain.Service.Rooms
         {
             Rect = data.Room;
             _isInside = new(Rect.Contains(playerPosition));
-            hasEntered = data.hasEntered;
-            hasEverEntered = data.hasEverEntered;
+            hasEntered = data.HasEntered;
+            hasEverEntered = data.HasEverEntered;
         }
 
         public RectInt Rect { get; init; }

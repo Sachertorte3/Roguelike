@@ -128,9 +128,10 @@ namespace Game
             var monsterHouseRoom = rooms.GetAtRandom();
             rooms.Remove(monsterHouseRoom);
 
-            var positions = monsterHouseRoom.RectRange().GetAtRandom(5).ToList();
-            foreach (var position in positions.Take(5))
+            var positions = monsterHouseRoom.RectRange().ToList();
+            foreach (var position in positions.TakeAndRemove(5))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
+            _chests.Add(Chest.Build(positions.TakeAndRemove(1).First(), data.ChestItems.GetRandomItem()));
 
             return MonsterHouse.Build(monsterHouseRoom);
         }
@@ -209,16 +210,16 @@ namespace Game
         public MapMemento Build()
         {
             return new MapMemento
-            {
-                Tilemap = _tilemap.Serialize(),
-                Characters = _characters,
-                Items = _items,
-                EventEntities = EventEntityManager.Build(_stairs, _chests),
-                KeyCharacters = _keyCharacters.Select(key => key.ToString()).ToList(),
-                MonsterHouse = new(_monsterHouse),
-                Shop = new(_shop),
-                RandomBlankPosition = _randomBlankPositions.GetAtRandom()
-            };
+            (
+                tilemap: _tilemap.Serialize(),
+                characters: _characters,
+                items: _items,
+                eventEntities: EventEntityManager.Build(_stairs, _chests),
+                keyCharacters: _keyCharacters.Select(key => key.ToString()).ToList(),
+                monsterHouse: new(_monsterHouse),
+                shop: new(_shop),
+                randomBlankPosition: _randomBlankPositions.GetAtRandom()
+            );
         }
     }
 }

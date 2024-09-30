@@ -11,10 +11,10 @@ namespace Domain.Service.Items
         public static ItemEntityMemento Build(Vector2Int spawnPosition, ItemMemento item)
         {
             return new ItemEntityMemento
-            {
-                Item = item,
-                Entity = Entity.Build(spawnPosition, EntityLayer.Bottom)
-            };
+            (
+                item: item,
+                entity: Entity.Build(spawnPosition, EntityLayer.Bottom)
+            );
         }
 
         public IItemEntity CreateItem(ItemEntityMemento item)

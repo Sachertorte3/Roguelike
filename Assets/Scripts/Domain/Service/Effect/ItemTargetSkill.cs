@@ -21,17 +21,17 @@ namespace Domain.Service.Effect
         public ItemTargetSkillMemento Serialize()
         {
             return new ItemTargetSkillMemento
-            {
-                ItemEffect = _itemEffect
-            };
+            (
+                itemEffect: _itemEffect
+            );
         }
 
         public static ItemTargetSkillMemento Build(IItemEffect itemEffect)
         {
             return new ItemTargetSkillMemento
-            {
-                ItemEffect = itemEffect
-            };
+            (
+                itemEffect: itemEffect
+            );
         }
 
         public async UniTask<ISkillResult> Use(IActor actor, IItem item)

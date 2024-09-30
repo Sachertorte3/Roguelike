@@ -17,21 +17,21 @@ namespace Domain.Service.Rooms
         public static RoomMemento Build(RectInt rect)
         {
             return new RoomMemento
-            {
-                Room = rect,
-                hasEntered = false,
-                hasEverEntered = false
-            };
+            (
+                room: rect,
+                hasEntered: false,
+                hasEverEntered: false
+            );
         }
 
         public override RoomMemento Serialize()
         {
             return new RoomMemento
-            {
-                Room = Rect,
-                hasEntered = hasEntered,
-                hasEverEntered = hasEverEntered
-            };
+            (
+                room: Rect,
+                hasEntered: hasEntered,
+                hasEverEntered: hasEverEntered
+            );
         }
 
         protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap mapManager)

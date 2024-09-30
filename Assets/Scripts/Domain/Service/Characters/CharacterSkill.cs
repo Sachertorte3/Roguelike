@@ -27,20 +27,20 @@ namespace Domain.Service.Characters
         public CharacterSkillMemento Serialize()
         {
             return new CharacterSkillMemento
-            {
-                Skill = _skill.Serialize(),
-                CoolTime = _coolTime,
-                RemainingTurn = _remainingCoolTime
-            };
+            (
+                skill: _skill.Serialize(),
+                coolTime: _coolTime,
+                remainingTurn: _remainingCoolTime
+            );
         }
         public static CharacterSkillMemento Build(SpawnEffectSkillMemento skill, int coolTime)
         {
             return new CharacterSkillMemento
-            {
-                Skill = skill,
-                CoolTime = coolTime,
-                RemainingTurn = 0
-            };
+            (
+                skill: skill,
+                coolTime: coolTime,
+                remainingTurn: 0
+            );
         }
         public string Info() => _skill.InfoOnUse();
         public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)

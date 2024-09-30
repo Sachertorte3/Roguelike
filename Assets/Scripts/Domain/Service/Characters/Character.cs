@@ -327,26 +327,26 @@ namespace Domain.Service.Characters
         public CharacterMemento Serialize()
         {
             return new CharacterMemento
-            {
-                Name = _name,
-                CharacterType = CharacterType,
-                Behavior = _behavior.BehaviorData,
-                HomePosition = _behavior.HomePosition,
-                Status = _statusManager.Serialize(),
-                Entity = _entity.Serialize(),
-                Direction = _direction.CurrentValue,
-                Skills = _skills.Select(x => x.Serialize()).ToArray(),
-                LastSkill = new(_lastSkill?.Serialize()),
-                Inventory = _inventory.Serialize(),
-                Affiliation = _affiliationManager.Serialize(),
-                Aggression = Aggression,
-                Money = _money,
-                IsLeader = IsLeader,
-                IsShiny = IsShiny,
-                IsBoss = IsBoss,
-                CanPickUp = CanPickUp,
-                CanUseItem = CanUseItem
-            };
+            (
+                name: _name,
+                characterType: CharacterType,
+                behavior: _behavior.BehaviorData,
+                homePosition: _behavior.HomePosition,
+                status: _statusManager.Serialize(),
+                entity: _entity.Serialize(),
+                direction: _direction.CurrentValue,
+                skills: _skills.Select(x => x.Serialize()).ToArray(),
+                lastSkill: new(_lastSkill?.Serialize()),
+                inventory: _inventory.Serialize(),
+                affiliation: _affiliationManager.Serialize(),
+                aggression: Aggression,
+                money: _money,
+                isLeader: IsLeader,
+                isShiny: IsShiny,
+                isBoss: IsBoss,
+                canPickUp: CanPickUp,
+                canUseItem: CanUseItem
+            );
         }
 
         public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)

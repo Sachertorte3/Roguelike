@@ -72,12 +72,12 @@ namespace Game
             _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
             var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
-            {
-                Dungeons = _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
-                Player = playerData,
-                Maps = _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
-                CurrentLocation = _activeLocation
-            };
+            (
+                dungeons: _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
+                player: playerData,
+                maps: _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
+                currentLocation: _activeLocation
+            );
         }
 
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
@@ -102,7 +102,7 @@ namespace Game
                     {
                         var prevMap = _maps[prevMapId];
                         var downStairs = prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
-                        upStairsId = new Id<IEntity>(downStairs.DestinationId);
+                        upStairsId = downStairs.DestinationId;
                         upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
                     }
                 }
@@ -113,7 +113,7 @@ namespace Game
                     {
                         var nextMap = _maps[nextMapId];
                         var upStairs = nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
-                        downStairsId = new Id<IEntity>(upStairs.DestinationId);
+                        downStairsId = upStairs.DestinationId;
                         downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
                     }
                 }

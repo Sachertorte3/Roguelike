@@ -36,27 +36,27 @@ namespace Domain.Service.Characters.Stats
         public CharacterStatsMemento Serialize()
         {
             return new CharacterStatsMemento
-            {
-                Hp = Hp.GetData(),
-                HpNaturalRecoveryAmount = HpNaturalRecoveryAmount.GetData(),
-                ElementAttackMultiplier = new(ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                ElementDamageRateMultiplier = new(ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                ViewRange = ViewRange.GetData(),
-                WaitTime = WaitTime.GetData(),
-            };
+            (
+                hp: Hp.GetData(),
+                hpNaturalRecovery: HpNaturalRecoveryAmount.GetData(),
+                elementAttackMultiplier: new(ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                elementDamageRateMultiplier: new(ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                viewRange: ViewRange.GetData(),
+                waitTime: WaitTime.GetData()
+            );
         }
 
         public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
         {
             return new CharacterStatsMemento
-            {
-                Hp = new ResourceData(new StatData(maxHp), maxHp),
-                HpNaturalRecoveryAmount = new StatData(hpNaturalRecoveryAmount),
-                ElementAttackMultiplier = new SerializableDictionary<Element, StatData>(elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                ElementDamageRateMultiplier = new SerializableDictionary<Element, StatData>(elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                ViewRange = new StatData(viewRange),
-                WaitTime = new ResourceData(new StatData(waitTime), waitTime),
-            };
+            (
+                hp: new ResourceData(new StatData(maxHp), maxHp),
+                hpNaturalRecovery: new StatData(hpNaturalRecoveryAmount),
+                elementAttackMultiplier: new SerializableDictionary<Element, StatData>(elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                elementDamageRateMultiplier: new SerializableDictionary<Element, StatData>(elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                viewRange: new StatData(viewRange),
+                waitTime: new ResourceData(new StatData(waitTime), waitTime)
+            );
         }
 
         public IntResource Hp { get; init; }

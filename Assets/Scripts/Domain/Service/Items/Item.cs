@@ -85,22 +85,22 @@ namespace Domain.Service.Items
         public ItemMemento Serialize()
         {
             return new ItemMemento
-            {
-                Id = Id.ToString(),
-                Name = _name,
-                IconName = Icon.name,
-                IsShiny = IsShiny,
-                UpgradePaths = _upgradePaths.Select(path => path.ToString()).ToList(),
-                State = State,
-                SkillOnUse = _skillOnUse.Select(skill => skill.Serialize()),
-                SkillOnThrow = _skillOnThrow.Select(skill => skill.Serialize()),
-                HasSameEffect = _hasSameEffect,
-                HasSameSkill = _hasSameSkill,
-                UseOnDeath = UseOnDeath,
-                MaxUsages = _maxUsages,
-                RemainingUsages = _remainingUsages.CurrentValue,
-                Conditions = _conditions.ToArray()
-            };
+            (
+                id: Id.ToString(),
+                name: _name,
+                iconName: Icon.name,
+                isShiny: IsShiny,
+                upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
+                state: State,
+                skillOnUse: _skillOnUse.Select(skill => skill.Serialize()),
+                skillOnThrow: _skillOnThrow.Select(skill => skill.Serialize()),
+                hasSameEffect: _hasSameEffect,
+                hasSameSkill: _hasSameSkill,
+                useOnDeath: UseOnDeath,
+                maxUsages: _maxUsages,
+                remainingUsages: _remainingUsages.CurrentValue,
+                conditions: _conditions.ToArray()
+            );
         }
 
         public static ItemMemento Build(ItemData data, ItemState state = ItemState.None)
@@ -122,22 +122,22 @@ namespace Domain.Service.Items
             }
 
             var memento = new ItemMemento
-            {
-                Id = Id<IItem>.Generate().ToString(),
-                Name = data.Name,
-                IconName = data.Icon.name,
-                IsShiny = data.IsShiny,
-                UpgradePaths = new(),
-                State = state,
-                SkillOnUse = new(skillOnUse),
-                SkillOnThrow = new(skillOnThrow),
-                HasSameEffect = data.IsSameEffect,
-                HasSameSkill = data.IsSameSkill,
-                UseOnDeath = data.UseOnDeath,
-                MaxUsages = data.UsageLimit,
-                RemainingUsages = data.UsageLimit,
-                Conditions = data.PassiveConditions.ToArray()
-            };
+            (
+                id: Id<IItem>.Generate().ToString(),
+                name: data.Name,
+                iconName: data.Icon.name,
+                isShiny: data.IsShiny,
+                upgradePaths: new(),
+                state: state,
+                skillOnUse: new(skillOnUse),
+                skillOnThrow: new(skillOnThrow),
+                hasSameEffect: data.IsSameEffect,
+                hasSameSkill: data.IsSameSkill,
+                useOnDeath: data.UseOnDeath,
+                maxUsages: data.UsageLimit,
+                remainingUsages: data.UsageLimit,
+                conditions: data.PassiveConditions.ToArray()
+            );
             var json = JsonUtility.ToJson(memento);
             return JsonUtility.FromJson<ItemMemento>(json);
         }

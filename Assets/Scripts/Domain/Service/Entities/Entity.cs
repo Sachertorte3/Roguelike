@@ -42,31 +42,31 @@ namespace Domain.Service.Entities
         public EntityMemento Serialize()
         {
             return new EntityMemento
-            {
-                Id = Id.ToString(),
-                Position = _position.CurrentValue,
-                Layer = _layer
-            };
+            (
+                id: Id.ToString(),
+                position: _position.CurrentValue,
+                layer: _layer
+            );
         }
 
         public static EntityMemento Build(Vector2Int position, EntityLayer layer)
         {
-            return new EntityMemento
-            {
-                Id = Id<IEntity>.Generate().ToString(),
-                Position = position,
-                Layer = layer
-            };
+            return Build
+            (
+                Id<IEntity>.Generate(),
+                position,
+                layer
+            );
         }
 
         public static EntityMemento Build(Id<IEntity> id, Vector2Int position, EntityLayer layer)
         {
             return new EntityMemento
-            {
-                Id = id.ToString(),
-                Position = position,
-                Layer = layer
-            };
+            (
+                id: id.ToString(),
+                position: position,
+                layer: layer
+            );
         }
 
         public void SetVisibility(bool visible)

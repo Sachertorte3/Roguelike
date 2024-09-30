@@ -111,19 +111,19 @@ namespace Domain.Service.Events
         public ChestMemento Serialize()
         {
             return new ChestMemento
-            {
-                Item = _item.Serialize(),
-                Entity = _entity.Serialize()
-            };
+            (
+                item: _item.Serialize(),
+                entity: _entity.Serialize()
+            );
         }
 
         public static ChestMemento Build(Vector2Int position, ItemData item)
         {
             return new ChestMemento
-            {
-                Item = new Item(item).Serialize(),
-                Entity = Entity.Build(position, EntityLayer.Middle)
-            };
+            (
+                item: new Item(item).Serialize(),
+                entity: Entity.Build(position, EntityLayer.Middle)
+            );
         }
     }
 }

@@ -17,19 +17,19 @@ namespace Domain.Model.Map
         public TileMemento Serialize()
         {
             return new TileMemento
-            {
-                TileType = TileType,
-                IsKnown = IsKnown
-            };
+            (
+                tileType: TileType,
+                isKnown: IsKnown
+            );
         }
 
         public static TileMemento Build(TileCategory tileType, bool isKnown)
         {
             return new TileMemento
-            {
-                TileType = tileType,
-                IsKnown = isKnown
-            };
+            (
+                tileType: tileType,
+                isKnown: isKnown
+            );
         }
 
         public bool IsPassable()

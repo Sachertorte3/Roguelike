@@ -28,8 +28,8 @@ namespace Domain.Service.Characters
         {
             _id = id;
             Group = data.Group;
-            _affections = data.Affiliations.ToDictionary(x => new Id<IEntity>(x.Key), x => x.Value);
-            _forcedAffiliation = data.ForcedAffiliations.ToDictionary(x => new Id<IEntity>(x.Key), x => x.Value);
+            _affections = data.Affiliations;
+            _forcedAffiliation = data.ForcedAffiliations;
             _player = player;
         }
 
@@ -147,28 +147,28 @@ namespace Domain.Service.Characters
         public AffiliationMemento Serialize()
         {
             return new AffiliationMemento
-            {
-                Group = Group,
-                Affiliations = _affections.ToSerializableDictionary(x => x.Key.ToString(), x => x.Value),
-                ForcedAffiliations = _forcedAffiliation.ToSerializableDictionary(x => x.Key.ToString(), x => x.Value)
-            };
+            (
+                group: Group,
+                affiliations: _affections,
+                forcedAffiliations: _forcedAffiliation
+            );
         }
 
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
 
-            var affiliationDict = new SerializableDictionary<string, float>();
+            var affiliationDict = new Dictionary<Id<IEntity>, float>();
             if (affiliation != null && id != null)
             {
-                affiliationDict = new(affiliation.Affiliations);
-                affiliationDict[id.ToString()] = 5f;
+                affiliationDict = affiliation.Affiliations;
+                affiliationDict[id] = 5f;
             }
             return new AffiliationMemento
-            {
-                Group = group,
-                Affiliations = affiliationDict,
-                ForcedAffiliations = new()
-            };
+            (
+                group: group,
+                affiliations: affiliationDict,
+                forcedAffiliations: new()
+            );
         }
 
         public void ModifyAffection(Id<IEntity> targetId, float change)

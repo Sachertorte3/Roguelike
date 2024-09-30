@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Memento
@@ -6,6 +7,10 @@ namespace Domain.Model.Memento
     [Serializable]
     public class InventoryMemento
     {
-        public Option<ItemMemento>[] Items;
+        [field: SerializeField] public Option<ItemMemento>[] Items { get; private set; }
+        public InventoryMemento(Option<ItemMemento>[] items)
+        {
+            Items = items;
+        }
     }
 }

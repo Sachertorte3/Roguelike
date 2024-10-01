@@ -117,8 +117,16 @@ namespace Game
             var shopItems = data.ShopItems.GetRandomItem().Items;
 
             var positions = shopRoom.RectRange().GetAtRandom(6).ToList();
-            foreach (var position in positions.Take(5))
+
+            var width = Random.Range(2,5);
+            var height = Random.Range(2,5);
+            var rect = shopRoom.GetCenteredInnerRect(new Vector2Int(width, height));
+
+            foreach (var position in rect.RectRange())
+            {
                 _items.Add(ItemFactory.Build(position, Item.Build(shopItems.GetRandomItem(), ItemState.ShopItem)));
+                positions.Remove(position);
+            }
 
             var clerkPosition = positions.Last();
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false, homePosition: clerkPosition);
@@ -163,7 +171,7 @@ namespace Game
                     positions.Remove(position);
                 }
 
-                foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(3))
+                foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
                 {
                     var position = center + direction.Vector();
                     var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position, direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance, homePosition: center);

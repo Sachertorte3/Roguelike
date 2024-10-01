@@ -56,6 +56,16 @@ MonoBehaviour:
       RushDistance: 0
       Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
     CoolTime: 30
+  - Skill:
+      Area:
+        rid: 5486256287083921411
+      Effect:
+        rid: 5486256287083921409
+      Position:
+        rid: 5486256287083921410
+      RushDistance: 0
+      Log: "\u306F\u653B\u6483\u3057\u305F\u3002"
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     Area:
@@ -108,3 +118,21 @@ MonoBehaviour:
     - rid: 861543592802648080
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
+    - rid: 5486256287083921409
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 3
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
+    - rid: 5486256287083921410
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256287083921411
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1

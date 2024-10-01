@@ -15,7 +15,7 @@ namespace Domain.Model
         public Vector2Int CurrentPosition { get; }
         public ReadOnlyReactiveProperty<bool> Visibility { get; }
         public EntityLayer Layer { get; }
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Observable<Unit> OnDestroyed { get; }
         public void SetVisibility(bool visibility);

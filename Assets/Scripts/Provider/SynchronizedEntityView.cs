@@ -47,8 +47,9 @@ namespace Provider
         public void ConstructEntity(IEntity entity, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
-            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction, move.isThrown)).AddTo(entityView);
             entity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetThrowMilliseconds(value)).AddTo(entityView);
             Settings.MoveMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
             Settings.DashMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 

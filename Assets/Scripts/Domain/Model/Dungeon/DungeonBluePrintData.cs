@@ -72,6 +72,7 @@ namespace Domain.Model.Dungeon
                 floorData.ShinyChance,
                 floorData.SleepChance,
                 floorData.Room.ChestChance,
+                floorData.MimicChance,
                 sectionData.WeaponChanceInChest,
                 floorData.ShopChance,
                 floorData.MonsterHouseChance,
@@ -81,7 +82,8 @@ namespace Domain.Model.Dungeon
                 floorData.Room.CharacterCount,
                 floorData.ExistBoss,
                 floorData.Boss,
-                sectionData.Clerk
+                sectionData.Clerk,
+                sectionData.Mimic
             );
         }
     }

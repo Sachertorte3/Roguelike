@@ -1,6 +1,8 @@
+#nullable enable
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -17,11 +19,13 @@ namespace Domain.Service.Events
     public class Chest : ISerializable<ChestMemento>, IIconEventEntity
     {
         private Entity _entity;
-        private Item _item;
+        private Option<Item> _item;
+        private Option<EnemyData> _mimic;
 
         public Chest(ChestMemento memento)
         {
-            _item = new Item(memento.Item);
+            _item = memento.Item.Map(i => new Item(i));
+            _mimic = memento.Mimic;
             _entity = new Entity(memento.Entity);
             _events = new()
             {
@@ -43,13 +47,20 @@ namespace Domain.Service.Events
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         private UniTask DoEvent(IGameManager gameManager, IMap mapManager)
         {
-            mapManager.SpawnItem(_item, CurrentPosition);
             mapManager.RemoveEventEntity(this);
+            if (_item.IsSome)
+            {
+                mapManager.SpawnItem(_item.Value, CurrentPosition);
+            }
+            else
+            {
+                mapManager.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
+            }
             return UniTask.CompletedTask;
         }
 
@@ -111,7 +122,8 @@ namespace Domain.Service.Events
         {
             return new ChestMemento
             (
-                item: _item.Serialize(),
+                item: _item.Map(i => i.Serialize()),
+                mimic: _mimic,
                 entity: _entity.Serialize()
             );
         }
@@ -121,6 +133,14 @@ namespace Domain.Service.Events
             return new ChestMemento
             (
                 item: new Item(item).Serialize(),
+                entity: Entity.Build(position, EntityLayer.Middle)
+            );
+        }
+        public static ChestMemento Build(Vector2Int position, EnemyData mimic)
+        {
+            return new ChestMemento
+            (
+                mimic: mimic,
                 entity: Entity.Build(position, EntityLayer.Middle)
             );
         }

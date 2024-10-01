@@ -150,24 +150,23 @@ namespace Game
 
             var positions = restRoom.RectRange().ToList();
 
-            var center = new Vector2Int(
-                x: Random.value < 0.5f ? Mathf.CeilToInt(restRoom.center.x) : Mathf.FloorToInt(restRoom.center.x),
-                y: Random.value < 0.5f ? Mathf.CeilToInt(restRoom.center.y) : Mathf.FloorToInt(restRoom.center.y)
-            );
-
-            if (restRoom.Contains(center - Vector2Int.one) && restRoom.Contains(center + Vector2Int.one))
+            if (restRoom.width >= 5 && restRoom.height >= 5)
             {
+                var innerRect = restRoom.GetRandomInnerRect(new Vector2Int(5, 5));
+
+                var center = Vector2Int.RoundToInt(innerRect.center);
+
                 _bonfirePosition = center;
-                var rect = new RectInt(center - Vector2Int.one, Vector2Int.one * 3);
-                foreach (var position in rect.RectRange())
+                
+                foreach (var position in innerRect.RectRange())
                 {
                     positions.Remove(position);
                 }
 
-                foreach (var position in rect.RectRange().Where(pos => pos != center).GetAtRandom(3))
+                foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(3))
                 {
-                    var direction = DirectionMethods.FromVector(center - position);
-                    var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position, direction, Random.value < data.SleepChance, Random.value < data.ShinyChance, homePosition: center);
+                    var position = center + direction.Vector();
+                    var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position, direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance, homePosition: center);
                     _characters.Add(character);
                 }
             }

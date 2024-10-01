@@ -7,6 +7,25 @@ using Random = UnityEngine.Random;
 
 namespace Utilities
 {
+    public static class RectIntExtension
+    {
+        public static RectInt GetRandomInnerRect(this RectInt rect, Vector2Int size)
+        {
+            Vector2Int max = rect.size - size;
+            
+            if (max.x < 0 || max.y < 0)
+            {
+                throw new ArgumentException("The specified size is larger than rect.");
+            }
+
+            Vector2Int randomOffset = new Vector2Int(
+                Random.Range(0, max.x + 1),
+                Random.Range(0, max.y + 1)
+            );
+
+            return new RectInt(rect.min + randomOffset, size);
+        }
+    }
     public static class EnumerableExtension
     {
         public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)

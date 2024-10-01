@@ -116,7 +116,7 @@ namespace Domain.Service.Items
             if (Item.CanActivateWhenThrown)
             {
                 var result = await Item.UseWhenThrown(actor, destination, direction, map);
-                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+                if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
                 {
                     _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                         spawnEffectResult.Area,

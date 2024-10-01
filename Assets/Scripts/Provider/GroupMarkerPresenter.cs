@@ -18,8 +18,8 @@ namespace Provider
                 {
                     if (affectionChanged.Message.Target == map.Player.Affiliation.Id)
                     {
-                        var characterView = synchronizedCharacterView.Get(affectionChanged.Character);
-                        characterView.UpdateGroupMarker(
+                        var characterView = synchronizedCharacterView.TryGet(affectionChanged.Character);
+                        characterView?.UpdateGroupMarker(
                             affectionChanged.Character.Affiliation.IsEnemy(map.Player.Affiliation),
                             affectionChanged.Character.Affiliation.IsAlly(map.Player.Affiliation)
                         );

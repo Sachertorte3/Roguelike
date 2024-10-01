@@ -8,6 +8,8 @@ using System;
 using Domain.Model.Item;
 using Utilities;
 using Utilities.Table;
+using Domain.Model.Evaluation;
+
 
 
 #if UNITY_EDITOR
@@ -41,6 +43,18 @@ namespace Domain.Model.Character
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
             AssetDatabase.SaveAssets();
+
+            foreach (var skill in Skills)
+            {
+                if (skill.Skill.ProbabilityOfSuccess == 0)
+                {
+                    skill.Skill.ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+                }
+            }
+            if (LastSkill != null)
+            {
+                LastSkill.ProbabilityOfSuccess = 1;
+            }
         }
 #endif
     }

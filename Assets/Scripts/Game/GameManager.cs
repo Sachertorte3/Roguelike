@@ -7,6 +7,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
+using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -47,6 +48,7 @@ namespace Game
 
         public async UniTask Title()
         {
+            GameLog.Clear();
             if (_world.ActiveMap.CurrentValue == null)
             {
                 await Load();

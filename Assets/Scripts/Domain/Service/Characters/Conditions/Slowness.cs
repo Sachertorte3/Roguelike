@@ -6,17 +6,17 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Clairvoyant : IConditionData
+    internal class Slowness : IConditionData
     {
-        public string Name => "千里眼";
-        public ParticleType ParticleType => ParticleType.Relieve;
-        public Impact Impact => Impact.Beneficial;
+        public string Name => "鈍足";
+        public ParticleType ParticleType => ParticleType.SlowDown;
+        public Impact Impact => Impact.Harmful;
         public bool CanAct => true;
         public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.AddClairvoyantFlags();
+            hasCondition.DivideStat(StatType.WaitTime, 0.5f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -26,17 +26,17 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.RemoveClairvoyantFlags();
+            hasCondition.MultiplyStat(StatType.WaitTime, 0.5f);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsClairvoyant ? 0 : 0.05f;
+            return CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
         }
 
         public float EvaluatePrice()
         {
-            return 10f;
+            return 20f;
         }
     }
 }

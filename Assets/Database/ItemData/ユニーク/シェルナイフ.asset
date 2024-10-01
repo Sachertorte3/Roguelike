@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: "\u30B7\u30A7\u30EB\u30CA\u30A4\u30D5"
   m_EditorClassIdentifier: 
   Icon: {fileID: -791552722, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 2
-  Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -28,11 +28,13 @@ MonoBehaviour:
       rid: 4274951336697528329
     Position:
       rid: 4274951336697528327
+    ProbabilityOfSuccess: 0.95
   SkillOnThrow:
     Area:
       rid: 4274951336697528328
     Effect:
       rid: 4274951336697528329
+    ProbabilityOfSuccess: 0.8
   ItemEffect:
     rid: -2
   UsageLimit: 15
@@ -46,6 +48,7 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 1
     - rid: 4274951336697528327
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

@@ -71,7 +71,7 @@ namespace Game
                     {
                         character.StatusManager.ResetWaitTime();
 
-                        if (character.CanAct && !character.StatusManager.IsDead)
+                        if (character.CanAct && !character.IsDead)
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
                             await character.DoNextAction(gameManager, map, _input);

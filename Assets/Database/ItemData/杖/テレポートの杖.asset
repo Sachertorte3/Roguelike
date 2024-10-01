@@ -13,25 +13,30 @@ MonoBehaviour:
   m_Name: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u6756"
   m_EditorClassIdentifier: 
   Icon: {fileID: 1442388210, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 2
-  Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425516923575599121
+      rid: 5486256292201496579
     Effect:
       rid: 4425516923575599122
     Position:
-      rid: 2541219106150416401
+      rid: 5486256292201496578
+    ProbabilityOfSuccess: 0.95
   SkillOnThrow:
     Area:
       rid: -2
     Effect:
       rid: -2
+    ProbabilityOfSuccess: 0.8
+  ItemEffect:
+    rid: -2
   UsageLimit: 5
   PassiveConditions: []
   references:
@@ -39,14 +44,15 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416401
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 4425516923575599121
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
     - rid: 4425516923575599122
       type: {class: TeleportEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 5486256292201496578
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon:
+          _name: icons_full_16_138
+        CanHitLayer: 0100000000000000
+    - rid: 5486256292201496579
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

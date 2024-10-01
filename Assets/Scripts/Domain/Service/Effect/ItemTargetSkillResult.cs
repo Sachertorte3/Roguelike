@@ -5,12 +5,13 @@ namespace Domain.Service.Effect
 {
     public record ItemTargetSkillResult : ISkillResult
     {
-        public bool IsSuccess { get; init; }
-        private ItemTargetSkillResult(bool isSuccess)
+        public SkillResult Result { get; init; }
+        private ItemTargetSkillResult(SkillResult result)
         {
-            IsSuccess = isSuccess;
+            Result = result;
         }
-        public static readonly ItemTargetSkillResult Failed = new(false);
-        public static readonly ItemTargetSkillResult Success = new(true);
+        public static readonly ItemTargetSkillResult Failed = new(SkillResult.Failed);
+        public static readonly ItemTargetSkillResult Cancelled = new(SkillResult.Cancelled);
+        public static readonly ItemTargetSkillResult Success = new(SkillResult.Success);
     }
 }

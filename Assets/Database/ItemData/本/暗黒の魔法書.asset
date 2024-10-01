@@ -10,47 +10,53 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30CF\u30FC\u30C8"
+  m_Name: "\u6697\u9ED2\u306E\u9B54\u6CD5\u66F8"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1552767190, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 1
+  SpawnEffectsOnThrow: 0
   IsSameEffect: 0
-  IsSameSkill: 1
+  IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425516923575599127
+      rid: 861543310686683144
     Effect:
-      rid: 4425517307579858944
+      rid: 4425517220030054409
     Position:
-      rid: 2541219106150416402
-    ProbabilityOfSuccess: 0.95
+      rid: 861543310686683140
   SkillOnThrow:
     Area:
-      rid: 4425516923575599127
+      rid: -2
     Effect:
-      rid: 4425517307579858944
-    ProbabilityOfSuccess: 0.95
+      rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 1
+  UsageLimit: 15
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416402
+    - rid: 861543310686683140
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599127
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 4425517307579858944
-      type: {class: AffectionIncreaseEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 861543310686683144
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        _power: 1
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Radius: 2
+    - rid: 4425517220030054409
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 5
+          _power: 10
+        _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []

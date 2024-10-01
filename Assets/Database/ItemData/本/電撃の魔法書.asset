@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u706B\u708E\u306E\u6756"
+  m_Name: "\u96FB\u6483\u306E\u9B54\u6CD5\u66F8"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1954880249, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1552767190, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 2
   EffectType: 1
   UseOnDeath: 0
@@ -22,11 +23,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 4425517232088416258
+      rid: 4425517220030054408
     Effect:
       rid: 4425517220030054409
     Position:
-      rid: 2541219106150416407
+      rid: 2541219106150416410
   SkillOnThrow:
     Area:
       rid: -2
@@ -34,30 +35,30 @@ MonoBehaviour:
       rid: -2
   ItemEffect:
     rid: -2
-  UsageLimit: 24
+  UsageLimit: 10
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416407
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+    - rid: 2541219106150416410
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:
-        Icon:
-          _name: icons_full_16_143
+        NumberOfTarget: 1
+        TargetAlly: 0
+        TargetEnemy: 1
+        TargetNeutral: 0
+        TargetSelf: 0
+    - rid: 4425517220030054408
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 1
-          _power: 8
+        - _element: 3
+          _power: 5
         _criticalRate: 0
         _blowAwayDistance: 0
         _additionalConditions: []
-    - rid: 4425517232088416258
-      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 1
-        CanIgnoreWalls: 0
-        Radius: 1

@@ -26,6 +26,7 @@ namespace Domain.Model.Character
         public int Money { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public bool CanAct { get; }
+        public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned { get; }
         public Observable<Unit> OnDead { get; }
@@ -65,6 +66,7 @@ namespace Domain.Model.Character
         public void WasAttackedBy(IActorOfEffect actor, float impact);
         public void WasHealedBy(IActorOfEffect actor, float impact);
         public UniTask DoNextAction(IGameManager gameManager, IMap world, IInput input);
+        public bool CanPickUpItem();
         public bool TryPickUp(IItem item);
         public IItem? ReplaceInventory(IItem? item, int index);
         public void UpdateTurn();

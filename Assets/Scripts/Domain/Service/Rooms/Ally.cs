@@ -69,7 +69,7 @@ namespace Domain.Service.Rooms
         public Vector2Int CurrentPosition => Character.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;
         public EntityLayer Layer => Character.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => Character.OnMove;
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => Character.OnMove;
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
 

@@ -144,7 +144,7 @@ namespace Game
             var positions = monsterHouseRoom.RectRange().ToList();
             foreach (var position in positions.GetAtRandomAndRemove(5))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
-            _chests.Add(Chest.Build(positions.GetAtRandomAndRemove(1).First(), data.ChestItems.GetRandomItem()));
+            AddChestsToRoom(data, positions.GetAtRandomAndRemove(1), _chests);
 
             return MonsterHouse.Build(monsterHouseRoom);
         }
@@ -181,7 +181,7 @@ namespace Game
 
             foreach (var position in positions.GetAtRandomAndRemove(2))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
-            _chests.Add(Chest.Build(positions.GetAtRandomAndRemove(1).First(), data.ChestItems.GetRandomItem()));
+            AddChestsToRoom(data, positions.GetAtRandomAndRemove(1), _chests);
         }
 
         private void AddCharactersToRoom(DungeonMapData data, List<Vector2Int> positions)
@@ -223,7 +223,11 @@ namespace Game
         {
             foreach (var position in positions)
             {
-                if (Random.value < data.WeaponChanceInChest)
+                if (Random.value < data.MimicChance)
+                {
+                    chests.Add(Chest.Build(position, data.Mimic));
+                }
+                else if (Random.value < data.WeaponChanceInChest)
                 {
                     var material = data.Materials.GetRandomItem();
                     var mold = data.WeaponMolds.GetRandomItem();

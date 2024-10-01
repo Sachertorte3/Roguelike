@@ -153,6 +153,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 1
       _shopChance: 1
       _monsterHouseChance: 0.1
       _restRoomChance: 1
@@ -164,6 +165,7 @@ MonoBehaviour:
       _existBoss: 0
       _boss: []
     WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -182,6 +184,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 1
       _restRoomChance: 0.1
@@ -198,6 +201,7 @@ MonoBehaviour:
       _prefixChance: 0
       _shinyChance: 0
       _sleepChance: 0
+      _mimicChance: 0.1
       _shopChance: 0
       _monsterHouseChance: 0
       _restRoomChance: 0.1
@@ -210,6 +214,7 @@ MonoBehaviour:
       _boss:
       - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
     WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -226,6 +231,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -242,6 +248,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -258,6 +265,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -270,6 +278,7 @@ MonoBehaviour:
       _boss:
       - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
     WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -292,6 +301,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -308,6 +318,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -320,6 +331,7 @@ MonoBehaviour:
       _boss:
       - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
     WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -342,6 +354,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -358,6 +371,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
+      _mimicChance: 0.1
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -370,6 +384,7 @@ MonoBehaviour:
       _boss:
       - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
     WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:

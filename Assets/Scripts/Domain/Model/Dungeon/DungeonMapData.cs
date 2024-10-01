@@ -21,6 +21,7 @@ namespace Domain.Model.Dungeon
         float ShinyChance,
         float SleepChance,
         float ChestChance,
+        float MimicChance,
         float WeaponChanceInChest,
         float ShopChance,
         float MonsterHouseChance,
@@ -30,6 +31,7 @@ namespace Domain.Model.Dungeon
         float CharacterCount,
         bool existBoss,
         List<EnemyData> Boss,
-        EnemyData Clerk
+        EnemyData Clerk,
+        EnemyData Mimic
     );
 }

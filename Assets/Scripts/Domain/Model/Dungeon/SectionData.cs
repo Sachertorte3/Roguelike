@@ -13,9 +13,11 @@ namespace Domain.Model.Dungeon
     {
         public int Depth => Floors.Sum(floor => floor.Depth);
         [RequiredListLength(1, null)] public List<FloorData> Floors;
-        private bool _existChest => Floors.Max(floor => floor.Room.ChestChance) > 0;
+        private bool _existChest => Floors.Any(floor => floor.Room.ChestChance > 0);
         [ShowIf("@_existChest"), Required] public float WeaponChanceInChest;
-        private bool _existShop => Floors.Max(floor => floor.ShopChance) > 0;
+        private bool _existMimic => Floors.Any(floor => floor.MimicChance > 0);
+        [ShowIf("@_existMimic"), Required] public EnemyData Mimic;
+        private bool _existShop => Floors.Any(floor => floor.ShopChance > 0);
         [ShowIf("@_existShop"), Required] public EnemyData Clerk;
         public Table<EnemyData> Enemies;
         public Table<MaterialData> Materials;

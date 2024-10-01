@@ -40,7 +40,7 @@ namespace Domain.Model.Character
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
         public ReadOnlyReactiveProperty<bool> Visibility { get; }
         public EntityLayer Layer { get; }
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Vector2Int CurrentPosition { get; }
         public ICharacterSkill[] Skills { get; }

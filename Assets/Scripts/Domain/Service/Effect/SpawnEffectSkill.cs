@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
@@ -22,17 +20,19 @@ namespace Domain.Service.Effect
         private readonly IEffect _effect;
         private readonly IEffectPosition _position;
         public int RushDistance { get; private set; }
+        public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, string? log)
+        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
             _effect = effect;
             RushDistance = rushDistance;
+            ProbabilityOfSuccess = probabilityOfSuccess;
             _log = log;
         }
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.RushDistance, data.Log)
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.RushDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
 
@@ -43,6 +43,7 @@ namespace Domain.Service.Effect
                 data.Area,
                 _effect,
                 data.RushDistance,
+                data.ProbabilityOfSuccess,
                 data.Log
             );
         }
@@ -57,6 +58,7 @@ namespace Domain.Service.Effect
                 area: _area,
                 effect: _effect,
                 rushDistance: RushDistance,
+                probabilityOfSuccess: ProbabilityOfSuccess,
                 log: _log
             );
         }
@@ -69,6 +71,7 @@ namespace Domain.Service.Effect
                 area: data.Area,
                 effect: data.Effect,
                 rushDistance: data.RushDistance,
+                probabilityOfSuccess: data.ProbabilityOfSuccess,
                 log: data.Log
             );
         }
@@ -81,6 +84,7 @@ namespace Domain.Service.Effect
                 area: data.Area,
                 effect: data.Effect,
                 rushDistance: 0,
+                probabilityOfSuccess: data.ProbabilityOfSuccess,
                 log: ""
             );
         }
@@ -93,6 +97,7 @@ namespace Domain.Service.Effect
                 area: data.Area,
                 effect: data.Effect,
                 rushDistance: 0,
+                probabilityOfSuccess: data.ProbabilityOfSuccess,
                 log: ""
             );
         }
@@ -116,6 +121,12 @@ namespace Domain.Service.Effect
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
+
+            if (Random.value > ProbabilityOfSuccess)
+            {
+                GameLog.Add($"しかし失敗した！");
+                return SpawnEffectSkillResult.Failed;
+            }
 
             if (_position is ProjectileImpact projectileImpact)
             {
@@ -218,7 +229,7 @@ namespace Domain.Service.Effect
                 }
             }
 
-            return totalEvaluation;
+            return totalEvaluation * ProbabilityOfSuccess;
         }
 
         public float EvaluatePrice()
@@ -227,7 +238,7 @@ namespace Domain.Service.Effect
             price += _effect.EvaluatePrice();
             price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
             price *= _area.EvaluateArea();
-            return price;
+            return price * ProbabilityOfSuccess;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
@@ -250,7 +261,7 @@ namespace Domain.Service.Effect
 
         public string InfoOnUse()
         {
-            var info = $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}";
+            var info = $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
             return info;
@@ -259,7 +270,7 @@ namespace Domain.Service.Effect
         {
             var info = "";
             info += $"効果: {(omitEffects ? "使用時と同じ" : _effect.Info())}\n";
-            info += $"範囲: {_area.Info()}";
+            info += $"範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
             return info;
         }
     }

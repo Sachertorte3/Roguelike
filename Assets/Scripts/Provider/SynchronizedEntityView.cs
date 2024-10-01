@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Provider
 {
-    public abstract class SynchronizedEntityView<T, TView> where T : IEntity where TView : Component
+    public abstract class SynchronizedEntityView<T, TView> where T : class, IEntity where TView : Component
     {
         private readonly BiMap<T, TView> _viewDict = new();
         protected abstract TView ViewPrefab(T obj);
@@ -34,9 +34,19 @@ namespace Provider
         protected abstract void InitializeView(T item, TView view);
         protected abstract void CleanupView(T item, TView view);
 
+        public T? TryGet(TView view)
+        {
+            return _viewDict.Reverse.ContainsKey(view) ? _viewDict.Reverse[view] : null;
+        }
+
         public T Get(TView view)
         {
             return _viewDict.Reverse[view];
+        }
+
+        public TView? TryGet(T obj)
+        {
+            return _viewDict.Forward.ContainsKey(obj) ? _viewDict.Forward[obj] : null;
         }
 
         public TView Get(T obj)

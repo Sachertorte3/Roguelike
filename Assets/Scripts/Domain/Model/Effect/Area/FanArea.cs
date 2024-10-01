@@ -33,7 +33,7 @@ namespace Domain.Model.Effect.Area
                 case Direction8.Right:
                     var deltaVec = direction.Vector();
                     var perpVec = direction.Rotate90Clockwise().Vector();
-                    for (var i = 1; i <= Radius; i++)
+                    for (var i = 0; i <= Radius; i++)
                     {
                         for (var j = -i; j <= i; j++)
                         {
@@ -52,12 +52,10 @@ namespace Domain.Model.Effect.Area
                 case Direction8.DownRight:
                     var clockwiseVec = direction.Rotate45Clockwise().Vector();
                     var anticlockwiseVec = direction.Rotate45AntiClockwise().Vector();
-                    for (var i = 1; i <= Radius; i++)
+                    for (var i = 0; i <= Radius; i++)
                     {
-                        area.Add(position + (i * clockwiseVec));
-                        for (var j = 1; j <= Radius; j++)
+                        for (var j = 0; j <= Radius; j++)
                         {
-                            area.Add(position + (j * anticlockwiseVec));
                             if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
                                 area.Add(position + (i * clockwiseVec) + (j * anticlockwiseVec));
@@ -68,6 +66,8 @@ namespace Domain.Model.Effect.Area
                     break;
             }
 
+            if (!ContainsSelf)
+                area.Remove(position);
             if (CanIgnoreWalls)
                 return area;
             var reachable = ViewCalculator.ComputeSquare(map.GetAllPassablePositions(), position, Radius + 0.5f);

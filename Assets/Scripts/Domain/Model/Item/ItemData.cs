@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -102,7 +103,16 @@ namespace Domain.Model.Item
 
             if (IsSameSkill && SkillOnUse != null)
             {
-                SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect);
+                SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect, SkillOnUse.ProbabilityOfSuccess);
+            }
+
+            if (SkillOnUse != null && SkillOnUse.ProbabilityOfSuccess == 0)
+            {
+                SkillOnUse.ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess; // デフォルト値で上書き
+            }
+            if (SkillOnThrow != null && SkillOnThrow.ProbabilityOfSuccess == 0)
+            {
+                SkillOnThrow.ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess; // デフォルト値で上書き
             }
         }
 #endif

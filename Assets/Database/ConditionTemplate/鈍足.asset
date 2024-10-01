@@ -19,10 +19,11 @@ MonoBehaviour:
     Duration: 8
     RemoveByDamage: 0
     Probability: 0
-    RemoveByEnemyNearby: 0
+    RemoveByCharacterNearby: 0
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 861543420369829893
       type: {class: Slow, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 

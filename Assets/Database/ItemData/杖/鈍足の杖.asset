@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\u920D\u8DB3\u306E\u6756"
   m_EditorClassIdentifier: 
   Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 3
   EffectType: 1
   UseOnDeath: 0
@@ -22,16 +23,18 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     Area:
-      rid: 861543420369829888
+      rid: 5486256292201496581
     Effect:
       rid: 861543420369829892
     Position:
-      rid: 861543420369829889
+      rid: 5486256292201496583
+    ProbabilityOfSuccess: 0.95
   SkillOnThrow:
     Area:
       rid: -2
     Effect:
       rid: -2
+    ProbabilityOfSuccess: 0.8
   ItemEffect:
     rid: -2
   UsageLimit: 10
@@ -41,16 +44,17 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543420369829888
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 861543420369829889
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        Icon:
-          _name: icons_full_16_132
     - rid: 861543420369829892
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _condition:
           _name: "\u920D\u8DB3"
+    - rid: 5486256292201496581
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256292201496583
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon:
+          _name: icons_full_16_138
+        CanHitLayer: 01000000

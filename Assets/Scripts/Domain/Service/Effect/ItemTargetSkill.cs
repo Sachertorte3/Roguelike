@@ -44,7 +44,7 @@ namespace Domain.Service.Effect
                 _itemEffect.Apply(selectedItem);
                 return ItemTargetSkillResult.Success;
             }
-            return ItemTargetSkillResult.Failed;
+            return ItemTargetSkillResult.Cancelled;
         }
 
         public float Evaluate(IActor actor, IItem item)

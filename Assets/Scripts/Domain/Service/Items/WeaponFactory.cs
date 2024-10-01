@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using Codice.CM.Common;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Service.Effect;
 using UnityEngine;
@@ -27,7 +29,8 @@ namespace Domain.Service.Items
                         0,
                         new List<AdditionalConditionData>(),
                         0
-                    )
+                    ),
+                    CommonSenseParameters.SkillOnUseProbabilityOfSuccess
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
@@ -37,7 +40,8 @@ namespace Domain.Service.Items
                         0,
                         new List<AdditionalConditionData>(),
                         0
-                    )
+                    ),
+                    CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
                 ),
                 true,
                 false,
@@ -62,7 +66,8 @@ namespace Domain.Service.Items
                             new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
-                        prefix.AdditionalConditions, 0)
+                        prefix.AdditionalConditions, 0),
+                    CommonSenseParameters.SkillOnUseProbabilityOfSuccess
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
@@ -71,7 +76,8 @@ namespace Domain.Service.Items
                             new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
-                        prefix.AdditionalConditions, 0)
+                        prefix.AdditionalConditions, 0),
+                    CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
                 ),
                 true,
                 false,

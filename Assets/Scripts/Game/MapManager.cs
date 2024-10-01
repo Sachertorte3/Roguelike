@@ -415,23 +415,27 @@ namespace Game
 
             CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
             {
-                if (positionChanged.Character.CanPickUp)
+                var item = ItemManager.GetItemAt(positionChanged.Message.Position);
+                if (item != null)
                 {
-                    if (positionChanged.Character.Inventory.HasEmptySpace())
+                    if (positionChanged.Character.CanPickUp
+                        && positionChanged.Character.CanPickUpItem()
+                        && ItemManager.CanPickUpAt(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value))
                     {
-                        var item = ItemManager.TryPickUp(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
-                        if (item != null)
+                        ItemManager.PickUpAt(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
+                        if (positionChanged.Character.TryPickUp(item.Item))
                         {
-                            if (positionChanged.Character.TryPickUp(item.Item))
-                            {
-                                if (positionChanged.Character == Player)
-                                    GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
-                            }
-                            else
-                            {
-                                Log.Error("cannot pick up item");
-                            }
+                            if (positionChanged.Character == Player)
+                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
                         }
+                        else
+                        {
+                            throw new Exception("Unexpected error. Unable to pick up item.");
+                        }
+                    }
+                    else
+                    {
+                        GameLog.Add($"{positionChanged.Character.GetName(positionChanged.Character)}は{item.Item.Name}の上に乗った");
                     }
                 }
             }).AddTo(_disposables);
@@ -513,7 +517,7 @@ namespace Game
 
         public void HandleItemDrop(int inventoryIndex)
         {
-            var itemEntity = ItemManager.TryPickUp(Player.CurrentPosition, true);
+            var itemEntity = ItemManager.TryPickUpAt(Player.CurrentPosition, true);
             if (itemEntity != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");

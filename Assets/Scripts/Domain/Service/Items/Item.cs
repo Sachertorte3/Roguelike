@@ -121,7 +121,7 @@ namespace Domain.Service.Items
                 skillOnThrow = data.SpawnEffectsOnThrow ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow) : null;
             }
 
-            return new ItemMemento
+            var memento = new ItemMemento
             (
                 id: Id<IItem>.Generate().ToString(),
                 name: data.Name,
@@ -138,6 +138,8 @@ namespace Domain.Service.Items
                 remainingUsages: data.UsageLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
+            var json = JsonUtility.ToJson(memento);
+            return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
         }
 
         public void SetState(ItemState state)
@@ -152,7 +154,7 @@ namespace Domain.Service.Items
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
                 itemTargetSkill => itemTargetSkill.Use(actor, this)
             );
-            if (result.IsSuccess)
+            if (result.Result != SkillResult.Cancelled)
             {
                 _remainingUsages.Value -= 1;
                 if (State == ItemState.ShopItem)
@@ -172,7 +174,7 @@ namespace Domain.Service.Items
                     return itemTargetSkill.Use((IActor)actor, this);
                 }
             );
-            if (result.IsSuccess)
+            if (result.Result != SkillResult.Cancelled)
             {
                 _remainingUsages.Value -= 1;
                 if (State == ItemState.ShopItem)

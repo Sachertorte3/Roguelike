@@ -74,17 +74,17 @@ namespace Domain.Service.Characters
 
             _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ =>
             {
-                if (_statusManager.IsDead)
+                if (IsDead)
                 {
                     foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
                     {
                         await UseItem(item, CurrentDirection, _map);
-                        if (!_statusManager.IsDead)
+                        if (!IsDead)
                             break;
                     }
                 }
 
-                if (_statusManager.IsDead)
+                if (IsDead)
                 {
                     if (_lastSkill != null)
                         await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
@@ -97,6 +97,7 @@ namespace Domain.Service.Characters
         public bool IsOverDrive => _statusManager.IsOverDrive;
         public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
         public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
+        public bool IsDead => _statusManager.IsDead || _entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
         public Entity Entity => _entity;
         public bool IsLeader { get; init; }
@@ -203,12 +204,12 @@ namespace Domain.Service.Characters
             for (var i = 0; i < skill.RushDistance; i++)
             {
                 if (CanMove(direction, map))
-                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
+                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }
 
             var result = await skill.Use(this, CurrentPosition, direction, map);
 
-            if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+            if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
             {
                 _onEffectSpawned.OnNext(
                     new OnEffectSpawnedMessage(spawnEffectResult.Area, spawnEffectResult.Color));
@@ -232,7 +233,7 @@ namespace Domain.Service.Characters
                     {
                         var result = await item.Use(this, CurrentPosition, direction, map);
 
-                        if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+                        if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
                         {
                             _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(spawnEffectResult.Area, spawnEffect.Color));
                             if (_entity.VisibleByPlayer.CurrentValue)
@@ -268,7 +269,7 @@ namespace Domain.Service.Characters
             if (item.CanActivateWhenThrown)
             {
                 var result = await item.UseWhenThrown(this, destination, direction, map);
-                if (result.IsSuccess && result is SpawnEffectSkillResult spawnEffectResult)
+                if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
                 {
                     _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
                         spawnEffectResult.Area,
@@ -316,7 +317,7 @@ namespace Domain.Service.Characters
 
         public void Destroy()
         {
-            _entity.Destroy();
+            _onDead.OnNext(Unit.Default);
         }
 
         public ICharacterSkill[] Skills => _skills;
@@ -421,6 +422,11 @@ namespace Domain.Service.Characters
 
             State = CharacterState.Act;
             await action.Do(this, world, input);
+        }
+
+        public bool CanPickUpItem()
+        {
+            return _inventory.HasEmptySpace();
         }
 
         public bool TryPickUp(IItem item)

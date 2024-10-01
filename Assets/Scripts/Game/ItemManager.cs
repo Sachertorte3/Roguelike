@@ -76,20 +76,29 @@ namespace Game
             return _items.FirstOrDefault(item => item.CurrentPosition == position);
         }
 
-        public IItemEntity? TryPickUp(Vector2Int position, bool pickUpShopItem = false)
+        public bool CanPickUpAt(Vector2Int position, bool pickUpShopItem = false)
         {
             var item = GetItemAt(position);
             if (item == null)
+                return false;
+
+            return pickUpShopItem || item.Item.State != ItemState.ShopItem;
+        }
+
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool pickUpShopItem = false)
+        {
+            if (!CanPickUpAt(position, pickUpShopItem))
                 return null;
 
-            if (pickUpShopItem || item.Item.State != ItemState.ShopItem)
-            {
-                _items.Remove(item);
-                ItemEntityEvents.Remove(item);
-                return item;
-            }
-            else
-                return null;
+            var item = GetItemAt(position)!;
+            _items.Remove(item);
+            ItemEntityEvents.Remove(item);
+            return item;
+        }
+
+        public IItemEntity PickUpAt(Vector2Int position, bool pickUpShopItem = false)
+        {
+            return TryPickUpAt(position, pickUpShopItem) ?? throw new Exception("item cannot be picked up");
         }
     }
 }

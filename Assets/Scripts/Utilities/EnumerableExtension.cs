@@ -18,12 +18,28 @@ namespace Utilities
                 throw new ArgumentException("The specified size is larger than rect.");
             }
 
-            Vector2Int randomOffset = new Vector2Int(
+            Vector2Int random = new Vector2Int(
                 Random.Range(0, max.x + 1),
                 Random.Range(0, max.y + 1)
             );
 
-            return new RectInt(rect.min + randomOffset, size);
+            return new RectInt(rect.min + random, size);
+        }
+        public static RectInt GetCenteredInnerRect(this RectInt rect, Vector2Int size)
+        {
+            Vector2Int max = rect.size - size;
+
+            if (max.x < 0 || max.y < 0)
+            {
+                throw new ArgumentException("The specified size is larger than rect.");
+            }
+
+            Vector2Int roundedOffset = new Vector2Int(
+                Random.value < 0.5f ? Mathf.FloorToInt(max.x / 2f) : Mathf.CeilToInt(max.x / 2f),
+                Random.value < 0.5f ? Mathf.FloorToInt(max.y / 2f) : Mathf.CeilToInt(max.y / 2f)
+            );
+
+            return new RectInt(rect.min + roundedOffset, size);
         }
     }
     public static class EnumerableExtension

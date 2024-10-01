@@ -153,7 +153,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
-      _shopChance: 0.1
+      _shopChance: 1
       _monsterHouseChance: 0.1
       _restRoomChance: 1
       _room:

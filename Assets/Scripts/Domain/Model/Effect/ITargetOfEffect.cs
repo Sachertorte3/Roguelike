@@ -1,5 +1,6 @@
 ﻿using Domain.Model.Character;
 using Domain.Model.Condition;
+using Utilities;
 
 namespace Domain.Model.Effect
 {
@@ -29,7 +30,7 @@ namespace Domain.Model.Effect
         /// <returns>The actual amount of HP recovered</returns>
         public int GainHp(int value);
 
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
+        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition);
         public void ClearCondition();
     }
 }

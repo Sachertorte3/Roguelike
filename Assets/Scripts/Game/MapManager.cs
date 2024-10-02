@@ -85,11 +85,15 @@ namespace Game
             {
                 foreach (var character in partyMembers)
                 {
-                    character.Entity.CopyWith(
-                        position: FindBlankPositionFrom(playerPosition.Value,
-                                position => !AllCharacterPositions().Contains(position))
+                    var ally = CharacterManager.SpawnAlly(
+                        character.ReplacePosition(
+                            FindBlankPositionFrom(
+                                playerPosition.Value,
+                                position => !AllCharacterPositions().Contains(position)
+                            )
+                        ),
+                        this
                     );
-                    var ally = CharacterManager.SpawnAlly(character, this);
                     EventEntityManager.Add(ally);
                 }
             }

@@ -45,9 +45,9 @@ namespace Domain.Service.Rooms
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
 
-        public void ReducesFavorabilityTowardsThief(ICharacter thief)
+        public void OpposingThief(ICharacter thief)
         {
-            Character.Affiliation.ForceAffiliation(thief.Affiliation, AffiliationType.Enemy);
+            Character.Affiliation.AddForceAffiliation(thief.Id, AffiliationType.Enemy);
         }
 
         public void SetVisibility(bool visibility)

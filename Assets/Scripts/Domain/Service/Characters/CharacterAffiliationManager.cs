@@ -6,6 +6,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Memento;
 using R3;
+using Stats;
 using UnityEngine;
 using Utilities;
 
@@ -22,14 +23,14 @@ namespace Domain.Service.Characters
         private readonly Id<IEntity> _id;
         private readonly Subject<OnAffiliationChangedMessage> _OnAffiliationChanged = new();
         private IAffiliation? _player;
-        private readonly Dictionary<Id<IEntity>, AffiliationType> _forcedAffiliation;
+        private readonly Dictionary<(Id<IEntity>, AffiliationType), FlagStat> _forcedAffiliationFlags = new();
 
         public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IAffiliation? player)
         {
             _id = id;
             Group = data.Group;
             _affections = data.Affiliations;
-            _forcedAffiliation = data.ForcedAffiliations;
+            _forcedAffiliationFlags = data.ForcedAffiliationFlags;
             _player = player;
         }
 
@@ -40,9 +41,17 @@ namespace Domain.Service.Characters
 
         public AffiliationType GetAffiliationType(IAffiliation other)
         {
-            if (_forcedAffiliation.ContainsKey(other.Id))
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Enemy)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Enemy)].CurrentValue)
             {
-                return _forcedAffiliation[other.Id];
+                return AffiliationType.Enemy;
+            }
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Ally)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Ally)].CurrentValue)
+            {
+                return AffiliationType.Ally;
+            }
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Neutral)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Neutral)].CurrentValue)
+            {
+                return AffiliationType.Neutral;
             }
 
             if (other.Id == Id)
@@ -150,7 +159,7 @@ namespace Domain.Service.Characters
             (
                 group: Group,
                 affiliations: _affections,
-                forcedAffiliations: _forcedAffiliation
+                forcedAffiliationFlags: _forcedAffiliationFlags
             );
         }
 
@@ -167,7 +176,7 @@ namespace Domain.Service.Characters
             (
                 group: group,
                 affiliations: affiliationDict,
-                forcedAffiliations: new()
+                forcedAffiliationFlags: new()
             );
         }
 
@@ -205,15 +214,37 @@ namespace Domain.Service.Characters
             return GetAffectionByGroup(target) + GetAffectionByRelation(target.Id);
         }
 
-        public void ForceAffiliation(IAffiliation target, AffiliationType type)
+        public void AddForceAffiliation(Id<IEntity> target, AffiliationType type)
         {
-            if (target.Id == Id)
+            if (target == Id)
             {
                 return;
             }
 
-            _forcedAffiliation[target.Id] = type;
-            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target.Id));
+            if (!_forcedAffiliationFlags.ContainsKey((target, type)))
+            {
+                _forcedAffiliationFlags[(target, type)] = new FlagStat(1);
+            }
+            else
+            {
+                _forcedAffiliationFlags[(target, type)].AddFlags();
+            }
+            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
+        }
+
+        public void RemoveForceAffiliation(Id<IEntity> target, AffiliationType type)
+        {
+            if (target == Id)
+            {
+                return;
+            }
+
+            _forcedAffiliationFlags[(target, type)].RemoveFlags();
+            if (_forcedAffiliationFlags[(target, type)].CurrentFlags <= 0)
+            {
+                _forcedAffiliationFlags.Remove((target, type));
+            }
+            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
         }
 
         private float GetAffectionByGroup(IAffiliation target)

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -10,14 +13,18 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int ClairvoyantFlags;
         [field: SerializeField] public int BlindFlags;
         [field: SerializeField] public int OverDriveFlags;
-        [field: SerializeField] public ConditionMemento[] Conditions;
-        public CharacterStatusMemento(CharacterStatsMemento stats, int clairvoyantFlags, int blindFlags, int overDriveFlags, ConditionMemento[] conditions)
+        [SerializeField] private List<ConditionMemento> _conditions;
+        [SerializeField] private List<string> _inflicters;
+        public List<(Id<IEntity> actor, ConditionMemento condition)> Conditions => _conditions.Select((x, i) => (new Id<IEntity>(_inflicters[i]), x)).ToList();
+
+        public CharacterStatusMemento(CharacterStatsMemento stats, int clairvoyantFlags, int blindFlags, int overDriveFlags, List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
         {
             Stats = stats;
             ClairvoyantFlags = clairvoyantFlags;
             BlindFlags = blindFlags;
             OverDriveFlags = overDriveFlags;
-            Conditions = conditions;
+            _conditions = conditions.Select(x => x.condition).ToList();
+            _inflicters = conditions.Select(x => x.actor.ToString()).ToList();
         }
     }
 }

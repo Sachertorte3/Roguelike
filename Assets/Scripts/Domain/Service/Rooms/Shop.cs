@@ -165,8 +165,8 @@ namespace Domain.Service.Rooms
         public void Stolen(IMap mapManager)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
-            Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
-            Clerk.Character.AddCondition(new Clairvoyant(), new RemovalConditionData());
+            Clerk.OpposingThief(mapManager.Player);
+            Clerk.Character.AddCondition(Id<IEntity>.Empty, new Clairvoyant(), new RemovalConditionData());
             MarkItemsAsStolen(mapManager);
             CanExecute = false;
             _isStolen.Value = true;

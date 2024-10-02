@@ -17,7 +17,7 @@ using Utilities;
 namespace Domain.Model.Character
 {
     public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
-        IActorOfEffect, ITargetOfEffect
+        IActorOfEffect, ITargetOfEffect, IHasCondition
     {
         public bool IsLeader { get; }
         public bool IsBoss { get; }
@@ -61,7 +61,7 @@ namespace Domain.Model.Character
         public void Teleport(Vector2Int position);
         public int GainHp(int value);
         public int LoseHp(int value);
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition);
+        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition);
         public UniTask ForceMove(Direction8 direction, IInput input);
         public void WasAttackedBy(IActorOfEffect actor, float impact);
         public void WasHealedBy(IActorOfEffect actor, float impact);

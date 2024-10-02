@@ -52,7 +52,7 @@ namespace Domain.Service.Effect
             {
                 if (Random.value < condition.Probability)
                 {
-                    target.AddCondition(condition.Condition.Value.Condition, condition.Condition.Value.RemovalCondition);
+                    target.AddCondition(actor.Id, condition.Condition.Value.Condition, condition.Condition.Value.RemovalCondition);
                 }
             }
             if (_blowAwayDistance > 0)

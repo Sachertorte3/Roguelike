@@ -42,19 +42,20 @@ namespace Game
             {
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
 
-                map.UpdateTurn(_turn.CurrentValue);
                 var characters = map.Characters.OrderBy(c => Vector2Extension.ChebyshevDistance(c.CurrentPosition, map.Player.CurrentPosition)).ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
                     characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
                 }
+
                 var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+                minWaitTime = Mathf.Min(minWaitTime, _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
+                _turnWaitTime.Gain(minWaitTime);
 
                 if (_turnWaitTime.IsFull())
                 {
-                    _turnWaitTime.Set(0);
+                    map.UpdateTurn(_turn.CurrentValue);
                 }
-                _turnWaitTime.Gain(minWaitTime);
 
                 foreach (var character in characters)
                 {
@@ -69,8 +70,9 @@ namespace Game
                     character.StatusManager.AddWaitTime(minWaitTime);
                     if (character.StatusManager.IsWaitTimeFull())
                     {
-                        character.StatusManager.ResetWaitTime();
-
+                        if (character.State != CharacterState.Wait)
+                            continue;
+                        
                         if (character.CanAct && !character.IsDead)
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
@@ -80,9 +82,9 @@ namespace Game
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
                         }
-                    }
 
-                    await UniTask.WaitWhile(() => map.IsEventExecuting);
+                        await UniTask.WaitWhile(() => map.IsEventExecuting);
+                    }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
@@ -95,8 +97,17 @@ namespace Game
 
                 Globals.GameManager.Save();
 
-                await characters.Select(character =>
-                    UniTask.WaitUntil(() => character.State == CharacterState.Wait));
+                foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
+                {
+                    await UniTask.WaitUntil(() => character.State == CharacterState.Wait || character.State == CharacterState.Finish);
+                    character.StatusManager.ResetWaitTime();
+                    character.SetWaitState();
+                }
+
+                if (_turnWaitTime.IsFull())
+                {
+                    _turnWaitTime.Set(0);
+                }
 
                 _turn.Value++;
                 _turnInLevel++;

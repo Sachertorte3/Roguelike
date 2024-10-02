@@ -85,7 +85,7 @@ namespace Domain.Service.Events
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.IsPassable(result + direction.Vector()))
+                if (map.IsBlankAndStandable(result + direction.Vector()))
                 {
                     result += direction.Vector();
                 }

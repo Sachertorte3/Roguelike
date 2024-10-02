@@ -77,7 +77,7 @@ namespace Domain.Service.Items
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.IsPassable(result + direction.Vector()))
+                if (map.IsBlank(result + direction.Vector(), EntityLayer.Middle))
                 {
                     result += direction.Vector();
                 }
@@ -111,7 +111,7 @@ namespace Domain.Service.Items
             {
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
             if (Item.CanActivateWhenThrown)
             {

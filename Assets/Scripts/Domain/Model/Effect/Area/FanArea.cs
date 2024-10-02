@@ -70,7 +70,7 @@ namespace Domain.Model.Effect.Area
                 area.Remove(position);
             if (CanIgnoreWalls)
                 return area;
-            var reachable = ViewCalculator.ComputeSquare(map.GetAllPassablePositions(), position, Radius + 0.5f);
+            var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle), position, Radius + 0.5f);
             return area.Where(p => reachable.Contains(p));
         }
 

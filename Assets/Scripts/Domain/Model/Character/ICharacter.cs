@@ -23,6 +23,7 @@ namespace Domain.Model.Character
         public bool IsBoss { get; }
         public bool HasHomePosition { get; }
         public CharacterState State { get; }
+        public void SetWaitState();
         public int Money { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public bool CanAct { get; }

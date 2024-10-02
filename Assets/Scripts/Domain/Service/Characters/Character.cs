@@ -54,10 +54,10 @@ namespace Domain.Service.Characters
             CharacterType = data.CharacterType;
             _entity = new(data.Entity);
             _direction = new(data.Direction);
-            _statusManager = new(data.Status, Position, map);
+            _statusManager = new(data.Status, Position, this, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToArray();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
-            _inventory = new(data.Inventory, _statusManager);
+            _inventory = new(data.Inventory, this);
             _behavior = behavior;
             canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
             _affiliationManager = new(Id, data.Affiliation, map.Player?.Affiliation);
@@ -377,9 +377,9 @@ namespace Domain.Service.Characters
             return _statusManager.LoseHp(value);
         }
 
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)
         {
-            _statusManager.AddCondition(condition, removalCondition);
+            _statusManager.AddCondition(actor, condition, removalCondition);
         }
 
         public void ClearCondition()
@@ -447,7 +447,7 @@ namespace Domain.Service.Characters
 
         public void UpdateTurn()
         {
-            _statusManager.UpdateTurn(_map.GetVisibleCharacters(this).Any());
+            _statusManager.UpdateTurn(this, _map.GetVisibleCharacters(this).Any());
             _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
             _inventory.UpdateTurn();
             _skills.ForEach(x => x.UpdateTurn());

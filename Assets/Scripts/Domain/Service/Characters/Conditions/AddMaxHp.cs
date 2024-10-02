@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
@@ -15,9 +17,9 @@ namespace Domain.Service.Characters.Conditions
         public bool CausesConfusion => false;
         [MinValue(0)] public int AddValue;
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.AddStatValue(StatType.MaxHp, AddValue);
+            hasCondition.StatusManager.AddStatValue(StatType.MaxHp, AddValue);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,9 +27,9 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.RemoveStatValue(StatType.MaxHp, AddValue);
+            hasCondition.StatusManager.RemoveStatValue(StatType.MaxHp, AddValue);
         }
 
         public float Evaluate(ITargetOfEffect target)

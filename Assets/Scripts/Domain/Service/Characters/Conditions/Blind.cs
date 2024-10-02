@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -14,9 +16,9 @@ namespace Domain.Service.Characters.Conditions
         public bool CanAct => true;
         public bool CausesConfusion => false;
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.AddBlindFlags();
+            hasCondition.StatusManager.AddBlindFlags();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -24,9 +26,9 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.RemoveBlindFlags();
+            hasCondition.StatusManager.RemoveBlindFlags();
         }
 
         public float Evaluate(ITargetOfEffect target)

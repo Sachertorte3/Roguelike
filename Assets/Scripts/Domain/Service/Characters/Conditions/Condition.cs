@@ -1,4 +1,5 @@
-﻿using Domain.Model.Character;
+﻿using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Memento;
 using Utilities;
@@ -11,11 +12,11 @@ namespace Domain.Service.Characters.Conditions
         private readonly RemovalConditionData _removalCondition;
         private int _elapsedTurn;
 
-        public Condition(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurn = 0)
+        public Condition(ConditionMemento memento)
         {
-            _elapsedTurn = elapsedTurn;
-            _condition = condition;
-            _removalCondition = removalCondition;
+            _elapsedTurn = memento.ElapsedTurns;
+            _condition = memento.Condition;
+            _removalCondition = memento.RemovalCondition;
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
@@ -32,14 +33,24 @@ namespace Domain.Service.Characters.Conditions
             );
         }
 
-        public void Inflict(IHasCondition hasCondition)
+        public ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurn = 0)
         {
-            _condition.Inflict(hasCondition);
+            return new ConditionMemento
+            (
+                condition: condition,
+                removalCondition: removalCondition,
+                elapsedTurns: elapsedTurn
+            );
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            _condition.Delete(hasCondition);
+            _condition.Inflict(hasCondition, actor);
+        }
+
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        {
+            _condition.Delete(hasCondition, actor);
         }
 
         public void UpdateTurn(IHasCondition hasCondition)

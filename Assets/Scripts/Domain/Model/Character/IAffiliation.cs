@@ -10,7 +10,8 @@ namespace Domain.Model.Character
         public CharacterGroup Group { get; }
         public Observable<OnAffiliationChangedMessage> OnAffiliationChanged { get; }
         public float GetAffection(IAffiliation other);
-        public void ForceAffiliation(IAffiliation other, AffiliationType type);
+        public void AddForceAffiliation(Id<IEntity> other, AffiliationType type);
+        public void RemoveForceAffiliation(Id<IEntity> other, AffiliationType type);
         public AffiliationType GetAffiliationType(IAffiliation other);
         public bool IsAlly(IAffiliation other);
         public bool IsEnemy(IAffiliation other);

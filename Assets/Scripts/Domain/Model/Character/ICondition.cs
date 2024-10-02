@@ -9,8 +9,8 @@ namespace Domain.Model.Character
         public ParticleType ParticleType { get; }
         public bool CanAct { get; }
         public bool CausesConfusion { get; }
-        public void Inflict(IHasCondition hasCondition);
-        public void Delete(IHasCondition hasCondition);
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor);
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor);
         public void UpdateTurn(IHasCondition hasCondition);
         public bool ShouldDelete(bool characterVisible);
         public bool ShouldDeleteByDamage();

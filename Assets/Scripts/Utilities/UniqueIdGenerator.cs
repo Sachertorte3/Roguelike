@@ -6,6 +6,7 @@ namespace Utilities
     [Serializable]
     public class Id<T>
     {
+        public static Id<T> Empty => new(Guid.Empty);
         public Guid Value { get; }
         public Id(Guid value) => Value = value;
         public Id(string value) => Value = Guid.Parse(value);

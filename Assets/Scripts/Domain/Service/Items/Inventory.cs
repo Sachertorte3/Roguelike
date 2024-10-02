@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Memento;
@@ -25,6 +26,7 @@ namespace Domain.Service.Items
         public Inventory(InventoryMemento data, IHasCondition hasCondition)
         {
             _hasCondition = hasCondition;
+
             _disposable = OnItemChanged.Subscribe(itemChanged =>
                 {
                     _disposables[itemChanged.Index].Clear();
@@ -117,12 +119,12 @@ namespace Domain.Service.Items
             if (item != null)
             {
                 foreach (var condition in item.PassiveConditions)
-                    condition.Inflict(_hasCondition);
+                    condition.Inflict(_hasCondition, Id<IEntity>.Empty);
             }
             if (removed != null)
             {
                 foreach (var condition in removed.PassiveConditions)
-                    condition.Delete(_hasCondition);
+                    condition.Delete(_hasCondition, Id<IEntity>.Empty);
             }
             return removed;
         }

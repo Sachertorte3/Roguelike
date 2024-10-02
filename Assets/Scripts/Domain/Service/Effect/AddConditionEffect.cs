@@ -21,7 +21,7 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
-            target.AddCondition(_condition.Value.Condition, _condition.Value.RemovalCondition);
+            target.AddCondition(actor.Id, _condition.Value.Condition, _condition.Value.RemovalCondition);
             return UniTask.CompletedTask;
         }
 

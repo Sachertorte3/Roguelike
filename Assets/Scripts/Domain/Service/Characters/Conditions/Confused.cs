@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -14,7 +15,7 @@ namespace Domain.Service.Characters.Conditions
         public bool CanAct => true;
         public bool CausesConfusion => true;
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
         }
 
@@ -23,7 +24,7 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
         }
 

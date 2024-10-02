@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -18,9 +19,9 @@ namespace Domain.Service.Characters.Conditions
         public Element Element;
         [MinValue(0)] public float AddedMultiplier = 0f;
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.AddElementAttackMultiplier(Element, AddedMultiplier);
+            hasCondition.StatusManager.AddElementAttackMultiplier(Element, AddedMultiplier);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,9 +29,9 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.RemoveElementAttackMultiplier(Element, AddedMultiplier);
+            hasCondition.StatusManager.RemoveElementAttackMultiplier(Element, AddedMultiplier);
         }
 
         public float Evaluate(ITargetOfEffect target)

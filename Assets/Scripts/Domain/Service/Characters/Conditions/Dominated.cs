@@ -8,17 +8,17 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Acceleration : IConditionData
+    internal class Dominated : IConditionData
     {
-        public string Name => "加速";
-        public ParticleType ParticleType => ParticleType.FastSpeed;
-        public Impact Impact => Impact.Beneficial;
+        public string Name => "支配";
+        public ParticleType ParticleType => ParticleType.None;
+        public Impact Impact => Impact.Harmful;
         public bool CanAct => true;
         public bool CausesConfusion => false;
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.MultiplyStat(StatType.WaitTime, 0.5f);
+            hasCondition.Affiliation.AddForceAffiliation(actor, AffiliationType.Ally);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,7 +28,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.DivideStat(StatType.WaitTime, 0.5f);
+            hasCondition.Affiliation.RemoveForceAffiliation(actor, AffiliationType.Ally);
         }
 
         public float Evaluate(ITargetOfEffect target)

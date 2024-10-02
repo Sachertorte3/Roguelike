@@ -1,5 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -18,16 +20,16 @@ namespace Domain.Service.Characters.Conditions
         public bool CausesConfusion => false;
         [MinValue(1)] public int Power = 1;
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.AddStatValue(StatType.HpNaturalRecovery, -Power);
+            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, -Power);
         }
 
         public UniTask Persist(IHasCondition hasCondition) => UniTask.CompletedTask;
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.AddStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public float Evaluate(ITargetOfEffect target)

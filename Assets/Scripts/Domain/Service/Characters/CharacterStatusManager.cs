@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Map;
@@ -14,6 +15,7 @@ using ObservableCollections;
 using R3;
 using Stats;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Service.Characters
 {
@@ -26,10 +28,10 @@ namespace Domain.Service.Characters
         private readonly VisionRange _visionRange;
         private readonly FlagStat _overDriveFlags;
 
-        public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IMap world)
+        public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position, IHasCondition hasCondition, IMap world)
         {
             _stats = new CharacterStats(data.Stats);
-            _conditions = new CharacterConditions(this, data.Conditions);
+            _conditions = new CharacterConditions(hasCondition, data.Conditions);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags, world);
             _overDriveFlags = new FlagStat(data.OverDriveFlags);
         }
@@ -48,7 +50,7 @@ namespace Domain.Service.Characters
                 clairvoyantFlags: _visionRange.ClairvoyantFlags,
                 blindFlags: _visionRange.BlindFlags,
                 overDriveFlags: _overDriveFlags.CurrentFlags,
-                conditions: _conditions.Conditions.Select(x => x.Serialize()).ToArray()
+                conditions: _conditions.ConditionsWithInflicter.Select(x => (x.actor, x.condition.Serialize())).ToList()
             );
         }
 
@@ -94,13 +96,13 @@ namespace Domain.Service.Characters
             return loseValue;
         }
 
-        public void UpdateTurn(bool characterVisible)
+        public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
             if (_stats.HpNaturalRecoveryAmount.CurrentValue > 0)
                 GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             else
                 LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, true);
-            _conditions.UpdateTurn(this, characterVisible);
+            _conditions.UpdateTurn(hasCondition, characterVisible);
         }
 
         public void WasAttacked()
@@ -159,13 +161,16 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
         {
-            var conditions = new List<ConditionMemento>();
+            var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
             {
                 conditions.Add(
-                    Condition.Build(
-                        new Slept(),
-                        new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)
+                    (
+                        Id<IEntity>.Empty,
+                        Condition.Build(
+                            new Slept(),
+                            new RemovalConditionData(probability: 0.5f, removeByEnemyNearby: true)
+                        )
                     )
                 );
             }
@@ -175,13 +180,13 @@ namespace Domain.Service.Characters
                 clairvoyantFlags: 0,
                 blindFlags: 0,
                 overDriveFlags: 0,
-                conditions: conditions.ToArray()
+                conditions: conditions
             );
         }
 
-        public void AddCondition(IConditionData condition, RemovalConditionData removalCondition)
+        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)
         {
-            _conditions.Add(condition, removalCondition);
+            _conditions.Add(actor, condition, removalCondition);
         }
 
         public void ClearCondition()

@@ -18,6 +18,8 @@ namespace Domain.Service.Action
                 return false;
             if (target.IsEnemy(actor))
                 return false;
+            if (target == world.Player)
+                return false;
             return target.CanMoveIgnoreCharacter(Direction.Reverse(), world) &&
                    actor.CanMoveIgnoreCharacter(Direction, world);
         }

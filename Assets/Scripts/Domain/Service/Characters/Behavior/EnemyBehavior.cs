@@ -235,7 +235,7 @@ namespace Domain.Service.Characters.Behavior
                 return null;
             return GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is Chase
                 && character.CurrentPosition != _lastTargetPosition
-                && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value) ?
+                && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value, character.Affiliation) ?
                 _lastTargetPosition : null;
         }
 

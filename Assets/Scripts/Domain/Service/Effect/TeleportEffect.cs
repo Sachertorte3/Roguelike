@@ -17,7 +17,7 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
-            var position = map.GetAllPassablePositions().GetAtRandom();
+            var position = map.GetAllBlankPositionsOn(EntityLayer.Middle).GetAtRandom();
             target.Teleport(position);
             return UniTask.CompletedTask;
         }

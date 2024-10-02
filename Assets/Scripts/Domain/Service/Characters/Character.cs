@@ -107,6 +107,7 @@ namespace Domain.Service.Characters
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;
+        public void SetWaitState() => State = CharacterState.Wait;
         public int Money => _money;
 
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false)
@@ -145,10 +146,10 @@ namespace Domain.Service.Characters
         {
             return _canIgnoreWall
                 ? true
-                : map.IsPassable(position + direction.Vector())
+                : map.IsBlankAndStandable(position + direction.Vector(), EntityLayer.Middle)
                   && (!direction.IsDiagonal() ||
-                      (map.IsPassable(position + direction.Rotate45Clockwise().Vector()) &&
-                       map.IsPassable(position + direction.Rotate45AntiClockwise().Vector())));
+                      (map.IsBlankAndStandable(position + direction.Rotate45Clockwise().Vector(), EntityLayer.Middle) &&
+                       map.IsBlankAndStandable(position + direction.Rotate45AntiClockwise().Vector(), EntityLayer.Middle)));
         }
 
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
@@ -184,7 +185,7 @@ namespace Domain.Service.Characters
         public void DoNothing()
         {
             Log.Debug($"[Action]{_name}:DoNothing");
-            State = CharacterState.Wait;
+            State = CharacterState.Finish;
         }
 
         public async UniTask Move(Direction8 direction, IInput input)
@@ -194,7 +195,7 @@ namespace Domain.Service.Characters
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
 
-            State = CharacterState.Wait;
+            State = CharacterState.Finish;
         }
 
         public async UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map)
@@ -217,7 +218,7 @@ namespace Domain.Service.Characters
                     await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
             }
 
-            State = CharacterState.Wait;
+            State = CharacterState.Finish;
         }
 
         public async UniTask UseItem(IItem item, Direction8 direction, IMap map)
@@ -245,7 +246,7 @@ namespace Domain.Service.Characters
                         await item.Use(this, CurrentPosition, direction, map);
                     }
                 );
-                State = CharacterState.Wait;
+                State = CharacterState.Finish;
             }
             else
             {
@@ -278,7 +279,7 @@ namespace Domain.Service.Characters
                 }
             }
 
-            State = CharacterState.Wait;
+            State = CharacterState.Finish;
         }
 
         public float EvaluateThrow(IItem item, Direction8 direction, IMap world)
@@ -363,7 +364,7 @@ namespace Domain.Service.Characters
         {
             _entity.Teleport(position);
 
-            State = CharacterState.Wait;
+            State = CharacterState.Finish;
         }
 
         public float GetStatValue(StatType statType) => _statusManager.GetStatValue(statType);
@@ -389,9 +390,12 @@ namespace Domain.Service.Characters
 
         public async UniTask ForceMove(Direction8 direction, IInput input)
         {
+            State = CharacterState.Act;
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+            
+            State = CharacterState.Finish;
         }
 
         public void WasAttackedBy(IActorOfEffect actor, float impact)

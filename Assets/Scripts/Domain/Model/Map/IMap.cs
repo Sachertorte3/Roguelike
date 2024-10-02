@@ -26,9 +26,10 @@ namespace Domain.Model.Map
         public IItem? GetItemFromId(Id<IItem> id);
         public bool IsOverlapped(Vector2Int position, EntityLayer layer);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
-        public bool IsPassable(Vector2Int position);
+        public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
+        public bool IsPassable(Vector2Int position, IAffiliation actor);
         public bool IsPassableOnMap(Vector2Int position);
-        public bool IsReachable(Vector2Int from, Vector2Int to);
+        public bool IsReachable(Vector2Int from, Vector2Int to, IAffiliation actor);
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);

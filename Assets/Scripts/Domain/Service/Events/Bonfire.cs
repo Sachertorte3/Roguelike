@@ -21,7 +21,6 @@ namespace Domain.Service.Events
         }
         public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;

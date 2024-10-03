@@ -173,7 +173,7 @@ namespace Domain.Service.Characters
                 .Where(x => x != this)
                 .Select(x => (character: x, direction: DirectionMethods.FromVectorStrict(x.CurrentPosition - CurrentPosition)))
                 .Where(x => x.direction.HasValue)
-                .OrderBy(x => Vector2Extension.ChebyshevDistance(x.character.CurrentPosition, CurrentPosition))
+                .OrderBy(x => VectorExtension.ChebyshevDistance(x.character.CurrentPosition, CurrentPosition))
                 .ThenByDescending(x => CurrentDirection.AngleTo(x.direction.Value).Value)
                 .FirstOrDefault().direction;
             if (nearestCharacterDirection.HasValue)
@@ -394,7 +394,7 @@ namespace Domain.Service.Characters
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
-            
+
             State = CharacterState.Finish;
         }
 

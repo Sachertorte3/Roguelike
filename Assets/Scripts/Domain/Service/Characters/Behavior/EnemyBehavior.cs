@@ -82,7 +82,7 @@ namespace Domain.Service.Characters.Behavior
                 lastTargetPosition: _lastTargetPosition
             );
         }
-        
+
         public static BehaviorMemento Build(BehaviorData behavior, Option<Vector2Int> homePosition)
         {
             return new BehaviorMemento(
@@ -159,7 +159,7 @@ namespace Domain.Service.Characters.Behavior
             if (_lastTargetPosition != null)
             {
                 var relativeVector = _lastTargetPosition.Value - character.CurrentPosition;
-                if (Vector2Extension.ChebyshevDistance(relativeVector) <= 1)
+                if (VectorExtension.ChebyshevDistance(relativeVector) <= 1)
                 {
                     var direction = DirectionMethods.NearestDirectionFromVector(relativeVector);
                     if (direction.HasValue)
@@ -241,7 +241,7 @@ namespace Domain.Service.Characters.Behavior
 
         private float GetDistance(IHasBehavior character, Vector2Int targetPosition)
         {
-            var distance = Vector2Extension.ChebyshevDistance(character.CurrentPosition, targetPosition);
+            var distance = VectorExtension.ChebyshevDistance(character.CurrentPosition, targetPosition);
             return distance;
         }
 

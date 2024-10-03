@@ -406,6 +406,11 @@ namespace Game
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
                 IsEventExecuting = true;
+                foreach (var eventArea in _eventAreas)
+                {
+                    await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
+                }
+
                 var eventEntity = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
                 if (eventEntity != null)
                 {
@@ -431,11 +436,6 @@ namespace Game
                             await eventEntity.Events[choiceIndex].DoEvent(Globals.GameManager, this);
                             break;
                     }
-                }
-
-                foreach (var eventArea in _eventAreas)
-                {
-                    await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
                 IsEventExecuting = false;
             }).AddTo(_disposables);
@@ -493,7 +493,7 @@ namespace Game
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())
-                    SpawnRandomEnemy(positions.GetAtRandom(), false);
+                    SpawnRandomEnemy(positions.GetAtRandom(), isShiny: false);
             }
         }
 

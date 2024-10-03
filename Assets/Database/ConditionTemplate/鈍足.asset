@@ -26,4 +26,4 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 861543420369829893
-      type: {class: Slow, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      type: {class: Slowness, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}

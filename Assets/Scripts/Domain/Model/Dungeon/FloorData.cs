@@ -27,6 +27,7 @@ namespace Domain.Model.Dungeon
         public const float DefaultShinyChance = 0.01f;
         public const float DefaultSleepChance = 0.5f;
         public const float DefaultMimicChance = 0.1f;
+        public const float DefaultTrapChance = 0.1f;
         public const float DefaultShopChance = 0.1f;
         public const float DefaultMonsterHouseChance = 0.1f;
         public const float DefaultRestRoomChance = 0.1f;
@@ -37,6 +38,7 @@ namespace Domain.Model.Dungeon
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shinyChance = DefaultShinyChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _sleepChance = DefaultSleepChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _mimicChance = DefaultMimicChance;
+        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _trapChance = DefaultTrapChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shopChance = DefaultShopChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _monsterHouseChance = DefaultMonsterHouseChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _restRoomChance = DefaultRestRoomChance;
@@ -74,6 +76,14 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Boss => 0,
             FloorTemplates.Shop => DefaultMimicChance,
             FloorTemplates.Custom => _mimicChance,
+            _ => throw new NotImplementedException()
+        };
+        public float TrapChance => Template switch
+        {
+            FloorTemplates.Default => DefaultTrapChance,
+            FloorTemplates.Boss => 0,
+            FloorTemplates.Shop => DefaultTrapChance,
+            FloorTemplates.Custom => _trapChance,
             _ => throw new NotImplementedException()
         };
         public float ShopChance => Template switch

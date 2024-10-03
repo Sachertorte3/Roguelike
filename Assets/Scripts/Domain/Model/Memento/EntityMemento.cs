@@ -16,7 +16,7 @@ namespace Domain.Model.Memento
             Position = position;
             Layer = layer;
         }
-        public EntityMemento CopyWith(string? id=null, Vector2Int? position=null, EntityLayer? layer=null)
+        public EntityMemento CopyWith(string? id = null, Vector2Int? position = null, EntityLayer? layer = null)
         {
             return new EntityMemento(
                 id ?? Id,

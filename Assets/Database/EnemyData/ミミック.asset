@@ -37,25 +37,25 @@ MonoBehaviour:
   CanUseItem: 0
   Skills:
   - Skill:
-      Area:
+      <Area>k__BackingField:
         rid: 2541219281251860524
-      Effect:
+      <Effect>k__BackingField:
         rid: 2541219281251860525
-      Position:
+      <Position>k__BackingField:
         rid: 2541219281251860526
-      RushDistance: 0
-      Log: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
+      <RushDistance>k__BackingField: 0
+      <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
-    Area:
+    <Area>k__BackingField:
       rid: -2
-    Effect:
+    <Effect>k__BackingField:
       rid: -2
-    Position:
+    <Position>k__BackingField:
       rid: -2
-    RushDistance: 0
-    Log: 
+    <RushDistance>k__BackingField: 0
+    <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []
   DropItemRate: 0

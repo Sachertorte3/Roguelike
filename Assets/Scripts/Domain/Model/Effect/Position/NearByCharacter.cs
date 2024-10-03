@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;

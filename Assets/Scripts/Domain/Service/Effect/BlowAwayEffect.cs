@@ -25,6 +25,8 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) =>
+            await Apply(actor, (IEntity)target, map);
         public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
             var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);

@@ -42,7 +42,7 @@ namespace Game
             {
                 Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
 
-                var characters = map.Characters.OrderBy(c => Vector2Extension.ChebyshevDistance(c.CurrentPosition, map.Player.CurrentPosition)).ToList();
+                var characters = map.Characters.OrderBy(c => VectorExtension.ChebyshevDistance(c.CurrentPosition, map.Player.CurrentPosition)).ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
                     characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
@@ -72,7 +72,7 @@ namespace Game
                     {
                         if (character.State != CharacterState.Wait)
                             continue;
-                        
+
                         if (character.CanAct && !character.IsDead)
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");

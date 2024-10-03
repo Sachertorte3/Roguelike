@@ -63,7 +63,7 @@ namespace Domain.Service.Effect
             );
         }
 
-        public static SpawnEffectSkillMemento Build(SkillData data)
+        public static SpawnEffectSkillMemento Build(ISkillData data)
         {
             return new SpawnEffectSkillMemento
             (
@@ -76,34 +76,8 @@ namespace Domain.Service.Effect
             );
         }
 
-        public static SpawnEffectSkillMemento Build(SkillDataOnUse data)
-        {
-            return new SpawnEffectSkillMemento
-            (
-                position: data.Position,
-                area: data.Area,
-                effect: data.Effect,
-                rushDistance: 0,
-                probabilityOfSuccess: data.ProbabilityOfSuccess,
-                log: ""
-            );
-        }
-
-        public static SpawnEffectSkillMemento Build(SkillDataOnThrow data)
-        {
-            return new SpawnEffectSkillMemento
-            (
-                position: new AtFeet(),
-                area: data.Area,
-                effect: data.Effect,
-                rushDistance: 0,
-                probabilityOfSuccess: data.ProbabilityOfSuccess,
-                log: ""
-            );
-        }
-
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IMap map, bool onlyVisible=false)
+            IMap map, bool onlyVisible = false)
         {
             var spawnPositions = _position.Get(actor, position, direction, map);
             if (onlyVisible)
@@ -124,7 +98,7 @@ namespace Domain.Service.Effect
 
             if (Random.value > ProbabilityOfSuccess)
             {
-                GameLog.Add($"しかし失敗した！");
+                GameLog.Add($"しかし失敗した");
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -135,7 +109,7 @@ namespace Domain.Service.Effect
             var area = GetArea(actor, position, direction, map);
 
             foreach (var target in map.GetEntitiesInArea(area)
-                .OrderBy(target => Vector2.Distance(target.CurrentPosition, actor.CurrentPosition))
+                .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
                 .Reverse())
             {
                 switch (target)

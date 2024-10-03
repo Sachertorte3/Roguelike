@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Domain.Model.Dungeon
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public ItemCategoryWeight ChestItem;
+        public Table<TrapData> Traps;
         public Table<WeaponMold> WeaponMolds;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         public Table<EnemyData> Npcs;
@@ -65,6 +67,7 @@ namespace Domain.Model.Dungeon
                 WeaponMolds,
                 WeaponPrefixes,
                 new ItemTable(MasterItemDataBase, ChestItem),
+                Traps,
                 MasterItemDataBase.ShopItems,
                 sectionData.Enemies,
                 Npcs,
@@ -74,6 +77,7 @@ namespace Domain.Model.Dungeon
                 floorData.Room.ChestChance,
                 floorData.MimicChance,
                 sectionData.WeaponChanceInChest,
+                floorData.TrapChance,
                 floorData.ShopChance,
                 floorData.MonsterHouseChance,
                 floorData.RestRoomChance,

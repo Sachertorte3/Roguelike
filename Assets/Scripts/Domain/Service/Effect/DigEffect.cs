@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -11,12 +9,14 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class DigEffect : IEffect
+    public class DigEffect : IActorlessEffect
     {
         public Color Color => Colors.Brown;
         public Impact Impact => Impact.Neutral;
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
+            => Apply(positions, map);
+        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             map.RemoveWalls(positions);
             return UniTask.CompletedTask;

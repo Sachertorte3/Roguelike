@@ -21,16 +21,16 @@ MonoBehaviour:
   SpawnEffectsOnThrow: 0
   IsSameSkill: 0
   SkillOnUse:
-    Area:
+    <Area>k__BackingField:
       rid: 4425516923575599140
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219106150416439
-    Position:
+    <Position>k__BackingField:
       rid: 2541219106150416409
   SkillOnThrow:
-    Area:
+    <Area>k__BackingField:
       rid: -2
-    Effect:
+    <Effect>k__BackingField:
       rid: -2
   UsageLimit: 1
   PassiveConditions: []

@@ -10,12 +10,18 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class BreakEffect : IEffect
+    public class BreakEffect : IActorlessEffect
     {
         public Color Color => Colors.Black;
         public Impact Impact => Impact.Harmful;
 
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) =>
+            Apply((IEntity)target, map);
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) =>
+            Apply(target, map);
+        public UniTask Apply(ITargetOfEffect target, IMap map) =>
+            Apply((IEntity)target, map);
+        public UniTask Apply(IEntity target, IMap map)
         {
             target.Destroy();
             return UniTask.CompletedTask;

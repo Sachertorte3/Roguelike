@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -13,7 +12,7 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class SpawnCharacterEffect : IEffect
+    public class SpawnCharacterEffect : IActorlessEffect
     {
         [Required, SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
         [MinValue(1), SerializeField] private int _count;
@@ -40,6 +39,22 @@ namespace Domain.Service.Effect
             }
             return UniTask.CompletedTask;
         }
+        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
+        {
+            foreach (var position in positions)
+            {
+                for (var i = 0; i < _count; i++)
+                {
+                    map.SpawnEnemy(
+                        _character.Value,
+                        position,
+                        isSlept: false,
+                        isShiny: false
+                    );
+                }
+            }
+            return UniTask.CompletedTask;
+        }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
@@ -55,7 +70,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"召喚: {_character.Value.Name}\n{_count}体";
+            return $"召喚: {_character.Value.Name} {_count}体";
         }
     }
 }

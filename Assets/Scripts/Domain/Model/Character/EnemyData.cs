@@ -46,14 +46,11 @@ namespace Domain.Model.Character
 
             foreach (var skill in Skills)
             {
-                if (skill.Skill.ProbabilityOfSuccess == 0)
-                {
-                    skill.Skill.ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
-                }
+                skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
             if (LastSkill != null)
             {
-                LastSkill.ProbabilityOfSuccess = 1;
+                LastSkill.OnValidate(1);
             }
         }
 #endif

@@ -42,6 +42,7 @@ namespace View
         {
             _disposable.Disposable = null;
             transform.position = (Vector3Int)position;
+            IsMoving = false;
         }
 
         public void Move(Vector2Int destination, Direction8 direction, bool isThrown)
@@ -66,9 +67,12 @@ namespace View
                     .TakeWhile(_ => elapsedTime < totalDuration)
                     .Subscribe(_ =>
                     {
-                        elapsedTime += Time.deltaTime;
-                        var t = Mathf.Clamp01(elapsedTime / totalDuration);
-                        transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
+                        if (IsMoving)
+                        {
+                            elapsedTime += Time.deltaTime;
+                            var t = Mathf.Clamp01(elapsedTime / totalDuration);
+                            transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
+                        }
                     },
                     _ => IsMoving = false).AddTo(this);
             }

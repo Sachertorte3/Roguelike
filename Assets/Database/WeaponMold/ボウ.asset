@@ -16,9 +16,9 @@ MonoBehaviour:
   Icon: {fileID: -1271251965, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   PowerMagnification: 0.8
   UsageLimit: 12
-  Area:
+  <Area>k__BackingField:
     rid: 2541219106150416421
-  Position:
+  <Position>k__BackingField:
     rid: 2541219106150416420
   references:
     version: 2

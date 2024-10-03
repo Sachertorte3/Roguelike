@@ -98,7 +98,7 @@ namespace Domain.Model.Item
 
             if (IsSameEffect && SkillOnUse != null && SkillOnThrow != null)
             {
-                SkillOnThrow.Effect = SkillOnUse.Effect;
+                SkillOnThrow.SetSameEffect(SkillOnUse);
             }
 
             if (IsSameSkill && SkillOnUse != null)
@@ -108,11 +108,11 @@ namespace Domain.Model.Item
 
             if (SkillOnUse != null && SkillOnUse.ProbabilityOfSuccess == 0)
             {
-                SkillOnUse.ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess; // デフォルト値で上書き
+                SkillOnUse.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
             if (SkillOnThrow != null && SkillOnThrow.ProbabilityOfSuccess == 0)
             {
-                SkillOnThrow.ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess; // デフォルト値で上書き
+                SkillOnThrow.OnValidate(CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
             }
         }
 #endif

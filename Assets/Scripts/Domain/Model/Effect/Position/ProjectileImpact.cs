@@ -5,12 +5,12 @@ using Utilities;
 
 namespace Domain.Model.Effect.Position
 {
-    public class ProjectileImpact : IEffectPosition
+    public class ProjectileImpact : IActorlessEffectPosition
     {
         [Required] public IconSerializable Icon;
         public List<EntityLayer> CanHitLayer = new() { EntityLayer.Middle };
 
-        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IEffectMap map)
         {
             var pos = position;
@@ -26,6 +26,8 @@ namespace Domain.Model.Effect.Position
 
             return new[] { pos };
         }
+        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IEffectMap map) => Get(position, direction, map);
 
         public float EvaluateHitProbability()
         {

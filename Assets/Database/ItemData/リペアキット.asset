@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\u30EA\u30DA\u30A2\u30AD\u30C3\u30C8"
   m_EditorClassIdentifier: 
   Icon: {fileID: 11433948, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 2
   EffectType: 2
   UseOnDeath: 0
@@ -21,19 +22,21 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
-    Area:
+    <Area>k__BackingField:
       rid: -2
-    Effect:
+    <Effect>k__BackingField:
       rid: -2
-    Position:
+    <Position>k__BackingField:
       rid: -2
+    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
-    Area:
+    <Area>k__BackingField:
       rid: -2
-    Effect:
+    <Effect>k__BackingField:
       rid: -2
+    <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
-    rid: 4274951156413235201
+    rid: 5486256311944871959
   UsageLimit: 1
   PassiveConditions: []
   references:
@@ -41,6 +44,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4274951156413235201
+    - rid: 5486256311944871959
       type: {class: Repair, ns: Domain.Service.ItemEffect, asm: Domain.Service}
       data: 

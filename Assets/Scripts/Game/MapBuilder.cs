@@ -15,6 +15,12 @@ using Unity.Logging;
 using Utilities;
 using Random = UnityEngine.Random;
 using Domain.Service.Rooms;
+using Domain.Service.Effect;
+using Domain.Model.Effect.Position;
+using Domain.Model.Effect.Area;
+using Domain.Model.Character;
+using Domain.Model.Condition;
+using Domain.Service.Characters.Conditions;
 
 namespace Game
 {
@@ -25,6 +31,7 @@ namespace Game
         private readonly List<ItemEntityMemento> _items;
         private readonly List<StairsMemento> _stairs;
         private readonly List<ChestMemento> _chests;
+        private readonly List<TrapMemento> _traps;
         private readonly Option<EntityMemento> _bonfire;
         private readonly List<Id<IEntity>> _keyCharacters;
         private readonly RoomMemento? _monsterHouse;
@@ -42,6 +49,7 @@ namespace Game
             _keyCharacters = new();
             _stairs = new();
             _chests = new();
+            _traps = new();
             _randomBlankPositions = new();
 
             var rooms = _tilemap.Rooms.ToList();
@@ -60,8 +68,9 @@ namespace Game
                 var itemCount = GetCount(data.ItemCount);
                 var weaponCount = GetCount(data.WeaponCount);
                 var chestCount = Random.value < data.ChestChance ? 1 : 0;
+                var trapCount = 5;
                 var bossCount = data.existBoss ? data.Boss.Count : 0;
-                var sum = characterCount + itemCount + weaponCount + chestCount + bossCount + 3;
+                var sum = characterCount + itemCount + weaponCount + chestCount + trapCount + bossCount + 3;
 
                 var positions = room.RectRange().ToList();
                 if (positions.Count < sum)
@@ -72,12 +81,13 @@ namespace Game
                 var itemPositions = positions.GetAtRandomAndRemove(itemCount);
                 var weaponPositions = positions.GetAtRandomAndRemove(weaponCount);
                 var chestPositions = positions.GetAtRandomAndRemove(chestCount);
+                var trapPositions = positions.GetAtRandomAndRemove(trapCount);
 
                 AddCharactersToRoom(data, characterPositions);
                 AddItemsToRoom(data, itemPositions);
                 AddWeaponsToRoom(data, weaponPositions);
                 AddChestsToRoom(data, chestPositions, _chests);
-
+                AddTrapsToRoom(data, trapPositions, _traps);
                 if (room == bossRoom)
                 {
                     foreach (var bossData in data.Boss)
@@ -98,7 +108,7 @@ namespace Game
                 _randomBlankPositions.Add(positions.GetAtRandomAndRemove(1).First());
             }
 
-            _bonfire = (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value): Option.None<Vector2Int>()).Map(position => Bonfire.Build(position));
+            _bonfire = (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value) : Option.None<Vector2Int>()).Map(position => Bonfire.Build(position));
         }
 
         private int GetCount(float attemptCount)
@@ -118,8 +128,8 @@ namespace Game
 
             var positions = shopRoom.RectRange().GetAtRandom(6).ToList();
 
-            var width = Random.Range(2,5);
-            var height = Random.Range(2,5);
+            var width = Random.Range(2, 5);
+            var height = Random.Range(2, 5);
             var rect = shopRoom.GetCenteredInnerRect(new Vector2Int(width, height));
 
             foreach (var position in rect.RectRange())
@@ -165,7 +175,7 @@ namespace Game
                 var center = Vector2Int.RoundToInt(innerRect.center);
 
                 _bonfirePosition = center;
-                
+
                 foreach (var position in innerRect.RectRange())
                 {
                     positions.Remove(position);
@@ -243,6 +253,14 @@ namespace Game
             }
         }
 
+        private void AddTrapsToRoom(DungeonMapData data, List<Vector2Int> positions, List<TrapMemento> traps)
+        {
+            foreach (var position in positions)
+            {
+                traps.Add(Trap.Build(data.Traps.GetRandomItem(), position));
+            }
+        }
+
         public void AddUpStairs(DungeonMapData data, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId)
         {
             if (upStairsId != null && upStairsDestinationId != null)
@@ -266,7 +284,7 @@ namespace Game
                 tilemap: _tilemap.Serialize(),
                 characters: _characters,
                 items: _items,
-                eventEntities: EventEntityManager.Build(_stairs, _chests, _bonfire),
+                eventEntities: EventEntityManager.Build(_stairs, _chests, _traps, _bonfire),
                 keyCharacters: _keyCharacters.Select(key => key.ToString()).ToList(),
                 monsterHouse: _monsterHouse.ToOption(),
                 shop: _shop.ToOption(),

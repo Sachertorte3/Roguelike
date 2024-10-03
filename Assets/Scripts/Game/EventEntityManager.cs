@@ -14,6 +14,7 @@ namespace Game
     {
         public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
+        private readonly List<Trap> _traps = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
@@ -35,20 +36,18 @@ namespace Game
                 Spawn(chest);
             }
 
+            foreach (var trapMemento in eventEntities.Traps)
+            {
+                var trap = new Trap(trapMemento);
+                _traps.Add(trap);
+                Spawn(trap);
+            }
+
             _bonfire = eventEntities.Bonfire.Map(bonfire => new Bonfire(bonfire));
             if (_bonfire.HasValue)
                 Spawn(_bonfire.Value!);
 
             EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
-        }
-        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests, Option<EntityMemento> bonfire)
-        {
-            return new EventEntitiesMemento
-            (
-                stairs: stairs.ToList(),
-                chests: chests.ToList(),
-                bonfire: bonfire
-            );
         }
         public EventEntitiesMemento Serialize()
         {
@@ -56,10 +55,20 @@ namespace Game
             (
                 stairs: Stairs.Select(stairs => stairs.Serialize()).ToList(),
                 chests: _chests.Select(chest => chest.Serialize()).ToList(),
+                traps: _traps.Select(trap => trap.Serialize()).ToList(),
                 bonfire: _bonfire.Map(bonfire => bonfire.Serialize())
             );
         }
-
+        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests, IEnumerable<TrapMemento> traps, Option<EntityMemento> bonfire)
+        {
+            return new EventEntitiesMemento
+            (
+                stairs: stairs.ToList(),
+                chests: chests.ToList(),
+                traps: traps.ToList(),
+                bonfire: bonfire
+            );
+        }
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
         public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
 
@@ -86,6 +95,10 @@ namespace Game
             else if (eventEntity is Stairs stairs)
             {
                 Stairs.Remove(stairs);
+            }
+            else if (eventEntity is Trap trap)
+            {
+                _traps.Remove(trap);
             }
             else if (eventEntity is Bonfire)
             {

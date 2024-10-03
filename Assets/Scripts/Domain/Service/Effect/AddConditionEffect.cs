@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
@@ -11,7 +12,7 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class AddConditionEffect : IEffect
+    public class AddConditionEffect : IActorlessEffect
     {
         [Required, SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
 
@@ -19,12 +20,20 @@ namespace Domain.Service.Effect
 
         public Impact Impact => _condition.Value.Condition.Impact;
 
+        public AddConditionEffect(ConditionTemplate condition)
+        {
+            _condition = condition.ToSerializable();
+        }
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             target.AddCondition(actor.Id, _condition.Value.Condition, _condition.Value.RemovalCondition);
             return UniTask.CompletedTask;
         }
-
+        public UniTask Apply(ITargetOfEffect target, IMap map)
+        {
+            target.AddCondition(Id<IEntity>.Empty, _condition.Value.Condition, _condition.Value.RemovalCondition);
+            return UniTask.CompletedTask;
+        }
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _condition.Value.Evaluate(target);

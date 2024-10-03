@@ -2,20 +2,21 @@
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
+using Domain.Model.Memento;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Domain.Model.Effect
 {
     [Serializable]
-    public record SkillData : IHasInfo
+    public record SkillData : ISkillData
     {
-        [SerializeReference][Required] public IArea Area;
-        [SerializeReference][Required] public IEffect Effect;
-        [SerializeReference][Required] public IEffectPosition Position = new AtFeet();
-        public int RushDistance = 0;
-        [Range(0, 1)] public float ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
-        [Required] public string Log = "は行動した";
+        [field: SerializeReference, Required] public IArea Area { get; private set; }
+        [field: SerializeReference, Required] public IEffect Effect { get; private set; }
+        [field: SerializeReference, Required] public IEffectPosition Position { get; private set; } = new AtFeet();
+        [field: SerializeField] public int RushDistance { get; private set; } = 0;
+        [field: SerializeField, Range(0, 1)] public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+        [field: SerializeField, Required] public string Log { get; private set; } = "は行動した";
 
         public SkillData(IEffectPosition position, IArea area, IEffect effect, int rushDistance, string log)
         {
@@ -25,6 +26,16 @@ namespace Domain.Model.Effect
             RushDistance = rushDistance;
             Log = log;
         }
+
+#if UNITY_EDITOR
+        public void OnValidate(float probabilityOfSuccess)
+        {
+            if (ProbabilityOfSuccess == 0)
+            {
+                ProbabilityOfSuccess = probabilityOfSuccess;
+            }
+        }
+#endif
 
         public string Info()
         {

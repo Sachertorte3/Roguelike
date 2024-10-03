@@ -9,7 +9,7 @@ namespace Domain.Model.Effect
     {
         public Impact Impact { get; }
         public Color Color { get; }
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor, (IEntity)target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => UniTask.CompletedTask;
         public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) => UniTask.CompletedTask;
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);

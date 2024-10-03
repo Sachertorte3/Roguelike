@@ -19,21 +19,21 @@ MonoBehaviour:
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
-  IsSameEffect: 1
+  IsSame<Effect>k__BackingField: 1
   IsSameSkill: 0
   SkillOnUse:
-    Area:
+    <Area>k__BackingField:
       rid: 2541219158355345461
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219158355345460
-    Position:
+    <Position>k__BackingField:
       rid: 2541219106150416405
   SkillOnThrow:
-    Area:
+    <Area>k__BackingField:
       rid: 2541219281251860483
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219158355345460
-  ItemEffect:
+  Item<Effect>k__BackingField:
     rid: -2
   UsageLimit: 10
   PassiveConditions: []

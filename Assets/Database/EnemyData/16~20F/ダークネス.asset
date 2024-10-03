@@ -24,36 +24,36 @@ MonoBehaviour:
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - Area:
+  - <Area>k__BackingField:
       rid: 2541219238315819015
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219238315819016
-    Position:
+    <Position>k__BackingField:
       rid: 2541219238315819017
-    Log: "\u306F\u7834\u58CA\u5149\u7DDA\u3092\u653E\u3063\u305F\u3002"
-  - Area:
+    <Log>k__BackingField: "\u306F\u7834\u58CA\u5149\u7DDA\u3092\u653E\u3063\u305F\u3002"
+  - <Area>k__BackingField:
       rid: 2541219246146060308
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219246146060311
-    Position:
+    <Position>k__BackingField:
       rid: 2541219238315819021
-    Log: "\u306F\u95C7\u306E\u30AA\u30FC\u30E9\u3092\u958B\u653E\u3057\u305F\u3002"
-  - Area:
+    <Log>k__BackingField: "\u306F\u95C7\u306E\u30AA\u30FC\u30E9\u3092\u958B\u653E\u3057\u305F\u3002"
+  - <Area>k__BackingField:
       rid: 2541219246146060316
-    Effect:
+    <Effect>k__BackingField:
       rid: 2541219246146060314
-    Position:
+    <Position>k__BackingField:
       rid: 2541219246146060317
-    Log: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F\u3002"
+    <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F\u3002"
   HasLastSkill: 0
   LastSkill:
-    Area:
+    <Area>k__BackingField:
       rid: -2
-    Effect:
+    <Effect>k__BackingField:
       rid: -2
-    Position:
+    <Position>k__BackingField:
       rid: -2
-    Log: 
+    <Log>k__BackingField: 
   references:
     version: 2
     RefIds:

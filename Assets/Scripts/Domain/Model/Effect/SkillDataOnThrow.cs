@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Model.Effect.Area;
+using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,11 +8,14 @@ using UnityEngine;
 namespace Domain.Model.Effect
 {
     [Serializable]
-    public class SkillDataOnThrow : IHasInfo
+    public class SkillDataOnThrow : ISkillData
     {
-        [SerializeReference][Required] public IArea Area;
-        [SerializeReference][Required] public IEffect Effect;
-        [Range(0, 1)] public float ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
+        [field: SerializeReference, Required] public IArea Area { get; private set; }
+        [field: SerializeReference, Required] public IEffect Effect { get; private set; }
+        public IEffectPosition Position => new AtFeet();
+        public int RushDistance => 0;
+        [field: SerializeField, Range(0, 1)] public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
+        public string Log => "";
 
         public SkillDataOnThrow(IArea area, IEffect effect, float probabilityOfSuccess)
         {
@@ -19,6 +23,21 @@ namespace Domain.Model.Effect
             Effect = effect;
             ProbabilityOfSuccess = probabilityOfSuccess;
         }
+
+        public void SetSameEffect(SkillDataOnUse skillDataOnUse)
+        {
+            Effect = skillDataOnUse.Effect;
+        }
+
+#if UNITY_EDITOR
+        public void OnValidate(float probabilityOfSuccess)
+        {
+            if (ProbabilityOfSuccess == 0)
+            {
+                ProbabilityOfSuccess = probabilityOfSuccess;
+            }
+        }
+#endif
 
         public string Info()
         {

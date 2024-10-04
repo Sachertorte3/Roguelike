@@ -11,6 +11,7 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using static RandomDungeonWithBluePrint.Constants;
+using Random = UnityEngine.Random;
 
 namespace Domain.Service.Map
 {
@@ -18,8 +19,10 @@ namespace Domain.Service.Map
     {
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
-        private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesKnownChanged = new();
+        private readonly Subject<IEnumerable<(Vector2Int Position, bool IsGrass)>> _onGrassesChanged = new();
+        private readonly Subject<IEnumerable<(Vector2Int Position, bool IsKnown)>> _onTilesKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
+        private readonly ObservableHashSet<Vector2Int> _grasses;
         private TilemapMemento _mementoCache;
         public readonly int Height;
         public readonly int Width;
@@ -27,9 +30,9 @@ namespace Domain.Service.Map
         public Tilemap(TilemapMemento memento)
         {
             Width = memento.Width;
-            Height = memento.Tiles.Length / Width;
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(memento.Tiles.ToList().Select((x, index) => (new Vector2Int(index % Width, index / Width), new TileData(x)))
-                .ToDictionary(x => x.Item1, x => x.Item2));
+            Height = memento.Height;
+            _tiles = memento.Tiles;
+            _grasses = new ObservableHashSet<Vector2Int>(memento.Grasses);
 
             Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
 
@@ -45,6 +48,10 @@ namespace Domain.Service.Map
                         _allPassablePositionsSet.Remove(position);
                     ResetMask(position);
                 }
+                UpdateMementoCache();
+            });
+            OnGrassesChanged.Subscribe(changeGrasses =>
+            {
                 UpdateMementoCache();
             });
             OnTilesKnownChanged.Subscribe(changeTiles =>
@@ -74,18 +81,28 @@ namespace Domain.Service.Map
 
         private void UpdateMementoCache()
         {
-            var tiles = new TileMemento[Width * Height];
-            foreach (var (position, tile) in _tiles)
-            {
-                tiles[position.x + (position.y * Width)] = tile.Serialize();
-            }
-
             _mementoCache = new TilemapMemento
             (
                 width: Width,
-                tiles: tiles,
-                rooms: Rooms.ToArray()
+                height: Height,
+                tiles: _tiles,
+                grasses: _grasses,
+                rooms: Rooms
             );
+        }
+
+        public void UpdateTurn()
+        {
+            var grasses = new List<Vector2Int>();
+            foreach (var position in _grasses)
+            {
+                if (Random.value < 1 / 256f)
+                {
+                    var spawnPosition = position + DirectionMethods.AllDirections.GetAtRandom().Vector();
+                    grasses.Add(spawnPosition);
+                }
+            }
+            SetGrasses(grasses, true);
         }
 
         public TilemapMemento Serialize()
@@ -94,7 +111,8 @@ namespace Domain.Service.Map
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
-        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesKnownChanged => _onTilesKnownChanged;
+        public Observable<IEnumerable<(Vector2Int Position, bool IsGrass)>> OnGrassesChanged => _onGrassesChanged;
+        public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged => _onTilesKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
 
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
@@ -102,9 +120,14 @@ namespace Domain.Service.Map
             return _tiles.Select(pair => (pair.Key, pair.Value));
         }
 
+        public IEnumerable<Vector2Int> GetAllGrasses()
+        {
+            return _grasses.ToArray();
+        }
+
         public bool IsPassable(Vector2Int position)
         {
-            return Get(position).MapOr(false, tile => tile.IsPassable());
+            return GetTile(position).MapOr(false, tile => tile.IsPassable());
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -144,7 +167,8 @@ namespace Domain.Service.Map
             (
                 width: width,
                 tiles: tiles,
-                rooms: rooms.ToArray()
+                grasses: Enumerable.Empty<Vector2Int>(),
+                rooms: rooms
             );
         }
 
@@ -158,7 +182,7 @@ namespace Domain.Service.Map
             return _tiles.ContainsKey(position);
         }
 
-        public Option<TileData> Get(Vector2Int position)
+        public Option<TileData> GetTile(Vector2Int position)
         {
             if (!IsPositionInsideMap(position))
             {
@@ -174,17 +198,42 @@ namespace Domain.Service.Map
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
         }
 
+        public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)
+        {
+            var result = new List<(Vector2Int position, bool isGrass)>();
+            foreach (var position in positions)
+            {
+                if (isGrass != _grasses.Contains(position))
+                {
+                    if (isGrass)
+                    {
+                        if (GetTile(position).MapOr(false, tile => tile.TileType == TileCategory.Floor))
+                        {
+                            _grasses.Add(position);
+                            result.Add((position, true));
+                        }
+                    }
+                    else
+                    {
+                        _grasses.Remove(position);
+                        result.Add((position, false));
+                    }
+                }
+            }
+            _onGrassesChanged.OnNext(result);
+        }
+
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)
         {
             var changedPositions = positions
-                .Select(position => (position, Get(position)))
+                .Select(position => (position, GetTile(position)))
                 .Where(pair => pair.Item2.MapOr(false, tile => tile.IsKnown != isKnown))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
-            var result = new List<(Vector2Int position, TileData tileData)>();
+            var result = new List<(Vector2Int position, bool isKnown)>();
             foreach (var (position, tile) in changedPositions)
             {
                 tile.SetKnown(isKnown);
-                result.Add((position, tile));
+                result.Add((position, isKnown));
             }
             _onTilesKnownChanged.OnNext(result);
         }
@@ -192,7 +241,7 @@ namespace Domain.Service.Map
         public void RemoveWalls(IEnumerable<Vector2Int> positions)
         {
             var changedPositions = positions
-                .Select(position => (position, Get(position)))
+                .Select(position => (position, GetTile(position)))
                 .Where(pair => pair.Item2.MapOr(false, tile => tile.TileType == TileCategory.Wall))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
             var result = new List<(Vector2Int position, TileData tileData)>();

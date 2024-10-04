@@ -1,5 +1,9 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Model.Map;
+using ObservableCollections;
 using UnityEngine;
 
 namespace Domain.Model.Memento
@@ -8,13 +12,34 @@ namespace Domain.Model.Memento
     public class TilemapMemento
     {
         [field: SerializeField] public int Width { get; private set; }
-        [field: SerializeField] public TileMemento[] Tiles { get; private set; }
+        public int Height => _tiles.Length / Width;
+        [SerializeField] private TileMemento[] _tiles;
+        public ObservableDictionary<Vector2Int, TileData> Tiles => new ObservableDictionary<Vector2Int, TileData>(
+            _tiles
+            .Select((x, index) => (new Vector2Int(index % Width, index / Width), new TileData(x)))
+            .ToDictionary(x => x.Item1, x => x.Item2));
+        [SerializeField] private Vector2Int[] _grasses;
+        public ObservableHashSet<Vector2Int> Grasses => new ObservableHashSet<Vector2Int>(_grasses);
         [field: SerializeField] public RectInt[] Rooms { get; private set; }
-        public TilemapMemento(int width, TileMemento[] tiles, RectInt[] rooms)
+        public TilemapMemento(int width, int height, IDictionary<Vector2Int, TileData> tiles, IEnumerable<Vector2Int> grasses, IEnumerable<RectInt> rooms)
+        {
+            var tileMementos = new TileMemento[width * height];
+            foreach (var (position, tile) in tiles)
+            {
+                tileMementos[position.x + (position.y * width)] = tile.Serialize();
+            }
+
+            Width = width;
+            _tiles = tileMementos;
+            _grasses = grasses.ToArray();
+            Rooms = rooms.ToArray();
+        }
+        public TilemapMemento(int width, TileMemento[] tiles, IEnumerable<Vector2Int> grasses, IEnumerable<RectInt> rooms)
         {
             Width = width;
-            Tiles = tiles;
-            Rooms = rooms;
+            _tiles = tiles;
+            _grasses = grasses.ToArray();
+            Rooms = rooms.ToArray();
         }
     }
 }

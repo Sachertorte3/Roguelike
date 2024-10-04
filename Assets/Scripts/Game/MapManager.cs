@@ -489,17 +489,23 @@ namespace Game
 
         public void UpdateTurn(int turn)
         {
-            if (turn % 100 == 0)
+            if (Random.value < 1 / 64f)
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())
                     SpawnRandomEnemy(positions.GetAtRandom(), isShiny: false);
             }
+            _tilemap.UpdateTurn();
         }
 
         public void RemoveWalls(IEnumerable<Vector2Int> positions)
         {
             _tilemap.RemoveWalls(positions);
+        }
+
+        public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)
+        {
+            _tilemap.SetGrasses(positions, isGrass);
         }
 
         public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area) where T : IEntity

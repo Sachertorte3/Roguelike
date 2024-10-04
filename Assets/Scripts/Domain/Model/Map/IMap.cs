@@ -33,6 +33,7 @@ namespace Domain.Model.Map
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
+        public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null);

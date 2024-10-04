@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Map;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Rooms;
@@ -41,6 +42,11 @@ namespace Provider
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
+            else if (eventEntity.Layer == EntityLayer.Middle)
+            {
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Chest.prefab").WaitForCompletion()
+                    .GetComponent<EntityView>();
+            }
             else
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
@@ -63,6 +69,13 @@ namespace Provider
             var spriteView = entityView.GetComponent<SpriteView>();
             if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
+            if (eventEntity is Stairs stairs)
+            {
+                if (stairs.Type == MovementEntityType.UpStairs)
+                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                else
+                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            }
         }
 
         protected override void CleanupView(IEventEntity item, EntityView view)

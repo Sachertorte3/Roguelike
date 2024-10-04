@@ -243,16 +243,17 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 0.5
-      _mimicChance: 1
-      _trapChance: 0.1
+      _mimicChance: 0.1
+      _grassChance: 0.5
       _shopChance: 1
       _monsterHouseChance: 0.1
       _restRoomChance: 1
       _room:
-        ChestChance: 0.1
+        ChestChance: 1
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     WeaponChanceInChest: 0.8
@@ -276,7 +277,7 @@ MonoBehaviour:
       _shinyChance: 0
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.51
       _shopChance: 0.1
       _monsterHouseChance: 1
       _restRoomChance: 0.1
@@ -285,6 +286,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     - Depth: 1
@@ -294,7 +296,7 @@ MonoBehaviour:
       _shinyChance: 0
       _sleepChance: 0
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0
       _monsterHouseChance: 0
       _restRoomChance: 0.1
@@ -303,6 +305,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 1
       _boss:
       - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
@@ -325,7 +328,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -334,6 +337,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     - Depth: 1
@@ -343,7 +347,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -352,6 +356,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     - Depth: 1
@@ -361,7 +366,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -370,6 +375,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss:
       - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
@@ -398,7 +404,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -407,6 +413,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     - Depth: 1
@@ -416,7 +423,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -425,6 +432,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss:
       - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
@@ -453,7 +461,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -462,6 +470,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss: []
     - Depth: 1
@@ -471,7 +480,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _trapChance: 0.1
+      _grassChance: 0.3
       _shopChance: 0.1
       _monsterHouseChance: 0.1
       _restRoomChance: 0.1
@@ -480,6 +489,7 @@ MonoBehaviour:
         ItemCount: 1
         WeaponCount: 0.2
         CharacterCount: 1
+        TrapCount: 0
       _existBoss: 0
       _boss:
       - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}

@@ -107,6 +107,7 @@ namespace Domain.Service.Effect
                 await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction, projectileImpact.CanHitLayer.ToArray());
             }
             var area = GetArea(actor, position, direction, map);
+            map.SetGrasses(area, isGrass: false);
 
             foreach (var target in map.GetEntitiesInArea(area)
                 .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))

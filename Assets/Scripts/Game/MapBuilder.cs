@@ -15,12 +15,6 @@ using Unity.Logging;
 using Utilities;
 using Random = UnityEngine.Random;
 using Domain.Service.Rooms;
-using Domain.Service.Effect;
-using Domain.Model.Effect.Position;
-using Domain.Model.Effect.Area;
-using Domain.Model.Character;
-using Domain.Model.Condition;
-using Domain.Service.Characters.Conditions;
 
 namespace Game
 {
@@ -54,6 +48,9 @@ namespace Game
 
             var rooms = _tilemap.Rooms.ToList();
 
+            foreach (var room in rooms)
+                AddGrasses(data, room);
+
             _shop = CreateShop(data, rooms);
             _monsterHouse = CreateMonsterHouse(data, rooms);
             CreateRestRoom(data, rooms);
@@ -68,7 +65,7 @@ namespace Game
                 var itemCount = GetCount(data.ItemCount);
                 var weaponCount = GetCount(data.WeaponCount);
                 var chestCount = Random.value < data.ChestChance ? 1 : 0;
-                var trapCount = 5;
+                var trapCount = GetCount(data.TrapCount);
                 var bossCount = data.existBoss ? data.Boss.Count : 0;
                 var sum = characterCount + itemCount + weaponCount + chestCount + trapCount + bossCount + 3;
 
@@ -88,6 +85,7 @@ namespace Game
                 AddWeaponsToRoom(data, weaponPositions);
                 AddChestsToRoom(data, chestPositions, _chests);
                 AddTrapsToRoom(data, trapPositions, _traps);
+
                 if (room == bossRoom)
                 {
                     foreach (var bossData in data.Boss)
@@ -111,6 +109,19 @@ namespace Game
             _bonfire = (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value) : Option.None<Vector2Int>()).Map(position => Bonfire.Build(position));
         }
 
+        private void AddGrasses(DungeonMapData data, RectInt room)
+        {
+            var randomValue = Random.value * 1024;
+            foreach (var position in room.RectRange())
+            {
+                var value = Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue);
+                if (value < data.GrassChance)
+                {
+                    _tilemap.SetGrasses(new[] { position }, isGrass: true);
+                }
+            }
+        }
+
         private int GetCount(float attemptCount)
         {
             var probability = 0.5f;
@@ -123,6 +134,8 @@ namespace Game
 
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
+
+            _tilemap.SetGrasses(shopRoom.RectRange(), isGrass: false);
 
             var shopItems = data.ShopItems.GetRandomItem().Items;
 

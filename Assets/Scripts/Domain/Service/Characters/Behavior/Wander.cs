@@ -18,14 +18,14 @@ namespace Domain.Service.Characters.Behavior
             if (character.CanMove(facingDirection, world))
             {
                 directions.Add(facingDirection, 0.1f);
-                if (!world.IsPassableOnMap(character.CurrentPosition +
+                if (!world.IsWalkableOnMap(character.CurrentPosition +
                                          facingDirection.RotateClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), world))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
 
-                if (!world.IsPassableOnMap(character.CurrentPosition +
+                if (!world.IsWalkableOnMap(character.CurrentPosition +
                                          facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), world))
                 {

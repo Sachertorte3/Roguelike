@@ -17,7 +17,9 @@ namespace Domain.Service.Map
 {
     public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemapViewer
     {
+        private readonly HashSet<Vector2Int> _allWalkablePositionsSet;
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
+        private readonly HashSet<Vector2Int> _allLightPassablePositionsSet;
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, bool IsGrass)>> _onGrassesChanged = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, bool IsKnown)>> _onTilesKnownChanged = new();
@@ -36,16 +38,29 @@ namespace Domain.Service.Map
 
             Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
 
+            _allWalkablePositionsSet = FindAllWalkablePositions().ToHashSet();
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
+            _allLightPassablePositionsSet = FindAllLightPassablePositions().ToHashSet();
 
             OnTilesChanged.Subscribe(changeTiles =>
             {
                 foreach (var (position, tileData) in changeTiles)
                 {
+                    if (tileData.IsWalkable())
+                        _allWalkablePositionsSet.Add(position);
+                    else
+                        _allWalkablePositionsSet.Remove(position);
+
                     if (tileData.IsPassable())
                         _allPassablePositionsSet.Add(position);
                     else
                         _allPassablePositionsSet.Remove(position);
+
+                    if (tileData.IsTransparent())
+                        _allLightPassablePositionsSet.Add(position);
+                    else
+                        _allLightPassablePositionsSet.Remove(position);
+
                     ResetMask(position);
                 }
                 UpdateMementoCache();
@@ -125,9 +140,24 @@ namespace Domain.Service.Map
             return _grasses.ToArray();
         }
 
+        public bool IsWalkable(Vector2Int position)
+        {
+            return GetTile(position).MapOr(false, tile => tile.IsWalkable());
+        }
+
         public bool IsPassable(Vector2Int position)
         {
             return GetTile(position).MapOr(false, tile => tile.IsPassable());
+        }
+
+        public bool IsTransparent(Vector2Int position)
+        {
+            return GetTile(position).MapOr(false, tile => tile.IsTransparent());
+        }
+
+        public HashSet<Vector2Int> GetAllWalkablePositions()
+        {
+            return new HashSet<Vector2Int>(_allWalkablePositionsSet);
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
@@ -135,7 +165,12 @@ namespace Domain.Service.Map
             return new HashSet<Vector2Int>(_allPassablePositionsSet);
         }
 
-        public static TilemapMemento Build(FieldBluePrint bluePrint)
+        public HashSet<Vector2Int> GetAllLightPassablePositions()
+        {
+            return new HashSet<Vector2Int>(_allLightPassablePositionsSet);
+        }
+
+        public static TilemapMemento Build(FieldBluePrint bluePrint, float waterChance)
         {
             var field = FieldBuilder.Build(bluePrint);
             var width = field.Grid.Size.x + 2;
@@ -143,6 +178,7 @@ namespace Domain.Service.Map
             var tiles = new TileMemento[width * height];
             var rooms = field.Rooms.Select(room => room.Rect).Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
 
+            var randomValue = Random.value * 1024;
             for (var x = -1; x < field.Grid.Size.x + 1; x++)
             {
                 for (var y = -1; y < field.Grid.Size.y + 1; y++)
@@ -158,6 +194,13 @@ namespace Domain.Service.Map
                         tileType = mapChipType == (int)MapChipType.Wall
                             ? TileCategory.Wall
                             : TileCategory.Floor;
+                        if (tileType == TileCategory.Wall)
+                        {
+                            if (Mathf.PerlinNoise(x / 16f + randomValue, y / 16f + randomValue) < waterChance)
+                            {
+                                tileType = TileCategory.Water;
+                            }
+                        }
                     }
                     tiles[x + 1 + ((y + 1) * width)] = TileData.Build(tileType, false);
                 }
@@ -193,9 +236,19 @@ namespace Domain.Service.Map
             return Option.Some(_tiles[position]);
         }
 
+        private IEnumerable<Vector2Int> FindAllWalkablePositions()
+        {
+            return GetAllTiles().Where(pair => pair.tileData.IsWalkable()).Select(pair => pair.position);
+        }
+
         private IEnumerable<Vector2Int> FindAllPassablePositions()
         {
             return GetAllTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position);
+        }
+
+        private IEnumerable<Vector2Int> FindAllLightPassablePositions()
+        {
+            return GetAllTiles().Where(pair => pair.tileData.IsTransparent()).Select(pair => pair.position);
         }
 
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)

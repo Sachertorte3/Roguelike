@@ -128,17 +128,20 @@ namespace Provider
         {
             switch (tileData.TileType)
             {
-                case TileCategory.Wall:
-                    tileView.SetWall(position, visibility);
-                    break;
-                case TileCategory.UnbreakableWall:
-                    tileView.SetUnbreakableWall(position, visibility);
-                    break;
                 case TileCategory.Floor:
                     if (shop.HasValue && shop.Value.Contains(position))
                         tileView.SetShopFloor(position, visibility);
                     else
                         tileView.SetFloor(position, visibility);
+                    break;
+                case TileCategory.Water:
+                    tileView.SetWater(position, visibility);
+                    break;
+                case TileCategory.Wall:
+                    tileView.SetWall(position, visibility);
+                    break;
+                case TileCategory.UnbreakableWall:
+                    tileView.SetUnbreakableWall(position, visibility);
                     break;
             }
         }

@@ -13,6 +13,16 @@ namespace View
             _tilemap.ClearAllTiles();
         }
 
+        public void SetFloor(Vector2Int position, TileVisibility? visibility = null)
+        {
+            SetTile(position, _tiles.Floor, visibility);
+        }
+
+        public void SetWater(Vector2Int position, TileVisibility? visibility = null)
+        {
+            SetTile(position, _tiles.Water, visibility);
+        }
+
         public void SetWall(Vector2Int position, TileVisibility? visibility = null)
         {
             SetTile(position, _tiles.Wall, visibility);
@@ -21,11 +31,6 @@ namespace View
         public void SetUnbreakableWall(Vector2Int position, TileVisibility? visibility = null)
         {
             SetTile(position, _tiles.Wall, visibility);
-        }
-
-        public void SetFloor(Vector2Int position, TileVisibility? visibility = null)
-        {
-            SetTile(position, _tiles.Floor, visibility);
         }
 
         public void SetShopFloor(Vector2Int position, TileVisibility? visibility = null)

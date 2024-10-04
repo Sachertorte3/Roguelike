@@ -31,7 +31,7 @@ namespace Provider
             builder.RegisterComponent(_dungeonData);
             builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();
-            builder.RegisterComponentInHierarchy<TileMaskController>();
+            builder.RegisterComponentInHierarchy<GrassViewController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
             builder.RegisterComponentInHierarchy<StatLine>();
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();

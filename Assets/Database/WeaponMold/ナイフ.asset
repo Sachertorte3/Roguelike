@@ -16,18 +16,19 @@ MonoBehaviour:
   Icon: {fileID: -118445534, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   PowerMagnification: 1
   UsageLimit: 22
-  <Area>k__BackingField:
-    rid: 4425516878087061506
-  <Position>k__BackingField:
-    rid: 2541219106150416418
+  Area:
+    rid: 5486256354307866632
+  Position:
+    rid: 5486256354307866625
   references:
     version: 2
     RefIds:
-    - rid: 2541219106150416418
+    - rid: 5486256354307866625
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4425516878087061506
+    - rid: 5486256354307866632
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 1

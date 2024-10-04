@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u920D\u8DB3"
   m_EditorClassIdentifier: 
   Condition:
-    rid: 861543420369829893
+    rid: 5486256311944871987
   RemovalCondition:
     RemoveByElapsedTurn: 1
     Duration: 8
@@ -23,7 +23,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 861543420369829893
+    - rid: 5486256311944871987
       type: {class: Slowness, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data: 

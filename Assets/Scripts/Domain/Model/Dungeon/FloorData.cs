@@ -27,18 +27,18 @@ namespace Domain.Model.Dungeon
         public const float DefaultShinyChance = 0.01f;
         public const float DefaultSleepChance = 0.5f;
         public const float DefaultMimicChance = 0.1f;
-        public const float DefaultTrapChance = 0.1f;
+        public const float DefaultGrassChance = 0.3f;
         public const float DefaultShopChance = 0.1f;
         public const float DefaultMonsterHouseChance = 0.1f;
         public const float DefaultRestRoomChance = 0.1f;
-        public readonly RoomData DefaultRoom = new RoomData(0, 1, 0.2f, 1);
-        public readonly RoomData EmptyRoom = new RoomData(0, 0, 0, 0);
+        public readonly RoomData DefaultRoom = new RoomData(0, 1, 0.5f, 1, 0.5f);
+        public readonly RoomData EmptyRoom = new RoomData(0, 0, 0, 0, 0);
 
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _prefixChance = DefaultPrefixChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shinyChance = DefaultShinyChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _sleepChance = DefaultSleepChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _mimicChance = DefaultMimicChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _trapChance = DefaultTrapChance;
+        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _grassChance = DefaultGrassChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shopChance = DefaultShopChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _monsterHouseChance = DefaultMonsterHouseChance;
         [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _restRoomChance = DefaultRestRoomChance;
@@ -78,12 +78,12 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _mimicChance,
             _ => throw new NotImplementedException()
         };
-        public float TrapChance => Template switch
+        public float GrassChance => Template switch
         {
-            FloorTemplates.Default => DefaultTrapChance,
+            FloorTemplates.Default => DefaultGrassChance,
             FloorTemplates.Boss => 0,
-            FloorTemplates.Shop => DefaultTrapChance,
-            FloorTemplates.Custom => _trapChance,
+            FloorTemplates.Shop => DefaultGrassChance,
+            FloorTemplates.Custom => _grassChance,
             _ => throw new NotImplementedException()
         };
         public float ShopChance => Template switch

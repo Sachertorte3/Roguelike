@@ -56,6 +56,7 @@ namespace Domain.Service.Characters
                 isLeader: true,
                 isShiny: false,
                 isBoss: false,
+                isFlying: true,
                 canPickUp: true,
                 canUseItem: true
             );
@@ -92,6 +93,7 @@ namespace Domain.Service.Characters
                 isLeader: false,
                 isShiny: isShiny,
                 isBoss: data.IsBoss,
+                isFlying: data.IsFlying,
                 canPickUp: data.CanPickUp,
                 canUseItem: data.CanUseItem
             );

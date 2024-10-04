@@ -16,7 +16,7 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
-            var route = new AStar(world.GetAllPassablePositions(character.Affiliation)).Calc(character.CurrentPosition, targetPosition);
+            var route = new AStar((pos, direction) => character.CanMove(pos, direction, world) || character.CanSwap(pos, direction, world)).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
                 Log.Debug($"Already reached the target position");
@@ -24,9 +24,13 @@ namespace Domain.Service.Characters.Behavior
             }
 
             var direction = DirectionMethods.FromVector(route[1] - route[0]);
+            foreach (var pos in route)
+            {
+                Log.Debug($"pos: {pos}");
+            }
 
-            var move = new Move(direction, 0.01f);
-            var swap = new Swap(direction, 0.01f);
+            var move = new Move(direction!.Value, 0.01f);
+            var swap = new Swap(direction!.Value, 0.01f);
             if (move.Doable(character, world))
             {
                 return new List<Move> { move };

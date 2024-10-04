@@ -43,7 +43,6 @@ namespace View
             _disposable.Disposable = null;
             transform.position = (Vector3Int)position;
             IsMoving = false;
-            Debug.Log($"Teleport: {position} End");
         }
 
         public void Move(Vector2Int destination, Direction8 direction, bool isThrown)
@@ -63,7 +62,6 @@ namespace View
                     totalDuration = MoveMilliseconds / 1000f;
 
                 IsMoving = true;
-                Debug.Log($"Move: {destination} {direction} {isThrown} {totalDuration}");
 
                 _disposable.Disposable = Observable.EveryUpdate()
                     .TakeWhile(_ => elapsedTime < totalDuration)
@@ -79,7 +77,6 @@ namespace View
                     _ =>
                     {
                         IsMoving = false;
-                        Debug.Log($"Move: {destination} {direction} {isThrown} End");
                     }).AddTo(this);
             }
             else

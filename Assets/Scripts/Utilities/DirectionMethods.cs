@@ -59,8 +59,12 @@ namespace Utilities
             };
         }
 
-        public static Direction8 FromVector(Vector2 vector)
+        public static Direction8? FromVector(Vector2 vector)
         {
+            if (Mathf.Approximately(vector.x, 0) && Mathf.Approximately(vector.y, 0))
+            {
+                return null;
+            }
             return vector switch
             {
                 { x: 0, y: > 0 } => Direction8.Up,
@@ -77,7 +81,11 @@ namespace Utilities
 
         public static Direction8? FromVectorStrict(Vector2 vector)
         {
-            if (vector.x == 0 || vector.y == 0 || Mathf.Abs(vector.x) == Mathf.Abs(vector.y))
+            if (Mathf.Approximately(vector.x, 0) && Mathf.Approximately(vector.y, 0))
+            {
+                return null;
+            }
+            if (Mathf.Approximately(vector.x, 0) || Mathf.Approximately(vector.y, 0) || Mathf.Approximately(Mathf.Abs(vector.x), Mathf.Abs(vector.y)))
             {
                 return vector switch
                 {
@@ -89,7 +97,7 @@ namespace Utilities
                     { x: < 0, y: < 0 } => Direction8.DownLeft,
                     { x: < 0, y: 0 } => Direction8.Left,
                     { x: < 0, y: > 0 } => Direction8.UpLeft,
-                    _ => throw new ArgumentException()
+                    _ => throw new ArgumentException($"Value {vector} does not fall within the expected range.")
                 };
             }
             else
@@ -105,7 +113,7 @@ namespace Utilities
 
         public static Direction8? NearestDirectionFromVector(Vector2 vector)
         {
-            if (vector == Vector2.zero)
+            if (Mathf.Approximately(vector.x, 0) && Mathf.Approximately(vector.y, 0))
             {
                 return null;
             }
@@ -127,7 +135,7 @@ namespace Utilities
 
         public static List<Direction8>? NearDirectionsFromVector(Vector2 vector)
         {
-            if (vector == Vector2.zero)
+            if (Mathf.Approximately(vector.x, 0) && Mathf.Approximately(vector.y, 0))
             {
                 return null;
             }

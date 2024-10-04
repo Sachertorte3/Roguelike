@@ -66,6 +66,7 @@ namespace Domain.Service.Characters
             IsLeader = data.IsLeader;
             IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
+            IsFlying = data.IsFlying;
             CanPickUp = data.CanPickUp;
             CanUseItem = data.CanUseItem;
 
@@ -103,6 +104,7 @@ namespace Domain.Service.Characters
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
+        public bool IsFlying { get; init; }
         public bool HasHomePosition => _behavior.HomePosition.HasValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
@@ -141,8 +143,10 @@ namespace Domain.Service.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IPassableChecker map, bool isFlying = false) => CanMove(CurrentPosition, direction, map, isFlying);
-        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map, bool isFlying = false)
+        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map) => CanMove(position, direction, IsFlying, map);
+        public bool CanMove(Direction8 direction, bool isFlying, IPassableChecker map) => CanMove(CurrentPosition, direction, isFlying, map);
+        public bool CanMove(Direction8 direction, IPassableChecker map) => CanMove(CurrentPosition, direction, IsFlying, map);
+        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, IPassableChecker map)
         {
             if (_canIgnoreWall)
                 return true;
@@ -157,19 +161,44 @@ namespace Domain.Service.Characters
             {
                 return map.IsBlankAndStandable(position + direction.Vector(), EntityLayer.Middle)
                     && (!direction.IsDiagonal() ||
-                    (map.IsWalkableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
-                    map.IsWalkableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+                    (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                    map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
             }
         }
 
-        public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
+        public bool CanSwap(Direction8 direction, IMap world) => CanSwap(CurrentPosition, direction, world);
+        public bool CanSwap(Vector2Int position, Direction8 direction, IMap world)
         {
-            return _canIgnoreWall
-                ? true
-                : world.IsWalkableOnMap(Position.CurrentValue + direction.Vector())
-                  && (!direction.IsDiagonal() ||
-                      (world.IsWalkableOnMap(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       world.IsWalkableOnMap(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+            var destination = position + direction.Vector();
+            var target = world.GetCharactersInArea(new[] { destination }).FirstOrDefault();
+            if (target == null)
+                return false;
+            if (target.IsEnemy(this))
+                return false;
+            if (target == world.Player)
+                return false;
+            return target.CanMoveIgnoreEntity(destination, direction.Reverse(), world) &&
+                CanMoveIgnoreEntity(position, direction, world);
+        }
+
+        public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker world)
+        {
+            if (_canIgnoreWall)
+                return true;
+            if (IsFlying)
+            {
+                return world.IsPassableOnMap(position + direction.Vector())
+                    && (!direction.IsDiagonal() ||
+                    (world.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                    world.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+            }
+            else
+            {
+                return world.IsWalkableOnMap(position + direction.Vector())
+                    && (!direction.IsDiagonal() ||
+                    (world.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                    world.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+            }
         }
 
         public void Turn(Direction8 direction)
@@ -355,6 +384,7 @@ namespace Domain.Service.Characters
                 isLeader: IsLeader,
                 isShiny: IsShiny,
                 isBoss: IsBoss,
+                isFlying: IsFlying,
                 canPickUp: CanPickUp,
                 canUseItem: CanUseItem
             );
@@ -364,7 +394,7 @@ namespace Domain.Service.Characters
         {
             for (var i = 0; i < distance; i++)
             {
-                if (!CanMove(direction, map, true))
+                if (!CanMove(direction, true, map))
                     break;
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }

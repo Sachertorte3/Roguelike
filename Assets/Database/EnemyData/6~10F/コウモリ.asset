@@ -31,7 +31,9 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 3
+  IsFlying: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
@@ -43,6 +45,7 @@ MonoBehaviour:
       <Position>k__BackingField:
         rid: 2541219281251860496
       <RushDistance>k__BackingField: 2
+      <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
@@ -54,6 +57,7 @@ MonoBehaviour:
     <Position>k__BackingField:
       rid: -2
     <RushDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data:
@@ -73,6 +77,7 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 1
     - rid: 2541219281251860491
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}

@@ -29,6 +29,7 @@ namespace Domain.Model.Character
         public Aggression Aggression = Aggression.AvoidAllies;
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
+        public bool IsFlying = false;
         public bool CanPickUp = false;
         public bool CanUseItem = false;
         public EnemySkillData[] Skills;

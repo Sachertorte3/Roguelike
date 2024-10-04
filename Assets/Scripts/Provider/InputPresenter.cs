@@ -9,6 +9,7 @@ using Utilities;
 using VContainer;
 using View;
 using View.UI;
+using System;
 
 namespace Provider
 {
@@ -27,18 +28,18 @@ namespace Provider
                         receiver.Enable();
                 });
             receiver.OnMovePerformed
-                .Where(vector => vector != Vector2.zero)
-                .Subscribe(vector =>
+                .Select(vector => DirectionMethods.FromVector(vector))
+                .Where(direction => direction != null)
+                .Subscribe(direction =>
                 {
-                    var direction = DirectionMethods.FromVector(vector);
-                    actionReceiver.SetMoveInput(direction, true);
+                    actionReceiver.SetMoveInput(direction!.Value, true);
                 });
             actionReceiver.OnActionRead.Select(_ => receiver.MoveVector)
-                .Where(vector => vector != Vector2.zero)
-                .Subscribe(vector =>
+                .Select(vector => DirectionMethods.FromVector(vector))
+                .Where(direction => direction != null)
+                .Subscribe(direction =>
                 {
-                    var direction = DirectionMethods.FromVector(vector);
-                    actionReceiver.SetMoveInput(direction, false);
+                    actionReceiver.SetMoveInput(direction!.Value, false);
                 });
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());

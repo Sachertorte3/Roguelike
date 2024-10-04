@@ -19,18 +19,35 @@ MonoBehaviour:
   IsBoss: 0
   Hp: 12
   Aggression: 4
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
+  IsFlying: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - <Area>k__BackingField:
-      rid: 2541219246146060292
-    <Effect>k__BackingField:
-      rid: 2541219246146060291
-    <Position>k__BackingField:
-      rid: 2541219106150416414
-    <Log>k__BackingField: "\u306F\u751F\u6C17\u3092\u5438\u53CE\u3057\u305F\u3002"
+  - Skill:
+      <Area>k__BackingField:
+        rid: -2
+      <Effect>k__BackingField:
+        rid: -2
+      <Position>k__BackingField:
+        rid: -2
+      <RushDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: 
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Area>k__BackingField:
@@ -39,26 +56,20 @@ MonoBehaviour:
       rid: -2
     <Position>k__BackingField:
       rid: -2
+    <RushDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416414
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219246146060290
       type: {class: Ghast, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219246146060291
-      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 3
-        Rate: 1
-    - rid: 2541219246146060292
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1

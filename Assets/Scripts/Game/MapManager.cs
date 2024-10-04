@@ -176,23 +176,24 @@ namespace Game
         public IReadOnlyCollection<Vector2Int> VisibleArea => Player.VisionRange.VisibleArea;
         public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
-        public IEnumerable<IEntity> Entities
+        public class EntityIdComparer : IEqualityComparer<IEntity>
         {
-            get
+            public bool Equals(IEntity? x, IEntity? y)
             {
-                foreach (var character in Characters)
-                    yield return character;
+                return x?.Id == y?.Id;
+            }
 
-                foreach (var item in Items)
-                    yield return item;
-
-                foreach (var eventEntity in EventEntities)
-                    yield return eventEntity;
-
-                foreach (var throwAnimationEntity in ThrowAnimationEntities)
-                    yield return throwAnimationEntity;
+            public int GetHashCode(IEntity obj)
+            {
+                return obj.Id.GetHashCode();
             }
         }
+        public IEnumerable<IEntity> Entities => Characters
+                    .Cast<IEntity>()
+                    .Concat(Items)
+                    .Concat(EventEntities)
+                    .Concat(ThrowAnimationEntities)
+                    .Distinct(new EntityIdComparer());
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Bottom)));
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null)
@@ -307,22 +308,35 @@ namespace Game
         }
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
-            return TilemapViewer.GetAllPassablePositions();
+            return TilemapViewer.GetAllLightPassablePositions();
         }
 
         public bool IsOverlapped(Vector2Int position, EntityLayer layer) => AllEntities().On(layer).Get().Count(entity => entity.CurrentPosition == position) > 1;
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers) => BlankPositions().On(layers).Get().Contains(position);
-        public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers) => IsBlank(position, layers);
-        public bool IsPassable(Vector2Int position, IAffiliation actor)
+        public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers)
         {
-            if (!IsPassableOnMap(position))
+            if (!IsWalkableOnMap(position))
                 return false;
             var entity = AllEntities().On(EntityLayer.Middle).At(position).Get().FirstOrDefault();
             if (entity == null)
                 return true;
-            if (entity is ICharacter character)
+            return false;
+        }
+        public bool IsWalkable(Vector2Int position, IAffiliation actor)
+        {
+            if (!IsWalkableOnMap(position))
+                return false;
+            var entity = AllEntities().On(EntityLayer.Middle).At(position).Get().FirstOrDefault();
+            if (entity == null)
+                return true;
+            if (entity is ICharacter character && character != Player)
                 return !character.Affiliation.IsEnemy(actor);
             return false;
+        }
+
+        public bool IsWalkableOnMap(Vector2Int position)
+        {
+            return TilemapViewer.IsWalkable(position);
         }
 
         public bool IsPassableOnMap(Vector2Int position)
@@ -340,7 +354,7 @@ namespace Game
             var route = new AStar(GetAllPassablePositions(actor)).Calc(from, to);
             if (!route.Any())
                 return false;
-            if (IsPassable(to, actor))
+            if (IsWalkable(to, actor))
                 return route.Last() == to;
             else
                 return (route.Last() - to).sqrMagnitude <= 2;
@@ -593,7 +607,7 @@ namespace Game
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
         {
-            return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsPassable, position);
+            return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsWalkable, position);
         }
     }
 }

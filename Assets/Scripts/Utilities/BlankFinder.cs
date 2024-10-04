@@ -25,7 +25,7 @@ namespace Utilities.Algorithms
             var openedPos = new List<Vector2Int>() { position };
             var nextPos = new List<Vector2Int>();
             var closedPos = new List<Vector2Int>();
-            while (openedPos.Count < 20)
+            while (openedPos.Count < 2000)
             {
                 closedPos.AddRange(openedPos);
                 foreach (var pos in openedPos)
@@ -37,8 +37,7 @@ namespace Utilities.Algorithms
 
                     nextPos.AddRange(Directions
                         .Select(x => pos + x)
-                        .Where(x => !closedPos.Contains(x) && !nextPos.Contains(x))
-                        .Where(x => isFloorFunc(x)));
+                        .Where(x => !closedPos.Contains(x) && !nextPos.Contains(x)));
                 }
 
                 openedPos = nextPos;

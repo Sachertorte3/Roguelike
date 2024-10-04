@@ -12,7 +12,8 @@ namespace Domain.Model.Effect
         public HashSet<Vector2Int> GetAllPassablePositions(IAffiliation affiliation);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
         public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
-        public bool IsPassable(Vector2Int position, IAffiliation affiliation);
+        public bool IsWalkable(Vector2Int position, IAffiliation affiliation);
+        public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
     }
 }

@@ -3,6 +3,7 @@
     public enum TileCategory
     {
         Floor,
+        Water,
         Wall,
         UnbreakableWall,
         Blank

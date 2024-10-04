@@ -12,11 +12,15 @@ namespace Domain.Service.Map
         public Observable<IEnumerable<(Vector2Int Position, bool IsGrass)>> OnGrassesChanged { get; }
         public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged { get; }
         public RectInt Rect { get; }
+        public bool IsWalkable(Vector2Int position);
         public bool IsPassable(Vector2Int position);
+        public bool IsTransparent(Vector2Int position);
         public Option<TileData> GetTile(Vector2Int position);
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles();
         public IEnumerable<Vector2Int> GetAllGrasses();
+        public HashSet<Vector2Int> GetAllWalkablePositions();
         public HashSet<Vector2Int> GetAllPassablePositions();
+        public HashSet<Vector2Int> GetAllLightPassablePositions();
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown);
     }
 }

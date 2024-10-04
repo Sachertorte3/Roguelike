@@ -141,25 +141,35 @@ namespace Domain.Service.Characters
         ///     if the destination is not passable.
         ///     If you want to check whether the destination is passable, please use World.IsPassable.
         /// </summary>
-        public bool CanMove(Direction8 direction, IPassableChecker map) => CanMove(CurrentPosition, direction, map);
-        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map)
+        public bool CanMove(Direction8 direction, IPassableChecker map, bool isFlying = false) => CanMove(CurrentPosition, direction, map, isFlying);
+        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map, bool isFlying = false)
         {
-            return _canIgnoreWall
-                ? true
-                : map.IsBlankAndStandable(position + direction.Vector(), EntityLayer.Middle)
-                  && (!direction.IsDiagonal() ||
-                      (map.IsBlankAndStandable(position + direction.Rotate45Clockwise().Vector(), EntityLayer.Middle) &&
-                       map.IsBlankAndStandable(position + direction.Rotate45AntiClockwise().Vector(), EntityLayer.Middle)));
+            if (_canIgnoreWall)
+                return true;
+            if (isFlying)
+            {
+                return map.IsBlank(position + direction.Vector(), EntityLayer.Middle)
+                    && (!direction.IsDiagonal() ||
+                    (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                    map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+            }
+            else
+            {
+                return map.IsBlankAndStandable(position + direction.Vector(), EntityLayer.Middle)
+                    && (!direction.IsDiagonal() ||
+                    (map.IsWalkableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                    map.IsWalkableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+            }
         }
 
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world)
         {
             return _canIgnoreWall
                 ? true
-                : world.IsPassableOnMap(Position.CurrentValue + direction.Vector())
+                : world.IsWalkableOnMap(Position.CurrentValue + direction.Vector())
                   && (!direction.IsDiagonal() ||
-                      (world.IsPassableOnMap(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
-                       world.IsPassableOnMap(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
+                      (world.IsWalkableOnMap(Position.CurrentValue + direction.Rotate45Clockwise().Vector()) &&
+                       world.IsWalkableOnMap(Position.CurrentValue + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -354,9 +364,14 @@ namespace Domain.Service.Characters
         {
             for (var i = 0; i < distance; i++)
             {
-                if (!CanMove(direction, map))
+                if (!CanMove(direction, map, true))
                     break;
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+            }
+            if (!map.IsWalkableOnMap(CurrentPosition))
+            {
+                var position = map.FindBlankPositionFrom(CurrentPosition, position => map.IsBlank(position, EntityLayer.Middle));
+                _entity.Teleport(position);
             }
         }
 

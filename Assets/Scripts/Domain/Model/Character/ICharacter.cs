@@ -49,7 +49,7 @@ namespace Domain.Model.Character
         public IVisionRange VisionRange { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
-        public bool CanMove(Direction8 direction, IPassableChecker world);
+        public bool CanMove(Direction8 direction, IPassableChecker world, bool isFlying=false);
         public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world);
         public void Turn(Direction8 direction);
         public void FaceNearestCharacter(IMap map);

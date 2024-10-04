@@ -49,7 +49,7 @@ namespace Game
         public MapMemento CreateMapManager(int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId, Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
         {
             var dungeonData = CreateMapData(level);
-            var mapBuilder = new MapBuilder(Tilemap.Build(dungeonData.Field), dungeonData);
+            var mapBuilder = new MapBuilder(Tilemap.Build(dungeonData.Field, 0.5f), dungeonData);
             if (ExistLevel(level + 1))
                 mapBuilder.AddDownStairs(dungeonData, level, downStairsId, downStairsDestinationId);
             if (ExistLevel(level - 1))

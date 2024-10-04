@@ -18,7 +18,7 @@ namespace Domain.Model.Map
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
-        public HashSet<Vector2Int> GetPassablePositionsInArea(IEnumerable<Vector2Int> area);
+        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area, params EntityLayer[] layers);
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
         public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area);
         public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area);
@@ -30,7 +30,7 @@ namespace Domain.Model.Map
         public bool IsWalkable(Vector2Int position, IAffiliation actor);
         public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
-        public bool IsReachable(Vector2Int from, Vector2Int to, IAffiliation actor);
+        public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);

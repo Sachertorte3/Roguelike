@@ -12,8 +12,7 @@ namespace Domain.Model.Action
         public IInventory Inventory { get; }
         public IItemSelector ItemSelector { get; }
         public void DoNothing();
-        public bool CanMove(Direction8 direction, IPassableChecker world, bool isFlying = false);
-        public bool CanMoveIgnoreCharacter(Direction8 direction, IPassableChecker world);
+        public bool CanSwap(Direction8 direction, IMap world);
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
         public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap world);

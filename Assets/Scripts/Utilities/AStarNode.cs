@@ -9,7 +9,7 @@ namespace Utilities.Algorithms
 
         private AStarNode _rootNode;
 
-        public int ECost;
+        public float ECost;
 
         public int MoveTotalCost;
 
@@ -19,13 +19,11 @@ namespace Utilities.Algorithms
             SetEstimateCost(position, goal);
         }
 
-        public int Score => ECost + MoveTotalCost;
+        public float Score => ECost + MoveTotalCost;
 
         public void SetEstimateCost(Vector2Int position, Vector2Int goal)
         {
-            var dx = Mathf.Abs(position.x - goal.x);
-            var dy = Mathf.Abs(position.y - goal.y);
-            ECost = Mathf.Max(dx, dy);
+            ECost = Vector2Int.Distance(position, goal);
         }
 
         public void Open(AStarNode rootNode)

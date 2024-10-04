@@ -19,32 +19,57 @@ MonoBehaviour:
   IsBoss: 1
   Hp: 100
   Aggression: 1
-  WanderAround: 1
+  Behavior:
+    wanderAround: 1
+    Default: 1
+    PrioritizeMovement: 0
+    UseTopBound: 0
+    greaterThanTopBound: 1
+    distanceTopBound: 6
+    PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
+    UseBottomBound: 0
+    distanceBottomBound: 3
+    lessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 1
+  IsFlying: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
-  - <Area>k__BackingField:
-      rid: 2541219238315819015
-    <Effect>k__BackingField:
-      rid: 2541219238315819016
-    <Position>k__BackingField:
-      rid: 2541219238315819017
-    <Log>k__BackingField: "\u306F\u7834\u58CA\u5149\u7DDA\u3092\u653E\u3063\u305F\u3002"
-  - <Area>k__BackingField:
-      rid: 2541219246146060308
-    <Effect>k__BackingField:
-      rid: 2541219246146060311
-    <Position>k__BackingField:
-      rid: 2541219238315819021
-    <Log>k__BackingField: "\u306F\u95C7\u306E\u30AA\u30FC\u30E9\u3092\u958B\u653E\u3057\u305F\u3002"
-  - <Area>k__BackingField:
-      rid: 2541219246146060316
-    <Effect>k__BackingField:
-      rid: 2541219246146060314
-    <Position>k__BackingField:
-      rid: 2541219246146060317
-    <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F\u3002"
+  - Skill:
+      <Area>k__BackingField:
+        rid: -2
+      <Effect>k__BackingField:
+        rid: -2
+      <Position>k__BackingField:
+        rid: -2
+      <RushDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: 
+    CoolTime: 0
+  - Skill:
+      <Area>k__BackingField:
+        rid: -2
+      <Effect>k__BackingField:
+        rid: -2
+      <Position>k__BackingField:
+        rid: -2
+      <RushDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: 
+    CoolTime: 0
+  - Skill:
+      <Area>k__BackingField:
+        rid: -2
+      <Effect>k__BackingField:
+        rid: -2
+      <Position>k__BackingField:
+        rid: -2
+      <RushDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: 
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Area>k__BackingField:
@@ -53,73 +78,20 @@ MonoBehaviour:
       rid: -2
     <Position>k__BackingField:
       rid: -2
+    <RushDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
+  ElementDamageRateMultiplier:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219238315819015
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 10
-    - rid: 2541219238315819016
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 9
-        CriticalRate: 0
-        BlowAwayDistance: 10
-        AdditionalConditions: []
-    - rid: 2541219238315819017
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 2541219238315819021
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 2541219246146060307
       type: {class: Space, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 2541219246146060308
-      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Radius: 2
-    - rid: 2541219246146060311
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 5
-        CriticalRate: 0
-        BlowAwayDistance: 1
-        AdditionalConditions:
-        - Condition:
-            rid: 2541219246146060312
-          RemovalCondition:
-            RemoveByElapsedTurn: 1
-            Duration: 2
-            RemoveByDamage: 0
-            Probability: 0
-            RemoveByEnemyNearby: 0
-          Probability: 0.5
-    - rid: 2541219246146060312
-      type: {class: Paralyzed, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
-    - rid: 2541219246146060314
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        Power: 3
-        CriticalRate: 0
-        BlowAwayDistance: 0
-        AdditionalConditions: []
-    - rid: 2541219246146060316
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 2541219246146060317
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        NumberOfTarget: 10
-        TargetAlly: 0
-        TargetEnemy: 1
-        TargetNeutral: 0
-        TargetSelf: 0

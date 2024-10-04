@@ -15,56 +15,56 @@ namespace Domain.Service.Characters.Behavior
         {
             var directions = new Dictionary<Direction8, float>();
             var facingDirection = character.CurrentDirection;
-            if (character.CanMove(facingDirection, world))
+            if (character.CanMove(facingDirection, false, world))
             {
                 directions.Add(facingDirection, 0.1f);
                 if (!world.IsWalkableOnMap(character.CurrentPosition +
                                          facingDirection.RotateClockwise(new Angle(135)).Vector())
-                    && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), world))
+                    && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), false, world))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
 
                 if (!world.IsWalkableOnMap(character.CurrentPosition +
                                          facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
-                    && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), world))
+                    && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), false, world))
                 {
                     directions.Add(facingDirection.RotateAntiClockwise(new Angle(90)), 0.1f);
                 }
             }
             else
             {
-                if (character.CanMove(facingDirection.Rotate90Clockwise(), world))
+                if (character.CanMove(facingDirection.Rotate90Clockwise(), false, world))
                 {
                     directions.Add(facingDirection.Rotate90Clockwise(), 0.1f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate90AntiClockwise(), world))
+                if (character.CanMove(facingDirection.Rotate90AntiClockwise(), false, world))
                 {
                     directions.Add(facingDirection.Rotate90AntiClockwise(), 0.1f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate45Clockwise(), world))
+                if (character.CanMove(facingDirection.Rotate45Clockwise(), false, world))
                 {
                     directions.Add(facingDirection.Rotate45Clockwise(), 0.05f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate45AntiClockwise(), world))
+                if (character.CanMove(facingDirection.Rotate45AntiClockwise(), false, world))
                 {
                     directions.Add(facingDirection.Rotate45AntiClockwise(), 0.05f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse().Rotate45Clockwise(), world))
+                if (character.CanMove(facingDirection.Reverse().Rotate45Clockwise(), false, world))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45Clockwise(), 0.02f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse().Rotate45AntiClockwise(), world))
+                if (character.CanMove(facingDirection.Reverse().Rotate45AntiClockwise(), false, world))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45AntiClockwise(), 0.02f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse(), world))
+                if (character.CanMove(facingDirection.Reverse(), false, world))
                 {
                     directions.Add(facingDirection.Reverse(), 0.03f);
                 }

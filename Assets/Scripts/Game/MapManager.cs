@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System.Security.AccessControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -261,22 +262,31 @@ namespace Game
                 .FirstOrDefault();
         }
 
-        public record PassablePositionFilter(MapManager Map, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area)
+        public record PassablePositionFilter(MapManager Map, bool IsWalkable, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area)
         {
+            public PassablePositionFilter SetWalkability(bool isWalkable)
+            {
+                return new(Map, IsWalkable, Layers, Area);
+            }
+
             public PassablePositionFilter On(params EntityLayer[] layers)
             {
                 if (layers.Any())
-                    return new(Map, layers, Area);
+                    return new(Map, IsWalkable, layers, Area);
                 else
                     return this;
             }
             public PassablePositionFilter In(IEnumerable<Vector2Int> area)
             {
-                return new(Map, Layers, area);
+                return new(Map, IsWalkable, Layers, area);
             }
             public HashSet<Vector2Int> Get()
             {
-                var result = Map.TilemapViewer.GetAllPassablePositions();
+                HashSet<Vector2Int> result;
+                if (IsWalkable)
+                    result = Map.TilemapViewer.GetAllWalkablePositions();
+                else
+                    result = Map.TilemapViewer.GetAllPassablePositions();
                 if (Layers.Any())
                     foreach (var layer in Layers)
                         result.ExceptWith(Map.GetAllEntityPositionsAt(layer));
@@ -288,24 +298,23 @@ namespace Game
             }
         }
 
-        public PassablePositionFilter BlankPositions() => new(this, Array.Empty<EntityLayer>(), null);
+        public PassablePositionFilter BlankPositions() => new(this, false, Array.Empty<EntityLayer>(), null);
         public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers) => BlankPositions().On(layers).Get();
-        public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers) => GetAllBlankPositionsOn(layers);
-        public HashSet<Vector2Int> GetAllPassablePositions(IAffiliation affiliation)
+        public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers) => BlankPositions().SetWalkability(true).On(layers).Get();
+        public HashSet<Vector2Int> GetAllWalkablePositions(IAffiliation affiliation)
         {
-            var passablePositions = GetAllBlankPositionsOn(EntityLayer.Middle);
-
-            var swapableCharacters = AllEntities().On(EntityLayer.Middle).Get()
-            .Where(entity => entity is ICharacter character && !character.Affiliation.IsEnemy(affiliation));
-
-            foreach (var character in swapableCharacters)
-                passablePositions.Add(character.CurrentPosition);
-            return passablePositions;
+            var result = TilemapViewer.GetAllWalkablePositions();
+            result.ExceptWith(
+                AllEntities()
+                .On(EntityLayer.Middle)
+                .Get()
+                .Where(entity => !(entity is ICharacter character && !character.Affiliation.IsEnemy(affiliation)))
+                .Select(entity => entity.CurrentPosition));
+            return result;
         }
-        public HashSet<Vector2Int> GetPassablePositionsInArea(IEnumerable<Vector2Int> area)
-        {
-            return GetAllPassablePositions(Player.Affiliation).Where(position => area.Contains(position)).ToHashSet();
-        }
+
+        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area, params EntityLayer[] layers)
+        => BlankPositions().SetWalkability(true).On(layers).In(area).Get();
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
             return TilemapViewer.GetAllLightPassablePositions();
@@ -349,12 +358,12 @@ namespace Game
             return !AllCharacterPositions().Contains(position);
         }
 
-        public bool IsReachable(Vector2Int from, Vector2Int to, IAffiliation actor)
+        public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
         {
-            var route = new AStar(GetAllPassablePositions(actor)).Calc(from, to);
+            var route = new AStar((pos, direction) => actor.CanMove(pos, direction, this) || actor.CanSwap(pos, direction, this)).Calc(from, to);
             if (!route.Any())
                 return false;
-            if (IsWalkable(to, actor))
+            if (IsWalkable(to, actor.Affiliation))
                 return route.Last() == to;
             else
                 return (route.Last() - to).sqrMagnitude <= 2;
@@ -429,7 +438,8 @@ namespace Game
                 if (eventEntity != null)
                 {
                     var choices = new List<string>();
-                    foreach (var eventData in eventEntity.Events)
+                    var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
+                    foreach (var eventData in executableEvents)
                     {
                         choices.Add(eventData.ChoiceText);
                     }
@@ -447,7 +457,7 @@ namespace Game
                         case "やめる":
                             break;
                         default:
-                            await eventEntity.Events[choiceIndex].DoEvent(Globals.GameManager, this);
+                            await executableEvents[choiceIndex].DoEvent(Globals.GameManager, this);
                             break;
                     }
                 }

@@ -9,7 +9,7 @@ namespace Domain.Model.Effect
         public ICharacter Player { get; }
         public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers);
         public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers);
-        public HashSet<Vector2Int> GetAllPassablePositions(IAffiliation affiliation);
+        public HashSet<Vector2Int> GetAllWalkablePositions(IAffiliation affiliation);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
         public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
         public bool IsWalkable(Vector2Int position, IAffiliation affiliation);

@@ -35,7 +35,7 @@ namespace Domain.Service.Characters.Behavior
 
         private Move MoveFilter(Move move, IHasBehavior character, IMap world)
         {
-            if (!character.CanMove(move.Direction, world))
+            if (!character.CanMove(move.Direction, world) && move.Direction.IsDiagonal())
             {
                 var directionRotateClockwise = move.Direction.Rotate45Clockwise();
                 var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, world);

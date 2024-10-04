@@ -10,7 +10,9 @@ namespace Domain.Model.Effect
         public bool IsShiny { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public IEnumerable<Vector2Int> VisibleArea { get; }
-        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map, bool isFlying = false);
+        public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
+        public bool CanMove(Direction8 direction, bool isFlying, IPassableChecker map);
+        public bool CanMove(Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
         public int GainHp(int value);
         public float GetElementAttackMultiplier(Element element);

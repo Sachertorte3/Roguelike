@@ -25,6 +25,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool IsLeader { get; private set; }
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public bool IsBoss { get; private set; }
+        [field: SerializeField] public bool IsFlying { get; private set; }
         [field: SerializeField] public bool CanPickUp { get; private set; }
         [field: SerializeField] public bool CanUseItem { get; private set; }
         public CharacterMemento(
@@ -43,6 +44,7 @@ namespace Domain.Model.Memento
             bool isLeader,
             bool isShiny,
             bool isBoss,
+            bool isFlying,
             bool canPickUp,
             bool canUseItem
         )
@@ -62,6 +64,7 @@ namespace Domain.Model.Memento
             IsLeader = isLeader;
             IsShiny = isShiny;
             IsBoss = isBoss;
+            IsFlying = isFlying;
             CanPickUp = canPickUp;
             CanUseItem = canUseItem;
         }
@@ -81,6 +84,7 @@ namespace Domain.Model.Memento
             bool? isLeader = null,
             bool? isShiny = null,
             bool? isBoss = null,
+            bool? isFlying = null,
             bool? canPickUp = null,
             bool? canUseItem = null
         )
@@ -101,6 +105,7 @@ namespace Domain.Model.Memento
                 isLeader: isLeader ?? IsLeader,
                 isShiny: isShiny ?? IsShiny,
                 isBoss: isBoss ?? IsBoss,
+                isFlying: isFlying ?? IsFlying,
                 canPickUp: canPickUp ?? CanPickUp,
                 canUseItem: canUseItem ?? CanUseItem
             );

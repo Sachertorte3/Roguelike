@@ -236,7 +236,8 @@ MonoBehaviour:
     - Item: {fileID: 11400000, guid: 932a468b28bc5904182a8c42d183162c, type: 2}
       Weight: 1
   Sections:
-  - Floors:
+  - Type: 0
+    Floors:
     - Depth: 1
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       Template: 2
@@ -269,7 +270,8 @@ MonoBehaviour:
         Weight: 3
       - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
         Weight: 1
-  - Floors:
+  - Type: 0
+    Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       Template: 0
@@ -320,7 +322,8 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
         Weight: 3
-  - Floors:
+  - Type: 1
+    Floors:
     - Depth: 3
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       Template: 0
@@ -396,7 +399,8 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
         Weight: 1
-  - Floors:
+  - Type: 1
+    Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       Template: 0
@@ -453,7 +457,8 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
         Weight: 1
-  - Floors:
+  - Type: 4
+    Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       Template: 0

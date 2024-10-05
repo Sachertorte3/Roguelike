@@ -1,5 +1,7 @@
 ﻿#nullable enable
+using System;
 using System.Linq;
+using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Game;
 using R3;
@@ -22,9 +24,19 @@ namespace Provider
                     tileView.Clear();
                     grassView.Clear();
 
+                    var tileSet = map.Type switch
+                    {
+                        SectionType.Cave => TileSet.Cave,
+                        SectionType.Forest => TileSet.Forest,
+                        SectionType.Snow => TileSet.Snow,
+                        SectionType.Volcano => TileSet.Volcano,
+                        SectionType.Dungeon => TileSet.Dungeon,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
                     foreach (var (position, tileData) in map.TilemapViewer.GetAllTiles())
                     {
-                        SetTile(tileView, tileData, position, map.ShopRect);
+                        SetTile(tileView, tileData, position, tileSet, map.ShopRect);
                         if (map.TilemapViewer.GetAllGrasses().Contains(position))
                             grassView.SetGrass(position);
                         SetVisibility(tileView, grassView, position, GetTileVisibility(map, position));
@@ -33,20 +45,20 @@ namespace Provider
                     var mapSize = map.TilemapViewer.Rect;
                     for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
                     {
-                        tileView.SetUnbreakableWall(new Vector2Int(x, -1), TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(x, -1), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), tileSet, TileVisibility.Transparent);
                     }
                     for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
                     {
-                        tileView.SetUnbreakableWall(new Vector2Int(-1, y), TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(-1, y), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), tileSet, TileVisibility.Transparent);
                     }
 
                     _disposables.Add(map.TilemapViewer.OnTilesChanged.Subscribe(context =>
                     {
                         foreach (var (position, tile) in context)
                         {
-                            SetTile(tileView, tile, position, map.ShopRect);
+                            SetTile(tileView, tile, position, tileSet, map.ShopRect);
                         }
                     }));
 
@@ -124,24 +136,24 @@ namespace Provider
             }
         }
 
-        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, RectInt? shop, TileVisibility? visibility = null)
+        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, TileSet type, RectInt? shop, TileVisibility? visibility = null)
         {
             switch (tileData.TileType)
             {
                 case TileCategory.Floor:
                     if (shop.HasValue && shop.Value.Contains(position))
-                        tileView.SetShopFloor(position, visibility);
+                        tileView.SetShopFloor(position, type, visibility);
                     else
-                        tileView.SetFloor(position, visibility);
+                        tileView.SetFloor(position, type, visibility);
                     break;
                 case TileCategory.Water:
-                    tileView.SetWater(position, visibility);
+                    tileView.SetWater(position, type, visibility);
                     break;
                 case TileCategory.Wall:
-                    tileView.SetWall(position, visibility);
+                    tileView.SetWall(position, type, visibility);
                     break;
                 case TileCategory.UnbreakableWall:
-                    tileView.SetUnbreakableWall(position, visibility);
+                    tileView.SetUnbreakableWall(position, type, visibility);
                     break;
             }
         }

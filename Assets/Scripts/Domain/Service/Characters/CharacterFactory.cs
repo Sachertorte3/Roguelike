@@ -56,7 +56,7 @@ namespace Domain.Service.Characters
                 isLeader: true,
                 isShiny: false,
                 isBoss: false,
-                isFlying: true,
+                isFlying: false,
                 canPickUp: true,
                 canUseItem: true
             );

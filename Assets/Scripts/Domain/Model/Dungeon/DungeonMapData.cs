@@ -9,6 +9,7 @@ namespace Domain.Model.Dungeon
 {
     public record DungeonMapData(
         string Name,
+        SectionType Type,
         FieldBluePrint Field,
         ITable<ItemData> Items,
         ITable<MaterialData> Materials,

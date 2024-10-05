@@ -31,6 +31,7 @@ namespace Game
     {
         public string Name => _dungeonData.Name;
         public readonly int Level;
+        public SectionType Type => _dungeonData.Type;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;

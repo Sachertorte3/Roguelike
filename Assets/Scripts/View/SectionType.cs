@@ -1,0 +1,11 @@
+namespace View
+{
+    public enum TileSet
+    {
+        Cave,
+        Forest,
+        Snow,
+        Volcano,
+        Dungeon
+    }
+}

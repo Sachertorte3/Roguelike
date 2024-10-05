@@ -10,8 +10,8 @@ namespace View
             return visibility switch
             {
                 TileVisibility.Visible => Color.white,
-                TileVisibility.Translucent => new Color(1f, 1f, 1f, 0.5f),
-                TileVisibility.Transparent => Color.clear,
+                TileVisibility.Translucent => new Color(0.5f, 0.5f, 0.5f, 1f),
+                TileVisibility.Transparent => Color.black,
                 _ => throw new ArgumentOutOfRangeException(nameof(visibility), visibility, null)
             };
         }

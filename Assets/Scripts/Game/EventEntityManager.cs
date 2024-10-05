@@ -49,26 +49,30 @@ namespace Game
 
             EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
+
         public EventEntitiesMemento Serialize()
         {
             return new EventEntitiesMemento
             (
-                stairs: Stairs.Select(stairs => stairs.Serialize()).ToList(),
-                chests: _chests.Select(chest => chest.Serialize()).ToList(),
-                traps: _traps.Select(trap => trap.Serialize()).ToList(),
-                bonfire: _bonfire.Map(bonfire => bonfire.Serialize())
+                Stairs.Select(stairs => stairs.Serialize()).ToList(),
+                _chests.Select(chest => chest.Serialize()).ToList(),
+                _traps.Select(trap => trap.Serialize()).ToList(),
+                _bonfire.Map(bonfire => bonfire.Serialize())
             );
         }
-        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests, IEnumerable<TrapMemento> traps, Option<EntityMemento> bonfire)
+
+        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
+            IEnumerable<TrapMemento> traps, Option<EntityMemento> bonfire)
         {
             return new EventEntitiesMemento
             (
-                stairs: stairs.ToList(),
-                chests: chests.ToList(),
-                traps: traps.ToList(),
-                bonfire: bonfire
+                stairs.ToList(),
+                chests.ToList(),
+                traps.ToList(),
+                bonfire
             );
         }
+
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
         public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
 
@@ -104,6 +108,7 @@ namespace Game
             {
                 _bonfire = Option<Bonfire>.None;
             }
+
             EventEntityEvents.Remove(eventEntity);
         }
     }

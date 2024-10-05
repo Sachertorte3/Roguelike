@@ -10,6 +10,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public SpawnEffectSkillMemento Skill { get; private set; }
         [field: SerializeField] public int CoolTime { get; private set; }
         [field: SerializeField] public int RemainingTurn { get; private set; }
+
         public CharacterSkillMemento(SpawnEffectSkillMemento skill, int coolTime, int remainingTurn)
         {
             Skill = skill;

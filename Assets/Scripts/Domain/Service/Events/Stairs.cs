@@ -20,6 +20,7 @@ namespace Domain.Service.Events
         private readonly Entity _entity;
         public Id<IEntity> DestinationId { get; init; }
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
+
         public Stairs(StairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             Type = data.Type;
@@ -27,7 +28,7 @@ namespace Domain.Service.Events
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
-            _events = new()
+            _events = new List<EntityEvent>
             {
                 new EntityEvent("進む", CanExecuteEvent, DoEvent)
             };
@@ -59,7 +60,11 @@ namespace Domain.Service.Events
         private readonly List<EntityEvent> _events;
         public IReadOnlyList<EntityEvent> Events => _events;
         public bool CanBeCanceled => true;
-        private bool CanExecuteEvent() => !IsLocked.CurrentValue;
+
+        private bool CanExecuteEvent()
+        {
+            return !IsLocked.CurrentValue;
+        }
 
         private UniTask DoEvent(IGameManager gameManager, IMap mapManager)
         {
@@ -91,19 +96,20 @@ namespace Domain.Service.Events
         {
             return new StairsMemento
             (
-                type: Type,
-                destination: Destination,
+                Type,
+                Destination,
                 entity: _entity.Serialize(),
                 destinationId: DestinationId
             );
         }
 
-        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IEntity> id, Location destination, Id<IEntity> destinationId)
+        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IEntity> id,
+            Location destination, Id<IEntity> destinationId)
         {
             return new StairsMemento
             (
-                type: type,
-                destination: destination,
+                type,
+                destination,
                 entity: Entity.Build(id, position, EntityLayer.Bottom),
                 destinationId: destinationId
             );

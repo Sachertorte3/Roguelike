@@ -29,6 +29,7 @@ namespace Provider
                             }
                         }));
                     }
+
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnPickUpItem.Subscribe(itemChanged =>
                     {
                         seManager.PickupSE();

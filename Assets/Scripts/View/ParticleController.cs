@@ -9,8 +9,7 @@ namespace View
     {
         private Dictionary<ParticleType, int> _particleCounter = new();
         private Dictionary<ParticleType, GameObject> _particles = new();
-        [HideInInspector, SerializeField]
-        private int _sortingLayerID;
+        [HideInInspector] [SerializeField] private int _sortingLayerID;
 
         public void Add(ParticleType particleType)
         {
@@ -29,6 +28,7 @@ namespace View
                 {
                     particleSystem.GetComponent<Renderer>().sortingLayerID = _sortingLayerID;
                 }
+
                 _particles.Add(particleType, particle);
                 _particleCounter.Add(particleType, 1);
             }
@@ -57,6 +57,7 @@ namespace View
             {
                 Destroy(particle.Value);
             }
+
             _particles.Clear();
             _particleCounter.Clear();
         }

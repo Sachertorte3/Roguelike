@@ -18,6 +18,7 @@ namespace Provider
                     camera.SetPosition((Vector3Int)map.Player.CurrentPosition);
                     return;
                 }
+
                 var playerView = characters.Get(map.Player);
                 camera.SetTarget(playerView.gameObject);
             });

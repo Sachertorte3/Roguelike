@@ -8,6 +8,7 @@ namespace Domain.Model.Effect
     {
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map);
+
         public float EvaluateHitProbability();
     }
 }

@@ -15,12 +15,21 @@ namespace Domain.Service.Effect
         public Color Color => Colors.Black;
         public Impact Impact => Impact.Harmful;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) =>
-            Apply((IEntity)target, map);
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) =>
-            Apply(target, map);
-        public UniTask Apply(ITargetOfEffect target, IMap map) =>
-            Apply((IEntity)target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        {
+            return Apply((IEntity)target, map);
+        }
+
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
+        {
+            return Apply(target, map);
+        }
+
+        public UniTask Apply(ITargetOfEffect target, IMap map)
+        {
+            return Apply((IEntity)target, map);
+        }
+
         public UniTask Apply(IEntity target, IMap map)
         {
             target.Destroy();
@@ -37,11 +46,14 @@ namespace Domain.Service.Effect
             return 100f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {
-            return $"破壊";
+            return "破壊";
         }
     }
 }

@@ -36,7 +36,8 @@ namespace Domain.Service.Map
             _tiles = memento.Tiles;
             _grasses = new ObservableHashSet<Vector2Int>(memento.Grasses);
 
-            Rooms = new(memento.Rooms.Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
+            Rooms = new ReadOnlyCollection<RectInt>(memento.Rooms
+                .Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
 
             _allWalkablePositionsSet = FindAllWalkablePositions().ToHashSet();
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
@@ -63,16 +64,11 @@ namespace Domain.Service.Map
 
                     ResetMask(position);
                 }
+
                 UpdateMementoCache();
             });
-            OnGrassesChanged.Subscribe(changeGrasses =>
-            {
-                UpdateMementoCache();
-            });
-            OnTilesKnownChanged.Subscribe(changeTiles =>
-            {
-                UpdateMementoCache();
-            });
+            OnGrassesChanged.Subscribe(changeGrasses => { UpdateMementoCache(); });
+            OnTilesKnownChanged.Subscribe(changeTiles => { UpdateMementoCache(); });
             UpdateMementoCache();
         }
 
@@ -98,11 +94,11 @@ namespace Domain.Service.Map
         {
             _mementoCache = new TilemapMemento
             (
-                width: Width,
-                height: Height,
-                tiles: _tiles,
-                grasses: _grasses,
-                rooms: Rooms
+                Width,
+                Height,
+                _tiles,
+                _grasses,
+                Rooms
             );
         }
 
@@ -117,6 +113,7 @@ namespace Domain.Service.Map
                     grasses.Add(spawnPosition);
                 }
             }
+
             SetGrasses(grasses, true);
         }
 
@@ -176,7 +173,8 @@ namespace Domain.Service.Map
             var width = field.Grid.Size.x + 2;
             var height = field.Grid.Size.y + 2;
             var tiles = new TileMemento[width * height];
-            var rooms = field.Rooms.Select(room => room.Rect).Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
+            var rooms = field.Rooms.Select(room => room.Rect)
+                .Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
 
             var randomValue = Random.value * 1024;
             for (var x = -1; x < field.Grid.Size.x + 1; x++)
@@ -202,16 +200,17 @@ namespace Domain.Service.Map
                             }
                         }
                     }
-                    tiles[x + 1 + ((y + 1) * width)] = TileData.Build(tileType, false);
+
+                    tiles[x + 1 + (y + 1) * width] = TileData.Build(tileType, false);
                 }
             }
 
             return new TilemapMemento
             (
-                width: width,
-                tiles: tiles,
-                grasses: Enumerable.Empty<Vector2Int>(),
-                rooms: rooms
+                width,
+                tiles,
+                Enumerable.Empty<Vector2Int>(),
+                rooms
             );
         }
 
@@ -273,6 +272,7 @@ namespace Domain.Service.Map
                     }
                 }
             }
+
             _onGrassesChanged.OnNext(result);
         }
 
@@ -288,6 +288,7 @@ namespace Domain.Service.Map
                 tile.SetKnown(isKnown);
                 result.Add((position, isKnown));
             }
+
             _onTilesKnownChanged.OnNext(result);
         }
 
@@ -303,6 +304,7 @@ namespace Domain.Service.Map
                 _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));
                 result.Add((position, _tiles[position]));
             }
+
             _onTilesChanged.OnNext(result);
         }
 

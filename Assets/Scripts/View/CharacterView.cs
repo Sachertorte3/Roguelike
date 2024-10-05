@@ -41,7 +41,7 @@ namespace View
 
         public void SetScale(float value)
         {
-            transform.localScale = new(value, value, 1);
+            transform.localScale = new Vector3(value, value, 1);
         }
 
         public void Turn(Direction8 direction)

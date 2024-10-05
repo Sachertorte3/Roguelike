@@ -28,74 +28,84 @@ namespace Domain.Service.Characters
         {
             return new CharacterMemento
             (
-                name: Name,
-                characterType: new Human("Chara_Hero1_USM"),
-                behavior: new BehaviorMemento(
-                    behavior: new BehaviorData(),
-                    homePosition: Option<Vector2Int>.None,
-                    lastTargetPosition: null
+                Name,
+                new Human("Chara_Hero1_USM"),
+                new BehaviorMemento(
+                    new BehaviorData(),
+                    Option<Vector2Int>.None,
+                    null
                 ),
-                status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f, new(), new(), 10, 1, false),
-                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
-                direction: Direction8.Down,
-                skills: new[]
+                CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
+                    new Dictionary<Element, float>(), new Dictionary<Element, float>(), 10, 1, false),
+                Entity.Build(spawnPosition, EntityLayer.Middle),
+                Direction8.Down,
+                new[]
                 {
-                    CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(), new LineArea(1, false, false),
-                        new AttackEffect(new List<ElementPower> { new(Element.Physical, 3) }, 0, new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                    CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(),
+                            new LineArea(1, false, false),
+                            new AttackEffect(new List<ElementPower> { new(Element.Physical, 3) }, 0,
+                                new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
                         0
                     )
                 },
-                lastSkill: Option<SpawnEffectSkillMemento>.None,
-                inventory: new InventoryMemento
+                Option<SpawnEffectSkillMemento>.None,
+                new InventoryMemento
                 (
-                    items: EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
+                    EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 ),
-                affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
-                aggression: Aggression.AttackAnyone,
-                money: 0,
-                isLeader: true,
-                isShiny: false,
-                isBoss: false,
-                isFlying: false,
-                canPickUp: true,
-                canUseItem: true
+                CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
+                Aggression.AttackAnyone,
+                0,
+                true,
+                false,
+                false,
+                false,
+                true,
+                true
             );
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition, Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false, AffiliationMemento? affiliation = null, Id<IEntity>? id = null, Vector2Int? homePosition = null)
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
+            Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
+            AffiliationMemento? affiliation = null, Id<IEntity>? id = null, Vector2Int? homePosition = null)
         {
             var inventory = new InventoryMemento
             (
-                items: EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
+                EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
             );
             if (Random.value < data.DropItemRate)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
                 inventory.Items[0] = Item.Build(dropItem).ToOption();
             }
+
             return new CharacterMemento
             (
-                name: isShiny ? "☆" + data.Name : data.Name,
-                characterType: data.CharacterType,
-                behavior: EnemyBehavior.Build(
-                    behavior: data.Behavior,
-                    homePosition: homePosition.ToOption()
+                isShiny ? "☆" + data.Name : data.Name,
+                data.CharacterType,
+                EnemyBehavior.Build(
+                    data.Behavior,
+                    homePosition.ToOption()
                 ),
-                status: CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f, isShiny ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f) : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.MoveSpeed.ToWaitTime(), isSlept),
-                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
-                direction: direction,
-                skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
-                lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
-                inventory: inventory,
-                affiliation: CharacterAffiliationManager.Build(data.Group, affiliation, id),
-                aggression: data.Aggression,
-                money: 0,
-                isLeader: false,
-                isShiny: isShiny,
-                isBoss: data.IsBoss,
-                isFlying: data.IsFlying,
-                canPickUp: data.CanPickUp,
-                canUseItem: data.CanUseItem
+                CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
+                    isShiny
+                        ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
+                        : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8,
+                    data.MoveSpeed.ToWaitTime(), isSlept),
+                Entity.Build(spawnPosition, EntityLayer.Middle),
+                direction,
+                data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
+                (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
+                inventory,
+                CharacterAffiliationManager.Build(data.Group, affiliation, id),
+                data.Aggression,
+                0,
+                false,
+                isShiny,
+                data.IsBoss,
+                data.IsFlying,
+                data.CanPickUp,
+                data.CanUseItem
             );
         }
 

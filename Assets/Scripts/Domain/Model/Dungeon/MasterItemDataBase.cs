@@ -14,6 +14,7 @@ namespace Domain.Model.Dungeon
         public RarityWeightTable<ItemData> Artifacts;
         public RarityWeightTable<ItemData> UpgradeMaterials;
         public Table<ShopItemData> ShopItems;
+
         public List<ItemData> GetAllItems()
         {
             var items = new HashSet<ItemData>();

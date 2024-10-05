@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -41,15 +40,20 @@ namespace Domain.Service.Characters
 
         public AffiliationType GetAffiliationType(IAffiliation other)
         {
-            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Enemy)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Enemy)].CurrentValue)
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Enemy)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Enemy)].CurrentValue)
             {
                 return AffiliationType.Enemy;
             }
-            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Ally)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Ally)].CurrentValue)
+
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Ally)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Ally)].CurrentValue)
             {
                 return AffiliationType.Ally;
             }
-            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Neutral)) && _forcedAffiliationFlags[(other.Id, AffiliationType.Neutral)].CurrentValue)
+
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Neutral)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Neutral)].CurrentValue)
             {
                 return AffiliationType.Neutral;
             }
@@ -74,8 +78,15 @@ namespace Domain.Service.Characters
             };
         }
 
-        public bool IsAlly(IAffiliation other) => GetAffiliationType(other) == AffiliationType.Ally;
-        public bool IsEnemy(IAffiliation other) => GetAffiliationType(other) == AffiliationType.Enemy;
+        public bool IsAlly(IAffiliation other)
+        {
+            return GetAffiliationType(other) == AffiliationType.Ally;
+        }
+
+        public bool IsEnemy(IAffiliation other)
+        {
+            return GetAffiliationType(other) == AffiliationType.Enemy;
+        }
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
         {
@@ -91,7 +102,6 @@ namespace Domain.Service.Characters
             }
             else if (attacker.Id == Id)
             {
-                return;
             }
             else
             {
@@ -129,7 +139,6 @@ namespace Domain.Service.Characters
             }
             else if (healer == this)
             {
-                return;
             }
             else
             {
@@ -157,26 +166,26 @@ namespace Domain.Service.Characters
         {
             return new AffiliationMemento
             (
-                group: Group,
-                affiliations: _affections,
-                forcedAffiliationFlags: _forcedAffiliationFlags
+                Group,
+                _affections,
+                _forcedAffiliationFlags
             );
         }
 
         public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
         {
-
             var affiliationDict = new Dictionary<Id<IEntity>, float>();
             if (affiliation != null && id != null)
             {
                 affiliationDict = affiliation.Affiliations;
                 affiliationDict[id] = 5f;
             }
+
             return new AffiliationMemento
             (
-                group: group,
-                affiliations: affiliationDict,
-                forcedAffiliationFlags: new()
+                group,
+                affiliationDict,
+                new Dictionary<(Id<IEntity>, AffiliationType), FlagStat>()
             );
         }
 
@@ -229,6 +238,7 @@ namespace Domain.Service.Characters
             {
                 _forcedAffiliationFlags[(target, type)].AddFlags();
             }
+
             _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
         }
 
@@ -244,6 +254,7 @@ namespace Domain.Service.Characters
             {
                 _forcedAffiliationFlags.Remove((target, type));
             }
+
             _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
         }
 

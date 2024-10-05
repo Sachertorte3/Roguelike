@@ -1,17 +1,16 @@
 #nullable enable
+
+
+using System;
 using Domain.Model.Character.Type;
+using Domain.Model.Effect;
+using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using Domain.Model.Effect;
-using System;
-using Domain.Model.Item;
 using Utilities;
 using Utilities.Table;
-using Domain.Model.Evaluation;
-
-
-
 #if UNITY_EDITOR
 using System.IO;
 #endif
@@ -21,22 +20,22 @@ namespace Domain.Model.Character
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [ReadOnly][Required] public string Name = "";
+        [ReadOnly] [Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Monster;
         [SerializeReference] public ICharacterType CharacterType;
-        public bool IsBoss = false;
+        public bool IsBoss;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
-        public bool IsFlying = false;
-        public bool CanPickUp = false;
-        public bool CanUseItem = false;
+        public bool IsFlying;
+        public bool CanPickUp;
+        public bool CanUseItem;
         public EnemySkillData[] Skills;
-        public bool HasLastSkill = false;
+        public bool HasLastSkill;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
-        [Range(0, 1)] public float DropItemRate = 0;
+        [Range(0, 1)] public float DropItemRate;
         [ShowIf("@DropItemRate > 0")] public Table<ItemData> DropItemTable;
 #if UNITY_EDITOR
         private void OnValidate()
@@ -49,6 +48,7 @@ namespace Domain.Model.Character
             {
                 skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
+
             if (LastSkill != null)
             {
                 LastSkill.OnValidate(1);
@@ -56,6 +56,7 @@ namespace Domain.Model.Character
         }
 #endif
     }
+
     [Serializable]
     public class EnemySkillData
     {

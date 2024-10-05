@@ -8,6 +8,7 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public ItemMemento Item { get; private set; }
         [field: SerializeField] public EntityMemento Entity { get; private set; }
+
         public ItemEntityMemento(ItemMemento item, EntityMemento entity)
         {
             Item = item;

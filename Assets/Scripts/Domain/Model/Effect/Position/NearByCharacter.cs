@@ -34,18 +34,20 @@ namespace Domain.Model.Effect.Position
             return NumberOfTarget * 50;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
                 { new UpgradePath("対象数"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
             };
+        }
 
         public string Info()
         {
-            string info = "近くの";
+            var info = "近くの";
             if (TargetAlly && TargetNeutral && TargetEnemy)
             {
-                info += $"キャラクター";
+                info += "キャラクター";
             }
             else
             {
@@ -56,6 +58,7 @@ namespace Domain.Model.Effect.Position
 
                 info += string.Join("、", targets);
             }
+
             if (TargetSelf) info += "（自分含む）";
             info += $"{NumberOfTarget}体";
 

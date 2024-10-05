@@ -7,7 +7,10 @@ using UnityEngine;
 
 namespace Domain.Model.Memento
 {
-    public interface ISkillMemento { }
+    public interface ISkillMemento
+    {
+    }
+
     [Serializable]
     public class SpawnEffectSkillMemento : ISkillMemento
     {
@@ -17,7 +20,9 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int RushDistance { get; private set; }
         [field: SerializeField] public float ProbabilityOfSuccess { get; private set; }
         [field: SerializeField] public string Log { get; private set; }
-        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, IEffect effect, int rushDistance, float probabilityOfSuccess, string log)
+
+        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, IEffect effect, int rushDistance,
+            float probabilityOfSuccess, string log)
         {
             Position = position;
             Area = area;
@@ -27,10 +32,12 @@ namespace Domain.Model.Memento
             Log = log;
         }
     }
+
     [Serializable]
     public class ItemTargetSkillMemento : ISkillMemento
     {
         [field: SerializeReference] public IItemEffect ItemEffect { get; private set; }
+
         public ItemTargetSkillMemento(IItemEffect itemEffect)
         {
             ItemEffect = itemEffect;

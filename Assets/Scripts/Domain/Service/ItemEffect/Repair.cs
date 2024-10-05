@@ -11,11 +11,20 @@ namespace Domain.Service.ItemEffect
             var disabledItems = inventory.AllItems.Where(item => item.RemainingUses.CurrentValue == item.MaxUsages);
             return disabledItems.Select(item => inventory.GetItemIndex(item));
         }
+
         public void Apply(IItem item)
         {
             item.Repair();
         }
-        public float EvaluatePrice() => 500;
-        public string Info() => "修理";
+
+        public float EvaluatePrice()
+        {
+            return 500;
+        }
+
+        public string Info()
+        {
+            return "修理";
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace Provider
                     }));
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnDamageReceived.Subscribe(damageChanged =>
                     {
-                        if (damageChanged.Character.Visibility.CurrentValue == true)
+                        if (damageChanged.Character.Visibility.CurrentValue)
                         {
                             var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 /
                                                             damageChanged.Character.StatusManager.Stats.MaxHp
@@ -43,7 +43,7 @@ namespace Provider
                     }));
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnHealReceived.Subscribe(healChanged =>
                     {
-                        if (healChanged.Character.Visibility.CurrentValue == true)
+                        if (healChanged.Character.Visibility.CurrentValue)
                         {
                             var healPercentageFromMaxHp = healChanged.Message.Heal * 100 /
                                                           healChanged.Character.StatusManager.Stats.MaxHp.CurrentValue;

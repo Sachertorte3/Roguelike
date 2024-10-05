@@ -11,6 +11,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public EntityMemento Clerk { get; private set; }
         [field: SerializeField] public List<ShopItemMemento> Items { get; private set; }
         [field: SerializeField] public bool IsStolen { get; private set; }
+
         public ShopMemento(RoomMemento room, EntityMemento clerk, List<ShopItemMemento> items, bool isStolen)
         {
             Room = room;

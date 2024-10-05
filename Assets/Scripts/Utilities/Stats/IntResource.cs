@@ -31,7 +31,9 @@ namespace Stats
         }
 
         public ReadOnlyReactiveProperty<int> MaxValue => _max.Value;
-        public ReadOnlyReactiveProperty<int> Value => _value.Select(v => Mathf.FloorToInt(v)).ToReadOnlyReactiveProperty();
+
+        public ReadOnlyReactiveProperty<int> Value =>
+            _value.Select(v => Mathf.FloorToInt(v)).ToReadOnlyReactiveProperty();
 
         public void Dispose()
         {
@@ -59,6 +61,7 @@ namespace Stats
             {
                 throw new ArgumentException("Value cannot be negative");
             }
+
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
             return oldValue - Value.CurrentValue;
@@ -70,6 +73,7 @@ namespace Stats
             {
                 throw new ArgumentException("Value cannot be negative");
             }
+
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(_value.CurrentValue + value, 0, MaxValue.CurrentValue);
             return Value.CurrentValue - oldValue;

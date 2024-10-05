@@ -10,11 +10,22 @@ namespace Domain.Model.Effect
     [Serializable]
     public class SkillDataOnThrow : ISkillData
     {
-        [field: SerializeReference, Required] public IArea Area { get; private set; }
-        [field: SerializeReference, Required] public IEffect Effect { get; private set; }
+        [field: SerializeReference]
+        [field: Required]
+        public IArea Area { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
+        public IEffect Effect { get; private set; }
+
         public IEffectPosition Position => new AtFeet();
         public int RushDistance => 0;
-        [field: SerializeField, Range(0, 1)] public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
+
+        [field: SerializeField]
+        [field: Range(0, 1)]
+        public float ProbabilityOfSuccess { get; private set; } =
+            CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
+
         public string Log => "";
 
         public SkillDataOnThrow(IArea area, IEffect effect, float probabilityOfSuccess)

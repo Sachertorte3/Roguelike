@@ -19,14 +19,14 @@ namespace Domain.Service.Characters.Behavior
             {
                 directions.Add(facingDirection, 0.1f);
                 if (!world.IsWalkableOnMap(character.CurrentPosition +
-                                         facingDirection.RotateClockwise(new Angle(135)).Vector())
+                                           facingDirection.RotateClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), false, world))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
 
                 if (!world.IsWalkableOnMap(character.CurrentPosition +
-                                         facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
+                                           facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
                     && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), false, world))
                 {
                     directions.Add(facingDirection.RotateAntiClockwise(new Angle(90)), 0.1f);
@@ -73,7 +73,8 @@ namespace Domain.Service.Characters.Behavior
             return directions.Select(direction => new Move(direction.Key, direction.Value));
         }
 
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+            IMap world)
         {
             return GenerateMoveActionsDoable(character, world);
         }

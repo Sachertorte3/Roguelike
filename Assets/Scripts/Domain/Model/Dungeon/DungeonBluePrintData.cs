@@ -11,7 +11,7 @@ using Utilities.Table;
 namespace Domain.Model.Dungeon
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
-    public partial class DungeonBluePrintData : ScriptableObject
+    public class DungeonBluePrintData : ScriptableObject
     {
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
@@ -21,11 +21,13 @@ namespace Domain.Model.Dungeon
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         public Table<EnemyData> Npcs;
         [RequiredListLength(1, null)] public List<SectionData> Sections;
+
         public bool ExistLevel(int level)
         {
             var Depth = Sections.Sum(section => section.Depth);
             return 0 < level && level <= Depth;
         }
+
         private SectionData GetSectionData(int level)
         {
             var currentDepth = 0;
@@ -37,8 +39,10 @@ namespace Domain.Model.Dungeon
                     return section;
                 }
             }
+
             throw new InvalidOperationException("指定されたレベルに対応するセクションが見つかりません。");
         }
+
         private FloorData GetFloorData(int level)
         {
             var currentDepth = 0;
@@ -53,8 +57,10 @@ namespace Domain.Model.Dungeon
                     }
                 }
             }
+
             throw new InvalidOperationException("指定されたレベルに対応するフロアが見つかりません。");
         }
+
         public DungeonMapData CreateMapData(int level)
         {
             var sectionData = GetSectionData(level);

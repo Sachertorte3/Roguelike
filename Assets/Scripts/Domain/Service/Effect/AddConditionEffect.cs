@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AddConditionEffect : IActorlessEffect
     {
-        [Required, SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
+        [Required] [SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
 
         public Color Color => Colors.Purple;
 
@@ -24,16 +24,19 @@ namespace Domain.Service.Effect
         {
             _condition = condition.ToSerializable();
         }
+
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
             target.AddCondition(actor.Id, _condition.Value.Condition, _condition.Value.RemovalCondition);
             return UniTask.CompletedTask;
         }
+
         public UniTask Apply(ITargetOfEffect target, IMap map)
         {
             target.AddCondition(Id<IEntity>.Empty, _condition.Value.Condition, _condition.Value.RemovalCondition);
             return UniTask.CompletedTask;
         }
+
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _condition.Value.Evaluate(target);
@@ -44,7 +47,10 @@ namespace Domain.Service.Effect
             return _condition.Value.EvaluateDamage();
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

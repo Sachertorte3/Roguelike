@@ -5,15 +5,23 @@ using UnityEngine;
 
 public static class Option
 {
-    public static Option<T> None<T>() => new None<T>();
-    public static Option<T> Some<T>(T value) => new Some<T>(value);
-    
+    public static Option<T> None<T>()
+    {
+        return new None<T>();
+    }
+
+    public static Option<T> Some<T>(T value)
+    {
+        return new Some<T>(value);
+    }
+
     public static Option<T> ToOption<T>(this T? value) where T : struct
     {
         if (value == null)
         {
             return Option<T>.None;
         }
+
         return new Some<T>(value.Value);
     }
 
@@ -23,6 +31,7 @@ public static class Option
         {
             return Option<T>.None;
         }
+
         return new Some<T>(value);
     }
 }
@@ -35,16 +44,17 @@ public class Option<T> : IEquatable<Option<T>>
     public bool IsSome => !IsNone;
     public bool HasValue => hasValue;
 
-    [SerializeField] bool hasValue;
-    [SerializeReference] T value;
+    [SerializeField] private bool hasValue;
+    [SerializeReference] private T value;
 
     public T? Value => UnwrapOrNull();
 
     public Option()
     {
         hasValue = false;
-        value = default(T);
+        value = default;
     }
+
     public Option(T? value)
     {
         hasValue = value != null;
@@ -56,11 +66,11 @@ public class Option<T> : IEquatable<Option<T>>
     {
         if (ReferenceEquals(other, null))
             return false;
-            
+
         if (hasValue != other.hasValue)
             return false;
 
-        return !hasValue || Equals (value, other.value);
+        return !hasValue || Equals(value, other.value);
     }
 
     public override bool Equals(object obj)
@@ -70,45 +80,115 @@ public class Option<T> : IEquatable<Option<T>>
         return false;
     }
 
-    string FriendlyName(Type t)
+    private string FriendlyName(Type t)
     {
         return t.FullName;
     }
 
-    public T Expect(string msg) => IsSome ? value : throw new Exception(msg);
-    public T Unwrap() => IsSome ? value : throw new Exception($"Tried to unwrap a None<{FriendlyName(typeof(T))}>!");
-    public T UnwrapOr(T def = default(T)) => IsSome ? value : def;
-    public T UnwrapOr(Func<T> provider) => IsSome ? value : provider();
-    public T? UnwrapOrNull() => IsSome ? value : default(T?);
-    
-    public Option<U> Map<U>(Func<T, U> converter) => IsSome ? new Option<U>(converter(value)) : new None<U>();
-    public async Task<Option<U>> Map<U>(Func<T, Task<U>> converter) => IsSome ? new Option<U>(await converter(value)) : new None<U>();
-    public U MapOr<U>(U def, Func<T, U> converter) => IsSome ? converter(value) : def;
-    public U MapOr<U>(Func<U> provider, Func<T, U> converter) => IsSome ? converter(value) : provider();
+    public T Expect(string msg)
+    {
+        return IsSome ? value : throw new Exception(msg);
+    }
 
-    public Option<U> And<U>(Option<U> option) => IsNone ? Option<U>.None : option;
-    public Option<U> AndThen<U>(Func<T, Option<U>> option) => IsNone ? Option<U>.None : option(value);
-    public Task<Option<U>> AndThen<U>(Func<T, Task<Option<U>>> option) => IsNone ? Task.FromResult(Option<U>.None) : option(value);
-    
-    public Option<T> Or(Option<T> other) => IsSome ? this : other;
-    public Option<T> OrElse(Func<Option<T>> option) => IsSome ? this : option();
-    public Task<Option<T>> OrElse(Func<Task<Option<T>>> option) => IsSome ? Task.FromResult(this): option();
+    public T Unwrap()
+    {
+        return IsSome ? value : throw new Exception($"Tried to unwrap a None<{FriendlyName(typeof(T))}>!");
+    }
+
+    public T UnwrapOr(T def = default)
+    {
+        return IsSome ? value : def;
+    }
+
+    public T UnwrapOr(Func<T> provider)
+    {
+        return IsSome ? value : provider();
+    }
+
+    public T? UnwrapOrNull()
+    {
+        return IsSome ? value : default;
+    }
+
+    public Option<U> Map<U>(Func<T, U> converter)
+    {
+        return IsSome ? new Option<U>(converter(value)) : new None<U>();
+    }
+
+    public async Task<Option<U>> Map<U>(Func<T, Task<U>> converter)
+    {
+        return IsSome ? new Option<U>(await converter(value)) : new None<U>();
+    }
+
+    public U MapOr<U>(U def, Func<T, U> converter)
+    {
+        return IsSome ? converter(value) : def;
+    }
+
+    public U MapOr<U>(Func<U> provider, Func<T, U> converter)
+    {
+        return IsSome ? converter(value) : provider();
+    }
+
+    public Option<U> And<U>(Option<U> option)
+    {
+        return IsNone ? Option<U>.None : option;
+    }
+
+    public Option<U> AndThen<U>(Func<T, Option<U>> option)
+    {
+        return IsNone ? Option<U>.None : option(value);
+    }
+
+    public Task<Option<U>> AndThen<U>(Func<T, Task<Option<U>>> option)
+    {
+        return IsNone ? Task.FromResult(Option<U>.None) : option(value);
+    }
+
+    public Option<T> Or(Option<T> other)
+    {
+        return IsSome ? this : other;
+    }
+
+    public Option<T> OrElse(Func<Option<T>> option)
+    {
+        return IsSome ? this : option();
+    }
+
+    public Task<Option<T>> OrElse(Func<Task<Option<T>>> option)
+    {
+        return IsSome ? Task.FromResult(this) : option();
+    }
 
     public void Take()
     {
-        value = default(T);
+        value = default;
         hasValue = false;
     }
 
-    public override int GetHashCode() => !hasValue ? 0 : (ReferenceEquals (value, null) ? -1 : value.GetHashCode());
+    public override int GetHashCode()
+    {
+        return !hasValue ? 0 : ReferenceEquals(value, null) ? -1 : value.GetHashCode();
+    }
 
-    public static bool operator ==(Option<T> left, Option<T> right) => left.Equals(right);
-    public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
+    public static bool operator ==(Option<T> left, Option<T> right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Option<T> left, Option<T> right)
+    {
+        return !left.Equals(right);
+    }
 }
 
-public class None<T> : Option<T> {}
+public class None<T> : Option<T>
+{
+}
 
 public class Some<T> : Option<T>
 {
-    public Some(T value) : base (value) {}
+    public Some(T value) : base(value)
+    {
+    }
 }

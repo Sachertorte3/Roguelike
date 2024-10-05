@@ -20,9 +20,11 @@ namespace Utilities
             {
                 mem.Close();
             }
+
             return result;
         }
     }
+
     public static class DeepCopyHelper
     {
         public static T DeepCopy<T>(this T target)
@@ -40,6 +42,7 @@ namespace Utilities
             {
                 mem.Close();
             }
+
             return result;
         }
     }

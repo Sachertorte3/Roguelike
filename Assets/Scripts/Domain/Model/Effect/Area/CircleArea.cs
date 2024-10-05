@@ -24,7 +24,8 @@ namespace Domain.Model.Effect.Area
         public IEnumerable<Vector2Int> Get(Vector2Int position, IMap map)
         {
             if (CanIgnoreWalls)
-                return EnumerableExtension.CircleRange(position, Radius + 0.5f).Where(p => ContainsSelf || p != position);
+                return EnumerableExtension.CircleRange(position, Radius + 0.5f)
+                    .Where(p => ContainsSelf || p != position);
             return ViewCalculator.ComputeCircle(map.GetAllBlankPositionsOn(EntityLayer.Middle), position, Radius + 0.5f)
                 .Where(p => ContainsSelf || p != position);
         }
@@ -39,11 +40,13 @@ namespace Domain.Model.Effect.Area
             return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
                 { new UpgradePath("半径"), new UpgradeData("半径+1", () => Radius += 1) }
             };
+        }
 
         public string Info()
         {

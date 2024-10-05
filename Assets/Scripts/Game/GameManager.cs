@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.IO;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Dungeon;
@@ -19,8 +20,9 @@ namespace Game
     public enum GameState
     {
         Title,
-        Dungeon,
+        Dungeon
     }
+
     public class GameManager : IGameManager
     {
         private readonly World _world;
@@ -31,12 +33,13 @@ namespace Game
         private readonly CharacterControlInputReceiver _receiver;
         private readonly DungeonBluePrintData _dungeonBluePrintData;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
-        private readonly ReactiveProperty<GameState> _state = new ReactiveProperty<GameState>(GameState.Title);
+        private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
-        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
+        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
+            CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
         {
             _world = world;
             _turnController = new TurnController(input);
@@ -53,6 +56,7 @@ namespace Game
             {
                 await Load();
             }
+
             var map = _world.ActiveMap.CurrentValue;
             if (map.Player.CurrentHp > 0)
             {
@@ -76,6 +80,7 @@ namespace Game
                 map = await CreateMap();
                 StartMap(map);
             }
+
             _world.ActiveMap.Subscribe(map =>
             {
                 _disposable.Disposable = map.Player.OnDestroyed.Subscribe(async _ =>
@@ -117,7 +122,7 @@ namespace Game
             Log.Debug("Start Save");
             var saveData = _world.Serialize();
             var saveDataStr = JsonUtility.ToJson(saveData);
-            System.IO.File.WriteAllText("Save/save.json", saveDataStr);
+            File.WriteAllText("Save/save.json", saveDataStr);
             Log.Debug("End Save");
         }
 
@@ -126,9 +131,9 @@ namespace Game
             Log.Debug("Start Load");
             await StopMap();
             MapManager map = null;
-            if (System.IO.File.Exists("Save/save.json"))
+            if (File.Exists("Save/save.json"))
             {
-                var str = System.IO.File.ReadAllText("Save/save.json");
+                var str = File.ReadAllText("Save/save.json");
                 var saveData = JsonUtility.FromJson<WorldMemento>(str);
                 map = _world.LoadWorld(saveData);
             }
@@ -137,6 +142,7 @@ namespace Game
                 _world.CreateNew(_dungeonBluePrintData);
                 map = _world.LoadMap(new Location("Dungeon", 1), null);
             }
+
             Log.Debug("End Load");
             return map;
         }

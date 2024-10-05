@@ -7,7 +7,9 @@ namespace Domain.Model.Character.Type
     [Serializable]
     public record Human : ICharacterType
     {
-        [ShowInInspector, OnValueChanged("OnValidate")] private Texture _texture;
+        [ShowInInspector] [OnValueChanged("OnValidate")]
+        private Texture _texture;
+
         [ReadOnly] public string TextureName;
 
         public Human(string textureName)

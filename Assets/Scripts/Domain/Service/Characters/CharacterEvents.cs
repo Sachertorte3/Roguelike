@@ -2,7 +2,6 @@
 using System;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
 using Domain.Model.Message;
 using Domain.Service.Entities;
 using R3;

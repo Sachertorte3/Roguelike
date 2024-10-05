@@ -18,9 +18,9 @@ namespace Domain.Service.Rooms
         {
             return new RoomMemento
             (
-                room: rect,
-                hasEntered: false,
-                hasEverEntered: false
+                rect,
+                false,
+                false
             );
         }
 
@@ -28,9 +28,9 @@ namespace Domain.Service.Rooms
         {
             return new RoomMemento
             (
-                room: Rect,
-                hasEntered: hasEntered,
-                hasEverEntered: hasEverEntered
+                Rect,
+                hasEntered,
+                hasEverEntered
             );
         }
 
@@ -39,8 +39,10 @@ namespace Domain.Service.Rooms
             GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
-                mapManager.SpawnRandomEnemy(mapManager.GetBlankAndStandablePositionsInArea(Rect.RectRange()).GetAtRandom());
+                mapManager.SpawnRandomEnemy(mapManager.GetBlankAndStandablePositionsInArea(Rect.RectRange())
+                    .GetAtRandom());
             }
+
             await UniTask.Delay(1000);
         }
     }

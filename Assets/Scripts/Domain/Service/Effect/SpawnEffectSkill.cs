@@ -23,7 +23,8 @@ namespace Domain.Service.Effect
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, float probabilityOfSuccess, string? log)
+        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance,
+            float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
@@ -32,7 +33,9 @@ namespace Domain.Service.Effect
             ProbabilityOfSuccess = probabilityOfSuccess;
             _log = log;
         }
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.RushDistance, data.ProbabilityOfSuccess, data.Log)
+
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect,
+            data.RushDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
 
@@ -54,12 +57,12 @@ namespace Domain.Service.Effect
         {
             return new SpawnEffectSkillMemento
             (
-                position: _position,
-                area: _area,
-                effect: _effect,
-                rushDistance: RushDistance,
-                probabilityOfSuccess: ProbabilityOfSuccess,
-                log: _log
+                _position,
+                _area,
+                _effect,
+                RushDistance,
+                ProbabilityOfSuccess,
+                _log
             );
         }
 
@@ -67,12 +70,12 @@ namespace Domain.Service.Effect
         {
             return new SpawnEffectSkillMemento
             (
-                position: data.Position,
-                area: data.Area,
-                effect: data.Effect,
-                rushDistance: data.RushDistance,
-                probabilityOfSuccess: data.ProbabilityOfSuccess,
-                log: data.Log
+                data.Position,
+                data.Area,
+                data.Effect,
+                data.RushDistance,
+                data.ProbabilityOfSuccess,
+                data.Log
             );
         }
 
@@ -87,31 +90,35 @@ namespace Domain.Service.Effect
                     .SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map))
                     .Where(actor.VisibleArea.Contains);
             }
+
             return spawnPositions
                 .SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
         }
 
-        public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
+        public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IMap map)
         {
             if (_log != null && _log != "")
                 GameLog.Add($"{actor.GetName(map.Player)}{_log}");
 
             if (Random.value > ProbabilityOfSuccess)
             {
-                GameLog.Add($"しかし失敗した");
+                GameLog.Add("しかし失敗した");
                 return SpawnEffectSkillResult.Failed;
             }
 
             if (_position is ProjectileImpact projectileImpact)
             {
-                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction, projectileImpact.CanHitLayer.ToArray());
+                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction,
+                    projectileImpact.CanHitLayer.ToArray());
             }
+
             var area = GetArea(actor, position, direction, map);
-            map.SetGrasses(area, isGrass: false);
+            map.SetGrasses(area, false);
 
             foreach (var target in map.GetEntitiesInArea(area)
-                .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
-                .Reverse())
+                         .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
+                         .Reverse())
             {
                 Debug.Log($"SpawnEffectSkill: target {target.GetType()} {target} {target.Id}");
                 switch (target)
@@ -147,17 +154,19 @@ namespace Domain.Service.Effect
                         break;
                 }
             }
+
             await _effect.Apply(actor, area, map);
             return SpawnEffectSkillResult.Success(Color, area);
         }
 
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            for (int i = 0; i < RushDistance; i++)
+            for (var i = 0; i < RushDistance; i++)
             {
                 if (actor.CanMove(position, direction, map))
                     position += direction.Vector();
             }
+
             var area = GetArea(actor, position, direction, map, true);
             var characters = map.GetCharactersInArea(area.ToHashSet());
             var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
@@ -224,24 +233,29 @@ namespace Domain.Service.Effect
             {
                 upgrades[UpgradePath.Join("効果", path)] = _effect.GetUpgrades()[path];
             }
+
             foreach (var path in _position.GenerateUpgradePaths())
             {
                 upgrades[UpgradePath.Join("発動位置", path)] = _position.GetUpgrades()[path];
             }
+
             foreach (var path in _area.GenerateUpgradePaths())
             {
                 upgrades[UpgradePath.Join("範囲", path)] = _area.GetUpgrades()[path];
             }
+
             return upgrades;
         }
 
         public string InfoOnUse()
         {
-            var info = $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
+            var info =
+                $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
             return info;
         }
+
         public string InfoOnThrow(bool omitEffects = false)
         {
             var info = "";

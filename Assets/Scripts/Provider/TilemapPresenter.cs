@@ -43,15 +43,18 @@ namespace Provider
                     }
 
                     var mapSize = map.TilemapViewer.Rect;
-                    for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
+                    for (var x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
                     {
                         tileView.SetUnbreakableWall(new Vector2Int(x, -1), tileSet, TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), tileSet,
+                            TileVisibility.Transparent);
                     }
-                    for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
+
+                    for (var y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
                     {
                         tileView.SetUnbreakableWall(new Vector2Int(-1, y), tileSet, TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), tileSet,
+                            TileVisibility.Transparent);
                     }
 
                     _disposables.Add(map.TilemapViewer.OnTilesChanged.Subscribe(context =>
@@ -91,8 +94,10 @@ namespace Provider
                     _disposables.Add(map.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(
                         visibleAreaChanged =>
                         {
-                            var areaEntered = visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
-                            var areaExited = visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
+                            var areaEntered =
+                                visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
+                            var areaExited =
+                                visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
                             foreach (var position in areaEntered)
                             {
                                 SetVisibility(tileView, grassView, position, TileVisibility.Visible);
@@ -125,18 +130,15 @@ namespace Provider
                 {
                     return TileVisibility.Visible;
                 }
-                else
-                {
-                    return TileVisibility.Translucent;
-                }
+
+                return TileVisibility.Translucent;
             }
-            else
-            {
-                return TileVisibility.Transparent;
-            }
+
+            return TileVisibility.Transparent;
         }
 
-        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, TileSet type, RectInt? shop, TileVisibility? visibility = null)
+        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, TileSet type,
+            RectInt? shop, TileVisibility? visibility = null)
         {
             switch (tileData.TileType)
             {
@@ -158,7 +160,8 @@ namespace Provider
             }
         }
 
-        public void SetVisibility(TileViewController tileView, GrassViewController grassView, Vector2Int position, TileVisibility visibility)
+        public void SetVisibility(TileViewController tileView, GrassViewController grassView, Vector2Int position,
+            TileVisibility visibility)
         {
             tileView.SetTileColor(position, visibility.GetColor());
             grassView.SetTileColor(position, visibility.GetColor());

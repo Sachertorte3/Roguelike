@@ -24,7 +24,10 @@ namespace Domain.Service.Characters.Conditions
             hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, -Power);
         }
 
-        public UniTask Persist(IHasCondition hasCondition) => UniTask.CompletedTask;
+        public UniTask Persist(IHasCondition hasCondition)
+        {
+            return UniTask.CompletedTask;
+        }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {

@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System.Security.AccessControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +45,8 @@ namespace Game
         public ObservableList<ICharacter> KeyCharacters = new();
         public bool IsEventExecuting { get; private set; }
 
-        public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData, List<CharacterMemento>? partyMembers,
+        public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
+            List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
         {
             Level = level;
@@ -112,14 +112,18 @@ namespace Game
 
             if (map.Shop.HasValue)
             {
-                var clerk = Characters.FirstOrDefault(character => character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
+                var clerk = Characters.FirstOrDefault(character =>
+                    character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
                 if (clerk == null && !map.Shop.Value.IsStolen)
                 {
                     var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();
-                    var ally = CharacterManager.SpawnAlly(CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: clerkPosition), this);
+                    var ally = CharacterManager.SpawnAlly(
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: clerkPosition),
+                        this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
                 }
+
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop.Value, clerk, this);
@@ -128,16 +132,18 @@ namespace Game
                 }
             }
 
-            KeyCharacters = new(map.KeyCharacters
+            KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
                 .Select(character => GetCharacterFromId(new Id<IEntity>(character)))
                 .Where(character => character != null)
                 .Cast<ICharacter>()
             );
             if (KeyCharacters.Any())
             {
-                KeyCharacters.ForEach(character => _disposables.Add(character.OnDead.Subscribe(_ => KeyCharacters.Remove(character))));
+                KeyCharacters.ForEach(character =>
+                    _disposables.Add(character.OnDead.Subscribe(_ => KeyCharacters.Remove(character))));
                 _disposables.Add(KeyCharacters.ObserveCountChanged().Subscribe(count => Debug.Log(count)));
-                _disposables.Add(KeyCharacters.ObserveCountChanged().Where(count => count == 0).Subscribe(_ => _stairsLocked.Value = false));
+                _disposables.Add(KeyCharacters.ObserveCountChanged().Where(count => count == 0)
+                    .Subscribe(_ => _stairsLocked.Value = false));
             }
             else
             {
@@ -151,7 +157,7 @@ namespace Game
                 entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
 
             if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
-            || map.Characters.Any(character => character.IsShiny))
+                || map.Characters.Any(character => character.IsShiny))
             {
                 GameLog.Add("<color=yellow>不穏な気配を感じる……</color>");
             }
@@ -160,7 +166,10 @@ namespace Game
         public ICharacter? Player => CharacterManager?.Player;
         public CharacterManager CharacterManager { get; init; }
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
-        public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities => ThrowAnimationEntityManager.ThrowAnimationEntities;
+
+        public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
+            ThrowAnimationEntityManager.ThrowAnimationEntities;
+
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
         public ThrowAnimationEntityManager ThrowAnimationEntityManager { get; init; }
@@ -178,6 +187,7 @@ namespace Game
         public IReadOnlyCollection<Vector2Int> VisibleArea => Player.VisionRange.VisibleArea;
         public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
+
         public class EntityIdComparer : IEqualityComparer<IEntity>
         {
             public bool Equals(IEntity? x, IEntity? y)
@@ -190,15 +200,22 @@ namespace Game
                 return obj.Id.GetHashCode();
             }
         }
-        public IEnumerable<IEntity> Entities => Characters
-                    .Cast<IEntity>()
-                    .Concat(Items)
-                    .Concat(EventEntities)
-                    .Concat(ThrowAnimationEntities)
-                    .Distinct(new EntityIdComparer());
 
-        public IItemEntity SpawnItem(IItem item, Vector2Int position) => ItemManager.SpawnItem(item, FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Bottom)));
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null)
+        public IEnumerable<IEntity> Entities => Characters
+            .Cast<IEntity>()
+            .Concat(Items)
+            .Concat(EventEntities)
+            .Concat(ThrowAnimationEntities)
+            .Distinct(new EntityIdComparer());
+
+        public IItemEntity SpawnItem(IItem item, Vector2Int position)
+        {
+            return ItemManager.SpawnItem(item,
+                FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Bottom)));
+        }
+
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
+            bool? isSlept = null, bool? isShiny = null)
         {
             var ally = CharacterManager.SpawnAlly(
                 CharacterFactory.BuildCharacter(
@@ -213,8 +230,14 @@ namespace Game
             EventEntityManager.Add(ally);
             return ally.Character;
         }
-        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null) => SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isShiny: isShiny);
-        public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction, params EntityLayer[] canHitLayer)
+
+        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null)
+        {
+            return SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isShiny: isShiny);
+        }
+
+        public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
+            params EntityLayer[] canHitLayer)
         {
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
@@ -222,11 +245,13 @@ namespace Game
             throwAnimationEntity.Destroy();
             return destination;
         }
+
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {
             var character = CharacterManager.Characters.FirstOrDefault(character => character.Id == id);
             return character;
         }
+
         public IItem? GetItemFromId(Id<IItem> id)
         {
             var itemEntity = ItemManager.Items.FirstOrDefault(item => item.Item.Id == id);
@@ -234,24 +259,29 @@ namespace Game
             return item;
         }
 
-        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
+        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea)
         {
             return GetCharacterPositions(character, visibleArea, CharacterRelation.Ally);
         }
 
-        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
+        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea)
         {
             return GetCharacterPositions(character, visibleArea, CharacterRelation.Neutral);
         }
 
-        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea)
+        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea)
         {
             return GetCharacterPositions(character, visibleArea, CharacterRelation.Enemy);
         }
 
-        public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea, CharacterRelation relation)
+        public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea, CharacterRelation relation)
         {
-            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition).Where(p => visibleArea.Contains(p));
+            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition)
+                .Where(p => visibleArea.Contains(p));
         }
 
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer)
@@ -263,24 +293,26 @@ namespace Game
                 .FirstOrDefault();
         }
 
-        public record PassablePositionFilter(MapManager Map, bool IsWalkable, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area)
+        public record PassablePositionFilter(MapManager Map, bool IsWalkable, EntityLayer[] Layers,
+            IEnumerable<Vector2Int>? Area)
         {
             public PassablePositionFilter SetWalkability(bool isWalkable)
             {
-                return new(Map, IsWalkable, Layers, Area);
+                return new PassablePositionFilter(Map, IsWalkable, Layers, Area);
             }
 
             public PassablePositionFilter On(params EntityLayer[] layers)
             {
                 if (layers.Any())
-                    return new(Map, IsWalkable, layers, Area);
-                else
-                    return this;
+                    return new PassablePositionFilter(Map, IsWalkable, layers, Area);
+                return this;
             }
+
             public PassablePositionFilter In(IEnumerable<Vector2Int> area)
             {
-                return new(Map, IsWalkable, Layers, area);
+                return new PassablePositionFilter(Map, IsWalkable, Layers, area);
             }
+
             public HashSet<Vector2Int> Get()
             {
                 HashSet<Vector2Int> result;
@@ -299,30 +331,54 @@ namespace Game
             }
         }
 
-        public PassablePositionFilter BlankPositions() => new(this, false, Array.Empty<EntityLayer>(), null);
-        public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers) => BlankPositions().On(layers).Get();
-        public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers) => BlankPositions().SetWalkability(true).On(layers).Get();
+        public PassablePositionFilter BlankPositions()
+        {
+            return new PassablePositionFilter(this, false, Array.Empty<EntityLayer>(), null);
+        }
+
+        public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers)
+        {
+            return BlankPositions().On(layers).Get();
+        }
+
+        public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers)
+        {
+            return BlankPositions().SetWalkability(true).On(layers).Get();
+        }
+
         public HashSet<Vector2Int> GetAllWalkablePositions(IAffiliation affiliation)
         {
             var result = TilemapViewer.GetAllWalkablePositions();
             result.ExceptWith(
                 AllEntities()
-                .On(EntityLayer.Middle)
-                .Get()
-                .Where(entity => !(entity is ICharacter character && !character.Affiliation.IsEnemy(affiliation)))
-                .Select(entity => entity.CurrentPosition));
+                    .On(EntityLayer.Middle)
+                    .Get()
+                    .Where(entity => !(entity is ICharacter character && !character.Affiliation.IsEnemy(affiliation)))
+                    .Select(entity => entity.CurrentPosition));
             return result;
         }
 
-        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area, params EntityLayer[] layers)
-        => BlankPositions().SetWalkability(true).On(layers).In(area).Get();
+        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area,
+            params EntityLayer[] layers)
+        {
+            return BlankPositions().SetWalkability(true).On(layers).In(area).Get();
+        }
+
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
             return TilemapViewer.GetAllLightPassablePositions();
         }
 
-        public bool IsOverlapped(Vector2Int position, EntityLayer layer) => AllEntities().On(layer).Get().Count(entity => entity.CurrentPosition == position) > 1;
-        public bool IsBlank(Vector2Int position, params EntityLayer[] layers) => BlankPositions().On(layers).Get().Contains(position);
+        public bool IsOverlapped(Vector2Int position, EntityLayer layer)
+        {
+            return AllEntities().On(layer).Get().Count(entity => entity.CurrentPosition == position) > 1;
+        }
+
+        public bool IsBlank(Vector2Int position, params EntityLayer[] layers)
+        {
+            return BlankPositions().On(layers).Get().Contains(position);
+        }
+
         public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers)
         {
             if (!IsWalkableOnMap(position))
@@ -332,6 +388,7 @@ namespace Game
                 return true;
             return false;
         }
+
         public bool IsWalkable(Vector2Int position, IAffiliation actor)
         {
             if (!IsWalkableOnMap(position))
@@ -361,13 +418,13 @@ namespace Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
         {
-            var route = new AStar((pos, direction) => actor.CanMove(pos, direction, this) || actor.CanSwap(pos, direction, this)).Calc(from, to);
+            var route = new AStar((pos, direction) =>
+                actor.CanMove(pos, direction, this) || actor.CanSwap(pos, direction, this)).Calc(from, to);
             if (!route.Any())
                 return false;
             if (IsWalkable(to, actor.Affiliation))
                 return route.Last() == to;
-            else
-                return (route.Last() - to).sqrMagnitude <= 2;
+            return (route.Last() - to).sqrMagnitude <= 2;
         }
 
         public void RemoveEventEntity(IEventEntity eventEntity)
@@ -383,14 +440,14 @@ namespace Game
             characters.Remove(Player);
             return new MapMemento
             (
-                tilemap: _tilemap.Serialize(),
-                characters: characters.Select(character => character.Serialize()).ToList(),
-                items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                eventEntities: EventEntityManager.Serialize(),
-                keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                monsterHouse: _monsterHouse.ToOption().Map(x => x.Serialize()),
-                shop: _shop.ToOption().Map(x => x.Serialize()),
-                randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
+                _tilemap.Serialize(),
+                characters.Select(character => character.Serialize()).ToList(),
+                ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                EventEntityManager.Serialize(),
+                KeyCharacters.Select(character => character.Id.ToString()).ToList(),
+                _monsterHouse.ToOption().Map(x => x.Serialize()),
+                _shop.ToOption().Map(x => x.Serialize()),
+                GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
             );
         }
 
@@ -401,23 +458,21 @@ namespace Game
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento
             (
-                tilemap: _tilemap.Serialize(),
-                characters: characters.Select(character => character.Serialize()).ToList(),
-                items: ItemManager.Items.Select(item => item.Serialize()).ToList(),
-                eventEntities: EventEntityManager.Serialize(),
-                keyCharacters: KeyCharacters.Select(character => character.Id.ToString()).ToList(),
-                monsterHouse: _monsterHouse.ToOption().Map(x => x.Serialize()),
-                shop: _shop.ToOption().Map(x => x.Serialize()),
-                randomBlankPosition: GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
+                _tilemap.Serialize(),
+                characters.Select(character => character.Serialize()).ToList(),
+                ItemManager.Items.Select(item => item.Serialize()).ToList(),
+                EventEntityManager.Serialize(),
+                KeyCharacters.Select(character => character.Id.ToString()).ToList(),
+                _monsterHouse.ToOption().Map(x => x.Serialize()),
+                _shop.ToOption().Map(x => x.Serialize()),
+                GetAllBlankPositionsOn(EntityLayer.Bottom).GetAtRandom()
             );
         }
 
         private void SetRules()
         {
-            CharacterManager.CharacterEvents.OnDead.Subscribe(dead =>
-            {
-                DropAllItem(dead.Character);
-            }).AddTo(_disposables);
+            CharacterManager.CharacterEvents.OnDead.Subscribe(dead => { DropAllItem(dead.Character); })
+                .AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
@@ -444,15 +499,18 @@ namespace Game
                     {
                         choices.Add(eventData.ChoiceText);
                     }
+
                     if (eventEntity.CanBeCanceled)
                     {
                         choices.Add("やめる");
                     }
+
                     var choiceIndex = 0;
                     if (choices.Count > 1)
                     {
                         choiceIndex = await Globals.GameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
                     }
+
                     switch (choices[choiceIndex])
                     {
                         case "やめる":
@@ -462,6 +520,7 @@ namespace Game
                             break;
                     }
                 }
+
                 IsEventExecuting = false;
             }).AddTo(_disposables);
 
@@ -472,9 +531,11 @@ namespace Game
                 {
                     if (positionChanged.Character.CanPickUp
                         && positionChanged.Character.CanPickUpItem()
-                        && ItemManager.CanPickUpAt(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value))
+                        && ItemManager.CanPickUpAt(positionChanged.Message.Position,
+                            positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value))
                     {
-                        ItemManager.PickUpAt(positionChanged.Message.Position, positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
+                        ItemManager.PickUpAt(positionChanged.Message.Position,
+                            positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
                         if (positionChanged.Character.TryPickUp(item.Item))
                         {
                             if (positionChanged.Character == Player)
@@ -487,7 +548,8 @@ namespace Game
                     }
                     else
                     {
-                        GameLog.Add($"{positionChanged.Character.GetName(positionChanged.Character)}は{item.Item.Name}の上に乗った");
+                        GameLog.Add(
+                            $"{positionChanged.Character.GetName(positionChanged.Character)}は{item.Item.Name}の上に乗った");
                     }
                 }
             }).AddTo(_disposables);
@@ -518,8 +580,9 @@ namespace Game
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())
-                    SpawnRandomEnemy(positions.GetAtRandom(), isShiny: false);
+                    SpawnRandomEnemy(positions.GetAtRandom(), false);
             }
+
             _tilemap.UpdateTurn();
         }
 
@@ -533,20 +596,24 @@ namespace Game
             _tilemap.SetGrasses(positions, isGrass);
         }
 
-        public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer[] Layers, IEnumerable<Vector2Int>? Area) where T : IEntity
+        public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer[] Layers,
+            IEnumerable<Vector2Int>? Area) where T : IEntity
         {
             public EntityFilter<T> On(params EntityLayer[] layers)
             {
-                return new(Map, Entities, layers, Area);
+                return new EntityFilter<T>(Map, Entities, layers, Area);
             }
+
             public EntityFilter<T> In(IEnumerable<Vector2Int> area)
             {
-                return new(Map, Entities, Layers, area);
+                return new EntityFilter<T>(Map, Entities, Layers, area);
             }
+
             public EntityFilter<T> At(Vector2Int position)
             {
-                return new(Map, Entities, Layers, new[] { position });
+                return new EntityFilter<T>(Map, Entities, Layers, new[] { position });
             }
+
             public IEnumerable<T> Get()
             {
                 var result = Entities;
@@ -556,26 +623,68 @@ namespace Game
                     result = result.Where(entity => Area.Contains(entity.CurrentPosition));
                 return result.ToHashSet();
             }
+
             public HashSet<T> GetEntities()
             {
                 return Get().ToHashSet();
             }
+
             public HashSet<Vector2Int> GetPositions()
             {
                 return Get().Select(entity => entity.CurrentPosition).ToHashSet();
             }
         }
 
-        public EntityFilter<IEntity> AllEntities() => new(this, Entities, Array.Empty<EntityLayer>(), null);
-        public EntityFilter<IItemEntity> AllItem() => new(this, ItemManager.Items, Array.Empty<EntityLayer>(), null);
-        public EntityFilter<ICharacter> AllCharacter() => new(this, CharacterManager.Characters, Array.Empty<EntityLayer>(), null);
-        public EntityFilter<IEventEntity> AllEventEntity() => new(this, EventEntityManager.EventEntities, Array.Empty<EntityLayer>(), null);
-        public HashSet<Vector2Int> AllItemPositions() => ItemManager.GetAllItemPositions();
-        public HashSet<Vector2Int> AllCharacterPositions() => CharacterManager.GetAllCharacterPositions();
-        public HashSet<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer) => AllEntities().On(layer).GetPositions();
-        public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area) => AllEntities().In(area).GetEntities();
-        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area) => AllCharacter().In(area).GetEntities();
-        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area) => AllItem().In(area).GetEntities();
+        public EntityFilter<IEntity> AllEntities()
+        {
+            return new EntityFilter<IEntity>(this, Entities, Array.Empty<EntityLayer>(), null);
+        }
+
+        public EntityFilter<IItemEntity> AllItem()
+        {
+            return new EntityFilter<IItemEntity>(this, ItemManager.Items, Array.Empty<EntityLayer>(), null);
+        }
+
+        public EntityFilter<ICharacter> AllCharacter()
+        {
+            return new EntityFilter<ICharacter>(this, CharacterManager.Characters, Array.Empty<EntityLayer>(), null);
+        }
+
+        public EntityFilter<IEventEntity> AllEventEntity()
+        {
+            return new EntityFilter<IEventEntity>(this, EventEntityManager.EventEntities, Array.Empty<EntityLayer>(),
+                null);
+        }
+
+        public HashSet<Vector2Int> AllItemPositions()
+        {
+            return ItemManager.GetAllItemPositions();
+        }
+
+        public HashSet<Vector2Int> AllCharacterPositions()
+        {
+            return CharacterManager.GetAllCharacterPositions();
+        }
+
+        public HashSet<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer)
+        {
+            return AllEntities().On(layer).GetPositions();
+        }
+
+        public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area)
+        {
+            return AllEntities().In(area).GetEntities();
+        }
+
+        public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area)
+        {
+            return AllCharacter().In(area).GetEntities();
+        }
+
+        public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area)
+        {
+            return AllItem().In(area).GetEntities();
+        }
 
         public void HandleItemDrop(int inventoryIndex)
         {
@@ -584,11 +693,14 @@ namespace Game
             {
                 GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
             }
+
             var item = Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
             if (item != null)
             {
                 GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
-                ItemManager.SpawnItem(item, FindBlankPositionFrom(Player.CurrentPosition, position => IsBlankAndStandable(position, EntityLayer.Bottom)));
+                ItemManager.SpawnItem(item,
+                    FindBlankPositionFrom(Player.CurrentPosition,
+                        position => IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
         }
 
@@ -598,7 +710,9 @@ namespace Game
             {
                 var item = character.ReplaceInventory(null, index);
                 if (item != null)
-                    ItemManager.SpawnItem(item, FindBlankPositionFrom(character.CurrentPosition, position => IsBlankAndStandable(position, EntityLayer.Bottom)));
+                    ItemManager.SpawnItem(item,
+                        FindBlankPositionFrom(character.CurrentPosition,
+                            position => IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
         }
 

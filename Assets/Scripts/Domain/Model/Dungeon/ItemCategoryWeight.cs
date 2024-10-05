@@ -10,9 +10,10 @@ namespace Domain.Model.Dungeon
         public float Weapons;
         public float Artifacts;
         public float UpgradeMaterials;
+
         public ItemCategory GetRandomCategory()
         {
-            return new float[] { Consumables, Weapons, Artifacts, UpgradeMaterials }.WeightedIndex() switch
+            return new[] { Consumables, Weapons, Artifacts, UpgradeMaterials }.WeightedIndex() switch
             {
                 0 => ItemCategory.Consumables,
                 1 => ItemCategory.Weapons,

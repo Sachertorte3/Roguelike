@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -74,13 +73,16 @@ namespace Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior), new ReactiveProperty<bool>(false), map));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior),
+                new ReactiveProperty<bool>(false), map));
         }
 
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior);
-            return new Ally(AddCharacter(_factory.CreateCharacter(data, behavior, new ReactiveProperty<bool>(false), map)), behavior, map);
+            return new Ally(
+                AddCharacter(_factory.CreateCharacter(data, behavior, new ReactiveProperty<bool>(false), map)),
+                behavior, map);
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

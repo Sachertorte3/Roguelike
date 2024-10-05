@@ -1,4 +1,4 @@
 ﻿namespace Domain.Model.Message
 {
-    public record OnDeadMessage();
+    public record OnDeadMessage;
 }

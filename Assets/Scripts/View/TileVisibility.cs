@@ -4,6 +4,6 @@ namespace View
     {
         Visible,
         Translucent,
-        Transparent,
+        Transparent
     }
 }

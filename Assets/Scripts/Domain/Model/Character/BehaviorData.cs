@@ -9,16 +9,24 @@ namespace Domain.Model.Character
     {
         public bool wanderAround = true;
         public MoveTypeWhenDiscoveringTarget Default = MoveTypeWhenDiscoveringTarget.Chase;
-        public bool PrioritizeMovement = false;
-        public bool UseTopBound = false;
-        [ShowIf("UseTopBound")] public MoveTypeWhenDiscoveringTarget greaterThanTopBound = MoveTypeWhenDiscoveringTarget.Chase;
-        [ShowIf("UseTopBound"), MinValue(0)] public float distanceTopBound = 6f;
-        [ShowIf("UseTopBound")] public bool PrioritizeMovementWhenDistanceGreaterThanTopBound = false;
-        public bool UseBottomBound = false;
-        [ShowIf("UseBottomBound"), MinValue(0)] public float distanceBottomBound = 3f;
-        [ShowIf("UseBottomBound")] public MoveTypeWhenDiscoveringTarget lessThanBottomBound = MoveTypeWhenDiscoveringTarget.Chase;
-        [ShowIf("UseBottomBound")] public bool PrioritizeMovementWhenDistanceLessThanBottomBound = false;
+        public bool PrioritizeMovement;
+        public bool UseTopBound;
 
-        public bool PrioritizeEnemiesOverLeaders = false;
+        [ShowIf("UseTopBound")]
+        public MoveTypeWhenDiscoveringTarget greaterThanTopBound = MoveTypeWhenDiscoveringTarget.Chase;
+
+        [ShowIf("UseTopBound")] [MinValue(0)] public float distanceTopBound = 6f;
+        [ShowIf("UseTopBound")] public bool PrioritizeMovementWhenDistanceGreaterThanTopBound;
+        public bool UseBottomBound;
+
+        [ShowIf("UseBottomBound")] [MinValue(0)]
+        public float distanceBottomBound = 3f;
+
+        [ShowIf("UseBottomBound")]
+        public MoveTypeWhenDiscoveringTarget lessThanBottomBound = MoveTypeWhenDiscoveringTarget.Chase;
+
+        [ShowIf("UseBottomBound")] public bool PrioritizeMovementWhenDistanceLessThanBottomBound;
+
+        public bool PrioritizeEnemiesOverLeaders;
     }
 }

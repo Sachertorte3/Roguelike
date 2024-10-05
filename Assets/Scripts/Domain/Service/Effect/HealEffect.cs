@@ -13,7 +13,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class HealEffect : IEffect
     {
-        [MinValue(1), SerializeField] private int _power;
+        [MinValue(1)] [SerializeField] private int _power;
 
         public HealEffect(int power)
         {
@@ -40,14 +40,13 @@ namespace Domain.Service.Effect
             {
                 return healRatio;
             }
-            else if (lostRatio > 0.5f)
+
+            if (lostRatio > 0.5f)
             {
                 return lostRatio;
             }
-            else
-            {
-                return 0;
-            }
+
+            return 0;
         }
 
         public float EvaluatePrice()
@@ -55,10 +54,13 @@ namespace Domain.Service.Effect
             return Formula.EvaluateHeal(_power);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
-            { new UpgradePath("回復量"), new UpgradeData("回復量+3", () => _power += 3) }
-        };
+            return new Dictionary<UpgradePath, UpgradeData>
+            {
+                { new UpgradePath("回復量"), new UpgradeData("回復量+3", () => _power += 3) }
+            };
+        }
 
         public string Info()
         {

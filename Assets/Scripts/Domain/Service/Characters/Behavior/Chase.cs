@@ -16,10 +16,12 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
-            var route = new AStar((pos, direction) => character.CanMove(pos, direction, world) || character.CanSwap(pos, direction, world)).Calc(character.CurrentPosition, targetPosition);
+            var route = new AStar((pos, direction) =>
+                    character.CanMove(pos, direction, world) || character.CanSwap(pos, direction, world))
+                .Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
-                Log.Debug($"Already reached the target position");
+                Log.Debug("Already reached the target position");
                 return Enumerable.Empty<Move>();
             }
 
@@ -35,7 +37,8 @@ namespace Domain.Service.Characters.Behavior
             {
                 return new List<Move> { move };
             }
-            else if (swap.Doable(character, world))
+
+            if (swap.Doable(character, world))
             {
                 return new List<Swap> { swap };
             }

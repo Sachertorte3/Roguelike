@@ -20,14 +20,16 @@ namespace Domain.Service.Events
         private readonly string _name;
         private readonly Entity _entity;
         private readonly SpawnEffectSkill _skill;
+
         public Trap(TrapMemento memento)
         {
             _name = memento.Name;
             _entity = new Entity(memento.Entity);
             _skill = new SpawnEffectSkill(memento.Skill);
             var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
-            _events = new List<EntityEvent> {
-                new EntityEvent(
+            _events = new List<EntityEvent>
+            {
+                new(
                     "",
                     () => true,
                     (gameManager, map) =>
@@ -38,6 +40,7 @@ namespace Domain.Service.Events
                 )
             };
         }
+
         public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
@@ -46,7 +49,8 @@ namespace Domain.Service.Events
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
-        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_1260]").WaitForCompletion();
+        public Sprite Icon => Addressables
+            .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_1260]").WaitForCompletion();
 
         public string ChoiceMessage => "";
         public bool CanBeCanceled => false;
@@ -57,29 +61,36 @@ namespace Domain.Service.Events
         {
             return UniTask.CompletedTask;
         }
+
         public void Destroy()
         {
             _entity.Destroy();
         }
+
         public void Dispose()
         {
             _entity.Dispose();
         }
+
         public void SetVisibility(bool visibility)
         {
             _entity.SetVisibility(visibility);
         }
+
         public void Teleport(Vector2Int position)
         {
             _entity.Teleport(position);
         }
+
         public TrapMemento Serialize()
         {
             return new TrapMemento(_name, _entity.Serialize(), _skill.Serialize());
         }
+
         public static TrapMemento Build(TrapData trap, Vector2Int position)
         {
-            return new TrapMemento(trap.Name, Entity.Build(position, EntityLayer.Bottom), SpawnEffectSkill.Build(trap.Skill));
+            return new TrapMemento(trap.Name, Entity.Build(position, EntityLayer.Bottom),
+                SpawnEffectSkill.Build(trap.Skill));
         }
     }
 }

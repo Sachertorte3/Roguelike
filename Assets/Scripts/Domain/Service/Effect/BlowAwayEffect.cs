@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class BlowAwayEffect : IEffect
     {
-        [MinValue(1), SerializeField] private int _distance;
+        [MinValue(1)] [SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
@@ -25,8 +25,11 @@ namespace Domain.Service.Effect
 
         public Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) =>
+        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        {
             await Apply(actor, (IEntity)target, map);
+        }
+
         public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
         {
             var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
@@ -44,10 +47,13 @@ namespace Domain.Service.Effect
             return CommonSenseParameters.BlowAwayPrice(_distance);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
-            { new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
-        };
+            return new Dictionary<UpgradePath, UpgradeData>
+            {
+                { new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
+            };
+        }
 
         public string Info()
         {

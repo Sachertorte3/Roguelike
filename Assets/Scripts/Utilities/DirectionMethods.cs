@@ -65,6 +65,7 @@ namespace Utilities
             {
                 return null;
             }
+
             return vector switch
             {
                 { x: 0, y: > 0 } => Direction8.Up,
@@ -85,7 +86,9 @@ namespace Utilities
             {
                 return null;
             }
-            if (Mathf.Approximately(vector.x, 0) || Mathf.Approximately(vector.y, 0) || Mathf.Approximately(Mathf.Abs(vector.x), Mathf.Abs(vector.y)))
+
+            if (Mathf.Approximately(vector.x, 0) || Mathf.Approximately(vector.y, 0) ||
+                Mathf.Approximately(Mathf.Abs(vector.x), Mathf.Abs(vector.y)))
             {
                 return vector switch
                 {
@@ -100,10 +103,8 @@ namespace Utilities
                     _ => throw new ArgumentException($"Value {vector} does not fall within the expected range.")
                 };
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static Angle AngleTo(this Direction8 direction, Direction8 otherDirection)
@@ -120,15 +121,15 @@ namespace Utilities
 
             return new Angle(vector).Value switch
             {
-                < 0 + (45 / 2) => Direction8.Right,
-                < 45 + (45 / 2) => Direction8.UpRight,
-                < 90 + (45 / 2) => Direction8.Up,
-                < 135 + (45 / 2) => Direction8.UpLeft,
-                < 180 + (45 / 2) => Direction8.Left,
-                < 225 + (45 / 2) => Direction8.DownLeft,
-                < 270 + (45 / 2) => Direction8.Down,
-                < 315 + (45 / 2) => Direction8.DownRight,
-                < 360 + (45 / 2) => Direction8.Right,
+                < 0 + 45 / 2 => Direction8.Right,
+                < 45 + 45 / 2 => Direction8.UpRight,
+                < 90 + 45 / 2 => Direction8.Up,
+                < 135 + 45 / 2 => Direction8.UpLeft,
+                < 180 + 45 / 2 => Direction8.Left,
+                < 225 + 45 / 2 => Direction8.DownLeft,
+                < 270 + 45 / 2 => Direction8.Down,
+                < 315 + 45 / 2 => Direction8.DownRight,
+                < 360 + 45 / 2 => Direction8.Right,
                 _ => throw new ArgumentException()
             };
         }
@@ -142,21 +143,21 @@ namespace Utilities
 
             return new Angle(vector).Value switch
             {
-                < 0 + (45 / 2) => new List<Direction8> { Direction8.Right, Direction8.UpRight, Direction8.Up },
+                < 0 + 45 / 2 => new List<Direction8> { Direction8.Right, Direction8.UpRight, Direction8.Up },
                 < 45 => new List<Direction8> { Direction8.UpRight, Direction8.Right, Direction8.Up },
-                < 45 + (45 / 2) => new List<Direction8> { Direction8.UpRight, Direction8.Up, Direction8.Right },
+                < 45 + 45 / 2 => new List<Direction8> { Direction8.UpRight, Direction8.Up, Direction8.Right },
                 < 90 => new List<Direction8> { Direction8.Up, Direction8.UpRight, Direction8.Right },
-                < 90 + (45 / 2) => new List<Direction8> { Direction8.Up, Direction8.UpLeft, Direction8.Left },
+                < 90 + 45 / 2 => new List<Direction8> { Direction8.Up, Direction8.UpLeft, Direction8.Left },
                 < 135 => new List<Direction8> { Direction8.UpLeft, Direction8.Up, Direction8.Left },
-                < 135 + (45 / 2) => new List<Direction8> { Direction8.UpLeft, Direction8.Left, Direction8.Up },
+                < 135 + 45 / 2 => new List<Direction8> { Direction8.UpLeft, Direction8.Left, Direction8.Up },
                 < 180 => new List<Direction8> { Direction8.Left, Direction8.UpLeft, Direction8.Up },
-                < 180 + (45 / 2) => new List<Direction8> { Direction8.Left, Direction8.DownLeft, Direction8.Down },
+                < 180 + 45 / 2 => new List<Direction8> { Direction8.Left, Direction8.DownLeft, Direction8.Down },
                 < 225 => new List<Direction8> { Direction8.DownLeft, Direction8.Left, Direction8.Down },
-                < 225 + (45 / 2) => new List<Direction8> { Direction8.DownLeft, Direction8.Down, Direction8.Left },
+                < 225 + 45 / 2 => new List<Direction8> { Direction8.DownLeft, Direction8.Down, Direction8.Left },
                 < 270 => new List<Direction8> { Direction8.Down, Direction8.DownLeft, Direction8.Left },
-                < 270 + (45 / 2) => new List<Direction8> { Direction8.Down, Direction8.DownRight, Direction8.Right },
+                < 270 + 45 / 2 => new List<Direction8> { Direction8.Down, Direction8.DownRight, Direction8.Right },
                 < 315 => new List<Direction8> { Direction8.DownRight, Direction8.Down, Direction8.Right },
-                < 315 + (45 / 2) => new List<Direction8> { Direction8.DownRight, Direction8.Right, Direction8.Down },
+                < 315 + 45 / 2 => new List<Direction8> { Direction8.DownRight, Direction8.Right, Direction8.Down },
                 < 360 => new List<Direction8> { Direction8.Right, Direction8.DownRight, Direction8.Down },
                 _ => throw new ArgumentException()
             };

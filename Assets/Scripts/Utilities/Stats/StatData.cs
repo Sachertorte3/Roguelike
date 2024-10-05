@@ -9,7 +9,9 @@ namespace Stats
         public float AdditiveValue;
         public float AdditiveMultiplier;
         public float MultiplicativeMultiplier;
-        public StatData(float baseValue, float additiveValue=0, float additiveMultiplier=1, float multiplicativeMultiplier=1)
+
+        public StatData(float baseValue, float additiveValue = 0, float additiveMultiplier = 1,
+            float multiplicativeMultiplier = 1)
         {
             BaseValue = baseValue;
             AdditiveValue = additiveValue;
@@ -17,11 +19,13 @@ namespace Stats
             MultiplicativeMultiplier = multiplicativeMultiplier;
         }
     }
+
     [Serializable]
     public class ResourceData
     {
         public StatData Max;
         public float Value;
+
         public ResourceData(StatData max, float value)
         {
             Max = max;

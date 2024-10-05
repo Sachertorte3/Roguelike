@@ -66,8 +66,8 @@ namespace Domain.Service.Items
         {
             return new ItemEntityMemento
             (
-                item: Item.Serialize(),
-                entity: _entity.Serialize()
+                Item.Serialize(),
+                _entity.Serialize()
             );
         }
 
@@ -87,6 +87,7 @@ namespace Domain.Service.Items
                     {
                         result += direction.Vector();
                     }
+
                     break;
                 }
             }
@@ -94,7 +95,8 @@ namespace Domain.Service.Items
             return result;
         }
 
-        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, int distance, IMap map)
+        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction,
+            int distance, IMap map)
         {
             if (item.CanActivateWhenThrown)
                 return 0;
@@ -111,8 +113,10 @@ namespace Domain.Service.Items
             {
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
+                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                    position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
+
             if (Item.CanActivateWhenThrown)
             {
                 var result = await Item.UseWhenThrown(actor, destination, direction, map);

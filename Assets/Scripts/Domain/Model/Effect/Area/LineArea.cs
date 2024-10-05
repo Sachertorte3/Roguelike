@@ -23,7 +23,7 @@ namespace Domain.Model.Effect.Area
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction, IMap map)
         {
             var area = (ContainsSelf ? Enumerable.Range(0, Length + 1) : Enumerable.Range(1, Length))
-                .Select(i => position + (direction.Vector() * i));
+                .Select(i => position + direction.Vector() * i);
             foreach (var pos in area)
             {
                 yield return pos;
@@ -39,11 +39,13 @@ namespace Domain.Model.Effect.Area
             return Mathf.Sqrt(Length);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
                 { new UpgradePath("長さ"), new UpgradeData("長さ+1", () => Length += 1) }
             };
+        }
 
         public string Info()
         {

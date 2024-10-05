@@ -18,7 +18,10 @@ namespace Domain.Model.Map
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
-        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area, params EntityLayer[] layers);
+
+        public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area,
+            params EntityLayer[] layers);
+
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
         public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area);
         public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area);
@@ -37,8 +40,13 @@ namespace Domain.Model.Map
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null);
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null, bool? isSlept = null, bool? isShiny = null);
-        public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction, params EntityLayer[] canHitLayer);
+
+        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
+            bool? isSlept = null, bool? isShiny = null);
+
+        public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
+            params EntityLayer[] canHitLayer);
+
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
         public void RemoveEventEntity(IEventEntity entity);
     }

@@ -9,11 +9,24 @@ namespace Domain.Model.Effect
     [Serializable]
     public class SkillDataOnUse : ISkillData
     {
-        [field: SerializeReference, Required] public IArea Area { get; private set; }
-        [field: SerializeReference, Required] public IEffect Effect { get; private set; }
-        [field: SerializeReference, Required] public IEffectPosition Position { get; private set; }
+        [field: SerializeReference]
+        [field: Required]
+        public IArea Area { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
+        public IEffect Effect { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
+        public IEffectPosition Position { get; private set; }
+
         public int RushDistance => 0;
-        [field: SerializeField, Range(0, 1)] public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+
+        [field: SerializeField]
+        [field: Range(0, 1)]
+        public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+
         public string Log => "";
 
         public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect, float probabilityOfSuccess)

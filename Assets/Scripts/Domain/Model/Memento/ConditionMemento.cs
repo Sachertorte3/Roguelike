@@ -10,6 +10,7 @@ namespace Domain.Model.Memento
         [field: SerializeReference] public IConditionData Condition { get; private set; }
         [field: SerializeField] public RemovalConditionData RemovalCondition { get; private set; }
         [field: SerializeField] public int ElapsedTurns { get; private set; }
+
         public ConditionMemento(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurns)
         {
             Condition = condition;

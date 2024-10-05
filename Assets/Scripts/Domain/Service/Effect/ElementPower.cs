@@ -12,7 +12,7 @@ namespace Domain.Service.Effect
     public class ElementPower : IHasInfo, IHasUpgrades
     {
         [SerializeField] private Element _element;
-        [MinValue(1), SerializeField] private int _power;
+        [MinValue(1)] [SerializeField] private int _power;
         public Element Element => _element;
         public int Power => _power;
 
@@ -27,17 +27,20 @@ namespace Domain.Service.Effect
             _power += value;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
-                new UpgradePath("威力[小]", Element.ToString()),
-                new UpgradeData($"[{Element}]威力[小]", () => Upgrade(2))
-            },
-            {
-                new UpgradePath("威力[大]", Element.ToString()),
-                new UpgradeData($"[{Element}]威力[大]", () => Upgrade(3))
-            }
-        };
+                {
+                    new UpgradePath("威力[小]", Element.ToString()),
+                    new UpgradeData($"[{Element}]威力[小]", () => Upgrade(2))
+                },
+                {
+                    new UpgradePath("威力[大]", Element.ToString()),
+                    new UpgradeData($"[{Element}]威力[大]", () => Upgrade(3))
+                }
+            };
+        }
 
         public string Info()
         {

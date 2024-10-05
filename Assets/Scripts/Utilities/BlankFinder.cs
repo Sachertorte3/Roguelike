@@ -22,7 +22,7 @@ namespace Utilities.Algorithms
         public static Vector2Int FindBlankPosition(Func<Vector2Int, bool> isBlankFunc,
             Func<Vector2Int, bool> isFloorFunc, Vector2Int position) //FIXME Error when search results are not found
         {
-            var openedPos = new List<Vector2Int>() { position };
+            var openedPos = new List<Vector2Int> { position };
             var nextPos = new List<Vector2Int>();
             var closedPos = new List<Vector2Int>();
             while (openedPos.Count < 2000)

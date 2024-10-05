@@ -19,6 +19,7 @@ namespace View
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
             }
         }
+
         public List<GameObject> SpawnPreview(IEnumerable<Vector2Int> area, Color color)
         {
             var spawnedEffects = new List<GameObject>();
@@ -29,6 +30,7 @@ namespace View
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
                 spawnedEffects.Add(spawnedEffect);
             }
+
             return spawnedEffects;
         }
     }

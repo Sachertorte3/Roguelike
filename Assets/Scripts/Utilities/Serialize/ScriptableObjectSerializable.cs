@@ -9,8 +9,10 @@ namespace Utilities
     [Serializable]
     public class ScriptableObjectSerializable<T> where T : ScriptableObject
     {
-        [ShowInInspector, OnValueChanged("OnValidate")] private T _value;
-        [ReadOnly, SerializeField] private string _name;
+        [ShowInInspector] [OnValueChanged("OnValidate")]
+        private T _value;
+
+        [ReadOnly] [SerializeField] private string _name;
 
         public T Value
         {
@@ -18,8 +20,10 @@ namespace Utilities
             {
                 if (_value == null)
                 {
-                    _value = Addressables.LoadAssetAsync<T>($"Assets/Database/{typeof(T).Name}/{_name}.asset").WaitForCompletion();
+                    _value = Addressables.LoadAssetAsync<T>($"Assets/Database/{typeof(T).Name}/{_name}.asset")
+                        .WaitForCompletion();
                 }
+
                 return _value;
             }
         }

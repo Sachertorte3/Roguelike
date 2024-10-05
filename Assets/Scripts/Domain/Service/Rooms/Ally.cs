@@ -26,44 +26,44 @@ namespace Domain.Service.Rooms
         {
             Character = character;
             Behavior = behavior;
-            _events = new()
+            _events = new List<EntityEvent>
             {
-                new EntityEvent("渡す", () => Character.CanUseItem && Character.IsAlly(map.Player), async (gameManager, map) =>
-                {
-                    var item = await map.Player.ItemSelector.SelectItem(map.Player.Inventory);
-                    if (item != null)
+                new EntityEvent("渡す", () => Character.CanUseItem && Character.IsAlly(map.Player),
+                    async (gameManager, map) =>
                     {
-                        var result = character.Inventory.TryAdd(item);
-                        if (result)
+                        var item = await map.Player.ItemSelector.SelectItem(map.Player.Inventory);
+                        if (item != null)
                         {
-                            var index = map.Player.Inventory.GetItemIndex(item);
-                            map.Player.ReplaceInventory(null, index);
-                            GameLog.Add($"{Character.GetName(map.Player)}に{item.Name}を渡した。");
+                            var result = character.Inventory.TryAdd(item);
+                            if (result)
+                            {
+                                var index = map.Player.Inventory.GetItemIndex(item);
+                                map.Player.ReplaceInventory(null, index);
+                                GameLog.Add($"{Character.GetName(map.Player)}に{item.Name}を渡した。");
+                            }
+                            else
+                            {
+                                GameLog.Add($"{Character.GetName(map.Player)}はこれ以上アイテムを持てない。");
+                            }
                         }
-                        else
-                        {
-                            GameLog.Add($"{Character.GetName(map.Player)}はこれ以上アイテムを持てない。");
-                        }
-                    }
-                }),
-                new EntityEvent("一緒に行動", () => Character.IsAlly(map.Player), async (gameManager, map) =>
-                {
-                    Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
-                }),
-                new EntityEvent("敵優先", () => Character.IsAlly(map.Player), async (gameManager, map) =>
-                {
-                    Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
-                })
+                    }),
+                new EntityEvent("一緒に行動", () => Character.IsAlly(map.Player),
+                    async (gameManager, map) => { Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false; }),
+                new EntityEvent("敵優先", () => Character.IsAlly(map.Player),
+                    async (gameManager, map) => { Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true; })
             };
         }
+
         public void Dispose()
         {
             Character.Dispose();
         }
+
         ~Ally()
         {
             Dispose();
         }
+
         public Id<IEntity> Id => Character.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
         public Vector2Int CurrentPosition => Character.CurrentPosition;

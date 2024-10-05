@@ -18,8 +18,8 @@ namespace Domain.Model.Map
         {
             return new TileMemento
             (
-                tileType: TileType,
-                isKnown: IsKnown
+                TileType,
+                IsKnown
             );
         }
 
@@ -27,8 +27,8 @@ namespace Domain.Model.Map
         {
             return new TileMemento
             (
-                tileType: tileType,
-                isKnown: isKnown
+                tileType,
+                isKnown
             );
         }
 

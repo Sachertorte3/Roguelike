@@ -120,7 +120,6 @@ namespace Domain.Service.Effect
                          .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
                          .Reverse())
             {
-                Debug.Log($"SpawnEffectSkill: target {target.GetType()} {target} {target.Id}");
                 switch (target)
                 {
                     case ICharacter character:

@@ -1801,7 +1801,7 @@ MonoBehaviour:
     Water: {fileID: 11400000, guid: 71422f7a1a06179458a471816c4398c4, type: 2}
     Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
   _forestTiles:
-    Floor: {fileID: 11400000, guid: 1e9c24d5ac0c73940b2b8cf804fb3011, type: 2}
+    Floor: {fileID: 11400000, guid: 82828df576217354e8f3ad3eb5954e4c, type: 2}
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
     Water: {fileID: 11400000, guid: 8d2039b0dcfa29d4f92692e438968315, type: 2}
     Wall: {fileID: 11400000, guid: 9fa9bcd095aa66b4d889eb774d6027fd, type: 2}

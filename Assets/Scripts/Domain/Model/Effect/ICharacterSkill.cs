@@ -13,6 +13,7 @@ namespace Domain.Model.Effect
         public bool IsUsable();
         public Color Color { get; }
         public int RushDistance { get; }
+        public int BackStepDistance { get; }
         public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world);
     }

@@ -8,6 +8,7 @@ namespace Domain.Model.Effect
         public IEffect Effect { get; }
         public IEffectPosition Position { get; }
         public int RushDistance { get; }
+        public int BackStepDistance { get; }
         public float ProbabilityOfSuccess { get; }
         public string Log { get; }
     }

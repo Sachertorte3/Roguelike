@@ -45,6 +45,7 @@ MonoBehaviour:
       <Position>k__BackingField:
         rid: 2541219281251860496
       <RushDistance>k__BackingField: 2
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F\u3002"
     CoolTime: 0
@@ -57,6 +58,7 @@ MonoBehaviour:
     <Position>k__BackingField:
       rid: -2
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:

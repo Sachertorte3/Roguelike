@@ -194,7 +194,7 @@ namespace Domain.Service.Map
                             : TileCategory.Floor;
                         if (tileType == TileCategory.Wall)
                         {
-                            if (Mathf.PerlinNoise(x / 16f + randomValue, y / 16f + randomValue) < waterChance)
+                            if (waterChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + randomValue, y / 16f + randomValue)) < waterChance)
                             {
                                 tileType = TileCategory.Water;
                             }

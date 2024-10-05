@@ -120,8 +120,7 @@ namespace Game
             var randomValue = Random.value * 1024;
             foreach (var position in room.RectRange())
             {
-                var value = Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue);
-                if (value < data.GrassChance)
+                if (data.GrassChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue)) < data.GrassChance)
                 {
                     _tilemap.SetGrasses(new[] { position }, true);
                 }

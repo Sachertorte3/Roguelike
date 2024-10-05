@@ -67,7 +67,7 @@ namespace Game
             Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
         {
             var dungeonData = CreateMapData(level);
-            var mapBuilder = new MapBuilder(Tilemap.Build(dungeonData.Field, 0.5f), dungeonData);
+            var mapBuilder = new MapBuilder(Tilemap.Build(dungeonData.Field, dungeonData.WaterChance), dungeonData);
             if (ExistLevel(level + 1))
                 mapBuilder.AddDownStairs(dungeonData, level, downStairsId, downStairsDestinationId);
             if (ExistLevel(level - 1))

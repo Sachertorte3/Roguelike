@@ -47,7 +47,7 @@ namespace Domain.Model.Dungeon
         [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
         private float _mimicChance = DefaultMimicChance;
 
-        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        [ShowIf("@!IsBoss")] [Range(0, 1)] [SerializeField]
         private float _grassChance = DefaultGrassChance;
 
         [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
@@ -103,9 +103,9 @@ namespace Domain.Model.Dungeon
 
         public float GrassChance => Template switch
         {
-            FloorTemplates.Default => DefaultGrassChance,
+            FloorTemplates.Default => _grassChance,
             FloorTemplates.Boss => 0,
-            FloorTemplates.Shop => DefaultGrassChance,
+            FloorTemplates.Shop => _grassChance,
             FloorTemplates.Custom => _grassChance,
             _ => throw new NotImplementedException()
         };

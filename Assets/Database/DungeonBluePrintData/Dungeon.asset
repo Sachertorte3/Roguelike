@@ -237,6 +237,7 @@ MonoBehaviour:
       Weight: 1
   Sections:
   - Type: 0
+    WaterChance: 0
     Floors:
     - Depth: 1
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
@@ -245,7 +246,7 @@ MonoBehaviour:
       _shinyChance: 0.01
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _grassChance: 0.5
+      _grassChance: 0
       _shopChance: 1
       _monsterHouseChance: 0.1
       _restRoomChance: 1
@@ -271,6 +272,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
         Weight: 1
   - Type: 0
+    WaterChance: 0
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
@@ -279,7 +281,7 @@ MonoBehaviour:
       _shinyChance: 0
       _sleepChance: 0.5
       _mimicChance: 0.1
-      _grassChance: 0.51
+      _grassChance: 0
       _shopChance: 0.1
       _monsterHouseChance: 1
       _restRoomChance: 0.1
@@ -323,6 +325,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
         Weight: 3
   - Type: 1
+    WaterChance: 0.25
     Floors:
     - Depth: 3
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
@@ -400,6 +403,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
         Weight: 1
   - Type: 1
+    WaterChance: 0.5
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
@@ -458,6 +462,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
         Weight: 1
   - Type: 4
+    WaterChance: 1
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}

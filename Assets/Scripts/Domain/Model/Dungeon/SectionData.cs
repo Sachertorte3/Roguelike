@@ -12,6 +12,7 @@ namespace Domain.Model.Dungeon
     public class SectionData
     {
         public int Depth => Floors.Sum(floor => floor.Depth);
+        public SectionType Type;
         [RequiredListLength(1, null)] public List<FloorData> Floors;
         private bool _existChest => Floors.Any(floor => floor.Room.ChestChance > 0);
         [ShowIf("@_existChest"), Required] public float WeaponChanceInChest;

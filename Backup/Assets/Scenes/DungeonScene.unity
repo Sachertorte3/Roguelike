@@ -1795,11 +1795,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 986205760}
-  _tiles:
+  _caveTiles:
     Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
     Water: {fileID: 11400000, guid: 71422f7a1a06179458a471816c4398c4, type: 2}
     Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
+  _forestTiles:
+    Floor: {fileID: 11400000, guid: 1e9c24d5ac0c73940b2b8cf804fb3011, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 8d2039b0dcfa29d4f92692e438968315, type: 2}
+    Wall: {fileID: 11400000, guid: 9fa9bcd095aa66b4d889eb774d6027fd, type: 2}
+  _snowTiles:
+    Floor: {fileID: 11400000, guid: 3642314a04cd4d74ca40452f4a845ce2, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 8eb40e3e1c2f1f54683248b153810d85, type: 2}
+    Wall: {fileID: 11400000, guid: e814d6a7dfeaae64c886772cfad8da06, type: 2}
+  _volcanoTiles:
+    Floor: {fileID: 11400000, guid: 25b25074febf59c4091fedfc57e6a8ef, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: c38b20ba5398da646b2abe1994480eec, type: 2}
+    Wall: {fileID: 11400000, guid: 6dad3272c81d33e4fa33139684949491, type: 2}
+  _dungeonTiles:
+    Floor: {fileID: 11400000, guid: d115660662eaafc43ba3241953b3faf3, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 769c6bb9d3830f4459c840c8d7f089af, type: 2}
+    Wall: {fileID: 11400000, guid: a2cc768f9d19d8f4c9403de88ee45280, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
   m_ObjectHideFlags: 0

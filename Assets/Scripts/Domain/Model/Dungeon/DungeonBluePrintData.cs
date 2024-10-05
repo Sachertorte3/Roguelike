@@ -61,6 +61,7 @@ namespace Domain.Model.Dungeon
             var floorData = GetFloorData(level);
             return new DungeonMapData(
                 name,
+                sectionData.Type,
                 floorData.Field,
                 new ItemTable(MasterItemDataBase, SpawnItem),
                 sectionData.Materials,

@@ -1,6 +1,5 @@
 #nullable enable
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Service.Effect;
 using Game;
 using R3;
@@ -15,7 +14,8 @@ namespace Provider
     public class EffectPreviewPresenter
     {
         [Inject]
-        public EffectPreviewPresenter(GameManager gameManager, World world, EffectViewSpawner effectViewSpawner, InventoryView inventoryView)
+        public EffectPreviewPresenter(GameManager gameManager, World world, EffectViewSpawner effectViewSpawner,
+            InventoryView inventoryView)
         {
             var serialDisposable = new SerialDisposable();
             var previews = new List<GameObject>();
@@ -28,12 +28,13 @@ namespace Provider
                     gameManager.Turn.AsUnitObservable()
                 ).Subscribe(_ =>
                 {
-                    previews.ForEach(preview => GameObject.Destroy(preview));
+                    previews.ForEach(preview => Object.Destroy(preview));
                     previews.Clear();
                     if (map.Player.CurrentHp <= 0)
                     {
                         return;
                     }
+
                     var focus = inventoryView.CurrentFocus;
                     if (focus != null)
                     {
@@ -42,7 +43,8 @@ namespace Provider
                         {
                             if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                             {
-                                var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition, map.Player.CurrentDirection, map, true);
+                                var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition,
+                                    map.Player.CurrentDirection, map, true);
                                 var color = spawnEffectSkill.Color;
                                 color.a = 0.25f;
                                 previews = effectViewSpawner.SpawnPreview(area, color);

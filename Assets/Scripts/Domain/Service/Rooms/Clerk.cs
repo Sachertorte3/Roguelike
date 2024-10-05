@@ -23,19 +23,22 @@ namespace Domain.Service.Rooms
         public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
-            _events = new()
+            _events = new List<EntityEvent>
             {
                 new EntityEvent("代金を支払う", canExecuteEvent, doEvent)
             };
         }
+
         public void Dispose()
         {
             Character.Dispose();
         }
+
         ~Clerk()
         {
             Dispose();
         }
+
         public Id<IEntity> Id => Character.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
         public Vector2Int CurrentPosition => Character.CurrentPosition;

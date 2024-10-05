@@ -4,8 +4,8 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Model.Map;
 using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,12 +17,15 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : IEffect
     {
-        [RequiredListLength(1, null), SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1), SerializeField] private float _criticalRate;
+        [RequiredListLength(1, null)] [SerializeField]
+        private List<ElementPower> _elementPowers;
+
+        [Range(0, 1)] [SerializeField] private float _criticalRate;
         [SerializeField] private int _blowAwayDistance;
         [SerializeField] private List<AdditionalConditionData> _additionalConditions = new();
 
-        public AttackEffect(List<ElementPower> elementPowers, float criticalRate, List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
+        public AttackEffect(List<ElementPower> elementPowers, float criticalRate,
+            List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
         {
             _elementPowers = elementPowers;
             _criticalRate = criticalRate;
@@ -48,16 +51,20 @@ namespace Domain.Service.Effect
                 GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
                 target.LoseHp(damage);
             }
+
             foreach (var condition in _additionalConditions)
             {
                 if (Random.value < condition.Probability)
                 {
-                    target.AddCondition(actor.Id, condition.Condition.Value.Condition, condition.Condition.Value.RemovalCondition);
+                    target.AddCondition(actor.Id, condition.Condition.Value.Condition,
+                        condition.Condition.Value.RemovalCondition);
                 }
             }
+
             if (_blowAwayDistance > 0)
             {
-                var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+                var direction =
+                    DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
                 if (direction.HasValue)
                     await target.BlowAway(actor, direction.Value, _blowAwayDistance, map);
             }
@@ -65,17 +72,25 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            var result = Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp) * (1 - _criticalRate);
-            result += Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers, true)) / target.CurrentMaxHp) * _criticalRate;
-            result += _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.Evaluate(target));
+            var result = Mathf.Min(1,
+                             Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) /
+                             target.CurrentMaxHp) *
+                         (1 - _criticalRate);
+            result += Mathf.Min(1,
+                Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers, true)) /
+                target.CurrentMaxHp) * _criticalRate;
+            result += _additionalConditions.Sum(condition =>
+                condition.Probability * condition.Condition.Value.Evaluate(target));
             result += CommonSenseParameters.BlowAwayEvaluate(_blowAwayDistance);
             return result;
         }
 
         public float EvaluatePrice()
         {
-            var result = (Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate)) + (Formula.EvaluateDamage(_elementPowers, true) * _criticalRate);
-            result += _additionalConditions.Sum(condition => condition.Probability * condition.Condition.Value.EvaluateDamage());
+            var result = Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate) +
+                         Formula.EvaluateDamage(_elementPowers, true) * _criticalRate;
+            result += _additionalConditions.Sum(condition =>
+                condition.Probability * condition.Condition.Value.EvaluateDamage());
             result += CommonSenseParameters.BlowAwayPrice(_blowAwayDistance);
             return result;
         }
@@ -90,14 +105,17 @@ namespace Domain.Service.Effect
                     upgrades.Add(upgrade.Key, upgrade.Value);
                 }
             }
+
             if (_criticalRate > 0 && _criticalRate < 0.9f)
             {
                 upgrades.Add(new UpgradePath("クリティカル率"), new UpgradeData("クリティカル率+5%", () => _criticalRate += 0.05f));
             }
+
             if (_blowAwayDistance > 0)
             {
                 upgrades.Add(new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _blowAwayDistance += 1));
             }
+
             return upgrades;
         }
 
@@ -108,10 +126,12 @@ namespace Domain.Service.Effect
             {
                 info += $"\nクリティカル: {_criticalRate:P0}";
             }
+
             if (_blowAwayDistance > 0)
             {
                 info += $"\n吹き飛ばし: {_blowAwayDistance}";
             }
+
             if (_additionalConditions.Count > 0)
             {
                 info += "\n追加状態付与:";

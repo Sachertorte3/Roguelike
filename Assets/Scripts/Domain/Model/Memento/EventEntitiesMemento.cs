@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -12,7 +11,9 @@ namespace Domain.Model.Memento
         [field: SerializeField] public List<ChestMemento> Chests { get; private set; }
         [field: SerializeField] public List<TrapMemento> Traps { get; private set; }
         [field: SerializeField] public Option<EntityMemento> Bonfire { get; private set; }
-        public EventEntitiesMemento(List<StairsMemento> stairs, List<ChestMemento> chests, List<TrapMemento> traps, Option<EntityMemento> bonfire)
+
+        public EventEntitiesMemento(List<StairsMemento> stairs, List<ChestMemento> chests, List<TrapMemento> traps,
+            Option<EntityMemento> bonfire)
         {
             Stairs = stairs;
             Chests = chests;

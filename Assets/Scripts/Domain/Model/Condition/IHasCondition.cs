@@ -1,5 +1,4 @@
 ﻿using Domain.Model.Character;
-using Utilities;
 
 namespace Domain.Model.Condition
 {

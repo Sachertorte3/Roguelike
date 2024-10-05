@@ -1,12 +1,12 @@
 #nullable enable
 using System;
-using Domain.Model.Effect;
 
 namespace Domain.Model.Character
 {
     public static class CharacterRelationExtensions
     {
-        public static bool MatchesRelation(this CharacterRelation relation, IHasAffiliation character, IHasAffiliation other)
+        public static bool MatchesRelation(this CharacterRelation relation, IHasAffiliation character,
+            IHasAffiliation other)
         {
             return relation switch
             {

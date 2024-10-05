@@ -15,6 +15,7 @@ namespace Domain.Model.Dungeon
         public FloorTemplates Template = FloorTemplates.Default;
         public bool IsCustom => Template == FloorTemplates.Custom;
         public bool IsBoss => Template == FloorTemplates.Boss;
+
         public enum FloorTemplates
         {
             Default,
@@ -31,20 +32,38 @@ namespace Domain.Model.Dungeon
         public const float DefaultShopChance = 0.1f;
         public const float DefaultMonsterHouseChance = 0.1f;
         public const float DefaultRestRoomChance = 0.1f;
-        public readonly RoomData DefaultRoom = new RoomData(0, 1, 0.5f, 1, 0.5f);
-        public readonly RoomData EmptyRoom = new RoomData(0, 0, 0, 0, 0);
+        public readonly RoomData DefaultRoom = new(0, 1, 0.5f, 1, 0.5f);
+        public readonly RoomData EmptyRoom = new(0, 0, 0, 0, 0);
 
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _prefixChance = DefaultPrefixChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shinyChance = DefaultShinyChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _sleepChance = DefaultSleepChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _mimicChance = DefaultMimicChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _grassChance = DefaultGrassChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _shopChance = DefaultShopChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _monsterHouseChance = DefaultMonsterHouseChance;
-        [ShowIf("IsCustom"), Range(0, 1), SerializeField] private float _restRoomChance = DefaultRestRoomChance;
-        [ShowIf("IsCustom"), SerializeField] private RoomData _room;
-        [ShowIf("IsCustom"), SerializeField] private bool _existBoss;
-        [ShowIf("@(IsCustom && ExistBoss) || IsBoss"), SerializeField, RequiredListLength(1, null)] private List<EnemyData> _boss;
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _prefixChance = DefaultPrefixChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _shinyChance = DefaultShinyChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _sleepChance = DefaultSleepChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _mimicChance = DefaultMimicChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _grassChance = DefaultGrassChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _shopChance = DefaultShopChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _monsterHouseChance = DefaultMonsterHouseChance;
+
+        [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
+        private float _restRoomChance = DefaultRestRoomChance;
+
+        [ShowIf("IsCustom")] [SerializeField] private RoomData _room;
+        [ShowIf("IsCustom")] [SerializeField] private bool _existBoss;
+
+        [ShowIf("@(IsCustom && ExistBoss) || IsBoss")] [SerializeField] [RequiredListLength(1, null)]
+        private List<EnemyData> _boss;
 
         public float PrefixChance => Template switch
         {
@@ -54,6 +73,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _prefixChance,
             _ => throw new NotImplementedException()
         };
+
         public float ShinyChance => Template switch
         {
             FloorTemplates.Default => DefaultShinyChance,
@@ -62,6 +82,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _shinyChance,
             _ => throw new NotImplementedException()
         };
+
         public float SleepChance => Template switch
         {
             FloorTemplates.Default => DefaultSleepChance,
@@ -70,6 +91,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _sleepChance,
             _ => throw new NotImplementedException()
         };
+
         public float MimicChance => Template switch
         {
             FloorTemplates.Default => DefaultMimicChance,
@@ -78,6 +100,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _mimicChance,
             _ => throw new NotImplementedException()
         };
+
         public float GrassChance => Template switch
         {
             FloorTemplates.Default => DefaultGrassChance,
@@ -86,6 +109,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _grassChance,
             _ => throw new NotImplementedException()
         };
+
         public float ShopChance => Template switch
         {
             FloorTemplates.Default => DefaultShopChance,
@@ -94,6 +118,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _shopChance,
             _ => throw new NotImplementedException()
         };
+
         public float MonsterHouseChance => Template switch
         {
             FloorTemplates.Default => DefaultMonsterHouseChance,
@@ -102,6 +127,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _monsterHouseChance,
             _ => throw new NotImplementedException()
         };
+
         public float RestRoomChance => Template switch
         {
             FloorTemplates.Default => DefaultRestRoomChance,
@@ -110,6 +136,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _restRoomChance,
             _ => throw new NotImplementedException()
         };
+
         public RoomData Room => Template switch
         {
             FloorTemplates.Default => DefaultRoom,
@@ -118,6 +145,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _room,
             _ => throw new NotImplementedException()
         };
+
         public bool ExistBoss => Template switch
         {
             FloorTemplates.Default => false,
@@ -126,6 +154,7 @@ namespace Domain.Model.Dungeon
             FloorTemplates.Custom => _existBoss,
             _ => throw new NotImplementedException()
         };
+
         public List<EnemyData> Boss => Template switch
         {
             FloorTemplates.Default => new List<EnemyData>(),

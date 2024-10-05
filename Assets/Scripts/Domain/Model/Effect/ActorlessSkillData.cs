@@ -9,14 +9,28 @@ namespace Domain.Model.Effect
     [Serializable]
     public class ActorlessSkillData : IActorlessSkillData
     {
-        [field: SerializeReference, Required] public INotDirectionalArea Area { get; private set; }
-        [field: SerializeReference, Required] public IActorlessEffect Effect { get; private set; }
-        [field: SerializeReference, Required] public IActorlessEffectPosition Position { get; private set; }
+        [field: SerializeReference]
+        [field: Required]
+        public INotDirectionalArea Area { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
+        public IActorlessEffect Effect { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
+        public IActorlessEffectPosition Position { get; private set; }
+
         public int RushDistance => 0;
-        [field: SerializeField, Range(0, 1)] public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+
+        [field: SerializeField]
+        [field: Range(0, 1)]
+        public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
+
         public string Log => "";
 
-        public ActorlessSkillData(IActorlessEffectPosition position, INotDirectionalArea area, IActorlessEffect effect, float probabilityOfSuccess)
+        public ActorlessSkillData(IActorlessEffectPosition position, INotDirectionalArea area, IActorlessEffect effect,
+            float probabilityOfSuccess)
         {
             Position = position;
             Area = area;

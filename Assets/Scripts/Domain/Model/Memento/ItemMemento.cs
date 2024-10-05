@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -25,7 +24,11 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int MaxUsages { get; private set; }
         [field: SerializeField] public int RemainingUsages { get; private set; }
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
-        public ItemMemento(string id, string name, string iconName, bool isShiny, ItemState state, List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow, bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages, IConditionData[] conditions)
+
+        public ItemMemento(string id, string name, string iconName, bool isShiny, ItemState state,
+            List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
+            bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
+            IConditionData[] conditions)
         {
             Id = id;
             Name = name;

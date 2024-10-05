@@ -20,13 +20,15 @@ namespace Domain.Service.Characters
         private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
-        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range, int clairvoyantFlags, int blindFlags, IMap world)
+        public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
+            int clairvoyantFlags, int blindFlags, IMap world)
         {
             _position = position;
             _range = range;
             _clairvoyantFlags = new FlagStat(clairvoyantFlags);
             _blindFlags = new FlagStat(blindFlags);
-            _position.Subscribe(currentPosition => ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
+            _position.Subscribe(currentPosition =>
+                ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
             _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, range)));
             _clairvoyantFlags
                 .Value
@@ -74,10 +76,9 @@ namespace Domain.Service.Characters
         {
             if (IsClairvoyant)
                 return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
-            else if (IsBlind)
+            if (IsBlind)
                 return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, 1);
-            else
-                return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);
+            return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);
         }
     }
 }

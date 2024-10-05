@@ -13,7 +13,7 @@ namespace View
             _tilemap.ClearAllTiles();
         }
 
-        public void SetGrass(Vector2Int position, TileVisibility? visibility=null)
+        public void SetGrass(Vector2Int position, TileVisibility? visibility = null)
         {
             SetTile(position, _grass, visibility);
         }

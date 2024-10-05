@@ -10,6 +10,7 @@ namespace Provider
     public class LogPresenter
     {
         private CompositeDisposable _disposables = new();
+
         [Inject]
         public LogPresenter(LogView logView)
         {

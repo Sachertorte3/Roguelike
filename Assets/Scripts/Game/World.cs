@@ -32,14 +32,14 @@ namespace Game
         {
             Globals.World = this;
             _receiver = receiver;
-            _dungeons[dungeonData.name] = new(Dungeon.Build(dungeonData));
+            _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
         }
 
         public void CreateNew(DungeonBluePrintData dungeonData)
         {
-            _dungeons[dungeonData.name] = new(Dungeon.Build(dungeonData));
-            _maps = new();
-            _updatedMapIds = new();
+            _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
+            _maps = new Dictionary<Id<MapManager>, MapMemento>();
+            _updatedMapIds = new HashSet<Id<MapManager>>();
             _activeMap.Value = null;
         }
 
@@ -59,7 +59,9 @@ namespace Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeons[memento.CurrentLocation.MapName].CreateMapData(memento.CurrentLocation.Level), memento.Player, new(), memento.Player.Entity.Position, _receiver, memento.CurrentLocation.Level);
+            MapManager map = new(mapMemento,
+                _dungeons[memento.CurrentLocation.MapName].CreateMapData(memento.CurrentLocation.Level), memento.Player,
+                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver, memento.CurrentLocation.Level);
 
             _activeLocation = memento.CurrentLocation;
             _activeMap.Value = map;
@@ -73,10 +75,10 @@ namespace Game
             var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
             (
-                dungeons: _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
-                player: playerData,
-                maps: _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
-                currentLocation: _activeLocation
+                _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
+                playerData,
+                _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
+                _activeLocation
             );
         }
 
@@ -86,6 +88,7 @@ namespace Game
         {
             return _dungeons[location.MapName].GetMapId(location.Level);
         }
+
         private MapMemento GetMapMemento(Location location)
         {
             var mapId = _dungeons[location.MapName].GetMapId(location.Level);
@@ -101,25 +104,32 @@ namespace Game
                     if (_maps.ContainsKey(prevMapId))
                     {
                         var prevMap = _maps[prevMapId];
-                        var downStairs = prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
+                        var downStairs =
+                            prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
                         upStairsId = downStairs.DestinationId;
                         upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
                     }
                 }
+
                 if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
                 {
                     var nextMapId = _dungeons[location.MapName].GetMapId(location.Level + 1);
                     if (_maps.ContainsKey(nextMapId))
                     {
                         var nextMap = _maps[nextMapId];
-                        var upStairs = nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
+                        var upStairs =
+                            nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
                         downStairsId = upStairs.DestinationId;
                         downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
                     }
                 }
-                Debug.Log($"CreateMapManager mapId:{mapId} upStairsId:{upStairsId} upStairsDestinationId:{upStairsDestinationId} downStairsId:{downStairsId} downStairsDestinationId:{downStairsDestinationId}");
-                _maps[mapId] = _dungeons[location.MapName].CreateMapManager(location.Level, upStairsId, upStairsDestinationId, downStairsId, downStairsDestinationId);
+
+                Debug.Log(
+                    $"CreateMapManager mapId:{mapId} upStairsId:{upStairsId} upStairsDestinationId:{upStairsDestinationId} downStairsId:{downStairsId} downStairsDestinationId:{downStairsDestinationId}");
+                _maps[mapId] = _dungeons[location.MapName].CreateMapManager(location.Level, upStairsId,
+                    upStairsDestinationId, downStairsId, downStairsDestinationId);
             }
+
             return _maps[mapId];
         }
 
@@ -131,7 +141,10 @@ namespace Game
 
             CharacterMemento? playerData = null;
             List<CharacterMemento>? characters = null;
-            Vector2Int? initialPosition = destination != null ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity.Position : null;
+            Vector2Int? initialPosition = destination != null
+                ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
+                    .Position
+                : null;
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
@@ -142,7 +155,8 @@ namespace Game
                 _activeMap.CurrentValue.Dispose();
             }
 
-            MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData, characters, initialPosition, _receiver, location.Level);
+            MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData,
+                characters, initialPosition, _receiver, location.Level);
 
             _activeLocation = location;
             _activeMap.Value = map;

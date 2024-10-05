@@ -11,11 +11,16 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedThrowAnimationEntityView : SynchronizedEntityView<ThrowAnimationEntity, EntityView>, IDisposable
+    public class SynchronizedThrowAnimationEntityView : SynchronizedEntityView<ThrowAnimationEntity, EntityView>,
+        IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
-        protected override EntityView GetEntityView(EntityView view) => view;
+
+        protected override EntityView GetEntityView(EntityView view)
+        {
+            return view;
+        }
 
         [Inject]
         public SynchronizedThrowAnimationEntityView(World world, InputReceiver inputReceiver)
@@ -28,9 +33,11 @@ namespace Provider
             );
         }
 
-        protected override EntityView ViewPrefab(ThrowAnimationEntity _) =>
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+        protected override EntityView ViewPrefab(ThrowAnimationEntity _)
+        {
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
+        }
 
         public void Dispose()
         {

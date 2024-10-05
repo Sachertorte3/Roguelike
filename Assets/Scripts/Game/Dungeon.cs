@@ -14,28 +14,39 @@ namespace Game
     {
         private readonly DungeonBluePrintData _dungeonData;
         private readonly Dictionary<int, Id<MapManager>> _mapIds;
+
         public Dungeon(DungeonMemento memento)
         {
-            _dungeonData = Addressables.LoadAssetAsync<DungeonBluePrintData>($"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
+            _dungeonData = Addressables
+                .LoadAssetAsync<DungeonBluePrintData>(
+                    $"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<MapManager>(mapId.Value));
         }
+
         public DungeonMemento Serialize()
         {
             return new DungeonMemento
             (
-                dungeonDataName: _dungeonData.name,
-                mapIds: new(_mapIds.ToDictionary(mapIds => mapIds.Key, mapIds => mapIds.Value.ToString()))
+                _dungeonData.name,
+                new Dictionary<int, string>(_mapIds.ToDictionary(mapIds => mapIds.Key,
+                    mapIds => mapIds.Value.ToString()))
             );
         }
+
         public static DungeonMemento Build(DungeonBluePrintData _dungeonData)
         {
             return new DungeonMemento
             (
-                dungeonDataName: _dungeonData.name,
-                mapIds: new()
+                _dungeonData.name,
+                new Dictionary<int, string>()
             );
         }
-        public bool ExistLevel(int level) => _dungeonData.ExistLevel(level);
+
+        public bool ExistLevel(int level)
+        {
+            return _dungeonData.ExistLevel(level);
+        }
+
         public Id<MapManager> GetMapId(int level)
         {
             if (!_mapIds.ContainsKey(level))
@@ -43,10 +54,17 @@ namespace Game
                 var mapId = Id<MapManager>.Generate();
                 _mapIds[level] = mapId;
             }
+
             return _mapIds[level];
         }
-        public DungeonMapData CreateMapData(int level) => _dungeonData.CreateMapData(level);
-        public MapMemento CreateMapManager(int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId, Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
+
+        public DungeonMapData CreateMapData(int level)
+        {
+            return _dungeonData.CreateMapData(level);
+        }
+
+        public MapMemento CreateMapManager(int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
+            Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
         {
             var dungeonData = CreateMapData(level);
             var mapBuilder = new MapBuilder(Tilemap.Build(dungeonData.Field, 0.5f), dungeonData);

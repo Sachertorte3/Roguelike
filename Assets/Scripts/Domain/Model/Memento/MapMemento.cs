@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -17,7 +16,10 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Option<RoomMemento> MonsterHouse { get; private set; }
         [field: SerializeField] public Option<ShopMemento> Shop { get; private set; }
         [field: SerializeField] public Vector2Int RandomBlankPosition { get; private set; }
-        public MapMemento(TilemapMemento tilemap, List<CharacterMemento> characters, List<ItemEntityMemento> items, EventEntitiesMemento eventEntities, List<string> keyCharacters, Option<RoomMemento> monsterHouse, Option<ShopMemento> shop, Vector2Int randomBlankPosition)
+
+        public MapMemento(TilemapMemento tilemap, List<CharacterMemento> characters, List<ItemEntityMemento> items,
+            EventEntitiesMemento eventEntities, List<string> keyCharacters, Option<RoomMemento> monsterHouse,
+            Option<ShopMemento> shop, Vector2Int randomBlankPosition)
         {
             Tilemap = tilemap;
             Characters = characters;

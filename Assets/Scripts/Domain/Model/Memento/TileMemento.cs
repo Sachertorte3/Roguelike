@@ -10,6 +10,7 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public TileCategory TileType { get; private set; }
         [field: SerializeField] public bool IsKnown { get; private set; }
+
         public TileMemento(TileCategory tileType, bool isKnown)
         {
             TileType = tileType;

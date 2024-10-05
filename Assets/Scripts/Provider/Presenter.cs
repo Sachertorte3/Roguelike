@@ -1,19 +1,22 @@
 #nullable enable
+using System;
+using Cysharp.Threading.Tasks;
 using Game;
+using R3;
 using Unity.Logging;
 using Unity.Logging.Sinks;
+using UnityEngine;
 using VContainer;
-using R3;
-using Logger = Unity.Logging.Logger;
 using View.UI;
-using Cysharp.Threading.Tasks;
+using Logger = Unity.Logging.Logger;
 
 namespace Provider
 {
     public class Presenter
     {
         [Inject]
-        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2, MenuController menuController)
+        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2,
+            MenuController menuController)
         {
             LoggerInit();
             gameManager.State.Subscribe(state =>
@@ -46,31 +49,38 @@ namespace Provider
             );
             Log.Debug("Init Logger");
         }
+
         private static LoggerConfig EditorConfiguration()
-            => new LoggerConfig()
+        {
+            return new LoggerConfig()
                 .SyncMode.FullSync()
                 .WriteTo.UnityDebugLog(
                     minLevel: LogLevel.Debug,
                     captureStackTrace: true);
+        }
 
         private static LoggerConfig DevelopmentConfiguration()
-            => new LoggerConfig()
+        {
+            return new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging_dev/client_dev_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    $"{Application.persistentDataPath}/Logs/logging_dev/client_dev_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel: LogLevel.Debug,
                     captureStackTrace: true,
                     outputTemplate: "{Timestamp} [{Level}] {Message}{NewLine}{Stacktrace}");
+        }
 
         private static LoggerConfig ReleaseConfiguration()
-            => new LoggerConfig()
+        {
+            return new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging/client_release_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    $"{Application.persistentDataPath}/Logs/logging/client_release_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel: LogLevel.Info,
                     captureStackTrace: false,
                     outputTemplate: "{Timestamp} [{Level}] {Message}");
+        }
     }
 }

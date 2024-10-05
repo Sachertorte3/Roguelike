@@ -33,6 +33,7 @@ namespace View
                 Debug.Log(clip.name);
                 return;
             }
+
             _audioSource.clip = clip;
             _audioSource.Play();
         }

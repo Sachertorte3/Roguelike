@@ -21,17 +21,24 @@ namespace Domain.Service.Rooms
     public class Shop : Room<ShopMemento>, IShop, IDisposable
     {
         public readonly Clerk Clerk;
+
         private record ShopItemCache(Id<IItem> Id, int Price);
+
         private HashSet<ShopItemCache> _shopItems = new();
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room, mapManager.Player.CurrentPosition)
+        public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room,
+            mapManager.Player.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
                 () => (CanExecute && GetSalePrice(mapManager) > 0) || GetPurchasePrice(mapManager) > 0,
-                (_, map) => { Purchase(map); return UniTask.CompletedTask; }
+                (_, map) =>
+                {
+                    Purchase(map);
+                    return UniTask.CompletedTask;
+                }
             );
 
             if (data.IsStolen)
@@ -57,19 +64,19 @@ namespace Domain.Service.Rooms
         {
             return new ShopMemento
             (
-                room: new RoomMemento
+                new RoomMemento
                 (
-                    room: rect,
-                    hasEntered: false,
-                    hasEverEntered: false
+                    rect,
+                    false,
+                    false
                 ),
-                clerk: entity,
-                items: items.Select(item => new ShopItemMemento
+                entity,
+                items.Select(item => new ShopItemMemento
                 (
-                    id: item.Item.Id,
-                    price: new Item(item.Item).Price
+                    item.Item.Id,
+                    new Item(item.Item).Price
                 )).ToList(),
-                isStolen: false
+                false
             );
         }
 
@@ -77,19 +84,19 @@ namespace Domain.Service.Rooms
         {
             return new ShopMemento
             (
-                room: new RoomMemento
+                new RoomMemento
                 (
-                    room: Rect,
-                    hasEntered: hasEntered,
-                    hasEverEntered: hasEverEntered
+                    Rect,
+                    hasEntered,
+                    hasEverEntered
                 ),
-                clerk: Clerk.Character.Serialize().Entity,
-                items: _shopItems.Select(item => new ShopItemMemento
+                Clerk.Character.Serialize().Entity,
+                _shopItems.Select(item => new ShopItemMemento
                 (
-                    id: item.Id.ToString(),
-                    price: item.Price
+                    item.Id.ToString(),
+                    item.Price
                 )).ToList(),
-                isStolen: _isStolen.Value
+                _isStolen.Value
             );
         }
 
@@ -106,6 +113,7 @@ namespace Domain.Service.Rooms
                 item.SetState(ItemState.ShopItem);
             }
         }
+
         private void RemoveMark(IMap mapManager, IEnumerable<ShopItemCache> items)
         {
             foreach (var item in items)
@@ -113,6 +121,7 @@ namespace Domain.Service.Rooms
                 mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
             }
         }
+
         private void MarkItemsAsStolen(IMap mapManager)
         {
             foreach (var item in _shopItems)
@@ -127,6 +136,7 @@ namespace Domain.Service.Rooms
             var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
             return purchaseItems;
         }
+
         public int GetPurchasePrice(IMap mapManager)
         {
             var purchaseItems = GetMissingItems(mapManager);
@@ -138,6 +148,7 @@ namespace Domain.Service.Rooms
             var saleItems = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
             return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
+
         public int GetSalePrice(IMap mapManager)
         {
             var saleItems = GetAddedItems(mapManager);
@@ -148,9 +159,11 @@ namespace Domain.Service.Rooms
         {
             if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
             {
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
                 var purchaseItems = GetMissingItems(mapManager);
                 RemoveMark(mapManager, purchaseItems);
@@ -158,7 +171,8 @@ namespace Domain.Service.Rooms
             }
             else
             {
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
             }
         }
 

@@ -1,17 +1,12 @@
 ﻿#nullable enable
 using System;
-using System.Linq;
 using Domain.Model;
 using Domain.Model.Map;
 using Domain.Service.Events;
-using Domain.Service.Items;
-using Domain.Service.Rooms;
 using Game;
 using R3;
-using Sirenix.OdinInspector.Editor.Drawers;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.TextCore.Text;
 using Utilities;
 using VContainer;
 using View;
@@ -22,7 +17,11 @@ namespace Provider
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
-        protected override EntityView GetEntityView(EntityView view) => view;
+
+        protected override EntityView GetEntityView(EntityView view)
+        {
+            return view;
+        }
 
         [Inject]
         public SynchronizedIconEntityView(World world, InputReceiver inputReceiver)
@@ -30,7 +29,8 @@ namespace Provider
             _inputReceiver = inputReceiver;
 
             world.ActiveMap.SubscribeToAllIgnoreNull(
-                map => _disposable.Disposable = map.EventEntityManager.StandaloneEventEntities.SubscribeToAll(Add, Remove),
+                map => _disposable.Disposable =
+                    map.EventEntityManager.StandaloneEventEntities.SubscribeToAll(Add, Remove),
                 map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
         }
@@ -42,16 +42,15 @@ namespace Provider
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            else if (eventEntity.Layer == EntityLayer.Middle)
+
+            if (eventEntity.Layer == EntityLayer.Middle)
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Chest.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            else
-            {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
-                    .GetComponent<EntityView>();
-            }
+
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+                .GetComponent<EntityView>();
         }
 
         public void Dispose()

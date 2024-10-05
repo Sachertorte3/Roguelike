@@ -17,21 +17,26 @@ namespace Domain.Service.Characters.Conditions
         private readonly Dictionary<ICondition, Id<IEntity>> _inflicterMap = new();
         private readonly CompositeDisposable _disposables = new();
 
-        public CharacterConditions(IHasCondition hasCondition, List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
+        public CharacterConditions(IHasCondition hasCondition,
+            List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
         {
-            foreach ((var actor, var conditionMemento) in conditions)
+            foreach (var (actor, conditionMemento) in conditions)
             {
                 var condition = new Condition(conditionMemento);
                 _conditions.Add(condition);
                 _inflicterMap.Add(condition, actor);
             }
 
-            _disposables.Add(_conditions.ObserveAdd().Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value])));
-            _disposables.Add(_conditions.ObserveRemove().Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value])));
+            _disposables.Add(_conditions.ObserveAdd()
+                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value])));
+            _disposables.Add(_conditions.ObserveRemove()
+                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value])));
         }
 
         public IObservableCollection<ICondition> Conditions => _conditions;
-        public List<(Id<IEntity> actor, ICondition condition)> ConditionsWithInflicter => _conditions.Select(condition => (_inflicterMap[condition], condition)).ToList();
+
+        public List<(Id<IEntity> actor, ICondition condition)> ConditionsWithInflicter =>
+            _conditions.Select(condition => (_inflicterMap[condition], condition)).ToList();
 
         public void Dispose()
         {

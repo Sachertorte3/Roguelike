@@ -13,7 +13,9 @@ namespace Domain.Model.Memento
         [SerializeField] private SerializableDictionary<string, MapMemento> _maps;
         public Dictionary<string, MapMemento> Maps => _maps;
         [field: SerializeField] public Location CurrentLocation { get; private set; }
-        public WorldMemento(Dictionary<string, DungeonMemento> dungeons, CharacterMemento player, Dictionary<string, MapMemento> maps, Location currentLocation)
+
+        public WorldMemento(Dictionary<string, DungeonMemento> dungeons, CharacterMemento player,
+            Dictionary<string, MapMemento> maps, Location currentLocation)
         {
             _dungeons = dungeons.ToSerializable();
             Player = player;

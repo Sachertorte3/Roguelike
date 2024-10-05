@@ -33,6 +33,7 @@ namespace Domain.Service.Entities
         public EntityLayer Layer => _layer;
         public ReadOnlyReactiveProperty<bool> IsDestroyed => _isDestroyed;
         public Observable<Unit> OnDestroyed => IsDestroyed.Where(isDestroyed => isDestroyed).AsUnitObservable();
+
         public void Dispose()
         {
             _position.Dispose();
@@ -43,9 +44,9 @@ namespace Domain.Service.Entities
         {
             return new EntityMemento
             (
-                id: Id.ToString(),
-                position: _position.CurrentValue,
-                layer: _layer
+                Id.ToString(),
+                _position.CurrentValue,
+                _layer
             );
         }
 
@@ -63,9 +64,9 @@ namespace Domain.Service.Entities
         {
             return new EntityMemento
             (
-                id: id.ToString(),
-                position: position,
-                layer: layer
+                id.ToString(),
+                position,
+                layer
             );
         }
 

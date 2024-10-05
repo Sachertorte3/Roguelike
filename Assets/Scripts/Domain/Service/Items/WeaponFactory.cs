@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Codice.CM.Common;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -23,7 +22,8 @@ namespace Domain.Service.Items
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,
-                    new AttackEffect(new List<ElementPower> {
+                    new AttackEffect(new List<ElementPower>
+                        {
                             new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
                         },
                         0,
@@ -34,7 +34,8 @@ namespace Domain.Service.Items
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(new List<ElementPower> {
+                    new AttackEffect(new List<ElementPower>
+                        {
                             new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
                         },
                         0,
@@ -62,8 +63,10 @@ namespace Domain.Service.Items
                     mold.Position,
                     mold.Area,
                     new AttackEffect(
-                        new List<ElementPower> {
-                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                        new List<ElementPower>
+                        {
+                            new(Element.Physical,
+                                Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
                         prefix.AdditionalConditions, 0),
@@ -72,8 +75,10 @@ namespace Domain.Service.Items
                 new SkillDataOnThrow(
                     new SelfArea(),
                     new AttackEffect(
-                        new List<ElementPower> {
-                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                        new List<ElementPower>
+                        {
+                            new(Element.Physical,
+                                Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
                         },
                         0,
                         prefix.AdditionalConditions, 0),

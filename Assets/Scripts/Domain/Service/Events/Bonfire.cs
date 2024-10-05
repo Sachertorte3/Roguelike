@@ -14,11 +14,13 @@ namespace Domain.Service.Events
     public class Bonfire : ISerializable<EntityMemento>, IEventEntity
     {
         private Entity _entity;
+
         public Bonfire(EntityMemento memento)
         {
             _entity = new Entity(memento);
-            _events = new();
+            _events = new List<EntityEvent>();
         }
+
         public Id<IEntity> Id => _entity.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
@@ -36,26 +38,32 @@ namespace Domain.Service.Events
         {
             return UniTask.CompletedTask;
         }
+
         public void Destroy()
         {
             _entity.Destroy();
         }
+
         public void Dispose()
         {
             _entity.Dispose();
         }
+
         public void SetVisibility(bool visibility)
         {
             _entity.SetVisibility(visibility);
         }
+
         public void Teleport(Vector2Int position)
         {
             _entity.Teleport(position);
         }
+
         public EntityMemento Serialize()
         {
             return _entity.Serialize();
         }
+
         public static EntityMemento Build(Vector2Int position)
         {
             return Entity.Build(position, EntityLayer.Middle);

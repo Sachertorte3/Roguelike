@@ -66,18 +66,15 @@ namespace View
                 _disposable.Disposable = Observable.EveryUpdate()
                     .TakeWhile(_ => elapsedTime < totalDuration)
                     .Subscribe(_ =>
-                    {
-                        if (IsMoving)
                         {
-                            elapsedTime += Time.deltaTime;
-                            var t = Mathf.Clamp01(elapsedTime / totalDuration);
-                            transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
-                        }
-                    },
-                    _ =>
-                    {
-                        IsMoving = false;
-                    }).AddTo(this);
+                            if (IsMoving)
+                            {
+                                elapsedTime += Time.deltaTime;
+                                var t = Mathf.Clamp01(elapsedTime / totalDuration);
+                                transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
+                            }
+                        },
+                        _ => { IsMoving = false; }).AddTo(this);
             }
             else
             {

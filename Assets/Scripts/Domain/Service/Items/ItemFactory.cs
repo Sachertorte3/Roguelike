@@ -12,8 +12,8 @@ namespace Domain.Service.Items
         {
             return new ItemEntityMemento
             (
-                item: item,
-                entity: Entity.Build(spawnPosition, EntityLayer.Bottom)
+                item,
+                Entity.Build(spawnPosition, EntityLayer.Bottom)
             );
         }
 

@@ -9,8 +9,10 @@ namespace Utilities
     [Serializable]
     public class IconSerializable
     {
-        [ShowInInspector, OnValueChanged("OnValidate")] private Sprite _value;
-        [ReadOnly, SerializeField] private string _name;
+        [ShowInInspector] [OnValueChanged("OnValidate")]
+        private Sprite _value;
+
+        [ReadOnly] [SerializeField] private string _name;
 
         public Sprite Value
         {
@@ -18,8 +20,10 @@ namespace Utilities
             {
                 if (_value == null)
                 {
-                    _value = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{_name}]").WaitForCompletion();
+                    _value = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{_name}]")
+                        .WaitForCompletion();
                 }
+
                 return _value;
             }
         }

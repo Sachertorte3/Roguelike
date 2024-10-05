@@ -39,7 +39,8 @@ namespace Domain.Service.Characters.Behavior
 
         public bool WanderAround => true;
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world,
+            IInput input)
         {
             Log.Debug("[PlayerThink] Start waiting input...");
             if (input.IsDash()) await _intelligentDashController.Wait(character, world);
@@ -67,11 +68,13 @@ namespace Domain.Service.Characters.Behavior
                                 move = _intelligentDashController.Filter(move, character, started, world, input);
 
                             var swap = new Swap(move.Direction);
-                            var eventEntity = world.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle);
+                            var eventEntity =
+                                world.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(),
+                                    EntityLayer.Middle);
                             character.Turn(move.Direction);
                             if (move.Doable(character, world))
                                 return move;
-                            else if (eventEntity != null)
+                            if (eventEntity != null)
                             {
                                 var choices = new List<string>();
                                 var firstChoiceIndex = 0;
@@ -80,20 +83,25 @@ namespace Domain.Service.Characters.Behavior
                                     choices.Add("入れ替わる");
                                     firstChoiceIndex += 1;
                                 }
+
                                 var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
                                 foreach (var eventData in executableEvents)
                                 {
                                     choices.Add(eventData.ChoiceText);
                                 }
+
                                 if (eventEntity.CanBeCanceled)
                                 {
                                     choices.Add("やめる");
                                 }
+
                                 var choiceIndex = 0;
                                 if (choices.Count > 1)
                                 {
-                                    choiceIndex = await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
+                                    choiceIndex =
+                                        await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
                                 }
+
                                 switch (choices[choiceIndex])
                                 {
                                     case "入れ替わる":
@@ -143,6 +151,7 @@ namespace Domain.Service.Characters.Behavior
                 firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             }
         }
+
         public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));

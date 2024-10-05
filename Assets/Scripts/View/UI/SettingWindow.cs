@@ -1,10 +1,8 @@
 ﻿using R3;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace View.UI
 {
-
     public class SettingWindow : MonoBehaviour
     {
         [SerializeField] private Transform _content;
@@ -46,7 +44,7 @@ namespace View.UI
                 var firstNav = firstOption.Selectable.navigation;
                 firstNav.selectOnUp = newSelectable.Selectable;
                 firstOption.Selectable.navigation = firstNav;
-                
+
                 var newNav = newSelectable.Selectable.navigation;
                 newNav.selectOnUp = lastOption.Selectable;
                 newNav.selectOnDown = firstOption.Selectable;

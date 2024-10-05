@@ -8,11 +8,13 @@ namespace Domain.Model.Dungeon
     {
         private readonly MasterItemDataBase _masterItemDataBase;
         private readonly ItemCategoryWeight _itemCategoryWeight;
+
         public ItemTable(MasterItemDataBase masterItemDataBase, ItemCategoryWeight itemCategoryWeight)
         {
             _masterItemDataBase = masterItemDataBase;
             _itemCategoryWeight = itemCategoryWeight;
         }
+
         public ItemData GetRandomItem()
         {
             return _itemCategoryWeight.GetRandomCategory() switch

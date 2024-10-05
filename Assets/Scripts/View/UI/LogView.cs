@@ -14,6 +14,7 @@ namespace View.UI
         {
             _logShownMilliSeconds = milliSeconds;
         }
+
         public void AddLog(string log)
         {
             var logText = Instantiate(_logTextPrefab, _content);
@@ -21,6 +22,7 @@ namespace View.UI
             logText.gameObject.AddComponent<LifeTimer>().LifeTimeMilliseconds = _logShownMilliSeconds;
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)logText.transform);
         }
+
         public void Clear()
         {
             foreach (var logText in _content.GetComponentsInChildren<TMP_Text>())

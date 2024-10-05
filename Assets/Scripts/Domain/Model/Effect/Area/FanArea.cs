@@ -37,9 +37,9 @@ namespace Domain.Model.Effect.Area
                     {
                         for (var j = -i; j <= i; j++)
                         {
-                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
+                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + (i * deltaVec) + (j * perpVec));
+                                area.Add(position + i * deltaVec + j * perpVec);
                             }
                         }
                     }
@@ -56,9 +56,9 @@ namespace Domain.Model.Effect.Area
                     {
                         for (var j = 0; j <= Radius; j++)
                         {
-                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
+                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + (i * clockwiseVec) + (j * anticlockwiseVec));
+                                area.Add(position + i * clockwiseVec + j * anticlockwiseVec);
                             }
                         }
                     }
@@ -70,7 +70,8 @@ namespace Domain.Model.Effect.Area
                 area.Remove(position);
             if (CanIgnoreWalls)
                 return area;
-            var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle), position, Radius + 0.5f);
+            var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle), position,
+                Radius + 0.5f);
             return area.Where(p => reachable.Contains(p));
         }
 
@@ -79,11 +80,13 @@ namespace Domain.Model.Effect.Area
             return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius) / 2;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
                 { new UpgradePath("半径"), new UpgradeData("半径+1", () => Radius += 1) }
             };
+        }
 
         public string Info()
         {

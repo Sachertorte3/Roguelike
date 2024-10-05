@@ -10,11 +10,10 @@ using Domain.Service.Characters;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Map;
-using UnityEngine;
-using Unity.Logging;
-using Utilities;
-using Random = UnityEngine.Random;
 using Domain.Service.Rooms;
+using Unity.Logging;
+using UnityEngine;
+using Utilities;
 
 namespace Game
 {
@@ -37,14 +36,14 @@ namespace Game
 
         public MapBuilder(TilemapMemento tilemapData, DungeonMapData data)
         {
-            _tilemap = new(tilemapData);
-            _characters = new();
-            _items = new();
-            _keyCharacters = new();
-            _stairs = new();
-            _chests = new();
-            _traps = new();
-            _randomBlankPositions = new();
+            _tilemap = new Tilemap(tilemapData);
+            _characters = new List<CharacterMemento>();
+            _items = new List<ItemEntityMemento>();
+            _keyCharacters = new List<Id<IEntity>>();
+            _stairs = new List<StairsMemento>();
+            _chests = new List<ChestMemento>();
+            _traps = new List<TrapMemento>();
+            _randomBlankPositions = new List<Vector2Int>();
 
             var rooms = _tilemap.Rooms.ToList();
 
@@ -55,8 +54,8 @@ namespace Game
             _monsterHouse = CreateMonsterHouse(data, rooms);
             CreateRestRoom(data, rooms);
 
-            RectInt downStairsRoom = rooms.GetAtRandom();
-            RectInt upStairsRoom = rooms.GetAtRandom();
+            var downStairsRoom = rooms.GetAtRandom();
+            var upStairsRoom = rooms.GetAtRandom();
             RectInt? bossRoom = data.existBoss ? rooms.GetAtRandom() : null;
 
             foreach (var room in rooms)
@@ -74,6 +73,7 @@ namespace Game
                 {
                     Log.Error("positions.Count < sum");
                 }
+
                 var characterPositions = positions.GetAtRandomAndRemove(characterCount);
                 var itemPositions = positions.GetAtRandomAndRemove(itemCount);
                 var weaponPositions = positions.GetAtRandomAndRemove(weaponCount);
@@ -90,23 +90,29 @@ namespace Game
                 {
                     foreach (var bossData in data.Boss)
                     {
-                        var boss = CharacterFactory.BuildCharacter(bossData, positions.GetAtRandomAndRemove(1).First(), isSlept: false, isShiny: false);
+                        var boss = CharacterFactory.BuildCharacter(bossData, positions.GetAtRandomAndRemove(1).First(),
+                            isSlept: false, isShiny: false);
                         _characters.Add(boss);
-                        _keyCharacters.Add(new(boss.Entity.Id));
+                        _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
                     }
                 }
+
                 if (room == downStairsRoom)
                 {
                     _downStairPosition = positions.GetAtRandomAndRemove(1).First();
                 }
+
                 if (room == upStairsRoom)
                 {
                     _upStairPosition = positions.GetAtRandomAndRemove(1).First();
                 }
+
                 _randomBlankPositions.Add(positions.GetAtRandomAndRemove(1).First());
             }
 
-            _bonfire = (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value) : Option.None<Vector2Int>()).Map(position => Bonfire.Build(position));
+            _bonfire =
+                (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value) : Option.None<Vector2Int>()).Map(
+                    position => Bonfire.Build(position));
         }
 
         private void AddGrasses(DungeonMapData data, RectInt room)
@@ -117,7 +123,7 @@ namespace Game
                 var value = Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue);
                 if (value < data.GrassChance)
                 {
-                    _tilemap.SetGrasses(new[] { position }, isGrass: true);
+                    _tilemap.SetGrasses(new[] { position }, true);
                 }
             }
         }
@@ -135,7 +141,7 @@ namespace Game
             var shopRoom = rooms.GetAtRandom();
             rooms.Remove(shopRoom);
 
-            _tilemap.SetGrasses(shopRoom.RectRange(), isGrass: false);
+            _tilemap.SetGrasses(shopRoom.RectRange(), false);
 
             var shopItems = data.ShopItems.GetRandomItem().Items;
 
@@ -152,7 +158,8 @@ namespace Game
             }
 
             var clerkPosition = positions.Last();
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false, homePosition: clerkPosition);
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false,
+                homePosition: clerkPosition);
             _characters.Add(clerk);
             return Shop.Build(shopRoom, clerk.Entity, _items.ToList());
         }
@@ -197,7 +204,9 @@ namespace Game
                 foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
                 {
                     var position = center + direction.Vector();
-                    var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position, direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance, homePosition: center);
+                    var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
+                        direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
+                        homePosition: center);
                     _characters.Add(character);
                 }
             }
@@ -211,7 +220,8 @@ namespace Game
         {
             foreach (var position in positions)
             {
-                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position, isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
+                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
+                    isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
                 _characters.Add(character);
             }
         }
@@ -274,34 +284,40 @@ namespace Game
             }
         }
 
-        public void AddUpStairs(DungeonMapData data, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId)
+        public void AddUpStairs(DungeonMapData data, int level, Id<IEntity>? upStairsId,
+            Id<IEntity>? upStairsDestinationId)
         {
             if (upStairsId != null && upStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, upStairsId, new(data.Name, level - 1), upStairsDestinationId));
+                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, upStairsId,
+                    new Location(data.Name, level - 1), upStairsDestinationId));
             else
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, new(data.Name, level - 1)));
+                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition,
+                    new Location(data.Name, level - 1)));
         }
 
-        public void AddDownStairs(DungeonMapData data, int level, Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
+        public void AddDownStairs(DungeonMapData data, int level, Id<IEntity>? downStairsId,
+            Id<IEntity>? downStairsDestinationId)
         {
             if (downStairsId != null && downStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, downStairsId, new(data.Name, level + 1), downStairsDestinationId));
+                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, downStairsId,
+                    new Location(data.Name, level + 1), downStairsDestinationId));
             else
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, new(data.Name, level + 1)));
+                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition,
+                    new Location(data.Name, level + 1)));
         }
 
         public MapMemento Build()
         {
             return new MapMemento
             (
-                tilemap: _tilemap.Serialize(),
-                characters: _characters,
-                items: _items,
-                eventEntities: EventEntityManager.Build(_stairs, _chests, _traps, _bonfire),
-                keyCharacters: _keyCharacters.Select(key => key.ToString()).ToList(),
-                monsterHouse: _monsterHouse.ToOption(),
-                shop: _shop.ToOption(),
-                randomBlankPosition: _randomBlankPositions.GetAtRandom()
+                _tilemap.Serialize(),
+                _characters,
+                _items,
+                EventEntityManager.Build(_stairs, _chests, _traps, _bonfire),
+                _keyCharacters.Select(key => key.ToString()).ToList(),
+                _monsterHouse.ToOption(),
+                _shop.ToOption(),
+                _randomBlankPositions.GetAtRandom()
             );
         }
     }

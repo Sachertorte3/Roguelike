@@ -10,9 +10,14 @@ namespace Domain.Model.Effect
         public bool IsWalkable(Vector2Int position, IAffiliation affiliation);
         public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
-        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
 
-        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
-        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character, IEnumerable<Vector2Int> visibleArea);
+        public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea);
+
+        public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea);
+
+        public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character,
+            IEnumerable<Vector2Int> visibleArea);
     }
 }

@@ -16,8 +16,10 @@ namespace Domain.Service.Characters.Stats
         {
             Hp = new IntResource(memento.Hp);
             HpNaturalRecoveryAmount = new Stat(memento.HpNaturalRecoveryAmount);
-            ElementAttackMultiplier = memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
-            ElementDamageRateMultiplier = memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            ElementAttackMultiplier =
+                memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            ElementDamageRateMultiplier =
+                memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
             ViewRange = new Stat(memento.ViewRange);
             WaitTime = new Resource(memento.WaitTime);
             foreach (Element element in Enum.GetValues(typeof(Element)))
@@ -26,6 +28,7 @@ namespace Domain.Service.Characters.Stats
                 {
                     ElementAttackMultiplier[element] = new Stat(1);
                 }
+
                 if (!ElementDamageRateMultiplier.ContainsKey(element))
                 {
                     ElementDamageRateMultiplier[element] = new Stat(1);
@@ -37,25 +40,31 @@ namespace Domain.Service.Characters.Stats
         {
             return new CharacterStatsMemento
             (
-                hp: Hp.GetData(),
-                hpNaturalRecovery: HpNaturalRecoveryAmount.GetData(),
-                elementAttackMultiplier: new(ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                elementDamageRateMultiplier: new(ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                viewRange: ViewRange.GetData(),
-                waitTime: WaitTime.GetData()
+                Hp.GetData(),
+                HpNaturalRecoveryAmount.GetData(),
+                new Dictionary<Element, StatData>(
+                    ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                new Dictionary<Element, StatData>(
+                    ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                ViewRange.GetData(),
+                WaitTime.GetData()
             );
         }
 
-        public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount,
+            Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
+            float viewRange, float waitTime, bool isSlept)
         {
             return new CharacterStatsMemento
             (
-                hp: new ResourceData(new StatData(maxHp), maxHp),
-                hpNaturalRecovery: new StatData(hpNaturalRecoveryAmount),
-                elementAttackMultiplier: new SerializableDictionary<Element, StatData>(elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                elementDamageRateMultiplier: new SerializableDictionary<Element, StatData>(elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                viewRange: new StatData(viewRange),
-                waitTime: new ResourceData(new StatData(waitTime), waitTime)
+                new ResourceData(new StatData(maxHp), maxHp),
+                new StatData(hpNaturalRecoveryAmount),
+                new SerializableDictionary<Element, StatData>(
+                    elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                new SerializableDictionary<Element, StatData>(
+                    elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                new StatData(viewRange),
+                new ResourceData(new StatData(waitTime), waitTime)
             );
         }
 
@@ -76,6 +85,7 @@ namespace Domain.Service.Characters.Stats
             {
                 element.Dispose();
             }
+
             foreach (var element in ElementDamageRateMultiplier.Values)
             {
                 element.Dispose();
@@ -100,7 +110,7 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
-                _ => throw new ArgumentException($"Invalid stat type: {type}"),
+                _ => throw new ArgumentException($"Invalid stat type: {type}")
             };
         }
 

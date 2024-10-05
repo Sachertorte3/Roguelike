@@ -12,6 +12,7 @@ namespace Domain.Model.Dungeon
         [MinValue(0)] public float WeaponCount = 0.5f;
         [MinValue(0)] public float CharacterCount = 1;
         [MinValue(0)] public float TrapCount = 0.5f;
+
         public RoomData(float chestChance, float itemCount, float weaponCount, float characterCount, float trapCount)
         {
             ChestChance = chestChance;

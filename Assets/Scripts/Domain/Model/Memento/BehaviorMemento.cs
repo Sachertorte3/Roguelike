@@ -2,7 +2,6 @@
 using System;
 using Domain.Model.Character;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -12,6 +11,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public BehaviorData Behavior { get; private set; }
         [field: SerializeField] public Option<Vector2Int> HomePosition { get; private set; }
         [field: SerializeField] public Option<Vector2Int> LastTargetPosition { get; private set; }
+
         public BehaviorMemento(
             BehaviorData behavior,
             Option<Vector2Int> homePosition,

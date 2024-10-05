@@ -7,11 +7,11 @@ namespace Domain.Model.Condition
     [Serializable]
     public class RemovalConditionData
     {
-        public bool RemoveByElapsedTurn = false;
+        public bool RemoveByElapsedTurn;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
-        public bool RemoveByDamage = false;
+        public bool RemoveByDamage;
         [ShowIf("@RemoveByDamage")] public float Probability;
-        public bool RemoveByCharacterNearby = false;
+        public bool RemoveByCharacterNearby;
 
         public RemovalConditionData(int duration = -1, float probability = -1, bool removeByEnemyNearby = false)
         {
@@ -35,13 +35,15 @@ namespace Domain.Model.Condition
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
                    (RemoveByCharacterNearby && characterVisible);
         }
+
         public bool IsFinishedByDamage()
         {
             return RemoveByDamage && Random.value < Probability;
         }
+
         public float EvaluateTurn()
         {
-            float estimatedTurns = float.MaxValue;
+            var estimatedTurns = float.MaxValue;
 
             if (RemoveByElapsedTurn)
             {
@@ -50,7 +52,7 @@ namespace Domain.Model.Condition
 
             if (RemoveByDamage)
             {
-                float damageTurns = 1 / Probability;
+                var damageTurns = 1 / Probability;
                 if (damageTurns < estimatedTurns)
                 {
                     estimatedTurns = damageTurns;

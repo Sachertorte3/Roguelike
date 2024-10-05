@@ -15,7 +15,10 @@ namespace Domain.Service.Effect
         public Impact Impact => Impact.Neutral;
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
-            => Apply(positions, map);
+        {
+            return Apply(positions, map);
+        }
+
         public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             map.RemoveWalls(positions);
@@ -32,11 +35,14 @@ namespace Domain.Service.Effect
             return 15f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {
-            return $"壁堀り";
+            return "壁堀り";
         }
     }
 }

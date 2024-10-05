@@ -12,6 +12,7 @@ namespace View
         [SerializeField] private Tiles _snowTiles;
         [SerializeField] private Tiles _volcanoTiles;
         [SerializeField] private Tiles _dungeonTiles;
+
         private Tiles GetTiles(TileSet type)
         {
             return type switch
@@ -55,7 +56,8 @@ namespace View
             SetTile(position, GetTiles(type).ShopFloor, visibility);
         }
 
-        private void SetTile(Vector2Int position, TileBase tile, TileVisibility? visibility = null, TileBase underTile = null)
+        private void SetTile(Vector2Int position, TileBase tile, TileVisibility? visibility = null,
+            TileBase underTile = null)
         {
             var color = visibility?.GetColor() ?? GetTileColor(position);
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);

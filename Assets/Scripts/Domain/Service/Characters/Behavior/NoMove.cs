@@ -10,10 +10,11 @@ namespace Domain.Service.Characters.Behavior
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
         {
-            return new List<IAction>() { new DoNothing() };
+            return new List<IAction> { new DoNothing() };
         }
 
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+            IMap world)
         {
             return GenerateMoveActionsDoable(character, world);
         }

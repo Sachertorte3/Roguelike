@@ -22,7 +22,10 @@ namespace Domain.Model.Effect.Area
             return 1;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

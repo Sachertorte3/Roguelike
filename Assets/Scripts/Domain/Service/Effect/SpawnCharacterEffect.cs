@@ -14,8 +14,8 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnCharacterEffect : IActorlessEffect
     {
-        [Required, SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
-        [MinValue(1), SerializeField] private int _count;
+        [Required] [SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
+        [MinValue(1)] [SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
         public Color Color => Colors.MediumPurple;
@@ -32,13 +32,15 @@ namespace Domain.Service.Effect
                         _character.Value,
                         position,
                         actor.Affiliation,
-                        isSlept: false,
+                        false,
                         _inheritsShiny ? actor.IsShiny : null
                     );
                 }
             }
+
             return UniTask.CompletedTask;
         }
+
         public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             foreach (var position in positions)
@@ -53,6 +55,7 @@ namespace Domain.Service.Effect
                     );
                 }
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -66,7 +69,10 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

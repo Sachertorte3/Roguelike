@@ -5,7 +5,6 @@ using Domain.Model.Setting;
 using R3;
 using UnityEngine;
 using View;
-using Object = UnityEngine.Object;
 
 namespace Provider
 {
@@ -16,6 +15,7 @@ namespace Provider
         protected abstract InputReceiver _inputReceiver { get; init; }
 
         protected abstract EntityView GetEntityView(TView view);
+
         public virtual void Add(T obj)
         {
             var view = Object.Instantiate(ViewPrefab(obj));
@@ -57,7 +57,8 @@ namespace Provider
         public void ConstructEntity(IEntity entity, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
-            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction, move.isThrown)).AddTo(entityView);
+            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction, move.isThrown))
+                .AddTo(entityView);
             entity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
             Settings.ThrowMilliseconds.Subscribe(value => entityView.SetThrowMilliseconds(value)).AddTo(entityView);
             Settings.MoveMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);

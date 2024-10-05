@@ -11,15 +11,22 @@ namespace Domain.Model.Effect.Position
         {
             yield return position;
         }
+
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map) => Get(position, direction, map);
+            IEffectMap map)
+        {
+            return Get(position, direction, map);
+        }
 
         public float EvaluateHitProbability()
         {
             return 1;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

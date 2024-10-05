@@ -16,26 +16,40 @@ namespace Domain.Model.Item
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
+
         #region spawn effect
-        [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath = false;
-        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnUse = true;
-        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnThrow = false;
+
+        [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath;
+
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")]
+        public bool SpawnEffectsOnUse = true;
+
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")]
+        public bool SpawnEffectsOnThrow;
 
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow && !IsSameSkill")]
         public bool IsSameEffect;
+
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow")]
         public bool IsSameSkill;
 
         [ShowIf("SpawnEffectsOnUse")] public SkillDataOnUse? SkillOnUse;
         [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
+
         #endregion
+
         #region item target
-        [ShowIf("@EffectType == ItemEffectType.ItemTarget"), SerializeReference, Required] public IItemEffect? ItemEffect;
+
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget")] [SerializeReference] [Required]
+        public IItemEffect? ItemEffect;
+
         #endregion
-        [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
+
+        [ShowIf("_usable")] [MinValue(1)] public int UsageLimit;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
-        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit,
+            List<IConditionData> conditions)
         {
             name = itemName;
             Icon = icon;
@@ -45,8 +59,10 @@ namespace Domain.Model.Item
             UsageLimit = usageLimit;
             PassiveConditions = conditions;
         }
+
         public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill,
+            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
             : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.SpawnEffect;
@@ -57,8 +73,10 @@ namespace Domain.Model.Item
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
         }
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-        : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
+
+        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect,
+            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
+            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.ItemTarget;
             ItemEffect = itemEffect;
@@ -103,13 +121,15 @@ namespace Domain.Model.Item
 
             if (IsSameSkill && SkillOnUse != null)
             {
-                SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect, SkillOnUse.ProbabilityOfSuccess);
+                SkillOnThrow =
+                    new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect, SkillOnUse.ProbabilityOfSuccess);
             }
 
             if (SkillOnUse != null && SkillOnUse.ProbabilityOfSuccess == 0)
             {
                 SkillOnUse.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
+
             if (SkillOnThrow != null && SkillOnThrow.ProbabilityOfSuccess == 0)
             {
                 SkillOnThrow.OnValidate(CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);

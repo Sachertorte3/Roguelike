@@ -13,7 +13,7 @@ namespace Domain.Service.Effect
     public class AbsorbsEffect : IEffect
     {
         [SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1), SerializeField] private float _rate;
+        [Range(0, 1)] [SerializeField] private float _rate;
 
         public AbsorbsEffect(List<ElementPower> elementPowers, float rate)
         {
@@ -35,7 +35,8 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return Mathf.Min(1, Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
+            return Mathf.Min(1,
+                Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
         }
 
         public float EvaluatePrice()
@@ -53,6 +54,7 @@ namespace Domain.Service.Effect
                     upgrades.Add(upgrade.Key, upgrade.Value);
                 }
             }
+
             if (_rate < 0.9f)
             {
                 upgrades.Add(
@@ -60,6 +62,7 @@ namespace Domain.Service.Effect
                     new UpgradeData("吸収割合+10%", () => _rate += 0.1f)
                 );
             }
+
             return upgrades;
         }
 

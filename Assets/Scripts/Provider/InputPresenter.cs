@@ -1,15 +1,13 @@
 ﻿#nullable enable
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
-using IngameDebugConsole;
 using Game;
+using IngameDebugConsole;
 using R3;
-using UnityEngine;
 using Utilities;
 using VContainer;
 using View;
 using View.UI;
-using System;
 
 namespace Provider
 {
@@ -17,7 +15,8 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController, InventoryView inventoryView)
+            ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController,
+            InventoryView inventoryView)
         {
             Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
                 .Subscribe(x =>
@@ -30,17 +29,11 @@ namespace Provider
             receiver.OnMovePerformed
                 .Select(vector => DirectionMethods.FromVector(vector))
                 .Where(direction => direction != null)
-                .Subscribe(direction =>
-                {
-                    actionReceiver.SetMoveInput(direction!.Value, true);
-                });
+                .Subscribe(direction => { actionReceiver.SetMoveInput(direction!.Value, true); });
             actionReceiver.OnActionRead.Select(_ => receiver.MoveVector)
                 .Select(vector => DirectionMethods.FromVector(vector))
                 .Where(direction => direction != null)
-                .Subscribe(direction =>
-                {
-                    actionReceiver.SetMoveInput(direction!.Value, false);
-                });
+                .Subscribe(direction => { actionReceiver.SetMoveInput(direction!.Value, false); });
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ =>

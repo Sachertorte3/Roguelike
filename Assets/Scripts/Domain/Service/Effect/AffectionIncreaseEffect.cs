@@ -12,7 +12,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AffectionIncreaseEffect : IEffect
     {
-        [MinValue(1), SerializeField] private float _power;
+        [MinValue(1)] [SerializeField] private float _power;
 
         public AffectionIncreaseEffect(float power)
         {
@@ -38,7 +38,10 @@ namespace Domain.Service.Effect
             return 100;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

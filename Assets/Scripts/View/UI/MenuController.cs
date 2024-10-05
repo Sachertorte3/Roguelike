@@ -21,14 +21,8 @@ namespace View.UI
         [Inject]
         public void Construct(InputReceiver inputReceiver)
         {
-            inputReceiver.OnMenuOpening.Subscribe(_ =>
-            {
-                AddMenu(_settingMenu);
-            });
-            inputReceiver.OnMenuClosing.Subscribe(_ =>
-            {
-                PopMenu();
-            });
+            inputReceiver.OnMenuOpening.Subscribe(_ => { AddMenu(_settingMenu); });
+            inputReceiver.OnMenuClosing.Subscribe(_ => { PopMenu(); });
         }
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)
@@ -51,6 +45,7 @@ namespace View.UI
                 previousMenu.Hide();
                 previousMenu.Disable();
             }
+
             if (_selectedObject.ContainsKey(menu))
                 EventSystem.current.SetSelectedGameObject(_selectedObject[menu]);
             menu.Show();
@@ -69,6 +64,7 @@ namespace View.UI
                 previousMenu.Hide();
                 previousMenu.Disable();
             }
+
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(pushedMenu));
             pushedMenu.Show();
             pushedMenu.Enable();
@@ -84,6 +80,7 @@ namespace View.UI
                 _selectedObject[previousMenu] = EventSystem.current.currentSelectedGameObject;
                 previousMenu.Disable();
             }
+
             EventSystem.current.SetSelectedGameObject(_selectedObject.GetValueOrDefault(addedMenu));
             addedMenu.Show();
             addedMenu.Enable();
@@ -102,6 +99,7 @@ namespace View.UI
                 previousMenu.Show();
                 previousMenu.Enable();
             }
+
             poppedMenu.Hide();
             poppedMenu.Disable();
         }

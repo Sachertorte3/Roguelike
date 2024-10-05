@@ -27,19 +27,20 @@ namespace Domain.Service.Characters.Conditions
         {
             return new ConditionMemento
             (
-                condition: _condition,
-                removalCondition: _removalCondition,
-                elapsedTurns: _elapsedTurn
+                _condition,
+                _removalCondition,
+                _elapsedTurn
             );
         }
 
-        public ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurn = 0)
+        public ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition,
+            int elapsedTurn = 0)
         {
             return new ConditionMemento
             (
-                condition: condition,
-                removalCondition: removalCondition,
-                elapsedTurns: elapsedTurn
+                condition,
+                removalCondition,
+                elapsedTurn
             );
         }
 
@@ -73,9 +74,9 @@ namespace Domain.Service.Characters.Conditions
         {
             return new ConditionMemento
             (
-                condition: condition,
-                removalCondition: removalCondition,
-                elapsedTurns: 0
+                condition,
+                removalCondition,
+                0
             );
         }
     }

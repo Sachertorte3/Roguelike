@@ -16,8 +16,16 @@ namespace Domain.Model.Evaluation
         public const float SkillOnUseProbabilityOfSuccess = 0.95f;
         public const float SkillOnThrowProbabilityOfSuccess = 0.8f;
 
-        public static float BlowAwayPrice(int distance) => distance;
-        public static float BlowAwayEvaluate(int distance) => 0.05f * distance;
+        public static float BlowAwayPrice(int distance)
+        {
+            return distance;
+        }
+
+        public static float BlowAwayEvaluate(int distance)
+        {
+            return 0.05f * distance;
+        }
+
         public static float CircleAreaEvaluate(bool canIgnoreWalls, int radius)
         {
             if (canIgnoreWalls)

@@ -8,14 +8,14 @@ using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Position;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Unity.Logging;
-using Domain.Model.Map;
 
 namespace Domain.Service.Items
 {
@@ -31,12 +31,16 @@ namespace Domain.Service.Items
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
 
-        public Item(ItemData data) : this(Build(data)) { }
+        public Item(ItemData data) : this(Build(data))
+        {
+        }
+
         public Item(ItemMemento data)
         {
             Id = new Id<IItem>(data.Id);
             _name = data.Name;
-            Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]").WaitForCompletion();
+            Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
+                .WaitForCompletion();
             IsShiny = data.IsShiny;
             State = data.State;
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
@@ -51,6 +55,7 @@ namespace Domain.Service.Items
                             itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         );
                     }
+
                     return new SpawnEffectSkill(spawnEffectSkillMemento);
                 },
                 itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
@@ -86,10 +91,10 @@ namespace Domain.Service.Items
         {
             return new ItemMemento
             (
-                id: Id.ToString(),
-                name: _name,
-                iconName: Icon.name,
-                isShiny: IsShiny,
+                Id.ToString(),
+                _name,
+                Icon.name,
+                IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
                 state: State,
                 skillOnUse: _skillOnUse.Map(skill => skill.Serialize()),
@@ -107,8 +112,10 @@ namespace Domain.Service.Items
         {
             var skillOnUse = data.EffectType switch
             {
-                ItemEffectType.SpawnEffect => data.SpawnEffectsOnUse ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse) : null,
-                ItemEffectType.ItemTarget => (ISkillMemento)new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
+                ItemEffectType.SpawnEffect => data.SpawnEffectsOnUse
+                    ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse)
+                    : null,
+                ItemEffectType.ItemTarget => new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
                 _ => null
             };
             ISkillMemento? skillOnThrow;
@@ -118,16 +125,18 @@ namespace Domain.Service.Items
             }
             else
             {
-                skillOnThrow = data.SpawnEffectsOnThrow ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow) : null;
+                skillOnThrow = data.SpawnEffectsOnThrow
+                    ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
+                    : null;
             }
 
             var memento = new ItemMemento
             (
-                id: Id<IItem>.Generate().ToString(),
-                name: data.Name,
-                iconName: data.Icon.name,
-                isShiny: data.IsShiny,
-                upgradePaths: new(),
+                Id<IItem>.Generate().ToString(),
+                data.Name,
+                data.Icon.name,
+                data.IsShiny,
+                upgradePaths: new List<string>(),
                 state: state,
                 skillOnUse: skillOnUse.ToOption(),
                 skillOnThrow: skillOnThrow.ToOption(),
@@ -161,15 +170,20 @@ namespace Domain.Service.Items
                 {
                     State = ItemState.UsedShopItem;
                 }
+
                 _onItemUpdated.OnNext(Unit.Default);
             }
+
             return result;
         }
-        public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap world)
+
+        public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
+            Direction8 direction, IMap world)
         {
             var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
-                itemTargetSkill => {
+                itemTargetSkill =>
+                {
                     Log.Error("The item is not configured to activate this type of skill when thrown.");
                     return itemTargetSkill.Use((IActor)actor, this);
                 }
@@ -181,8 +195,10 @@ namespace Domain.Service.Items
                 {
                     State = ItemState.UsedShopItem;
                 }
+
                 _onItemUpdated.OnNext(Unit.Default);
             }
+
             return result;
         }
 
@@ -192,6 +208,7 @@ namespace Domain.Service.Items
             {
                 return 0;
             }
+
             return SkillOnUse.MapOr(
                 0,
                 skill => skill.Match(
@@ -200,6 +217,7 @@ namespace Domain.Service.Items
                 )
             );
         }
+
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
         {
             return SkillOnThrow.MapOr(
@@ -214,7 +232,8 @@ namespace Domain.Service.Items
         public float EvaluatePrice()
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
-            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) * new ProjectileImpact().EvaluateHitProbability();
+            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
+                               new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             return price;
@@ -233,13 +252,22 @@ namespace Domain.Service.Items
             {
                 upgrades.Add(
                     new UpgradePath("使用可能回数[小]"),
-                    new UpgradeData("使用可能回数[小]", () => { _maxUsages += 3; _remainingUsages.Value += 3; })
+                    new UpgradeData("使用可能回数[小]", () =>
+                    {
+                        _maxUsages += 3;
+                        _remainingUsages.Value += 3;
+                    })
                 );
                 upgrades.Add(
                     new UpgradePath("使用可能回数[大]"),
-                    new UpgradeData("使用可能回数[大]", () => { _maxUsages += 5; _remainingUsages.Value += 5; })
+                    new UpgradeData("使用可能回数[大]", () =>
+                    {
+                        _maxUsages += 5;
+                        _remainingUsages.Value += 5;
+                    })
                 );
             }
+
             if (SkillOnUse.HasValue)
             {
                 var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null").GetUpgrades();
@@ -249,6 +277,7 @@ namespace Domain.Service.Items
                     upgrades.Add(upgrade.Key, upgrade.Value);
                 }
             }
+
             if (SkillOnThrow.HasValue)
             {
                 var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null").GetUpgrades();
@@ -259,9 +288,11 @@ namespace Domain.Service.Items
                     {
                         continue;
                     }
+
                     upgrades.Add(upgrade.Key, upgrade.Value);
                 }
             }
+
             return upgrades;
         }
 
@@ -272,6 +303,7 @@ namespace Domain.Service.Items
             {
                 return upgrades.Any();
             }
+
             return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
         }
 
@@ -290,7 +322,7 @@ namespace Domain.Service.Items
             {
                 if (_hasSameSkill)
                 {
-                    info += $"[使用・投擲時]\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
+                    info += "[使用・投擲時]\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => $"{spawnEffectSkill.InfoOnUse()}\n",
                         itemTargetSkill => $"{itemTargetSkill.Info()}\n"
                     ) + "\n";
@@ -299,18 +331,19 @@ namespace Domain.Service.Items
                 {
                     info += SkillOnUse.MapOr(
                         "",
-                        skill => $"[使用時]\n" + skill.Match(
+                        skill => "[使用時]\n" + skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
                             itemTargetSkill => itemTargetSkill.Info()
-                    ) + "\n");
+                        ) + "\n");
 
                     info += SkillOnThrow.MapOr(
                         "",
                         skill => skill.Match(
                             spawnEffectSkill => $"[投擲時]\n{spawnEffectSkill.InfoOnThrow(_hasSameEffect)}\n",
                             itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                    ));
+                        ));
                 }
+
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
             }
 
@@ -345,7 +378,6 @@ namespace Domain.Service.Items
         public override int GetHashCode()
         {
             return Id.Value.GetHashCode();
-
         }
     }
 }

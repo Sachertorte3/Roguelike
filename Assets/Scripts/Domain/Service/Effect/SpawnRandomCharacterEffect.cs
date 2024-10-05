@@ -13,14 +13,17 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnRandomCharacterEffect : IActorlessEffect
     {
-        [MinValue(1), SerializeField] private int _count;
+        [MinValue(1)] [SerializeField] private int _count;
 
         public Color Color => Colors.MediumPurple;
 
         public Impact Impact => Impact.Neutral;
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
-            => Apply(positions, map);
+        {
+            return Apply(positions, map);
+        }
+
         public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             foreach (var position in positions)
@@ -30,6 +33,7 @@ namespace Domain.Service.Effect
                     map.SpawnRandomEnemy(position);
                 }
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -43,7 +47,10 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

@@ -10,8 +10,7 @@ namespace Utilities.Table
     [Serializable]
     public class Table<T> : ITable<T>
     {
-        [RequiredListLength(1, null)]
-        [SerializeField]
+        [RequiredListLength(1, null)] [SerializeField]
         private List<WeightedItem> items = new();
 
         public T GetRandomItem()

@@ -32,15 +32,15 @@ namespace Domain.Service.Characters.Behavior
         private readonly IBehaviorWhenDiscoveringTarget _discoveringLeader = new Chase();
         private readonly IBehaviorWhenDiscoveringTarget _returningHome = new Chase();
         private readonly IBehaviorWhenDiscoveringTarget _default;
-        private readonly bool _prioritizeMovement = false;
+        private readonly bool _prioritizeMovement;
 
         private readonly float _distanceTopBound = float.PositiveInfinity;
-        private readonly IBehaviorWhenDiscoveringTarget? _greaterThanTopBound = null;
-        private readonly bool _prioritizeMovementWhenDistanceGreaterThanTopBound = false;
+        private readonly IBehaviorWhenDiscoveringTarget? _greaterThanTopBound;
+        private readonly bool _prioritizeMovementWhenDistanceGreaterThanTopBound;
 
         private readonly float _distanceBottomBound = float.NegativeInfinity;
-        private readonly IBehaviorWhenDiscoveringTarget? _lessThanBottomBound = null;
-        private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound = false;
+        private readonly IBehaviorWhenDiscoveringTarget? _lessThanBottomBound;
+        private readonly bool _prioritizeMovementWhenDistanceLessThanBottomBound;
 
         public BehaviorData BehaviorData { get; init; }
 
@@ -58,41 +58,46 @@ namespace Domain.Service.Characters.Behavior
             {
                 _wander = new NoMove();
             }
+
             _default = BehaviorData.Default.ToDiscoveredTargetBehavior();
             _prioritizeMovement = BehaviorData.PrioritizeMovement;
             if (BehaviorData.UseTopBound)
             {
                 _distanceTopBound = BehaviorData.distanceTopBound;
                 _greaterThanTopBound = BehaviorData.greaterThanTopBound.ToDiscoveredTargetBehavior();
-                _prioritizeMovementWhenDistanceGreaterThanTopBound = BehaviorData.PrioritizeMovementWhenDistanceGreaterThanTopBound;
+                _prioritizeMovementWhenDistanceGreaterThanTopBound =
+                    BehaviorData.PrioritizeMovementWhenDistanceGreaterThanTopBound;
             }
+
             if (BehaviorData.UseBottomBound)
             {
                 _distanceBottomBound = BehaviorData.distanceBottomBound;
                 _lessThanBottomBound = BehaviorData.lessThanBottomBound.ToDiscoveredTargetBehavior();
-                _prioritizeMovementWhenDistanceLessThanBottomBound = BehaviorData.PrioritizeMovementWhenDistanceLessThanBottomBound;
+                _prioritizeMovementWhenDistanceLessThanBottomBound =
+                    BehaviorData.PrioritizeMovementWhenDistanceLessThanBottomBound;
             }
         }
 
         public BehaviorMemento Serialize()
         {
             return new BehaviorMemento(
-                behavior: BehaviorData,
-                homePosition: _homePosition,
-                lastTargetPosition: _lastTargetPosition
+                BehaviorData,
+                _homePosition,
+                _lastTargetPosition
             );
         }
 
         public static BehaviorMemento Build(BehaviorData behavior, Option<Vector2Int> homePosition)
         {
             return new BehaviorMemento(
-                behavior: behavior,
-                homePosition: homePosition,
-                lastTargetPosition: null
+                behavior,
+                homePosition,
+                null
             );
         }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world,
+            IInput input)
         {
             _lastTarget = null;
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
@@ -152,7 +157,7 @@ namespace Domain.Service.Characters.Behavior
             }
             else
             {
-                Log.Debug($"[Think] Wandering around.");
+                Log.Debug("[Think] Wandering around.");
                 _lastTargetPosition = null;
             }
 
@@ -234,9 +239,10 @@ namespace Domain.Service.Characters.Behavior
             if (_lastTargetPosition == null)
                 return null;
             return GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is Chase
-                && character.CurrentPosition != _lastTargetPosition
-                && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value, character) ?
-                _lastTargetPosition : null;
+                   && character.CurrentPosition != _lastTargetPosition
+                   && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value, character)
+                ? _lastTargetPosition
+                : null;
         }
 
         private float GetDistance(IHasBehavior character, Vector2Int targetPosition)
@@ -245,7 +251,8 @@ namespace Domain.Service.Characters.Behavior
             return distance;
         }
 
-        public IBehaviorWhenDiscoveringTarget GetDiscoveredTargetBehavior(IHasBehavior character, Vector2Int targetPosition)
+        public IBehaviorWhenDiscoveringTarget GetDiscoveredTargetBehavior(IHasBehavior character,
+            Vector2Int targetPosition)
         {
             if (_lastTarget != null && character.IsAlly(_lastTarget) && _lastTarget.IsLeader)
                 return _discoveringLeader;
@@ -281,10 +288,8 @@ namespace Domain.Service.Characters.Behavior
                 return GetDiscoveredTargetBehavior(character, targetPosition.Value)
                     .GenerateMoveActionsDoable(character, targetPosition.Value, world);
             }
-            else
-            {
-                return _wander.GenerateMoveActionsDoable(character, world);
-            }
+
+            return _wander.GenerateMoveActionsDoable(character, world);
         }
 
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)

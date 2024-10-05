@@ -28,6 +28,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool IsFlying { get; private set; }
         [field: SerializeField] public bool CanPickUp { get; private set; }
         [field: SerializeField] public bool CanUseItem { get; private set; }
+
         public CharacterMemento(
             string name,
             ICharacterType characterType,
@@ -68,6 +69,7 @@ namespace Domain.Model.Memento
             CanPickUp = canPickUp;
             CanUseItem = canUseItem;
         }
+
         public CharacterMemento CopyWith(
             string? name = null,
             ICharacterType? characterType = null,
@@ -90,26 +92,27 @@ namespace Domain.Model.Memento
         )
         {
             return new CharacterMemento(
-                name: name ?? Name,
-                characterType: characterType ?? CharacterType,
-                behavior: behavior ?? Behavior,
-                status: status ?? Status,
-                entity: entity ?? Entity,
-                direction: direction ?? Direction,
-                skills: skills ?? Skills,
-                lastSkill: lastSkill ?? LastSkill,
-                inventory: inventory ?? Inventory,
-                affiliation: affiliation ?? Affiliation,
-                aggression: aggression ?? Aggression,
-                money: money ?? Money,
-                isLeader: isLeader ?? IsLeader,
-                isShiny: isShiny ?? IsShiny,
-                isBoss: isBoss ?? IsBoss,
-                isFlying: isFlying ?? IsFlying,
-                canPickUp: canPickUp ?? CanPickUp,
-                canUseItem: canUseItem ?? CanUseItem
+                name ?? Name,
+                characterType ?? CharacterType,
+                behavior ?? Behavior,
+                status ?? Status,
+                entity ?? Entity,
+                direction ?? Direction,
+                skills ?? Skills,
+                lastSkill ?? LastSkill,
+                inventory ?? Inventory,
+                affiliation ?? Affiliation,
+                aggression ?? Aggression,
+                money ?? Money,
+                isLeader ?? IsLeader,
+                isShiny ?? IsShiny,
+                isBoss ?? IsBoss,
+                isFlying ?? IsFlying,
+                canPickUp ?? CanPickUp,
+                canUseItem ?? CanUseItem
             );
         }
+
         public CharacterMemento ReplacePosition(Vector2Int position)
         {
             return CopyWith(entity: Entity.CopyWith(position: position));

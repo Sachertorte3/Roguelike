@@ -13,6 +13,7 @@ namespace Stats
         {
             _flags = new ReactiveProperty<int>(flags);
         }
+
         public ReadOnlyReactiveProperty<bool> Value => _value;
         public ReadOnlyReactiveProperty<int> Flags => _flags;
 

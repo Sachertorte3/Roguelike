@@ -11,30 +11,31 @@ namespace Utilities
     {
         public static RectInt GetRandomInnerRect(this RectInt rect, Vector2Int size)
         {
-            Vector2Int max = rect.size - size;
-            
+            var max = rect.size - size;
+
             if (max.x < 0 || max.y < 0)
             {
                 throw new ArgumentException("The specified size is larger than rect.");
             }
 
-            Vector2Int random = new Vector2Int(
+            var random = new Vector2Int(
                 Random.Range(0, max.x + 1),
                 Random.Range(0, max.y + 1)
             );
 
             return new RectInt(rect.min + random, size);
         }
+
         public static RectInt GetCenteredInnerRect(this RectInt rect, Vector2Int size)
         {
-            Vector2Int max = rect.size - size;
+            var max = rect.size - size;
 
             if (max.x < 0 || max.y < 0)
             {
                 throw new ArgumentException("The specified size is larger than rect.");
             }
 
-            Vector2Int roundedOffset = new Vector2Int(
+            var roundedOffset = new Vector2Int(
                 Random.value < 0.5f ? Mathf.FloorToInt(max.x / 2f) : Mathf.CeilToInt(max.x / 2f),
                 Random.value < 0.5f ? Mathf.FloorToInt(max.y / 2f) : Mathf.CeilToInt(max.y / 2f)
             );
@@ -42,6 +43,7 @@ namespace Utilities
             return new RectInt(rect.min + roundedOffset, size);
         }
     }
+
     public static class EnumerableExtension
     {
         public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
@@ -56,17 +58,20 @@ namespace Utilities
         {
             return new Enumerator(bits);
         }
+
         public struct Enumerator
         {
             private int bits;
             private int count;
             private int position;
+
             public Enumerator(Enum bits)
             {
                 this.bits = Convert.ToInt32(bits);
                 count = NumOfBits(this.bits);
                 position = -1;
             }
+
             public bool MoveNext()
             {
                 while (0 < count)
@@ -78,12 +83,16 @@ namespace Utilities
                         bits >>= 1;
                         return true;
                     }
+
                     bits >>= 1;
                 }
+
                 return false;
             }
+
             public int Current => 1 << position;
         }
+
         public static int NumOfBits(int bits)
         {
             bits = (bits & 0x55555555) + ((bits >> 1) & 0x55555555);
@@ -101,16 +110,16 @@ namespace Utilities
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
-                for (var y = rect.y; y < rect.y + rect.height; y++)
-                    yield return new Vector2Int(x, y);
+            for (var y = rect.y; y < rect.y + rect.height; y++)
+                yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                    if ((x * x) + (y * y) <= radius * radius)
-                        yield return new Vector2Int(x, y) + center;
+            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                if (x * x + y * y <= radius * radius)
+                    yield return new Vector2Int(x, y) + center;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)

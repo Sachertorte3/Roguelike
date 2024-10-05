@@ -9,8 +9,8 @@ namespace Domain.Service.Rooms
 {
     public abstract class Room<TMemento> : ISerializable<TMemento>, IEventArea
     {
-        protected bool hasEntered = false;
-        protected bool hasEverEntered = false;
+        protected bool hasEntered;
+        protected bool hasEverEntered;
         public bool CanExecute { get; protected set; } = true;
         private ReactiveProperty<bool> _isInside;
         public ReadOnlyReactiveProperty<bool> IsInside => _isInside;
@@ -18,7 +18,7 @@ namespace Domain.Service.Rooms
         public Room(RoomMemento data, Vector2Int playerPosition)
         {
             Rect = data.Room;
-            _isInside = new(Rect.Contains(playerPosition));
+            _isInside = new ReactiveProperty<bool>(Rect.Contains(playerPosition));
             hasEntered = data.HasEntered;
             hasEverEntered = data.HasEverEntered;
         }

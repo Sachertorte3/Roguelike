@@ -10,6 +10,7 @@ namespace Domain.Model.Map
         [SerializeField] private int _level;
         public string MapName => _mapName;
         public int Level => _level;
+
         public Location(string mapName, int level)
         {
             _mapName = mapName;

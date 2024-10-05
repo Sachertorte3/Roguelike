@@ -22,7 +22,7 @@ namespace Domain.Service.Effect
         {
             return new ItemTargetSkillMemento
             (
-                itemEffect: _itemEffect
+                _itemEffect
             );
         }
 
@@ -30,7 +30,7 @@ namespace Domain.Service.Effect
         {
             return new ItemTargetSkillMemento
             (
-                itemEffect: itemEffect
+                itemEffect
             );
         }
 
@@ -44,6 +44,7 @@ namespace Domain.Service.Effect
                 _itemEffect.Apply(selectedItem);
                 return ItemTargetSkillResult.Success;
             }
+
             return ItemTargetSkillResult.Cancelled;
         }
 
@@ -57,7 +58,10 @@ namespace Domain.Service.Effect
             return _itemEffect.EvaluatePrice();
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

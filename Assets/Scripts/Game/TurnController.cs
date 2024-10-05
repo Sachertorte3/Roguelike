@@ -9,7 +9,6 @@ using R3;
 using Stats;
 using Unity.Logging;
 using UnityEngine;
-using Utilities;
 
 namespace Game
 {
@@ -17,7 +16,7 @@ namespace Game
     {
         private readonly GameInput _input;
         private CancellationTokenSource _cancellationTokenSource;
-        private bool _isRunning = false;
+        private bool _isRunning;
         private UniTaskCompletionSource _runCompletionSource;
         private ReactiveProperty<int> _turn = new(1);
         private int _turnInLevel = 1;
@@ -48,8 +47,10 @@ namespace Game
                     characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
                 }
 
-                var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
-                minWaitTime = Mathf.Min(minWaitTime, _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
+                var minWaitTime = characters.Min(character =>
+                    character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+                minWaitTime = Mathf.Min(minWaitTime,
+                    _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
                 _turnWaitTime.Gain(minWaitTime);
 
                 if (_turnWaitTime.IsFull())
@@ -59,7 +60,8 @@ namespace Game
 
                 foreach (var character in characters)
                 {
-                    if (characters.Any(character => character.StatusManager.IsOverDrive) && !character.StatusManager.IsOverDrive)
+                    if (characters.Any(character => character.StatusManager.IsOverDrive) &&
+                        !character.StatusManager.IsOverDrive)
                         continue;
 
                     if (_turnWaitTime.IsFull())
@@ -90,7 +92,7 @@ namespace Game
                     {
                         _isRunning = false;
                         _runCompletionSource.TrySetResult();
-                        Log.Debug($"[Turn] loop canceled.");
+                        Log.Debug("[Turn] loop canceled.");
                         return;
                     }
                 }
@@ -99,7 +101,8 @@ namespace Game
 
                 foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
                 {
-                    await UniTask.WaitUntil(() => character.State == CharacterState.Wait || character.State == CharacterState.Finish);
+                    await UniTask.WaitUntil(() =>
+                        character.State == CharacterState.Wait || character.State == CharacterState.Finish);
                     character.StatusManager.ResetWaitTime();
                     character.SetWaitState();
                 }
@@ -112,6 +115,7 @@ namespace Game
                 _turn.Value++;
                 _turnInLevel++;
             }
+
             _isRunning = false;
             _runCompletionSource.TrySetResult();
         }

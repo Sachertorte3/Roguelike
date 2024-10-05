@@ -10,6 +10,7 @@ namespace Domain.Service.Events
         private readonly Subject<(string? text, string[] choices)> _onShownChoice = new();
         public Observable<(string? text, string[] choices)> OnShownChoice => _onShownChoice;
         private readonly AsyncReactiveProperty<int> _onReceivedChoicedIndex = new(-1);
+
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             Debug.Log("GetChoice");
@@ -18,10 +19,12 @@ namespace Domain.Service.Events
             Debug.Log($"GetChoice: {index}");
             return index;
         }
+
         internal void SetChoices(string? text, string[] choices)
         {
             _onShownChoice.OnNext((text, choices));
         }
+
         public void SetChoicedIndex(int index)
         {
             _onReceivedChoicedIndex.Value = index;

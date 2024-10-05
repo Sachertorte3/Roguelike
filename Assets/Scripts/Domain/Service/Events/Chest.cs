@@ -27,7 +27,7 @@ namespace Domain.Service.Events
             _item = memento.Item.Map(i => new Item(i));
             _mimic = memento.Mimic;
             _entity = new Entity(memento.Entity);
-            _events = new()
+            _events = new List<EntityEvent>
             {
                 new EntityEvent("開ける", CanExecuteEvent, DoEvent)
             };
@@ -42,7 +42,12 @@ namespace Domain.Service.Events
         public bool CanBeCanceled => true;
         public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-        private bool CanExecuteEvent() => true;
+
+        private bool CanExecuteEvent()
+        {
+            return true;
+        }
+
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
@@ -61,6 +66,7 @@ namespace Domain.Service.Events
             {
                 mapManager.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -95,6 +101,7 @@ namespace Domain.Service.Events
                     {
                         result += direction.Vector();
                     }
+
                     break;
                 }
             }
@@ -109,7 +116,8 @@ namespace Domain.Service.Events
             {
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom, EntityLayer.Middle)));
+                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                    position => map.IsBlank(position, EntityLayer.Bottom, EntityLayer.Middle)));
             }
         }
 
@@ -122,9 +130,9 @@ namespace Domain.Service.Events
         {
             return new ChestMemento
             (
-                item: _item.Map(i => i.Serialize()),
-                mimic: _mimic,
-                entity: _entity.Serialize()
+                _item.Map(i => i.Serialize()),
+                _mimic,
+                _entity.Serialize()
             );
         }
 
@@ -132,16 +140,17 @@ namespace Domain.Service.Events
         {
             return new ChestMemento
             (
-                item: new Item(item).Serialize(),
-                entity: Entity.Build(position, EntityLayer.Middle)
+                new Item(item).Serialize(),
+                Entity.Build(position, EntityLayer.Middle)
             );
         }
+
         public static ChestMemento Build(Vector2Int position, EnemyData mimic)
         {
             return new ChestMemento
             (
-                mimic: mimic,
-                entity: Entity.Build(position, EntityLayer.Middle)
+                mimic,
+                Entity.Build(position, EntityLayer.Middle)
             );
         }
     }

@@ -16,6 +16,7 @@ namespace Domain.Model.Effect
         public bool CanAct { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
+
         /// <summary>
         /// Takes damage
         /// </summary>

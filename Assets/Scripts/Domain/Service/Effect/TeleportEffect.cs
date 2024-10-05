@@ -16,9 +16,21 @@ namespace Domain.Service.Effect
         public Impact Impact => Impact.Neutral;
         public Color Color => Colors.SkyBlue;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) => Apply(target, map);
-        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        {
+            return Apply((IEntity)target, map);
+        }
+
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
+        {
+            return Apply(target, map);
+        }
+
+        public UniTask Apply(ITargetOfEffect target, IMap map)
+        {
+            return Apply((IEntity)target, map);
+        }
+
         public async UniTask Apply(IEntity target, IMap map)
         {
             var position = map.GetAllBlankPositionsOn(EntityLayer.Middle).GetAtRandom();
@@ -36,7 +48,10 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>();
+        }
 
         public string Info()
         {

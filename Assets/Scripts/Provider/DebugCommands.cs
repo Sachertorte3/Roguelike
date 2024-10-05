@@ -1,15 +1,15 @@
 using System;
+using System.Linq;
+using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Domain.Service.Logs;
-using IngameDebugConsole;
 using Game;
+using IngameDebugConsole;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Unity.Logging;
 using VContainer;
-using Domain.Model.Character;
-using System.Linq;
 
 namespace Provider
 {
@@ -74,27 +74,29 @@ namespace Provider
             {
                 return _world.ActiveMap.CurrentValue.Player;
             }
-            else if (Guid.TryParse(target, out var guid))
+
+            if (Guid.TryParse(target, out var guid))
             {
-                var character = _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character => character.Id.ToString() == guid.ToString());
+                var character =
+                    _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character =>
+                        character.Id.ToString() == guid.ToString());
                 if (character == null)
                 {
-                    throw new Exception($"指定されたキャラクターが見つかりません。");
+                    throw new Exception("指定されたキャラクターが見つかりません。");
                 }
+
                 return character;
             }
-            else
-            {
-                throw new Exception($"不正なキャラクター指定です。");
-            }
+
+            throw new Exception("不正なキャラクター指定です。");
         }
 
         private void ShowCharacter(ICharacter character)
         {
             var info = $"{character.GetName(_world.ActiveMap.CurrentValue.Player, true)}\n"
-            + $"Id: {character.Id}\n"
-            + $"Position: {character.Position.CurrentValue}\n"
-            + $"CharacterType: {character.CharacterType.SubtypeName()}";
+                       + $"Id: {character.Id}\n"
+                       + $"Position: {character.Position.CurrentValue}\n"
+                       + $"CharacterType: {character.CharacterType.SubtypeName()}";
             Log.Info(info);
         }
 
@@ -105,14 +107,16 @@ namespace Provider
 
         private void FindCharacter(Vector2Int position)
         {
-            var character = _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character => character.Position.CurrentValue == position);
+            var character =
+                _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character =>
+                    character.Position.CurrentValue == position);
             if (character != null)
             {
                 ShowCharacter(character);
             }
             else
             {
-                Log.Error($"指定された位置にキャラクターが見つかりません。");
+                Log.Error("指定された位置にキャラクターが見つかりません。");
             }
         }
 
@@ -143,7 +147,8 @@ namespace Provider
             try
             {
                 var character = GetTarget(target);
-                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset").WaitForCompletion();
+                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
+                    .WaitForCompletion();
                 var item = new Item(itemData);
                 if (character.Inventory.TryAdd(item))
                 {
@@ -164,7 +169,8 @@ namespace Provider
         {
             try
             {
-                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset").WaitForCompletion();
+                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
+                    .WaitForCompletion();
                 var item = new Item(itemData);
                 _world.ActiveMap.CurrentValue.SpawnItem(item, position);
                 Log.Info($"{itemName}を{position}にスポーンしました。");
@@ -179,7 +185,8 @@ namespace Provider
         {
             try
             {
-                var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset").WaitForCompletion();
+                var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset")
+                    .WaitForCompletion();
                 _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
                 Log.Info($"{enemyName}を{position}にスポーンしました。");
             }

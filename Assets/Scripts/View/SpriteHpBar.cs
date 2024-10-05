@@ -8,7 +8,7 @@ namespace View
 
         public void SetValue(float maxValue, float value)
         {
-            _statBar.localPosition = new Vector3(-0.5f + (value / maxValue / 2), _statBar.localPosition.y,
+            _statBar.localPosition = new Vector3(-0.5f + value / maxValue / 2, _statBar.localPosition.y,
                 _statBar.localPosition.z);
             _statBar.localScale = new Vector3(value / maxValue, _statBar.localScale.y, _statBar.localScale.z);
         }

@@ -17,7 +17,10 @@ namespace Domain.Service.Items
     {
         private const int MaxItems = 10;
         private readonly IDisposable _disposable;
-        private readonly CompositeDisposable[] _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(MaxItems).ToArray();
+
+        private readonly CompositeDisposable[] _disposables =
+            EnumerableExtension.CreateNewInstances<CompositeDisposable>(MaxItems).ToArray();
+
         private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
         public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
@@ -96,7 +99,7 @@ namespace Domain.Service.Items
         {
             return new InventoryMemento
             (
-                items: _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray()
+                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray()
             );
         }
 
@@ -121,11 +124,13 @@ namespace Domain.Service.Items
                 foreach (var condition in item.PassiveConditions)
                     condition.Inflict(_hasCondition, Id<IEntity>.Empty);
             }
+
             if (removed != null)
             {
                 foreach (var condition in removed.PassiveConditions)
                     condition.Delete(_hasCondition, Id<IEntity>.Empty);
             }
+
             return removed;
         }
 

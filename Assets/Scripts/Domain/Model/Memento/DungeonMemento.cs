@@ -11,6 +11,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public string DungeonDataName { get; private set; }
         [SerializeField] private SerializableDictionary<int, string> _mapIds;
         public Dictionary<int, string> MapIds => _mapIds.ToDictionary();
+
         public DungeonMemento(string dungeonDataName, Dictionary<int, string> mapIds)
         {
             DungeonDataName = dungeonDataName;

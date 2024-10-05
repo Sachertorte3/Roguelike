@@ -16,12 +16,14 @@ namespace View.UI
         [SerializeField] private RectTransform _content;
         [SerializeField] private ChoiceButton _choiceButtonPrefab;
         private readonly List<ChoiceButton> _buttons = new();
+
         public void SetChoices(string? text, params string[] choices)
         {
             foreach (var button in _buttons)
             {
                 Destroy(button.gameObject);
             }
+
             _buttons.Clear();
 
             if (text != null)
@@ -29,14 +31,14 @@ namespace View.UI
             else
                 _text.text = "";
 
-            foreach ((var choice, int index) in choices.Index())
+            foreach ((var choice, var index) in choices.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
                 button.Construct(choice, () => _selectedIndex.Value = index);
                 _buttons.Add(button);
             }
 
-            for (int i = 0; i < _buttons.Count; i++)
+            for (var i = 0; i < _buttons.Count; i++)
             {
                 var nav = new Navigation
                 {

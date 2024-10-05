@@ -22,7 +22,11 @@ namespace Utilities
                 Value = value;
             }
         }
-        public SerializableDictionary() { }
+
+        public SerializableDictionary()
+        {
+        }
+
         public SerializableDictionary(Dictionary<TKey, TValue> dictionary)
         {
             foreach (var pair in dictionary)
@@ -30,6 +34,7 @@ namespace Utilities
                 this[pair.Key] = pair.Value;
             }
         }
+
         public void OnBeforeSerialize()
         {
             data.Clear();

@@ -9,7 +9,7 @@ namespace View
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
-        private bool _isMenuOpen = false;
+        private bool _isMenuOpen;
 
         public InputReceiver()
         {

@@ -10,16 +10,19 @@ namespace Domain.Service.Items
     public class ThrowAnimationEntityEvents : IDisposable, IEntityGroupEvents
     {
         private readonly GroupEvents<ThrowAnimationEntity> _events = new();
+
         public Observable<(ThrowAnimationEntity Entity, OnPositionChangedMessage Message)> OnPositionChanged =>
             _events.GetObservable<OnPositionChangedMessage>();
 
-        public Observable<(ThrowAnimationEntity Entity, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
+        public Observable<(ThrowAnimationEntity Entity, OnMoveMessage Message)> OnMove =>
+            _events.GetObservable<OnMoveMessage>();
 
         public Observable<(ThrowAnimationEntity Entity, OnTeleportMessage Message)> OnTeleport =>
             _events.GetObservable<OnTeleportMessage>();
 
         public Observable<(ThrowAnimationEntity Entity, OnDestroyedMessage Message)> OnDestroyed =>
             _events.GetObservable<OnDestroyedMessage>();
+
         public void Dispose()
         {
             _events.Dispose();
@@ -44,7 +47,8 @@ namespace Domain.Service.Items
 
         public void Add(ThrowAnimationEntity entity)
         {
-            _events.Add(entity, entity.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
+            _events.Add(entity,
+                entity.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
             _events.Add(entity, entity.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(entity, entity.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(entity, entity.OnDestroyed.Select(destroyed => new OnDestroyedMessage()));

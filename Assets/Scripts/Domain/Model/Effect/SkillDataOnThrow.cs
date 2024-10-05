@@ -20,6 +20,7 @@ namespace Domain.Model.Effect
 
         public IEffectPosition Position => new AtFeet();
         public int RushDistance => 0;
+        public int BackStepDistance => 0;
 
         [field: SerializeField]
         [field: Range(0, 1)]

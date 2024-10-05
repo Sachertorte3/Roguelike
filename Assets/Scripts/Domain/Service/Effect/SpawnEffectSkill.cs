@@ -20,22 +20,24 @@ namespace Domain.Service.Effect
         private readonly IEffect _effect;
         private readonly IEffectPosition _position;
         public int RushDistance { get; private set; }
+        public int BackStepDistance { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance,
+        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, int backStepDistance,
             float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
             _effect = effect;
             RushDistance = rushDistance;
+            BackStepDistance = backStepDistance;
             ProbabilityOfSuccess = probabilityOfSuccess;
             _log = log;
         }
 
         public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect,
-            data.RushDistance, data.ProbabilityOfSuccess, data.Log)
+            data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
 
@@ -46,6 +48,7 @@ namespace Domain.Service.Effect
                 data.Area,
                 _effect,
                 data.RushDistance,
+                data.BackStepDistance,
                 data.ProbabilityOfSuccess,
                 data.Log
             );
@@ -61,6 +64,7 @@ namespace Domain.Service.Effect
                 _area,
                 _effect,
                 RushDistance,
+                BackStepDistance,
                 ProbabilityOfSuccess,
                 _log
             );
@@ -74,6 +78,7 @@ namespace Domain.Service.Effect
                 data.Area,
                 data.Effect,
                 data.RushDistance,
+                data.BackStepDistance,
                 data.ProbabilityOfSuccess,
                 data.Log
             );

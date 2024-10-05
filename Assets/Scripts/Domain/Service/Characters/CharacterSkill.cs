@@ -17,6 +17,7 @@ namespace Domain.Service.Characters
         private int _coolTime { get; }
         public Color Color => _skill.Color;
         public int RushDistance => _skill.RushDistance;
+        public int BackStepDistance => _skill.BackStepDistance;
         private int _remainingCoolTime;
 
         public CharacterSkill(CharacterSkillMemento data)

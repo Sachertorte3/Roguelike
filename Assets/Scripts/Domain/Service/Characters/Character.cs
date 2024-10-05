@@ -276,6 +276,12 @@ namespace Domain.Service.Characters
                     await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
             }
 
+            for (var i = 0; i < skill.BackStepDistance; i++)
+            {
+                if (CanMove(direction.Reverse(), map))
+                    await _entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.Value, true);
+            }
+
             State = CharacterState.Finish;
         }
 

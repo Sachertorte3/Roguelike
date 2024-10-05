@@ -36,15 +36,15 @@ namespace Domain.Model.Effect
             ProbabilityOfSuccess = probabilityOfSuccess;
         }
 
+#if UNITY_EDITOR
         public void SetSameEffect(SkillDataOnUse skillDataOnUse)
         {
             Effect = skillDataOnUse.Effect;
         }
 
-#if UNITY_EDITOR
         public void OnValidate(float probabilityOfSuccess)
         {
-            if (ProbabilityOfSuccess == 0)
+            if (ProbabilityOfSuccess == 0 || ProbabilityOfSuccess == CommonSenseParameters.SkillOnUseProbabilityOfSuccess)
             {
                 ProbabilityOfSuccess = probabilityOfSuccess;
             }

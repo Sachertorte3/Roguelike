@@ -20,7 +20,7 @@ namespace View
 
         public void SetWater(Vector2Int position, TileVisibility? visibility = null)
         {
-            SetTile(position, _tiles.Water, visibility);
+            SetTile(position, _tiles.Water, visibility, _tiles.Floor);
         }
 
         public void SetWall(Vector2Int position, TileVisibility? visibility = null)
@@ -38,10 +38,11 @@ namespace View
             SetTile(position, _tiles.ShopFloor, visibility);
         }
 
-        private void SetTile(Vector2Int position, TileBase tile, TileVisibility? visibility = null)
+        private void SetTile(Vector2Int position, TileBase tile, TileVisibility? visibility = null, TileBase underTile = null)
         {
             var color = visibility?.GetColor() ?? GetTileColor(position);
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
+            _tilemap.SetTile(new Vector3Int(position.x, position.y, -1), underTile);
             SetTileColor(position, color);
         }
         
@@ -53,9 +54,10 @@ namespace View
 
         public void SetTileColor(Vector2Int position, Color color)
         {
-            var vector3 = new Vector3Int(position.x, position.y, 0);
-            _tilemap.SetTileFlags(vector3, TileFlags.None);
-            _tilemap.SetColor(vector3, color);
+            _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, 0), TileFlags.None);
+            _tilemap.SetColor(new Vector3Int(position.x, position.y, 0), color);
+            _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, -1), TileFlags.None);
+            _tilemap.SetColor(new Vector3Int(position.x, position.y, -1), color);
         }
 
         public void SetTileTransparent(Vector2Int position)

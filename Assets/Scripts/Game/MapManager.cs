@@ -383,7 +383,7 @@ namespace Game
         {
             if (!IsWalkableOnMap(position))
                 return false;
-            var entity = AllEntities().On(EntityLayer.Middle).At(position).Get().FirstOrDefault();
+            var entity = AllEntities().On(layers).At(position).Get().FirstOrDefault();
             if (entity == null)
                 return true;
             return false;

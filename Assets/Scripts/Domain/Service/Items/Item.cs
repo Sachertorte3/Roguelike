@@ -46,17 +46,41 @@ namespace Domain.Service.Items
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
             _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
-                spawnEffectSkillMemento =>
+                memento =>
                 {
                     if (data.HasSameEffect)
                     {
                         return _skillOnUse.Expect("SkillOnUse is null").Match(
-                            spawnEffectSkill => spawnEffectSkill.CreateSkillWithEffect(spawnEffectSkillMemento),
+                            spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
+                                position: memento.Position,
+                                area: memento.Area,
+                                effect: null,
+                                rushDistance: memento.RushDistance,
+                                backStepDistance: memento.BackStepDistance,
+                                probabilityOfSuccess: memento.ProbabilityOfSuccess,
+                                log: memento.Log
+                            ),
                             itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         );
                     }
 
-                    return new SpawnEffectSkill(spawnEffectSkillMemento);
+                    if (data.HasSameSkill)
+                    {
+                        return _skillOnUse.Expect("SkillOnUse is null").Match(
+                            spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
+                                position: null,
+                                area: null,
+                                effect: null,
+                                rushDistance: null,
+                                backStepDistance: null,
+                                probabilityOfSuccess: memento.ProbabilityOfSuccess,
+                                log: null
+                            ),
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        );
+                    }
+
+                    return new SpawnEffectSkill(memento);
                 },
                 itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
             ));
@@ -75,7 +99,7 @@ namespace Domain.Service.Items
         public bool CanActivateWhenUsed => SkillOnUse.HasValue;
         public bool CanActivateWhenThrown => SkillOnThrow.HasValue;
         public Option<ISkill> SkillOnUse => _skillOnUse;
-        public Option<ISkill> SkillOnThrow => _hasSameSkill ? _skillOnUse : _skillOnThrow;
+        public Option<ISkill> SkillOnThrow => _skillOnThrow;
         private readonly bool _hasSameEffect;
         private readonly bool _hasSameSkill;
         private bool _usable => CanActivateWhenUsed || CanActivateWhenThrown;
@@ -118,17 +142,9 @@ namespace Domain.Service.Items
                 ItemEffectType.ItemTarget => new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
                 _ => null
             };
-            ISkillMemento? skillOnThrow;
-            if (data.IsSameSkill)
-            {
-                skillOnThrow = null;
-            }
-            else
-            {
-                skillOnThrow = data.SpawnEffectsOnThrow
+            var skillOnThrow = data.SpawnEffectsOnThrow
                     ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
                     : null;
-            }
 
             var memento = new ItemMemento
             (
@@ -323,9 +339,19 @@ namespace Domain.Service.Items
                 if (_hasSameSkill)
                 {
                     info += "[使用・投擲時]\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
-                        spawnEffectSkill => $"{spawnEffectSkill.InfoOnUse()}\n",
-                        itemTargetSkill => $"{itemTargetSkill.Info()}\n"
-                    ) + "\n";
+                        spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
+                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                    );
+                    var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Match(
+                        spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
+                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                    );
+                    var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Match(
+                        spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
+                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                    );
+                    info += $"発動確率(使用時): {skillOnUseSuccessProbability:P0}\n";
+                    info += $"発動確率(投擲時): {skillOnThrowSuccessProbability:P0}\n";
                 }
                 else
                 {
@@ -338,10 +364,10 @@ namespace Domain.Service.Items
 
                     info += SkillOnThrow.MapOr(
                         "",
-                        skill => skill.Match(
-                            spawnEffectSkill => $"[投擲時]\n{spawnEffectSkill.InfoOnThrow(_hasSameEffect)}\n",
+                        skill => $"[投擲時]\n" + skill.Match(
+                            spawnEffectSkill => spawnEffectSkill.InfoOnThrow(_hasSameEffect),
                             itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                        ));
+                        ) + "\n");
                 }
 
                 info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";

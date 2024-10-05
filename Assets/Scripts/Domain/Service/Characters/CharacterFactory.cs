@@ -41,10 +41,21 @@ namespace Domain.Service.Characters
                 Direction8.Down,
                 new[]
                 {
-                    CharacterSkill.Build(SpawnEffectSkill.Build(new SkillData(new AtFeet(),
-                            new LineArea(1, false, false),
-                            new AttackEffect(new List<ElementPower> { new(Element.Physical, 3) }, 0,
-                                new List<AdditionalConditionData>(), 0), 0, "は殴りかかった")),
+                    CharacterSkill.Build(
+                        SpawnEffectSkill.Build(
+                            new SkillData(
+                                new AtFeet(),
+                                new LineArea(1, false, false),
+                                new AttackEffect(
+                                    new List<ElementPower> { new(Element.Physical, 3) },
+                                    0,
+                                    new List<AdditionalConditionData>(),
+                                    0
+                                ),
+                                0,
+                                0,
+                                "は殴りかかった")
+                            ),
                         0
                     )
                 },

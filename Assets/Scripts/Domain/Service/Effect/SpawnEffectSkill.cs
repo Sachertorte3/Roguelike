@@ -24,8 +24,8 @@ namespace Domain.Service.Effect
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance, int backStepDistance,
-            float probabilityOfSuccess, string? log)
+        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance,
+            int backStepDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
@@ -41,16 +41,23 @@ namespace Domain.Service.Effect
         {
         }
 
-        public SpawnEffectSkill CreateSkillWithEffect(SpawnEffectSkillMemento data)
+        public SpawnEffectSkill CopyWith(
+            IEffectPosition? position=null,
+            IArea? area=null,
+            IEffect? effect=null,
+            int? rushDistance=null,
+            int? backStepDistance=null,
+            float? probabilityOfSuccess=null,
+            string? log=null)
         {
             return new SpawnEffectSkill(
-                data.Position,
-                data.Area,
-                _effect,
-                data.RushDistance,
-                data.BackStepDistance,
-                data.ProbabilityOfSuccess,
-                data.Log
+                position ?? _position,
+                area ?? _area,
+                effect ?? _effect,
+                rushDistance ?? RushDistance,
+                backStepDistance ?? BackStepDistance,
+                probabilityOfSuccess ?? ProbabilityOfSuccess,
+                log ?? _log
             );
         }
 
@@ -125,6 +132,7 @@ namespace Domain.Service.Effect
                          .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
                          .Reverse())
             {
+                Debug.Log($"SpawnEffectSkill: target {target.GetType()} {target} {target.Id}");
                 switch (target)
                 {
                     case ICharacter character:
@@ -251,12 +259,16 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
-        public string InfoOnUse()
+        public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
             var info =
-                $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
+                $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
+            if (BackStepDistance > 0)
+                info += $"\n後退距離: {BackStepDistance}";
+            if (!omitProbabilityOfSuccess)
+                info += $"\n発動確率: {ProbabilityOfSuccess:P0}";
             return info;
         }
 

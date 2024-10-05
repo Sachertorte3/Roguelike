@@ -11,14 +11,34 @@ using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
+    public class MoveCostCalculator
+    {
+        private IHasBehavior _character;
+        private IMap _world;
+
+        public MoveCostCalculator(IHasBehavior character, IMap world)
+        {
+            _character = character;
+            _world = world;
+        }
+
+        public float Calculate(Vector2Int pos, Direction8 direction)
+        {
+            if (_character.CanMove(pos, direction, _world))
+                return 1;
+            if (_character.CanSwap(pos, direction, _world))
+                return 1 + 0.01f;
+            return float.PositiveInfinity;
+        }
+    }
+
     internal sealed class Chase : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
-            var route = new AStar((pos, direction) =>
-                    character.CanMove(pos, direction, world) || character.CanSwap(pos, direction, world))
-                .Calc(character.CurrentPosition, targetPosition);
+            var calculator = new MoveCostCalculator(character, world);
+            var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
                 Log.Debug("Already reached the target position");

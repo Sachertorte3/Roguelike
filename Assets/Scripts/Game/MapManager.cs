@@ -418,8 +418,8 @@ namespace Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
         {
-            var route = new AStar((pos, direction) =>
-                actor.CanMove(pos, direction, this) || actor.CanSwap(pos, direction, this)).Calc(from, to);
+            var calculator = new MoveCostCalculator(actor, this);
+            var route = new AStar(calculator.Calculate).Calc(from, to);
             if (!route.Any())
                 return false;
             if (IsWalkable(to, actor.Affiliation))

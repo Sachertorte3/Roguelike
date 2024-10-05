@@ -11,7 +11,7 @@ namespace Utilities.Algorithms
 
         public float ECost;
 
-        public int MoveTotalCost;
+        public float MoveTotalCost;
 
         public AStarNode(Vector2Int position, Vector2Int goal)
         {
@@ -23,16 +23,16 @@ namespace Utilities.Algorithms
 
         public void SetEstimateCost(Vector2Int position, Vector2Int goal)
         {
-            ECost = Vector2Int.Distance(position, goal);
+            ECost = VectorExtension.ChebyshevDistance(position, goal);
         }
 
-        public void Open(AStarNode rootNode)
+        public void Open(AStarNode rootNode, float cost)
         {
             _rootNode = rootNode;
             if (_rootNode == null)
                 MoveTotalCost = 0;
             else
-                MoveTotalCost = _rootNode.MoveTotalCost + 1;
+                MoveTotalCost = _rootNode.MoveTotalCost + cost;
         }
 
         public List<Vector2Int> ToList()

@@ -10,14 +10,14 @@ namespace Utilities.Algorithms
         private HashSet<Vector2Int> _closeHash;
         private Dictionary<Vector2Int, AStarNode> _map;
         private HashSet<Vector2Int> _openHash;
-        private Func<Vector2Int, Direction8, bool> _canMove;
+        private Func<Vector2Int, Direction8, float> _canMove;
 
-        public AStar(Func<Vector2Int, Direction8, bool> canMove)
+        public AStar(Func<Vector2Int, Direction8, float> canMove)
         {
             SetMap(canMove);
         }
 
-        private void SetMap(Func<Vector2Int, Direction8, bool> canMove)
+        private void SetMap(Func<Vector2Int, Direction8, float> canMove)
         {
             _canMove = canMove;
             _openHash = new HashSet<Vector2Int>();
@@ -34,7 +34,7 @@ namespace Utilities.Algorithms
 
             var current = start;
             _openHash.Add(current);
-            _map[current].Open(null);
+            _map[current].Open(null, 0);
             var count = 1000;
             while (count-- > 0)
             {
@@ -47,7 +47,7 @@ namespace Utilities.Algorithms
                 if (_map[current].ECost <= 1)
                 {
                     var direction = DirectionMethods.FromVectorStrict(goal - current);
-                    if (direction != null && _canMove(current, direction.Value))
+                    if (direction != null && _canMove(current, direction.Value) < float.PositiveInfinity)
                     {
                         if (_map[current].ECost <= 0)
                             break;
@@ -70,8 +70,9 @@ namespace Utilities.Algorithms
             foreach (var direction in DirectionMethods.AllDirections)
             {
                 var pos = current + direction.Vector();
+                var cost = _canMove(current, direction);
                 if (!_map.ContainsKey(pos))
-                    if (_canMove(current, direction))
+                    if (cost < float.PositiveInfinity)
                         _map.Add(pos, new AStarNode(pos, goal));
                     else
                         continue;
@@ -87,7 +88,7 @@ namespace Utilities.Algorithms
                 }
 
                 _openHash.Add(pos);
-                _map[pos].Open(_map[current]);
+                _map[pos].Open(_map[current], cost);
             }
         }
     }

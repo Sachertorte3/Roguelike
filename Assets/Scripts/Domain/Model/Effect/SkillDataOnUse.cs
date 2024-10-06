@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Domain.Model.Effect.Area;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Effect
 {
@@ -15,7 +17,7 @@ namespace Domain.Model.Effect
 
         [field: SerializeReference]
         [field: Required]
-        public IEffect Effect { get; private set; }
+        public List<IEffect> Effects { get; private set; }
 
         [field: SerializeReference]
         [field: Required]
@@ -31,11 +33,11 @@ namespace Domain.Model.Effect
 
         public string Log => "";
 
-        public SkillDataOnUse(IEffectPosition position, IArea area, IEffect effect, float probabilityOfSuccess)
+        public SkillDataOnUse(IEffectPosition position, IArea area, List<IEffect> effects, float probabilityOfSuccess)
         {
             Position = position;
             Area = area;
-            Effect = effect;
+            Effects = effects;
             ProbabilityOfSuccess = probabilityOfSuccess;
         }
 
@@ -51,7 +53,15 @@ namespace Domain.Model.Effect
 
         public string Info()
         {
-            return $"効果: {Effect.Info()}\n発動位置: {Position.Info()}\n範囲: {Area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
+            var info = "";
+            foreach (var (effect, index) in Effects.Index())
+            {
+                info += $"効果{index + 1}: {effect.Info()}\n";
+            }
+            info += $"発動位置: {Position.Info()}\n";
+            info += $"範囲: {Area.Info()}\n";
+            info += $"発動確率: {ProbabilityOfSuccess:P0}";
+            return info;
         }
     }
 }

@@ -24,16 +24,16 @@ MonoBehaviour:
   SkillOnUse:
     <Area>k__BackingField:
       rid: 5486256292201496579
-    <Effect>k__BackingField:
-      rid: 5486256378686996490
+    <Effects>k__BackingField:
+      - rid: 5486256378686996490
     <Position>k__BackingField:
       rid: 5486256292201496578
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
-    <Effect>k__BackingField:
-      rid: -2
+    <Effects>k__BackingField:
+      - rid: -2
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: -2

@@ -26,8 +26,8 @@ MonoBehaviour:
   Skills:
   - <Area>k__BackingField:
       rid: 2541219246146060295
-    <Effect>k__BackingField:
-      rid: 4425516923575599108
+    <Effects>k__BackingField:
+      - rid: 4425516923575599108
     <Position>k__BackingField:
       rid: 2541219106150416414
     <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
@@ -35,8 +35,8 @@ MonoBehaviour:
   LastSkill:
     <Area>k__BackingField:
       rid: 2541219246146060294
-    <Effect>k__BackingField:
-      rid: 2541219246146060296
+    <Effects>k__BackingField:
+      - rid: 2541219246146060296
     <Position>k__BackingField:
       rid: 2541219246146060297
     <Log>k__BackingField: "\u306F\u7206\u767A\u3057\u305F\u3002"

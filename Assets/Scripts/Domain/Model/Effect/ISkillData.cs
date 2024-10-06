@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Domain.Model.Effect.Area;
 
 namespace Domain.Model.Effect
@@ -5,7 +6,7 @@ namespace Domain.Model.Effect
     public interface ISkillData : IHasInfo
     {
         public IArea Area { get; }
-        public IEffect Effect { get; }
+        public List<IEffect> Effects { get; }
         public IEffectPosition Position { get; }
         public int RushDistance { get; }
         public int BackStepDistance { get; }

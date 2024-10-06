@@ -19,13 +19,16 @@ MonoBehaviour:
   Area:
     rid: 5486256354307866633
   Position:
-    rid: 5486256354307866626
+    rid: 5486256397401194499
   references:
     version: 2
     RefIds:
-    - rid: 5486256354307866626
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
     - rid: 5486256354307866633
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
+    - rid: 5486256397401194499
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon:
+          _name: icons_full_16_539
+        CanHitLayer: 01000000

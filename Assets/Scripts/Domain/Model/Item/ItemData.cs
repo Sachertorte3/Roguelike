@@ -126,12 +126,12 @@ namespace Domain.Model.Item
                 if (SkillOnThrow == null)
                 {
                     SkillOnThrow =
-                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect, CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
+                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects, CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
                 }
                 else
                 {
                     SkillOnThrow =
-                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect, SkillOnThrow.ProbabilityOfSuccess);
+                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects, SkillOnThrow.ProbabilityOfSuccess);
                 }
             }
 

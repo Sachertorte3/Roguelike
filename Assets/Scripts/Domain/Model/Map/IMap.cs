@@ -45,7 +45,7 @@ namespace Domain.Model.Map
             bool? isSlept = null, bool? isShiny = null);
 
         public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
-            params EntityLayer[] canHitLayer);
+            int distance, params EntityLayer[] canHitLayer);
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
         public void RemoveEventEntity(IEventEntity entity);

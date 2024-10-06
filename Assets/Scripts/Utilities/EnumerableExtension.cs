@@ -7,43 +7,6 @@ using Random = UnityEngine.Random;
 
 namespace Utilities
 {
-    public static class RectIntExtension
-    {
-        public static RectInt GetRandomInnerRect(this RectInt rect, Vector2Int size)
-        {
-            var max = rect.size - size;
-
-            if (max.x < 0 || max.y < 0)
-            {
-                throw new ArgumentException("The specified size is larger than rect.");
-            }
-
-            var random = new Vector2Int(
-                Random.Range(0, max.x + 1),
-                Random.Range(0, max.y + 1)
-            );
-
-            return new RectInt(rect.min + random, size);
-        }
-
-        public static RectInt GetCenteredInnerRect(this RectInt rect, Vector2Int size)
-        {
-            var max = rect.size - size;
-
-            if (max.x < 0 || max.y < 0)
-            {
-                throw new ArgumentException("The specified size is larger than rect.");
-            }
-
-            var roundedOffset = new Vector2Int(
-                Random.value < 0.5f ? Mathf.FloorToInt(max.x / 2f) : Mathf.CeilToInt(max.x / 2f),
-                Random.value < 0.5f ? Mathf.FloorToInt(max.y / 2f) : Mathf.CeilToInt(max.y / 2f)
-            );
-
-            return new RectInt(rect.min + roundedOffset, size);
-        }
-    }
-
     public static class EnumerableExtension
     {
         public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
@@ -110,16 +73,16 @@ namespace Utilities
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             for (var x = rect.x; x < rect.x + rect.width; x++)
-            for (var y = rect.y; y < rect.y + rect.height; y++)
-                yield return new Vector2Int(x, y);
+                for (var y = rect.y; y < rect.y + rect.height; y++)
+                    yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                if (x * x + y * y <= radius * radius)
-                    yield return new Vector2Int(x, y) + center;
+                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                    if (x * x + y * y <= radius * radius)
+                        yield return new Vector2Int(x, y) + center;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)

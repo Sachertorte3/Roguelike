@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Model.Evaluation;
 using UnityEngine;
 using Utilities;
 
@@ -14,14 +15,21 @@ namespace Domain.Model.Effect.Position
             IEffectMap map)
         {
             var pos = position;
-            while (map.IsBlank(pos + direction.Vector(), CanHitLayer.ToArray()))
+            for (var i = 0; i < CommonSenseParameters.ThrowDistance; i++)
             {
-                pos += direction.Vector();
-            }
-
-            if (map.IsPassableOnMap(pos + direction.Vector()))
-            {
-                pos += direction.Vector();
+                if (map.IsBlank(pos + direction.Vector(), CanHitLayer.ToArray()))
+                {
+                    pos += direction.Vector();
+                }
+                else if (map.IsPassableOnMap(pos + direction.Vector()))
+                {
+                    pos += direction.Vector();
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return new[] { pos };

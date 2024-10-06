@@ -24,17 +24,17 @@ MonoBehaviour:
   SkillOnUse:
     <Area>k__BackingField:
       rid: 861543310686683137
-    <Effect>k__BackingField:
-      rid: 4425517220030054409
+    <Effects>k__BackingField:
+      - rid: 4425517220030054409
     <Position>k__BackingField:
       rid: 861543310686683136
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
-    <Effect>k__BackingField:
-      rid: -2
-  Item<Effect>k__BackingField:
-    rid: -2
+    <Effects>k__BackingField:
+      - rid: -2
+  Item<Effects>k__BackingField:
+    - rid: -2
   UsageLimit: 18
   PassiveConditions: []
   references:

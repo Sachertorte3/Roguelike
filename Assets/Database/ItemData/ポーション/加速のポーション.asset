@@ -13,26 +13,29 @@ MonoBehaviour:
   m_Name: "\u52A0\u901F\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
   Icon: {fileID: -1519877338, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 3
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
-  IsSame<Effect>k__BackingField: 0
+  IsSameEffect: 0
   IsSameSkill: 1
   SkillOnUse:
     <Area>k__BackingField:
       rid: 4425516923575599143
-    <Effect>k__BackingField:
-      rid: 4425516923575599144
+    <Effects>k__BackingField:
+    - rid: 4425516923575599144
     <Position>k__BackingField:
       rid: 2541219106150416411
+    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 4425516923575599143
-    <Effect>k__BackingField:
-      rid: 4425516923575599144
-  Item<Effect>k__BackingField:
+    <Effects>k__BackingField:
+    - rid: 4425516923575599144
+    <ProbabilityOfSuccess>k__BackingField: 0.8
+  ItemEffect:
     rid: -2
   UsageLimit: 1
   PassiveConditions: []
@@ -52,3 +55,4 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u52A0\u901F"
+        _probabilityOfSuccess: 1

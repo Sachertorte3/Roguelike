@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Effect
 {
@@ -16,7 +18,7 @@ namespace Domain.Model.Effect
 
         [field: SerializeReference]
         [field: Required]
-        public IEffect Effect { get; private set; }
+        public List<IEffect> Effects { get; private set; }
 
         public IEffectPosition Position => new AtFeet();
         public int RushDistance => 0;
@@ -29,17 +31,17 @@ namespace Domain.Model.Effect
 
         public string Log => "";
 
-        public SkillDataOnThrow(IArea area, IEffect effect, float probabilityOfSuccess)
+        public SkillDataOnThrow(IArea area, List<IEffect> effect, float probabilityOfSuccess)
         {
             Area = area;
-            Effect = effect;
+            Effects = effect;
             ProbabilityOfSuccess = probabilityOfSuccess;
         }
 
 #if UNITY_EDITOR
         public void SetSameEffect(SkillDataOnUse skillDataOnUse)
         {
-            Effect = skillDataOnUse.Effect;
+            Effects = skillDataOnUse.Effects;
         }
 
         public void OnValidate(float probabilityOfSuccess)
@@ -53,7 +55,14 @@ namespace Domain.Model.Effect
 
         public string Info()
         {
-            return $"効果: {Effect.Info()}\n範囲: {Area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
+            var info = "";
+            foreach (var effect in Effects.Index())
+            {
+                info += $"効果{effect.index + 1}: {effect.item.Info()}\n";
+            }
+            info += $"範囲: {Area.Info()}\n";
+            info += $"発動確率: {ProbabilityOfSuccess:P0}";
+            return info;
         }
     }
 }

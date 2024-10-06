@@ -112,7 +112,7 @@ namespace Domain.Service.Items
             if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
             {
                 _entity.SetVisibility(false);
-                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, EntityLayer.Middle);
+                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
             }

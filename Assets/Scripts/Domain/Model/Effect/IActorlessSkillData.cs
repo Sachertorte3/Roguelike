@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Effect.Area;
 
 namespace Domain.Model.Effect
@@ -6,8 +8,8 @@ namespace Domain.Model.Effect
     {
         public INotDirectionalArea Area { get; }
         IArea ISkillData.Area => Area;
-        public IActorlessEffect Effect { get; }
-        IEffect ISkillData.Effect => Effect;
+        public List<IActorlessEffect> Effects { get; }
+        List<IEffect> ISkillData.Effects => Effects.Cast<IEffect>().ToList();
         public IActorlessEffectPosition Position { get; }
         IEffectPosition ISkillData.Position => Position;
     }

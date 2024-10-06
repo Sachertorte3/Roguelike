@@ -31,39 +31,48 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
+  IsFlying: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
       <Area>k__BackingField:
         rid: 2541219281251860510
-      <Effect>k__BackingField:
-        rid: 2541219281251860511
+      <Effects>k__BackingField:
+      - rid: 2541219281251860511
+      - rid: 5486256397401194498
       <Position>k__BackingField:
         rid: 2541219281251860512
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
     CoolTime: 0
   - Skill:
       <Area>k__BackingField:
         rid: 2541219281251860513
-      <Effect>k__BackingField:
-        rid: 2541219281251860514
+      <Effects>k__BackingField:
+      - rid: 2541219281251860514
       <Position>k__BackingField:
         rid: 2541219281251860518
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u5C3B\u5C3E\u3067\u8599\u304E\u6255\u3063\u305F\u3002"
     CoolTime: 1
   HasLastSkill: 0
   LastSkill:
     <Area>k__BackingField:
       rid: -2
-    <Effect>k__BackingField:
-      rid: -2
+    <Effects>k__BackingField:
+    - rid: -2
     <Position>k__BackingField:
       rid: -2
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []
@@ -83,6 +92,7 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 2
     - rid: 2541219281251860511
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -92,10 +102,6 @@ MonoBehaviour:
           _power: 7
         _criticalRate: 0
         _blowAwayDistance: 0
-        _additionalConditions:
-        - Condition:
-            _name: "\u9EBB\u75FA"
-          Probability: 0.2
     - rid: 2541219281251860512
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -103,6 +109,7 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Radius: 2
     - rid: 2541219281251860514
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -112,7 +119,12 @@ MonoBehaviour:
           _power: 5
         _criticalRate: 0
         _blowAwayDistance: 2
-        _additionalConditions: []
     - rid: 2541219281251860518
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 5486256397401194498
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u9EBB\u75FA"
+        _probabilityOfSuccess: 0.2

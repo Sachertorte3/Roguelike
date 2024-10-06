@@ -8,6 +8,7 @@ using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -15,36 +16,46 @@ namespace Domain.Service.Effect
     public class AddConditionEffect : IActorlessEffect
     {
         [Required] [SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)] private float _probabilityOfSuccess = 1;
 
         public Color Color => Colors.Purple;
 
         public Impact Impact => _condition.Value.Condition.Impact;
 
-        public AddConditionEffect(ConditionTemplate condition)
+        public AddConditionEffect(AdditionalConditionData condition)
         {
-            _condition = condition.ToSerializable();
+            _condition = condition.Condition;
+            _probabilityOfSuccess = condition.Probability;
         }
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor.Id, target);
+
+        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply(Id<IEntity>.Empty, target);
+
+        public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target)
         {
-            target.AddCondition(actor.Id, _condition.Value.Condition, _condition.Value.RemovalCondition);
+            if (Random.value < _probabilityOfSuccess)
+            {
+                target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
+            }
+
             return UniTask.CompletedTask;
         }
 
-        public UniTask Apply(ITargetOfEffect target, IMap map)
+        private void OnProbabilityOfSuccessChanged()
         {
-            target.AddCondition(Id<IEntity>.Empty, _condition.Value.Condition, _condition.Value.RemovalCondition);
-            return UniTask.CompletedTask;
+            if (_probabilityOfSuccess == 0)
+                _probabilityOfSuccess = 1;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return _condition.Value.Evaluate(target);
+            return _condition.Value.Evaluate(target) * _probabilityOfSuccess;
         }
 
         public float EvaluatePrice()
         {
-            return _condition.Value.EvaluateDamage();
+            return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
@@ -54,7 +65,10 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"状態付与: {_condition.Value.Condition.Name}";
+            var info = $"状態付与: {_condition.Value.Condition.Name}";
+            info += $" 成功率: {_probabilityOfSuccess:P0}";
+
+            return info;
         }
     }
 }

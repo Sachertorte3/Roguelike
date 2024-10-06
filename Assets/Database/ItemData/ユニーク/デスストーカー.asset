@@ -13,27 +13,30 @@ MonoBehaviour:
   m_Name: "\u30C7\u30B9\u30B9\u30C8\u30FC\u30AB\u30FC"
   m_EditorClassIdentifier: 
   Icon: {fileID: 678230710, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 2
-  Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
-  IsSame<Effect>k__BackingField: 1
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     <Area>k__BackingField:
       rid: 4274951336697528325
-    <Effect>k__BackingField:
-      rid: 4274951336697528331
+    <Effects>k__BackingField:
+    - rid: 4274951336697528331
+    - rid: 5486256396100960273
     <Position>k__BackingField:
       rid: 4274951336697528327
+    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 4274951336697528328
-    <Effect>k__BackingField:
-      rid: 4274951336697528331
-  Item<Effect>k__BackingField:
+    <Effects>k__BackingField:
+    - rid: 4274951336697528331
+    <ProbabilityOfSuccess>k__BackingField: 0.8
+  ItemEffect:
     rid: -2
   UsageLimit: 10
   PassiveConditions: []
@@ -46,6 +49,7 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Length: 1
     - rid: 4274951336697528327
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
@@ -61,7 +65,10 @@ MonoBehaviour:
           _power: 2
         _criticalRate: 0
         _blowAwayDistance: 0
-        _additionalConditions:
-        - Condition:
-            _name: "\u6BD2"
-          Probability: 1
+        _additionalConditions: []
+    - rid: 5486256396100960273
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u6BD2"
+        _probabilityOfSuccess: 1

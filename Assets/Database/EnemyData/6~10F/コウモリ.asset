@@ -40,8 +40,8 @@ MonoBehaviour:
   - Skill:
       <Area>k__BackingField:
         rid: 2541219281251860490
-      <Effect>k__BackingField:
-        rid: 2541219281251860491
+      <Effects>k__BackingField:
+        - rid: 2541219281251860491
       <Position>k__BackingField:
         rid: 2541219281251860496
       <RushDistance>k__BackingField: 2
@@ -53,8 +53,8 @@ MonoBehaviour:
   LastSkill:
     <Area>k__BackingField:
       rid: -2
-    <Effect>k__BackingField:
-      rid: -2
+    <Effects>k__BackingField:
+      - rid: -2
     <Position>k__BackingField:
       rid: -2
     <RushDistance>k__BackingField: 0

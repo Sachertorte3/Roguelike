@@ -237,11 +237,11 @@ namespace Game
         }
 
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
-            params EntityLayer[] canHitLayer)
+            int distance, params EntityLayer[] canHitLayer)
         {
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
-            var destination = await throwAnimationEntity.Throw(direction, this, canHitLayer);
+            var destination = await throwAnimationEntity.Throw(direction, this, distance, canHitLayer);
             throwAnimationEntity.Destroy();
             return destination;
         }

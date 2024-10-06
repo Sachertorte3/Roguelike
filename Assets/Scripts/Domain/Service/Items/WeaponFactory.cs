@@ -22,26 +22,32 @@ namespace Domain.Service.Items
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,
-                    new AttackEffect(new List<ElementPower>
-                        {
-                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
-                        },
-                        0,
-                        new List<AdditionalConditionData>(),
-                        0
-                    ),
+                    new List<IEffect>
+                    {
+                        new AttackEffect(
+                            new List<ElementPower>
+                            {
+                                new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                            },
+                            0,
+                            0
+                        )
+                    },
                     CommonSenseParameters.SkillOnUseProbabilityOfSuccess
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(new List<ElementPower>
-                        {
-                            new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
-                        },
-                        0,
-                        new List<AdditionalConditionData>(),
-                        0
-                    ),
+                    new List<IEffect>
+                    {
+                        new AttackEffect(
+                            new List<ElementPower>
+                            {
+                                new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
+                            },
+                            0,
+                            0
+                        )
+                    },
                     CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
                 ),
                 true,
@@ -54,6 +60,21 @@ namespace Domain.Service.Items
 
         public static ItemData Create(WeaponPrefix prefix, MaterialData material, WeaponMold mold)
         {
+            var effects = new List<IEffect>
+            {
+                new AttackEffect(
+                    new List<ElementPower>
+                    {
+                        new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
+                    },
+                    0,
+                    0
+                )
+            };
+            foreach (var condition in prefix.AdditionalConditions)
+            {
+                effects.Add(new AddConditionEffect(condition));
+            }
             return new ItemData(
                 prefix.Name + material.Name + mold.Name,
                 mold.Icon,
@@ -62,26 +83,12 @@ namespace Domain.Service.Items
                 new SkillDataOnUse(
                     mold.Position,
                     mold.Area,
-                    new AttackEffect(
-                        new List<ElementPower>
-                        {
-                            new(Element.Physical,
-                                Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
-                        },
-                        0,
-                        prefix.AdditionalConditions, 0),
+                    effects,
                     CommonSenseParameters.SkillOnUseProbabilityOfSuccess
                 ),
                 new SkillDataOnThrow(
                     new SelfArea(),
-                    new AttackEffect(
-                        new List<ElementPower>
-                        {
-                            new(Element.Physical,
-                                Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
-                        },
-                        0,
-                        prefix.AdditionalConditions, 0),
+                    effects,
                     CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
                 ),
                 true,

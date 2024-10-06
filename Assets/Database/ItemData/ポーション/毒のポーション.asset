@@ -54,5 +54,5 @@ MonoBehaviour:
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _condition:
-          _name: 
+          _name: "\u6BD2"
         _probabilityOfSuccess: 1

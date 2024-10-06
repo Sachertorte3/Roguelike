@@ -281,7 +281,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
+      - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}
         Weight: 1
     Materials:
       items:
@@ -561,6 +561,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u7761\u7720"
+        _probabilityOfSuccess: 1
     - rid: 5486256311944871967
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
@@ -581,6 +582,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u6DF7\u4E71"
+        _probabilityOfSuccess: 1
     - rid: 5486256311944871976
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -592,6 +594,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u6BD2"
+        _probabilityOfSuccess: 1
     - rid: 5486256311944871979
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -603,6 +606,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u920D\u8DB3"
+        _probabilityOfSuccess: 1
     - rid: 5486256311944871982
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -614,6 +618,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u9EBB\u75FA"
+        _probabilityOfSuccess: 1
     - rid: 5486256311944871985
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -631,8 +636,6 @@ MonoBehaviour:
       type: {class: ExplosionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _damageRate: 0.5
-        _canDigWall: 0
-        _additionalConditions: []
     - rid: 5486256396100960260
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

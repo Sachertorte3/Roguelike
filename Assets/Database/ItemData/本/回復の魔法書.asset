@@ -37,7 +37,7 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: -2
-  UsageLimit: 10
+  UsageLimit: 5
   PassiveConditions: []
   references:
     version: 2

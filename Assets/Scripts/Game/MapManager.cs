@@ -389,6 +389,18 @@ namespace Game
             return false;
         }
 
+        public bool CanPlace(Vector2Int position, bool isFlying)
+        {
+            if (isFlying)
+            {
+                return IsBlank(position, EntityLayer.Middle);
+            }
+            else
+            {
+                return IsBlankAndStandable(position, EntityLayer.Middle);
+            }
+        }
+
         public bool IsWalkable(Vector2Int position, IAffiliation actor)
         {
             if (!IsWalkableOnMap(position))

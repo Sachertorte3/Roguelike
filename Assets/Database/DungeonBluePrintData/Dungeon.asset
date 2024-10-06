@@ -127,8 +127,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871960
-          <Effect>k__BackingField:
-            rid: 5486256311944871961
+          <Effects>k__BackingField:
+          - rid: 5486256311944871961
           <Position>k__BackingField:
             rid: 5486256311944871962
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -138,8 +138,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871977
-          <Effect>k__BackingField:
-            rid: 5486256311944871978
+          <Effects>k__BackingField:
+          - rid: 5486256311944871978
           <Position>k__BackingField:
             rid: 5486256311944871979
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -149,8 +149,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871974
-          <Effect>k__BackingField:
-            rid: 5486256311944871975
+          <Effects>k__BackingField:
+          - rid: 5486256311944871975
           <Position>k__BackingField:
             rid: 5486256311944871976
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -160,8 +160,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871963
-          <Effect>k__BackingField:
-            rid: 5486256311944871966
+          <Effects>k__BackingField:
+          - rid: 5486256311944871966
           <Position>k__BackingField:
             rid: 5486256311944871965
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -171,8 +171,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871980
-          <Effect>k__BackingField:
-            rid: 5486256311944871981
+          <Effects>k__BackingField:
+          - rid: 5486256311944871981
           <Position>k__BackingField:
             rid: 5486256311944871982
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -182,8 +182,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871983
-          <Effect>k__BackingField:
-            rid: 5486256311944871984
+          <Effects>k__BackingField:
+          - rid: 5486256311944871984
           <Position>k__BackingField:
             rid: 5486256311944871985
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -193,8 +193,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256311944871967
-          <Effect>k__BackingField:
-            rid: 5486256311944871968
+          <Effects>k__BackingField:
+          - rid: 5486256311944871968
           <Position>k__BackingField:
             rid: 5486256311944871969
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -204,8 +204,8 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256396100960256
-          <Effect>k__BackingField:
-            rid: 5486256396100960257
+          <Effects>k__BackingField:
+          - rid: 5486256396100960257
           <Position>k__BackingField:
             rid: 5486256396100960258
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -215,12 +215,13 @@ MonoBehaviour:
         <Skill>k__BackingField:
           <Area>k__BackingField:
             rid: 5486256396100960260
-          <Effect>k__BackingField:
-            rid: 5486256396100960259
+          <Effects>k__BackingField:
+          - rid: 5486256396100960259
+          - rid: 5486256396100960271
           <Position>k__BackingField:
             rid: 5486256311944871973
           <ProbabilityOfSuccess>k__BackingField: 0.95
-      Weight: 1000
+      Weight: 1
   WeaponMolds:
     items:
     - Item: {fileID: 11400000, guid: 6cd5c19ac0e883c40bc6152522b5c698, type: 2}
@@ -630,7 +631,7 @@ MonoBehaviour:
       type: {class: ExplosionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _damageRate: 0.5
-        _canDigWall: 1
+        _canDigWall: 0
         _additionalConditions: []
     - rid: 5486256396100960260
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
@@ -638,3 +639,6 @@ MonoBehaviour:
         ContainsSelf: 1
         CanIgnoreWalls: 1
         Radius: 2
+    - rid: 5486256396100960271
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

@@ -23,14 +23,11 @@ namespace Domain.Service.Effect
 
         [Range(0, 1)][SerializeField] private float _criticalRate;
         [SerializeField] private int _blowAwayDistance;
-        [SerializeField] private List<AdditionalConditionData> _additionalConditions = new();
 
-        public AttackEffect(List<ElementPower> elementPowers, float criticalRate,
-            List<AdditionalConditionData> additionalConditions, int blowAwayDistance)
+        public AttackEffect(List<ElementPower> elementPowers, float criticalRate, int blowAwayDistance)
         {
             _elementPowers = elementPowers;
             _criticalRate = criticalRate;
-            _additionalConditions = additionalConditions;
             _blowAwayDistance = blowAwayDistance;
         }
 
@@ -53,15 +50,6 @@ namespace Domain.Service.Effect
                 target.LoseHp(damage);
             }
 
-            foreach (var condition in _additionalConditions)
-            {
-                if (Random.value < condition.Probability)
-                {
-                    target.AddCondition(actor.Id, condition.Condition.Value.Condition,
-                        condition.Condition.Value.RemovalCondition);
-                }
-            }
-
             if (_blowAwayDistance > 0)
             {
                 var direction =
@@ -80,8 +68,6 @@ namespace Domain.Service.Effect
             result += Mathf.Min(1,
                 Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers, true)) /
                 target.CurrentMaxHp) * _criticalRate;
-            result += _additionalConditions.Sum(condition =>
-                condition.Probability * condition.Condition.Value.Evaluate(target));
             result += CommonSenseParameters.BlowAwayEvaluate(_blowAwayDistance);
             return result;
         }
@@ -90,8 +76,6 @@ namespace Domain.Service.Effect
         {
             var result = Formula.EvaluateDamage(_elementPowers) * (1 - _criticalRate) +
                          Formula.EvaluateDamage(_elementPowers, true) * _criticalRate;
-            result += _additionalConditions.Sum(condition =>
-                condition.Probability * condition.Condition.Value.EvaluateDamage());
             result += CommonSenseParameters.BlowAwayPrice(_blowAwayDistance);
             return result;
         }
@@ -131,15 +115,6 @@ namespace Domain.Service.Effect
             if (_blowAwayDistance > 0)
             {
                 info += $"\n吹き飛ばし: {_blowAwayDistance}";
-            }
-
-            if (_additionalConditions.Count > 0)
-            {
-                info += "\n追加状態付与:";
-                foreach (var condition in _additionalConditions)
-                {
-                    info += $"\n{condition.Info()}";
-                }
             }
 
             return info;

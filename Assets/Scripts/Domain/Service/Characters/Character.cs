@@ -326,7 +326,7 @@ namespace Domain.Service.Characters
                 ItemEntity.GetThrowDestination(CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
             if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
             {
-                await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, EntityLayer.Middle);
+                await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
             }
 
             var itemEntity = map.SpawnItem(item,

@@ -30,16 +30,23 @@ namespace Domain.Service.Items
             Icon = icon;
         }
 
-        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, params EntityLayer[] canHitLayer)
+        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, int distance, params EntityLayer[] canHitLayer)
         {
-            while (map.IsBlank(CurrentPosition + direction.Vector(), canHitLayer))
+            for (var i = 0; i < distance; i++)
             {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
-            }
-
-            if (map.IsPassableOnMap(CurrentPosition + direction.Vector()))
-            {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                if (map.IsBlank(CurrentPosition + direction.Vector(), canHitLayer))
+                {
+                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                }
+                else if (map.IsPassableOnMap(CurrentPosition + direction.Vector()))
+                {
+                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return CurrentPosition;

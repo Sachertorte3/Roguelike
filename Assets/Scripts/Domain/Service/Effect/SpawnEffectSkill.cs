@@ -6,6 +6,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
@@ -17,19 +18,19 @@ namespace Domain.Service.Effect
     public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
     {
         private readonly IArea _area;
-        private readonly IEffect _effect;
+        private readonly List<IEffect> _effects;
         private readonly IEffectPosition _position;
         public int RushDistance { get; private set; }
         public int BackStepDistance { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, IEffect effect, int rushDistance,
+        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int rushDistance,
             int backStepDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
-            _effect = effect;
+            _effects = effect;
             RushDistance = rushDistance;
             BackStepDistance = backStepDistance;
             ProbabilityOfSuccess = probabilityOfSuccess;
@@ -42,18 +43,18 @@ namespace Domain.Service.Effect
         }
 
         public SpawnEffectSkill CopyWith(
-            IEffectPosition? position=null,
-            IArea? area=null,
-            IEffect? effect=null,
-            int? rushDistance=null,
-            int? backStepDistance=null,
-            float? probabilityOfSuccess=null,
-            string? log=null)
+            IEffectPosition? position = null,
+            IArea? area = null,
+            List<IEffect>? effect = null,
+            int? rushDistance = null,
+            int? backStepDistance = null,
+            float? probabilityOfSuccess = null,
+            string? log = null)
         {
             return new SpawnEffectSkill(
                 position ?? _position,
                 area ?? _area,
-                effect ?? _effect,
+                effect ?? _effects,
                 rushDistance ?? RushDistance,
                 backStepDistance ?? BackStepDistance,
                 probabilityOfSuccess ?? ProbabilityOfSuccess,
@@ -61,7 +62,7 @@ namespace Domain.Service.Effect
             );
         }
 
-        public Color Color => _effect.Color;
+        public Color Color => _effects.First().Color;
 
         public SpawnEffectSkillMemento Serialize()
         {
@@ -69,7 +70,7 @@ namespace Domain.Service.Effect
             (
                 _position,
                 _area,
-                _effect,
+                _effects,
                 RushDistance,
                 BackStepDistance,
                 ProbabilityOfSuccess,
@@ -83,7 +84,7 @@ namespace Domain.Service.Effect
             (
                 data.Position,
                 data.Area,
-                data.Effect,
+                data.Effects,
                 data.RushDistance,
                 data.BackStepDistance,
                 data.ProbabilityOfSuccess,
@@ -122,51 +123,55 @@ namespace Domain.Service.Effect
             if (_position is ProjectileImpact projectileImpact)
             {
                 await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction,
-                    projectileImpact.CanHitLayer.ToArray());
+                    CommonSenseParameters.ThrowDistance, projectileImpact.CanHitLayer.ToArray());
             }
 
             var area = GetArea(actor, position, direction, map);
             map.SetGrasses(area, false);
 
-            foreach (var target in map.GetEntitiesInArea(area)
-                         .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
-                         .Reverse())
+            foreach (var effect in _effects)
             {
-                switch (target)
+                foreach (var target in map.GetEntitiesInArea(area)
+                             .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
+                             .Reverse())
                 {
-                    case ICharacter character:
-                        if (_effect.Impact == Impact.Harmful)
-                        {
-                            var impactValue = _effect.Evaluate(actor, character);
-                            character.WasAttackedBy(actor, impactValue);
+                    switch (target)
+                    {
+                        case ICharacter character:
+                            if (effect.Impact == Impact.Harmful)
+                            {
+                                var impactValue = effect.Evaluate(actor, character);
+                                character.WasAttackedBy(actor, impactValue);
 
-                            map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                .Where(target => target != actor && target != actor)
-                                .ForEach(c =>
-                                    c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
-                                        impactValue));
-                        }
-                        else if (_effect.Impact == Impact.Beneficial)
-                        {
-                            var impactValue = _effect.Evaluate(actor, character);
-                            character.WasHealedBy(actor, impactValue);
+                                map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    .Where(target => target != actor && target != actor)
+                                    .ForEach(c =>
+                                        c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
+                                            impactValue));
+                            }
+                            else if (effect.Impact == Impact.Beneficial)
+                            {
+                                var impactValue = effect.Evaluate(actor, character);
+                                character.WasHealedBy(actor, impactValue);
 
-                            map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                .Where(target => target != actor && target != actor)
-                                .ForEach(c =>
-                                    c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
-                                        impactValue));
-                        }
+                                map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    .Where(target => target != actor && target != actor)
+                                    .ForEach(c =>
+                                        c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
+                                            impactValue));
+                            }
 
-                        await _effect.Apply(actor, character, map);
-                        break;
-                    default:
-                        await _effect.Apply(actor, target, map);
-                        break;
+                            await effect.Apply(actor, character, map);
+                            break;
+                        default:
+                            await effect.Apply(actor, target, map);
+                            break;
+                    }
                 }
+
+                await effect.Apply(actor, area, map);
             }
 
-            await _effect.Apply(actor, area, map);
             return SpawnEffectSkillResult.Success(Color, area);
         }
 
@@ -188,40 +193,43 @@ namespace Domain.Service.Effect
                 return -1;
             }
 
-            foreach (var target in characters)
+            foreach (var effect in _effects)
             {
-                switch (_effect.Impact)
+                foreach (var target in characters)
                 {
-                    case Impact.Harmful:
-                        if (actor.IsAlly(target))
-                        {
-                            totalEvaluation += allyImpactRate * _effect.Evaluate(actor, target);
-                        }
-                        else if (actor.IsEnemy(target))
-                        {
-                            totalEvaluation += enemyImpactRate * _effect.Evaluate(actor, target);
-                        }
-                        else
-                        {
-                            totalEvaluation += neutralImpactRate * _effect.Evaluate(actor, target);
-                        }
+                    switch (effect.Impact)
+                    {
+                        case Impact.Harmful:
+                            if (actor.IsAlly(target))
+                            {
+                                totalEvaluation += allyImpactRate * effect.Evaluate(actor, target);
+                            }
+                            else if (actor.IsEnemy(target))
+                            {
+                                totalEvaluation += enemyImpactRate * effect.Evaluate(actor, target);
+                            }
+                            else
+                            {
+                                totalEvaluation += neutralImpactRate * effect.Evaluate(actor, target);
+                            }
 
-                        break;
-                    case Impact.Beneficial:
-                        if (actor.IsAlly(target))
-                        {
-                            totalEvaluation += 1 * _effect.Evaluate(actor, target);
-                        }
-                        else if (actor.IsEnemy(target))
-                        {
-                            totalEvaluation += -Mathf.Infinity * _effect.Evaluate(actor, target);
-                        }
-                        else
-                        {
-                            totalEvaluation += 0 * _effect.Evaluate(actor, target);
-                        }
+                            break;
+                        case Impact.Beneficial:
+                            if (actor.IsAlly(target))
+                            {
+                                totalEvaluation += 1 * effect.Evaluate(actor, target);
+                            }
+                            else if (actor.IsEnemy(target))
+                            {
+                                totalEvaluation += -Mathf.Infinity * effect.Evaluate(actor, target);
+                            }
+                            else
+                            {
+                                totalEvaluation += 0 * effect.Evaluate(actor, target);
+                            }
 
-                        break;
+                            break;
+                    }
                 }
             }
 
@@ -231,7 +239,10 @@ namespace Domain.Service.Effect
         public float EvaluatePrice()
         {
             var price = 0f;
-            price += _effect.EvaluatePrice();
+            foreach (var effect in _effects)
+            {
+                price += effect.EvaluatePrice();
+            }
             price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
             price *= _area.EvaluateArea();
             return price * ProbabilityOfSuccess;
@@ -240,9 +251,12 @@ namespace Domain.Service.Effect
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
-            foreach (var path in _effect.GenerateUpgradePaths())
+            foreach (var effect in _effects)
             {
-                upgrades[UpgradePath.Join("効果", path)] = _effect.GetUpgrades()[path];
+                foreach (var path in effect.GenerateUpgradePaths())
+                {
+                    upgrades[UpgradePath.Join("効果", path)] = effect.GetUpgrades()[path];
+                }
             }
 
             foreach (var path in _position.GenerateUpgradePaths())
@@ -260,8 +274,13 @@ namespace Domain.Service.Effect
 
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
-            var info =
-                $"効果: {_effect.Info()}\n発動位置: {_position.Info()}\n範囲: {_area.Info()}";
+            var info = "";
+            foreach (var (effect, index) in _effects.Index())
+            {
+                info += $"効果{index + 1}: {effect.Info()}\n";
+            }
+            info += $"発動位置: {_position.Info()}\n";
+            info += $"範囲: {_area.Info()}";
             if (RushDistance > 0)
                 info += $"\n突進距離: {RushDistance}";
             if (BackStepDistance > 0)
@@ -274,8 +293,20 @@ namespace Domain.Service.Effect
         public string InfoOnThrow(bool omitEffects = false)
         {
             var info = "";
-            info += $"効果: {(omitEffects ? "使用時と同じ" : _effect.Info())}\n";
-            info += $"範囲: {_area.Info()}\n発動確率: {ProbabilityOfSuccess:P0}";
+            if (!omitEffects)
+            {
+                foreach (var (effect, index) in _effects.Index())
+                {
+                    info += $"効果{index + 1}: {effect.Info()}\n";
+                }
+            }
+            else
+            {
+                info += "効果: 使用時と同じ\n";
+            }
+            info += $"発動位置: {_position.Info()}\n";
+            info += $"範囲: {_area.Info()}\n";
+            info += $"発動確率: {ProbabilityOfSuccess:P0}";
             return info;
         }
     }

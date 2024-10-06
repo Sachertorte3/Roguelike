@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveStatMultiplier(StatType.ViewRange, 0.5f);
+            hasCondition.StatusManager.AddBlindFlags();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,7 +27,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddStatMultiplier(StatType.ViewRange, 0.5f);
+            hasCondition.StatusManager.RemoveBlindFlags();
         }
 
         public float Evaluate(ITargetOfEffect target)

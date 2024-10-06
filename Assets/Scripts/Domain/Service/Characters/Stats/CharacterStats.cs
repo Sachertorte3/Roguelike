@@ -53,7 +53,7 @@ namespace Domain.Service.Characters.Stats
 
         public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            float viewRange, float waitTime, bool isSlept)
+            float viewRange, float waitTime)
         {
             return new CharacterStatsMemento
             (

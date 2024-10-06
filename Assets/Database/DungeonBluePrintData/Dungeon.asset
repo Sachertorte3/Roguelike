@@ -59,6 +59,9 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 120c6a5438a8e7141bacf67dd9f824ff, type: 2}
       - {fileID: 11400000, guid: cf377fdb98246864ba3b4028cee97d6b, type: 2}
       - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
+      - {fileID: 11400000, guid: da5d05fbbfcca204ebcb378535e0ce4d, type: 2}
+      - {fileID: 11400000, guid: 547c6406d235e8144adf3ad4a605dbef, type: 2}
+      - {fileID: 11400000, guid: 7464067b6bc22ea4aa84d8224832c41e, type: 2}
     Artifacts:
       items:
       - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
@@ -130,102 +133,111 @@ MonoBehaviour:
     - Item:
         <Name>k__BackingField: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871962
           <Area>k__BackingField:
             rid: 5486256311944871960
           <Effects>k__BackingField:
           - rid: 5486256311944871961
-          <Position>k__BackingField:
-            rid: 5486256311944871962
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u6BD2\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871979
           <Area>k__BackingField:
             rid: 5486256311944871977
           <Effects>k__BackingField:
           - rid: 5486256311944871978
-          <Position>k__BackingField:
-            rid: 5486256311944871979
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u6DF7\u4E71\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871976
           <Area>k__BackingField:
             rid: 5486256311944871974
           <Effects>k__BackingField:
           - rid: 5486256311944871975
-          <Position>k__BackingField:
-            rid: 5486256311944871976
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7761\u7720\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871965
           <Area>k__BackingField:
             rid: 5486256311944871963
           <Effects>k__BackingField:
           - rid: 5486256311944871966
-          <Position>k__BackingField:
-            rid: 5486256311944871965
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u920D\u8DB3\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871982
           <Area>k__BackingField:
             rid: 5486256311944871980
           <Effects>k__BackingField:
           - rid: 5486256311944871981
-          <Position>k__BackingField:
-            rid: 5486256311944871982
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u9EBB\u75FA\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871985
           <Area>k__BackingField:
             rid: 5486256311944871983
           <Effects>k__BackingField:
           - rid: 5486256311944871984
-          <Position>k__BackingField:
-            rid: 5486256311944871985
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7652\u3057\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871969
           <Area>k__BackingField:
             rid: 5486256311944871967
           <Effects>k__BackingField:
           - rid: 5486256311944871968
-          <Position>k__BackingField:
-            rid: 5486256311944871969
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u53EC\u559A\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256396100960258
           <Area>k__BackingField:
             rid: 5486256396100960256
           <Effects>k__BackingField:
           - rid: 5486256396100960257
-          <Position>k__BackingField:
-            rid: 5486256396100960258
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7206\u767A\u306E\u7F60"
         <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871973
           <Area>k__BackingField:
             rid: 5486256396100960260
           <Effects>k__BackingField:
           - rid: 5486256396100960259
           - rid: 5486256396100960271
           - rid: 5486256406402433024
-          <Position>k__BackingField:
-            rid: 5486256311944871973
+          <Repeats>k__BackingField: 0
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
   WeaponPrefixes:

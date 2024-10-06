@@ -13,15 +13,19 @@ namespace Domain.Model.Effect
     {
         [field: SerializeReference]
         [field: Required]
+        public IEffectPosition Position { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
         public IArea Area { get; private set; }
 
         [field: SerializeReference]
         [field: Required]
         public List<IEffect> Effects { get; private set; }
 
-        [field: SerializeReference]
-        [field: Required]
-        public IEffectPosition Position { get; private set; }
+        [field: SerializeField]
+        [field: MinValue(1)]
+        public int Repeats { get; private set; } = 1;
 
         public int RushDistance => 0;
 
@@ -44,6 +48,10 @@ namespace Domain.Model.Effect
 #if UNITY_EDITOR
         public void OnValidate()
         {
+            if (Repeats == 0)
+            {
+                Repeats = 1;
+            }
             if (ProbabilityOfSuccess == 0)
             {
                 ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
@@ -54,6 +62,8 @@ namespace Domain.Model.Effect
         public string Info()
         {
             var info = "";
+            if (Repeats > 1)
+                info += $"発動回数: {Repeats}回\n";
             foreach (var (effect, index) in Effects.Index())
             {
                 info += $"効果{index + 1}: {effect.Info()}\n";

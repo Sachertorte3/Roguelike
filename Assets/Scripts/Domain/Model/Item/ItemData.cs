@@ -48,6 +48,7 @@ namespace Domain.Model.Item
         #endregion
 
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
+        public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
         private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit,
@@ -155,6 +156,11 @@ namespace Domain.Model.Item
             if (SkillOnThrow != null)
             {
                 SkillOnThrow.OnValidate();
+            }
+
+            if (UpgradeLimit == 0)
+            {
+                UpgradeLimit = 3;
             }
         }
 #endif

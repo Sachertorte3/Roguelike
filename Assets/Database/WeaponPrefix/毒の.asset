@@ -16,6 +16,7 @@ MonoBehaviour:
   _rarity: 2
   PowerMagnification: 1
   UsageLimitMagnification: 1
+  AdditionalUpgradeLimit: 0
   AdditionalConditions:
   - Condition:
       _name: "\u6BD2"

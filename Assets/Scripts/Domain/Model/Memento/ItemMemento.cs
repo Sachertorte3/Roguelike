@@ -23,12 +23,13 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool UseOnDeath { get; private set; }
         [field: SerializeField] public int MaxUsages { get; private set; }
         [field: SerializeField] public int RemainingUsages { get; private set; }
+        [field: SerializeField] public int UpgradeLimit { get; private set; }
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
 
         public ItemMemento(string id, string name, string iconName, bool isShiny, ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
-            IConditionData[] conditions)
+            int upgradeLimit, IConditionData[] conditions)
         {
             Id = id;
             Name = name;
@@ -43,13 +44,14 @@ namespace Domain.Model.Memento
             UseOnDeath = useOnDeath;
             MaxUsages = maxUsages;
             RemainingUsages = remainingUsages;
+            UpgradeLimit = upgradeLimit;
             Conditions = conditions;
         }
 
         public ItemMemento CopyWith(string? id = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
             List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null, Option<ISkillMemento>? skillOnThrow = null,
             bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null, int? remainingUsages = null,
-            IConditionData[]? conditions = null)
+            int? upgradeLimit = null, IConditionData[]? conditions = null)
         {
             return new ItemMemento(
                 id ?? Id,
@@ -65,6 +67,7 @@ namespace Domain.Model.Memento
                 useOnDeath ?? UseOnDeath,
                 maxUsages ?? MaxUsages,
                 remainingUsages ?? RemainingUsages,
+                upgradeLimit ?? UpgradeLimit,
                 conditions ?? Conditions
             );
         }

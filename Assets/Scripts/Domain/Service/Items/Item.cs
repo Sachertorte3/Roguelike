@@ -89,6 +89,7 @@ namespace Domain.Service.Items
             UseOnDeath = data.UseOnDeath;
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
+            UpgradeLimit = data.UpgradeLimit;
             _conditions = data.Conditions.ToList();
         }
 
@@ -108,6 +109,7 @@ namespace Domain.Service.Items
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public int MaxUsages => _maxUsages;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
+        public int UpgradeLimit { get; init; }
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
 
@@ -128,6 +130,7 @@ namespace Domain.Service.Items
                 useOnDeath: UseOnDeath,
                 maxUsages: _maxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
+                upgradeLimit: UpgradeLimit,
                 conditions: _conditions.ToArray()
             );
         }
@@ -161,6 +164,7 @@ namespace Domain.Service.Items
                 useOnDeath: data.UseOnDeath,
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
+                upgradeLimit: data.UpgradeLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
             var json = JsonUtility.ToJson(memento);
@@ -314,6 +318,11 @@ namespace Domain.Service.Items
 
         public bool CanUpgrade(string filter = "")
         {
+            if (_upgradePaths.Count >= UpgradeLimit)
+            {
+                return false;
+            }
+
             var upgrades = GetUpgrades();
             if (filter == "")
             {
@@ -378,9 +387,14 @@ namespace Domain.Service.Items
                 info += "死亡時に自動的に使用される\n";
             }
 
-            foreach (var path in _upgradePaths)
+            if (_upgradePaths.Any() || CanUpgrade())
             {
-                info += $"アップグレード: {GetUpgrades()[path].Description}\n";
+                info += $"アップグレード ({_upgradePaths.Count}/{UpgradeLimit})\n";
+
+                foreach (var path in _upgradePaths)
+                {
+                    info += $"{GetUpgrades()[path].Description}\n";
+                }
             }
 
             foreach (var condition in PassiveConditions)

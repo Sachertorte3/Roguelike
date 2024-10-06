@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u56DE\u5FA9\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 187119880, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: -85694764, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 1
   EffectType: 1
@@ -25,7 +25,7 @@ MonoBehaviour:
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-      - rid: 2541219238315819008
+    - rid: 2541219238315819008
     <Position>k__BackingField:
       rid: 2541219106150416404
     <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -33,11 +33,12 @@ MonoBehaviour:
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-      - rid: 2541219238315819008
+    - rid: 2541219238315819008
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: -2
   UsageLimit: 1
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2

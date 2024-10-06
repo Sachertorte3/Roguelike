@@ -223,6 +223,7 @@ MonoBehaviour:
           <Effects>k__BackingField:
           - rid: 5486256396100960259
           - rid: 5486256396100960271
+          - rid: 5486256406402433024
           <Position>k__BackingField:
             rid: 5486256311944871973
           <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -608,3 +609,7 @@ MonoBehaviour:
     - rid: 5486256396100960271
       type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 
+    - rid: 5486256406402433024
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        OnlyApplyToItem: 1

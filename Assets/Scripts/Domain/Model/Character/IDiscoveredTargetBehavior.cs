@@ -8,6 +8,6 @@ namespace Domain.Model.Character
     public interface IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap world);
+            IMap map);
     }
 }

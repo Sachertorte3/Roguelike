@@ -11,60 +11,60 @@ namespace Domain.Service.Characters.Behavior
 {
     internal sealed class Wander : IBehaviorWhenUndiscoveringTarget, IBehaviorWhenDiscoveringTarget
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
         {
             var directions = new Dictionary<Direction8, float>();
             var facingDirection = character.CurrentDirection;
-            if (character.CanMove(facingDirection, false, world))
+            if (character.CanMove(facingDirection, false, map))
             {
                 directions.Add(facingDirection, 0.1f);
-                if (!world.IsWalkableOnMap(character.CurrentPosition +
+                if (!map.IsWalkableOnMap(character.CurrentPosition +
                                            facingDirection.RotateClockwise(new Angle(135)).Vector())
-                    && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), false, world))
+                    && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), false, map))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
 
-                if (!world.IsWalkableOnMap(character.CurrentPosition +
+                if (!map.IsWalkableOnMap(character.CurrentPosition +
                                            facingDirection.RotateAntiClockwise(new Angle(135)).Vector())
-                    && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), false, world))
+                    && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), false, map))
                 {
                     directions.Add(facingDirection.RotateAntiClockwise(new Angle(90)), 0.1f);
                 }
             }
             else
             {
-                if (character.CanMove(facingDirection.Rotate90Clockwise(), false, world))
+                if (character.CanMove(facingDirection.Rotate90Clockwise(), false, map))
                 {
                     directions.Add(facingDirection.Rotate90Clockwise(), 0.1f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate90AntiClockwise(), false, world))
+                if (character.CanMove(facingDirection.Rotate90AntiClockwise(), false, map))
                 {
                     directions.Add(facingDirection.Rotate90AntiClockwise(), 0.1f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate45Clockwise(), false, world))
+                if (character.CanMove(facingDirection.Rotate45Clockwise(), false, map))
                 {
                     directions.Add(facingDirection.Rotate45Clockwise(), 0.05f);
                 }
 
-                if (character.CanMove(facingDirection.Rotate45AntiClockwise(), false, world))
+                if (character.CanMove(facingDirection.Rotate45AntiClockwise(), false, map))
                 {
                     directions.Add(facingDirection.Rotate45AntiClockwise(), 0.05f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse().Rotate45Clockwise(), false, world))
+                if (character.CanMove(facingDirection.Reverse().Rotate45Clockwise(), false, map))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45Clockwise(), 0.02f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse().Rotate45AntiClockwise(), false, world))
+                if (character.CanMove(facingDirection.Reverse().Rotate45AntiClockwise(), false, map))
                 {
                     directions.Add(facingDirection.Reverse().Rotate45AntiClockwise(), 0.02f);
                 }
 
-                if (character.CanMove(facingDirection.Reverse(), false, world))
+                if (character.CanMove(facingDirection.Reverse(), false, map))
                 {
                     directions.Add(facingDirection.Reverse(), 0.03f);
                 }
@@ -74,9 +74,9 @@ namespace Domain.Service.Characters.Behavior
         }
 
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap world)
+            IMap map)
         {
-            return GenerateMoveActionsDoable(character, world);
+            return GenerateMoveActionsDoable(character, map);
         }
     }
 }

@@ -10,14 +10,14 @@ namespace Domain.Service.Action
 {
     internal record Swap(Direction8 Direction, float Score = 0) : IAction
     {
-        public bool Doable(IActor actor, IMap world)
+        public bool Doable(IActor actor, IMap map)
         {
-            return actor.CanSwap(Direction, world);
+            return actor.CanSwap(Direction, map);
         }
 
-        public UniTask Do(IActor actor, IMap world, IInput input)
+        public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            var target = world.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
+            var target = map.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
                 .FirstOrDefault();
             if (target == null)
                 throw new InvalidOperationException("target is null");
@@ -26,7 +26,7 @@ namespace Domain.Service.Action
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActor actor, IMap world)
+        public float Evaluate(IActor actor, IMap map)
         {
             return Score;
         }

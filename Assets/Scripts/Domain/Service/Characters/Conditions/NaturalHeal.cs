@@ -14,6 +14,8 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
+        public string InflictLog => "は自然治癒力が上がった";
+        public string DeleteLog => "は自然治癒力はもとに戻った";
         [MinValue(0)] public float Power;
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)

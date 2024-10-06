@@ -21,18 +21,18 @@ namespace Domain.Service.Characters
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
-            int clairvoyantFlags, int blindFlags, IMap world)
+            int clairvoyantFlags, int blindFlags, IMap map)
         {
             _position = position;
             _range = range;
             _clairvoyantFlags = new FlagStat(clairvoyantFlags);
             _blindFlags = new FlagStat(blindFlags);
             _position.Subscribe(currentPosition =>
-                ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
-            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, _range.CurrentValue)));
+                ChangeVisibleArea(Calc(currentPosition, map, _range.CurrentValue)));
+            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue)));
             _clairvoyantFlags
                 .Value
-                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, world, _range.CurrentValue)));
+                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue)));
         }
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;

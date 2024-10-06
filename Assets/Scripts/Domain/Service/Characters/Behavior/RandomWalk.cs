@@ -10,9 +10,9 @@ namespace Domain.Service.Characters.Behavior
 {
     internal sealed class RandomWalk : IBehaviorWhenUndiscoveringTarget
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
         {
-            return DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, world))
+            return DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, map))
                 .Select(direction => new Move(direction));
         }
     }

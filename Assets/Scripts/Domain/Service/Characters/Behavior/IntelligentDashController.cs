@@ -12,35 +12,35 @@ namespace Domain.Service.Characters.Behavior
 {
     internal sealed class IntelligentDashController
     {
-        public async UniTask Wait(IHasBehavior character, IMap world)
+        public async UniTask Wait(IHasBehavior character, IMap map)
         {
-            if (character.CanMove(character.CurrentDirection, world) &&
-                character.CanMove(character.CurrentDirection.Reverse(), world) &&
+            if (character.CanMove(character.CurrentDirection, map) &&
+                character.CanMove(character.CurrentDirection.Reverse(), map) &&
                 (
-                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise(), world) &&
-                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise(), world))
-                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise(), world) &&
-                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise(), world))
+                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise(), map) &&
+                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise(), map))
+                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise(), map) &&
+                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise(), map))
                 )
                )
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
         }
 
-        public Move Filter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
+        public Move Filter(Move move, IHasBehavior character, bool started, IMap map, IInput input)
         {
-            move = MoveFilter(move, character, world);
-            move = DashFilter(move, character, started, world, input);
+            move = MoveFilter(move, character, map);
+            move = DashFilter(move, character, started, map, input);
             return move;
         }
 
-        private Move MoveFilter(Move move, IHasBehavior character, IMap world)
+        private Move MoveFilter(Move move, IHasBehavior character, IMap map)
         {
-            if (!character.CanMove(move.Direction, world) && move.Direction.IsDiagonal())
+            if (!character.CanMove(move.Direction, map) && move.Direction.IsDiagonal())
             {
                 var directionRotateClockwise = move.Direction.Rotate45Clockwise();
-                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, world);
+                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, map);
                 var directionRotateAntiClockwise = move.Direction.Rotate45AntiClockwise();
-                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise, world);
+                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise, map);
                 if (canMoveDirectionRotateClockwise && !canMoveDirectionRotateAntiClockwise)
                     return new Move(directionRotateClockwise);
                 if (!canMoveDirectionRotateClockwise && canMoveDirectionRotateAntiClockwise)
@@ -50,11 +50,11 @@ namespace Domain.Service.Characters.Behavior
             return move;
         }
 
-        private Move DashFilter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
+        private Move DashFilter(Move move, IHasBehavior character, bool started, IMap map, IInput input)
         {
             if (!IsDashingStraight(started, input)) return move;
             var canMoveDirections = DirectionMethods.AllDirections
-                .Where(direction => character.CanMove(direction, world))
+                .Where(direction => character.CanMove(direction, map))
                 .ToHashSet();
             var inStraightway = canMoveDirections.Count() == 2;
             if (inStraightway)

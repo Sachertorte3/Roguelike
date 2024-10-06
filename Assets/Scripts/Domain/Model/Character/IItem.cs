@@ -26,18 +26,18 @@ namespace Domain.Model.Item
         public Option<ISkill> SkillOnUse { get; }
         public Option<ISkill> SkillOnThrow { get; }
         public bool Usable => CanActivateWhenUsed || CanActivateWhenThrown;
-        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world);
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map);
+        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public bool IsDisabled { get; }
         public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public void SetState(ItemState state);
-        public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world);
+        public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
 
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IMap world);
+            IMap map);
 
         public void Repair();
         public bool CanUpgrade(string filter = "");

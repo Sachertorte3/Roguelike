@@ -2,6 +2,7 @@
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Memento;
+using Domain.Service.Logs;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -44,13 +45,15 @@ namespace Domain.Service.Characters.Conditions
             );
         }
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
         {
+            GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
             _condition.Inflict(hasCondition, actor);
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
         {
+            GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
             _condition.Delete(hasCondition, actor);
         }
 

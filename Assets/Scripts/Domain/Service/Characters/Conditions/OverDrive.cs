@@ -13,6 +13,8 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
+        public string InflictLog => "以外の時が止まった";
+        public string DeleteLog => "以外の時が動き出した";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {

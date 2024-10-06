@@ -19,7 +19,7 @@ namespace Domain.Model.Item
         public Rarity Rarity => _rarity;
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
-        [MinValue(0)] public int AdditionalUpgradeLimit = 0;
+        public int AdditionalUpgradeLimit = 0;
         public List<AdditionalConditionData> AdditionalConditions = new();
 #if UNITY_EDITOR
         private void OnValidate()

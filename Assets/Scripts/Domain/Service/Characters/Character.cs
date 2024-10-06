@@ -117,7 +117,8 @@ namespace Domain.Service.Characters
 
         public int Money => _money;
 
-        public string GetName(IHasAffiliation player, bool ignoreVisibility = false)
+        public string GetName(IHasAffiliation player) => GetName(player, false);
+        public string GetName(IHasAffiliation player, bool ignoreVisibility)
         {
             if (!ignoreVisibility && !Visibility.CurrentValue)
             {
@@ -182,41 +183,41 @@ namespace Domain.Service.Characters
                         map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
         }
 
-        public bool CanSwap(Direction8 direction, IMap world)
+        public bool CanSwap(Direction8 direction, IMap map)
         {
-            return CanSwap(CurrentPosition, direction, world);
+            return CanSwap(CurrentPosition, direction, map);
         }
 
-        public bool CanSwap(Vector2Int position, Direction8 direction, IMap world)
+        public bool CanSwap(Vector2Int position, Direction8 direction, IMap map)
         {
             var destination = position + direction.Vector();
-            var target = world.GetCharactersInArea(new[] { destination }).FirstOrDefault();
+            var target = map.GetCharactersInArea(new[] { destination }).FirstOrDefault();
             if (target == null)
                 return false;
             if (target.IsEnemy(this))
                 return false;
-            if (target == world.Player)
+            if (target == map.Player)
                 return false;
-            return target.CanMoveIgnoreEntity(destination, direction.Reverse(), world) &&
-                   CanMoveIgnoreEntity(position, direction, world);
+            return target.CanMoveIgnoreEntity(destination, direction.Reverse(), map) &&
+                   CanMoveIgnoreEntity(position, direction, map);
         }
 
-        public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker world)
+        public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
             if (_canIgnoreWall)
                 return true;
             if (IsFlying)
             {
-                return world.IsPassableOnMap(position + direction.Vector())
+                return map.IsPassableOnMap(position + direction.Vector())
                        && (!direction.IsDiagonal() ||
-                           (world.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
-                            world.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+                           (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                            map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
             }
 
-            return world.IsWalkableOnMap(position + direction.Vector())
+            return map.IsWalkableOnMap(position + direction.Vector())
                    && (!direction.IsDiagonal() ||
-                       (world.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
-                        world.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+                       (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
+                        map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
         }
 
         public void Turn(Direction8 direction)
@@ -347,10 +348,9 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public float EvaluateThrow(IItem item, Direction8 direction, IMap world)
+        public float EvaluateThrow(IItem item, Direction8 direction, IMap map)
         {
-            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance,
-                world);
+            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
         }
 
         public int GainHp(int value)
@@ -501,17 +501,17 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        public async UniTask DoNextAction(IGameManager gameManager, IMap world, IInput input)
+        public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
         {
             State = CharacterState.Think;
-            var action = await _behavior.GenerateNextAction(this, gameManager, world, input);
+            var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
             if (IsConfused)
             {
-                action = RegenerateConfuseAction(this, world, action);
+                action = RegenerateConfuseAction(this, map, action);
             }
 
             State = CharacterState.Act;
-            await action.Do(this, world, input);
+            await action.Do(this, map, input);
         }
 
         public bool CanPickUpItem()
@@ -560,7 +560,7 @@ namespace Domain.Service.Characters
             Dispose();
         }
 
-        private IAction RegenerateConfuseAction(IHasBehavior character, IMap world, IAction action)
+        private IAction RegenerateConfuseAction(IHasBehavior character, IMap map, IAction action)
         {
             switch (action)
             {
@@ -571,9 +571,9 @@ namespace Domain.Service.Characters
                     {
                         var move = new Move(direction);
                         var swap = new Swap(direction);
-                        if (move.Doable(character, world))
+                        if (move.Doable(character, map))
                             moves.Add(move);
-                        else if (swap.Doable(character, world))
+                        else if (swap.Doable(character, map))
                             moves.Add(swap);
                     }
 

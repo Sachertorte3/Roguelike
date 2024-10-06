@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u30ED\u30F3\u30B0\u30BD\u30FC\u30C9"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1269613576, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: -85647645, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 0
   EffectType: 1
@@ -38,6 +38,7 @@ MonoBehaviour:
   ItemEffect:
     rid: -2
   UsageLimit: 25
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2

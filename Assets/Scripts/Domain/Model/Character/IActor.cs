@@ -12,12 +12,12 @@ namespace Domain.Model.Action
         public IInventory Inventory { get; }
         public IItemSelector ItemSelector { get; }
         public void DoNothing();
-        public bool CanSwap(Direction8 direction, IMap world);
+        public bool CanSwap(Direction8 direction, IMap map);
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
-        public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap world);
-        public UniTask UseItem(IItem item, Direction8 direction, IMap world);
-        public UniTask ThrowItem(IItem item, Direction8 direction, IMap world);
-        public float EvaluateThrow(IItem item, Direction8 direction, IMap world);
+        public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
+        public UniTask UseItem(IItem item, Direction8 direction, IMap map);
+        public UniTask ThrowItem(IItem item, Direction8 direction, IMap map);
+        public float EvaluateThrow(IItem item, Direction8 direction, IMap map);
     }
 }

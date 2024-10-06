@@ -96,53 +96,53 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world,
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input)
         {
             _lastTarget = null;
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
 
-            var visibleCharacters = world.GetVisibleCharacters(character);
+            var visibleCharacters = map.GetVisibleCharacters(character);
             var visibleEnemies = visibleCharacters.Where(c => character.IsEnemy(c));
             var visibleLeaders = visibleCharacters.Where(c => character.IsAlly(c) && c.IsLeader);
-            if (character.IsAlly(world.Player))
+            if (character.IsAlly(map.Player))
             {
-                visibleLeaders = visibleLeaders.Append(world.Player);
+                visibleLeaders = visibleLeaders.Append(map.Player);
             }
 
             var targetedEnemy = GetTargetedEnemy(character, visibleEnemies);
             var targetedLeader = GetTargetedLeader(character, visibleLeaders);
-            var targetedPosition = GetTargetPosition(character, world);
+            var targetedPosition = GetTargetPosition(character, map);
 
             if (BehaviorData.PrioritizeEnemiesOverLeaders)
             {
                 if (targetedEnemy != null)
                 {
-                    DiscoverEnemy(world, targetedEnemy);
+                    DiscoverEnemy(map, targetedEnemy);
                 }
                 else if (targetedLeader != null)
                 {
-                    DiscoverLeader(world, targetedLeader);
+                    DiscoverLeader(map, targetedLeader);
                 }
                 else if (_lastTargetPosition.HasValue)
                 {
-                    _lastTargetPosition = GetTargetPosition(character, world);
+                    _lastTargetPosition = GetTargetPosition(character, map);
                 }
             }
             else
             {
                 if (targetedLeader != null)
                 {
-                    DiscoverLeader(world, targetedLeader);
+                    DiscoverLeader(map, targetedLeader);
                 }
                 else if (targetedEnemy != null)
                 {
-                    DiscoverEnemy(world, targetedEnemy);
+                    DiscoverEnemy(map, targetedEnemy);
                 }
                 else if (_lastTargetPosition.HasValue)
                 {
-                    _lastTargetPosition = GetTargetPosition(character, world);
+                    _lastTargetPosition = GetTargetPosition(character, map);
                 }
             }
 
@@ -175,47 +175,47 @@ namespace Domain.Service.Characters.Behavior
             var actions = new List<IAction>();
             if (PrioritizeMovement(character, _lastTargetPosition))
             {
-                actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, world));
-                if (!actions.Any(action => action.Evaluate(character, world) > 0))
+                actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, map));
+                if (!actions.Any(action => action.Evaluate(character, map) > 0))
                 {
-                    actions.AddRange(GenerateUseSkillActionsDoable(character, world));
-                    actions.AddRange(GenerateUseItemActionsDoable(character, world));
-                    actions.AddRange(GenerateThrowItemActionsDoable(character, world));
+                    actions.AddRange(GenerateUseSkillActionsDoable(character, map));
+                    actions.AddRange(GenerateUseItemActionsDoable(character, map));
+                    actions.AddRange(GenerateThrowItemActionsDoable(character, map));
                 }
             }
             else
             {
-                actions.AddRange(GenerateUseSkillActionsDoable(character, world));
-                actions.AddRange(GenerateUseItemActionsDoable(character, world));
-                actions.AddRange(GenerateThrowItemActionsDoable(character, world));
-                if (!actions.Any(action => action.Evaluate(character, world) > 0))
+                actions.AddRange(GenerateUseSkillActionsDoable(character, map));
+                actions.AddRange(GenerateUseItemActionsDoable(character, map));
+                actions.AddRange(GenerateThrowItemActionsDoable(character, map));
+                if (!actions.Any(action => action.Evaluate(character, map) > 0))
                 {
-                    actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, world));
+                    actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, map));
                 }
             }
 
-            var validActions = actions.Where(action => action.Evaluate(character, world) > 0);
+            var validActions = actions.Where(action => action.Evaluate(character, map) > 0);
             foreach (var actionTemp in validActions)
             {
-                Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, world)}");
+                Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, map)}");
             }
 
             var action = await UniTask.FromResult(validActions.MaxByOrDefault(
-                action => action.Evaluate(character, world) + Random.Range(0, behavioralRandomness),
+                action => action.Evaluate(character, map) + Random.Range(0, behavioralRandomness),
                 new DoNothing()));
             return action;
         }
 
-        private void DiscoverLeader(IMap world, ICharacter targetedLeader)
+        private void DiscoverLeader(IMap map, ICharacter targetedLeader)
         {
-            Log.Debug($"[Think] Discover Leader {targetedLeader.GetName(world.Player)}.");
+            Log.Debug($"[Think] Discover Leader {targetedLeader.GetName(map.Player)}.");
             _lastTarget = targetedLeader;
             _lastTargetPosition = targetedLeader.CurrentPosition;
         }
 
-        private void DiscoverEnemy(IMap world, ICharacter targetedEnemy)
+        private void DiscoverEnemy(IMap map, ICharacter targetedEnemy)
         {
-            Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(world.Player)}.");
+            Log.Debug($"[Think] Discover Enemy {targetedEnemy.GetName(map.Player)}.");
             _lastTarget = targetedEnemy;
             _lastTargetPosition = targetedEnemy.CurrentPosition;
         }
@@ -234,13 +234,13 @@ namespace Domain.Service.Characters.Behavior
             return null;
         }
 
-        public Vector2Int? GetTargetPosition(IHasBehavior character, IMap world)
+        public Vector2Int? GetTargetPosition(IHasBehavior character, IMap map)
         {
             if (_lastTargetPosition == null)
                 return null;
             return GetDiscoveredTargetBehavior(character, _lastTargetPosition.Value) is Chase
                    && character.CurrentPosition != _lastTargetPosition
-                   && world.IsReachable(character.CurrentPosition, _lastTargetPosition.Value, character)
+                   && map.IsReachable(character.CurrentPosition, _lastTargetPosition.Value, character)
                 ? _lastTargetPosition
                 : null;
         }
@@ -281,28 +281,28 @@ namespace Domain.Service.Characters.Behavior
         }
 
         private IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int? targetPosition,
-            IMap world)
+            IMap map)
         {
             if (targetPosition != null)
             {
                 return GetDiscoveredTargetBehavior(character, targetPosition.Value)
-                    .GenerateMoveActionsDoable(character, targetPosition.Value, world);
+                    .GenerateMoveActionsDoable(character, targetPosition.Value, map);
             }
 
-            return _wander.GenerateMoveActionsDoable(character, world);
+            return _wander.GenerateMoveActionsDoable(character, map);
         }
 
-        private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap world)
+        private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap map)
         {
             return character.Skills
                 .SelectMany(
                     skill => DirectionMethods.AllDirections
                         .Select(direction => new UseSkill(skill, direction))
                 )
-                .Where(action => action.Doable(character, world));
+                .Where(action => action.Doable(character, map));
         }
 
-        private IEnumerable<UseItem> GenerateUseItemActionsDoable(IHasBehavior character, IMap world)
+        private IEnumerable<UseItem> GenerateUseItemActionsDoable(IHasBehavior character, IMap map)
         {
             if (!character.CanUseItem)
             {
@@ -314,10 +314,10 @@ namespace Domain.Service.Characters.Behavior
                     item => DirectionMethods.AllDirections
                         .Select(direction => new UseItem(item, direction))
                 )
-                .Where(action => action.Doable(character, world));
+                .Where(action => action.Doable(character, map));
         }
 
-        private IEnumerable<ThrowItem> GenerateThrowItemActionsDoable(IHasBehavior character, IMap world)
+        private IEnumerable<ThrowItem> GenerateThrowItemActionsDoable(IHasBehavior character, IMap map)
         {
             if (!character.CanUseItem)
             {
@@ -329,7 +329,7 @@ namespace Domain.Service.Characters.Behavior
                     item => DirectionMethods.AllDirections
                         .Select(direction => new ThrowItem(item, direction))
                 )
-                .Where(action => action.Doable(character, world));
+                .Where(action => action.Doable(character, map));
         }
 
         public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)

@@ -42,11 +42,11 @@ namespace Domain.Model.Effect
         }
 
 #if UNITY_EDITOR
-        public void OnValidate(float probabilityOfSuccess)
+        public void OnValidate()
         {
             if (ProbabilityOfSuccess == 0)
             {
-                ProbabilityOfSuccess = probabilityOfSuccess;
+                ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
             }
         }
 #endif

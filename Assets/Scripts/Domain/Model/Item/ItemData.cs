@@ -86,6 +86,18 @@ namespace Domain.Model.Item
 
         public string Name => name.SetColored(Rarity.GetColor());
         private bool _usable => SpawnEffectsOnUse || SpawnEffectsOnThrow;
+
+        public void AddEffects(List<IEffect> effects)
+        {
+            if (SkillOnUse != null)
+            {
+                SkillOnUse.Effects.AddRange(effects);
+            }
+            if (SkillOnThrow != null)
+            {
+                SkillOnThrow.Effects.AddRange(effects);
+            }
+        }
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -137,12 +149,12 @@ namespace Domain.Model.Item
 
             if (SkillOnUse != null)
             {
-                SkillOnUse.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
+                SkillOnUse.OnValidate();
             }
 
             if (SkillOnThrow != null)
             {
-                SkillOnThrow.OnValidate(CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
+                SkillOnThrow.OnValidate();
             }
         }
 #endif

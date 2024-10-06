@@ -31,6 +31,14 @@ namespace Domain.Service.Effect
             _blowAwayDistance = blowAwayDistance;
         }
 
+        public void MultiplyPower(float multiplier)
+        {
+            foreach (var elementPower in _elementPowers)
+            {
+                elementPower.Upgrade(Mathf.RoundToInt(elementPower.Power * multiplier - elementPower.Power));
+            }
+        }
+
         public Color Color => Colors.Red;
 
         public Impact Impact => Impact.Harmful;

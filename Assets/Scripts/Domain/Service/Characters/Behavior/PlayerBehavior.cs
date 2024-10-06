@@ -39,11 +39,11 @@ namespace Domain.Service.Characters.Behavior
 
         public bool WanderAround => true;
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world,
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input)
         {
             Log.Debug("[PlayerThink] Start waiting input...");
-            if (input.IsDash()) await _intelligentDashController.Wait(character, world);
+            if (input.IsDash()) await _intelligentDashController.Wait(character, map);
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
@@ -65,20 +65,20 @@ namespace Domain.Service.Characters.Behavior
                         else
                         {
                             if (Settings.IntelligentDash.Value)
-                                move = _intelligentDashController.Filter(move, character, started, world, input);
+                                move = _intelligentDashController.Filter(move, character, started, map, input);
 
                             var swap = new Swap(move.Direction);
                             var eventEntity =
-                                world.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(),
+                                map.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(),
                                     EntityLayer.Middle);
                             character.Turn(move.Direction);
-                            if (move.Doable(character, world))
+                            if (move.Doable(character, map))
                                 return move;
                             if (eventEntity != null)
                             {
                                 var choices = new List<string>();
                                 var firstChoiceIndex = 0;
-                                if (swap.Doable(character, world))
+                                if (swap.Doable(character, map))
                                 {
                                     choices.Add("入れ替わる");
                                     firstChoiceIndex += 1;
@@ -110,11 +110,11 @@ namespace Domain.Service.Characters.Behavior
                                         break;
                                     default:
                                         await executableEvents[choiceIndex - firstChoiceIndex]
-                                            .DoEvent(gameManager, world);
+                                            .DoEvent(gameManager, map);
                                         return new DoNothing();
                                 }
                             }
-                            else if (swap.Doable(character, world))
+                            else if (swap.Doable(character, map))
                                 return swap;
                         }
 
@@ -129,7 +129,7 @@ namespace Domain.Service.Characters.Behavior
                         else
                             action = new UseItem(item, character.CurrentDirection);
 
-                        if (action.Doable(character, world)) return action;
+                        if (action.Doable(character, map)) return action;
                         break;
                     case 2:
                         itemIndex = firstCompletedTask.result3;
@@ -137,7 +137,7 @@ namespace Domain.Service.Characters.Behavior
                         if (item != null)
                         {
                             action = new ThrowItem(item, character.CurrentDirection);
-                            if (action.Doable(character, world)) return action;
+                            if (action.Doable(character, map)) return action;
                         }
 
                         break;

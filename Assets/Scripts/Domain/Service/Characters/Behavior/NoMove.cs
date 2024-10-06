@@ -8,15 +8,15 @@ namespace Domain.Service.Characters.Behavior
 {
     public sealed class NoMove : IBehaviorWhenUndiscoveringTarget, IBehaviorWhenDiscoveringTarget
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap world)
+        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
         {
             return new List<IAction> { new DoNothing() };
         }
 
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap world)
+            IMap map)
         {
-            return GenerateMoveActionsDoable(character, world);
+            return GenerateMoveActionsDoable(character, map);
         }
     }
 }

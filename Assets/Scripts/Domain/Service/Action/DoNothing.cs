@@ -5,18 +5,18 @@ using Domain.Model.Map;
 
 public class DoNothing : IAction
 {
-    public bool Doable(IActor actor, IMap world)
+    public bool Doable(IActor actor, IMap map)
     {
         return true;
     }
 
-    public UniTask Do(IActor actor, IMap world, IInput input)
+    public UniTask Do(IActor actor, IMap map, IInput input)
     {
         actor.DoNothing();
         return UniTask.CompletedTask;
     }
 
-    public float Evaluate(IActor actor, IMap world)
+    public float Evaluate(IActor actor, IMap map)
     {
         return 0;
     }

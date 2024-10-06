@@ -18,7 +18,7 @@ namespace Domain.Service.Characters.Conditions
         private readonly CompositeDisposable _disposables = new();
 
         public CharacterConditions(IHasCondition hasCondition,
-            List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
+            List<(Id<IEntity> actor, ConditionMemento condition)> conditions, IHasAffiliation player)
         {
             foreach (var (actor, conditionMemento) in conditions)
             {
@@ -28,9 +28,9 @@ namespace Domain.Service.Characters.Conditions
             }
 
             _disposables.Add(_conditions.ObserveAdd()
-                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value])));
+                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player)));
             _disposables.Add(_conditions.ObserveRemove()
-                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value])));
+                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player)));
         }
 
         public IObservableCollection<ICondition> Conditions => _conditions;

@@ -116,7 +116,7 @@ namespace Domain.Service.Effect
 
             if (Random.value > ProbabilityOfSuccess)
             {
-                GameLog.Add("しかし失敗した");
+                GameLog.Add("しかし効果がなかった");
                 return SpawnEffectSkillResult.Failed;
             }
 

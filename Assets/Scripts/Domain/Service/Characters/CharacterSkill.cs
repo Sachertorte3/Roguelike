@@ -58,9 +58,9 @@ namespace Domain.Service.Characters
             return _skill.Use(actor, position, direction, map);
         }
 
-        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            return _skill.Evaluate(actor, position, direction, world);
+            return _skill.Evaluate(actor, position, direction, map);
         }
 
         public float EvaluatePrice()

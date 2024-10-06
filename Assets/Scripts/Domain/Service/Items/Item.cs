@@ -177,10 +177,10 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
-                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => itemTargetSkill.Use(actor, this)
             );
             if (result.Result != SkillResult.Cancelled)
@@ -198,10 +198,10 @@ namespace Domain.Service.Items
         }
 
         public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
-            Direction8 direction, IMap world)
+            Direction8 direction, IMap map)
         {
             var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
-                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, world),
+                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill =>
                 {
                     Log.Error("The item is not configured to activate this type of skill when thrown.");
@@ -222,7 +222,7 @@ namespace Domain.Service.Items
             return result;
         }
 
-        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             if (UseOnDeath && _remainingUsages.CurrentValue <= 1)
             {
@@ -232,18 +232,18 @@ namespace Domain.Service.Items
             return SkillOnUse.MapOr(
                 0,
                 skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
                     itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
                 )
             );
         }
 
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap world)
+        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             return SkillOnThrow.MapOr(
                 0,
                 skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, world),
+                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
                     itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
                 )
             );

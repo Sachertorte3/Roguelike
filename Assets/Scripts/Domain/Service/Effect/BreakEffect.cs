@@ -4,6 +4,9 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Map;
+using Domain.Service.Characters;
+using Domain.Service.Items;
+using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
 
@@ -14,25 +17,28 @@ namespace Domain.Service.Effect
     {
         public Color Color => Colors.Black;
         public Impact Impact => Impact.Harmful;
+        public bool OnlyApplyToItem = false;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
-        {
-            return Apply((IEntity)target, map);
-        }
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
 
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
-        {
-            return Apply(target, map);
-        }
+        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) => Apply(target, map);
 
-        public UniTask Apply(ITargetOfEffect target, IMap map)
-        {
-            return Apply((IEntity)target, map);
-        }
+        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
 
         public UniTask Apply(IEntity target, IMap map)
         {
-            target.Destroy();
+            if (!OnlyApplyToItem || target is ItemEntity)
+            {
+                if (target is Character character)
+                {
+                    GameLog.Add($"{character.GetName(map.Player)}は破壊された");
+                }
+                else if (target is ItemEntity item)
+                {
+                    GameLog.Add($"{item.Item.Name}は破壊された");
+                }
+                target.Destroy();
+            }
             return UniTask.CompletedTask;
         }
 

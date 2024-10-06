@@ -123,15 +123,15 @@ namespace Domain.Service.Characters
         }
 
         public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver,
-            ReactiveProperty<bool> canIgnoreWall, IMap world)
+            ReactiveProperty<bool> canIgnoreWall, IMap map)
         {
-            return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, world);
+            return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, map);
         }
 
         public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior,
-            ReactiveProperty<bool> canIgnoreWall, IMap world)
+            ReactiveProperty<bool> canIgnoreWall, IMap map)
         {
-            return new Character(data, behavior, canIgnoreWall, world);
+            return new Character(data, behavior, canIgnoreWall, map);
         }
     }
 }

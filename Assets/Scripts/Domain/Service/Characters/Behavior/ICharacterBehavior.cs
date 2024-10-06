@@ -16,7 +16,7 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
 
-        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap world,
+        public UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input);
     }
 }

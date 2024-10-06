@@ -15,6 +15,6 @@ namespace Domain.Model.Character
         public IInventory Inventory { get; }
         public IVisionRange VisionRange { get; }
         public int CurrentHp { get; }
-        public bool CanSwap(Vector2Int position, Direction8 direction, IMap world);
+        public bool CanSwap(Vector2Int position, Direction8 direction, IMap map);
     }
 }

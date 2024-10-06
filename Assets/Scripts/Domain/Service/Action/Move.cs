@@ -8,18 +8,18 @@ namespace Domain.Service.Action
 {
     internal record Move(Direction8 Direction, float Score = 0) : IAction
     {
-        public bool Doable(IActor actor, IMap world)
+        public bool Doable(IActor actor, IMap map)
         {
-            return actor.CanMove(Direction, world);
+            return actor.CanMove(Direction, map);
         }
 
-        public UniTask Do(IActor actor, IMap world, IInput input)
+        public UniTask Do(IActor actor, IMap map, IInput input)
         {
             actor.Move(Direction, input).Forget();
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActor actor, IMap world)
+        public float Evaluate(IActor actor, IMap map)
         {
             return Score;
         }

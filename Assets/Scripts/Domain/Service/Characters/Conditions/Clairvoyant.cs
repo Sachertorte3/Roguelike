@@ -13,7 +13,8 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
-
+        public string InflictLog => "はよく見えるようになった";
+        public string DeleteLog => "の視界は元に戻った";
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.StatusManager.AddClairvoyantFlags();

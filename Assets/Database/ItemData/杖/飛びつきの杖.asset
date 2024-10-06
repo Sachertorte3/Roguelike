@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u98DB\u3073\u3064\u304D\u306E\u6756"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1442388210, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2
   EffectType: 1
@@ -25,7 +25,7 @@ MonoBehaviour:
     <Area>k__BackingField:
       rid: 5486256292201496579
     <Effects>k__BackingField:
-      - rid: 5486256378686996490
+    - rid: 5486256378686996490
     <Position>k__BackingField:
       rid: 5486256292201496578
     <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -33,11 +33,12 @@ MonoBehaviour:
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
+    - rid: -2
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: -2
   UsageLimit: 5
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2

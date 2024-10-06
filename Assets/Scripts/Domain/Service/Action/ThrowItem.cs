@@ -9,19 +9,19 @@ namespace Domain.Service.Action
 {
     internal record ThrowItem(IItem Item, Direction8 Direction) : IAction
     {
-        public bool Doable(IActor actor, IMap world)
+        public bool Doable(IActor actor, IMap map)
         {
             return true;
         }
 
-        public async UniTask Do(IActor actor, IMap world, IInput input)
+        public async UniTask Do(IActor actor, IMap map, IInput input)
         {
-            await actor.ThrowItem(Item, Direction, world);
+            await actor.ThrowItem(Item, Direction, map);
         }
 
-        public float Evaluate(IActor actor, IMap world)
+        public float Evaluate(IActor actor, IMap map)
         {
-            return actor.EvaluateThrow(Item, Direction, world);
+            return actor.EvaluateThrow(Item, Direction, map);
         }
 
         public string Info()

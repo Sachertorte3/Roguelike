@@ -14,6 +14,8 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Harmful;
         public bool CanAct => true;
         public bool CausesConfusion => false;
+        public string InflictLog => "は足が遅くなった";
+        public string DeleteLog => "は元の速度に戻った";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {

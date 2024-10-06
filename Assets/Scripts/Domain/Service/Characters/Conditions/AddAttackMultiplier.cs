@@ -16,6 +16,8 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
+        public string InflictLog => $"は{Element}属性の攻撃力が上がった";
+        public string DeleteLog => $"の{Element}属性の攻撃力は元に戻った";
         public Element Element;
         [MinValue(0)] public float AddedMultiplier = 0f;
 

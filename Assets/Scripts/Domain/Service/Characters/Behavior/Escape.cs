@@ -13,7 +13,7 @@ namespace Domain.Service.Characters.Behavior
     internal sealed class Escape : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap world)
+            IMap map)
         {
             var relativePosition = character.CurrentPosition - targetPosition;
             var directions = DirectionMethods.NearDirectionsFromVector(relativePosition);
@@ -28,7 +28,7 @@ namespace Domain.Service.Characters.Behavior
                 moves = DirectionMethods.AllDirections.Select(direction => new Move(direction, 0.01f));
             }
 
-            return moves.Where(move => move.Doable(character, world));
+            return moves.Where(move => move.Doable(character, map));
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Game
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
+            ItemEntityEvents.OnDestroyed.Subscribe(dead => _items.Remove(dead.Item));
         }
 
         public IObservableCollection<IItemEntity> Items => _items;

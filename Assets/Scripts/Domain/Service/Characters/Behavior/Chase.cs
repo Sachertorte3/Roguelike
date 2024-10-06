@@ -14,20 +14,20 @@ namespace Domain.Service.Characters.Behavior
     public class MoveCostCalculator
     {
         private IHasBehavior _character;
-        private IMap _world;
+        private IMap _map;
         private bool _canSwap;
-        public MoveCostCalculator(IHasBehavior character, IMap world, bool canSwap)
+        public MoveCostCalculator(IHasBehavior character, IMap map, bool canSwap)
         {
             _character = character;
-            _world = world;
+            _map = map;
             _canSwap = canSwap;
         }
 
         public float Calculate(Vector2Int pos, Direction8 direction)
         {
-            if (_character.CanMove(pos, direction, _world))
+            if (_character.CanMove(pos, direction, _map))
                 return 1;
-            if (_canSwap && _character.CanSwap(pos, direction, _world))
+            if (_canSwap && _character.CanSwap(pos, direction, _map))
                 return 1 + 0.01f;
             return float.PositiveInfinity;
         }
@@ -36,9 +36,9 @@ namespace Domain.Service.Characters.Behavior
     internal sealed class Chase : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap world)
+            IMap map)
         {
-            var calculator = new MoveCostCalculator(character, world, false);
+            var calculator = new MoveCostCalculator(character, map, false);
             var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
@@ -54,12 +54,12 @@ namespace Domain.Service.Characters.Behavior
 
             var move = new Move(direction!.Value, 0.01f);
             var swap = new Swap(direction!.Value, 0.01f);
-            if (move.Doable(character, world))
+            if (move.Doable(character, map))
             {
                 return new List<Move> { move };
             }
 
-            if (swap.Doable(character, world))
+            if (swap.Doable(character, map))
             {
                 return new List<Swap> { swap };
             }

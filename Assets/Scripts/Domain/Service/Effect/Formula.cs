@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using UnityEngine;
 
 namespace Domain.Service.Effect
@@ -28,13 +29,22 @@ namespace Domain.Service.Effect
 
         public static int CalcHeal(int power)
         {
-            var baseHeal = power;
-            return Mathf.RoundToInt(baseHeal);
+            return Mathf.RoundToInt(power);
         }
 
         public static int EvaluateHeal(int power)
         {
             return Mathf.RoundToInt(power);
+        }
+
+        public static int CalcExplosionDamage(float damageRate, ITargetOfEffect target)
+        {
+            return Mathf.RoundToInt(target.CurrentHp * damageRate);
+        }
+
+        public static int EvaluateExplosionDamage(float damageRate)
+        {
+            return Mathf.RoundToInt(CommonSenseParameters.PlayerMaxHealth * damageRate);
         }
     }
 }

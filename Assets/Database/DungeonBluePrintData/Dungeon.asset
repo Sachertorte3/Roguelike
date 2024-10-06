@@ -203,13 +203,24 @@ MonoBehaviour:
         <Name>k__BackingField: "\u53EC\u559A\u306E\u7F60"
         <Skill>k__BackingField:
           <Area>k__BackingField:
-            rid: 5486256311944871970
+            rid: 5486256396100960256
           <Effect>k__BackingField:
-            rid: 5486256311944871972
+            rid: 5486256396100960257
+          <Position>k__BackingField:
+            rid: 5486256396100960258
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u7206\u767A\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Area>k__BackingField:
+            rid: 5486256396100960260
+          <Effect>k__BackingField:
+            rid: 5486256396100960259
           <Position>k__BackingField:
             rid: 5486256311944871973
           <ProbabilityOfSuccess>k__BackingField: 0.95
-      Weight: 1
+      Weight: 1000
   WeaponMolds:
     items:
     - Item: {fileID: 11400000, guid: 6cd5c19ac0e883c40bc6152522b5c698, type: 2}
@@ -558,13 +569,6 @@ MonoBehaviour:
     - rid: 5486256311944871969
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256311944871970
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871972
-      type: {class: SpawnRandomCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _count: 3
     - rid: 5486256311944871973
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -612,3 +616,25 @@ MonoBehaviour:
     - rid: 5486256311944871985
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 5486256396100960256
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256396100960257
+      type: {class: SpawnRandomCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _count: 3
+    - rid: 5486256396100960258
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256396100960259
+      type: {class: ExplosionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _damageRate: 0.5
+        _canDigWall: 1
+        _additionalConditions: []
+    - rid: 5486256396100960260
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 1
+        CanIgnoreWalls: 1
+        Radius: 2

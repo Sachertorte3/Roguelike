@@ -44,11 +44,11 @@ namespace Domain.Model.Effect
             Effects = skillDataOnUse.Effects;
         }
 
-        public void OnValidate(float probabilityOfSuccess)
+        public void OnValidate()
         {
             if (ProbabilityOfSuccess == 0 || ProbabilityOfSuccess == CommonSenseParameters.SkillOnUseProbabilityOfSuccess)
             {
-                ProbabilityOfSuccess = probabilityOfSuccess;
+                ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
             }
         }
 #endif

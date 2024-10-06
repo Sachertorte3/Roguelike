@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using Domain.Model.Character;
-using Domain.Model.Condition;
-using Domain.Model.Effect;
-using Domain.Model.Effect.Area;
-using Domain.Model.Evaluation;
 using Domain.Model.Item;
+using Domain.Model.Memento;
 using Domain.Service.Effect;
 using UnityEngine;
 
@@ -12,91 +7,35 @@ namespace Domain.Service.Items
 {
     public static class WeaponFactory
     {
-        public static ItemData Create(MaterialData material, WeaponMold mold)
+        public static ItemMemento Create(ItemData weapon, WeaponPrefix prefix)
         {
-            return new ItemData(
-                material.Name + mold.Name,
-                mold.Icon,
-                false,
-                Rarity.Common,
-                new SkillDataOnUse(
-                    mold.Position,
-                    mold.Area,
-                    new List<IEffect>
+            var item = Item.Build(weapon);
+            var effects = item.SkillOnUse.Value;
+            if (effects != null && effects is SpawnEffectSkillMemento spawnEffectSkillMemento)
+            {
+                foreach (var effect in spawnEffectSkillMemento.Effect)
+                {
+                    if (effect is AttackEffect attackEffect)
                     {
-                        new AttackEffect(
-                            new List<ElementPower>
-                            {
-                                new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
-                            },
-                            0,
-                            0
-                        )
-                    },
-                    CommonSenseParameters.SkillOnUseProbabilityOfSuccess
-                ),
-                new SkillDataOnThrow(
-                    new SelfArea(),
-                    new List<IEffect>
+                        attackEffect.MultiplyPower(prefix.PowerMagnification);
+                    }
+                    else if (effect is AbsorbsEffect absorbsEffect)
                     {
-                        new AttackEffect(
-                            new List<ElementPower>
-                            {
-                                new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification))
-                            },
-                            0,
-                            0
-                        )
-                    },
-                    CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
-                ),
-                true,
-                false,
-                false,
-                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification),
-                new List<IConditionData>()
-            );
-        }
+                        absorbsEffect.MultiplyPower(prefix.PowerMagnification);
+                    }
+                }
 
-        public static ItemData Create(WeaponPrefix prefix, MaterialData material, WeaponMold mold)
-        {
-            var effects = new List<IEffect>
-            {
-                new AttackEffect(
-                    new List<ElementPower>
-                    {
-                        new(Element.Physical, Mathf.RoundToInt(material.Power * mold.PowerMagnification * prefix.PowerMagnification))
-                    },
-                    0,
-                    0
-                )
-            };
-            foreach (var condition in prefix.AdditionalConditions)
-            {
-                effects.Add(new AddConditionEffect(condition));
+                foreach (var condition in prefix.AdditionalConditions)
+                {
+                    spawnEffectSkillMemento.Effect.Add(new AddConditionEffect(condition));
+                }
             }
-            return new ItemData(
-                prefix.Name + material.Name + mold.Name,
-                mold.Icon,
-                false,
-                prefix.Rarity,
-                new SkillDataOnUse(
-                    mold.Position,
-                    mold.Area,
-                    effects,
-                    CommonSenseParameters.SkillOnUseProbabilityOfSuccess
-                ),
-                new SkillDataOnThrow(
-                    new SelfArea(),
-                    effects,
-                    CommonSenseParameters.SkillOnThrowProbabilityOfSuccess
-                ),
-                true,
-                false,
-                false,
-                Mathf.RoundToInt(mold.UsageLimit * material.UsageLimitMagnification * prefix.UsageLimitMagnification),
-                new List<IConditionData>()
+            item = item.CopyWith(
+                name: prefix.Name + item.Name,
+                maxUsages: Mathf.RoundToInt(item.MaxUsages * prefix.UsageLimitMagnification),
+                remainingUsages: Mathf.RoundToInt(item.RemainingUsages * prefix.UsageLimitMagnification)
             );
+            return item;
         }
     }
 }

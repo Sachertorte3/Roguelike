@@ -62,11 +62,10 @@ namespace Game
             {
                 var characterCount = GetCount(data.CharacterCount);
                 var itemCount = GetCount(data.ItemCount);
-                var weaponCount = GetCount(data.WeaponCount);
                 var chestCount = Random.value < data.ChestChance ? 1 : 0;
                 var trapCount = GetCount(data.TrapCount);
                 var bossCount = data.existBoss ? data.Boss.Count : 0;
-                var sum = characterCount + itemCount + weaponCount + chestCount + trapCount + bossCount + 3;
+                var sum = characterCount + itemCount + chestCount + trapCount + bossCount + 3;
 
                 var positions = room.RectRange().ToList();
                 if (positions.Count < sum)
@@ -76,13 +75,11 @@ namespace Game
 
                 var characterPositions = positions.GetAtRandomAndRemove(characterCount);
                 var itemPositions = positions.GetAtRandomAndRemove(itemCount);
-                var weaponPositions = positions.GetAtRandomAndRemove(weaponCount);
                 var chestPositions = positions.GetAtRandomAndRemove(chestCount);
                 var trapPositions = positions.GetAtRandomAndRemove(trapCount);
 
                 AddCharactersToRoom(data, characterPositions);
                 AddItemsToRoom(data, itemPositions);
-                AddWeaponsToRoom(data, weaponPositions);
                 AddChestsToRoom(data, chestPositions, _chests);
                 AddTrapsToRoom(data, trapPositions, _traps);
 
@@ -231,26 +228,6 @@ namespace Game
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
         }
 
-        private void AddWeaponsToRoom(DungeonMapData data, List<Vector2Int> positions)
-        {
-            foreach (var position in positions)
-            {
-                var material = data.Materials.GetRandomItem();
-                var mold = data.WeaponMolds.GetRandomItem();
-                if (Random.value < data.PrefixChance)
-                {
-                    var prefix = data.WeaponPrefixes.GetRandomItem();
-                    var weapon = WeaponFactory.Create(prefix, material, mold);
-                    _items.Add(ItemFactory.Build(position, Item.Build(weapon)));
-                }
-                else
-                {
-                    var weapon = WeaponFactory.Create(material, mold);
-                    _items.Add(ItemFactory.Build(position, Item.Build(weapon)));
-                }
-            }
-        }
-
         private void AddChestsToRoom(DungeonMapData data, List<Vector2Int> positions, List<ChestMemento> chests)
         {
             foreach (var position in positions)
@@ -261,16 +238,11 @@ namespace Game
                 }
                 else if (Random.value < data.WeaponChanceInChest)
                 {
-                    var material = data.Materials.GetRandomItem();
-                    var mold = data.WeaponMolds.GetRandomItem();
-                    var prefix = data.WeaponPrefixes.GetRandomItem();
-                    var weapon = WeaponFactory.Create(prefix, material, mold);
-                    chests.Add(Chest.Build(position, weapon));
+                    chests.Add(Chest.Build(position, WeaponFactory.Create(data.Items.GetRandomItem(ItemCategory.Weapons), data.WeaponPrefixes.GetRandomItem())));
                 }
                 else
                 {
-                    var item = data.ChestItems.GetRandomItem();
-                    chests.Add(Chest.Build(position, item));
+                    chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem()));
                 }
             }
         }

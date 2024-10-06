@@ -32,8 +32,8 @@ namespace Domain.Model.Dungeon
         public const float DefaultShopChance = 0.1f;
         public const float DefaultMonsterHouseChance = 0.1f;
         public const float DefaultRestRoomChance = 0.1f;
-        public readonly RoomData DefaultRoom = new(0, 1, 0.5f, 1, 0.5f);
-        public readonly RoomData EmptyRoom = new(0, 0, 0, 0, 0);
+        public readonly RoomData DefaultRoom = new(0, 1, 1, 0.5f);
+        public readonly RoomData EmptyRoom = new(0, 0, 0, 0);
 
         [ShowIf("IsCustom")] [Range(0, 1)] [SerializeField]
         private float _prefixChance = DefaultPrefixChance;

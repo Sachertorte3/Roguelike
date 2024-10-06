@@ -15,15 +15,17 @@ namespace Domain.Service.Effect
         [SerializeField] private List<ElementPower> _elementPowers;
         [Range(0, 1)] [SerializeField] private float _rate;
 
-        public AbsorbsEffect(List<ElementPower> elementPowers, float rate)
-        {
-            _elementPowers = elementPowers;
-            _rate = rate;
-        }
-
         public Color Color => Colors.Yellow;
 
         public Impact Impact => Impact.Harmful;
+
+        public void MultiplyPower(float multiplier)
+        {
+            foreach (var elementPower in _elementPowers)
+            {
+                elementPower.Upgrade(Mathf.RoundToInt(elementPower.Power * multiplier - elementPower.Power));
+            }
+        }
 
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {

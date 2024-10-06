@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
-using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Table;
@@ -23,6 +22,5 @@ namespace Domain.Model.Dungeon
         private bool _existShop => Floors.Any(floor => floor.ShopChance > 0);
         [ShowIf("@_existShop")] [Required] public EnemyData Clerk;
         public Table<EnemyData> Enemies;
-        public Table<MaterialData> Materials;
     }
 }

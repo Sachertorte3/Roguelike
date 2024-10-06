@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30E2\u30FC\u30CB\u30F3\u30B0\u30B9\u30BF\u30FC"
+  m_Name: "\u30BD\u30A6\u30EB\u30A4\u30FC\u30BF\u30FC"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -1231767279, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 583322411, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 3
   EffectType: 1
@@ -23,50 +23,43 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Area>k__BackingField:
-      rid: 2541219158355345461
+      rid: 2541219281251860481
     <Effects>k__BackingField:
-    - rid: 2541219158355345460
-    - rid: 5486256396100960270
+    - rid: 4425516923575599125
     <Position>k__BackingField:
-      rid: 2541219106150416405
+      rid: 2541219106150416400
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
-      rid: 2541219281251860483
+      rid: 2541219281251860482
     <Effects>k__BackingField:
-    - rid: 2541219158355345460
+    - rid: 4425516923575599125
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: -2
-  UsageLimit: 10
+  UsageLimit: 15
   PassiveConditions: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416405
+    - rid: 2541219106150416400
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219158355345460
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers:
-        - _element: 0
-          _power: 7
-        _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
-    - rid: 2541219158355345461
-      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 2541219281251860481
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
-        Radius: 1
-    - rid: 2541219281251860483
+        Length: 1
+    - rid: 2541219281251860482
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 5486256396100960270
-      type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 4425516923575599125
+      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _distance: 1
+        _elementPowers:
+        - _element: 0
+          _power: 5
+        _rate: 1

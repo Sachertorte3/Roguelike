@@ -17,7 +17,6 @@ namespace Domain.Model.Dungeon
         public ItemCategoryWeight SpawnItem;
         public ItemCategoryWeight ChestItem;
         public Table<TrapData> Traps;
-        public Table<WeaponMold> WeaponMolds;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         public Table<EnemyData> Npcs;
         [RequiredListLength(1, null)] public List<SectionData> Sections;
@@ -70,8 +69,6 @@ namespace Domain.Model.Dungeon
                 sectionData.Type,
                 floorData.Field,
                 new ItemTable(MasterItemDataBase, SpawnItem),
-                sectionData.Materials,
-                WeaponMolds,
                 WeaponPrefixes,
                 new ItemTable(MasterItemDataBase, ChestItem),
                 Traps,
@@ -90,7 +87,6 @@ namespace Domain.Model.Dungeon
                 floorData.MonsterHouseChance,
                 floorData.RestRoomChance,
                 floorData.Room.ItemCount,
-                floorData.Room.WeaponCount,
                 floorData.Room.CharacterCount,
                 floorData.Room.TrapCount,
                 floorData.ExistBoss,

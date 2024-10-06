@@ -136,11 +136,12 @@ namespace Domain.Service.Events
             );
         }
 
-        public static ChestMemento Build(Vector2Int position, ItemData item)
+        public static ChestMemento Build(Vector2Int position, ItemData item) => Build(position, new Item(item).Serialize());
+        public static ChestMemento Build(Vector2Int position, ItemMemento item)
         {
             return new ChestMemento
             (
-                new Item(item).Serialize(),
+                item,
                 Entity.Build(position, EntityLayer.Middle)
             );
         }

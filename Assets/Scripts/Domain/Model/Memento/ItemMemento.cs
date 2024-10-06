@@ -45,5 +45,28 @@ namespace Domain.Model.Memento
             RemainingUsages = remainingUsages;
             Conditions = conditions;
         }
+
+        public ItemMemento CopyWith(string? id = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
+            List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null, Option<ISkillMemento>? skillOnThrow = null,
+            bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null, int? remainingUsages = null,
+            IConditionData[]? conditions = null)
+        {
+            return new ItemMemento(
+                id ?? Id,
+                name ?? Name,
+                iconName ?? IconName,
+                isShiny ?? IsShiny,
+                state ?? State,
+                upgradePaths ?? UpgradePaths,
+                skillOnUse ?? SkillOnUse,
+                skillOnThrow ?? SkillOnThrow,
+                hasSameEffect ?? HasSameEffect,
+                hasSameSkill ?? HasSameSkill,
+                useOnDeath ?? UseOnDeath,
+                maxUsages ?? MaxUsages,
+                remainingUsages ?? RemainingUsages,
+                conditions ?? Conditions
+            );
+        }
     }
 }

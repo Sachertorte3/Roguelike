@@ -26,7 +26,7 @@ namespace Domain.Model.Dungeon
 
         public const float DefaultPrefixChance = 0.2f;
         public const float DefaultShinyChance = 0.01f;
-        public const float DefaultSleepChance = 0.5f;
+        public const float DefaultSleepChance = 0.75f;
         public const float DefaultMimicChance = 0.1f;
         public const float DefaultGrassChance = 0.3f;
         public const float DefaultShopChance = 0.1f;

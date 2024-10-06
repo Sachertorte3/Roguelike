@@ -224,9 +224,9 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento
             (
                 CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
-                    elementDamageRateMultiplier, viewRange, waitTime, isSlept),
+                    elementDamageRateMultiplier, viewRange, waitTime),
                 0,
-                0,
+                isSlept ? 1 : 0,
                 0,
                 conditions
             );

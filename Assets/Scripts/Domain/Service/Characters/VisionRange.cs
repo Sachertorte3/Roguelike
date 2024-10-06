@@ -29,7 +29,7 @@ namespace Domain.Service.Characters
             _blindFlags = new FlagStat(blindFlags);
             _position.Subscribe(currentPosition =>
                 ChangeVisibleArea(Calc(currentPosition, world, _range.CurrentValue)));
-            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, range)));
+            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, world, _range.CurrentValue)));
             _clairvoyantFlags
                 .Value
                 .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, world, _range.CurrentValue)));
@@ -77,7 +77,7 @@ namespace Domain.Service.Characters
             if (IsClairvoyant)
                 return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
             if (IsBlind)
-                return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, 1);
+                return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, 1.5f);
             return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);
         }
     }

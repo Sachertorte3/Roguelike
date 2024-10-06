@@ -13,6 +13,10 @@ namespace Domain.Model.Effect
     {
         [field: SerializeReference]
         [field: Required]
+        public IActorlessEffectPosition Position { get; private set; }
+
+        [field: SerializeReference]
+        [field: Required]
         public INotDirectionalArea Area { get; private set; }
 
         [field: SerializeReference]
@@ -20,8 +24,8 @@ namespace Domain.Model.Effect
         public List<IActorlessEffect> Effects { get; private set; }
 
         [field: SerializeReference]
-        [field: Required]
-        public IActorlessEffectPosition Position { get; private set; }
+        [field: MinValue(1)]
+        public int Repeats { get; private set; } = 1;
 
         public int RushDistance => 0;
 

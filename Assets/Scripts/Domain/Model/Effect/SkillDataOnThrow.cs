@@ -12,6 +12,8 @@ namespace Domain.Model.Effect
     [Serializable]
     public class SkillDataOnThrow : ISkillData
     {
+        public IEffectPosition Position => new AtFeet();
+
         [field: SerializeReference]
         [field: Required]
         public IArea Area { get; private set; }
@@ -20,7 +22,8 @@ namespace Domain.Model.Effect
         [field: Required]
         public List<IEffect> Effects { get; private set; }
 
-        public IEffectPosition Position => new AtFeet();
+        public int Repeats => 1;
+
         public int RushDistance => 0;
         public int BackStepDistance => 0;
 

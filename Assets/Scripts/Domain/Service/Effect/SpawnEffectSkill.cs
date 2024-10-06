@@ -17,27 +17,29 @@ namespace Domain.Service.Effect
 {
     public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
     {
+        private readonly IEffectPosition _position;
         private readonly IArea _area;
         private readonly List<IEffect> _effects;
-        private readonly IEffectPosition _position;
+        public int Repeats { get; private set; }
         public int RushDistance { get; private set; }
         public int BackStepDistance { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int rushDistance,
+        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats, int rushDistance,
             int backStepDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
             _area = area;
             _effects = effect;
+            Repeats = repeats;
             RushDistance = rushDistance;
             BackStepDistance = backStepDistance;
             ProbabilityOfSuccess = probabilityOfSuccess;
             _log = log;
         }
 
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect,
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.Repeats,
             data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
@@ -46,6 +48,7 @@ namespace Domain.Service.Effect
             IEffectPosition? position = null,
             IArea? area = null,
             List<IEffect>? effect = null,
+            int? repeats = null,
             int? rushDistance = null,
             int? backStepDistance = null,
             float? probabilityOfSuccess = null,
@@ -55,6 +58,7 @@ namespace Domain.Service.Effect
                 position ?? _position,
                 area ?? _area,
                 effect ?? _effects,
+                repeats ?? Repeats,
                 rushDistance ?? RushDistance,
                 backStepDistance ?? BackStepDistance,
                 probabilityOfSuccess ?? ProbabilityOfSuccess,
@@ -71,6 +75,7 @@ namespace Domain.Service.Effect
                 _position,
                 _area,
                 _effects,
+                Repeats,
                 RushDistance,
                 BackStepDistance,
                 ProbabilityOfSuccess,
@@ -85,6 +90,7 @@ namespace Domain.Service.Effect
                 data.Position,
                 data.Area,
                 data.Effects,
+                data.Repeats,
                 data.RushDistance,
                 data.BackStepDistance,
                 data.ProbabilityOfSuccess,
@@ -129,47 +135,50 @@ namespace Domain.Service.Effect
             var area = GetArea(actor, position, direction, map);
             map.SetGrasses(area, false);
 
-            foreach (var effect in _effects)
+            for (var i = 0; i < Repeats; i++)
             {
-                foreach (var target in map.GetEntitiesInArea(area)
-                             .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
-                             .Reverse())
+                foreach (var effect in _effects)
                 {
-                    switch (target)
+                    foreach (var target in map.GetEntitiesInArea(area)
+                                .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
+                                .Reverse())
                     {
-                        case ICharacter character:
-                            if (effect.Impact == Impact.Harmful)
-                            {
-                                var impactValue = effect.Evaluate(actor, character);
-                                character.WasAttackedBy(actor, impactValue);
+                        switch (target)
+                        {
+                            case ICharacter character:
+                                if (effect.Impact == Impact.Harmful)
+                                {
+                                    var impactValue = effect.Evaluate(actor, character);
+                                    character.WasAttackedBy(actor, impactValue);
 
-                                map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                    .Where(target => target != actor && target != actor)
-                                    .ForEach(c =>
-                                        c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
-                                            impactValue));
-                            }
-                            else if (effect.Impact == Impact.Beneficial)
-                            {
-                                var impactValue = effect.Evaluate(actor, character);
-                                character.WasHealedBy(actor, impactValue);
+                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                        .Where(target => target != actor && target != actor)
+                                        .ForEach(c =>
+                                            c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
+                                                impactValue));
+                                }
+                                else if (effect.Impact == Impact.Beneficial)
+                                {
+                                    var impactValue = effect.Evaluate(actor, character);
+                                    character.WasHealedBy(actor, impactValue);
 
-                                map.GetCharactersCanSeePosition(character.CurrentPosition)
-                                    .Where(target => target != actor && target != actor)
-                                    .ForEach(c =>
-                                        c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
-                                            impactValue));
-                            }
+                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                        .Where(target => target != actor && target != actor)
+                                        .ForEach(c =>
+                                            c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
+                                                impactValue));
+                                }
 
-                            await effect.Apply(actor, character, map);
-                            break;
-                        default:
-                            await effect.Apply(actor, target, map);
-                            break;
+                                await effect.Apply(actor, character, map);
+                                break;
+                            default:
+                                await effect.Apply(actor, target, map);
+                                break;
+                        }
                     }
-                }
 
-                await effect.Apply(actor, area, map);
+                    await effect.Apply(actor, area, map);
+                }
             }
 
             return SpawnEffectSkillResult.Success(Color, area);
@@ -275,6 +284,8 @@ namespace Domain.Service.Effect
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
             var info = "";
+            if (Repeats > 1)
+                info += $"発動回数: {Repeats}回\n";
             foreach (var (effect, index) in _effects.Index())
             {
                 info += $"効果{index + 1}: {effect.Info()}\n";
@@ -293,6 +304,8 @@ namespace Domain.Service.Effect
         public string InfoOnThrow(bool omitEffects = false)
         {
             var info = "";
+            if (Repeats > 1)
+                info += $"発動回数: {Repeats}回\n";
             if (!omitEffects)
             {
                 foreach (var (effect, index) in _effects.Index())

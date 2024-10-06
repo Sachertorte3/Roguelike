@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using Domain.Model.Character;
@@ -47,9 +48,29 @@ namespace Provider
                 "GiveItem",
                 this);
             DebugLogConsole.AddCommandInstance(
+                "GiveItem",
+                "指定した対象のインベントリに指定したアイテムを追加します。",
+                "GivePrefixedItem",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "GiveItemPlayer",
+                "プレイヤーのインベントリに指定したアイテムを追加します。",
+                "GiveItemPlayer",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "GiveItemPlayer",
+                "プレイヤーのインベントリに指定したアイテムを追加します。",
+                "GivePrefixedItemPlayer",
+                this);
+            DebugLogConsole.AddCommandInstance(
                 "SpawnItem",
                 "指定した位置に指定したアイテムをスポーンします。",
                 "SpawnItem",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "SpawnItem",
+                "指定した位置に指定したアイテムをスポーンします。",
+                "SpawnPrefixedItem",
                 this);
             DebugLogConsole.AddCommandInstance(
                 "SpawnEnemy",
@@ -141,8 +162,10 @@ namespace Provider
                 Log.Error(e);
             }
         }
-
-        private void GiveItem(string target, string itemName)
+        private void GiveItemPlayer(string itemName) => GivePrefixedItem("player", itemName, null);
+        private void GivePrefixedItemPlayer(string itemName, string? prefixName = null) => GivePrefixedItem("player", itemName, prefixName);
+        private void GiveItem(string target, string itemName) => GivePrefixedItem(target, itemName, null);
+        private void GivePrefixedItem(string target, string itemName, string? prefixName = null)
         {
             try
             {
@@ -150,9 +173,16 @@ namespace Provider
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
                 var item = new Item(itemData);
+                if (prefixName != null)
+                {
+                    var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
+                        .WaitForCompletion();
+                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
+                    item = new Item(itemMemento);
+                }
                 if (character.Inventory.TryAdd(item))
                 {
-                    Log.Info($"{itemName}を{target}のインベントリに追加しました。");
+                    Log.Info($"{item.Name}を{target}のインベントリに追加しました。");
                 }
                 else
                 {
@@ -165,15 +195,23 @@ namespace Provider
             }
         }
 
-        private void SpawnItem(string itemName, Vector2Int position)
+        private void SpawnItem(string itemName, Vector2Int position) => SpawnPrefixedItem(itemName, position, null);
+        private void SpawnPrefixedItem(string itemName, Vector2Int position, string? prefixName = null)
         {
             try
             {
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
                 var item = new Item(itemData);
-                _world.ActiveMap.CurrentValue.SpawnItem(item, position);
-                Log.Info($"{itemName}を{position}にスポーンしました。");
+                if (prefixName != null)
+                {
+                    var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
+                        .WaitForCompletion();
+                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
+                    item = new Item(itemMemento);
+                }
+                var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
+                Log.Info($"{spawnedItem.Item.Name}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {
@@ -187,8 +225,8 @@ namespace Provider
             {
                 var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset")
                     .WaitForCompletion();
-                _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
-                Log.Info($"{enemyName}を{position}にスポーンしました。");
+                var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
+                Log.Info($"{enemy.GetName(_world.ActiveMap.CurrentValue.Player, true)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

@@ -23,7 +23,7 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Area>k__BackingField:
-      rid: 5486256397401194512
+      rid: 5486256397401194515
     <Effects>k__BackingField:
     - rid: 2541219158355345460
     <Position>k__BackingField:
@@ -52,15 +52,15 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 6
+          _power: 5
         _criticalRate: 0
         _blowAwayDistance: 0
     - rid: 2541219281251860483
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 5486256397401194512
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 5486256397401194515
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
-        Length: 1
+        Radius: 1

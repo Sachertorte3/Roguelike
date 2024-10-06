@@ -33,7 +33,8 @@ namespace Domain.Service.Items
             item = item.CopyWith(
                 name: prefix.Name + item.Name,
                 maxUsages: Mathf.RoundToInt(item.MaxUsages * prefix.UsageLimitMagnification),
-                remainingUsages: Mathf.RoundToInt(item.RemainingUsages * prefix.UsageLimitMagnification)
+                remainingUsages: Mathf.RoundToInt(item.RemainingUsages * prefix.UsageLimitMagnification),
+                upgradeLimit: item.UpgradeLimit + prefix.AdditionalUpgradeLimit
             );
             return item;
         }

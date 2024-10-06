@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: -1231767279, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 3
+  _rarity: 2
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -53,7 +53,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 7
+          _power: 5
         _criticalRate: 0
         _blowAwayDistance: 0
     - rid: 2541219281251860483

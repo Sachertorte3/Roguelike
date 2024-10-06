@@ -15,48 +15,54 @@ MonoBehaviour:
   MasterItemDataBase:
     Consumables:
       items:
+      - {fileID: 11400000, guid: 69708070d58333b45838e656a14c6fb3, type: 2}
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
+      - {fileID: 11400000, guid: f5954a8ba66a98444ace7667d7ee2362, type: 2}
       - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+      - {fileID: 11400000, guid: 0299f6328f2795248adce3e46d009493, type: 2}
       - {fileID: 11400000, guid: 39691e5dea321a64fbb7e0cd664d6261, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
       - {fileID: 11400000, guid: 208881b119b976244a51307120cf9e28, type: 2}
       - {fileID: 11400000, guid: edf0f6bc35c73d74bb59f02584bb0ab5, type: 2}
-      - {fileID: 11400000, guid: 0299f6328f2795248adce3e46d009493, type: 2}
-      - {fileID: 11400000, guid: f5954a8ba66a98444ace7667d7ee2362, type: 2}
-      - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
-      - {fileID: 11400000, guid: 7b70ff2864835eb479d3552172b5763a, type: 2}
-      - {fileID: 11400000, guid: 33eea7551848a164c9dcf92d8b8ede2c, type: 2}
-      - {fileID: 11400000, guid: e16cf9694809f024f825f15a0c27e878, type: 2}
+      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
       - {fileID: 11400000, guid: 05490fe8cb870984c893e036bce07295, type: 2}
+      - {fileID: 11400000, guid: 7b70ff2864835eb479d3552172b5763a, type: 2}
+      - {fileID: 11400000, guid: e16cf9694809f024f825f15a0c27e878, type: 2}
+      - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
       - {fileID: 11400000, guid: 04798754c79f8bb46922b957a944a4ef, type: 2}
-      - {fileID: 11400000, guid: 69708070d58333b45838e656a14c6fb3, type: 2}
+      - {fileID: 11400000, guid: 33eea7551848a164c9dcf92d8b8ede2c, type: 2}
+      - {fileID: 11400000, guid: dde14a99d714bfd48933ba0589629d5e, type: 2}
+      - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
+      - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
+      - {fileID: 11400000, guid: 2d495872fc952f943aa04d73c68be98e, type: 2}
+      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
+      - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
+      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+      - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+      - {fileID: 11400000, guid: 5bbf8af4e6664114a86949a781c43ebb, type: 2}
+      - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+      - {fileID: 11400000, guid: bd7b184c81a4f884ea259981d5108472, type: 2}
+      - {fileID: 11400000, guid: 0ed5fe0cbff036b42a54319cf7cb3370, type: 2}
+      - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+      - {fileID: 11400000, guid: 82cd42b9fc0e70e4dbaf5977771fb17d, type: 2}
+      - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
     Weapons:
       items:
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: f2a6d946be267f342b2e6213d596b6fa, type: 2}
-      - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
       - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
-      - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
-      - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
-      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
-      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
-      - {fileID: 11400000, guid: 2d495872fc952f943aa04d73c68be98e, type: 2}
-      - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
-      - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
-      - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
-      - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
+      - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
     Artifacts:
       items:
-      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
       - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
       - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
       - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
+      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
     UpgradeMaterials:
       items:
       - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
     ShopItems:
       items:
       - Item:

@@ -124,8 +124,6 @@ namespace Game
                     }
                 }
 
-                Debug.Log(
-                    $"CreateMapManager mapId:{mapId} upStairsId:{upStairsId} upStairsDestinationId:{upStairsDestinationId} downStairsId:{downStairsId} downStairsDestinationId:{downStairsDestinationId}");
                 _maps[mapId] = _dungeons[location.MapName].CreateMapManager(location.Level, upStairsId,
                     upStairsDestinationId, downStairsId, downStairsDestinationId);
             }

@@ -30,7 +30,6 @@ namespace View
         {
             if (_audioSource.clip == clip)
             {
-                Debug.Log(clip.name);
                 return;
             }
 

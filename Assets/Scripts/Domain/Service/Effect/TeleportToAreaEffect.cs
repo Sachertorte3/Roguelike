@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -17,10 +18,15 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var position = positions.GetAtRandom();
-            var blank = map.FindBlankPositionFrom(position,
-                (pos) => actor.IsFlying ? map.IsBlank(pos, EntityLayer.Middle) : map.IsBlankAndStandable(pos, EntityLayer.Middle));
-            actor.Teleport(blank);
+            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying));
+            if (placeablePositions.Any())
+            {
+                actor.Teleport(placeablePositions.GetAtRandom());
+            }
+            else
+            {
+                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), (pos) => map.CanPlace(pos, actor.IsFlying)));
+            }
             return UniTask.CompletedTask;
         }
 

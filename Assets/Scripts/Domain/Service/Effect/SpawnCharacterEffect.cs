@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
@@ -14,8 +16,8 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnCharacterEffect : IActorlessEffect
     {
-        [Required] [SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
-        [MinValue(1)] [SerializeField] private int _count;
+        [Required][SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
+        [MinValue(1)][SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
         public Color Color => Colors.MediumPurple;
@@ -24,9 +26,10 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            foreach (var position in positions)
+            var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying));
+            if (placeablePositions.Any())
             {
-                for (var i = 0; i < _count; i++)
+                foreach (var position in placeablePositions.GetAtRandom(_count))
                 {
                     map.SpawnEnemy(
                         _character.Value,
@@ -43,15 +46,17 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            foreach (var position in positions)
+            var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying));
+            if (placeablePositions.Any())
             {
-                for (var i = 0; i < _count; i++)
+                foreach (var position in placeablePositions.GetAtRandom(_count))
                 {
                     map.SpawnEnemy(
                         _character.Value,
                         position,
-                        isSlept: false,
-                        isShiny: false
+                        null,
+                        false,
+                        false
                     );
                 }
             }

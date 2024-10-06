@@ -19,23 +19,25 @@ MonoBehaviour:
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 0
-  IsSame<Effect>k__BackingField: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     <Area>k__BackingField:
       rid: 861543310686683137
     <Effects>k__BackingField:
-      - rid: 4425517220030054409
+    - rid: 4425517220030054409
     <Position>k__BackingField:
       rid: 861543310686683136
+    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-  Item<Effects>k__BackingField:
     - rid: -2
-  UsageLimit: 18
+    <ProbabilityOfSuccess>k__BackingField: 0.8
+  ItemEffect:
+    rid: -2
+  UsageLimit: 9
   PassiveConditions: []
   references:
     version: 2
@@ -59,4 +61,3 @@ MonoBehaviour:
           _power: 10
         _criticalRate: 0
         _blowAwayDistance: 0
-        _additionalConditions: []

@@ -13,28 +13,31 @@ MonoBehaviour:
   m_Name: "\u5439\u304D\u98DB\u3070\u3057\u306E\u6756"
   m_EditorClassIdentifier: 
   Icon: {fileID: 1233723462, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
   _rarity: 1
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 0
-  IsSame<Effect>k__BackingField: 0
+  IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     <Area>k__BackingField:
       rid: 861543420369829888
     <Effects>k__BackingField:
-      - rid: 4425516923575599132
+    - rid: 4425516923575599132
     <Position>k__BackingField:
       rid: 861543420369829889
+    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-  Item<Effects>k__BackingField:
     - rid: -2
-  UsageLimit: 20
+    <ProbabilityOfSuccess>k__BackingField: 0.8
+  ItemEffect:
+    rid: -2
+  UsageLimit: 8
   PassiveConditions: []
   references:
     version: 2

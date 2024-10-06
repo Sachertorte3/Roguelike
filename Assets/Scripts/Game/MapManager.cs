@@ -418,7 +418,7 @@ namespace Game
 
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
         {
-            var calculator = new MoveCostCalculator(actor, this);
+            var calculator = new MoveCostCalculator(actor, this, true);
             var route = new AStar(calculator.Calculate).Calc(from, to);
             if (!route.Any())
                 return false;

@@ -15,18 +15,19 @@ namespace Domain.Service.Characters.Behavior
     {
         private IHasBehavior _character;
         private IMap _world;
-
-        public MoveCostCalculator(IHasBehavior character, IMap world)
+        private bool _canSwap;
+        public MoveCostCalculator(IHasBehavior character, IMap world, bool canSwap)
         {
             _character = character;
             _world = world;
+            _canSwap = canSwap;
         }
 
         public float Calculate(Vector2Int pos, Direction8 direction)
         {
             if (_character.CanMove(pos, direction, _world))
                 return 1;
-            if (_character.CanSwap(pos, direction, _world))
+            if (_canSwap && _character.CanSwap(pos, direction, _world))
                 return 1 + 0.01f;
             return float.PositiveInfinity;
         }
@@ -37,7 +38,7 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap world)
         {
-            var calculator = new MoveCostCalculator(character, world);
+            var calculator = new MoveCostCalculator(character, world, false);
             var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {

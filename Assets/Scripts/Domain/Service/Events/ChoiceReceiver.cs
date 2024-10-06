@@ -1,7 +1,7 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
 using R3;
-using UnityEngine;
+using Unity.Logging;
 
 namespace Domain.Service.Events
 {
@@ -13,10 +13,10 @@ namespace Domain.Service.Events
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
-            Debug.Log("GetChoice");
+            Log.Debug($"GetChoice: {text} {string.Join(", ", choices)}");
             SetChoices(text, choices);
             var index = await _onReceivedChoicedIndex.WaitAsync();
-            Debug.Log($"GetChoice: {index}");
+            Log.Debug($"GetChoice: {choices[index]} {index}");
             return index;
         }
 

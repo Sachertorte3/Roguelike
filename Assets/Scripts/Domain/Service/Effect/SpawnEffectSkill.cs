@@ -133,7 +133,14 @@ namespace Domain.Service.Effect
             }
 
             var area = GetArea(actor, position, direction, map);
-            map.SetGrasses(area, false);
+            if (_effects.Any(effect =>
+                effect is AttackEffect ||
+                effect is AbsorbsEffect ||
+                effect is ExplosionEffect ||
+                effect is BreakEffect))
+            {
+                map.SetGrasses(area, false);
+            }
 
             for (var i = 0; i < Repeats; i++)
             {

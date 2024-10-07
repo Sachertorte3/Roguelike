@@ -40,6 +40,11 @@ namespace Domain.Service.Characters
 
         public AffiliationType GetAffiliationType(IAffiliation other)
         {
+            if (other.Id == Id)
+            {
+                return AffiliationType.Ally;
+            }
+
             if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Enemy)) &&
                 _forcedAffiliationFlags[(other.Id, AffiliationType.Enemy)].CurrentValue)
             {
@@ -56,11 +61,6 @@ namespace Domain.Service.Characters
                 _forcedAffiliationFlags[(other.Id, AffiliationType.Neutral)].CurrentValue)
             {
                 return AffiliationType.Neutral;
-            }
-
-            if (other.Id == Id)
-            {
-                return AffiliationType.Ally;
             }
 
             if (other != _player && _player != null && IsAlly(_player))

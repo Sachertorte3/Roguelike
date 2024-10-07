@@ -28,10 +28,10 @@ namespace Domain.Service.Characters
         private readonly FlagStat _overDriveFlags;
 
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
-            IHasCondition hasCondition, IMap map)
+            ICharacter character, IMap map)
         {
             _stats = new CharacterStats(data.Stats);
-            _conditions = new CharacterConditions(hasCondition, data.Conditions, map.Player);
+            _conditions = new CharacterConditions(character, data.Conditions, map.Player ?? character);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags,
                 map);
             _overDriveFlags = new FlagStat(data.OverDriveFlags);

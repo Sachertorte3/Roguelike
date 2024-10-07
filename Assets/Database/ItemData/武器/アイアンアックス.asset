@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u30A2\u30A4\u30A2\u30F3\u30A2\u30C3\u30AF\u30B9"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -118445534, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: -1095276346, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 0
   EffectType: 1
@@ -22,12 +22,13 @@ MonoBehaviour:
   IsSameEffect: 1
   IsSameSkill: 0
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416405
     <Area>k__BackingField:
       rid: 5486256397401194507
     <Effects>k__BackingField:
     - rid: 2541219158355345460
-    <Position>k__BackingField:
-      rid: 2541219106150416405
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.75
   SkillOnThrow:
     <Area>k__BackingField:

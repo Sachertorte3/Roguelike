@@ -8,7 +8,7 @@ namespace Domain.Model.Setting
     {
         private static readonly Slider _BGMVolume = new("BGM音量", 0, 100, 50);
         private static readonly Slider _SEVolume = new("SE音量", 0, 100, 50);
-        private static readonly Slider _moveMilliseconds = new("移動時間[ms]", 1, 1000, 100);
+        private static readonly Slider _moveMilliseconds = new("移動時間[ms]", 1, 1000, 150);
         private static readonly Slider _dashMilliseconds = new("ダッシュ時移動時間[ms]", 1, 1000, 20);
         private static readonly Slider _throwMilliseconds = new("吹き飛ばし時間[ms]", 1, 1000, 50);
         private static readonly Slider _effectDisplayTime = new("エフェクト表示時間[ms]", 10, 1000, 100);

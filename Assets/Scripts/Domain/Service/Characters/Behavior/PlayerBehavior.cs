@@ -42,16 +42,17 @@ namespace Domain.Service.Characters.Behavior
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input)
         {
-            Log.Debug("[PlayerThink] Start waiting input...");
+            Log.Debug("[Think] Start waiting input...");
             if (input.IsDash()) await _intelligentDashController.Wait(character, map);
 
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
+            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
+            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask);
             while (true)
             {
                 switch (firstCompletedTask.winArgumentIndex)
@@ -141,6 +142,14 @@ namespace Domain.Service.Characters.Behavior
                         }
 
                         break;
+                    case 3:
+                        itemIndex = firstCompletedTask.result4;
+                        if (itemIndex != null)
+                        {
+                            action = new DropItem(itemIndex.Value);
+                            if (action.Doable(character, map)) return action;
+                        }
+                        break;
                     default:
                         throw new IndexOutOfRangeException();
                 }
@@ -148,7 +157,8 @@ namespace Domain.Service.Characters.Behavior
                 moveTask = _receiver.OnMoveInputReceived.WaitAsync();
                 useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
                 throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
+                dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask);
             }
         }
 

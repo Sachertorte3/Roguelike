@@ -38,25 +38,27 @@ MonoBehaviour:
   CanUseItem: 0
   Skills:
   - Skill:
+      <Position>k__BackingField:
+        rid: 2541219281251860512
       <Area>k__BackingField:
         rid: 2541219281251860510
       <Effects>k__BackingField:
       - rid: 2541219281251860511
       - rid: 5486256397401194498
-      <Position>k__BackingField:
-        rid: 2541219281251860512
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
     CoolTime: 0
   - Skill:
+      <Position>k__BackingField:
+        rid: 2541219281251860518
       <Area>k__BackingField:
         rid: 2541219281251860513
       <Effects>k__BackingField:
       - rid: 2541219281251860514
-      <Position>k__BackingField:
-        rid: 2541219281251860518
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -64,12 +66,13 @@ MonoBehaviour:
     CoolTime: 1
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
     - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
@@ -101,7 +104,6 @@ MonoBehaviour:
         - _element: 0
           _power: 7
         _criticalRate: 0
-        _blowAwayDistance: 0
     - rid: 2541219281251860512
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -118,7 +120,6 @@ MonoBehaviour:
         - _element: 0
           _power: 5
         _criticalRate: 0
-        _blowAwayDistance: 2
     - rid: 2541219281251860518
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

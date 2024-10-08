@@ -176,19 +176,5 @@ namespace Game
             _activeMap.Value = map;
             return map;
         }
-
-        public HashSet<ICharacter> GetCharactersInArea(HashSet<Vector2Int> area)
-        {
-            if (ActiveMap.CurrentValue == null)
-                throw new InvalidOperationException("ActiveMap is null");
-            return ActiveMap.CurrentValue.GetCharactersInArea(area);
-        }
-
-        public void HandleItemDrop(int inventoryIndex)
-        {
-            if (ActiveMap.CurrentValue == null)
-                throw new InvalidOperationException("ActiveMap is null");
-            ActiveMap.CurrentValue.HandleItemDrop(inventoryIndex);
-        }
     }
 }

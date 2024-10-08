@@ -15,6 +15,8 @@ namespace Domain.Model.Effect
         public bool CanMove(Direction8 direction, bool isFlying, IPassableChecker map);
         public bool CanMove(Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
+        public int CurrentMaxHp { get; }
+        public int CurrentHp { get; }
         public int GainHp(int value);
         public float GetElementAttackMultiplier(Element element);
     }

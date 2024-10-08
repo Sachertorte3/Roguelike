@@ -31,6 +31,7 @@ namespace Domain.Model.Item
         public bool IsDisabled { get; }
         public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
+        public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public void SetState(ItemState state);
@@ -42,5 +43,6 @@ namespace Domain.Model.Item
         public void Repair();
         public bool CanUpgrade(string filter = "");
         public void Upgrade(string filter = "");
+        public void Downgrade();
     }
 }

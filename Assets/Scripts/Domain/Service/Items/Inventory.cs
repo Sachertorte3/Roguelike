@@ -7,6 +7,7 @@ using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;
+using Domain.Service.Logs;
 using ObservableCollections;
 using R3;
 using Utilities;

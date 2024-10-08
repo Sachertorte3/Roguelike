@@ -22,9 +22,9 @@ namespace Domain.Service.Effect
             _power = power;
         }
 
-        public void Upgrade(int value)
+        public void MultiplyPower(float multiplier)
         {
-            _power += value;
+            _power = Mathf.RoundToInt(_power * multiplier);
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
@@ -33,11 +33,19 @@ namespace Domain.Service.Effect
             {
                 {
                     new UpgradePath("威力[小]", Element.ToString()),
-                    new UpgradeData($"[{Element}]威力[小]", () => Upgrade(2))
+                    new UpgradeData(
+                        $"[{Element}]威力[小]",
+                        () => _power += 2,
+                        () => _power -= 2
+                    )
                 },
                 {
                     new UpgradePath("威力[大]", Element.ToString()),
-                    new UpgradeData($"[{Element}]威力[大]", () => Upgrade(3))
+                    new UpgradeData(
+                        $"[{Element}]威力[大]",
+                        () => _power += 3,
+                        () => _power -= 3
+                    )
                 }
             };
         }

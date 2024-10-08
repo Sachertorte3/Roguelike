@@ -51,7 +51,14 @@ namespace Domain.Service.Effect
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
+                {
+                    new UpgradePath("吹き飛ばし距離"),
+                    new UpgradeData(
+                        "吹き飛ばし距離+1",
+                        () => _distance += 1,
+                        () => _distance -= 1
+                    )
+                }
             };
         }
 

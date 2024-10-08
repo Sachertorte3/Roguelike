@@ -38,7 +38,14 @@ namespace Domain.Model.Effect.Position
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("対象数"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
+                {
+                    new UpgradePath("対象数"),
+                    new UpgradeData(
+                        "対象数+1",
+                        () => NumberOfTarget += 1,
+                        () => NumberOfTarget -= 1
+                    )
+                }
             };
         }
 

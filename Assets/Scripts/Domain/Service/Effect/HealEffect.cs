@@ -58,7 +58,14 @@ namespace Domain.Service.Effect
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("回復量"), new UpgradeData("回復量+3", () => _power += 3) }
+                {
+                    new UpgradePath("回復量"),
+                    new UpgradeData(
+                        "回復量+3",
+                        () => _power += 3,
+                        () => _power -= 3
+                    )
+                }
             };
         }
 

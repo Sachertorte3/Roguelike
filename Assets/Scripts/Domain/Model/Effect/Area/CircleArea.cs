@@ -44,7 +44,14 @@ namespace Domain.Model.Effect.Area
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("半径"), new UpgradeData("半径+1", () => Radius += 1) }
+                {
+                    new UpgradePath("半径"),
+                    new UpgradeData(
+                        "半径+1",
+                        () => Radius += 1,
+                        () => Radius -= 1
+                    )
+                }
             };
         }
 

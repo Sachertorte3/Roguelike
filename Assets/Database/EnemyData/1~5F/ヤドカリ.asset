@@ -33,29 +33,35 @@ MonoBehaviour:
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
+  IsFlying: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
+      <Position>k__BackingField:
+        rid: 2541219281251860489
       <Area>k__BackingField:
         rid: 2541219281251860487
       <Effects>k__BackingField:
-        - rid: 2541219281251860488
-      <Position>k__BackingField:
-        rid: 2541219281251860489
+      - rid: 2541219281251860488
+      - rid: 5486256447100289024
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
@@ -83,8 +89,6 @@ MonoBehaviour:
         - _element: 0
           _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
     - rid: 2541219281251860489
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -92,3 +96,7 @@ MonoBehaviour:
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 2
+    - rid: 5486256447100289024
+      type: {class: RemoveUpgradeEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _probabilityOfSuccess: 0.1

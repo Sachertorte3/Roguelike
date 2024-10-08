@@ -1,5 +1,6 @@
 ﻿using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Item;
 using Utilities;
 
 namespace Domain.Model.Effect
@@ -10,6 +11,7 @@ namespace Domain.Model.Effect
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);
+        public IInventory Inventory { get; }
         public bool IsClairvoyant { get; }
         public bool IsOverDrive { get; }
         public bool IsConfused { get; }

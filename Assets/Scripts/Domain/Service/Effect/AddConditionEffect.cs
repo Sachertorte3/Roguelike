@@ -16,7 +16,8 @@ namespace Domain.Service.Effect
     public class AddConditionEffect : IActorlessEffect
     {
         [Required] [SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)] private float _probabilityOfSuccess = 1;
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
+        private float _probabilityOfSuccess = 1;
 
         public Color Color => Colors.Purple;
 
@@ -27,7 +28,13 @@ namespace Domain.Service.Effect
             _condition = condition.Condition;
             _probabilityOfSuccess = condition.Probability;
         }
-
+#if UNITY_EDITOR
+        private void OnProbabilityOfSuccessChanged()
+        {
+            if (_probabilityOfSuccess == 0)
+                _probabilityOfSuccess = 1;
+        }
+#endif
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor.Id, target);
 
         public UniTask Apply(ITargetOfEffect target, IMap map) => Apply(Id<IEntity>.Empty, target);
@@ -40,12 +47,6 @@ namespace Domain.Service.Effect
             }
 
             return UniTask.CompletedTask;
-        }
-
-        private void OnProbabilityOfSuccessChanged()
-        {
-            if (_probabilityOfSuccess == 0)
-                _probabilityOfSuccess = 1;
         }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

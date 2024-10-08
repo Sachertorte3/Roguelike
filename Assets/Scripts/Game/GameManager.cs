@@ -163,7 +163,7 @@ namespace Game
             return map;
         }
 
-        public async void ClearSave()
+        public void ClearSave()
         {
             var saveDirectory = "Save";
             var jsonFiles = Directory.GetFiles(saveDirectory, "*.json");

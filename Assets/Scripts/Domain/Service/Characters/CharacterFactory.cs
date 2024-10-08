@@ -50,7 +50,6 @@ namespace Domain.Service.Characters
                                 {
                                     new AttackEffect(
                                         new List<ElementPower> { new(Element.Physical, 3) },
-                                        0,
                                         0
                                     )
                                 },

@@ -12,12 +12,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AffectionIncreaseEffect : IEffect
     {
-        [MinValue(1)] [SerializeField] private float _power;
-
-        public AffectionIncreaseEffect(float power)
-        {
-            _power = power;
-        }
+        [MinValue(1)][SerializeField] private float _power;
 
         public Color Color => Colors.HotPink;
 

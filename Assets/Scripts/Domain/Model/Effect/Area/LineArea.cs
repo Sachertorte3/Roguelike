@@ -43,7 +43,14 @@ namespace Domain.Model.Effect.Area
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("長さ"), new UpgradeData("長さ+1", () => Length += 1) }
+                {
+                    new UpgradePath("長さ"),
+                    new UpgradeData(
+                        "長さ+1",
+                        () => Length += 1,
+                        () => Length -= 1
+                    )
+                }
             };
         }
 

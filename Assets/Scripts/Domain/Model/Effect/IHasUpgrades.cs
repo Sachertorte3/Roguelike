@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Domain.Model.Effect
 {
-    public record UpgradeData(string Description, System.Action Upgrade);
+    public record UpgradeData(string Description, System.Action Upgrade, System.Action Downgrade);
 
     public interface IHasUpgrades
     {

@@ -11,6 +11,7 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
+using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace Domain.Service.Items
         public Id<IItem> Id { get; init; }
         private string _name;
         private readonly List<UpgradePath> _upgradePaths;
+        public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
         private readonly Option<ISkill> _skillOnUse;
@@ -93,7 +95,7 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string Name => _upgradePaths.Count > 0 ? $"{_name} +{_upgradePaths.Count}" : _name;
+        public string Name => _upgradePaths.Count > 0 ? $"{_name} +{AppliedUpgrades}" : _name;
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
         public ItemState State { get; private set; }
@@ -272,18 +274,30 @@ namespace Domain.Service.Items
             {
                 upgrades.Add(
                     new UpgradePath("使用可能回数[小]"),
-                    new UpgradeData("使用可能回数[小]", () =>
+                    new UpgradeData("使用可能回数[小]",
+                    () =>
                     {
                         _maxUsages += 3;
                         _remainingUsages.Value += 3;
+                    },
+                    () =>
+                    {
+                        _maxUsages -= 3;
+                        _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 3);
                     })
                 );
                 upgrades.Add(
                     new UpgradePath("使用可能回数[大]"),
-                    new UpgradeData("使用可能回数[大]", () =>
+                    new UpgradeData("使用可能回数[大]",
+                    () =>
                     {
                         _maxUsages += 5;
                         _remainingUsages.Value += 5;
+                    },
+                    () =>
+                    {
+                        _maxUsages -= 5;
+                        _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 5);
                     })
                 );
             }
@@ -335,8 +349,24 @@ namespace Domain.Service.Items
         public void Upgrade(string filter = "")
         {
             var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
+            GameLog.Add($"{Name}は{upgrade.Description}の効果を得た");
             upgrade.Upgrade();
             _upgradePaths.Add(path);
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
+        public void Downgrade()
+        {
+            if (_upgradePaths.Count == 0)
+            {
+                return;
+            }
+
+            var path = _upgradePaths.GetAtRandom();
+            _upgradePaths.Remove(path);
+            var upgrade = GetUpgrades()[path];
+            GameLog.Add($"{Name}の{upgrade.Description}は消えた");
+            upgrade.Downgrade();
             _onItemUpdated.OnNext(Unit.Default);
         }
 

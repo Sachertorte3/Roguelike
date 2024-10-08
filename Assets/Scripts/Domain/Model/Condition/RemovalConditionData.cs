@@ -12,8 +12,9 @@ namespace Domain.Model.Condition
         public bool RemoveByDamage;
         [ShowIf("@RemoveByDamage")] public float Probability;
         public bool RemoveByCharacterNearby;
+        [ShowIf("@RemoveByCharacterNearby")] public float CharacterNearbyProbability;
 
-        public RemovalConditionData(int duration = -1, float probability = -1, bool removeByEnemyNearby = false)
+        public RemovalConditionData(int duration = -1, float damageProbability = -1, float characterNearbyProbability = -1)
         {
             if (duration > 0)
             {
@@ -21,19 +22,23 @@ namespace Domain.Model.Condition
                 Duration = duration;
             }
 
-            if (probability > 0)
+            if (damageProbability > 0)
             {
                 RemoveByDamage = true;
-                Probability = probability;
+                Probability = damageProbability;
             }
 
-            RemoveByCharacterNearby = removeByEnemyNearby;
+            if (characterNearbyProbability > 0)
+            {
+                RemoveByCharacterNearby = true;
+                CharacterNearbyProbability = characterNearbyProbability;
+            }
         }
 
         public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByCharacterNearby && characterVisible);
+                   (RemoveByCharacterNearby && characterVisible && Random.value < CharacterNearbyProbability);
         }
 
         public bool IsFinishedByDamage()
@@ -61,7 +66,11 @@ namespace Domain.Model.Condition
 
             if (RemoveByCharacterNearby)
             {
-                estimatedTurns = 0;
+                var enemyNearbyTurns = 1 / CharacterNearbyProbability;
+                if (enemyNearbyTurns < estimatedTurns)
+                {
+                    estimatedTurns = enemyNearbyTurns;
+                }
             }
 
             return estimatedTurns;

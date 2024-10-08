@@ -215,7 +215,7 @@ namespace Domain.Service.Characters
                         Id<IEntity>.Empty,
                         Condition.Build(
                             new Slept(),
-                            new RemovalConditionData(probability: 0.75f, removeByEnemyNearby: true)
+                            new RemovalConditionData(damageProbability: 0.75f, characterNearbyProbability: 0.5f)
                         )
                     )
                 );

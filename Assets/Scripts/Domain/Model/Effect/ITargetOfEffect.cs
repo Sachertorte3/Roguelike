@@ -35,5 +35,6 @@ namespace Domain.Model.Effect
 
         public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition);
         public void ClearCondition();
+        public void ListenToAlert(IActorOfEffect actor);
     }
 }

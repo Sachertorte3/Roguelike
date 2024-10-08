@@ -99,7 +99,7 @@ namespace Game
         private int GetCount(float attemptCount)
         {
             var probability = 0.5f;
-            return MathExtension.RandomBinomialApproxValue(attemptCount, probability);
+            return MathExtension.RandomBinomialApproxValue(attemptCount * 2, probability);
         }
 
         private void CreateRoom(DungeonMapData data, RectInt room)

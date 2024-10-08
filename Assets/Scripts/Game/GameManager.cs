@@ -70,6 +70,7 @@ namespace Game
                         StartMap(map);
                         break;
                     case 1:
+                        ClearSave();
                         map = await CreateWorld();
                         StartMap(map);
                         break;
@@ -79,6 +80,7 @@ namespace Game
             {
                 var _ = await GetChoice(null, "New Game");
                 _state.Value = GameState.Dungeon;
+                ClearSave();
                 map = await CreateWorld();
                 StartMap(map);
             }
@@ -159,6 +161,16 @@ namespace Game
 
             Log.Debug("[Save]End Load");
             return map;
+        }
+
+        public async void ClearSave()
+        {
+            var saveDirectory = "Save";
+            var jsonFiles = Directory.GetFiles(saveDirectory, "*.json");
+            foreach (var file in jsonFiles)
+            {
+                File.Delete(file);
+            }
         }
 
         public void WriteData(string path, string saveData)

@@ -139,7 +139,7 @@ MonoBehaviour:
             rid: 5486256311944871960
           <Effects>k__BackingField:
           - rid: 5486256311944871961
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -151,7 +151,7 @@ MonoBehaviour:
             rid: 5486256311944871977
           <Effects>k__BackingField:
           - rid: 5486256311944871978
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -163,7 +163,7 @@ MonoBehaviour:
             rid: 5486256311944871974
           <Effects>k__BackingField:
           - rid: 5486256311944871975
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -175,7 +175,7 @@ MonoBehaviour:
             rid: 5486256311944871963
           <Effects>k__BackingField:
           - rid: 5486256311944871966
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -187,7 +187,7 @@ MonoBehaviour:
             rid: 5486256311944871980
           <Effects>k__BackingField:
           - rid: 5486256311944871981
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -199,7 +199,7 @@ MonoBehaviour:
             rid: 5486256311944871983
           <Effects>k__BackingField:
           - rid: 5486256311944871984
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -211,7 +211,7 @@ MonoBehaviour:
             rid: 5486256311944871967
           <Effects>k__BackingField:
           - rid: 5486256311944871968
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -223,7 +223,7 @@ MonoBehaviour:
             rid: 5486256396100960256
           <Effects>k__BackingField:
           - rid: 5486256396100960257
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
     - Item:
@@ -237,7 +237,7 @@ MonoBehaviour:
           - rid: 5486256396100960259
           - rid: 5486256396100960271
           - rid: 5486256406402433024
-          <Repeats>k__BackingField: 0
+          <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
       Weight: 1
   WeaponPrefixes:

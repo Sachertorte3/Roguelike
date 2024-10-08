@@ -77,6 +77,10 @@ namespace Game
 
                         if (character.CanAct && !character.IsDead)
                         {
+                            if (character == map.Player)
+                            {
+                                Globals.GameManager.Save();
+                            }
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
                             await character.DoNextAction(gameManager, map, _input);
                         }
@@ -96,8 +100,6 @@ namespace Game
                         return;
                     }
                 }
-
-                Globals.GameManager.Save();
 
                 foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
                 {

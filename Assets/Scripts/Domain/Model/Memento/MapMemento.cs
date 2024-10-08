@@ -1,13 +1,17 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Domain.Model.Map;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
     [Serializable]
     public class MapMemento
     {
+        [SerializeField] private string _id;
+        public Id<IMap> Id => new(_id);
         [field: SerializeField] public TilemapMemento Tilemap { get; private set; }
         [field: SerializeField] public List<CharacterMemento> Characters { get; private set; }
         [field: SerializeField] public List<ItemEntityMemento> Items { get; private set; }
@@ -17,10 +21,11 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Option<ShopMemento> Shop { get; private set; }
         [field: SerializeField] public Vector2Int RandomBlankPosition { get; private set; }
 
-        public MapMemento(TilemapMemento tilemap, List<CharacterMemento> characters, List<ItemEntityMemento> items,
-            EventEntitiesMemento eventEntities, List<string> keyCharacters, Option<RoomMemento> monsterHouse,
-            Option<ShopMemento> shop, Vector2Int randomBlankPosition)
+        public MapMemento(Id<IMap> id, TilemapMemento tilemap, List<CharacterMemento> characters,
+            List<ItemEntityMemento> items, EventEntitiesMemento eventEntities, List<string> keyCharacters,
+            Option<RoomMemento> monsterHouse, Option<ShopMemento> shop, Vector2Int randomBlankPosition)
         {
+            _id = id.ToString();
             Tilemap = tilemap;
             Characters = characters;
             Items = items;

@@ -21,35 +21,37 @@ namespace Game
         private ReactiveProperty<MapManager?> _activeMap = new();
         private Location _activeLocation;
         private Dungeon _activeDungeon => _dungeons[_activeLocation.MapName];
-        private Id<MapManager> _activeMapId => GetMapId(_activeLocation);
-        private Dictionary<Id<MapManager>, MapMemento> _maps = new();
-        private HashSet<Id<MapManager>> _updatedMapIds = new();
+        private Id<IMap> _activeMapId => GetMapId(_activeLocation);
+        private Dictionary<Id<IMap>, MapMemento> _maps = new();
+        private HashSet<Id<IMap>> _updatedMapIds = new();
         private CharacterControlInputReceiver _receiver;
         private Dictionary<string, Dungeon> _dungeons = new();
 
         [Inject]
-        public World(CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonData)
+        public World(CharacterControlInputReceiver receiver)
         {
             Globals.World = this;
             _receiver = receiver;
-            _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
         }
 
         public void CreateNew(DungeonBluePrintData dungeonData)
         {
             _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
-            _maps = new Dictionary<Id<MapManager>, MapMemento>();
-            _updatedMapIds = new HashSet<Id<MapManager>>();
+            _maps = new Dictionary<Id<IMap>, MapMemento>();
+            _updatedMapIds = new HashSet<Id<IMap>>();
             _activeMap.Value = null;
         }
 
-        public MapManager LoadWorld(WorldMemento memento)
+        public MapManager LoadWorld(WorldMemento memento, List<(string, MapMemento)> maps)
         {
             _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
-            _maps = memento.Maps.ToDictionary(map => new Id<MapManager>(map.Key), map => map.Value);
+            _maps = memento.MapIds.ToDictionary(
+                mapId => new Id<IMap>(mapId),
+                mapId => maps.First(map => map.Item1 == mapId).Item2
+            );
 
             var mapId = GetMapId(memento.CurrentLocation);
-            _updatedMapIds = new HashSet<Id<MapManager>> { mapId };
+            _updatedMapIds = new HashSet<Id<IMap>> { mapId };
 
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(memento.CurrentLocation);
@@ -75,16 +77,24 @@ namespace Game
             var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
             (
-                _dungeons.ToSerializableDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
+                _dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
                 playerData,
-                _maps.ToSerializableDictionary(map => map.Key.ToString(), map => map.Value),
+                _maps.Select(map => map.Key.ToString()).ToList(),
                 _activeLocation
             );
         }
 
+        public List<MapMemento> SerializeUpdatedMaps()
+        {
+            var updatedMaps = _updatedMapIds.Select(mapId => _maps[mapId]).ToList();
+            _updatedMapIds.Clear();
+            _updatedMapIds.Add(_activeMapId);
+            return updatedMaps;
+        }
+
         public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
 
-        private Id<MapManager> GetMapId(Location location)
+        private Id<IMap> GetMapId(Location location)
         {
             return _dungeons[location.MapName].GetMapId(location.Level);
         }
@@ -94,41 +104,47 @@ namespace Game
             var mapId = _dungeons[location.MapName].GetMapId(location.Level);
             if (!_maps.ContainsKey(mapId))
             {
-                Id<IEntity>? upStairsId = null;
-                Id<IEntity>? upStairsDestinationId = null;
-                Id<IEntity>? downStairsId = null;
-                Id<IEntity>? downStairsDestinationId = null;
-                if (_dungeons[location.MapName].ExistLevel(location.Level - 1))
-                {
-                    var prevMapId = _dungeons[location.MapName].GetMapId(location.Level - 1);
-                    if (_maps.ContainsKey(prevMapId))
-                    {
-                        var prevMap = _maps[prevMapId];
-                        var downStairs =
-                            prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
-                        upStairsId = downStairs.DestinationId;
-                        upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
-                    }
-                }
-
-                if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
-                {
-                    var nextMapId = _dungeons[location.MapName].GetMapId(location.Level + 1);
-                    if (_maps.ContainsKey(nextMapId))
-                    {
-                        var nextMap = _maps[nextMapId];
-                        var upStairs =
-                            nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
-                        downStairsId = upStairs.DestinationId;
-                        downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
-                    }
-                }
-
-                _maps[mapId] = _dungeons[location.MapName].CreateMapManager(location.Level, upStairsId,
-                    upStairsDestinationId, downStairsId, downStairsDestinationId);
+                _maps[mapId] = CreateMap(location, mapId);
+                _updatedMapIds.Add(mapId);
             }
 
             return _maps[mapId];
+        }
+
+        private MapMemento CreateMap(Location location, Id<IMap> id)
+        {
+            Id<IEntity>? upStairsId = null;
+            Id<IEntity>? upStairsDestinationId = null;
+            Id<IEntity>? downStairsId = null;
+            Id<IEntity>? downStairsDestinationId = null;
+            if (_dungeons[location.MapName].ExistLevel(location.Level - 1))
+            {
+                var prevMapId = _dungeons[location.MapName].GetMapId(location.Level - 1);
+                if (_maps.ContainsKey(prevMapId))
+                {
+                    var prevMap = _maps[prevMapId];
+                    var downStairs =
+                        prevMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.DownStairs);
+                    upStairsId = downStairs.DestinationId;
+                    upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
+                }
+            }
+
+            if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
+            {
+                var nextMapId = _dungeons[location.MapName].GetMapId(location.Level + 1);
+                if (_maps.ContainsKey(nextMapId))
+                {
+                    var nextMap = _maps[nextMapId];
+                    var upStairs =
+                        nextMap.EventEntities.Stairs.First(stairs => stairs.Type == MovementEntityType.UpStairs);
+                    downStairsId = upStairs.DestinationId;
+                    downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
+                }
+            }
+
+            return _dungeons[location.MapName].CreateMapManager(id, location.Level, upStairsId,
+                upStairsDestinationId, downStairsId, downStairsDestinationId);
         }
 
         public MapManager LoadMap(Location location, Id<IEntity>? destination)

@@ -20,30 +20,23 @@ namespace Game
     public class MapBuilder
     {
         private readonly Tilemap _tilemap;
-        private readonly List<CharacterMemento> _characters;
-        private readonly List<ItemEntityMemento> _items;
-        private readonly List<StairsMemento> _stairs;
-        private readonly List<ChestMemento> _chests;
-        private readonly List<TrapMemento> _traps;
-        private readonly Option<EntityMemento> _bonfire;
-        private readonly List<Id<IEntity>> _keyCharacters;
+        private readonly List<CharacterMemento> _characters = new();
+        private readonly List<ItemEntityMemento> _items = new();
+        private readonly List<StairsMemento> _stairs = new();
+        private readonly List<ChestMemento> _chests = new();
+        private readonly List<TrapMemento> _traps = new();
+        private EntityMemento? _bonfire;
+        private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
         private readonly Vector2Int _upStairPosition;
         private readonly Vector2Int _downStairPosition;
-        private Vector2Int? _bonfirePosition;
-        private readonly List<Vector2Int> _randomBlankPositions;
+        private readonly HashSet<Vector2Int> _blankPositions;
 
         public MapBuilder(TilemapMemento tilemapData, DungeonMapData data)
         {
             _tilemap = new Tilemap(tilemapData);
-            _characters = new List<CharacterMemento>();
-            _items = new List<ItemEntityMemento>();
-            _keyCharacters = new List<Id<IEntity>>();
-            _stairs = new List<StairsMemento>();
-            _chests = new List<ChestMemento>();
-            _traps = new List<TrapMemento>();
-            _randomBlankPositions = new List<Vector2Int>();
+            _blankPositions = _tilemap.GetAllWalkablePositions();
 
             var rooms = _tilemap.Rooms.ToList();
 
@@ -73,15 +66,10 @@ namespace Game
                     Log.Error("positions.Count < sum");
                 }
 
-                var characterPositions = positions.GetAtRandomAndRemove(characterCount);
-                var itemPositions = positions.GetAtRandomAndRemove(itemCount);
-                var chestPositions = positions.GetAtRandomAndRemove(chestCount);
-                var trapPositions = positions.GetAtRandomAndRemove(trapCount);
-
-                AddCharactersToRoom(data, characterPositions);
-                AddItemsToRoom(data, itemPositions);
-                AddChestsToRoom(data, chestPositions, _chests);
-                AddTrapsToRoom(data, trapPositions, _traps);
+                AddCharactersToRoom(data, room, characterCount);
+                AddItemsToRoom(data, room, itemCount);
+                AddChestsToRoom(data, room, chestCount);
+                AddTrapsToRoom(data, room, trapCount);
 
                 if (room == bossRoom)
                 {
@@ -103,13 +91,7 @@ namespace Game
                 {
                     _upStairPosition = positions.GetAtRandomAndRemove(1).First();
                 }
-
-                _randomBlankPositions.Add(positions.GetAtRandomAndRemove(1).First());
             }
-
-            _bonfire =
-                (_bonfirePosition != null ? Option.Some(_bonfirePosition!.Value) : Option.None<Vector2Int>()).Map(
-                    position => Bonfire.Build(position));
         }
 
         private void AddGrasses(DungeonMapData data, RectInt room)
@@ -170,7 +152,7 @@ namespace Game
             var positions = monsterHouseRoom.RectRange().ToList();
             foreach (var position in positions.GetAtRandomAndRemove(5))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
-            AddChestsToRoom(data, positions.GetAtRandomAndRemove(1), _chests);
+            AddChestsToRoom(data, monsterHouseRoom, 1);
 
             return MonsterHouse.Build(monsterHouseRoom);
         }
@@ -188,9 +170,9 @@ namespace Game
             {
                 var innerRect = restRoom.GetRandomInnerRect(new Vector2Int(5, 5));
 
-                var center = Vector2Int.RoundToInt(innerRect.center);
+                var center = innerRect.min + new Vector2Int(2, 2);
 
-                _bonfirePosition = center;
+                _bonfire = Bonfire.Build(center);
 
                 foreach (var position in innerRect.RectRange())
                 {
@@ -209,12 +191,17 @@ namespace Game
 
             foreach (var position in positions.GetAtRandomAndRemove(2))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
-            AddChestsToRoom(data, positions.GetAtRandomAndRemove(1), _chests);
+            AddChestsToRoom(data, restRoom, 1);
         }
 
-        private void AddCharactersToRoom(DungeonMapData data, List<Vector2Int> positions)
+        private IEnumerable<Vector2Int> GetRandomBlankPositionsInRoom(RectInt room, int count)
         {
-            foreach (var position in positions)
+            return _blankPositions.Where(position => room.Contains(position)).GetAtRandom(count);
+        }
+
+        private void AddCharactersToRoom(DungeonMapData data, RectInt room, int count)
+        {
+            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
             {
                 var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
                     isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
@@ -222,36 +209,36 @@ namespace Game
             }
         }
 
-        private void AddItemsToRoom(DungeonMapData data, List<Vector2Int> positions)
+        private void AddItemsToRoom(DungeonMapData data, RectInt room, int count)
         {
-            foreach (var position in positions)
+            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
         }
 
-        private void AddChestsToRoom(DungeonMapData data, List<Vector2Int> positions, List<ChestMemento> chests)
+        private void AddChestsToRoom(DungeonMapData data, RectInt room, int count)
         {
-            foreach (var position in positions)
+            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
             {
                 if (Random.value < data.MimicChance)
                 {
-                    chests.Add(Chest.Build(position, data.Mimic));
+                    _chests.Add(Chest.Build(position, data.Mimic));
                 }
                 else if (Random.value < data.WeaponChanceInChest)
                 {
-                    chests.Add(Chest.Build(position, WeaponFactory.Create(data.Items.GetRandomItem(ItemCategory.Weapons), data.WeaponPrefixes.GetRandomItem())));
+                    _chests.Add(Chest.Build(position, WeaponFactory.Create(data.Items.GetRandomItem(ItemCategory.Weapons), data.WeaponPrefixes.GetRandomItem())));
                 }
                 else
                 {
-                    chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem()));
+                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem()));
                 }
             }
         }
 
-        private void AddTrapsToRoom(DungeonMapData data, List<Vector2Int> positions, List<TrapMemento> traps)
+        private void AddTrapsToRoom(DungeonMapData data, RectInt room, int count)
         {
-            foreach (var position in positions)
+            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
             {
-                traps.Add(Trap.Build(data.Traps.GetRandomItem(), position));
+                _traps.Add(Trap.Build(data.Traps.GetRandomItem(), position));
             }
         }
 
@@ -285,11 +272,11 @@ namespace Game
                 _tilemap.Serialize(),
                 _characters,
                 _items,
-                EventEntityManager.Build(_stairs, _chests, _traps, _bonfire),
+                EventEntityManager.Build(_stairs, _chests, _traps, _bonfire.ToOption()),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),
                 _shop.ToOption(),
-                _randomBlankPositions.GetAtRandom()
+                _blankPositions.GetAtRandom()
             );
         }
     }

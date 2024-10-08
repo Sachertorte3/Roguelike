@@ -47,50 +47,24 @@ namespace Game
             _monsterHouse = CreateMonsterHouse(data, rooms);
             CreateRestRoom(data, rooms);
 
-            var downStairsRoom = rooms.GetAtRandom();
-            var upStairsRoom = rooms.GetAtRandom();
-            RectInt? bossRoom = data.existBoss ? rooms.GetAtRandom() : null;
+            _downStairPosition = GetRandomBlankPositionInRoom(rooms.GetAtRandom());
+            _upStairPosition = GetRandomBlankPositionInRoom(rooms.GetAtRandom());
+
+            if (data.existBoss)
+            {
+                var bossRoom = rooms.GetAtRandom();
+                foreach (var bossData in data.Boss)
+                {
+                    var boss = CharacterFactory.BuildCharacter(bossData, GetRandomBlankPositionInRoom(bossRoom),
+                        isSlept: false, isShiny: false);
+                    _characters.Add(boss);
+                    _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
+                }
+            }
 
             foreach (var room in rooms)
             {
-                var characterCount = GetCount(data.CharacterCount);
-                var itemCount = GetCount(data.ItemCount);
-                var chestCount = Random.value < data.ChestChance ? 1 : 0;
-                var trapCount = GetCount(data.TrapCount);
-                var bossCount = data.existBoss ? data.Boss.Count : 0;
-                var sum = characterCount + itemCount + chestCount + trapCount + bossCount + 3;
-
-                var positions = room.RectRange().ToList();
-                if (positions.Count < sum)
-                {
-                    Log.Error("positions.Count < sum");
-                }
-
-                AddCharactersToRoom(data, room, characterCount);
-                AddItemsToRoom(data, room, itemCount);
-                AddChestsToRoom(data, room, chestCount);
-                AddTrapsToRoom(data, room, trapCount);
-
-                if (room == bossRoom)
-                {
-                    foreach (var bossData in data.Boss)
-                    {
-                        var boss = CharacterFactory.BuildCharacter(bossData, positions.GetAtRandomAndRemove(1).First(),
-                            isSlept: false, isShiny: false);
-                        _characters.Add(boss);
-                        _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
-                    }
-                }
-
-                if (room == downStairsRoom)
-                {
-                    _downStairPosition = positions.GetAtRandomAndRemove(1).First();
-                }
-
-                if (room == upStairsRoom)
-                {
-                    _upStairPosition = positions.GetAtRandomAndRemove(1).First();
-                }
+                CreateRoom(data, room);
             }
         }
 
@@ -110,6 +84,19 @@ namespace Game
         {
             var probability = 0.5f;
             return MathExtension.RandomBinomialApproxValue(attemptCount, probability);
+        }
+
+        private void CreateRoom(DungeonMapData data, RectInt room)
+        {
+            var characterCount = GetCount(data.CharacterCount);
+            var itemCount = GetCount(data.ItemCount);
+            var chestCount = Random.value < data.ChestChance ? 1 : 0;
+            var trapCount = GetCount(data.TrapCount);
+
+            AddCharactersToRoom(data, room, characterCount);
+            AddItemsToRoom(data, room, itemCount);
+            AddChestsToRoom(data, room, chestCount);
+            AddTrapsToRoom(data, room, trapCount);
         }
 
         private ShopMemento? CreateShop(DungeonMapData data, List<RectInt> rooms)
@@ -194,9 +181,19 @@ namespace Game
             AddChestsToRoom(data, restRoom, 1);
         }
 
+        private Vector2Int GetRandomBlankPositionInRoom(RectInt room)
+        {
+            var position = _blankPositions.Where(position => room.Contains(position)).GetAtRandom();
+            _blankPositions.Remove(position);
+            return position;
+        }
+
         private IEnumerable<Vector2Int> GetRandomBlankPositionsInRoom(RectInt room, int count)
         {
-            return _blankPositions.Where(position => room.Contains(position)).GetAtRandom(count);
+            var positions = _blankPositions.Where(position => room.Contains(position)).GetAtRandom(count);
+            foreach (var position in positions)
+                _blankPositions.Remove(position);
+            return positions;
         }
 
         private void AddCharactersToRoom(DungeonMapData data, RectInt room, int count)

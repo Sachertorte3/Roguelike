@@ -31,29 +31,38 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
+    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
+  IsFlying: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
+      <Position>k__BackingField:
+        rid: 2541219281251860517
       <Area>k__BackingField:
         rid: 2541219281251860515
       <Effects>k__BackingField:
-        - rid: 2541219281251860516
-      <Position>k__BackingField:
-        rid: 2541219281251860517
+      - rid: 2541219281251860516
+      - rid: 5486256447100289026
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []
@@ -71,6 +80,7 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
+        CanIgnoreWalls: 0
         Radius: 1
     - rid: 2541219281251860516
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -79,8 +89,6 @@ MonoBehaviour:
         - _element: 0
           _power: 5
         _criticalRate: 0
-        _blowAwayDistance: 1
-        _additionalConditions: []
     - rid: 2541219281251860517
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -88,3 +96,7 @@ MonoBehaviour:
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 2
+    - rid: 5486256447100289026
+      type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _distance: 1

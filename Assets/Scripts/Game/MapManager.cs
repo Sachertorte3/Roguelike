@@ -552,7 +552,7 @@ namespace Game
                     {
                         ItemManager.PickUpAt(positionChanged.Message.Position,
                             positionChanged.Character == Player && Settings.AutoPickUpShopItem.Value);
-                        if (positionChanged.Character.TryPickUp(item.Item))
+                        if (positionChanged.Character.TryAddToInventory(item.Item))
                         {
                             if (positionChanged.Character == Player)
                                 GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
@@ -702,23 +702,7 @@ namespace Game
             return AllItem().In(area).GetEntities();
         }
 
-        public void HandleItemDrop(int inventoryIndex)
-        {
-            var itemEntity = ItemManager.TryPickUpAt(Player.CurrentPosition, true);
-            if (itemEntity != null)
-            {
-                GameLog.Add($"{Player.GetName(Player)}は{itemEntity.Item.Name}を拾った");
-            }
-
-            var item = Player.ReplaceInventory(itemEntity?.Item, inventoryIndex);
-            if (item != null)
-            {
-                GameLog.Add($"{Player.GetName(Player)}は{item.Name}を捨てた.");
-                ItemManager.SpawnItem(item,
-                    FindBlankPositionFrom(Player.CurrentPosition,
-                        position => IsBlankAndStandable(position, EntityLayer.Bottom)));
-            }
-        }
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool isShopItem) => ItemManager.TryPickUpAt(position, isShopItem);
 
         public void DropAllItem(ICharacter character)
         {

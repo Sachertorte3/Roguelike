@@ -36,13 +36,7 @@ namespace Provider
                 .Subscribe(direction => { actionReceiver.SetMoveInput(direction!.Value, false); });
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
-            receiver.OnDropPerformed.Subscribe(_ =>
-            {
-                if (inventoryView.CurrentFocus.HasValue)
-                {
-                    world.HandleItemDrop(inventoryView.CurrentFocus.Value);
-                }
-            });
+            receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));

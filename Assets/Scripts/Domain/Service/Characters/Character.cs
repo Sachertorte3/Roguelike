@@ -348,6 +348,25 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
+        public void DropItem(int itemIndex, IMap map)
+        {
+            var itemEntity = map.TryPickUpAt(CurrentPosition, true);
+            if (itemEntity != null)
+            {
+                GameLog.Add($"{GetName(map.Player)}は{itemEntity.Item.Name}を拾った");
+            }
+            var item = ReplaceInventory(itemEntity?.Item, itemIndex);
+            if (item != null)
+            {
+                GameLog.Add($"{GetName(map.Player)}は{item.Name}を捨てた.");
+                map.SpawnItem(item,
+                    map.FindBlankPositionFrom(CurrentPosition,
+                        position => map.IsBlank(position, EntityLayer.Bottom)));
+            }
+
+            State = CharacterState.Finish;
+        }
+
         public float EvaluateThrow(IItem item, Direction8 direction, IMap map)
         {
             return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
@@ -519,7 +538,7 @@ namespace Domain.Service.Characters
             return _inventory.HasEmptySpace();
         }
 
-        public bool TryPickUp(IItem item)
+        public bool TryAddToInventory(IItem item)
         {
             if (_inventory.TryAdd(item))
             {

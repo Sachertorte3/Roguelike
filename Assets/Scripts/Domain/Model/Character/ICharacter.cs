@@ -56,11 +56,6 @@ namespace Domain.Model.Character
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map);
         public void Turn(Direction8 direction);
         public void FaceNearestCharacter(IMap map);
-        public void DoNothing();
-        public UniTask Move(Direction8 direction, IInput input);
-        public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
-        public UniTask UseItem(IItem item, Direction8 direction, IMap map);
-        public UniTask ThrowItem(IItem item, Direction8 direction, IMap map);
         public void SetVisibility(bool visibility);
         public void Teleport(Vector2Int position);
         public int GainHp(int value);
@@ -71,7 +66,7 @@ namespace Domain.Model.Character
         public void WasHealedBy(IActorOfEffect actor, float impact);
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
         public bool CanPickUpItem();
-        public bool TryPickUp(IItem item);
+        public bool TryAddToInventory(IItem item);
         public IItem? ReplaceInventory(IItem? item, int index);
         public void UpdateTurn();
         public void AddMoney(int value);

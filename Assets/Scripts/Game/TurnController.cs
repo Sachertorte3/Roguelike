@@ -89,7 +89,10 @@ namespace Game
                             Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
                         }
 
-                        await UniTask.WaitWhile(() => map.IsEventExecuting);
+                        if (map.IsEventExecuting)
+                        {
+                            await UniTask.WaitWhile(() => map.IsEventExecuting);
+                        }
                     }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
@@ -103,8 +106,11 @@ namespace Game
 
                 foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
                 {
-                    await UniTask.WaitUntil(() =>
-                        character.State == CharacterState.Wait || character.State == CharacterState.Finish);
+                    if (character.State != CharacterState.Wait && character.State != CharacterState.Finish)
+                    {
+                        await UniTask.WaitUntil(() =>
+                            character.State == CharacterState.Wait || character.State == CharacterState.Finish);
+                    }
                     character.StatusManager.ResetWaitTime();
                     character.SetWaitState();
                 }

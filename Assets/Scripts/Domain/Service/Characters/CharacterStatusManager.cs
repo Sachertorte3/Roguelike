@@ -237,6 +237,11 @@ namespace Domain.Service.Characters
             _conditions.Add(actor, condition, removalCondition);
         }
 
+        public void RemoveConditionType(Type conditionType)
+        {
+            _conditions.RemoveType(conditionType);
+        }
+
         public void ClearCondition()
         {
             _conditions.Clear();

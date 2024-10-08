@@ -50,6 +50,16 @@ namespace Domain.Service.Characters.Conditions
             _conditions.Add(condition);
         }
 
+        public void RemoveType(Type conditionType)
+        {
+            var removedConditions = _conditions.Where(condition => condition.GetType() == conditionType).ToList();
+            foreach (var condition in removedConditions)
+            {
+                _conditions.Remove(condition);
+                _inflicterMap.Remove(condition);
+            }
+        }
+
         public void Clear()
         {
             foreach (var condition in _conditions.ToList())

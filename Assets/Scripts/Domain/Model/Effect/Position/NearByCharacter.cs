@@ -26,7 +26,9 @@ namespace Domain.Model.Effect.Position
                 positions.AddRange(map.GetVisibleNeutralPositions(actor, actor.VisibleArea));
             if (TargetEnemy)
                 positions.AddRange(map.GetVisibleEnemyPositions(actor, actor.VisibleArea));
-            return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
+            return positions
+                .OrderBy(p => Vector2Int.Distance(p, position))
+                .Take(NumberOfTarget);
         }
 
         public float EvaluateHitProbability()

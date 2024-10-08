@@ -17,6 +17,7 @@ using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Characters.Conditions;
 using Domain.Service.Effect;
 using Domain.Service.Entities;
 using Domain.Service.Items;
@@ -481,6 +482,12 @@ namespace Domain.Service.Characters
         public int LoseHp(int value)
         {
             return _statusManager.LoseHp(value);
+        }
+
+        public void ListenToAlert(IActorOfEffect actor)
+        {
+            _statusManager.RemoveConditionType(typeof(Slept));
+            _behavior.KnowLocationOf(this, actor);
         }
 
         public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)

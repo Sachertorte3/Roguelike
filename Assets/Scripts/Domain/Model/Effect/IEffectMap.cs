@@ -11,6 +11,8 @@ namespace Domain.Model.Effect
         public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);
 
+        public HashSet<Vector2Int> AllCharacterPositions();
+
         public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character,
             IEnumerable<Vector2Int> visibleArea);
 

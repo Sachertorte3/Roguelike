@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -161,6 +162,8 @@ namespace Domain.Service.Characters.Behavior
                 firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask);
             }
         }
+
+        public void KnowLocationOf(IHasBehavior self, IActorOfEffect target) {}
 
         public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
         {

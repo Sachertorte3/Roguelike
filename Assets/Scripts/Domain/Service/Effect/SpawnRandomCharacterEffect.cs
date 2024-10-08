@@ -30,7 +30,7 @@ namespace Domain.Service.Effect
             {
                 for (var i = 0; i < _count; i++)
                 {
-                    map.SpawnRandomEnemy(position);
+                    map.SpawnRandomEnemy(position, false, false);
                 }
             }
 

@@ -233,9 +233,9 @@ namespace Game
             return ally.Character;
         }
 
-        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isShiny = null)
+        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null)
         {
-            return SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isShiny: isShiny);
+            return SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isSlept: isSlept, isShiny: isShiny);
         }
 
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
@@ -596,7 +596,7 @@ namespace Game
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Except(Player.VisionRange.VisibleArea);
                 if (positions.Any())
-                    SpawnRandomEnemy(positions.GetAtRandom(), false);
+                    SpawnRandomEnemy(positions.GetAtRandom(), null, false);
             }
 
             _tilemap.UpdateTurn();

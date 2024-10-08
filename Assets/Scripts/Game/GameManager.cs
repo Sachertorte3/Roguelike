@@ -14,6 +14,8 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using VContainer;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Game
 {
@@ -68,7 +70,7 @@ namespace Game
                         StartMap(map);
                         break;
                     case 1:
-                        map = await CreateMap();
+                        map = await CreateWorld();
                         StartMap(map);
                         break;
                 }
@@ -77,7 +79,7 @@ namespace Game
             {
                 var _ = await GetChoice(null, "New Game");
                 _state.Value = GameState.Dungeon;
-                map = await CreateMap();
+                map = await CreateWorld();
                 StartMap(map);
             }
 
@@ -92,13 +94,13 @@ namespace Game
             });
         }
 
-        public async UniTask<MapManager> CreateMap()
+        public async UniTask<MapManager> CreateWorld()
         {
-            Log.Debug("Start CreateMap");
+            Log.Debug("Start CreateWorld");
             await StopMap();
             _world.CreateNew(_dungeonBluePrintData);
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
-            Log.Debug("End CreateMap");
+            Log.Debug("End CreateWorld");
             return map;
         }
 
@@ -112,6 +114,7 @@ namespace Game
             Log.Debug("Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
+            Save();
             _turnController.Run(this, map);
             _receiver.Enable(true);
             Log.Debug("End LoadMap");
@@ -119,23 +122,34 @@ namespace Game
 
         public void Save()
         {
-            Log.Debug("Start Save");
+            Log.Debug("[Save]Start Save");
             var saveData = _world.Serialize();
-            var saveDataStr = JsonUtility.ToJson(saveData);
-            File.WriteAllText("Save/save.json", saveDataStr);
-            Log.Debug("End Save");
+            var maps = _world.SerializeUpdatedMaps();
+            WriteData("Save/save.json", JsonUtility.ToJson(saveData));
+            foreach (var map in maps)
+            {
+                Log.Debug($"[Save]Save map: {map.Id}");
+                WriteData($"Save/{map.Id}.json", JsonUtility.ToJson(map));
+            }
+            Log.Debug("[Save]End Save");
         }
 
         public async UniTask<MapManager> Load()
         {
-            Log.Debug("Start Load");
+            Log.Debug("[Save]Start Load");
             await StopMap();
             MapManager map = null;
-            if (File.Exists("Save/save.json"))
+            var saveData = ReadData("Save/save.json");
+            if (saveData != null)
             {
-                var str = File.ReadAllText("Save/save.json");
-                var saveData = JsonUtility.FromJson<WorldMemento>(str);
-                map = _world.LoadWorld(saveData);
+                var world = JsonUtility.FromJson<WorldMemento>(saveData);
+                var maps = new List<(string, MapMemento)>();
+                foreach (var mapId in world.MapIds)
+                {
+                    var mapData = JsonUtility.FromJson<MapMemento>(ReadData($"Save/{mapId}.json"));
+                    maps.Add((mapId, mapData));
+                }
+                map = _world.LoadWorld(world, maps);
             }
             else
             {
@@ -143,8 +157,30 @@ namespace Game
                 map = _world.LoadMap(new Location("Dungeon", 1), null);
             }
 
-            Log.Debug("End Load");
+            Log.Debug("[Save]End Load");
             return map;
+        }
+
+        public void WriteData(string path, string saveData)
+        {
+            if (saveData.Contains("❰") || saveData.Contains("❱"))
+            {
+                throw new Exception("Save data is corrupted");
+            }
+            saveData = Regex.Replace(saveData, @"<(.+?)>k__BackingField", "❰$1❱");
+            File.WriteAllText(path, saveData);
+        }
+
+        public string? ReadData(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            var saveDataStr = File.ReadAllText(path);
+            saveDataStr = Regex.Replace(saveDataStr, @"❰(.+?)❱", "<$1>k__BackingField");
+            return saveDataStr;
         }
 
         public void StartMap(MapManager map)

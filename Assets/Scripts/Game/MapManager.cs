@@ -28,6 +28,7 @@ namespace Game
 {
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap
     {
+        public Id<IMap> Id { get; init; }
         public string Name => _dungeonData.Name;
         public readonly int Level;
         public SectionType Type => _dungeonData.Type;
@@ -49,6 +50,7 @@ namespace Game
             List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
         {
+            Id = map.Id;
             Level = level;
 
             _tilemap = new Tilemap(map.Tilemap);
@@ -452,6 +454,7 @@ namespace Game
             characters.Remove(Player);
             return new MapMemento
             (
+                Id,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
@@ -470,6 +473,7 @@ namespace Game
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento
             (
+                Id,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),

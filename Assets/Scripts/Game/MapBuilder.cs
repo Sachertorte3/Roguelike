@@ -277,10 +277,11 @@ namespace Game
                     new Location(data.Name, level + 1)));
         }
 
-        public MapMemento Build()
+        public MapMemento Build(Id<IMap> id)
         {
             return new MapMemento
             (
+                id,
                 _tilemap.Serialize(),
                 _characters,
                 _items,

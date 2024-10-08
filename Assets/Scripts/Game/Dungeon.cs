@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Dungeon;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Map;
 using UnityEngine.AddressableAssets;
@@ -13,14 +14,14 @@ namespace Game
     public class Dungeon : ISerializable<DungeonMemento>
     {
         private readonly DungeonBluePrintData _dungeonData;
-        private readonly Dictionary<int, Id<MapManager>> _mapIds;
+        private readonly Dictionary<int, Id<IMap>> _mapIds;
 
         public Dungeon(DungeonMemento memento)
         {
             _dungeonData = Addressables
                 .LoadAssetAsync<DungeonBluePrintData>(
                     $"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
-            _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<MapManager>(mapId.Value));
+            _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
         }
 
         public DungeonMemento Serialize()
@@ -47,11 +48,11 @@ namespace Game
             return _dungeonData.ExistLevel(level);
         }
 
-        public Id<MapManager> GetMapId(int level)
+        public Id<IMap> GetMapId(int level)
         {
             if (!_mapIds.ContainsKey(level))
             {
-                var mapId = Id<MapManager>.Generate();
+                var mapId = Id<IMap>.Generate();
                 _mapIds[level] = mapId;
             }
 
@@ -63,7 +64,7 @@ namespace Game
             return _dungeonData.CreateMapData(level);
         }
 
-        public MapMemento CreateMapManager(int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
+        public MapMemento CreateMapManager(Id<IMap> id, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
             Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
         {
             var dungeonData = CreateMapData(level);
@@ -72,7 +73,7 @@ namespace Game
                 mapBuilder.AddDownStairs(dungeonData, level, downStairsId, downStairsDestinationId);
             if (ExistLevel(level - 1))
                 mapBuilder.AddUpStairs(dungeonData, level, upStairsId, upStairsDestinationId);
-            return mapBuilder.Build();
+            return mapBuilder.Build(id);
         }
     }
 }

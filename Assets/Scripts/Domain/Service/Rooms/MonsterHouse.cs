@@ -40,7 +40,7 @@ namespace Domain.Service.Rooms
             for (var i = 0; i < 10; i++)
             {
                 mapManager.SpawnRandomEnemy(mapManager.GetBlankAndStandablePositionsInArea(Rect.RectRange())
-                    .GetAtRandom());
+                    .GetAtRandom(), false, false);
             }
 
             await UniTask.Delay(1000);

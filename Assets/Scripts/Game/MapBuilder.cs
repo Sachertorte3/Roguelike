@@ -136,7 +136,7 @@ namespace Game
                 homePosition: (_location, clerkPosition));
             _characters.Add(clerk);
 
-            return Shop.Build(room, clerk.Entity, _items.ToList());
+            return Shop.Build(room, new(clerk.Entity.Id), _items.ToList());
         }
 
         private RoomMemento? CreateMonsterHouse(DungeonMapData data, RectInt room)

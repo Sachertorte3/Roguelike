@@ -79,7 +79,7 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
-            AffiliationMemento? affiliation = null, Id<IEntity>? id = null, (Location, Vector2Int)? homePosition = null)
+            AffiliationMemento? affiliation = null, Id<IEntity>? masterId = null, (Location, Vector2Int)? homePosition = null)
         {
             var inventory = new InventoryMemento
             (
@@ -109,7 +109,7 @@ namespace Domain.Service.Characters
                 data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
                 (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory,
-                CharacterAffiliationManager.Build(data.Group, affiliation, id),
+                CharacterAffiliationManager.Build(data.Group, affiliation, masterId),
                 data.Aggression,
                 0,
                 false,

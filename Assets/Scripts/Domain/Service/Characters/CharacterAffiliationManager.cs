@@ -172,13 +172,13 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
+        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? masterId)
         {
             var affiliationDict = new Dictionary<Id<IEntity>, float>();
-            if (affiliation != null && id != null)
+            if (affiliation != null && masterId != null)
             {
                 affiliationDict = affiliation.Affiliations;
-                affiliationDict[id] = 5f;
+                affiliationDict[masterId] = 5f;
             }
 
             return new AffiliationMemento

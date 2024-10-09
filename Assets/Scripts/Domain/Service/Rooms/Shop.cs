@@ -60,7 +60,7 @@ namespace Domain.Service.Rooms
             Dispose();
         }
 
-        public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
+        public static ShopMemento Build(RectInt rect, Id<IEntity> clerkId, List<ItemEntityMemento> items)
         {
             return new ShopMemento
             (
@@ -70,7 +70,7 @@ namespace Domain.Service.Rooms
                     false,
                     false
                 ),
-                entity,
+                clerkId,
                 items.Select(item => new ShopItemMemento
                 (
                     item.Item.Id,
@@ -90,7 +90,7 @@ namespace Domain.Service.Rooms
                     hasEntered,
                     hasEverEntered
                 ),
-                Clerk.Character.Serialize().Entity,
+                Clerk.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
                     item.Id.ToString(),

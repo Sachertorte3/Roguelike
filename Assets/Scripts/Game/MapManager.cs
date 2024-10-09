@@ -119,7 +119,7 @@ namespace Game
             if (map.Shop.HasValue)
             {
                 var clerk = Characters.FirstOrDefault(character =>
-                    character.Id == new Id<IEntity>(map.Shop.Value.Clerk.Id));
+                    character.Id == map.Shop.Value.ClerkId);
                 if (clerk == null && !map.Shop.Value.IsStolen)
                 {
                     var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();

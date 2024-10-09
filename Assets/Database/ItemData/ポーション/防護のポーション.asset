@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
+  m_Name: "\u9632\u8B77\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
+  m_EditorClassIdentifier: 
+  Icon: {fileID: -85694764, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  IsShiny: 0
+  _rarity: 3
+  EffectType: 1
+  UseOnDeath: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
+  IsSameEffect: 0
+  IsSameSkill: 1
+  SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416411
+    <Area>k__BackingField:
+      rid: 4425516923575599143
+    <Effects>k__BackingField:
+    - rid: 4425516923575599144
+    <Repeats>k__BackingField: 1
+    <ProbabilityOfSuccess>k__BackingField: 0.95
+  SkillOnThrow:
+    <Area>k__BackingField:
+      rid: 4425516923575599143
+    <Effects>k__BackingField:
+    - rid: 4425516923575599144
+    <ProbabilityOfSuccess>k__BackingField: 0.8
+  ItemEffect:
+    rid: -2
+  UsageLimit: 1
+  UpgradeLimit: 3
+  PassiveConditions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2541219106150416411
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 4425516923575599143
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 4425516923575599144
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u9632\u8B77"
+        _probabilityOfSuccess: 1

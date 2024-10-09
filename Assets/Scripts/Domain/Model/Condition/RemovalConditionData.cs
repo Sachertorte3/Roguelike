@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Sirenix.OdinInspector;
 using Random = UnityEngine.Random;
 
@@ -10,9 +11,9 @@ namespace Domain.Model.Condition
         public bool RemoveByElapsedTurn;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage;
-        [ShowIf("@RemoveByDamage")] public float Probability;
+        [ShowIf("@RemoveByDamage")] [Range(0, 1)] public float Probability;
         public bool RemoveByCharacterNearby;
-        [ShowIf("@RemoveByCharacterNearby")] public float CharacterNearbyProbability;
+        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)] public float CharacterNearbyProbability;
 
         public RemovalConditionData(int duration = -1, float damageProbability = -1, float characterNearbyProbability = -1)
         {

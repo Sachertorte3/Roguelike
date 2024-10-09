@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
         public string DeleteLog => "の視界は元に戻った";
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddClairvoyantFlags();
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.Clairvoyant);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,7 +27,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveClairvoyantFlags();
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Clairvoyant);
         }
 
         public float Evaluate(ITargetOfEffect target)

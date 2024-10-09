@@ -47,13 +47,19 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
         {
-            GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
+            if (_condition.InflictLog != "")
+            {
+                GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
+            }
             _condition.Inflict(hasCondition, actor);
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
         {
-            GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
+            if (_condition.DeleteLog != "")
+            {
+                GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
+            }
             _condition.Delete(hasCondition, actor);
         }
 

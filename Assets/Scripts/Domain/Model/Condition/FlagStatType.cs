@@ -5,6 +5,7 @@ namespace Domain.Model.Condition
         Clairvoyant,
         Blind,
         OverDrive,
-        Hard
+        Hard,
+        Heavy
     }
 }

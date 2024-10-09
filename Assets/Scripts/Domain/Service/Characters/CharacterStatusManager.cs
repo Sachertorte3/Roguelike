@@ -27,7 +27,7 @@ namespace Domain.Service.Characters
         private readonly VisionRange _visionRange;
         private readonly FlagStat _overDriveFlags;
         private readonly FlagStat _hardFlags;
-
+        private readonly FlagStat _heavyFlags;
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
         {
@@ -37,6 +37,7 @@ namespace Domain.Service.Characters
                 character.CanThroughWalls, map);
             _overDriveFlags = new FlagStat(data.OverDriveFlags);
             _hardFlags = new FlagStat(data.HardFlags);
+            _heavyFlags = new FlagStat(data.HeavyFlags);
         }
 
         public void Dispose()
@@ -54,6 +55,7 @@ namespace Domain.Service.Characters
                 _visionRange.BlindFlags,
                 _overDriveFlags.CurrentFlags,
                 _hardFlags.CurrentFlags,
+                _heavyFlags.CurrentFlags,
                 _conditions.ConditionsWithInflicter.Select(x => (x.actor, x.condition.Serialize())).ToList()
             );
         }
@@ -63,6 +65,7 @@ namespace Domain.Service.Characters
         public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
         public bool IsOverDrive => _overDriveFlags.CurrentValue;
         public bool IsHard => _hardFlags.CurrentValue;
+        public bool IsHeavy => _heavyFlags.CurrentValue;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -178,6 +181,9 @@ namespace Domain.Service.Characters
                 case FlagStatType.Hard:
                     _hardFlags.AddFlags();
                     break;
+                case FlagStatType.Heavy:
+                    _heavyFlags.AddFlags();
+                    break;
             }
         }
 
@@ -196,6 +202,9 @@ namespace Domain.Service.Characters
                     break;
                 case FlagStatType.Hard:
                     _hardFlags.RemoveFlags();
+                    break;
+                case FlagStatType.Heavy:
+                    _heavyFlags.RemoveFlags();
                     break;
             }
         }
@@ -217,7 +226,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            float viewRange, bool isHard, float waitTime, bool isSlept)
+            float viewRange, bool isHard, bool isHeavy, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -241,6 +250,7 @@ namespace Domain.Service.Characters
                 isSlept ? 1 : 0,
                 0,
                 isHard ? 1 : 0,
+                isHeavy ? 1 : 0,
                 conditions
             );
         }

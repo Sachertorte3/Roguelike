@@ -162,34 +162,42 @@ namespace Domain.Service.Characters
             _stats.RemoveElementAttackMultiplier(element, value);
         }
 
-        public void AddClairvoyantFlags()
+        public void AddFlagStat(FlagStatType type)
         {
-            _visionRange.AddClairvoyantFlags();
+            switch (type)
+            {
+                case FlagStatType.Clairvoyant:
+                    _visionRange.AddClairvoyantFlags();
+                    break;
+                case FlagStatType.Blind:
+                    _visionRange.AddBlindFlags();
+                    break;
+                case FlagStatType.OverDrive:
+                    _overDriveFlags.AddFlags();
+                    break;
+                case FlagStatType.Hard:
+                    _hardFlags.AddFlags();
+                    break;
+            }
         }
 
-        public void RemoveClairvoyantFlags()
+        public void RemoveFlagStat(FlagStatType type)
         {
-            _visionRange.RemoveClairvoyantFlags();
-        }
-
-        public void AddBlindFlags()
-        {
-            _visionRange.AddBlindFlags();
-        }
-
-        public void RemoveBlindFlags()
-        {
-            _visionRange.RemoveBlindFlags();
-        }
-
-        public void AddOverDriveFlags()
-        {
-            _overDriveFlags.AddFlags();
-        }
-
-        public void RemoveOverDriveFlags()
-        {
-            _overDriveFlags.RemoveFlags();
+            switch (type)
+            {
+                case FlagStatType.Clairvoyant:
+                    _visionRange.RemoveClairvoyantFlags();
+                    break;
+                case FlagStatType.Blind:
+                    _visionRange.RemoveBlindFlags();
+                    break;
+                case FlagStatType.OverDrive:
+                    _overDriveFlags.RemoveFlags();
+                    break;
+                case FlagStatType.Hard:
+                    _hardFlags.RemoveFlags();
+                    break;
+            }
         }
 
         public void AddWaitTime(float value)

@@ -19,7 +19,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddBlindFlags();
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.Blind);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -29,7 +29,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveBlindFlags();
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Blind);
         }
 
         public float Evaluate(ITargetOfEffect target)

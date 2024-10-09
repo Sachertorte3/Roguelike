@@ -2,23 +2,24 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class OverDrive : IConditionData
+    internal class Protected : IConditionData
     {
-        public string Name => "オーバードライブ";
-        public ParticleType ParticleType => ParticleType.None;
+        public string Name => "防護";
+        public ParticleType ParticleType => ParticleType.PowerUp;
         public Impact Impact => Impact.Beneficial;
         public bool CanAct => true;
         public bool CausesConfusion => false;
-        public string InflictLog => "以外の時が止まった";
-        public string DeleteLog => "以外の時が動き出した";
+        public string InflictLog => "は守りを固めた";
+        public string DeleteLog => "の守りは元に戻った";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.OverDrive);
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.Hard);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,17 +29,17 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.OverDrive);
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Hard);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsOverDrive ? 0 : 1f;
+            return CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
         }
 
         public float EvaluatePrice()
         {
-            return 20;
+            return 20f;
         }
     }
 }

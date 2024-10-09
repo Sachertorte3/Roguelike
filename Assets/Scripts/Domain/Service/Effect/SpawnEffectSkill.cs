@@ -155,6 +155,8 @@ namespace Domain.Service.Effect
                         switch (target)
                         {
                             case ICharacter character:
+                                await effect.Apply(actor, character, map);
+
                                 if (effect.Impact == Impact.Harmful)
                                 {
                                     var impactValue = effect.Evaluate(actor, character);
@@ -177,8 +179,6 @@ namespace Domain.Service.Effect
                                             c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
                                                 impactValue));
                                 }
-
-                                await effect.Apply(actor, character, map);
                                 break;
                             default:
                                 await effect.Apply(actor, target, map);

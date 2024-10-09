@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using Game;
@@ -76,6 +77,11 @@ namespace Provider
                 "SpawnEnemy",
                 "指定した位置に指定した敵をスポーンします。",
                 "SpawnEnemy",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "MoveLevelTo",
+                "指定したマップに移動します。",
+                "MoveLevelTo",
                 this);
         }
 
@@ -227,6 +233,18 @@ namespace Provider
                     .WaitForCompletion();
                 var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
                 Log.Info($"{enemy.GetName(_world.ActiveMap.CurrentValue.Player, true)}を{position}にスポーンしました。");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+        
+        private void MoveLevelTo(string mapName, int level)
+        {
+            try
+            {
+                _gameManager.LoadMap(new Location(mapName, level), null);
             }
             catch (Exception e)
             {

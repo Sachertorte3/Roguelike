@@ -27,6 +27,10 @@ namespace Provider
                                 map.Shop.GetSalePrice(map));
                         }));
                     }
+                    else
+                    {
+                        shopInfoView.SetVisibility(false);
+                    }
                 },
                 _ => disposable.Clear());
         }

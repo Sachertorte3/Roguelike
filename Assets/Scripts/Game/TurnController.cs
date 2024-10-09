@@ -82,7 +82,14 @@ namespace Game
                                 Globals.GameManager.Save();
                             }
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
-                            await character.DoNextAction(gameManager, map, _input);
+                            try
+                            {
+                                await character.DoNextAction(gameManager, map, _input).AttachExternalCancellation(_cancellationTokenSource.Token);
+                            }
+                            catch (OperationCanceledException e)
+                            {
+                                Log.Error(e);
+                            }
                         }
                         else
                         {

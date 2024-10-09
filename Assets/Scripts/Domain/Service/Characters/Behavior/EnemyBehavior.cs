@@ -47,9 +47,9 @@ namespace Domain.Service.Characters.Behavior
         public EnemyBehavior(BehaviorMemento data, Location mapLocation)
         {
             BehaviorData = data.Behavior;
-            if (data.HomePosition.MapOr(false, tuple => tuple.Item1 == mapLocation))
+            if (data.HomePosition.HasValue && data.HomePosition.Value.Item1 == mapLocation)
             {
-                _homePosition = data.HomePosition.Value;
+                _homePosition = data.HomePosition;
             }
             _lastTargetPosition = data.LastTargetPosition.Value;
 

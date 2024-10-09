@@ -6,8 +6,6 @@ using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Model.Message;
-using Domain.Service.Effect;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
@@ -18,7 +16,6 @@ namespace Domain.Service.Items
     internal class ItemEntity : IItemEntity
     {
         private readonly Entity _entity;
-        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
 
         public ItemEntity(ItemEntityMemento item)
         {
@@ -29,13 +26,11 @@ namespace Domain.Service.Items
         public IItem Item { get; init; }
 
         public Sprite Icon => Item.Icon;
-        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
 
         public void Dispose()
         {
             _entity.Dispose();
-            _onEffectSpawned.Dispose();
         }
 
         public Id<IEntity> Id => _entity.Id;
@@ -116,17 +111,11 @@ namespace Domain.Service.Items
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
+            await map.ExecuteTrapAt(destination, actor);
 
             if (Item.CanActivateWhenThrown)
             {
                 var result = await Item.UseWhenThrown(actor, destination, direction, map);
-                if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
-                {
-                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffectResult.Area,
-                        spawnEffectResult.Color
-                    ));
-                }
             }
         }
 

@@ -56,11 +56,6 @@ namespace Provider
 
         protected override void InitializeView(IItemEntity item, EntityView entityView)
         {
-            item.OnEffectSpawned.Subscribe(useSkill =>
-                    _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
-                        useSkill.Color, Settings.EffectDisplayTime.Value))
-                .AddTo(entityView);
-
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.GetComponent<SpriteRenderer>().sprite = item.Icon;
         }

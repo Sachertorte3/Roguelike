@@ -31,9 +31,6 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnDestroyedMessage Message)> OnDestroyed =>
             _events.GetObservable<OnDestroyedMessage>();
 
-        public Observable<(ICharacter Character, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
-            _events.GetObservable<OnEffectSpawnedMessage>();
-
         public Observable<(ICharacter Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged =>
             _events.GetObservable<OnVisibleAreaChangedMessage>();
 
@@ -82,7 +79,6 @@ namespace Domain.Service.Characters
                 character.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(character, character.OnDestroyed.Select(_ => new OnDestroyedMessage()));
-            _events.Add(character, character.OnEffectSpawned);
             _events.Add(character, character.VisionRange.OnVisibleAreaChanged);
             _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
             _events.Add(character,

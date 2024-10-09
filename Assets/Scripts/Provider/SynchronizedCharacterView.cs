@@ -76,14 +76,9 @@ namespace Provider
 
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
-            character.OnEffectSpawned.Subscribe(useSkill =>
-                _effectViewSpawner.Spawn(useSkill.Area.Intersect(_world.ActiveMap.CurrentValue.VisibleArea),
-                    useSkill.Color, Settings.EffectDisplayTime.Value)
-            ).AddTo(characterView);
-
             character.OnMove.Where(move => !move.isThrown).Subscribe(move => characterView.PlayWalkAnimation().Forget())
                 .AddTo(characterView);
-            character.OnEffectSpawned.Subscribe(useSkill => characterView.PlayAttackAnimation()).AddTo(characterView);
+            character.OnAttacked.Subscribe(useSkill => characterView.PlayAttackAnimation()).AddTo(characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Map;
 using UnityEngine;

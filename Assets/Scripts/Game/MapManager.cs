@@ -6,13 +6,16 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Entities;
+using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using Domain.Service.Map;
@@ -45,7 +48,7 @@ namespace Game
         public ReadOnlyReactiveProperty<bool> MovementEntityLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
         public bool IsEventExecuting { get; private set; }
-
+        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
             List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
@@ -175,6 +178,7 @@ namespace Game
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
         public ThrowAnimationEntityManager ThrowAnimationEntityManager { get; init; }
+        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
 
         public void Dispose()
         {
@@ -248,6 +252,11 @@ namespace Game
             return destination;
         }
 
+        public void SpawnEffect(IEnumerable<Vector2Int> area, Color color)
+        {
+            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(area, color));
+        }
+
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
         {
             var character = CharacterManager.Characters.FirstOrDefault(character => character.Id == id);
@@ -293,6 +302,15 @@ namespace Game
                 .Where(eventEntity => eventEntity.Layer == layer)
                 .Where(eventEntity => eventEntity.Events.Any(e => e.CanExecuteEvent()))
                 .FirstOrDefault();
+        }
+
+        public async UniTask ExecuteTrapAt(Vector2Int position, IActorOfEffect actor)
+        {
+            var trap = GetEventEntityAt(position, EntityLayer.Bottom);
+            if (trap != null && trap is Trap trapEntity)
+            {
+                await trapEntity.Execute(this, actor);
+            }
         }
 
         public record PassablePositionFilter(MapManager Map, bool IsWalkable, EntityLayer[] Layers,

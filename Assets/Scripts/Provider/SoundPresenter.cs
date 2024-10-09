@@ -34,7 +34,7 @@ namespace Provider
                     {
                         seManager.PickupSE();
                     }));
-                    _disposable.Add(map.CharacterManager.CharacterEvents.OnEffectSpawned.Subscribe(attackChanged =>
+                    _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
                     {
                         seManager.AttackSE();
                     }));

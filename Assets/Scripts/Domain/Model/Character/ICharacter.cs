@@ -9,7 +9,6 @@ using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Model.Message;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -29,7 +28,7 @@ namespace Domain.Model.Character
         public bool CanAct { get; }
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
-        public Observable<OnEffectSpawnedMessage> OnEffectSpawned { get; }
+        public Observable<Unit> OnAttacked { get; }
         public Observable<Unit> OnDead { get; }
         public Observable<Unit> OnPickUpItem { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }

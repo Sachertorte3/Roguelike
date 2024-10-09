@@ -36,7 +36,7 @@ namespace Domain.Service.Characters
         private readonly ReactiveProperty<Direction8> _direction;
         private readonly Entity _entity;
         private readonly Inventory _inventory;
-        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
+        private readonly Subject<Unit> _onAttacked = new();
         private readonly Subject<Unit> _onPickUpItem = new();
         private readonly CharacterSkill[] _skills;
         private readonly SpawnEffectSkill? _lastSkill;
@@ -135,7 +135,7 @@ namespace Domain.Service.Characters
         }
 
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
-        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
+        public Observable<Unit> OnAttacked => _onAttacked;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
         public ICharacterType CharacterType { get; init; }
@@ -269,13 +269,9 @@ namespace Domain.Service.Characters
             }
 
             var result = await skill.Use(this, CurrentPosition, direction, map);
-
-            if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
+            if (result.Result == SkillResult.Success)
             {
-                _onEffectSpawned.OnNext(
-                    new OnEffectSpawnedMessage(spawnEffectResult.Area, spawnEffectResult.Color));
-                if (_entity.VisibleByPlayer.CurrentValue)
-                    await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+                _onAttacked.OnNext(Unit.Default);
             }
 
             for (var i = 0; i < skill.BackStepDistance; i++)
@@ -299,13 +295,9 @@ namespace Domain.Service.Characters
                     async spawnEffect =>
                     {
                         var result = await item.Use(this, CurrentPosition, direction, map);
-
-                        if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
+                        if (result.Result == SkillResult.Success)
                         {
-                            _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(spawnEffectResult.Area,
-                                spawnEffect.Color));
-                            if (_entity.VisibleByPlayer.CurrentValue)
-                                await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
+                            _onAttacked.OnNext(Unit.Default);
                         }
                     },
                     async itemTarget => { await item.Use(this, CurrentPosition, direction, map); }
@@ -333,17 +325,11 @@ namespace Domain.Service.Characters
 
             var itemEntity = map.SpawnItem(item,
                 map.FindBlankPositionFrom(destination, position => map.IsBlank(position, EntityLayer.Bottom)));
+            await map.ExecuteTrapAt(destination, this);
             item = itemEntity.Item;
             if (item.CanActivateWhenThrown)
             {
                 var result = await item.UseWhenThrown(this, destination, direction, map);
-                if (result.Result == SkillResult.Success && result is SpawnEffectSkillResult spawnEffectResult)
-                {
-                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffectResult.Area,
-                        spawnEffectResult.Color
-                    ));
-                }
             }
 
             State = CharacterState.Finish;
@@ -383,7 +369,6 @@ namespace Domain.Service.Characters
             _disposable.Dispose();
             _entity.Dispose();
             _inventory.Dispose();
-            _onEffectSpawned.Dispose();
             _direction.Dispose();
         }
 

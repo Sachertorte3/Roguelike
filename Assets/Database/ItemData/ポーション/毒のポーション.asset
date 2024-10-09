@@ -22,12 +22,13 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 1
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416411
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
     - rid: 5486256396100960275
-    <Position>k__BackingField:
-      rid: 2541219106150416411
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:

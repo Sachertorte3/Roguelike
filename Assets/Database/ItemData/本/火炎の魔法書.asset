@@ -22,12 +22,13 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416407
     <Area>k__BackingField:
       rid: 4425517232088416258
     <Effects>k__BackingField:
     - rid: 4425517220030054409
-    <Position>k__BackingField:
-      rid: 2541219106150416407
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
@@ -38,6 +39,7 @@ MonoBehaviour:
   ItemEffect:
     rid: -2
   UsageLimit: 12
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2
@@ -57,7 +59,6 @@ MonoBehaviour:
         - _element: 1
           _power: 8
         _criticalRate: 0
-        _blowAwayDistance: 0
     - rid: 4425517232088416258
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

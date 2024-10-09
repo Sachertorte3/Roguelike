@@ -5,6 +5,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
+using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -16,6 +17,7 @@ namespace Domain.Service.Effect
     public class AddConditionEffect : IActorlessEffect
     {
         [Required][SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
+
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
         [Range(0, 1)]
@@ -37,15 +39,22 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 1;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor.Id, target);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor.Id, target, map);
 
-        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply(Id<IEntity>.Empty, target);
+        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply(Id<IEntity>.Empty, target, map);
 
-        public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target)
+        public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)
         {
             if (Random.value < _probabilityOfSuccess)
             {
-                target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
+                if (Random.value > target.GetConditionResistance(_condition.Value))
+                {
+                    target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
+                }
+                else
+                {
+                    GameLog.Add($"{target.GetName(map.Player)}は{_condition.Value.name}に耐性があるようだ");
+                }
             }
 
             return UniTask.CompletedTask;

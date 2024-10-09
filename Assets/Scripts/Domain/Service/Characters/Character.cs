@@ -452,6 +452,11 @@ namespace Domain.Service.Characters
             return _statusManager.Stats.GetElementDamageRateMultiplier(element);
         }
 
+        public float GetConditionResistance(ConditionTemplate condition)
+        {
+            return _statusManager.Stats.GetConditionResistance(condition);
+        }
+
         public int LoseHp(int value)
         {
             return _statusManager.LoseHp(value);

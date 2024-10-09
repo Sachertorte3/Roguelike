@@ -33,6 +33,8 @@ MonoBehaviour:
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 1
   MoveSpeed: 2
+  IsHard: 0
+  IsHeavy: 0
   IsFlying: 0
   CanThroughWalls: 0
   CanPickUp: 0
@@ -65,6 +67,8 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
+    data: []
+  ConditionResistance:
     data: []
   DropItemRate: 0
   DropItemTable:

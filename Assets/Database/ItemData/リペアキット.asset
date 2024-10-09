@@ -22,22 +22,24 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
+    - rid: -2
     <ProbabilityOfSuccess>k__BackingField: 0.8
   ItemEffect:
     rid: 5486256311944871959
   UsageLimit: 1
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2

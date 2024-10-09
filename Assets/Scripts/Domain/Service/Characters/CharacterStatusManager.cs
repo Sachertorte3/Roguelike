@@ -226,7 +226,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            float viewRange, bool isHard, bool isHeavy, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -245,7 +245,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento
             (
                 CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
-                    elementDamageRateMultiplier, viewRange, waitTime),
+                    elementDamageRateMultiplier, conditionResistance, viewRange, waitTime),
                 0,
                 isSlept ? 1 : 0,
                 0,

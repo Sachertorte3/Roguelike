@@ -1,6 +1,4 @@
 #nullable enable
-
-
 using System;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;
@@ -10,6 +8,13 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using Utilities.Table;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Model.Condition;
+
+
+
+
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -38,6 +43,7 @@ namespace Domain.Model.Character
         public bool HasLastSkill;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
+        public SerializableDictionary<ConditionTemplate, float> ConditionResistance;
         [Range(0, 1)] public float DropItemRate;
         [ShowIf("@DropItemRate > 0")] public Table<ItemData> DropItemTable;
 #if UNITY_EDITOR
@@ -45,7 +51,7 @@ namespace Domain.Model.Character
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
-            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(this);
 
             foreach (var skill in Skills)
             {
@@ -56,7 +62,8 @@ namespace Domain.Model.Character
             {
                 LastSkill.OnValidate(1);
             }
-            AssetDatabase.SaveAssets();
+
+            EditorUtility.SetDirty(this);
         }
 #endif
     }

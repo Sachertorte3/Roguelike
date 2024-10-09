@@ -297,7 +297,7 @@ MonoBehaviour:
       _prefixChance: 0.2
       _shinyChance: 0.01
       _sleepChance: 1
-      _mimicChance: 0.1
+      _mimicChance: 1
       _grassChance: 0
       _shopChance: 1
       _monsterHouseChance: 0.1

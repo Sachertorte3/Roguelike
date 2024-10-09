@@ -39,8 +39,6 @@ namespace Game
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
-
                 var characters = map.Characters.ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
@@ -55,6 +53,9 @@ namespace Game
 
                 if (_turnWaitTime.IsFull())
                 {
+                    _turn.Value++;
+                    _turnInLevel++;
+                    Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
                     map.UpdateTurn(_turn.CurrentValue);
                 }
 
@@ -126,9 +127,6 @@ namespace Game
                 {
                     _turnWaitTime.Set(0);
                 }
-
-                _turn.Value++;
-                _turnInLevel++;
             }
 
             _isRunning = false;

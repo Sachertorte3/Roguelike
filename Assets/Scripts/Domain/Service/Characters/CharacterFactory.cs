@@ -36,7 +36,7 @@ namespace Domain.Service.Characters
                     null
                 ),
                 status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
-                    new Dictionary<Element, float>(), new Dictionary<Element, float>(), 10, 1, false),
+                    new Dictionary<Element, float>(), new Dictionary<Element, float>(), 10, false, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
                 skills: new[]
@@ -103,7 +103,7 @@ namespace Domain.Service.Characters
                 status: CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
                     isShiny
                         ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
-                        : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8,
+                        : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8, data.IsHard,
                     data.MoveSpeed.ToWaitTime(), isSlept),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,

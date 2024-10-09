@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
@@ -12,7 +13,7 @@ using Utilities;
 
 namespace Domain.Model.Item
 {
-    public interface IItem : ISerializable<ItemMemento>, IHasInfo, IHasUpgrades
+    public interface IItem : ISerializable<ItemMemento>, IEquatable<IItem>, IHasInfo, IHasUpgrades
     {
         public Id<IItem> Id { get; }
         public string Name { get; }

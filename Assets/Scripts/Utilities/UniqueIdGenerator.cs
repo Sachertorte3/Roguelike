@@ -4,7 +4,7 @@ using System;
 namespace Utilities
 {
     [Serializable]
-    public class Id<T>
+    public class Id<T> : IEquatable<Id<T>>
     {
         public static Id<T> Empty => new(Guid.Empty);
         public Guid Value { get; }
@@ -43,7 +43,12 @@ namespace Utilities
 
         public override bool Equals(object? obj)
         {
-            return obj is Id<T> id && Value == id.Value;
+            return obj is Id<T> id && Equals(id);
+        }
+
+        public bool Equals(Id<T> other)
+        {
+            return Value == other.Value;
         }
 
         public override int GetHashCode()

@@ -1,10 +1,11 @@
+#nullable enable
 using System;
 using UnityEngine;
 
 namespace Domain.Model.Map
 {
     [Serializable]
-    public class Location
+    public class Location : IEquatable<Location>
     {
         [SerializeField] private string _mapName;
         [SerializeField] private int _level;
@@ -15,6 +16,11 @@ namespace Domain.Model.Map
         {
             _mapName = mapName;
             _level = level;
+        }
+
+        public bool Equals(Location other)
+        {
+            return other.MapName == MapName && other.Level == Level;
         }
     }
 }

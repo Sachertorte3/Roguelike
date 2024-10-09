@@ -435,14 +435,9 @@ namespace Domain.Service.Items
             return info;
         }
 
-        public override bool Equals(object obj)
+        public bool Equals(IItem other)
         {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            return Id.Value == ((Item)obj).Id.Value;
+            return other.Id == Id;
         }
 
         public override int GetHashCode()

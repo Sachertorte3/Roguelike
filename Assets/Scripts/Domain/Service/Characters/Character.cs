@@ -40,15 +40,13 @@ namespace Domain.Service.Characters
         private readonly CharacterSkill[] _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
-        private bool _canIgnoreWall;
         private int _money;
         private string _name = "Character";
         private readonly IDisposable _disposable;
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
 
-        internal Character(CharacterMemento data, ICharacterBehavior behavior, Observable<bool> canIgnoreWall,
-            IMap map)
+        internal Character(CharacterMemento data, ICharacterBehavior behavior, IMap map)
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
@@ -59,7 +57,7 @@ namespace Domain.Service.Characters
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
             _inventory = new Inventory(data.Inventory, this);
             _behavior = behavior;
-            canIgnoreWall.Subscribe(x => _canIgnoreWall = x);
+            CanThroughWalls = data.CanThroughWalls;
             _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
@@ -105,6 +103,7 @@ namespace Domain.Service.Characters
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
+        public bool CanThroughWalls { get; init; }
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;
@@ -151,32 +150,27 @@ namespace Domain.Service.Characters
         /// </summary>
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
-            return CanMove(position, direction, IsFlying, map);
+            return CanMove(position, direction, IsFlying, CanThroughWalls, map);
         }
 
-        public bool CanMove(Direction8 direction, bool isFlying, IPassableChecker map)
+        public bool CanMove(Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map)
         {
-            return CanMove(CurrentPosition, direction, isFlying, map);
+            return CanMove(CurrentPosition, direction, isFlying, canThroughWalls, map);
         }
 
         public bool CanMove(Direction8 direction, IPassableChecker map)
         {
-            return CanMove(CurrentPosition, direction, IsFlying, map);
+            return CanMove(CurrentPosition, direction, IsFlying, CanThroughWalls, map);
         }
 
-        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, IPassableChecker map)
+        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map)
         {
-            if (_canIgnoreWall)
-                return true;
-            if (isFlying)
+            if (canThroughWalls)
             {
-                return map.IsBlank(position + direction.Vector(), EntityLayer.Middle)
-                       && (!direction.IsDiagonal() ||
-                           (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
-                            map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
+                return map.CanPlace(position + direction.Vector(), isFlying, canThroughWalls, false);
             }
 
-            return map.IsBlankAndStandable(position + direction.Vector(), EntityLayer.Middle)
+            return map.CanPlace(position + direction.Vector(), isFlying, canThroughWalls, false)
                    && (!direction.IsDiagonal() ||
                        (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
                         map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
@@ -203,17 +197,10 @@ namespace Domain.Service.Characters
 
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
-            if (_canIgnoreWall)
-                return true;
-            if (IsFlying)
-            {
-                return map.IsPassableOnMap(position + direction.Vector())
-                       && (!direction.IsDiagonal() ||
-                           (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
-                            map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
-            }
+            if (CanThroughWalls)
+                return map.CanPlace(position + direction.Vector(), IsFlying, CanThroughWalls, true);
 
-            return map.IsWalkableOnMap(position + direction.Vector())
+            return map.CanPlace(position + direction.Vector(), IsFlying, CanThroughWalls, true)
                    && (!direction.IsDiagonal() ||
                        (map.IsPassableOnMap(position + direction.Rotate45Clockwise().Vector()) &&
                         map.IsPassableOnMap(position + direction.Rotate45AntiClockwise().Vector())));
@@ -415,6 +402,7 @@ namespace Domain.Service.Characters
                 IsShiny,
                 IsBoss,
                 IsFlying,
+                CanThroughWalls,
                 CanPickUp,
                 CanUseItem
             );
@@ -424,12 +412,12 @@ namespace Domain.Service.Characters
         {
             for (var i = 0; i < distance; i++)
             {
-                if (!CanMove(direction, true, map))
+                if (!CanMove(direction, true, CanThroughWalls, map))
                     break;
                 await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }
 
-            if (!map.IsWalkableOnMap(CurrentPosition))
+            if (!map.CanPlace(CurrentPosition, IsFlying, CanThroughWalls, true))
             {
                 var position = map.FindBlankPositionFrom(CurrentPosition,
                     position => map.IsBlank(position, EntityLayer.Middle));

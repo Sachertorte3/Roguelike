@@ -28,18 +28,18 @@ namespace Domain.Service.Characters
         {
             return new CharacterMemento
             (
-                Name,
-                new Human("Chara_Hero1_USM"),
-                new BehaviorMemento(
+                name: Name,
+                characterType: new Human("Chara_Hero1_USM"),
+                behavior: new BehaviorMemento(
                     new BehaviorData(),
                     null,
                     null
                 ),
-                CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
+                status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
                     new Dictionary<Element, float>(), new Dictionary<Element, float>(), 10, 1, false),
-                Entity.Build(spawnPosition, EntityLayer.Middle),
-                Direction8.Down,
-                new[]
+                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
+                direction: Direction8.Down,
+                skills: new[]
                 {
                     CharacterSkill.Build(
                         SpawnEffectSkill.Build(
@@ -60,20 +60,21 @@ namespace Domain.Service.Characters
                         0
                     )
                 },
-                Option<SpawnEffectSkillMemento>.None,
-                new InventoryMemento
+                lastSkill: Option<SpawnEffectSkillMemento>.None,
+                inventory: new InventoryMemento
                 (
                     EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 ),
-                CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
-                Aggression.AttackAnyone,
-                0,
-                true,
-                false,
-                false,
-                false,
-                true,
-                true
+                affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
+                aggression: Aggression.AttackAnyone,
+                money: 0,
+                isLeader: true,
+                isShiny: false,
+                isBoss: false,
+                isFlying: false,
+                canThroughWalls: false,
+                canPickUp: true,
+                canUseItem: true
             );
         }
 
@@ -93,44 +94,43 @@ namespace Domain.Service.Characters
 
             return new CharacterMemento
             (
-                isShiny ? "☆" + data.Name : data.Name,
-                data.CharacterType,
-                EnemyBehavior.Build(
+                name: isShiny ? "☆" + data.Name : data.Name,
+                characterType: data.CharacterType,
+                behavior: EnemyBehavior.Build(
                     data.Behavior,
                     homePosition
                 ),
-                CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
+                status: CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
                     isShiny
                         ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
                         : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, 8,
                     data.MoveSpeed.ToWaitTime(), isSlept),
-                Entity.Build(spawnPosition, EntityLayer.Middle),
-                direction,
-                data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
-                (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
-                inventory,
-                CharacterAffiliationManager.Build(data.Group, affiliation, masterId),
-                data.Aggression,
-                0,
-                false,
-                isShiny,
-                data.IsBoss,
-                data.IsFlying,
-                data.CanPickUp,
-                data.CanUseItem
+                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
+                direction: direction,
+                skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
+                lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
+                inventory: inventory,
+                affiliation: CharacterAffiliationManager.Build(data.Group, affiliation, masterId),
+                aggression: data.Aggression,
+                money: 0,
+                isLeader: false,
+                isShiny: isShiny,
+                isBoss: data.IsBoss,
+                isFlying: data.IsFlying,
+                canThroughWalls: data.CanThroughWalls,
+                canPickUp: data.CanPickUp,
+                canUseItem: data.CanUseItem
             );
         }
 
-        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver,
-            ReactiveProperty<bool> canIgnoreWall, IMap map)
+        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
-            return new Character(playerData, new PlayerBehavior(receiver), canIgnoreWall, map);
+            return new Character(playerData, new PlayerBehavior(receiver), map);
         }
 
-        public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior,
-            ReactiveProperty<bool> canIgnoreWall, IMap map)
+        public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IMap map)
         {
-            return new Character(data, behavior, canIgnoreWall, map);
+            return new Character(data, behavior, map);
         }
     }
 }

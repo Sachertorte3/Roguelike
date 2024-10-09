@@ -20,7 +20,7 @@ namespace Domain.Model.Character
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [ReadOnly] [Required] public string Name = "";
+        [ReadOnly][Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Monster;
         [SerializeReference] public ICharacterType CharacterType;
         public bool IsBoss;
@@ -29,6 +29,7 @@ namespace Domain.Model.Character
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         public bool IsFlying;
+        public bool CanThroughWalls;
         public bool CanPickUp;
         public bool CanUseItem;
         public EnemySkillData[] Skills;

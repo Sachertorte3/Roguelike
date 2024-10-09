@@ -284,8 +284,8 @@ MonoBehaviour:
     - Item: {fileID: 11400000, guid: 932a468b28bc5904182a8c42d183162c, type: 2}
       Weight: 1
   Sections:
-  - Type: 3
-    WaterChance: 0.568
+  - Type: 4
+    WaterChance: 0
     Floors:
     - Depth: 1
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
@@ -310,7 +310,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
         Weight: 1
   - Type: 0
     WaterChance: 0

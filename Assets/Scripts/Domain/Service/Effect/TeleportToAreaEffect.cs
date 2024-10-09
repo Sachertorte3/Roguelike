@@ -17,14 +17,14 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying));
+            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false));
             if (placeablePositions.Any())
             {
                 actor.Teleport(placeablePositions.GetAtRandom());
             }
             else
             {
-                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), (pos) => map.CanPlace(pos, actor.IsFlying)));
+                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false)));
             }
             return UniTask.CompletedTask;
         }

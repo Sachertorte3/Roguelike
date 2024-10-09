@@ -70,10 +70,12 @@ namespace Utilities
             return ie.Select((item, index) => (item, index));
         }
 
-        public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
+        public static IEnumerable<Vector2Int> RectRange(this RectInt rect) => RectRange(rect.xMin, rect.yMin, rect.width, rect.height);
+        public static IEnumerable<Vector2Int> RectRange(Vector2Int min, Vector2Int size) => RectRange(min.x, min.y, size.x, size.y);
+        public static IEnumerable<Vector2Int> RectRange(int xMin, int yMin, int width, int height)
         {
-            for (var x = rect.x; x < rect.x + rect.width; x++)
-                for (var y = rect.y; y < rect.y + rect.height; y++)
+            for (var x = xMin; x < xMin + width; x++)
+                for (var y = yMin; y < yMin + height; y++)
                     yield return new Vector2Int(x, y);
         }
 

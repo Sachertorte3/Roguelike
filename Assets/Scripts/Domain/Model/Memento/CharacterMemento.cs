@@ -26,6 +26,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public bool IsBoss { get; private set; }
         [field: SerializeField] public bool IsFlying { get; private set; }
+        [field: SerializeField] public bool CanThroughWalls { get; private set; }
         [field: SerializeField] public bool CanPickUp { get; private set; }
         [field: SerializeField] public bool CanUseItem { get; private set; }
 
@@ -46,6 +47,7 @@ namespace Domain.Model.Memento
             bool isShiny,
             bool isBoss,
             bool isFlying,
+            bool canThroughWalls,
             bool canPickUp,
             bool canUseItem
         )
@@ -66,6 +68,7 @@ namespace Domain.Model.Memento
             IsShiny = isShiny;
             IsBoss = isBoss;
             IsFlying = isFlying;
+            CanThroughWalls = canThroughWalls;
             CanPickUp = canPickUp;
             CanUseItem = canUseItem;
         }
@@ -87,6 +90,7 @@ namespace Domain.Model.Memento
             bool? isShiny = null,
             bool? isBoss = null,
             bool? isFlying = null,
+            bool? canThroughWalls = null,
             bool? canPickUp = null,
             bool? canUseItem = null
         )
@@ -108,6 +112,7 @@ namespace Domain.Model.Memento
                 isShiny ?? IsShiny,
                 isBoss ?? IsBoss,
                 isFlying ?? IsFlying,
+                canThroughWalls ?? CanThroughWalls,
                 canPickUp ?? CanPickUp,
                 canUseItem ?? CanUseItem
             );

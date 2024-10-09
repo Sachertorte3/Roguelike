@@ -33,7 +33,7 @@ namespace Domain.Service.Characters
             _stats = new CharacterStats(data.Stats);
             _conditions = new CharacterConditions(character, data.Conditions, map.Player ?? character);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags,
-                map);
+                character.CanThroughWalls, map);
             _overDriveFlags = new FlagStat(data.OverDriveFlags);
         }
 

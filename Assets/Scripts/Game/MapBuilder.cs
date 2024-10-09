@@ -19,6 +19,7 @@ namespace Game
     public class MapBuilder
     {
         private readonly Tilemap _tilemap;
+        private readonly Location _location;
         private readonly List<CharacterMemento> _characters = new();
         private readonly List<ItemEntityMemento> _items = new();
         private readonly List<StairsMemento> _stairs = new();
@@ -32,9 +33,10 @@ namespace Game
         private readonly Vector2Int _downStairPosition;
         private readonly HashSet<Vector2Int> _blankPositions;
 
-        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data)
+        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, Location location)
         {
             _tilemap = new Tilemap(tilemapData);
+            _location = location;
             _blankPositions = _tilemap.GetAllWalkablePositions();
 
             var rooms = _tilemap.Rooms.ToList();
@@ -131,7 +133,7 @@ namespace Game
 
             var clerkPosition = GetRandomBlankPositionInRoom(room);
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false,
-                homePosition: clerkPosition);
+                homePosition: (_location, clerkPosition));
             _characters.Add(clerk);
 
             return Shop.Build(room, clerk.Entity, _items.ToList());
@@ -166,7 +168,7 @@ namespace Game
                     var position = center + direction.Vector();
                     var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
                         direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
-                        homePosition: center);
+                        homePosition: (_location, center));
                     _characters.Add(character);
                 }
             }
@@ -265,6 +267,7 @@ namespace Game
             return new MapMemento
             (
                 id,
+                _location,
                 _tilemap.Serialize(),
                 _characters,
                 _items,

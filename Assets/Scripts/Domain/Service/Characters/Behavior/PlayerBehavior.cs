@@ -26,7 +26,7 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
-        public Option<Vector2Int> HomePosition => Option<Vector2Int>.None;
+        private (Location, Vector2Int)? _homePosition;
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
@@ -35,7 +35,7 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorMemento Serialize()
         {
-            return new BehaviorMemento(BehaviorData, HomePosition, null);
+            return new BehaviorMemento(BehaviorData, _homePosition, null);
         }
 
         public bool WanderAround => true;

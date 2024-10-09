@@ -20,7 +20,6 @@ namespace Domain.Model.Character
     {
         public bool IsLeader { get; }
         public bool IsBoss { get; }
-        public bool HasHomePosition { get; }
         public CharacterState State { get; }
         public void SetWaitState();
         public int Money { get; }

@@ -1,9 +1,7 @@
 ﻿#nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -42,6 +40,11 @@ namespace Game
             _activeMap.Value = null;
         }
 
+        public DungeonMapData GetDungeonMapData(Location location)
+        {
+            return _dungeons[location.MapName].CreateMapData(location.Level);
+        }
+
         public MapManager LoadWorld(WorldMemento memento, List<(string, MapMemento)> maps)
         {
             _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
@@ -62,8 +65,8 @@ namespace Game
             }
 
             MapManager map = new(mapMemento,
-                _dungeons[memento.CurrentLocation.MapName].CreateMapData(memento.CurrentLocation.Level), memento.Player,
-                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver, memento.CurrentLocation.Level);
+                GetDungeonMapData(memento.CurrentLocation), memento.Player,
+                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver);
 
             _activeLocation = memento.CurrentLocation;
             _activeMap.Value = map;
@@ -170,7 +173,7 @@ namespace Game
             }
 
             MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData,
-                characters, initialPosition, _receiver, location.Level);
+                characters, initialPosition, _receiver);
 
             _activeLocation = location;
             _activeMap.Value = map;

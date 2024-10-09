@@ -23,8 +23,7 @@ namespace Domain.Service.Characters.Behavior
 
         private ICharacter? _lastTarget;
         private Vector2Int? _lastTargetPosition;
-        private readonly Option<Vector2Int> _homePosition;
-        public Option<Vector2Int> HomePosition => _homePosition;
+        private readonly (Location Location, Vector2Int Position)? _homePosition;
 
         private readonly float behavioralRandomness = 0.01f;
 
@@ -45,10 +44,13 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorMemento data)
+        public EnemyBehavior(BehaviorMemento data, Location mapLocation)
         {
             BehaviorData = data.Behavior;
-            _homePosition = data.HomePosition;
+            if (data.HomePosition.MapOr(false, tuple => tuple.Item1 == mapLocation))
+            {
+                _homePosition = data.HomePosition.Value;
+            }
             _lastTargetPosition = data.LastTargetPosition.Value;
 
             if (BehaviorData.wanderAround)
@@ -88,7 +90,7 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public static BehaviorMemento Build(BehaviorData behavior, Option<Vector2Int> homePosition)
+        public static BehaviorMemento Build(BehaviorData behavior, (Location, Vector2Int)? homePosition)
         {
             return new BehaviorMemento(
                 behavior,
@@ -151,10 +153,10 @@ namespace Domain.Service.Characters.Behavior
             {
                 Log.Debug($"[Think] Target position is {_lastTargetPosition}.");
             }
-            else if (HomePosition.HasValue)
+            else if (_homePosition.HasValue)
             {
-                Log.Debug($"[Think] Home position is {HomePosition}.");
-                _lastTargetPosition = HomePosition.Value;
+                Log.Debug($"[Think] Home position is {_homePosition}.");
+                _lastTargetPosition = _homePosition.Value.Position;
             }
             else
             {

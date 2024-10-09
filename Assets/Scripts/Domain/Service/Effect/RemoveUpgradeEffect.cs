@@ -48,7 +48,7 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 1;
+            return 0.25f;
         }
 
         public float EvaluatePrice()

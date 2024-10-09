@@ -15,6 +15,7 @@ namespace Domain.Service.Characters
     {
         public SpawnEffectSkill _skill { get; }
         private int _coolTime { get; }
+        public bool IsDirectional => _skill.IsDirectional;
         public Color Color => _skill.Color;
         public int RushDistance => _skill.RushDistance;
         public int BackStepDistance => _skill.BackStepDistance;

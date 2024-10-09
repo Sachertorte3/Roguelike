@@ -68,6 +68,7 @@ namespace Domain.Service.Effect
         }
 
         public Color Color => _effects.First().Color;
+        public bool IsDirectional => _area.IsDirectional || _position.IsDirectional;
 
         public SpawnEffectSkillMemento Serialize()
         {
@@ -208,7 +209,6 @@ namespace Domain.Service.Effect
 
             var area = GetArea(actor, position, direction, map, true);
             var characters = map.GetCharactersInArea(area.ToHashSet());
-            var (allyImpactRate, neutralImpactRate, enemyImpactRate) = actor.Aggression.GetAggression();
             var totalEvaluation = 0f;
 
             if (characters.Count <= 0)
@@ -223,19 +223,8 @@ namespace Domain.Service.Effect
                     switch (effect.Impact)
                     {
                         case Impact.Harmful:
-                            if (actor.IsAlly(target))
-                            {
-                                totalEvaluation += allyImpactRate * effect.Evaluate(actor, target);
-                            }
-                            else if (actor.IsEnemy(target))
-                            {
-                                totalEvaluation += enemyImpactRate * effect.Evaluate(actor, target);
-                            }
-                            else
-                            {
-                                totalEvaluation += neutralImpactRate * effect.Evaluate(actor, target);
-                            }
-
+                            var affiliationType = actor.Affiliation.GetAffiliationType(target.Affiliation);
+                            totalEvaluation += actor.Aggression.GetAggression(affiliationType) * effect.Evaluate(actor, target);
                             break;
                         case Impact.Beneficial:
                             if (actor.IsAlly(target))
@@ -254,6 +243,7 @@ namespace Domain.Service.Effect
                             break;
                     }
                 }
+                totalEvaluation += effect.Evaluate(actor, area);
             }
 
             return totalEvaluation * ProbabilityOfSuccess;

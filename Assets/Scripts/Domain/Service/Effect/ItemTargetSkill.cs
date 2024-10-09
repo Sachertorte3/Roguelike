@@ -12,6 +12,7 @@ namespace Domain.Service.Effect
     public class ItemTargetSkill : ISerializable<ItemTargetSkillMemento>, ISkill
     {
         private readonly IItemEffect _itemEffect;
+        public bool IsDirectional => false;
 
         public ItemTargetSkill(ItemTargetSkillMemento memento)
         {

@@ -176,6 +176,7 @@ namespace Domain.Service.Characters.Behavior
             var actions = new List<IAction>();
             if (PrioritizeMovement(character, _lastTargetPosition))
             {
+                Log.Debug($"[Think] Prioritize Movement.");
                 actions.AddRange(GenerateMoveActionsDoable(character, _lastTargetPosition, map));
                 if (!actions.Any(action => action.Evaluate(character, map) > 0))
                 {
@@ -186,6 +187,7 @@ namespace Domain.Service.Characters.Behavior
             }
             else
             {
+                Log.Debug($"[Think] Not Prioritize Movement.");
                 actions.AddRange(GenerateUseSkillActionsDoable(character, map));
                 actions.AddRange(GenerateUseItemActionsDoable(character, map));
                 actions.AddRange(GenerateThrowItemActionsDoable(character, map));
@@ -295,12 +297,19 @@ namespace Domain.Service.Characters.Behavior
 
         private IEnumerable<UseSkill> GenerateUseSkillActionsDoable(IHasBehavior character, IMap map)
         {
-            return character.Skills
-                .SelectMany(
-                    skill => DirectionMethods.AllDirections
-                        .Select(direction => new UseSkill(skill, direction))
-                )
-                .Where(action => action.Doable(character, map));
+            var actions = new List<UseSkill>();
+            foreach (var skill in character.Skills)
+            {
+                if (skill.IsDirectional)
+                {
+                    actions.AddRange(DirectionMethods.AllDirections.Select(direction => new UseSkill(skill, direction)));
+                }
+                else
+                {
+                    actions.Add(new UseSkill(skill, character.CurrentDirection));
+                }
+            }
+            return actions.Where(action => action.Doable(character, map));
         }
 
         private IEnumerable<UseItem> GenerateUseItemActionsDoable(IHasBehavior character, IMap map)
@@ -310,12 +319,22 @@ namespace Domain.Service.Characters.Behavior
                 return Enumerable.Empty<UseItem>();
             }
 
-            return character.Inventory.AllItems
-                .SelectMany(
-                    item => DirectionMethods.AllDirections
-                        .Select(direction => new UseItem(item, direction))
-                )
-                .Where(action => action.Doable(character, map));
+            var actions = new List<UseItem>();
+            foreach (var item in character.Inventory.AllItems)
+            {
+                if (!item.CanActivateWhenUsed)
+                    continue;
+
+                if (item.SkillOnUse.MapOr(false, skill => skill.IsDirectional))
+                {
+                    actions.AddRange(DirectionMethods.AllDirections.Select(direction => new UseItem(item, direction)));
+                }
+                else
+                {
+                    actions.Add(new UseItem(item, character.CurrentDirection));
+                }
+            }
+            return actions.Where(action => action.Doable(character, map));
         }
 
         private IEnumerable<ThrowItem> GenerateThrowItemActionsDoable(IHasBehavior character, IMap map)

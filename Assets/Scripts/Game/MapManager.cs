@@ -273,25 +273,27 @@ namespace Game
         public IEnumerable<Vector2Int> GetVisibleAllyPositions(IHasAffiliation character,
             IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, visibleArea, CharacterRelation.Ally);
+            return GetCharacterPositions(character, visibleArea, AffiliationType.Ally);
         }
 
         public IEnumerable<Vector2Int> GetVisibleNeutralPositions(IHasAffiliation character,
             IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, visibleArea, CharacterRelation.Neutral);
+            return GetCharacterPositions(character, visibleArea, AffiliationType.Neutral);
         }
 
         public IEnumerable<Vector2Int> GetVisibleEnemyPositions(IHasAffiliation character,
             IEnumerable<Vector2Int> visibleArea)
         {
-            return GetCharacterPositions(character, visibleArea, CharacterRelation.Enemy);
+            return GetCharacterPositions(character, visibleArea, AffiliationType.Enemy);
         }
 
         public IEnumerable<Vector2Int> GetCharacterPositions(IHasAffiliation character,
-            IEnumerable<Vector2Int> visibleArea, CharacterRelation relation)
+            IEnumerable<Vector2Int> visibleArea, AffiliationType relation)
         {
-            return Characters.Where(c => relation.MatchesRelation(c, character)).Select(c => c.CurrentPosition)
+            return Characters
+                .Where(c => character.Affiliation.GetAffiliationType(c.Affiliation) == relation)
+                .Select(c => c.CurrentPosition)
                 .Where(p => visibleArea.Contains(p));
         }
 

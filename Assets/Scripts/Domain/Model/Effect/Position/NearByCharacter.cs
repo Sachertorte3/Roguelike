@@ -13,6 +13,7 @@ namespace Domain.Model.Effect.Position
         public bool TargetEnemy;
         public bool TargetNeutral;
         public bool TargetSelf;
+        public bool IsDirectional => false;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map)

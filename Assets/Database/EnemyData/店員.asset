@@ -35,7 +35,7 @@ MonoBehaviour:
   MoveSpeed: 3
   IsFlying: 0
   CanPickUp: 0
-  CanUseItem: 0
+  CanUseItem: 1
   Skills:
   - Skill:
       <Position>k__BackingField:

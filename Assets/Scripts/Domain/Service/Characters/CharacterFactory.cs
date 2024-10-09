@@ -32,7 +32,7 @@ namespace Domain.Service.Characters
                 new Human("Chara_Hero1_USM"),
                 new BehaviorMemento(
                     new BehaviorData(),
-                    Option<Vector2Int>.None,
+                    null,
                     null
                 ),
                 CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
@@ -79,7 +79,7 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
-            AffiliationMemento? affiliation = null, Id<IEntity>? id = null, Vector2Int? homePosition = null)
+            AffiliationMemento? affiliation = null, Id<IEntity>? id = null, (Location, Vector2Int)? homePosition = null)
         {
             var inventory = new InventoryMemento
             (
@@ -97,7 +97,7 @@ namespace Domain.Service.Characters
                 data.CharacterType,
                 EnemyBehavior.Build(
                     data.Behavior,
-                    homePosition.ToOption()
+                    homePosition
                 ),
                 CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
                     isShiny

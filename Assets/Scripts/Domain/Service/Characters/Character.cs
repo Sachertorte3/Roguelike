@@ -13,7 +13,6 @@ using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Characters.Behavior;
@@ -106,7 +105,6 @@ namespace Domain.Service.Characters
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
-        public bool HasHomePosition => _behavior.HomePosition.HasValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public CharacterState State { get; set; } = CharacterState.Wait;

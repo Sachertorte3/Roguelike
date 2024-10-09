@@ -7,11 +7,11 @@ using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 using Utilities;
 using Utilities.Table;
 #if UNITY_EDITOR
+using UnityEditor;
 using System.IO;
 #endif
 
@@ -53,6 +53,7 @@ namespace Domain.Model.Character
             {
                 LastSkill.OnValidate(1);
             }
+            AssetDatabase.SaveAssets();
         }
 #endif
     }

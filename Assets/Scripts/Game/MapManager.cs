@@ -32,8 +32,9 @@ namespace Game
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap
     {
         public Id<IMap> Id { get; init; }
-        public string Name => _dungeonData.Name;
-        public readonly int Level;
+        public Location Location { get; init; }
+        public string Name => Location.MapName;
+        public int Level => Location.Level;
         public SectionType Type => _dungeonData.Type;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
@@ -51,10 +52,10 @@ namespace Game
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
             List<CharacterMemento>? partyMembers,
-            Vector2Int? playerPosition, CharacterControlInputReceiver receiver, int level)
+            Vector2Int? playerPosition, CharacterControlInputReceiver receiver)
         {
             Id = map.Id;
-            Level = level;
+            Location = map.Location;
 
             _tilemap = new Tilemap(map.Tilemap);
 
@@ -123,7 +124,7 @@ namespace Game
                 {
                     var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();
                     var ally = CharacterManager.SpawnAlly(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: clerkPosition),
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: (Location, clerkPosition)),
                         this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
@@ -475,6 +476,7 @@ namespace Game
             return new MapMemento
             (
                 Id,
+                Location,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
@@ -494,6 +496,7 @@ namespace Game
             return new MapMemento
             (
                 Id,
+                Location,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
@@ -745,7 +748,6 @@ namespace Game
         {
             return CharacterManager.Characters
                 .Where(character => character != Player)
-                .Where(character => !character.HasHomePosition)
                 .Where(character => character.IsAlly(Player))
                 .Where(character => character.IsVisible(Player.CurrentPosition));
         }

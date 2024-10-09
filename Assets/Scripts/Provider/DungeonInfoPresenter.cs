@@ -11,7 +11,7 @@ namespace Provider
         [Inject]
         public DungeonInfoPresenter(World world, DungeonInfoView dungeonInfoView)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map => { dungeonInfoView.SetInfo(map.Name, map.Level); });
+            world.ActiveMap.SubscribeToAllIgnoreNull(map => { dungeonInfoView.SetInfo(map.Name, map.Location.Level); });
         }
     }
 }

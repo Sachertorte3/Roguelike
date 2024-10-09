@@ -13,6 +13,7 @@ namespace Domain.Model.Map
 {
     public interface IMap : IPassableChecker, IEffectMap
     {
+        public Location Location { get; }
         public ICharacter Player { get; }
         public bool IsEventExecuting { get; }
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }

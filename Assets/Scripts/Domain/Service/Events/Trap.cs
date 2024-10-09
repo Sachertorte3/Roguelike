@@ -20,22 +20,29 @@ namespace Domain.Service.Events
         private readonly string _name;
         private readonly Entity _entity;
         private readonly SpawnEffectSkill _skill;
+        private readonly float _probabilityOfBreaking;
 
         public Trap(TrapMemento memento)
         {
             _name = memento.Name;
             _entity = new Entity(memento.Entity);
             _skill = new SpawnEffectSkill(memento.Skill);
+            _probabilityOfBreaking = memento.ProbabilityOfBreaking;
             var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
             _events = new List<EntityEvent>
             {
                 new(
                     "",
                     () => true,
-                    (gameManager, map) =>
+                    async (gameManager, map) =>
                     {
                         GameLog.Add($"{_name}が起動した");
-                        return map.Player.UseSkill(characterSkill, map.Player.CurrentDirection, map);
+                        await map.Player.UseSkill(characterSkill, map.Player.CurrentDirection, map);
+                        if (Random.value < _probabilityOfBreaking)
+                        {
+                            GameLog.Add($"{_name}は壊れた");
+                            _entity.Destroy();
+                        }
                     }
                 )
             };
@@ -84,13 +91,13 @@ namespace Domain.Service.Events
 
         public TrapMemento Serialize()
         {
-            return new TrapMemento(_name, _entity.Serialize(), _skill.Serialize());
+            return new TrapMemento(_name, _entity.Serialize(), _skill.Serialize(), _probabilityOfBreaking);
         }
 
         public static TrapMemento Build(TrapData trap, Vector2Int position)
         {
             return new TrapMemento(trap.Name, Entity.Build(position, EntityLayer.Bottom),
-                SpawnEffectSkill.Build(trap.Skill));
+                SpawnEffectSkill.Build(trap.Skill), trap.ProbabilityOfBreaking);
         }
     }
 }

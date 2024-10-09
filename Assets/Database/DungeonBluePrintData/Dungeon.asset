@@ -141,6 +141,7 @@ MonoBehaviour:
           - rid: 5486256311944871961
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u6BD2\u306E\u7F60"
@@ -153,6 +154,7 @@ MonoBehaviour:
           - rid: 5486256311944871978
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u6DF7\u4E71\u306E\u7F60"
@@ -165,6 +167,7 @@ MonoBehaviour:
           - rid: 5486256311944871975
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7761\u7720\u306E\u7F60"
@@ -177,6 +180,7 @@ MonoBehaviour:
           - rid: 5486256311944871966
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u920D\u8DB3\u306E\u7F60"
@@ -189,6 +193,7 @@ MonoBehaviour:
           - rid: 5486256311944871981
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u9EBB\u75FA\u306E\u7F60"
@@ -201,6 +206,7 @@ MonoBehaviour:
           - rid: 5486256311944871984
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7652\u3057\u306E\u7F60"
@@ -213,6 +219,7 @@ MonoBehaviour:
           - rid: 5486256311944871968
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u53EC\u559A\u306E\u7F60"
@@ -225,6 +232,7 @@ MonoBehaviour:
           - rid: 5486256396100960257
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u7206\u767A\u306E\u7F60"
@@ -239,6 +247,7 @@ MonoBehaviour:
           - rid: 5486256406402433024
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 1
       Weight: 1
     - Item:
         <Name>k__BackingField: "\u8B66\u5831\u306E\u7F60"
@@ -251,7 +260,8 @@ MonoBehaviour:
           - rid: 5486256447100289029
           <Repeats>k__BackingField: 1
           <ProbabilityOfSuccess>k__BackingField: 0.95
-      Weight: 999
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
   WeaponPrefixes:
     items:
     - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}

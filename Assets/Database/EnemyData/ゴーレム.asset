@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30E4\u30C9\u30AB\u30EA"
+  m_Name: "\u30B4\u30FC\u30EC\u30E0"
   m_EditorClassIdentifier: 
-  Name: "\u30E4\u30C9\u30AB\u30EA"
+  Name: "\u30B4\u30FC\u30EC\u30E0"
   Group: 1
   CharacterType:
-    rid: 4425516923575599116
+    rid: 5486256464210165768
   IsBoss: 0
-  Hp: 4
+  Hp: 20
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+      <Log>k__BackingField: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -87,12 +87,12 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 3
+          _power: 7
         _criticalRate: 0
     - rid: 2541219281251860489
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599116
-      type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 5486256464210165768
+      type: {class: Golem, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 2
+        Type: 0

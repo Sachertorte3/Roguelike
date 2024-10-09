@@ -28,7 +28,7 @@ namespace Domain.Service.Characters.Behavior
             if (_character.CanMove(pos, direction, _map))
                 return 1;
             if (_canSwap && _character.CanSwap(pos, direction, _map))
-                return 1 + 0.01f;
+                return 2;
             return float.PositiveInfinity;
         }
     }
@@ -38,7 +38,7 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
-            var calculator = new MoveCostCalculator(character, map, false);
+            var calculator = new MoveCostCalculator(character, map, true);
             var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
@@ -57,7 +57,7 @@ namespace Domain.Service.Characters.Behavior
 
             if (swap.Doable(character, map))
             {
-                return new List<Swap> { swap };
+                //return new List<Swap> { swap };
             }
 
             Log.Debug($"[Think]Move to {direction} is not doable");

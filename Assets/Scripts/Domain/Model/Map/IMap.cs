@@ -19,6 +19,7 @@ namespace Domain.Model.Map
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
+        public HashSet<Vector2Int> GetAllPositions();
         public HashSet<Vector2Int> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area,
             params EntityLayer[] layers);
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
@@ -26,10 +27,11 @@ namespace Domain.Model.Map
         public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area);
         public HashSet<Vector2Int> GetAllLightPassablePositions();
         public IItem? GetItemFromId(Id<IItem> id);
+        public bool IsInside(Vector2Int position);
         public bool IsOverlapped(Vector2Int position, EntityLayer layer);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
         public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
-        public bool CanPlace(Vector2Int position, bool isFlying);
+        public bool CanPlace(Vector2Int position, bool isFlying, bool canThroughWalls, bool ignoreEntity);
         public bool IsWalkable(Vector2Int position, IAffiliation actor);
         public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);

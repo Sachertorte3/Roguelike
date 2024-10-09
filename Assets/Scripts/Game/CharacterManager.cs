@@ -28,7 +28,7 @@ namespace Game
             CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
 
-            var player = _factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), map);
+            var player = _factory.CreatePlayer(playerData, receiver, map);
             if (Player != null)
             {
                 PlayerEvents.Remove(Player);
@@ -73,14 +73,14 @@ namespace Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), new ReactiveProperty<bool>(false), map));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map));
         }
 
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Location);
             return new Ally(
-                AddCharacter(_factory.CreateCharacter(data, behavior, new ReactiveProperty<bool>(false), map)),
+                AddCharacter(_factory.CreateCharacter(data, behavior, map)),
                 behavior, map);
         }
 

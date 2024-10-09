@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Model.Message;
@@ -15,18 +16,20 @@ namespace Domain.Service.Characters
         private ReadOnlyReactiveProperty<float> _range;
         private readonly FlagStat _clairvoyantFlags;
         private readonly FlagStat _blindFlags;
+        private bool _canThroughWalls;
         public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
         public bool IsBlind => _blindFlags.CurrentValue;
         private HashSet<Vector2Int> _visibleArea = new();
         private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
-            int clairvoyantFlags, int blindFlags, IMap map)
+            int clairvoyantFlags, int blindFlags, bool canThroughWalls, IMap map)
         {
             _position = position;
             _range = range;
             _clairvoyantFlags = new FlagStat(clairvoyantFlags);
             _blindFlags = new FlagStat(blindFlags);
+            _canThroughWalls = canThroughWalls;
             _position.Subscribe(currentPosition =>
                 ChangeVisibleArea(Calc(currentPosition, map, _range.CurrentValue)));
             _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue)));
@@ -74,6 +77,14 @@ namespace Domain.Service.Characters
 
         private HashSet<Vector2Int> Calc(Vector2Int position, IMap map, float range)
         {
+            if (_canThroughWalls)
+            {
+                if (IsClairvoyant)
+                    return map.GetAllPositions();
+                var viewRadiusSq = IsBlind ? 1.5f * 1.5f : range * range;
+                return map.GetAllPositions().Where(
+                    pos => (position - pos).sqrMagnitude <= viewRadiusSq).ToHashSet();
+            }
             if (IsClairvoyant)
                 return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
             if (IsBlind)

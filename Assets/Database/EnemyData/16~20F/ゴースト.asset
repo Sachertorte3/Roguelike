@@ -34,29 +34,34 @@ MonoBehaviour:
     PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 2
   IsFlying: 1
+  CanThroughWalls: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
-      <Area>k__BackingField:
-        rid: -2
-      <Effects>k__BackingField:
-        - rid: -2
       <Position>k__BackingField:
-        rid: -2
+        rid: 5486256464210165763
+      <Area>k__BackingField:
+        rid: 5486256464210165764
+      <Effects>k__BackingField:
+      - rid: 5486256464210165765
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: 
+      <Log>k__BackingField: "\u306E\u653B\u6483"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
@@ -73,3 +78,19 @@ MonoBehaviour:
       type: {class: Ghast, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
+    - rid: 5486256464210165763
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256464210165764
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1
+    - rid: 5486256464210165765
+      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 5
+          _power: 6
+        _rate: 0.5

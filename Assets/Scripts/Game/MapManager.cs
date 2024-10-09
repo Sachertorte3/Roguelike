@@ -321,7 +321,7 @@ namespace Game
         {
             public PassablePositionFilter SetWalkability(bool isWalkable)
             {
-                return new PassablePositionFilter(Map, IsWalkable, Layers, Area);
+                return new PassablePositionFilter(Map, isWalkable, Layers, Area);
             }
 
             public PassablePositionFilter On(params EntityLayer[] layers)
@@ -357,6 +357,16 @@ namespace Game
         public PassablePositionFilter BlankPositions()
         {
             return new PassablePositionFilter(this, false, Array.Empty<EntityLayer>(), null);
+        }
+
+        public bool IsInside(Vector2Int position)
+        {
+            return _tilemap.IsPositionInsideMap(position);
+        }
+
+        public HashSet<Vector2Int> GetAllPositions()
+        {
+            return _tilemap.GetAllTiles().Select(tile => tile.position).ToHashSet();
         }
 
         public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers)
@@ -397,6 +407,11 @@ namespace Game
             return AllEntities().On(layer).Get().Count(entity => entity.CurrentPosition == position) > 1;
         }
 
+        public bool IsBlankIgnoreWall(Vector2Int position, params EntityLayer[] layers)
+        {
+            return !GetAllEntityPositionsAt(layers).Contains(position);
+        }
+
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers)
         {
             return BlankPositions().On(layers).Get().Contains(position);
@@ -412,16 +427,17 @@ namespace Game
             return false;
         }
 
-        public bool CanPlace(Vector2Int position, bool isFlying)
+        public bool CanPlace(Vector2Int position, bool isFlying, bool canThroughWalls, bool ignoreEntity)
         {
-            if (isFlying)
+            return (ignoreEntity, canThroughWalls, isFlying) switch
             {
-                return IsBlank(position, EntityLayer.Middle);
-            }
-            else
-            {
-                return IsBlankAndStandable(position, EntityLayer.Middle);
-            }
+                (true, true, _) => IsInside(position),
+                (true, false, true) => IsPassableOnMap(position),
+                (true, false, false) => IsWalkableOnMap(position),
+                (false, true, _) => IsInside(position) && IsBlankIgnoreWall(position),
+                (false, false, true) => IsBlank(position, EntityLayer.Middle),
+                (false, false, false) => IsBlankAndStandable(position, EntityLayer.Middle)
+            };
         }
 
         public bool IsWalkable(Vector2Int position, IAffiliation actor)
@@ -444,11 +460,6 @@ namespace Game
         public bool IsPassableOnMap(Vector2Int position)
         {
             return TilemapViewer.IsPassable(position);
-        }
-
-        public bool IsPassableIgnoreWall(Vector2Int position)
-        {
-            return !AllCharacterPositions().Contains(position);
         }
 
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
@@ -705,9 +716,9 @@ namespace Game
             return CharacterManager.GetAllCharacterPositions();
         }
 
-        public HashSet<Vector2Int> GetAllEntityPositionsAt(EntityLayer layer)
+        public HashSet<Vector2Int> GetAllEntityPositionsAt(params EntityLayer[] layers)
         {
-            return AllEntities().On(layer).GetPositions();
+            return AllEntities().On(layers).GetPositions();
         }
 
         public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area)

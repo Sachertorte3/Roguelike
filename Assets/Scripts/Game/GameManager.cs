@@ -111,7 +111,7 @@ namespace Game
             return await _choiceReceiver.GetChoice(text, choices);
         }
 
-        public async void LoadMap(Location location, Id<IEntity> destination)
+        public async void LoadMap(Location location, Id<IEntity>? destination = null)
         {
             Log.Debug("Start LoadMap");
             await StopMap();

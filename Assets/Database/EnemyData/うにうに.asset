@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30E4\u30C9\u30AB\u30EA"
+  m_Name: "\u3046\u306B\u3046\u306B"
   m_EditorClassIdentifier: 
-  Name: "\u30E4\u30C9\u30AB\u30EA"
+  Name: "\u3046\u306B\u3046\u306B"
   Group: 1
   CharacterType:
-    rid: 4425516923575599116
+    rid: 5486256464210165769
   IsBoss: 0
   Hp: 4
   Aggression: 1
@@ -40,17 +40,17 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 2541219281251860489
+        rid: 5486256464210165771
       <Area>k__BackingField:
-        rid: 2541219281251860487
+        rid: 5486256464210165770
       <Effects>k__BackingField:
       - rid: 2541219281251860488
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-    CoolTime: 0
+      <Log>k__BackingField: "\u306F\u96F7\u3092\u653E\u3063\u305F\u3002"
+    CoolTime: 3
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -76,23 +76,25 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860487
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        CanIgnoreWalls: 0
-        Length: 1
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 0
-          _power: 3
+        - _element: 3
+          _power: 5
         _criticalRate: 0
-    - rid: 2541219281251860489
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 4425516923575599116
-      type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 5486256464210165769
+      type: {class: Worm, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 2
+        Type: 0
+    - rid: 5486256464210165770
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256464210165771
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        NumberOfTarget: 1
+        TargetAlly: 0
+        TargetEnemy: 1
+        TargetNeutral: 0
+        TargetSelf: 0

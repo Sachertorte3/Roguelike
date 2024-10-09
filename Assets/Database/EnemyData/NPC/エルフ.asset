@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30E4\u30C9\u30AB\u30EA"
+  m_Name: "\u30A8\u30EB\u30D5"
   m_EditorClassIdentifier: 
-  Name: "\u30E4\u30C9\u30AB\u30EA"
-  Group: 1
+  Name: "\u30A8\u30EB\u30D5"
+  Group: 0
   CharacterType:
-    rid: 4425516923575599116
+    rid: 861543580450947072
   IsBoss: 0
-  Hp: 4
-  Aggression: 1
+  Hp: 25
+  Aggression: 3
   Behavior:
     wanderAround: 1
     Default: 1
@@ -27,29 +27,29 @@ MonoBehaviour:
     greaterThanTopBound: 1
     distanceTopBound: 5
     PrioritizeMovementWhenDistanceGreaterThanTopBound: 0
-    UseBottomBound: 0
-    distanceBottomBound: 3
+    UseBottomBound: 1
+    distanceBottomBound: 2
     lessThanBottomBound: 3
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
-    PrioritizeEnemiesOverLeaders: 0
+    PrioritizeEnemiesOverLeaders: 1
   MoveSpeed: 2
   IsFlying: 0
   CanThroughWalls: 0
   CanPickUp: 0
-  CanUseItem: 0
+  CanUseItem: 1
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 2541219281251860489
+        rid: 861543592802648065
       <Area>k__BackingField:
-        rid: 2541219281251860487
+        rid: 861543592802648064
       <Effects>k__BackingField:
       - rid: 2541219281251860488
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
+      <Log>k__BackingField: "\u306F\u77E2\u3092\u653E\u3063\u305F\u3002"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -66,33 +66,31 @@ MonoBehaviour:
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
-    items:
-    - Item: {fileID: 11400000, guid: 4f78e74bb0a46d340b80fa884693a6ba, type: 2}
-      Weight: 1
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860487
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 861543580450947072
+      type: {class: Human, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        ContainsSelf: 0
-        CanIgnoreWalls: 0
-        Length: 1
+        TextureName: Chara_Elf
+    - rid: 861543592802648064
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 861543592802648065
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon:
+          _name: icons_full_16_539
+        CanHitLayer: 01000000
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
         - _element: 0
-          _power: 3
+          _power: 5
         _criticalRate: 0
-    - rid: 2541219281251860489
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 4425516923575599116
-      type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
-      data:
-        Type: 2

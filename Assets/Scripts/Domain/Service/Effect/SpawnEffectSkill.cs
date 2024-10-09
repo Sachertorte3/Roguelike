@@ -9,6 +9,7 @@ using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Model.Setting;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
@@ -186,6 +187,12 @@ namespace Domain.Service.Effect
 
                     await effect.Apply(actor, area, map);
                 }
+            }
+
+            if (map.VisibleArea.Intersect(area).Any())
+            {
+                map.SpawnEffect(area, Color);
+                await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
             }
 
             return SpawnEffectSkillResult.Success(Color, area);

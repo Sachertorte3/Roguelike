@@ -1,5 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
+using System.Linq;
+using Domain.Model.Setting;
 using Domain.Service.Effect;
 using Game;
 using R3;
@@ -17,42 +19,52 @@ namespace Provider
         public EffectPreviewPresenter(GameManager gameManager, World world, EffectViewSpawner effectViewSpawner,
             InventoryView inventoryView)
         {
-            var serialDisposable = new SerialDisposable();
+            var disposables = new CompositeDisposable();
             var previews = new List<GameObject>();
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
-            {
-                serialDisposable.Disposable = Observable.Merge(
-                    inventoryView.OnFocusChanged.AsUnitObservable(),
-                    map.Player.Inventory.OnItemChanged.AsUnitObservable(),
-                    map.Player.Direction.AsUnitObservable(),
-                    gameManager.Turn.AsUnitObservable()
-                ).Subscribe(_ =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(
+                map =>
                 {
-                    previews.ForEach(preview => Object.Destroy(preview));
-                    previews.Clear();
-                    if (map.Player.CurrentHp <= 0)
+                    disposables.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
+                        effectViewSpawner.Spawn(
+                            effectSpawned.Area.Intersect(map.VisibleArea),
+                            effectSpawned.Color,
+                            Settings.EffectDisplayTime.Value
+                        )
+                    ));
+                    disposables.Add(Observable.Merge(
+                        inventoryView.OnFocusChanged.AsUnitObservable(),
+                        map.Player.Inventory.OnItemChanged.AsUnitObservable(),
+                        map.Player.Direction.AsUnitObservable(),
+                        gameManager.Turn.AsUnitObservable()
+                    ).Subscribe(_ =>
                     {
-                        return;
-                    }
-
-                    var focus = inventoryView.CurrentFocus;
-                    if (focus != null)
-                    {
-                        var item = map.Player.Inventory.GetItem(focus.Value);
-                        if (item != null)
+                        previews.ForEach(preview => Object.Destroy(preview));
+                        previews.Clear();
+                        if (map.Player.CurrentHp <= 0)
                         {
-                            if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
+                            return;
+                        }
+
+                        var focus = inventoryView.CurrentFocus;
+                        if (focus != null)
+                        {
+                            var item = map.Player.Inventory.GetItem(focus.Value);
+                            if (item != null)
                             {
-                                var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition,
-                                    map.Player.CurrentDirection, map, true);
-                                var color = spawnEffectSkill.Color;
-                                color.a = 0.25f;
-                                previews = effectViewSpawner.SpawnPreview(area, color);
+                                if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
+                                {
+                                    var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition,
+                                        map.Player.CurrentDirection, map, true);
+                                    var color = spawnEffectSkill.Color;
+                                    color.a = 0.25f;
+                                    previews = effectViewSpawner.SpawnPreview(area, color);
+                                }
                             }
                         }
-                    }
-                });
-            });
+                    }));
+                },
+                _ => disposables.Clear()
+            );
         }
     }
 }

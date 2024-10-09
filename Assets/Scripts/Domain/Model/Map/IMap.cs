@@ -34,6 +34,7 @@ namespace Domain.Model.Map
         public bool IsPassableOnMap(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
+        public UniTask ExecuteTrapAt(Vector2Int position, IActorOfEffect actor);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
@@ -43,6 +44,7 @@ namespace Domain.Model.Map
             bool? isSlept = null, bool? isShiny = null);
         public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
             int distance, params EntityLayer[] canHitLayer);
+        public void SpawnEffect(IEnumerable<Vector2Int> area, Color color);
         public IItemEntity? TryPickUpAt(Vector2Int position, bool isShopItem);
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
         public void RemoveEventEntity(IEventEntity entity);

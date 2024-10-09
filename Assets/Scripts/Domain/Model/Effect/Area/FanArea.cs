@@ -8,7 +8,7 @@ using Utilities;
 
 namespace Domain.Model.Effect.Area
 {
-    public class FanArea : IDirectionalArea
+    public class FanArea : IArea
     {
         public bool ContainsSelf;
         public bool CanIgnoreWalls;

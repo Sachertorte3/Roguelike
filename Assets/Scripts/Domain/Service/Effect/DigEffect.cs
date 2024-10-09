@@ -27,7 +27,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0.1f;
+            return 0;
+        }
+
+        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
+        {
+            return 0;
         }
 
         public float EvaluatePrice()

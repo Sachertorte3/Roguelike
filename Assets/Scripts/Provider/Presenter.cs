@@ -55,7 +55,7 @@ namespace Provider
             return new LoggerConfig()
                 .SyncMode.FullSync()
                 .WriteTo.UnityDebugLog(
-                    minLevel: LogLevel.Info,
+                    minLevel: LogLevel.Debug,
                     captureStackTrace: true);
         }
 

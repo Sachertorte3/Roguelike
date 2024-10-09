@@ -10,7 +10,7 @@ namespace Domain.Model.Effect.Position
     {
         [Required] public IconSerializable Icon;
         public List<EntityLayer> CanHitLayer = new() { EntityLayer.Middle };
-
+        public bool IsDirectional => true;
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IEffectMap map)
         {

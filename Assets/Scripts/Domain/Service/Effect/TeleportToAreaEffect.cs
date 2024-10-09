@@ -31,7 +31,14 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0.1f;
+            return 0;
+        }
+
+        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
+        {
+            if (positions.Contains(actor.CurrentPosition))
+                return 0;
+            return 0.05f * positions.Average(pos => VectorExtension.ChebyshevDistance(actor.CurrentPosition, pos));
         }
 
         public float EvaluatePrice()

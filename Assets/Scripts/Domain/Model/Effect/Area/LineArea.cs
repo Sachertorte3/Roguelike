@@ -7,7 +7,7 @@ using Utilities;
 
 namespace Domain.Model.Effect.Area
 {
-    public class LineArea : IDirectionalArea
+    public class LineArea : IArea
     {
         public bool ContainsSelf;
         public bool CanIgnoreWalls;

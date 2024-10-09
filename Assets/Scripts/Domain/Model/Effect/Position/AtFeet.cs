@@ -6,16 +6,14 @@ namespace Domain.Model.Effect.Position
 {
     public class AtFeet : IActorlessEffectPosition
     {
+        public bool IsDirectional => false;
+        
+        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IEffectMap map) => Get(position, direction, map);
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IEffectMap map)
         {
             yield return position;
-        }
-
-        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
-        {
-            return Get(position, direction, map);
         }
 
         public float EvaluateHitProbability()

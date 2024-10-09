@@ -33,17 +33,21 @@ MonoBehaviour:
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 3
+  IsHard: 0
+  IsHeavy: 0
   IsFlying: 1
+  CanThroughWalls: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
+      <Position>k__BackingField:
+        rid: 2541219281251860496
       <Area>k__BackingField:
         rid: 2541219281251860490
       <Effects>k__BackingField:
-        - rid: 2541219281251860491
-      <Position>k__BackingField:
-        rid: 2541219281251860496
+      - rid: 2541219281251860491
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 2
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -51,12 +55,13 @@ MonoBehaviour:
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
@@ -65,6 +70,8 @@ MonoBehaviour:
     data:
     - Key: 4
       Value: 2
+  ConditionResistance:
+    data: []
   DropItemRate: 0.05
   DropItemTable:
     items:
@@ -88,8 +95,6 @@ MonoBehaviour:
         - _element: 0
           _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
     - rid: 2541219281251860496
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

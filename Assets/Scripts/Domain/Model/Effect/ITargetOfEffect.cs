@@ -11,6 +11,7 @@ namespace Domain.Model.Effect
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);
+        public float GetConditionResistance(ConditionTemplate condition);
         public IInventory Inventory { get; }
         public bool IsClairvoyant { get; }
         public bool IsOverDrive { get; }

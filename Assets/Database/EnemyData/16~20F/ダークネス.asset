@@ -33,55 +33,68 @@ MonoBehaviour:
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 1
+  IsHard: 0
+  IsHeavy: 0
   IsFlying: 1
+  CanThroughWalls: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
+      <Position>k__BackingField:
+        rid: -2
       <Area>k__BackingField:
         rid: -2
       <Effects>k__BackingField:
-        - rid: -2
-      <Position>k__BackingField:
-        rid: -2
+      - rid: -2
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
     CoolTime: 0
   - Skill:
+      <Position>k__BackingField:
+        rid: -2
       <Area>k__BackingField:
         rid: -2
       <Effects>k__BackingField:
-        - rid: -2
-      <Position>k__BackingField:
-        rid: -2
+      - rid: -2
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
     CoolTime: 0
   - Skill:
+      <Position>k__BackingField:
+        rid: -2
       <Area>k__BackingField:
         rid: -2
       <Effects>k__BackingField:
-        - rid: -2
-      <Position>k__BackingField:
-        rid: -2
+      - rid: -2
+      <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
+    <Position>k__BackingField:
+      rid: -2
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
-      - rid: -2
-    <Position>k__BackingField:
-      rid: -2
+    - rid: -2
+    <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
+    data: []
+  ConditionResistance:
     data: []
   DropItemRate: 0
   DropItemTable:

@@ -34,6 +34,7 @@ namespace Domain.Service.Characters.Stats
                     ElementDamageRateMultiplier[element] = new Stat(1);
                 }
             }
+            ConditionResistance = memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
         }
 
         public CharacterStatsMemento Serialize()
@@ -42,10 +43,9 @@ namespace Domain.Service.Characters.Stats
             (
                 Hp.GetData(),
                 HpNaturalRecoveryAmount.GetData(),
-                new Dictionary<Element, StatData>(
-                    ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                new Dictionary<Element, StatData>(
-                    ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
+                ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
+                ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
+                ConditionResistance.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
                 ViewRange.GetData(),
                 WaitTime.GetData()
             );
@@ -53,16 +53,15 @@ namespace Domain.Service.Characters.Stats
 
         public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            float viewRange, float waitTime)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, float waitTime)
         {
             return new CharacterStatsMemento
             (
                 new ResourceData(new StatData(maxHp), maxHp),
                 new StatData(hpNaturalRecoveryAmount),
-                new SerializableDictionary<Element, StatData>(
-                    elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                new SerializableDictionary<Element, StatData>(
-                    elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
+                elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
+                elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
+                conditionResistance.ToDictionary(pair => pair.Key.name, pair => new StatData(pair.Value)),
                 new StatData(viewRange),
                 new ResourceData(new StatData(waitTime), waitTime)
             );
@@ -74,7 +73,7 @@ namespace Domain.Service.Characters.Stats
         public Resource WaitTime { get; init; }
         public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
         public Dictionary<Element, Stat> ElementDamageRateMultiplier { get; init; }
-
+        public Dictionary<string, Stat> ConditionResistance { get; init; }
         public void Dispose()
         {
             Hp.Dispose();
@@ -89,6 +88,11 @@ namespace Domain.Service.Characters.Stats
             foreach (var element in ElementDamageRateMultiplier.Values)
             {
                 element.Dispose();
+            }
+
+            foreach (var condition in ConditionResistance.Values)
+            {
+                condition.Dispose();
             }
         }
 
@@ -122,6 +126,15 @@ namespace Domain.Service.Characters.Stats
         public float GetElementDamageRateMultiplier(Element element)
         {
             return ElementDamageRateMultiplier[element].CurrentValue;
+        }
+
+        public float GetConditionResistance(ConditionTemplate condition)
+        {
+            if (ConditionResistance.ContainsKey(condition.name))
+            {
+                return ConditionResistance[condition.name].CurrentValue;
+            }
+            return 0f;
         }
 
         public void AddStatValue(StatType type, float value)

@@ -56,7 +56,6 @@ MonoBehaviour:
         - _element: 0
           _power: 5
         _criticalRate: 0.25
-        _blowAwayDistance: 0
     - rid: 2541219281251860483
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

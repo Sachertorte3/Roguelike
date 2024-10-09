@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Character;
 using Stats;
 using UnityEngine;
@@ -16,17 +17,20 @@ namespace Domain.Model.Memento
         public Dictionary<Element, StatData> ElementAttackMultiplier => _elementAttackMultiplier;
         [SerializeField] private SerializableDictionary<Element, StatData> _elementDamageRateMultiplier;
         public Dictionary<Element, StatData> ElementDamageRateMultiplier => _elementDamageRateMultiplier;
+        [SerializeField] private SerializableDictionary<string, StatData> _conditionResistance;
+        public Dictionary<string, StatData> ConditionResistance => _conditionResistance.ToDictionary();
         [field: SerializeField] public StatData ViewRange { get; private set; }
         [field: SerializeField] public ResourceData WaitTime { get; private set; }
 
         public CharacterStatsMemento(ResourceData hp, StatData hpNaturalRecovery,
             Dictionary<Element, StatData> elementAttackMultiplier,
-            Dictionary<Element, StatData> elementDamageRateMultiplier, StatData viewRange, ResourceData waitTime)
+            Dictionary<Element, StatData> elementDamageRateMultiplier, Dictionary<string, StatData> conditionResistance, StatData viewRange, ResourceData waitTime)
         {
             Hp = hp;
             HpNaturalRecoveryAmount = hpNaturalRecovery;
             _elementAttackMultiplier = elementAttackMultiplier.ToSerializable();
             _elementDamageRateMultiplier = elementDamageRateMultiplier.ToSerializable();
+            _conditionResistance = conditionResistance.ToSerializable();
             ViewRange = viewRange;
             WaitTime = waitTime;
         }

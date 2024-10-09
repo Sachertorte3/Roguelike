@@ -165,7 +165,7 @@ namespace Domain.Model.Item
             {
                 UpgradeLimit = 3;
             }
-            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(this);
         }
 #endif
         public string Info()

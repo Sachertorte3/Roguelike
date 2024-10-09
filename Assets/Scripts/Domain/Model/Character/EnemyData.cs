@@ -28,6 +28,7 @@ namespace Domain.Model.Character
         public Aggression Aggression = Aggression.AvoidAllies;
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
+        public bool IsHard;
         public bool IsFlying;
         public bool CanThroughWalls;
         public bool CanPickUp;

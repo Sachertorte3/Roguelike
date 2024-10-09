@@ -11,6 +11,9 @@ namespace Domain.Service.Effect
         public static int Calc(IActorOfEffect actor, ITargetOfEffect target, List<ElementPower> powers,
             bool isCritical = false)
         {
+            if (target.IsHard && !isCritical)
+                return 1;
+
             var elementDamages = new List<float>();
             foreach (var elementPower in powers)
             {
@@ -19,7 +22,7 @@ namespace Domain.Service.Effect
                 elementDamages.Add(elementPower.Power * elementAttackMultiplier * elementResistanceMultiplier);
             }
 
-            return Mathf.RoundToInt(elementDamages.Sum() * (isCritical ? 2 : 1));
+            return Mathf.Max(1, Mathf.RoundToInt(elementDamages.Sum() * (isCritical ? 2 : 1)));
         }
 
         public static int EvaluateDamage(List<ElementPower> powers, bool isCritical = false)
@@ -39,7 +42,7 @@ namespace Domain.Service.Effect
 
         public static int CalcExplosionDamage(float damageRate, ITargetOfEffect target)
         {
-            return Mathf.RoundToInt(target.CurrentHp * damageRate);
+            return Mathf.Max(1, Mathf.RoundToInt(target.CurrentHp * damageRate));
         }
 
         public static int EvaluateExplosionDamage(float damageRate)

@@ -14,6 +14,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int BlindFlags;
         [field: SerializeField] public int OverDriveFlags;
         [field: SerializeField] public int HardFlags;
+        [field: SerializeField] public int HeavyFlags;
         [SerializeField] private List<ConditionMemento> _conditions;
         [SerializeField] private List<string> _inflicters;
 
@@ -21,13 +22,14 @@ namespace Domain.Model.Memento
             _conditions.Select((x, i) => (new Id<IEntity>(_inflicters[i]), x)).ToList();
 
         public CharacterStatusMemento(CharacterStatsMemento stats, int clairvoyantFlags, int blindFlags,
-            int overDriveFlags, int hardFlags, List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
+            int overDriveFlags, int hardFlags, int heavyFlags, List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
         {
             Stats = stats;
             ClairvoyantFlags = clairvoyantFlags;
             BlindFlags = blindFlags;
             OverDriveFlags = overDriveFlags;
             HardFlags = hardFlags;
+            HeavyFlags = heavyFlags;
             _conditions = conditions.Select(x => x.condition).ToList();
             _inflicters = conditions.Select(x => x.actor.ToString()).ToList();
         }

@@ -70,6 +70,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
       - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
       - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: de80b70acd79c8345a76525a6d06bccb, type: 2}
     UpgradeMaterials:
       items:
       - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}

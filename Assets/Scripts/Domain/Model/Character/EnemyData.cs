@@ -29,6 +29,7 @@ namespace Domain.Model.Character
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         public bool IsHard;
+        public bool IsHeavy;
         public bool IsFlying;
         public bool CanThroughWalls;
         public bool CanPickUp;

@@ -97,6 +97,7 @@ namespace Domain.Service.Characters
         public bool IsOverDrive => _statusManager.IsOverDrive;
         public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
         public bool IsHard => _statusManager.IsHard;
+        public bool IsHeavy => _statusManager.IsHeavy;
         public bool IsDead => _statusManager.IsDead || _entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
         public Entity Entity => _entity;

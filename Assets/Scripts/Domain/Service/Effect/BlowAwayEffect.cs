@@ -27,7 +27,10 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
-            await Apply(actor, (IEntity)target, map);
+            if (!target.IsHeavy)
+            {
+                await Apply(actor, (IEntity)target, map);
+            }
         }
 
         public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
@@ -39,6 +42,10 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
+            if (target.IsHeavy)
+            {
+                return 0f;
+            }
             return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 

@@ -16,6 +16,7 @@ namespace Domain.Model.Effect
         public bool IsOverDrive { get; }
         public bool IsConfused { get; }
         public bool IsHard { get; }
+        public bool IsHeavy { get; }
         public bool CanAct { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }

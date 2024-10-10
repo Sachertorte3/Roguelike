@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -11,14 +12,16 @@ using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Map;
 using Domain.Service.Rooms;
+using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
     public class MapBuilder
     {
-        private readonly Tilemap _tilemap;
+        private readonly TilemapBuilder _tilemap;
         private readonly Location _location;
         private readonly List<CharacterMemento> _characters = new();
         private readonly List<ItemEntityMemento> _items = new();
@@ -31,46 +34,49 @@ namespace Game
         private readonly ShopMemento? _shop;
         private readonly Vector2Int _upStairPosition;
         private readonly Vector2Int _downStairPosition;
-        private readonly HashSet<Vector2Int> _blankPositions;
+        private readonly Dictionary<Id<Room>, HashSet<Vector2Int>> _blankPositionsInRooms;
 
-        public MapBuilder(TilemapMemento tilemapData, DungeonMapData data, Location location)
+        public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Location location)
         {
-            _tilemap = new Tilemap(tilemapData);
+            _tilemap = new TilemapBuilder(bluePrint, waterChance);
             _location = location;
-            _blankPositions = _tilemap.GetAllWalkablePositions();
+            _blankPositionsInRooms = new();
 
-            var rooms = _tilemap.Rooms.ToList();
+            var roomIds = _tilemap.RoomIds.ToList();
 
-            if (Random.value < data.ShopChance && rooms.Count() > 1)
+            if (Random.value < data.ShopChance && roomIds.Count() > 1)
             {
-                var shopRoom = rooms.GetAtRandom();
-                rooms.Remove(shopRoom);
+                var shopRoom = roomIds.GetAtRandom();
                 _shop = CreateShop(data, shopRoom);
+                if (_shop != null)
+                    roomIds.Remove(shopRoom);
             }
 
-            foreach (var room in rooms)
-                AddGrasses(data, room);
-
-            if (Random.value < data.MonsterHouseChance && rooms.Count() > 1)
+            if (Random.value < data.MonsterHouseChance && roomIds.Count() > 1)
             {
-                var monsterHouseRoom = rooms.GetAtRandom();
-                rooms.Remove(monsterHouseRoom);
+                var monsterHouseRoom = roomIds.GetAtRandom();
                 _monsterHouse = CreateMonsterHouse(data, monsterHouseRoom);
+                if (_monsterHouse != null)
+                    roomIds.Remove(monsterHouseRoom);
             }
-            if (Random.value < data.RestRoomChance && rooms.Count() > 1)
+            if (Random.value < data.RestRoomChance && roomIds.Count() > 1)
             {
-                var restRoom = rooms.GetAtRandom();
-                rooms.Remove(restRoom);
-
-                CreateRestRoom(data, restRoom);
+                var restRoom = roomIds.GetAtRandom();
+                if (CreateRestRoom(data, restRoom))
+                    roomIds.Remove(restRoom);
             }
 
-            _downStairPosition = GetRandomBlankPositionInRoom(rooms.GetAtRandom());
-            _upStairPosition = GetRandomBlankPositionInRoom(rooms.GetAtRandom());
-
-            if (data.existBoss)
+            foreach (var room in roomIds)
             {
-                var bossRoom = rooms.GetAtRandom();
+                CreateRoom(data, room);
+            }
+
+            _downStairPosition = GetRandomBlankPositionInRoom(roomIds.GetAtRandom());
+            _upStairPosition = GetRandomBlankPositionInRoom(roomIds.GetAtRandom());
+
+            if (data.ExistBoss)
+            {
+                var bossRoom = roomIds.GetAtRandom();
                 foreach (var bossData in data.Boss)
                 {
                     var boss = CharacterFactory.BuildCharacter(bossData, GetRandomBlankPositionInRoom(bossRoom),
@@ -80,16 +86,39 @@ namespace Game
                 }
             }
 
-            foreach (var room in rooms)
-            {
-                CreateRoom(data, room);
-            }
+            foreach (var room in roomIds)
+                AddGrasses(data, room);
         }
 
-        private void AddGrasses(DungeonMapData data, RectInt room)
+        private HashSet<Vector2Int> GetAllBlankPositionInRoom(Id<Room> roomId)
+        {
+            if (!_blankPositionsInRooms.ContainsKey(roomId))
+                _blankPositionsInRooms[roomId] = _tilemap.GetWalkablePositionsIn(roomId);
+            return _blankPositionsInRooms[roomId];
+        }
+        private Vector2Int GetRandomBlankPositionInRoom(Id<Room> roomId)
+        {
+            if (!_blankPositionsInRooms.ContainsKey(roomId))
+                _blankPositionsInRooms[roomId] = _tilemap.GetWalkablePositionsIn(roomId);
+            var position = _blankPositionsInRooms[roomId].GetAtRandom();
+            _blankPositionsInRooms[roomId].Remove(position);
+            return position;
+        }
+
+        private IEnumerable<Vector2Int> GetRandomBlankPositionsInRoom(Id<Room> roomId, int count)
+        {
+            if (!_blankPositionsInRooms.ContainsKey(roomId))
+                _blankPositionsInRooms[roomId] = _tilemap.GetWalkablePositionsIn(roomId);
+            var positions = _blankPositionsInRooms[roomId].GetAtRandom(count);
+            foreach (var position in positions)
+                _blankPositionsInRooms[roomId].Remove(position);
+            return positions;
+        }
+
+        private void AddGrasses(DungeonMapData data, Id<Room> roomId)
         {
             var randomValue = Random.value * 1024;
-            foreach (var position in room.RectRange())
+            foreach (var position in _tilemap.GetWalkablePositionsIn(roomId))
             {
                 if (data.GrassChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue)) < data.GrassChance)
                 {
@@ -104,102 +133,104 @@ namespace Game
             return MathExtension.RandomBinomialApproxValue(attemptCount * 2, probability);
         }
 
-        private void CreateRoom(DungeonMapData data, RectInt room)
+        private void CreateRoom(DungeonMapData data, Id<Room> roomId)
         {
+            if (data.RoundRoomCorner)
+                _tilemap.RoundRoomCorner(roomId);
+
             var characterCount = GetCount(data.CharacterCount);
             var itemCount = GetCount(data.ItemCount);
             var chestCount = Random.value < data.ChestChance ? 1 : 0;
             var trapCount = GetCount(data.TrapCount);
 
-            AddCharactersToRoom(data, room, characterCount);
-            AddItemsToRoom(data, room, itemCount);
-            AddChestsToRoom(data, room, chestCount);
-            AddTrapsToRoom(data, room, trapCount);
+            AddCharactersToRoom(data, roomId, characterCount);
+            AddItemsToRoom(data, roomId, itemCount);
+            AddChestsToRoom(data, roomId, chestCount);
+            AddTrapsToRoom(data, roomId, trapCount);
         }
 
-        private ShopMemento CreateShop(DungeonMapData data, RectInt room)
+        private ShopMemento? CreateShop(DungeonMapData data, Id<Room> roomId)
         {
             var shopItems = data.ShopItems.GetRandomItem().Items;
 
             var width = Random.Range(2, 5);
             var height = Random.Range(2, 5);
-            var rect = room.GetCenteredInnerRect(new Vector2Int(width, height));
+            var rect = _tilemap.GetCenteredInnerRect(roomId, new Vector2Int(width, height));
 
-            foreach (var position in rect.RectRange())
+            if (rect == null)
             {
-                _items.Add(ItemFactory.Build(position, Item.Build(shopItems.GetRandomItem(), ItemState.ShopItem)));
-                _blankPositions.Remove(position);
+                return null;
             }
 
-            var clerkPosition = GetRandomBlankPositionInRoom(room);
+            foreach (var position in rect.Value.RectRange())
+            {
+                _items.Add(ItemFactory.Build(position, Item.Build(shopItems.GetRandomItem(), ItemState.ShopItem)));
+                GetAllBlankPositionInRoom(roomId).Remove(position);
+            }
+
+            var clerkPosition = GetRandomBlankPositionInRoom(roomId);
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false,
                 homePosition: (_location, clerkPosition));
             _characters.Add(clerk);
 
-            return Shop.Build(room, new(clerk.Entity.Id), _items.ToList());
+            return Shop.Build(_tilemap.GetRoom(roomId), new(clerk.Entity.Id), _items.ToList());
         }
 
-        private RoomMemento? CreateMonsterHouse(DungeonMapData data, RectInt room)
+        private RoomMemento? CreateMonsterHouse(DungeonMapData data, Id<Room> roomId)
         {
-            AddItemsToRoom(data, room, 5);
-            AddChestsToRoom(data, room, 1);
-            AddTrapsToRoom(data, room, 3);
+            if (data.RoundRoomCorner)
+                _tilemap.RoundRoomCorner(roomId);
 
-            return MonsterHouse.Build(room);
+            AddItemsToRoom(data, roomId, 5);
+            AddChestsToRoom(data, roomId, 1);
+            AddTrapsToRoom(data, roomId, 3);
+
+            return MonsterHouse.Build(_tilemap.GetRoom(roomId));
         }
 
-        private void CreateRestRoom(DungeonMapData data, RectInt room)
+        private bool CreateRestRoom(DungeonMapData data, Id<Room> roomId)
         {
-            if (room.width >= 5 && room.height >= 5)
+            if (data.RoundRoomCorner)
+                _tilemap.RoundRoomCorner(roomId);
+
+            var innerRect = _tilemap.GetWalkablePositionsIn(roomId).GetRandomInnerRect(new Vector2Int(5, 5));
+            if (innerRect == null)
             {
-                var innerRect = room.GetRandomInnerRect(new Vector2Int(5, 5));
-
-                var center = innerRect.min + new Vector2Int(2, 2);
-
-                _bonfire = Bonfire.Build(center);
-
-                foreach (var position in innerRect.RectRange())
-                {
-                    _blankPositions.Remove(position);
-                }
-
-                foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
-                {
-                    var position = center + direction.Vector();
-                    var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
-                        direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
-                        homePosition: (_location, center));
-                    _characters.Add(character);
-                }
+                return false;
             }
-            
+
+            var center = innerRect.Value.min + new Vector2Int(2, 2);
+
+            _bonfire = Bonfire.Build(center);
+
+            foreach (var position in innerRect.Value.RectRange())
+            {
+                GetAllBlankPositionInRoom(roomId).Remove(position);
+            }
+
+            foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
+            {
+                var position = center + direction.Vector();
+                var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
+                    direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
+                    homePosition: (_location, center));
+                _characters.Add(character);
+            }
+
             var itemCount = GetCount(data.ItemCount);
             var chestCount = Random.value < data.ChestChance ? 1 : 0;
             var trapCount = GetCount(data.TrapCount);
 
-            AddItemsToRoom(data, room, itemCount);
-            AddChestsToRoom(data, room, chestCount);
-            AddTrapsToRoom(data, room, trapCount);
+            AddItemsToRoom(data, roomId, itemCount);
+            AddChestsToRoom(data, roomId, chestCount);
+            AddTrapsToRoom(data, roomId, trapCount);
+
+            return true;
         }
 
-        private Vector2Int GetRandomBlankPositionInRoom(RectInt room)
+        private void AddCharactersToRoom(DungeonMapData data, Id<Room> roomId, int count)
         {
-            var position = _blankPositions.Where(position => room.Contains(position)).GetAtRandom();
-            _blankPositions.Remove(position);
-            return position;
-        }
-
-        private IEnumerable<Vector2Int> GetRandomBlankPositionsInRoom(RectInt room, int count)
-        {
-            var positions = _blankPositions.Where(position => room.Contains(position)).GetAtRandom(count);
-            foreach (var position in positions)
-                _blankPositions.Remove(position);
-            return positions;
-        }
-
-        private void AddCharactersToRoom(DungeonMapData data, RectInt room, int count)
-        {
-            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
                     isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
@@ -207,15 +238,15 @@ namespace Game
             }
         }
 
-        private void AddItemsToRoom(DungeonMapData data, RectInt room, int count)
+        private void AddItemsToRoom(DungeonMapData data, Id<Room> roomId, int count)
         {
-            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
                 _items.Add(ItemFactory.Build(position, Item.Build(data.Items.GetRandomItem())));
         }
 
-        private void AddChestsToRoom(DungeonMapData data, RectInt room, int count)
+        private void AddChestsToRoom(DungeonMapData data, Id<Room> roomId, int count)
         {
-            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 if (Random.value < data.MimicChance)
                 {
@@ -232,9 +263,9 @@ namespace Game
             }
         }
 
-        private void AddTrapsToRoom(DungeonMapData data, RectInt room, int count)
+        private void AddTrapsToRoom(DungeonMapData data, Id<Room> roomId, int count)
         {
-            foreach (var position in GetRandomBlankPositionsInRoom(room, count))
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 _traps.Add(Trap.Build(data.Traps.GetRandomItem(), position));
             }
@@ -268,14 +299,14 @@ namespace Game
             (
                 id,
                 _location,
-                _tilemap.Serialize(),
+                _tilemap.Build(),
                 _characters,
                 _items,
                 EventEntityManager.Build(_stairs, _chests, _traps, _bonfire.ToOption()),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),
                 _shop.ToOption(),
-                _blankPositions.GetAtRandom()
+                _blankPositionsInRooms.Values.SelectMany(positions => positions).GetAtRandom()
             );
         }
     }

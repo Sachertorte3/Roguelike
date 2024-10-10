@@ -70,6 +70,24 @@ namespace Utilities
             return ie.Select((item, index) => (item, index));
         }
 
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                var tmp = list[i];
+                list[i] = list[j];
+                list[j] = tmp;
+            }
+        }
+
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> ie)
+        {
+            var list = ie.ToList();
+            list.Shuffle();
+            return list;
+        }
+
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect) => RectRange(rect.xMin, rect.yMin, rect.width, rect.height);
         public static IEnumerable<Vector2Int> RectRange(Vector2Int min, Vector2Int size) => RectRange(min.x, min.y, size.x, size.y);
         public static IEnumerable<Vector2Int> RectRange(int xMin, int yMin, int width, int height)
@@ -165,6 +183,20 @@ namespace Utilities
         public static int WeightedIndex<T>(this IEnumerable<T> source, Func<T, float> weightSelector)
         {
             return WeightedIndex(source, Random.value, weightSelector);
+        }
+
+        public static RectInt? GetRandomInnerRect(this IEnumerable<Vector2Int> positions, Vector2Int size)
+        {
+            var shuffledPositions = positions.Shuffle();
+            foreach (var position in shuffledPositions)
+            {
+                var rect = new RectInt(position, size);
+                if (rect.RectRange().All(position => positions.Contains(position)))
+                {
+                    return rect;
+                }
+            }
+            return null;
         }
 
         public static T MinBy<T, U>(this IEnumerable<T> xs, Func<T, U> key) where U : IComparable<U>

@@ -24,6 +24,7 @@ namespace Domain.Model.Dungeon
         float ChestChance,
         float MimicChance,
         float WeaponChanceInChest,
+        bool RoundRoomCorner,
         float WaterChance,
         float GrassChance,
         float ShopChance,
@@ -32,7 +33,7 @@ namespace Domain.Model.Dungeon
         float ItemCount,
         float CharacterCount,
         float TrapCount,
-        bool existBoss,
+        bool ExistBoss,
         List<EnemyData> Boss,
         EnemyData Clerk,
         EnemyData Mimic

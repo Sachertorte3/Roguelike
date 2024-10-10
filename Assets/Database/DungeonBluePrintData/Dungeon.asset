@@ -292,7 +292,8 @@ MonoBehaviour:
       Weight: 1
   Sections:
   - Type: 4
-    WaterChance: 0
+    RoundRoomCorner: 0
+    WaterChance: 1
     Floors:
     - Depth: 1
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
@@ -320,6 +321,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}
         Weight: 1
   - Type: 0
+    RoundRoomCorner: 1
     WaterChance: 0
     Floors:
     - Depth: 4
@@ -367,6 +369,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
   - Type: 1
+    RoundRoomCorner: 1
     WaterChance: 0.25
     Floors:
     - Depth: 3
@@ -438,6 +441,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
         Weight: 1
   - Type: 1
+    RoundRoomCorner: 1
     WaterChance: 0.5
     Floors:
     - Depth: 4
@@ -491,6 +495,7 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: c3c61fb9e1e447e46a157efb056fc530, type: 2}
         Weight: 1
   - Type: 4
+    RoundRoomCorner: 0
     WaterChance: 1
     Floors:
     - Depth: 4

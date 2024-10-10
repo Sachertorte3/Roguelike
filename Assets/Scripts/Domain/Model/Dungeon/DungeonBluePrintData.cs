@@ -81,6 +81,7 @@ namespace Domain.Model.Dungeon
                 floorData.Room.ChestChance,
                 floorData.MimicChance,
                 sectionData.WeaponChanceInChest,
+                sectionData.RoundRoomCorner,
                 sectionData.WaterChance,
                 floorData.GrassChance,
                 floorData.ShopChance,

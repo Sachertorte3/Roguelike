@@ -22,10 +22,9 @@ namespace Domain.Model.Memento
 
         [SerializeField] private Vector2Int[] _grasses;
         public ObservableHashSet<Vector2Int> Grasses => new(_grasses);
-        [field: SerializeField] public RectInt[] Rooms { get; private set; }
 
         public TilemapMemento(int width, int height, IDictionary<Vector2Int, TileData> tiles,
-            IEnumerable<Vector2Int> grasses, IEnumerable<RectInt> rooms)
+            IEnumerable<Vector2Int> grasses)
         {
             var tileMementos = new TileMemento[width * height];
             foreach (var (position, tile) in tiles)
@@ -36,16 +35,13 @@ namespace Domain.Model.Memento
             Width = width;
             _tiles = tileMementos;
             _grasses = grasses.ToArray();
-            Rooms = rooms.ToArray();
         }
 
-        public TilemapMemento(int width, TileMemento[] tiles, IEnumerable<Vector2Int> grasses,
-            IEnumerable<RectInt> rooms)
+        public TilemapMemento(int width, TileMemento[] tiles, IEnumerable<Vector2Int> grasses)
         {
             Width = width;
             _tiles = tiles;
             _grasses = grasses.ToArray();
-            Rooms = rooms.ToArray();
         }
     }
 }

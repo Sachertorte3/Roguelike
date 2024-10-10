@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
-using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using static RandomDungeonWithBluePrint.Constants;
 using Random = UnityEngine.Random;
 
 namespace Domain.Service.Map
@@ -35,9 +32,6 @@ namespace Domain.Service.Map
             Height = memento.Height;
             _tiles = memento.Tiles;
             _grasses = new ObservableHashSet<Vector2Int>(memento.Grasses);
-
-            Rooms = new ReadOnlyCollection<RectInt>(memento.Rooms
-                .Select(room => new RectInt(room.x, room.y, room.width, room.height)).ToList());
 
             _allWalkablePositionsSet = FindAllWalkablePositions().ToHashSet();
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
@@ -80,8 +74,6 @@ namespace Domain.Service.Map
                 .ToDictionary(x => x, _ => new TileData(TileData.Build(TileCategory.Blank, false))));
         }
 
-        public ReadOnlyCollection<RectInt> Rooms { get; init; }
-
         public Vector2Int Size => new(Width, Height);
 
         public void Dispose()
@@ -97,8 +89,7 @@ namespace Domain.Service.Map
                 Width,
                 Height,
                 _tiles,
-                _grasses,
-                Rooms
+                _grasses
             );
         }
 
@@ -165,53 +156,6 @@ namespace Domain.Service.Map
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
             return new HashSet<Vector2Int>(_allLightPassablePositionsSet);
-        }
-
-        public static TilemapMemento Build(FieldBluePrint bluePrint, float waterChance)
-        {
-            var field = FieldBuilder.Build(bluePrint);
-            var width = field.Grid.Size.x + 2;
-            var height = field.Grid.Size.y + 2;
-            var tiles = new TileMemento[width * height];
-            var rooms = field.Rooms.Select(room => room.Rect)
-                .Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
-
-            var randomValue = Random.value * 1024;
-            for (var x = -1; x < field.Grid.Size.x + 1; x++)
-            {
-                for (var y = -1; y < field.Grid.Size.y + 1; y++)
-                {
-                    TileCategory tileType;
-                    if (x == -1 || y == -1 || x == field.Grid.Size.x || y == field.Grid.Size.y)
-                    {
-                        tileType = TileCategory.UnbreakableWall;
-                    }
-                    else
-                    {
-                        var mapChipType = field.Grid[x, y];
-                        tileType = mapChipType == (int)MapChipType.Wall
-                            ? TileCategory.Wall
-                            : TileCategory.Floor;
-                        if (tileType == TileCategory.Wall)
-                        {
-                            if (waterChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + randomValue, y / 16f + randomValue)) < waterChance)
-                            {
-                                tileType = TileCategory.Water;
-                            }
-                        }
-                    }
-
-                    tiles[x + 1 + (y + 1) * width] = TileData.Build(tileType, false);
-                }
-            }
-
-            return new TilemapMemento
-            (
-                width,
-                tiles,
-                Enumerable.Empty<Vector2Int>(),
-                rooms
-            );
         }
 
         ~Tilemap()

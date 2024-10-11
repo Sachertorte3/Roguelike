@@ -319,7 +319,7 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
+      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
         Weight: 1
   - Type: 0
     RoundRoomCorner: 1
@@ -495,7 +495,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: c3c61fb9e1e447e46a157efb056fc530, type: 2}
         Weight: 1
-  - Type: 4
+  - Type: 5
     RoundRoomCorner: 0
     WaterChance: 1
     Floors:
@@ -548,6 +548,58 @@ MonoBehaviour:
       - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
+        Weight: 1
+  - Type: 4
+    RoundRoomCorner: 1
+    WaterChance: 0
+    Floors:
+    - Depth: 4
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      Template: 0
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _mimicChance: 0.1
+      _grassChance: 0.3
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        CharacterCount: 1
+        TrapCount: 0
+      _existBoss: 0
+      _boss: []
+    - Depth: 1
+      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      Template: 1
+      _prefixChance: 0.2
+      _shinyChance: 0.01
+      _sleepChance: 0.5
+      _mimicChance: 0.1
+      _grassChance: 0.3
+      _shopChance: 0.1
+      _monsterHouseChance: 0.1
+      _restRoomChance: 0.1
+      _room:
+        ChestChance: 0.1
+        ItemCount: 1
+        CharacterCount: 1
+        TrapCount: 0
+      _existBoss: 0
+      _boss:
+      - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
+        Weight: 3
+      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
+        Weight: 3
+      - Item: {fileID: 11400000, guid: 7b8d9caf8a0f37a4f83b24e4620e807e, type: 2}
         Weight: 1
   references:
     version: 2

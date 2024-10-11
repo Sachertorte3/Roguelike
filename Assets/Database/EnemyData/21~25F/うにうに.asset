@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u3046\u306B\u3085\u3046\u306B\u3085"
+  m_Name: "\u3046\u306B\u3046\u306B"
   m_EditorClassIdentifier: 
-  Name: "\u3046\u306B\u3085\u3046\u306B\u3085"
+  Name: "\u3046\u306B\u3046\u306B"
   Group: 1
   CharacterType:
     rid: 5486256464210165769
@@ -21,7 +21,7 @@ MonoBehaviour:
   Aggression: 1
   Behavior:
     wanderAround: 1
-    Default: 1
+    Default: 3
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
@@ -51,7 +51,7 @@ MonoBehaviour:
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u708E\u3092\u653E\u3063\u305F\u3002"
+      <Log>k__BackingField: "\u306F\u96F7\u3092\u653E\u3063\u305F\u3002"
     CoolTime: 3
   HasLastSkill: 0
   LastSkill:
@@ -84,13 +84,13 @@ MonoBehaviour:
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 1
+        - _element: 3
           _power: 5
         _criticalRate: 0
     - rid: 5486256464210165769
       type: {class: Worm, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 5
+        Type: 0
     - rid: 5486256464210165770
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

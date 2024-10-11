@@ -31,11 +31,14 @@ namespace Domain.Service.Characters
             _blindFlags = new FlagStat(blindFlags);
             _canThroughWalls = canThroughWalls;
             _position.Subscribe(currentPosition =>
-                ChangeVisibleArea(Calc(currentPosition, map, _range.CurrentValue)));
-            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue)));
+                ChangeVisibleArea(Calc(currentPosition, map)));
+            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
             _clairvoyantFlags
                 .Value
-                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue)));
+                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
+            _blindFlags
+                .Value
+                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
         }
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
@@ -65,7 +68,7 @@ namespace Domain.Service.Characters
 
         public void Refresh(IMap map)
         {
-            ChangeVisibleArea(Calc(_position.CurrentValue, map, _range.CurrentValue));
+            ChangeVisibleArea(Calc(_position.CurrentValue, map));
         }
 
         private void ChangeVisibleArea(HashSet<Vector2Int> area)
@@ -75,8 +78,9 @@ namespace Domain.Service.Characters
             _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, oldArea));
         }
 
-        private HashSet<Vector2Int> Calc(Vector2Int position, IMap map, float range)
+        private HashSet<Vector2Int> Calc(Vector2Int position, IMap map)
         {
+            var range = _range.CurrentValue;
             if (_canThroughWalls)
             {
                 if (IsClairvoyant)

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u3046\u306B\u3046\u306B"
+  m_Name: "\u30D4\u30E9\u30DF\u30C3\u30C9"
   m_EditorClassIdentifier: 
-  Name: "\u3046\u306B\u3046\u306B"
+  Name: "\u30D4\u30E9\u30DF\u30C3\u30C9"
   Group: 1
   CharacterType:
-    rid: 5486256464210165769
-  IsBoss: 0
-  Hp: 4
+    rid: 5486256507571666950
+  IsBoss: 1
+  Hp: 30
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -42,17 +42,17 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 5486256464210165771
+        rid: 5486256464210165773
       <Area>k__BackingField:
-        rid: 5486256464210165770
+        rid: 5486256464210165774
       <Effects>k__BackingField:
-      - rid: 2541219281251860488
+      - rid: 5486256464210165775
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u96F7\u3092\u653E\u3063\u305F\u3002"
-    CoolTime: 3
+      <Log>k__BackingField: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F"
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -70,7 +70,7 @@ MonoBehaviour:
     data: []
   ConditionResistance:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
     items:
     - Item: {fileID: 11400000, guid: 4f78e74bb0a46d340b80fa884693a6ba, type: 2}
@@ -80,25 +80,23 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860488
+    - rid: 5486256464210165773
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256464210165774
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1
+    - rid: 5486256464210165775
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 3
+        - _element: 0
           _power: 5
         _criticalRate: 0
-    - rid: 5486256464210165769
-      type: {class: Worm, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 5486256507571666950
+      type: {class: Pyramid, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 5486256464210165770
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256464210165771
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        NumberOfTarget: 1
-        TargetAlly: 0
-        TargetEnemy: 1
-        TargetNeutral: 0
-        TargetSelf: 0

@@ -4,6 +4,7 @@
     {
         Human,
         Monster,
-        Neutral
+        Neutral,
+        Outcast,
     }
 }

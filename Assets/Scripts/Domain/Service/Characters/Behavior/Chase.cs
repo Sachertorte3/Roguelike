@@ -57,7 +57,12 @@ namespace Domain.Service.Characters.Behavior
 
             if (swap.Doable(character, map))
             {
-                //return new List<Swap> { swap };
+                var target = map.GetCharactersInArea(new[] { character.CurrentPosition + direction.Value.Vector() })
+                    .FirstOrDefault();
+                if (character.IsNeutral(target))
+                {
+                    return new List<Swap> { swap };
+                }
             }
 
             Log.Debug($"[Think]Move to {direction} is not doable");

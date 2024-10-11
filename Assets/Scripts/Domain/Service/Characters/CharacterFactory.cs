@@ -65,7 +65,7 @@ namespace Domain.Service.Characters
                 (
                     EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 ),
-                affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human, null, null),
+                affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human),
                 aggression: Aggression.AttackAnyone,
                 money: 0,
                 isLeader: true,
@@ -80,7 +80,7 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
-            AffiliationMemento? affiliation = null, Id<IEntity>? masterId = null, (Location, Vector2Int)? homePosition = null)
+            IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
         {
             var inventory = new InventoryMemento
             (
@@ -110,7 +110,7 @@ namespace Domain.Service.Characters
                 skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory: inventory,
-                affiliation: CharacterAffiliationManager.Build(data.Group, affiliation, masterId),
+                affiliation: CharacterAffiliationManager.Build(data.Group, affiliation),
                 aggression: data.Aggression,
                 money: 0,
                 isLeader: false,

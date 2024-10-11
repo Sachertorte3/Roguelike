@@ -35,7 +35,7 @@ MonoBehaviour:
       rid: 2541219246146060320
     <Effects>k__BackingField:
     - rid: 4274951156413235203
-    <ProbabilityOfSuccess>k__BackingField: 0.8
+    <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
   UsageLimit: 24

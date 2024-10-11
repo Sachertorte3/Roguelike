@@ -24,6 +24,7 @@ namespace Provider
                             inventoryView.Replace(
                                 newItem.Icon,
                                 newItem.Usable ? newItem.RemainingUses.CurrentValue : null,
+                                newItem.IsCursed,
                                 newItem.IsShiny,
                                 newItem.Info(),
                                 itemChanged.Index);
@@ -36,6 +37,7 @@ namespace Provider
                         inventoryView.UpdateCount(
                             itemUpdated.Item.Usable ? itemUpdated.Item.RemainingUses.CurrentValue : null,
                             itemUpdated.Index);
+                        inventoryView.UpdateCursed(itemUpdated.Item.IsCursed, itemUpdated.Index);
                         inventoryView.UpdateInfo(itemUpdated.Item.Info(), itemUpdated.Index);
                     }));
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
@@ -45,6 +47,7 @@ namespace Provider
                             inventoryView.Replace(
                                 item.Icon,
                                 item.Usable ? item.RemainingUses.CurrentValue : null,
+                                item.IsCursed,
                                 item.IsShiny,
                                 item.Info(),
                                 i);

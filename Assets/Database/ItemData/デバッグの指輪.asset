@@ -22,22 +22,24 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416411
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-      - rid: 4425516923575599144
-    <Position>k__BackingField:
-      rid: 2541219106150416411
+    - rid: 4425516923575599144
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-      - rid: 4425516923575599144
-    <ProbabilityOfSuccess>k__BackingField: 0.8
+    - rid: 4425516923575599144
+    <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
   UsageLimit: 1
+  UpgradeLimit: 3
   PassiveConditions:
   - rid: 2541219158355345437
   - rid: 5486256378686996488
@@ -63,6 +65,7 @@ MonoBehaviour:
       data:
         _condition:
           _name: 
+        _probabilityOfSuccess: 0
     - rid: 5486256378686996488
       type: {class: AddMaxHp, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:

@@ -50,6 +50,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
       - {fileID: 11400000, guid: 82cd42b9fc0e70e4dbaf5977771fb17d, type: 2}
       - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
+      - {fileID: 11400000, guid: dc2e4bf948103ff4a91bc99c2bef4daf, type: 2}
     Weapons:
       items:
       - {fileID: 11400000, guid: 5aca68febc4c42147a691066dc7cffdf, type: 2}

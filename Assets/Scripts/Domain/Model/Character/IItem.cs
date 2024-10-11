@@ -32,9 +32,11 @@ namespace Domain.Model.Item
         public bool IsDisabled { get; }
         public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
+        public bool IsCursed { get; }
         public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
+        public Observable<bool> OnCursedChanged { get; }
         public void SetState(ItemState state);
         public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
 
@@ -42,6 +44,7 @@ namespace Domain.Model.Item
             IMap map);
 
         public void Repair();
+        public void SetCursed(bool isCursed);
         public bool CanUpgrade(string filter = "");
         public void Upgrade(string filter = "");
         public void Downgrade();

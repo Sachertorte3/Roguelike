@@ -53,6 +53,10 @@ namespace Domain.Model.Effect
             {
                 ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
             }
+            if (ProbabilityOfSuccess == 0.8f)
+            {
+                ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
+            }
         }
 #endif
 

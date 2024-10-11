@@ -68,23 +68,8 @@ MonoBehaviour:
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []
-  ConditionProbability:
-    data:
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
+  ConditionResistance:
+    data: []
   DropItemRate: 0.05
   DropItemTable:
     items:

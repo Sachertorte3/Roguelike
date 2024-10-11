@@ -13,6 +13,7 @@ namespace View.UI
     {
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _count;
+        [SerializeField] private Image _cursedIcon;
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
@@ -23,11 +24,12 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isShiny)
+        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
             SetCount(count);
+            SetCursed(isCursed);
             SetShiny(isShiny);
         }
 
@@ -36,7 +38,13 @@ namespace View.UI
             _icon.sprite = null;
             _icon.enabled = false;
             RemoveCount();
+            SetCursed(false);
             SetShiny(false);
+        }
+
+        public void SetCursed(bool isCursed)
+        {
+            _cursedIcon.enabled = isCursed;
         }
 
         public void SetShiny(bool isShiny)
@@ -63,12 +71,14 @@ namespace View.UI
         public void Disable()
         {
             _icon.color = Color.gray;
+            _cursedIcon.color = Color.gray;
             interactable = false;
         }
 
         public void Enable()
         {
             _icon.color = Color.white;
+            _cursedIcon.color = Color.white;
             interactable = true;
         }
     }

@@ -13,37 +13,37 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class RemoveUpgradeEffect : IEffect
+    public class CurseItemEffect : IEffect
     {
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
         [Range(0, 1)]
-        private float _probabilityOfSuccess = 0.1f;
+        private float _probabilityOfSuccess = 0.25f;
 
-        public Color Color => Colors.SandyBrown;
+        public Color Color => Colors.MediumPurple;
 
         public Impact Impact => Impact.Harmful;
 #if UNITY_EDITOR
         private void OnProbabilityOfSuccessChanged()
         {
             if (_probabilityOfSuccess == 0)
-                _probabilityOfSuccess = 0.1f;
+                _probabilityOfSuccess = 0.25f;
         }
 #endif
         public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
         {
-            var upgradedItems = target.Inventory.AllItems.Where(item => item.AppliedUpgrades > 0).ToArray();
-            if (upgradedItems.Any())
+            var notCursedItems = target.Inventory.AllItems.Where(item => !item.IsCursed).ToArray();
+            if (notCursedItems.Any())
             {
-                var item = upgradedItems.GetAtRandom();
+                var item = notCursedItems.GetAtRandom();
                 if (Random.value < _probabilityOfSuccess)
-                    item.Downgrade();
+                    item.SetCursed(true);
                 else
-                    GameLog.Add($"{item.Name}の強化は消えなかった");
+                    GameLog.Add($"{item.Name}は呪われなかった");
             }
             else
             {
-                GameLog.Add($"{target.GetName(map.Player)}は強化されたアイテムを持っていない");
+                GameLog.Add($"{target.GetName(map.Player)}は呪いの対象になるアイテムを持っていない");
             }
             return UniTask.CompletedTask;
         }
@@ -65,7 +65,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"強化解除";
+            return $"呪い";
         }
     }
 }

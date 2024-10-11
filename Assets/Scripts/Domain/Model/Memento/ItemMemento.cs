@@ -11,6 +11,7 @@ namespace Domain.Model.Memento
     public class ItemMemento
     {
         [field: SerializeField] public string Id { get; private set; }
+        [field: SerializeField] public string BaseName { get; private set; }
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public string IconName { get; private set; }
         [field: SerializeField] public bool IsShiny { get; private set; }
@@ -27,12 +28,13 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int UpgradeLimit { get; private set; }
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
 
-        public ItemMemento(string id, string name, string iconName, bool isShiny, ItemState state,
+        public ItemMemento(string id, string baseName, string name, string iconName, bool isShiny, ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
             bool isCursed, int upgradeLimit, IConditionData[] conditions)
         {
             Id = id;
+            BaseName = baseName;
             Name = name;
             IconName = iconName;
             IsShiny = isShiny;
@@ -50,13 +52,14 @@ namespace Domain.Model.Memento
             Conditions = conditions;
         }
 
-        public ItemMemento CopyWith(string? id = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
+        public ItemMemento CopyWith(string? id = null, string? baseName = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
             List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null, Option<ISkillMemento>? skillOnThrow = null,
             bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null, int? remainingUsages = null,
             bool? isCursed = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
         {
             return new ItemMemento(
                 id ?? Id,
+                baseName ?? BaseName,
                 name ?? Name,
                 iconName ?? IconName,
                 isShiny ?? IsShiny,

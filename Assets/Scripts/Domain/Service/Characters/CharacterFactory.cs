@@ -65,6 +65,7 @@ namespace Domain.Service.Characters
                 (
                     EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
                 ),
+                knownItemNames: new List<string>(),
                 affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human),
                 aggression: Aggression.AttackAnyone,
                 money: 0,
@@ -110,6 +111,7 @@ namespace Domain.Service.Characters
                 skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory: inventory,
+                knownItemNames: new List<string>(),
                 affiliation: CharacterAffiliationManager.Build(data.Group, affiliation),
                 aggression: data.Aggression,
                 money: 0,

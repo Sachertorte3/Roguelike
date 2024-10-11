@@ -186,7 +186,7 @@ namespace Domain.Service.Characters
             (
                 group,
                 affiliationDict,
-                forcedAffiliationFlags
+                new Dictionary<(Id<IEntity>, AffiliationType), FlagStat>()
             );
         }
 

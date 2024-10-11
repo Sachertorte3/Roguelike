@@ -13,10 +13,13 @@ using Utilities;
 
 namespace Domain.Model.Item
 {
-    public interface IItem : ISerializable<ItemMemento>, IEquatable<IItem>, IHasInfo, IHasUpgrades
+    public interface IItem : ISerializable<ItemMemento>, IEquatable<IItem>, IHasUpgrades
     {
         public Id<IItem> Id { get; }
-        public string Name { get; }
+        public string BaseName { get; }
+        public string UnknownName { get; }
+        public string DebugName { get; }
+        public string GetName(IHasInventory player);
         public Sprite Icon { get; }
         public bool IsShiny { get; }
         public ItemState State { get; }
@@ -43,10 +46,12 @@ namespace Domain.Model.Item
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map);
 
-        public void Repair();
-        public void SetCursed(bool isCursed);
+        public void Repair(IHasInventory player);
+        public void SetCursed(IHasInventory player, bool isCursed);
         public bool CanUpgrade(string filter = "");
-        public void Upgrade(string filter = "");
-        public void Downgrade();
+        public void Upgrade(IHasInventory player, string filter = "");
+        public void Downgrade(IHasInventory player);
+        public string Info(IHasInventory player);
+        public string DebugInfo();
     }
 }

@@ -6,15 +6,15 @@ namespace Domain.Service.ItemEffect
 {
     public class UnleashCurse : IItemEffect
     {
-        public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory)
+        public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
         {
-            var disabledItems = inventory.AllItems.Where(item => !item.IsCursed);
-            return disabledItems.Select(item => inventory.GetItemIndex(item));
+            var disabledItems = actor.Inventory.AllItems.Where(item => !item.IsCursed);
+            return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
-        public void Apply(IItem item)
+        public void Apply(IHasInventory actor, IItem item)
         {
-            item.SetCursed(false);
+            item.SetCursed(actor, false);
         }
 
         public float EvaluatePrice()

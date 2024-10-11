@@ -24,12 +24,12 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny)
+        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isIdentified)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
-            SetCount(count);
-            SetCursed(isCursed);
+            SetCount(count, isIdentified);
+            SetCursed(isCursed, isIdentified);
             SetShiny(isShiny);
         }
 
@@ -38,13 +38,20 @@ namespace View.UI
             _icon.sprite = null;
             _icon.enabled = false;
             RemoveCount();
-            SetCursed(false);
+            SetCursed(false, true);
             SetShiny(false);
         }
 
-        public void SetCursed(bool isCursed)
+        public void SetCursed(bool isCursed, bool isIdentified)
         {
-            _cursedIcon.enabled = isCursed;
+            if (!isIdentified)
+            {
+                _cursedIcon.enabled = false;
+            }
+            else
+            {
+                _cursedIcon.enabled = isCursed;
+            }
         }
 
         public void SetShiny(bool isShiny)
@@ -55,9 +62,11 @@ namespace View.UI
                 _particles.Clear();
         }
 
-        public void SetCount(int? count)
+        public void SetCount(int? count, bool isIdentified)
         {
-            if (count.HasValue)
+            if (!isIdentified)
+                _count.text = "?";
+            else if (count.HasValue)
                 _count.text = count.ToString();
             else
                 _count.text = "";

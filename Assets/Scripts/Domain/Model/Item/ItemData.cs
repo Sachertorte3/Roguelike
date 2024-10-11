@@ -89,7 +89,12 @@ namespace Domain.Model.Item
         }
 
         public string Name => name.SetColored(Rarity.GetColor());
-        private bool _usable => SpawnEffectsOnUse || SpawnEffectsOnThrow;
+        private bool _usable => EffectType switch
+        {
+            ItemEffectType.SpawnEffect => SpawnEffectsOnUse || SpawnEffectsOnThrow,
+            ItemEffectType.ItemTarget => ItemEffect != null,
+            _ => false
+        };
 
         public void AddEffects(List<IEffect> effects)
         {

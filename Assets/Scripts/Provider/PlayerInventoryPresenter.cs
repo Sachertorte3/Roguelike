@@ -1,4 +1,6 @@
 #nullable enable
+using Domain.Model.Character;
+using Domain.Model.Item;
 using Game;
 using R3;
 using Utilities;
@@ -18,44 +20,59 @@ namespace Provider
                 {
                     _disposables.Add(map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
-                        if (itemChanged.NewValue != null)
-                        {
-                            var newItem = itemChanged.NewValue;
-                            inventoryView.Replace(
-                                newItem.Icon,
-                                newItem.Usable ? newItem.RemainingUses.CurrentValue : null,
-                                newItem.IsCursed,
-                                newItem.IsShiny,
-                                newItem.Info(),
-                                itemChanged.Index);
-                        }
-                        else
-                            inventoryView.Remove(itemChanged.Index);
+                        ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player);
                     }));
                     _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
-                        inventoryView.UpdateCount(
-                            itemUpdated.Item.Usable ? itemUpdated.Item.RemainingUses.CurrentValue : null,
-                            itemUpdated.Index);
-                        inventoryView.UpdateCursed(itemUpdated.Item.IsCursed, itemUpdated.Index);
-                        inventoryView.UpdateInfo(itemUpdated.Item.Info(), itemUpdated.Index);
+                        UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player);
+                    }));
+                    _disposables.Add(map.Player.OnKnownItemUpdated.Subscribe(_ =>
+                    {
+                        for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
+                        {
+                            var item = map.Player.Inventory.GetItem(i);
+                            if (item != null)
+                                UpdateItemView(inventoryView, item, i, map.Player);
+                        }
                     }));
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
                     {
-                        var item = map.Player.Inventory.GetItem(i);
-                        if (item != null)
-                            inventoryView.Replace(
-                                item.Icon,
-                                item.Usable ? item.RemainingUses.CurrentValue : null,
-                                item.IsCursed,
-                                item.IsShiny,
-                                item.Info(),
-                                i);
-                        else
-                            inventoryView.Remove(i);
+                        ReplaceItemView(inventoryView, map.Player.Inventory.GetItem(i), i, map.Player);
                     }
                 },
                 _ => _disposables.Clear());
+        }
+
+        public void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, ICharacter player)
+        {
+            if (item != null)
+            {
+                inventoryView.Replace(
+                    item.Icon,
+                    item.Usable ? item.RemainingUses.CurrentValue : null,
+                    item.IsCursed,
+                    item.IsShiny,
+                    player.IsKnownItem(item),
+                    item.Info(player),
+                    index);
+            }
+            else
+            {
+                inventoryView.Remove(index);
+            }
+        }
+
+        public void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player)
+        {
+            inventoryView.UpdateCount(
+                item.Usable ? item.RemainingUses.CurrentValue : null,
+                player.IsKnownItem(item),
+                index);
+            inventoryView.UpdateCursed(
+                item.IsCursed,
+                player.IsKnownItem(item),
+                index);
+            inventoryView.UpdateInfo(item.Info(player), index);
         }
     }
 }

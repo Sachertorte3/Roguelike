@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public CharacterSkillMemento[] Skills { get; private set; }
         [field: SerializeField] public Option<SpawnEffectSkillMemento> LastSkill { get; private set; }
         [field: SerializeField] public InventoryMemento Inventory { get; private set; }
+        [field: SerializeField] public List<string> KnownItemNames { get; private set; }
         [field: SerializeField] public AffiliationMemento Affiliation { get; private set; }
         [field: SerializeField] public Aggression Aggression { get; private set; }
         [field: SerializeField] public int Money { get; private set; }
@@ -40,6 +42,7 @@ namespace Domain.Model.Memento
             CharacterSkillMemento[] skills,
             Option<SpawnEffectSkillMemento> lastSkill,
             InventoryMemento inventory,
+            List<string> knownItemNames,
             AffiliationMemento affiliation,
             Aggression aggression,
             int money,
@@ -61,6 +64,7 @@ namespace Domain.Model.Memento
             Skills = skills;
             LastSkill = lastSkill;
             Inventory = inventory;
+            KnownItemNames = knownItemNames;
             Affiliation = affiliation;
             Aggression = aggression;
             Money = money;
@@ -83,6 +87,7 @@ namespace Domain.Model.Memento
             CharacterSkillMemento[]? skills = null,
             Option<SpawnEffectSkillMemento>? lastSkill = null,
             InventoryMemento? inventory = null,
+            List<string>? knownItemNames = null,
             AffiliationMemento? affiliation = null,
             Aggression? aggression = null,
             int? money = null,
@@ -105,6 +110,7 @@ namespace Domain.Model.Memento
                 skills ?? Skills,
                 lastSkill ?? LastSkill,
                 inventory ?? Inventory,
+                knownItemNames ?? KnownItemNames,
                 affiliation ?? Affiliation,
                 aggression ?? Aggression,
                 money ?? Money,

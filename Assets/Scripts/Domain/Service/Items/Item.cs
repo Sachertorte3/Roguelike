@@ -23,7 +23,11 @@ namespace Domain.Service.Items
     public class Item : IItem
     {
         public Id<IItem> Id { get; init; }
+        public string BaseName { get; init; }
+        public string UnknownName => "???";
         private string _name;
+        public string DebugName => _fullName;
+        private string _fullName => _upgradePaths.Count > 0 ? $"{_name} +{AppliedUpgrades}" : _name;
         private readonly List<UpgradePath> _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
@@ -41,6 +45,7 @@ namespace Domain.Service.Items
         public Item(ItemMemento data)
         {
             Id = new Id<IItem>(data.Id);
+            BaseName = data.BaseName;
             _name = data.Name;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
                 .WaitForCompletion();
@@ -97,7 +102,12 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string Name => _upgradePaths.Count > 0 ? $"{_name} +{AppliedUpgrades}" : _name;
+        public string GetName(IHasInventory character)
+        {
+            if (character.IsKnownItem(this))
+                return _fullName;
+            return UnknownName;
+        }
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
         public ItemState State { get; private set; }
@@ -122,6 +132,7 @@ namespace Domain.Service.Items
             return new ItemMemento
             (
                 Id.ToString(),
+                BaseName,
                 _name,
                 Icon.name,
                 IsShiny,
@@ -157,6 +168,7 @@ namespace Domain.Service.Items
             var memento = new ItemMemento
             (
                 Id<IItem>.Generate().ToString(),
+                data.name,
                 data.Name,
                 data.Icon.name,
                 data.IsShiny,
@@ -187,7 +199,7 @@ namespace Domain.Service.Items
         {
             if (IsCursed)
             {
-                GameLog.Add($"{Name}は呪われているため使用できない");
+                GameLog.Add($"{GetName(actor)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -290,22 +302,28 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public void Repair()
+        public void Repair(IHasInventory player)
         {
+            GameLog.Add($"{GetName(player)}は修理された");
             _remainingUsages.Value = _maxUsages;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void SetCursed(bool isCursed)
+        public void SetCursed(IHasInventory actor, bool isCursed)
         {
+            if (IsCursed == isCursed)
+            {
+                return;
+            }
+
             IsCursed = isCursed;
             if (isCursed)
             {
-                GameLog.Add($"{Name}は呪われた");
+                GameLog.Add($"{GetName(actor)}は呪われた");
             }
             else
             {
-                GameLog.Add($"{Name}の呪いは解かれた");
+                GameLog.Add($"{GetName(actor)}の呪いは解かれた");
             }
             _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
@@ -390,16 +408,23 @@ namespace Domain.Service.Items
             return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
         }
 
-        public void Upgrade(string filter = "")
+        public void Upgrade(IHasInventory character, string filter = "")
         {
             var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
-            GameLog.Add($"{Name}は{upgrade.Description}の効果を得た");
+            if (character.IsKnownItem(this))
+            {
+                GameLog.Add($"{_fullName}は{upgrade.Description}の効果を得た");
+            }
+            else
+            {
+                GameLog.Add($"{GetName(character)}は何かの効果を得た");
+            }
             upgrade.Upgrade();
             _upgradePaths.Add(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Downgrade()
+        public void Downgrade(IHasInventory character)
         {
             if (_upgradePaths.Count == 0)
             {
@@ -409,14 +434,41 @@ namespace Domain.Service.Items
             var path = _upgradePaths.GetAtRandom();
             _upgradePaths.Remove(path);
             var upgrade = GetUpgrades()[path];
-            GameLog.Add($"{Name}の{upgrade.Description}は消えた");
+            if (character.IsKnownItem(this))
+            {
+                GameLog.Add($"{_fullName}の{upgrade.Description}は消えた");
+            }
+            else
+            {
+                GameLog.Add($"{GetName(character)}の何かの効果は消えた");
+            }
             upgrade.Downgrade();
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public string Info()
+        public string Info(IHasInventory player)
         {
-            var info = $"{State.GetDescription()}{Name}\n価格: {Price}\n";
+            if (player.IsKnownItem(this))
+            {
+                return FullInfo();
+            }
+            else
+            {
+                var info = $"{State.GetDescription()}{UnknownName}";
+                if (CanActivateWhenUsed)
+                    info += $"\n使用可能";
+                if (CanActivateWhenThrown)
+                    info += $"\n投擲可能";
+                return info;
+            }
+        }
+
+        public string DebugInfo() => FullInfo();
+
+        public string FullInfo()
+        {
+            var info = $"{State.GetDescription()}{_fullName}";
+            info += $"\n価格: {Price}\n";
             if (_usable)
             {
                 if (_hasSameSkill)

@@ -17,7 +17,7 @@ MonoBehaviour:
   CharacterType:
     rid: 2541219246146060303
   IsBoss: 0
-  Hp: 10
+  Hp: 5
   Aggression: 1
   Behavior:
     wanderAround: 0

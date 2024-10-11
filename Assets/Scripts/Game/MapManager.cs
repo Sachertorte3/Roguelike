@@ -22,6 +22,7 @@ using Domain.Service.Map;
 using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Algorithms;
@@ -427,16 +428,20 @@ namespace Game
             return false;
         }
 
-        public bool CanPlace(Vector2Int position, bool isFlying, bool canThroughWalls, bool ignoreEntity)
+        public bool CanPlace(Vector2Int position, bool isFlying, bool canThroughWalls, bool ignoreEntity,
+            params EntityLayer[] layers)
         {
+            if (!layers.Any())
+                Log.Warning("No layers specified for CanPlace");
+            
             return (ignoreEntity, canThroughWalls, isFlying) switch
             {
                 (true, true, _) => IsInside(position),
                 (true, false, true) => IsPassableOnMap(position),
                 (true, false, false) => IsWalkableOnMap(position),
-                (false, true, _) => IsInside(position) && IsBlankIgnoreWall(position),
-                (false, false, true) => IsBlank(position, EntityLayer.Middle),
-                (false, false, false) => IsBlankAndStandable(position, EntityLayer.Middle)
+                (false, true, _) => IsInside(position) && IsBlankIgnoreWall(position, layers),
+                (false, false, true) => IsBlank(position, layers),
+                (false, false, false) => IsBlankAndStandable(position, layers)
             };
         }
 
@@ -589,7 +594,7 @@ namespace Game
                         if (positionChanged.Character.TryAddToInventory(item.Item))
                         {
                             if (positionChanged.Character == Player)
-                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.Name}</color>を拾った");
+                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player)}</color>を拾った");
                         }
                         else
                         {
@@ -599,7 +604,7 @@ namespace Game
                     else
                     {
                         GameLog.Add(
-                            $"{positionChanged.Character.GetName(positionChanged.Character)}は{item.Item.Name}の上に乗った");
+                            $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player)}の上に乗った");
                     }
                 }
             }).AddTo(_disposables);

@@ -10,7 +10,8 @@ namespace Domain.Model.Effect
         public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers);
         public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers);
         public HashSet<Vector2Int> GetAllWalkablePositions(IAffiliation affiliation);
-        public bool CanPlace(Vector2Int position, bool isFlying, bool canIgnoreWall, bool ignoreEntity);
+        public bool CanPlace(Vector2Int position, bool isFlying, bool canIgnoreWall, bool ignoreEntity,
+            params EntityLayer[] layers);
         public bool IsInside(Vector2Int position);
         public bool IsBlankIgnoreWall(Vector2Int position, params EntityLayer[] layers);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);

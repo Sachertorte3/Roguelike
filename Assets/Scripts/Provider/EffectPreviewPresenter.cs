@@ -49,7 +49,7 @@ namespace Provider
                         if (focus != null)
                         {
                             var item = map.Player.Inventory.GetItem(focus.Value);
-                            if (item != null)
+                            if (item != null && map.Player.IsKnownItem(item))
                             {
                                 if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                                 {

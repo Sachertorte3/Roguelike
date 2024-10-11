@@ -6,6 +6,7 @@ namespace View
         Forest,
         Snow,
         Volcano,
+        Desert,
         Dungeon
     }
 }

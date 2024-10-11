@@ -6,6 +6,7 @@ namespace Domain.Model.Dungeon
         Forest,
         Snow,
         Volcano,
+        Desert,
         Dungeon
     }
 }

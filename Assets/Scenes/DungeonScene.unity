@@ -744,7 +744,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000061035156
+      value: 0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1815,10 +1815,15 @@ MonoBehaviour:
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
     Water: {fileID: 11400000, guid: c38b20ba5398da646b2abe1994480eec, type: 2}
     Wall: {fileID: 11400000, guid: 6dad3272c81d33e4fa33139684949491, type: 2}
+  _desertTiles:
+    Floor: {fileID: 11400000, guid: 4fa4afd16ff65754ca8a69c7379eb6d8, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 9daff306bb6bf4b4594a583d24a4fab5, type: 2}
+    Wall: {fileID: 11400000, guid: d4ec35f2c2cbd9147bcb743884ea4c29, type: 2}
   _dungeonTiles:
     Floor: {fileID: 11400000, guid: d115660662eaafc43ba3241953b3faf3, type: 2}
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 769c6bb9d3830f4459c840c8d7f089af, type: 2}
+    Water: {fileID: 11400000, guid: fec8e3a22d85e65449d3ef1a18e8e4a7, type: 2}
     Wall: {fileID: 11400000, guid: a2cc768f9d19d8f4c9403de88ee45280, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
@@ -2532,7 +2537,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 8.4375
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -3026,7 +3031,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 8.4375
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

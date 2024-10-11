@@ -188,7 +188,7 @@ namespace Provider
                 }
                 if (character.Inventory.TryAdd(item))
                 {
-                    Log.Info($"{item.Name}を{target}のインベントリに追加しました。");
+                    Log.Info($"{item.GetName(_world.ActiveMap.CurrentValue.Player)}を{target}のインベントリに追加しました。");
                 }
                 else
                 {
@@ -217,7 +217,7 @@ namespace Provider
                     item = new Item(itemMemento);
                 }
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
-                Log.Info($"{spawnedItem.Item.Name}を{position}にスポーンしました。");
+                Log.Info($"{spawnedItem.Item.GetName(_world.ActiveMap.CurrentValue.Player)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

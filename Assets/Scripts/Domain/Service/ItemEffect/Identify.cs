@@ -1,35 +1,30 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Item;
-using UnityEngine;
 
 namespace Domain.Service.ItemEffect
 {
-    [Serializable]
-    public class UpgradeItem : IItemEffect
+    public class Identify : IItemEffect
     {
-        [SerializeField] private string _filter = "";
-
         public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
         {
-            var disabledItems = actor.Inventory.AllItems.Where(item => !item.CanUpgrade(_filter));
+            var disabledItems = actor.Inventory.AllItems.Where(item => actor.IsKnownItem(item));
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
         public void Apply(IHasInventory actor, IItem item)
         {
-            item.Upgrade(actor, _filter);
+            actor.AddKnownItem(item);
         }
 
         public float EvaluatePrice()
         {
-            return 1000;
+            return 100;
         }
 
         public string Info()
         {
-            return _filter != "" ? $"強化({_filter})" : "強化(ランダム)";
+            return "識別";
         }
     }
 }

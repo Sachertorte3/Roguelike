@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Map;
 using UnityEngine;
@@ -17,14 +18,14 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false));
+            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 actor.Teleport(placeablePositions.GetAtRandom());
             }
             else
             {
-                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false)));
+                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
             }
             return UniTask.CompletedTask;
         }

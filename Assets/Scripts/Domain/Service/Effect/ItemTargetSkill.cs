@@ -6,6 +6,7 @@ using Domain.Model.Action;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Memento;
+using Domain.Service.Logs;
 
 namespace Domain.Service.Effect
 {
@@ -35,21 +36,42 @@ namespace Domain.Service.Effect
             );
         }
 
-        public async UniTask<ISkillResult> Use(IActor actor, IItem item)
+        public async UniTask<ISkillResult> Use(IHasInventory player, IItem item)
         {
-            var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(actor.Inventory);
-            disabledItemIndexes = disabledItemIndexes.Append(actor.Inventory.GetItemIndex(item));
-            var selectedItem = await actor.ItemSelector.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
-            if (selectedItem != null)
+            var selfIndex = player.Inventory.GetItemIndex(item);
+            var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(player);
+            disabledItemIndexes = disabledItemIndexes.Append(selfIndex);
+            if (player.IsKnownItem(item))
             {
-                _itemEffect.Apply(selectedItem);
-                return ItemTargetSkillResult.Success;
+                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, disabledItemIndexes.ToArray());
+                if (selectedItem != null)
+                {
+                    _itemEffect.Apply(player, selectedItem);
+                    return ItemTargetSkillResult.Success;
+                }
+            }
+            else
+            {
+                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, new[] { selfIndex });
+                if (selectedItem != null)
+                {
+                    var selectedItemIndex = player.Inventory.GetItemIndex(selectedItem);
+                    if (disabledItemIndexes.Contains(selectedItemIndex))
+                    {
+                        GameLog.Add($"しかし効果はなかった。");
+                    }
+                    else
+                    {
+                        _itemEffect.Apply(player, selectedItem);
+                    }
+                    return ItemTargetSkillResult.Success;
+                }
             }
 
             return ItemTargetSkillResult.Cancelled;
         }
 
-        public float Evaluate(IActor actor, IItem item)
+        public float Evaluate(IActor player, IItem item)
         {
             return 0;
         }

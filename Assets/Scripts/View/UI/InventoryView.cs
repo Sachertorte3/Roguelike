@@ -31,7 +31,7 @@ namespace View.UI
             OnFocusChanged.Subscribe(index => { _infoText.text = index == null ? "" : _info[index.Value]; })
                 .AddTo(this);
             _itemViews[0].Select();
-            _itemViews[InventorySize].SetIcon(_emptyIcon, null, false, false);
+            _itemViews[InventorySize].SetIcon(_emptyIcon, null, false, false, true);
 
             for (var i = 0; i < _itemViews.Length; i++)
             {
@@ -46,11 +46,11 @@ namespace View.UI
             }
         }
 
-        public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, string info, int index)
+        public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isIdentified, string info, int index)
         {
             if (_itemViews[index] == null)
                 _itemViews[index] = Instantiate(_itemViewPrefab, transform);
-            _itemViews[index].SetIcon(icon, count, isCursed, isShiny);
+            _itemViews[index].SetIcon(icon, count, isCursed, isShiny, isIdentified);
             _info[index] = info;
             UpdateInfo(info, index);
         }
@@ -69,14 +69,14 @@ namespace View.UI
             if (CurrentFocus == index) _infoText.text = info;
         }
 
-        public void UpdateCount(int? count, int index)
+        public void UpdateCount(int? count, bool isIdentified, int index)
         {
-            _itemViews[index].SetCount(count);
+            _itemViews[index].SetCount(count, isIdentified);
         }
 
-        public void UpdateCursed(bool isCursed, int index)
+        public void UpdateCursed(bool isCursed, bool isIdentified, int index)
         {
-            _itemViews[index].SetCursed(isCursed);
+            _itemViews[index].SetCursed(isCursed, isIdentified);
         }
 
         public void DisableItems(int[] disabledItemIndexes)

@@ -31,7 +31,6 @@ namespace Domain.Model.Map
         public bool IsOverlapped(Vector2Int position, EntityLayer layer);
         public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
         public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
-        public bool CanPlace(Vector2Int position, bool isFlying, bool canThroughWalls, bool ignoreEntity);
         public bool IsWalkable(Vector2Int position, IAffiliation actor);
         public bool IsWalkableOnMap(Vector2Int position);
         public bool IsPassableOnMap(Vector2Int position);

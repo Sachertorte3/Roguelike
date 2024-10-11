@@ -5,8 +5,8 @@ namespace Domain.Model.Item
 {
     public interface IItemEffect : IHasInfo
     {
-        public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory);
-        public void Apply(IItem item);
+        public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor);
+        public void Apply(IHasInventory actor, IItem item);
         public float EvaluatePrice();
     }
 }

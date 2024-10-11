@@ -26,7 +26,7 @@ namespace Domain.Service.Action
 
         public string Info()
         {
-            return $"ThrowItem: Item:{Item.Info()}, Direction:{Direction}";
+            return $"ThrowItem: Item:{Item.DebugInfo()}, Direction:{Direction}";
         }
     }
 }

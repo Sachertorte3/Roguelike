@@ -6,11 +6,9 @@ using Utilities;
 
 namespace Domain.Model.Action
 {
-    public interface IActor : IActorOfEffect
+    public interface IActor : IActorOfEffect, IHasInventory
     {
         public Direction8 CurrentDirection { get; }
-        public IInventory Inventory { get; }
-        public IItemSelector ItemSelector { get; }
         public void DoNothing();
         public bool CanSwap(Direction8 direction, IMap map);
         public UniTask Move(Direction8 direction, IInput input);

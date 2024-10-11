@@ -31,7 +31,7 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 3
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
-    PrioritizeEnemiesOverLeaders: 0
+    PrioritizeEnemiesOverLeaders: 1
   MoveSpeed: 2
   IsHard: 0
   IsHeavy: 0

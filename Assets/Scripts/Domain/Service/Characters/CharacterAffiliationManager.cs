@@ -175,17 +175,18 @@ namespace Domain.Service.Characters
         public static AffiliationMemento Build(CharacterGroup group, IAffiliation? affiliation = null)
         {
             var affiliationDict = new Dictionary<Id<IEntity>, float>();
+            var forcedAffiliationFlags = new Dictionary<(Id<IEntity>, AffiliationType), FlagStat>();
             if (affiliation != null)
             {
                 affiliationDict = affiliation.Serialize().Affiliations;
-                affiliationDict[affiliation.Id] = 5f;
+                forcedAffiliationFlags[(affiliation.Id, AffiliationType.Ally)] = new FlagStat(1);
             }
 
             return new AffiliationMemento
             (
                 group,
                 affiliationDict,
-                new Dictionary<(Id<IEntity>, AffiliationType), FlagStat>()
+                forcedAffiliationFlags
             );
         }
 

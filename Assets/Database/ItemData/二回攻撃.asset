@@ -22,23 +22,25 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
+    <Position>k__BackingField:
+      rid: 2541219106150416399
     <Area>k__BackingField:
       rid: 4425516923575599124
     <Effects>k__BackingField:
     - rid: 5486256396100960269
     - rid: 5486256397401194504
-    <Position>k__BackingField:
-      rid: 2541219106150416399
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2
     <Effects>k__BackingField:
     - rid: -2
-    <ProbabilityOfSuccess>k__BackingField: 0.8
+    <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
   UsageLimit: 20
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2
@@ -61,7 +63,6 @@ MonoBehaviour:
         - _element: 0
           _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 0
     - rid: 5486256397401194504
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
@@ -69,4 +70,3 @@ MonoBehaviour:
         - _element: 0
           _power: 3
         _criticalRate: 0
-        _blowAwayDistance: 0

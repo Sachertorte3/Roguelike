@@ -14,7 +14,7 @@ namespace Domain.Model.Evaluation
         public const float EvaluateCoefficient = 0.05f;
         public const int ThrowDistance = 10;
         public const float SkillOnUseProbabilityOfSuccess = 0.95f;
-        public const float SkillOnThrowProbabilityOfSuccess = 0.8f;
+        public const float SkillOnThrowProbabilityOfSuccess = 0.9f;
 
         public static float BlowAwayPrice(int distance)
         {

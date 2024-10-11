@@ -28,11 +28,12 @@ namespace Domain.Service.Items
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
+        public bool IsCursed { get; private set; }
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
-
+        private readonly Subject<bool> _onCursedChanged = new();
         public Item(ItemData data) : this(Build(data))
         {
         }
@@ -91,6 +92,7 @@ namespace Domain.Service.Items
             UseOnDeath = data.UseOnDeath;
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
+            IsCursed = data.IsCursed;
             UpgradeLimit = data.UpgradeLimit;
             _conditions = data.Conditions.ToList();
         }
@@ -114,7 +116,7 @@ namespace Domain.Service.Items
         public int UpgradeLimit { get; init; }
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
-
+        public Observable<bool> OnCursedChanged => _onCursedChanged;
         public ItemMemento Serialize()
         {
             return new ItemMemento
@@ -132,6 +134,7 @@ namespace Domain.Service.Items
                 useOnDeath: UseOnDeath,
                 maxUsages: _maxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
+                isCursed: IsCursed,
                 upgradeLimit: UpgradeLimit,
                 conditions: _conditions.ToArray()
             );
@@ -166,6 +169,7 @@ namespace Domain.Service.Items
                 useOnDeath: data.UseOnDeath,
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
+                isCursed: false,
                 upgradeLimit: data.UpgradeLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
@@ -181,6 +185,12 @@ namespace Domain.Service.Items
 
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            if (IsCursed)
+            {
+                GameLog.Add($"{Name}は呪われているため使用できない");
+                return SpawnEffectSkillResult.Failed;
+            }
+
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => itemTargetSkill.Use(actor, this)
@@ -202,6 +212,11 @@ namespace Domain.Service.Items
         public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
             Direction8 direction, IMap map)
         {
+            if (IsCursed)
+            {
+                return SpawnEffectSkillResult.Failed;
+            }
+
             var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill =>
@@ -226,6 +241,11 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            if (IsCursed)
+            {
+                return 0;
+            }
+
             if (UseOnDeath && _remainingUsages.CurrentValue <= 1)
             {
                 return 0;
@@ -242,6 +262,11 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            if (IsCursed)
+            {
+                return 0;
+            }
+
             return SkillOnThrow.MapOr(
                 0,
                 skill => skill.Match(
@@ -258,12 +283,31 @@ namespace Domain.Service.Items
                                new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
+            if (IsCursed)
+            {
+                price *= 0.8f;
+            }
             return price;
         }
 
         public void Repair()
         {
             _remainingUsages.Value = _maxUsages;
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
+        public void SetCursed(bool isCursed)
+        {
+            IsCursed = isCursed;
+            if (isCursed)
+            {
+                GameLog.Add($"{Name}は呪われた");
+            }
+            else
+            {
+                GameLog.Add($"{Name}の呪いは解かれた");
+            }
+            _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
         }
 

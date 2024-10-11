@@ -102,7 +102,6 @@ namespace Domain.Service.Characters.Behavior
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input)
         {
-            _lastTarget = null;
             HashSet<Vector2Int> visibleArea = new(character.VisionRange.VisibleArea);
             visibleArea.Remove(character.CurrentPosition);
 
@@ -228,14 +227,22 @@ namespace Domain.Service.Characters.Behavior
         public ICharacter? GetTargetedEnemy(IHasBehavior character, IEnumerable<ICharacter> visibleEnemies)
         {
             if (visibleEnemies.Any())
+            {
+                Log.Debug("[Think] Targeted Enemy.");
                 return visibleEnemies.MinBy(enemy => character.Affiliation.GetAffection(enemy.Affiliation));
+            }
+            Log.Debug("[Think] No Targeted Enemy.");
             return null;
         }
 
         public ICharacter? GetTargetedLeader(IHasBehavior character, IEnumerable<ICharacter> visibleLeaders)
         {
             if (visibleLeaders.Any())
+            {
+                Log.Debug("[Think] Targeted Leader.");
                 return visibleLeaders.MaxBy(leader => character.Affiliation.GetAffection(leader.Affiliation));
+            }
+            Log.Debug("[Think] No Targeted Leader.");
             return null;
         }
 
@@ -260,16 +267,29 @@ namespace Domain.Service.Characters.Behavior
             Vector2Int targetPosition)
         {
             if (_lastTarget != null && character.IsAlly(_lastTarget) && _lastTarget.IsLeader)
+            {
+                Log.Debug($"[Think] Discover Leader {_lastTarget.GetName(character)}.");
                 return _discoveringLeader;
+            }
 
             if (_lastTarget == null)
+            {
+                Log.Debug("[Think] Returning Home.");
                 return _returningHome;
+            }
 
             var distance = GetDistance(character, targetPosition);
             if (_greaterThanTopBound != null && distance > _distanceTopBound)
+            {
+                Log.Debug($"[Think] Distance is greater than top bound {_distanceTopBound}.");
                 return _greaterThanTopBound;
+            }
             if (_lessThanBottomBound != null && distance < _distanceBottomBound)
+            {
+                Log.Debug($"[Think] Distance is less than bottom bound {_distanceBottomBound}.");
                 return _lessThanBottomBound;
+            }
+            Log.Debug("[Think] Behavior is Default.");
             return _default;
         }
 

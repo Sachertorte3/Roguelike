@@ -5,13 +5,14 @@ namespace Stats
     public class FlagStat
     {
         private readonly ReactiveProperty<int> _flags;
-        private readonly ReactiveProperty<bool> _value = new();
-        public bool CurrentValue => _flags.Value > 0;
+        private readonly ReactiveProperty<bool> _value;
+        public bool CurrentValue => _value.Value;
         public int CurrentFlags => _flags.Value;
 
         public FlagStat(int flags)
         {
             _flags = new ReactiveProperty<int>(flags);
+            _value = new ReactiveProperty<bool>(flags > 0);
         }
 
         public ReadOnlyReactiveProperty<bool> Value => _value;

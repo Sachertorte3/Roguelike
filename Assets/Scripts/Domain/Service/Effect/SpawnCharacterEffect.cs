@@ -52,10 +52,7 @@ namespace Domain.Service.Effect
                 {
                     map.SpawnEnemy(
                         _character.Value,
-                        position,
-                        null,
-                        false,
-                        false
+                        position
                     );
                 }
             }

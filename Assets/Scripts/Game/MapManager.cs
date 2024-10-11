@@ -230,7 +230,7 @@ namespace Game
                     FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Middle)),
                     isSlept: isSlept ?? Random.value < _dungeonData.SleepChance,
                     isShiny: isShiny ?? Random.value < _dungeonData.ShinyChance,
-                    affiliation: affiliation?.Serialize()
+                    affiliation: affiliation
                 ),
                 this
             );

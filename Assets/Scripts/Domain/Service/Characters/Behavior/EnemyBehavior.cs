@@ -229,7 +229,7 @@ namespace Domain.Service.Characters.Behavior
             if (visibleEnemies.Any())
             {
                 Log.Debug("[Think] Targeted Enemy.");
-                return visibleEnemies.MinBy(enemy => character.Affiliation.GetAffection(enemy.Affiliation));
+                return visibleEnemies.MinBy(enemy => VectorExtension.ChebyshevDistance(character.CurrentPosition, enemy.CurrentPosition));
             }
             Log.Debug("[Think] No Targeted Enemy.");
             return null;

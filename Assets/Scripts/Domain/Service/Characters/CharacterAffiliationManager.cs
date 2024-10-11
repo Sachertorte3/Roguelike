@@ -172,13 +172,13 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? masterId)
+        public static AffiliationMemento Build(CharacterGroup group, IAffiliation? affiliation = null)
         {
             var affiliationDict = new Dictionary<Id<IEntity>, float>();
-            if (affiliation != null && masterId != null)
+            if (affiliation != null)
             {
-                affiliationDict = affiliation.Affiliations;
-                affiliationDict[masterId] = 5f;
+                affiliationDict = affiliation.Serialize().Affiliations;
+                affiliationDict[affiliation.Id] = 5f;
             }
 
             return new AffiliationMemento
@@ -269,8 +269,16 @@ namespace Domain.Service.Characters
             {
                 (CharacterGroup.Human, CharacterGroup.Human) => BaseAllyValue,
                 (CharacterGroup.Human, CharacterGroup.Monster) => BaseEnemyValue,
+                (CharacterGroup.Human, CharacterGroup.Outcast) => BaseEnemyValue,
+
                 (CharacterGroup.Monster, CharacterGroup.Human) => BaseEnemyValue,
                 (CharacterGroup.Monster, CharacterGroup.Monster) => 0,
+                (CharacterGroup.Monster, CharacterGroup.Outcast) => BaseEnemyValue,
+
+                (CharacterGroup.Outcast, CharacterGroup.Human) => BaseEnemyValue,
+                (CharacterGroup.Outcast, CharacterGroup.Monster) => BaseEnemyValue,
+                (CharacterGroup.Outcast, CharacterGroup.Outcast) => BaseEnemyValue,
+
                 (CharacterGroup.Neutral, _) => 0,
                 _ => 0
             };

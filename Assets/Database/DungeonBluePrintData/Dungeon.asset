@@ -493,8 +493,6 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: c3c61fb9e1e447e46a157efb056fc530, type: 2}
-        Weight: 1
   - Type: 5
     RoundRoomCorner: 0
     WaterChance: 1

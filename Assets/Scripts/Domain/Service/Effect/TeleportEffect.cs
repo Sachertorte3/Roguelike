@@ -33,7 +33,7 @@ namespace Domain.Service.Effect
 
         public async UniTask Apply(IEntity target, IMap map)
         {
-            var position = map.GetAllBlankPositionsOn(EntityLayer.Middle).GetAtRandom();
+            var position = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom();
             target.Teleport(position);
             await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
         }

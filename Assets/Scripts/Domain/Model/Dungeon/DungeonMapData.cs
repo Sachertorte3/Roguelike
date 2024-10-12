@@ -11,7 +11,8 @@ namespace Domain.Model.Dungeon
         string Name,
         SectionType Type,
         FieldBluePrint Field,
-        ItemTable Items,
+        ItemDatabase Items,
+        
         ITable<WeaponPrefix> WeaponPrefixes,
         ITable<ItemData> ChestItems,
         ITable<TrapData> Traps,

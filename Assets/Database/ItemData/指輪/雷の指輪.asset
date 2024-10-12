@@ -10,51 +10,58 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u6B6A\u3093\u3060\u61D0\u4E2D\u6642\u8A08"
+  m_Name: "\u96F7\u306E\u6307\u8F2A"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -1732882176, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Category: 5
+  Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 4
-  EffectType: 1
+  _rarity: 3
+  EffectType: 0
   UseOnDeath: 0
-  SpawnEffectsOnUse: 1
+  SpawnEffectsOnUse: 0
   SpawnEffectsOnThrow: 0
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
     <Position>k__BackingField:
-      rid: 2541219106150416409
+      rid: 2541219106150416411
     <Area>k__BackingField:
-      rid: 4425516923575599140
+      rid: 4425516923575599143
     <Effects>k__BackingField:
-    - rid: 2541219106150416439
+    - rid: 4425516923575599144
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
-      rid: -2
+      rid: 4425516923575599143
     <Effects>k__BackingField:
-    - rid: -2
+    - rid: 4425516923575599144
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
   UsageLimit: 1
   UpgradeLimit: 3
-  PassiveConditions: []
+  PassiveConditions:
+  - rid: 2541219158355345437
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219106150416409
+    - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219106150416439
+    - rid: 2541219158355345437
+      type: {class: AddAttackMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        Element: 3
+        AddedMultiplier: 0.5
+    - rid: 4425516923575599143
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 4425516923575599144
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _condition:
-          _name: "\u30AA\u30FC\u30D0\u30FC\u30C9\u30E9\u30A4\u30D6"
-        _probabilityOfSuccess: 1
-    - rid: 4425516923575599140
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
+          _name: 
+        _probabilityOfSuccess: 0

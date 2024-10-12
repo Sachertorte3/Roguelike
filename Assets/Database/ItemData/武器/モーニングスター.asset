@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u30E2\u30FC\u30CB\u30F3\u30B0\u30B9\u30BF\u30FC"
   m_EditorClassIdentifier: 
+  Category: 4
   Icon: {fileID: -1231767279, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2

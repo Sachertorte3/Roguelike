@@ -12,6 +12,7 @@ namespace Utilities.Table
     {
         [RequiredListLength(1, null)] [SerializeField]
         private List<WeightedItem> items = new();
+        public int Count => items.Count;
 
         public T GetRandomItem()
         {

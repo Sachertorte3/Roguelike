@@ -2,9 +2,12 @@ namespace Domain.Model.Dungeon
 {
     public enum ItemCategory
     {
-        Consumables,
+        Potions,
+        Scrolls,
+        Books,
+        Wands,
         Weapons,
         Artifacts,
-        UpgradeMaterials
+        Others
     }
 }

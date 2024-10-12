@@ -2,7 +2,6 @@ using Domain.Model.Item;
 using Domain.Service.Items;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
-using UnityEngine;
 
 [CustomEditor(typeof(ItemData))]
 public class ItemDataEditor : OdinEditor
@@ -28,7 +27,7 @@ public class ItemDataEditor : OdinEditor
     private float EvaluatePrice()
     {
         ItemData itemData = (ItemData)target;
-        Item item = new Item(itemData);
+        Item item = new Item(itemData, "Test");
         return item.EvaluatePrice();
     }
 }

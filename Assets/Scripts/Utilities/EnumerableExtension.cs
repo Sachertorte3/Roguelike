@@ -81,7 +81,7 @@ namespace Utilities
             }
         }
 
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> ie)
+        public static IEnumerable<T> Shuffled<T>(this IEnumerable<T> ie)
         {
             var list = ie.ToList();
             list.Shuffle();
@@ -187,7 +187,7 @@ namespace Utilities
 
         public static RectInt? GetRandomInnerRect(this IEnumerable<Vector2Int> positions, Vector2Int size)
         {
-            var shuffledPositions = positions.Shuffle();
+            var shuffledPositions = positions.Shuffled();
             foreach (var position in shuffledPositions)
             {
                 var rect = new RectInt(position, size);

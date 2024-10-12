@@ -24,10 +24,10 @@ namespace Domain.Service.Items
     {
         public Id<IItem> Id { get; init; }
         public string BaseName { get; init; }
-        public string UnknownName => "???";
-        private string _name;
+        public string Name { get; init; }
+        public string UnknownName { get; private set; }
         public string DebugName => _fullName;
-        private string _fullName => _upgradePaths.Count > 0 ? $"{_name} +{AppliedUpgrades}" : _name;
+        private string _fullName => _upgradePaths.Count > 0 ? $"{BaseName} +{AppliedUpgrades}" : BaseName;
         private readonly List<UpgradePath> _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
@@ -38,7 +38,7 @@ namespace Domain.Service.Items
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
         private readonly Subject<bool> _onCursedChanged = new();
-        public Item(ItemData data) : this(Build(data))
+        public Item(ItemData data, string placeholder) : this(Build(data, placeholder))
         {
         }
 
@@ -46,7 +46,8 @@ namespace Domain.Service.Items
         {
             Id = new Id<IItem>(data.Id);
             BaseName = data.BaseName;
-            _name = data.Name;
+            Name = data.Name;
+            UnknownName = data.Placeholder;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
                 .WaitForCompletion();
             IsShiny = data.IsShiny;
@@ -133,7 +134,8 @@ namespace Domain.Service.Items
             (
                 Id.ToString(),
                 BaseName,
-                _name,
+                Name,
+                UnknownName,
                 Icon.name,
                 IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
@@ -151,7 +153,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public static ItemMemento Build(ItemData data, ItemState state = ItemState.None)
+        public static ItemMemento Build(ItemData data, string placeholder, ItemState state = ItemState.None)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -169,7 +171,8 @@ namespace Domain.Service.Items
             (
                 Id<IItem>.Generate().ToString(),
                 data.name,
-                data.Name,
+                data.name,
+                placeholder,
                 data.Icon.name,
                 data.IsShiny,
                 upgradePaths: new List<string>(),

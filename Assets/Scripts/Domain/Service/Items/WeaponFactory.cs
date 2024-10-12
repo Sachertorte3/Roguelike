@@ -7,9 +7,9 @@ namespace Domain.Service.Items
 {
     public static class WeaponFactory
     {
-        public static ItemMemento Create(ItemData weapon, WeaponPrefix prefix)
+        public static ItemMemento Create(ItemData weapon, string placeholder, WeaponPrefix prefix)
         {
-            var item = Item.Build(weapon);
+            var item = Item.Build(weapon, placeholder);
             var effects = item.SkillOnUse.Value;
             if (effects != null && effects is SpawnEffectSkillMemento spawnEffectSkillMemento)
             {

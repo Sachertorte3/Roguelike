@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u925B\u306E\u6307\u8F2A"
+  m_Name: "\u900F\u8996\u306E\u6307\u8F2A"
   m_EditorClassIdentifier: 
+  Category: 5
   Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 3
+  _rarity: 4
   EffectType: 0
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
@@ -41,7 +42,7 @@ MonoBehaviour:
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
-  - rid: 5486256464210165799
+  - rid: 2541219158355345442
   references:
     version: 2
     RefIds:
@@ -49,6 +50,9 @@ MonoBehaviour:
       type: {class: , ns: , asm: }
     - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345442
+      type: {class: Clairvoyant, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
@@ -59,6 +63,3 @@ MonoBehaviour:
         _condition:
           _name: 
         _probabilityOfSuccess: 0
-    - rid: 5486256464210165799
-      type: {class: SuperArmor, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 

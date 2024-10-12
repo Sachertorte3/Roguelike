@@ -40,6 +40,8 @@ namespace View
 
         public Observable<Unit> OnThrowPerformed => _actions.Field.Throw.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnDropPerformed => _actions.Field.Drop.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnDoNothingPerformed => _actions.Field.DoNothing.AsObservable().Select(context => Unit.Default);
+        public bool IsDoNothingPerformed => _actions.Field.DoNothing.IsPressed();
         public Observable<Unit> OnRenamePerformed => _actions.Field.Rename.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);

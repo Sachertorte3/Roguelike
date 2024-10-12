@@ -14,6 +14,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<int?> _onUseItemActionReceived = new(0);
         private readonly AsyncReactiveProperty<int?> _onThrowItemActionReceived = new(0);
         private readonly AsyncReactiveProperty<int?> _onDropItemActionReceived = new(0);
+        private readonly AsyncReactiveProperty<Unit> _onDoNothingActionReceived = new(Unit.Default);
         private readonly AsyncReactiveProperty<int?> _onRenameItemActionReceived = new(0);
         private bool _enable = true;
 
@@ -23,6 +24,7 @@ namespace Domain.Service.Characters.Behavior
         internal IReadOnlyAsyncReactiveProperty<int?> OnUseItemActionReceived => _onUseItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<int?> OnThrowItemActionReceived => _onThrowItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<int?> OnDropItemActionReceived => _onDropItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
         internal IReadOnlyAsyncReactiveProperty<int?> OnRenameItemActionReceived => _onRenameItemActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;
 
@@ -48,6 +50,12 @@ namespace Domain.Service.Characters.Behavior
         {
             if (_enable)
                 _onDropItemActionReceived.Value = _inventoryIndexReceiver.Index;
+        }
+
+        public void SetDoNothingInput()
+        {
+            if (_enable)
+                _onDoNothingActionReceived.Value = Unit.Default;
         }
 
         public void SetRenameInput()

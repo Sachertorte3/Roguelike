@@ -50,11 +50,12 @@ namespace Domain.Service.Characters.Behavior
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
             var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
             var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, renameItemTask);
+            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
             while (true)
             {
                 switch (firstCompletedTask.winArgumentIndex)
@@ -153,7 +154,10 @@ namespace Domain.Service.Characters.Behavior
                         }
                         break;
                     case 4:
-                        itemIndex = firstCompletedTask.result5;
+                        await UniTask.Yield();
+                        return new DoNothing();
+                    case 5:
+                        itemIndex = firstCompletedTask.result6;
                         if (itemIndex != null)
                         {
                             item = character.Inventory.GetItem(itemIndex.Value);
@@ -169,8 +173,9 @@ namespace Domain.Service.Characters.Behavior
                 useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
                 throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
                 dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+                doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
                 renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, renameItemTask);
+                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
             }
         }
 

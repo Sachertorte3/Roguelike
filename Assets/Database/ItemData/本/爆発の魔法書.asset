@@ -29,6 +29,7 @@ MonoBehaviour:
       rid: 5486256534138650627
     <Effects>k__BackingField:
     - rid: 5486256534138650625
+    - rid: 5486256542496849920
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -60,3 +61,6 @@ MonoBehaviour:
         ContainsSelf: 1
         CanIgnoreWalls: 0
         Radius: 2
+    - rid: 5486256542496849920
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

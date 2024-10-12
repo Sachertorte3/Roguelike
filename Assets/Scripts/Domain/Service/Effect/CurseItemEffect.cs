@@ -37,9 +37,9 @@ namespace Domain.Service.Effect
             {
                 var item = notCursedItems.GetAtRandom();
                 if (Random.value < _probabilityOfSuccess)
-                    item.SetCursed(map.Player, true);
+                    item.SetCursed(map.Player, map.ItemDatabase, true);
                 else
-                    GameLog.Add($"{item.GetName(map.Player)}は呪われなかった");
+                    GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}は呪われなかった");
             }
             else
             {

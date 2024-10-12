@@ -19,6 +19,10 @@ namespace Domain.Model.Item
         public ItemCategory Category;
         [Required] public Sprite Icon;
         public bool IsShiny;
+        public bool CannotUseIfCursed => Category != ItemCategory.Weapons;
+        public bool CannotDropIfCursed => Category == ItemCategory.Weapons;
+        public bool IdentifyIfGot => Category == ItemCategory.Weapons;
+        public bool IdentifyIfUsed => Category != ItemCategory.Wands;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;

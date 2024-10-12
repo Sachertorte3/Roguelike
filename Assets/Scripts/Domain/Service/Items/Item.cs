@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Condition;
+using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Position;
 using Domain.Model.Item;
@@ -23,32 +24,31 @@ namespace Domain.Service.Items
     public class Item : IItem
     {
         public Id<IItem> Id { get; init; }
+        public ItemCategory Category { get; init; }
         public string BaseName { get; init; }
-        public string Name { get; init; }
-        private string _unknownName;
-        public string UnknownName => $"?{_unknownName}?";
+        public string RevealedName { get; init; }
+        public string UnknownName(ItemDatabase itemDatabase) => $"?{itemDatabase.GetPlaceholder(BaseName, Category)}?";
         public string DebugName => _fullName;
-        private string _fullName => _upgradePaths.Count > 0 ? $"{BaseName} +{AppliedUpgrades}" : BaseName;
+        private string _fullName => _upgradePaths.Count > 0 ? $"{RevealedName} +{AppliedUpgrades}" : RevealedName;
         private readonly List<UpgradePath> _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
         private readonly ReactiveProperty<int> _remainingUsages;
-        public bool IsCursed { get; private set; }
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
         private readonly Subject<bool> _onCursedChanged = new();
-        public Item(ItemData data, string placeholder) : this(Build(data, placeholder))
+        public Item(ItemData data) : this(Build(data))
         {
         }
 
         public Item(ItemMemento data)
         {
             Id = new Id<IItem>(data.Id);
+            Category = data.Category;
             BaseName = data.BaseName;
-            Name = data.Name;
-            _unknownName = data.Placeholder;
+            RevealedName = data.Name;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
                 .WaitForCompletion();
             IsShiny = data.IsShiny;
@@ -100,15 +100,18 @@ namespace Domain.Service.Items
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
             IsCursed = data.IsCursed;
+            CannotDropIfCursed = data.CannotDropIfCursed;
+            IdentifyIfGot = data.IdentifyIfGot;
+            IdentifyIfUsed = data.IdentifyIfUsed;
             UpgradeLimit = data.UpgradeLimit;
             _conditions = data.Conditions.ToList();
         }
 
-        public string GetName(IHasInventory character)
+        public string GetName(IHasInventory character, ItemDatabase itemDatabase)
         {
             if (character.IsKnownItem(this))
                 return _fullName;
-            return UnknownName;
+            return UnknownName(itemDatabase);
         }
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
@@ -125,6 +128,11 @@ namespace Domain.Service.Items
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public int MaxUsages => _maxUsages;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
+        public bool IsCursed { get; private set; }
+        public bool CannotUseIfCursed { get; init; }
+        public bool CannotDropIfCursed { get; init; }
+        public bool IdentifyIfGot { get; init; }
+        public bool IdentifyIfUsed { get; init; }
         public int UpgradeLimit { get; init; }
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
@@ -134,9 +142,9 @@ namespace Domain.Service.Items
             return new ItemMemento
             (
                 Id.ToString(),
+                Category,
                 BaseName,
-                Name,
-                _unknownName,
+                RevealedName,
                 Icon.name,
                 IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
@@ -149,12 +157,16 @@ namespace Domain.Service.Items
                 maxUsages: _maxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
                 isCursed: IsCursed,
+                cannotUseIfCursed: CannotUseIfCursed,
+                cannotDropIfCursed: CannotDropIfCursed,
+                identifyIfGot: IdentifyIfGot,
+                identifyIfUsed: IdentifyIfUsed,
                 upgradeLimit: UpgradeLimit,
                 conditions: _conditions.ToArray()
             );
         }
 
-        public static ItemMemento Build(ItemData data, string placeholder, ItemState state = ItemState.None)
+        public static ItemMemento Build(ItemData data, ItemState state = ItemState.None)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -171,9 +183,9 @@ namespace Domain.Service.Items
             var memento = new ItemMemento
             (
                 Id<IItem>.Generate().ToString(),
+                data.Category,
                 data.name,
                 data.name,
-                placeholder,
                 data.Icon.name,
                 data.IsShiny,
                 upgradePaths: new List<string>(),
@@ -186,6 +198,10 @@ namespace Domain.Service.Items
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
                 isCursed: false,
+                cannotUseIfCursed: data.CannotUseIfCursed,
+                cannotDropIfCursed: data.CannotDropIfCursed,
+                identifyIfGot: data.IdentifyIfGot,
+                identifyIfUsed: data.IdentifyIfUsed,
                 upgradeLimit: data.UpgradeLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
@@ -201,15 +217,15 @@ namespace Domain.Service.Items
 
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (IsCursed)
+            if (IsCursed && CannotUseIfCursed)
             {
-                GameLog.Add($"{GetName(actor)}は呪われているため使用できない");
+                GameLog.Add($"{GetName(actor, map.ItemDatabase)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
             }
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(actor, this)
+                itemTargetSkill => itemTargetSkill.Use(actor, this, map.ItemDatabase)
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -228,7 +244,7 @@ namespace Domain.Service.Items
         public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
             Direction8 direction, IMap map)
         {
-            if (IsCursed)
+            if (IsCursed && CannotUseIfCursed)
             {
                 return SpawnEffectSkillResult.Failed;
             }
@@ -238,7 +254,7 @@ namespace Domain.Service.Items
                 itemTargetSkill =>
                 {
                     Log.Error("The item is not configured to activate this type of skill when thrown.");
-                    return itemTargetSkill.Use((IActor)actor, this);
+                    return itemTargetSkill.Use((IActor)actor, this, map.ItemDatabase);
                 }
             );
             if (result.Result != SkillResult.Cancelled)
@@ -257,7 +273,7 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (IsCursed)
+            if (IsCursed && CannotUseIfCursed)
             {
                 return 0;
             }
@@ -278,7 +294,7 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (IsCursed)
+            if (IsCursed && CannotUseIfCursed)
             {
                 return 0;
             }
@@ -306,22 +322,14 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public void Repair(IHasInventory player)
+        public void Repair(IHasInventory player, ItemDatabase itemDatabase)
         {
-            GameLog.Add($"{GetName(player)}は修理された");
+            GameLog.Add($"{GetName(player, itemDatabase)}は修理された");
             _remainingUsages.Value = _maxUsages;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Rename(string name)
-        {
-            if (name == "")
-                return;
-            _unknownName = name;
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void SetCursed(IHasInventory actor, bool isCursed)
+        public void SetCursed(IHasInventory actor, ItemDatabase itemDatabase, bool isCursed)
         {
             if (IsCursed == isCursed)
             {
@@ -331,11 +339,11 @@ namespace Domain.Service.Items
             IsCursed = isCursed;
             if (isCursed)
             {
-                GameLog.Add($"{GetName(actor)}は呪われた");
+                GameLog.Add($"{GetName(actor, itemDatabase)}は呪われた");
             }
             else
             {
-                GameLog.Add($"{GetName(actor)}の呪いは解かれた");
+                GameLog.Add($"{GetName(actor, itemDatabase)}の呪いは解かれた");
             }
             _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
@@ -420,23 +428,23 @@ namespace Domain.Service.Items
             return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
         }
 
-        public void Upgrade(IHasInventory character, string filter = "")
+        public void Upgrade(IHasInventory player, ItemDatabase itemDatabase, string filter = "")
         {
             var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
-            if (character.IsKnownItem(this))
+            if (player.IsKnownItem(this))
             {
                 GameLog.Add($"{_fullName}は{upgrade.Description}の効果を得た");
             }
             else
             {
-                GameLog.Add($"{GetName(character)}は何かの効果を得た");
+                GameLog.Add($"{GetName(player, itemDatabase)}は何かの効果を得た");
             }
             upgrade.Upgrade();
             _upgradePaths.Add(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Downgrade(IHasInventory character)
+        public void Downgrade(IHasInventory player, ItemDatabase itemDatabase)
         {
             if (_upgradePaths.Count == 0)
             {
@@ -446,19 +454,19 @@ namespace Domain.Service.Items
             var path = _upgradePaths.GetAtRandom();
             _upgradePaths.Remove(path);
             var upgrade = GetUpgrades()[path];
-            if (character.IsKnownItem(this))
+            if (player.IsKnownItem(this))
             {
                 GameLog.Add($"{_fullName}の{upgrade.Description}は消えた");
             }
             else
             {
-                GameLog.Add($"{GetName(character)}の何かの効果は消えた");
+                GameLog.Add($"{GetName(player, itemDatabase)}の何かの効果は消えた");
             }
             upgrade.Downgrade();
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public string Info(IHasInventory player)
+        public string Info(IHasInventory player, ItemDatabase itemDatabase)
         {
             if (player.IsKnownItem(this))
             {
@@ -466,7 +474,7 @@ namespace Domain.Service.Items
             }
             else
             {
-                var info = $"{State.GetDescription()}{UnknownName}";
+                var info = $"{State.GetDescription()}{UnknownName(itemDatabase)}";
                 if (CanActivateWhenUsed)
                     info += $"\n使用可能";
                 if (CanActivateWhenThrown)

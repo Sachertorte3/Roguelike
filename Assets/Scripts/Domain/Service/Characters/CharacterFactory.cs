@@ -80,7 +80,7 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterMemento BuildCharacter(EnemyData data, ItemDatabase itemDatabase, Vector2Int spawnPosition,
+        public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
             IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
         {
@@ -91,7 +91,7 @@ namespace Domain.Service.Characters
             if (Random.value < data.DropItemRate && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
-                inventory.Items[0] = Item.Build(dropItem, itemDatabase.GetPlaceholder(dropItem)).ToOption();
+                inventory.Items[0] = Item.Build(dropItem).ToOption();
             }
 
             return new CharacterMemento

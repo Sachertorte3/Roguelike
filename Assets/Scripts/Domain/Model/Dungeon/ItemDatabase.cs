@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Domain.Model.Item;
 using Domain.Model.Memento;
+using R3;
 using Utilities.Table;
 
 namespace Domain.Model.Dungeon
@@ -15,6 +16,9 @@ namespace Domain.Model.Dungeon
         private CategoryPlaceholders _wandPlaceholders;
         private CategoryPlaceholders _artifactPlaceholders;
         private ItemCategoryWeight _itemCategoryWeight;
+        private Subject<Unit> _onItemRenamed = new();
+        public Observable<Unit> OnItemRenamed => _onItemRenamed;
+        
         public ItemDatabase(ItemDatabaseMemento memento, MasterItemDataBase masterItemDataBase, ItemCategoryWeight itemCategoryWeight)
         {
             _plaseholders = memento.Placeholders;
@@ -59,22 +63,29 @@ namespace Domain.Model.Dungeon
         public ItemData GetRandomItem() => _masterItemDataBase.GetRandomItem(_itemCategoryWeight.GetRandomCategory());
         public ItemData GetRandomItem(ItemCategory category) => _masterItemDataBase.GetRandomItem(category);
 
-        public string GetPlaceholder(ItemData item)
+        public string GetPlaceholder(ItemData item) => GetPlaceholder(item.name, item.Category);
+        public string GetPlaceholder(string baseName, ItemCategory category)
         {
-            if (!_plaseholders.ContainsKey(item.name))
+            if (!_plaseholders.ContainsKey(baseName))
             {
-                var placeholder = item.Category switch
+                var placeholder = category switch
                 {
                     ItemCategory.Potions => _potionPlaceholders.GetAtRandomAndRemove(),
                     ItemCategory.Scrolls => _scrollPlaceholders.GetAtRandomAndRemove(),
                     ItemCategory.Books => _bookPlaceholders.GetAtRandomAndRemove(),
                     ItemCategory.Wands => _wandPlaceholders.GetAtRandomAndRemove(),
                     ItemCategory.Artifacts => _artifactPlaceholders.GetAtRandomAndRemove(),
-                    _ => item.name
+                    _ => baseName
                 };
-                _plaseholders[item.name] = placeholder;
+                _plaseholders[baseName] = placeholder;
             }
-            return _plaseholders[item.name];
+            return _plaseholders[baseName];
+        }
+
+        public void Rename(string baseName, string newName)
+        {
+            _plaseholders[baseName] = newName;
+            _onItemRenamed.OnNext(Unit.Default);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Game
                 var bossRoom = roomIds.GetAtRandom();
                 foreach (var bossData in data.Boss)
                 {
-                    var boss = CharacterFactory.BuildCharacter(bossData, data.Items, GetRandomBlankPositionInRoom(bossRoom),
+                    var boss = CharacterFactory.BuildCharacter(bossData, GetRandomBlankPositionInRoom(bossRoom),
                         isSlept: false, isShiny: false);
                     _characters.Add(boss);
                     _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
@@ -165,12 +165,12 @@ namespace Game
             foreach (var position in rect.Value.RectRange())
             {
                 var item = shopItems.GetRandomItem();
-                _items.Add(ItemFactory.Build(position, Item.Build(item, data.Items.GetPlaceholder(item), ItemState.ShopItem)));
+                _items.Add(ItemFactory.Build(position, Item.Build(item, ItemState.ShopItem)));
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
 
             var clerkPosition = GetRandomBlankPositionInRoom(roomId);
-            var clerk = CharacterFactory.BuildCharacter(data.Clerk, data.Items, clerkPosition, isSlept: false, isShiny: false,
+            var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false,
                 homePosition: (_location, clerkPosition));
             _characters.Add(clerk);
 
@@ -212,7 +212,7 @@ namespace Game
             foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
             {
                 var position = center + direction.Vector();
-                var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), data.Items, position,
+                var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
                     direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
                     homePosition: (_location, center));
                 _characters.Add(character);
@@ -233,7 +233,7 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
-                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), data.Items, position,
+                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
                     isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
                 _characters.Add(character);
             }
@@ -243,8 +243,8 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
-                var item = data.Items.GetRandomItem();
-                _items.Add(ItemFactory.Build(position, Item.Build(item, data.Items.GetPlaceholder(item))));
+                var item = data.ItemDatabase.GetRandomItem();
+                _items.Add(ItemFactory.Build(position, Item.Build(item)));
             }
         }
 
@@ -258,12 +258,12 @@ namespace Game
                 }
                 else if (Random.value < data.WeaponChanceInChest)
                 {
-                    var weapon = data.Items.GetRandomItem(ItemCategory.Weapons);
-                    _chests.Add(Chest.Build(position, WeaponFactory.Create(weapon, data.Items.GetPlaceholder(weapon), data.WeaponPrefixes.GetRandomItem())));
+                    var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons);
+                    _chests.Add(Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem())));
                 }
                 else
                 {
-                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem(), data.Items.GetPlaceholder(data.Items.GetRandomItem())));
+                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem()));
                 }
             }
         }

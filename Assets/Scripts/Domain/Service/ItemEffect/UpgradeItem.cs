@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
 
@@ -17,9 +18,9 @@ namespace Domain.Service.ItemEffect
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
-        public void Apply(IHasInventory actor, IItem item)
+        public void Apply(IHasInventory actor, IItem item, ItemDatabase itemDatabase)
         {
-            item.Upgrade(actor, _filter);
+            item.Upgrade(actor, itemDatabase, _filter);
         }
 
         public float EvaluatePrice()

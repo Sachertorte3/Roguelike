@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 
 namespace Domain.Service.ItemEffect
@@ -12,7 +13,7 @@ namespace Domain.Service.ItemEffect
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
-        public void Apply(IHasInventory actor, IItem item)
+        public void Apply(IHasInventory actor, IItem item, ItemDatabase itemDatabase)
         {
             actor.AddKnownItem(item);
         }

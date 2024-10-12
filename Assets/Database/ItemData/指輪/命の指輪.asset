@@ -51,7 +51,7 @@ MonoBehaviour:
     - rid: 861543420369829897
       type: {class: AddMaxHp, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        AddValue: 25
+        AddValue: 10
     - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

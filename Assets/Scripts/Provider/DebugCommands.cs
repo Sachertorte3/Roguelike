@@ -178,17 +178,18 @@ namespace Provider
                 var character = GetTarget(target);
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
-                var item = new Item(itemData, $"[Debug]{itemData.name}");
+                var item = new Item(itemData);
                 if (prefixName != null)
                 {
                     var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
-                    var itemMemento = WeaponFactory.Create(itemData, $"[Debug]{itemData.name}", prefixData);
+                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
                 if (character.Inventory.TryAdd(item))
                 {
-                    Log.Info($"{item.GetName(_world.ActiveMap.CurrentValue.Player)}を{target}のインベントリに追加しました。");
+                    var map = _world.ActiveMap.CurrentValue;
+                    Log.Info($"{item.GetName(map.Player, map.ItemDatabase)}を{target}のインベントリに追加しました。");
                 }
                 else
                 {
@@ -208,16 +209,17 @@ namespace Provider
             {
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
-                var item = new Item(itemData, $"[Debug]{itemData.name}");
+                var item = new Item(itemData);
                 if (prefixName != null)
                 {
                     var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
-                    var itemMemento = WeaponFactory.Create(itemData, $"[Debug]{itemData.name}", prefixData);
+                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
-                Log.Info($"{spawnedItem.Item.GetName(_world.ActiveMap.CurrentValue.Player)}を{position}にスポーンしました。");
+                var map = _world.ActiveMap.CurrentValue;
+                Log.Info($"{spawnedItem.Item.GetName(map.Player, map.ItemDatabase)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

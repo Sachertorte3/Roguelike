@@ -14,7 +14,7 @@ namespace Domain.Model.Dungeon
         public RarityWeightTable<ItemData> Weapons;
         public RarityWeightTable<ItemData> Artifacts;
         public RarityWeightTable<ItemData> Others;
-        public Table<ItemData> ChestItems;
+        public RarityWeightTable<ItemData> ChestItems;
         public Table<ShopItemData> ShopItems;
 
         public ItemData GetRandomItem(ItemCategory category)

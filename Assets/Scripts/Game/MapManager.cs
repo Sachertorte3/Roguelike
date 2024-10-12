@@ -37,6 +37,7 @@ namespace Game
         public string Name => Location.MapName;
         public int Level => Location.Level;
         public SectionType Type => _dungeonData.Type;
+        public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -125,7 +126,7 @@ namespace Game
                 {
                     var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();
                     var ally = CharacterManager.SpawnAlly(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, _dungeonData.Items, clerkPosition, homePosition: (Location, clerkPosition)),
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: (Location, clerkPosition)),
                         this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
@@ -228,7 +229,6 @@ namespace Game
             var ally = CharacterManager.SpawnAlly(
                 CharacterFactory.BuildCharacter(
                     enemy,
-                    _dungeonData.Items,
                     FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Middle)),
                     isSlept: isSlept ?? Random.value < _dungeonData.SleepChance,
                     isShiny: isShiny ?? Random.value < _dungeonData.ShinyChance,
@@ -434,7 +434,7 @@ namespace Game
         {
             if (!layers.Any())
                 Log.Warning("No layers specified for CanPlace");
-            
+
             return (ignoreEntity, canThroughWalls, isFlying) switch
             {
                 (true, true, _) => IsInside(position),
@@ -595,7 +595,7 @@ namespace Game
                         if (positionChanged.Character.TryAddToInventory(item.Item))
                         {
                             if (positionChanged.Character == Player)
-                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player)}</color>を拾った");
+                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemDatabase)}</color>を拾った");
                         }
                         else
                         {
@@ -605,7 +605,7 @@ namespace Game
                     else
                     {
                         GameLog.Add(
-                            $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player)}の上に乗った");
+                            $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player, ItemDatabase)}の上に乗った");
                     }
                 }
             }).AddTo(_disposables);

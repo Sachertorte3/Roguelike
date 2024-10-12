@@ -27,7 +27,7 @@ public class ItemDataEditor : OdinEditor
     private float EvaluatePrice()
     {
         ItemData itemData = (ItemData)target;
-        Item item = new Item(itemData, "Test");
+        Item item = new Item(itemData);
         return item.EvaluatePrice();
     }
 }

@@ -330,13 +330,6 @@ namespace Domain.Service.Characters
             if (item.CanActivateWhenThrown)
             {
                 var result = await item.UseWhenThrown(this, destination, direction, map);
-                if (result.Result == SkillResult.Success)
-                {
-                    if (!IsKnownItem(item))
-                    {
-                        AddKnownItem(item);
-                    }
-                }
             }
 
             State = CharacterState.Finish;

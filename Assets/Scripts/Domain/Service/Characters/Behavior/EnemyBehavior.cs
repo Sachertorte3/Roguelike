@@ -92,11 +92,13 @@ namespace Domain.Service.Characters.Behavior
 
         public static BehaviorMemento Build(BehaviorData behavior, (Location, Vector2Int)? homePosition)
         {
-            return new BehaviorMemento(
+            var memento = new BehaviorMemento(
                 behavior,
                 homePosition,
                 null
             );
+            var json = JsonUtility.ToJson(memento);
+            return JsonUtility.FromJson<BehaviorMemento>(json);
         }
 
         public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,

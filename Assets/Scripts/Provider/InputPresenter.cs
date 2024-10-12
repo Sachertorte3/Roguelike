@@ -29,14 +29,19 @@ namespace Provider
             receiver.OnMovePerformed
                 .Select(vector => DirectionMethods.FromVector(vector))
                 .Where(direction => direction != null)
-                .Subscribe(direction => { actionReceiver.SetMoveInput(direction!.Value, true); });
-            actionReceiver.OnActionRead.Select(_ => receiver.MoveVector)
+                .Subscribe(direction => actionReceiver.SetMoveInput(direction!.Value, true));
+            actionReceiver.OnActionRead
+                .Select(_ => receiver.MoveVector)
                 .Select(vector => DirectionMethods.FromVector(vector))
                 .Where(direction => direction != null)
-                .Subscribe(direction => { actionReceiver.SetMoveInput(direction!.Value, false); });
+                .Subscribe(direction => actionReceiver.SetMoveInput(direction!.Value, false));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());
+            receiver.OnDoNothingPerformed.Subscribe(_ => actionReceiver.SetDoNothingInput());
+            actionReceiver.OnActionRead
+                .Where(_ => receiver.IsDoNothingPerformed)
+                .Subscribe(_ => actionReceiver.SetDoNothingInput());
             receiver.OnRenamePerformed.Subscribe(_ => actionReceiver.SetRenameInput());
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));

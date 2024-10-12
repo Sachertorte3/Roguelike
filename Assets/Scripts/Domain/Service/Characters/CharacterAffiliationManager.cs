@@ -20,7 +20,7 @@ namespace Domain.Service.Characters
 
         private readonly Dictionary<Id<IEntity>, float> _affections;
         private readonly Id<IEntity> _id;
-        private readonly Subject<OnAffiliationChangedMessage> _OnAffiliationChanged = new();
+        private readonly Subject<OnAffiliationChangedMessage> _onAffiliationChanged = new();
         private IAffiliation? _player;
         private readonly Dictionary<(Id<IEntity>, AffiliationType), FlagStat> _forcedAffiliationFlags = new();
 
@@ -34,9 +34,18 @@ namespace Domain.Service.Characters
         }
 
         public Id<IEntity> Id => _id;
-        public Observable<OnAffiliationChangedMessage> OnAffiliationChanged => _OnAffiliationChanged;
+        public Observable<OnAffiliationChangedMessage> OnAffiliationChanged => _onAffiliationChanged;
 
         public CharacterGroup Group { get; private set; }
+
+        public void Clear()
+        {
+            foreach (var key in _affections.Keys.ToList())
+            {
+                _affections.Remove(key);
+                _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(key));
+            }
+        }
 
         public AffiliationType GetAffiliationType(IAffiliation other)
         {
@@ -203,7 +212,7 @@ namespace Domain.Service.Characters
             }
 
             _affections[targetId] += change;
-            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(targetId));
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(targetId));
         }
 
         public void UpdateTurn(IEnumerable<IAffiliation> visibleCharacters)
@@ -240,7 +249,7 @@ namespace Domain.Service.Characters
                 _forcedAffiliationFlags[(target, type)].AddFlags();
             }
 
-            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
         }
 
         public void RemoveForceAffiliation(Id<IEntity> target, AffiliationType type)
@@ -256,7 +265,7 @@ namespace Domain.Service.Characters
                 _forcedAffiliationFlags.Remove((target, type));
             }
 
-            _OnAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
         }
 
         private float GetAffectionByGroup(IAffiliation target)

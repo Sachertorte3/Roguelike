@@ -499,6 +499,18 @@ namespace Domain.Service.Characters
             _statusManager.ClearCondition();
         }
 
+        public void ClearKnownItems(IMap map)
+        {
+            _knownItemNames.Clear();
+            GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
+        }
+
+        public void ClearAffiliation(IMap map)
+        {
+            _affiliationManager.Clear();
+            GameLog.Add($"{GetName(map.Player)}は他のキャラクターのことを忘れてしまった");
+        }
+
         public async UniTask ForceMove(Direction8 direction, IInput input)
         {
             State = CharacterState.Act;

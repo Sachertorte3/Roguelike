@@ -27,6 +27,15 @@ namespace Domain.Service.Characters.Behavior
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
         private (Location, Vector2Int)? _homePosition;
+        private enum InputType
+        {
+            Move,
+            UseItem,
+            ThrowItem,
+            DropItem,
+            DoNothing,
+            RenameItem
+        }
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
@@ -46,85 +55,43 @@ namespace Domain.Service.Characters.Behavior
             Log.Debug("[Think] Start waiting input...");
             if (input.IsDash()) await _intelligentDashController.Wait(character, map);
 
-            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
-            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
-            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
-            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
-
+            var tasks = InitializeTasks();
             _receiver.ReadInput();
+            var result = await tasks;
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
             while (true)
             {
-                switch (firstCompletedTask.winArgumentIndex)
+                switch (result.type)
                 {
-                    case 0:
-                        var (move, started) = firstCompletedTask.result1;
+                    case InputType.Move:
+                        var (move, started) = result.move.Value;
                         if (input.IsNoMove())
                         {
                             character.Turn(move.Direction);
+                            break;
                         }
-                        else
+
+                        if (Settings.IntelligentDash.Value)
+                            move = _intelligentDashController.Filter(move, character, started, map, input);
+
+                        var swap = new Swap(move.Direction);
+                        var destination = character.CurrentPosition + move.Direction.Vector();
+                        var eventEntity = map.GetEventEntityAt(destination, EntityLayer.Middle);
+                        character.Turn(move.Direction);
+
+                        if (move.Doable(character, map))
+                            return move;
+                        else if (eventEntity != null)
                         {
-                            if (Settings.IntelligentDash.Value)
-                                move = _intelligentDashController.Filter(move, character, started, map, input);
-
-                            var swap = new Swap(move.Direction);
-                            var eventEntity =
-                                map.GetEventEntityAt(character.CurrentPosition + move.Direction.Vector(),
-                                    EntityLayer.Middle);
-                            character.Turn(move.Direction);
-                            if (move.Doable(character, map))
-                                return move;
-                            if (eventEntity != null)
-                            {
-                                var choices = new List<string>();
-                                var firstChoiceIndex = 0;
-                                if (swap.Doable(character, map))
-                                {
-                                    choices.Add("入れ替わる");
-                                    firstChoiceIndex += 1;
-                                }
-
-                                var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
-                                foreach (var eventData in executableEvents)
-                                {
-                                    choices.Add(eventData.ChoiceText);
-                                }
-
-                                if (eventEntity.CanBeCanceled)
-                                {
-                                    choices.Add("やめる");
-                                }
-
-                                var choiceIndex = 0;
-                                if (choices.Count > 1)
-                                {
-                                    choiceIndex =
-                                        await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
-                                }
-
-                                switch (choices[choiceIndex])
-                                {
-                                    case "入れ替わる":
-                                        return swap;
-                                    case "やめる":
-                                        break;
-                                    default:
-                                        await executableEvents[choiceIndex - firstChoiceIndex]
-                                            .DoEvent(gameManager, map);
-                                        return new DoNothing();
-                                }
-                            }
-                            else if (swap.Doable(character, map))
-                                return swap;
+                            var eventAction = await ChoiceEvent(character, gameManager, map, swap, eventEntity);
+                            if (eventAction != null && eventAction.Doable(character, map))
+                                return eventAction;
                         }
-
+                        else if (swap.Doable(character, map))
+                            return swap;
                         break;
-                    case 1:
-                        var itemIndex = firstCompletedTask.result2;
+                    case InputType.UseItem:
+                        var itemIndex = result.itemIndex;
                         var item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         IAction action;
 
@@ -135,8 +102,8 @@ namespace Domain.Service.Characters.Behavior
 
                         if (action.Doable(character, map)) return action;
                         break;
-                    case 2:
-                        itemIndex = firstCompletedTask.result3;
+                    case InputType.ThrowItem:
+                        itemIndex = result.itemIndex;
                         item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
                         if (item != null)
                         {
@@ -145,19 +112,19 @@ namespace Domain.Service.Characters.Behavior
                         }
 
                         break;
-                    case 3:
-                        itemIndex = firstCompletedTask.result4;
+                    case InputType.DropItem:
+                        itemIndex = result.itemIndex;
                         if (itemIndex != null)
                         {
                             action = new DropItem(itemIndex.Value);
                             if (action.Doable(character, map)) return action;
                         }
                         break;
-                    case 4:
+                    case InputType.DoNothing:
                         await UniTask.Yield();
                         return new DoNothing();
-                    case 5:
-                        itemIndex = firstCompletedTask.result6;
+                    case InputType.RenameItem:
+                        itemIndex = result.itemIndex;
                         if (itemIndex != null)
                         {
                             item = character.Inventory.GetItem(itemIndex.Value);
@@ -169,17 +136,75 @@ namespace Domain.Service.Characters.Behavior
                         throw new IndexOutOfRangeException();
                 }
 
-                moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-                useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
-                throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-                dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
-                doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
-                renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
+                result = await InitializeTasks();
             }
         }
 
-        public void KnowLocationOf(IHasBehavior self, IActorOfEffect target) {}
+        private async UniTask<(InputType type, (Move action, bool isStarted)? move, int? itemIndex)> InitializeTasks()
+        {
+            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
+            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
+            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
+            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
+            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
+
+            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
+            return tasks.winArgumentIndex switch
+            {
+                0 => (InputType.Move, tasks.result1, null),
+                1 => (InputType.UseItem, null, tasks.result2),
+                2 => (InputType.ThrowItem, null, tasks.result3),
+                3 => (InputType.DropItem, null, tasks.result4),
+                4 => (InputType.DoNothing, null, null),
+                5 => (InputType.RenameItem, null, tasks.result6),
+                _ => throw new IndexOutOfRangeException()
+            };
+        }
+
+        private async UniTask<IAction?> ChoiceEvent(IHasBehavior character, IGameManager gameManager, IMap map, Swap swap, IEventEntity eventEntity)
+        {
+            var choices = new List<string>();
+            var firstChoiceIndex = 0;
+            if (swap.Doable(character, map))
+            {
+                choices.Add("入れ替わる");
+                firstChoiceIndex += 1;
+            }
+
+            var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
+            foreach (var eventData in executableEvents)
+            {
+                choices.Add(eventData.ChoiceText);
+            }
+
+            if (eventEntity.CanBeCanceled)
+            {
+                choices.Add("やめる");
+            }
+
+            var choiceIndex = 0;
+            if (choices.Count > 1)
+            {
+                choiceIndex =
+                    await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
+            }
+
+            switch (choices[choiceIndex])
+            {
+                case "入れ替わる":
+                    return swap;
+                case "やめる":
+                    break;
+                default:
+                    await executableEvents[choiceIndex - firstChoiceIndex]
+                        .DoEvent(gameManager, map);
+                    return new DoNothing();
+            }
+            return null;
+        }
+
+        public void KnowLocationOf(IHasBehavior self, IActorOfEffect target) { }
 
         public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
         {

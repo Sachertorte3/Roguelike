@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u7206\u767A\u306E\u9B54\u6CD5\u66F8"
+  m_Name: "\u53EC\u559A\u306E\u5DFB\u7269"
   m_EditorClassIdentifier: 
-  Category: 2
-  Icon: {fileID: 1552767190, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Category: 1
+  Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2
   EffectType: 1
@@ -24,13 +24,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Position>k__BackingField:
-      rid: 5486256534138650626
+      rid: 2541219106150416406
     <Area>k__BackingField:
-      rid: 5486256534138650627
+      rid: 4425516923575599136
     <Effects>k__BackingField:
-    - rid: 5486256534138650625
-    - rid: 5486256542496849939
-    - rid: 5486256542496849920
+    - rid: 5486256542496849921
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -41,7 +39,7 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
-  UsageLimit: 3
+  UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions: []
   references:
@@ -49,23 +47,16 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5486256534138650625
-      type: {class: ExplosionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _damageRate: 0.5
-    - rid: 5486256534138650626
+    - rid: 2541219106150416406
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256534138650627
+    - rid: 4425516923575599136
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
-        ContainsSelf: 1
-        CanIgnoreWalls: 0
-        Radius: 2
-    - rid: 5486256542496849920
-      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 
-    - rid: 5486256542496849939
-      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+        ContainsSelf: 0
+        CanIgnoreWalls: 1
+        Radius: 8
+    - rid: 5486256542496849921
+      type: {class: SpawnRandomCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        OnlyApplyToItem: 1
+        _count: 8

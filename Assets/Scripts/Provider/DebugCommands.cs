@@ -178,12 +178,12 @@ namespace Provider
                 var character = GetTarget(target);
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
-                var item = new Item(itemData);
+                var item = new Item(itemData, $"[Debug]{itemData.name}");
                 if (prefixName != null)
                 {
                     var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
-                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
+                    var itemMemento = WeaponFactory.Create(itemData, $"[Debug]{itemData.name}", prefixData);
                     item = new Item(itemMemento);
                 }
                 if (character.Inventory.TryAdd(item))
@@ -208,12 +208,12 @@ namespace Provider
             {
                 var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
                     .WaitForCompletion();
-                var item = new Item(itemData);
+                var item = new Item(itemData, $"[Debug]{itemData.name}");
                 if (prefixName != null)
                 {
                     var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
-                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
+                    var itemMemento = WeaponFactory.Create(itemData, $"[Debug]{itemData.name}", prefixData);
                     item = new Item(itemMemento);
                 }
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);

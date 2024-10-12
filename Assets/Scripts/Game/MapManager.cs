@@ -125,7 +125,7 @@ namespace Game
                 {
                     var clerkPosition = BlankPositions().In(map.Shop.Value.Room.Room.RectRange()).Get().GetAtRandom();
                     var ally = CharacterManager.SpawnAlly(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition, homePosition: (Location, clerkPosition)),
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, _dungeonData.Items, clerkPosition, homePosition: (Location, clerkPosition)),
                         this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
@@ -228,6 +228,7 @@ namespace Game
             var ally = CharacterManager.SpawnAlly(
                 CharacterFactory.BuildCharacter(
                     enemy,
+                    _dungeonData.Items,
                     FindBlankPositionFrom(position, position => IsBlankAndStandable(position, EntityLayer.Middle)),
                     isSlept: isSlept ?? Random.value < _dungeonData.SleepChance,
                     isShiny: isShiny ?? Random.value < _dungeonData.ShinyChance,

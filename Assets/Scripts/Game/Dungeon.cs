@@ -5,7 +5,6 @@ using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Map;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
@@ -15,6 +14,7 @@ namespace Game
     {
         private readonly DungeonBluePrintData _dungeonData;
         private readonly Dictionary<int, Id<IMap>> _mapIds;
+        private readonly ItemDatabase _itemDatabase;
 
         public Dungeon(DungeonMemento memento)
         {
@@ -22,6 +22,7 @@ namespace Game
                 .LoadAssetAsync<DungeonBluePrintData>(
                     $"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
+            _itemDatabase = new ItemDatabase(memento.ItemTable, _dungeonData.MasterItemDataBase, _dungeonData.SpawnItem);
         }
 
         public DungeonMemento Serialize()
@@ -30,7 +31,8 @@ namespace Game
             (
                 _dungeonData.name,
                 new Dictionary<int, string>(_mapIds.ToDictionary(mapIds => mapIds.Key,
-                    mapIds => mapIds.Value.ToString()))
+                    mapIds => mapIds.Value.ToString())),
+                _itemDatabase.Serialize()
             );
         }
 
@@ -39,7 +41,8 @@ namespace Game
             return new DungeonMemento
             (
                 _dungeonData.name,
-                new Dictionary<int, string>()
+                new Dictionary<int, string>(),
+                ItemDatabase.Build(_dungeonData.Placeholders)
             );
         }
 
@@ -61,7 +64,7 @@ namespace Game
 
         public DungeonMapData CreateMapData(int level)
         {
-            return _dungeonData.CreateMapData(level);
+            return _dungeonData.CreateMapData(level, _itemDatabase);
         }
 
         public MapMemento CreateMapManager(Id<IMap> id, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,

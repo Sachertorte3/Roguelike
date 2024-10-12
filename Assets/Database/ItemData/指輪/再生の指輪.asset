@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u547D\u306E\u30CD\u30C3\u30AF\u30EC\u30B9"
+  m_Name: "\u518D\u751F\u306E\u6307\u8F2A"
   m_EditorClassIdentifier: 
-  Icon: {fileID: -778422075, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Category: 5
+  Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 3
   EffectType: 0
@@ -41,19 +42,19 @@ MonoBehaviour:
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
-  - rid: 861543420369829897
+  - rid: 2541219158355345436
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543420369829897
-      type: {class: AddMaxHp, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data:
-        AddValue: 25
     - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 2541219158355345436
+      type: {class: NaturalHeal, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        Power: 1
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

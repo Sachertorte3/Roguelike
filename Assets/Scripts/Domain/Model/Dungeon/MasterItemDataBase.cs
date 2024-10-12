@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Item;
 using Utilities.Table;
 
@@ -9,20 +7,29 @@ namespace Domain.Model.Dungeon
     [Serializable]
     public class MasterItemDataBase
     {
-        public RarityWeightTable<ItemData> Consumables;
+        public RarityWeightTable<ItemData> Potions;
+        public RarityWeightTable<ItemData> Scrolls;
+        public RarityWeightTable<ItemData> Books;
+        public RarityWeightTable<ItemData> Wands;
         public RarityWeightTable<ItemData> Weapons;
         public RarityWeightTable<ItemData> Artifacts;
-        public RarityWeightTable<ItemData> UpgradeMaterials;
+        public RarityWeightTable<ItemData> Others;
+        public Table<ItemData> ChestItems;
         public Table<ShopItemData> ShopItems;
 
-        public List<ItemData> GetAllItems()
+        public ItemData GetRandomItem(ItemCategory category)
         {
-            var items = new HashSet<ItemData>();
-            items.UnionWith(Consumables.Items);
-            items.UnionWith(Weapons.Items);
-            items.UnionWith(Artifacts.Items);
-            items.UnionWith(UpgradeMaterials.Items);
-            return items.ToList();
+            return category switch
+            {
+                ItemCategory.Potions => Potions.GetRandomItem(),
+                ItemCategory.Scrolls => Scrolls.GetRandomItem(),
+                ItemCategory.Books => Books.GetRandomItem(),
+                ItemCategory.Wands => Wands.GetRandomItem(),
+                ItemCategory.Weapons => Weapons.GetRandomItem(),
+                ItemCategory.Artifacts => Artifacts.GetRandomItem(),
+                ItemCategory.Others => Others.GetRandomItem(),
+                _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
+            };
         }
     }
 }

@@ -5,6 +5,8 @@ using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Domain.Model.Dungeon;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,6 +16,7 @@ namespace Domain.Model.Item
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo, IHasRarity
     {
+        public ItemCategory Category;
         [Required] public Sprite Icon;
         public bool IsShiny;
         [SerializeField] private Rarity _rarity;
@@ -88,7 +91,6 @@ namespace Domain.Model.Item
             ItemEffect = itemEffect;
         }
 
-        public string Name => name.SetColored(Rarity.GetColor());
         private bool _usable => EffectType switch
         {
             ItemEffectType.SpawnEffect => SpawnEffectsOnUse || SpawnEffectsOnThrow,
@@ -175,7 +177,7 @@ namespace Domain.Model.Item
 #endif
         public string Info()
         {
-            var info = $"{Name}\n";
+            var info = $"{name}\n";
             if (_usable)
             {
                 if (IsSameSkill)

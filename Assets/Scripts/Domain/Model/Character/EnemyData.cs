@@ -8,12 +8,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using Utilities.Table;
-using System.Collections.Generic;
-using System.Linq;
-using Domain.Model.Condition;
-
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;

@@ -50,10 +50,11 @@ namespace Domain.Service.Characters.Behavior
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
             var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
 
             _receiver.ReadInput();
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask);
+            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, renameItemTask);
             while (true)
             {
                 switch (firstCompletedTask.winArgumentIndex)
@@ -151,6 +152,15 @@ namespace Domain.Service.Characters.Behavior
                             if (action.Doable(character, map)) return action;
                         }
                         break;
+                    case 4:
+                        itemIndex = firstCompletedTask.result5;
+                        if (itemIndex != null)
+                        {
+                            item = character.Inventory.GetItem(itemIndex.Value);
+                            if (item == null) break;
+                            item.Rename(await gameManager.GetTextInput());
+                        }
+                        break;
                     default:
                         throw new IndexOutOfRangeException();
                 }
@@ -159,7 +169,8 @@ namespace Domain.Service.Characters.Behavior
                 useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
                 throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
                 dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask);
+                renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
+                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, renameItemTask);
             }
         }
 

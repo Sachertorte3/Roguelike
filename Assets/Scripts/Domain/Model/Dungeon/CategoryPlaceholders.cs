@@ -61,7 +61,7 @@ namespace Domain.Model.Dungeon
             _placeholderIndexes.RemoveAt(index);
 
             var prefix = prefixIndex != -1 ? _placeholderPrefixes[prefixIndex] : "";
-            return prefix + _placeholders[placeholderIndex] + _placeholderSuffix;
+            return $"{prefix}{_placeholders[placeholderIndex]}{_placeholderSuffix}";
         }
     }
 }

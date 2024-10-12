@@ -14,13 +14,13 @@ namespace Domain.Service.Events
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             Log.Debug($"GetChoice: {text} {string.Join(", ", choices)}");
-            SetChoices(text, choices);
+            ShowChoices(text, choices);
             var index = await _onReceivedChoicedIndex.WaitAsync();
             Log.Debug($"GetChoice: {choices[index]} {index}");
             return index;
         }
 
-        internal void SetChoices(string? text, string[] choices)
+        private void ShowChoices(string? text, string[] choices)
         {
             _onShownChoice.OnNext((text, choices));
         }

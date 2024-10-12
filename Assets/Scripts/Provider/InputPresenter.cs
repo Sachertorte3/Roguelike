@@ -15,7 +15,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, GameManager gameManager, World world, MenuController menuController,
+            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world, MenuController menuController,
             InventoryView inventoryView)
         {
             Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
@@ -37,6 +37,7 @@ namespace Provider
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());
+            receiver.OnRenamePerformed.Subscribe(_ => actionReceiver.SetRenameInput());
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
@@ -58,6 +59,12 @@ namespace Provider
             {
                 var index = await menuController.GetChoice(message.text, message.choices);
                 choiceReceiver.SetChoicedIndex(index);
+            });
+
+            textInputReceiver.OnShownTextInput.Subscribe(async _ => 
+            {
+                var text = await menuController.GetTextInput();
+                textInputReceiver.SetTextInput(text);
             });
 
             receiver.OnQuickSave.Subscribe(_ => gameManager.Save());

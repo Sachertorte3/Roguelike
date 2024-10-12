@@ -15,6 +15,7 @@ namespace View.UI
         [SerializeField] private DungeonMenu _dungeonMenu;
         [SerializeField] private SettingMenu _settingMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
+        [SerializeField] private TextInputMenu _textInputMenu;
         private readonly Stack<IMenu> _menuStack = new();
         private readonly Dictionary<IMenu, GameObject> _selectedObject = new();
 
@@ -33,6 +34,14 @@ namespace View.UI
             var selectedIndex = await _choiceMenu.SelectedIndex.WaitAsync();
             PopMenu();
             return selectedIndex;
+        }
+
+        public async UniTask<string> GetTextInput()
+        {
+            AddMenu(_textInputMenu);
+            var text = await _textInputMenu.Text.WaitAsync();
+            PopMenu();
+            return text;
         }
 
         public void SwitchMenu(IMenu menu)

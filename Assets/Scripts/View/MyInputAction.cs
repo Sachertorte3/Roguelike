@@ -107,6 +107,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rename"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f453a2e-3ff0-400a-830f-c8fe57840833"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -250,6 +259,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""QuickLoad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab912cbe-4ec3-4540-9239-59430019e60f"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rename"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -780,6 +800,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_Throw = m_Field.FindAction("Throw", throwIfNotFound: true);
         m_Field_QuickSave = m_Field.FindAction("QuickSave", throwIfNotFound: true);
         m_Field_QuickLoad = m_Field.FindAction("QuickLoad", throwIfNotFound: true);
+        m_Field_Rename = m_Field.FindAction("Rename", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -865,6 +886,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_Throw;
     private readonly InputAction m_Field_QuickSave;
     private readonly InputAction m_Field_QuickLoad;
+    private readonly InputAction m_Field_Rename;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
@@ -878,6 +900,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         public InputAction @Throw => m_Wrapper.m_Field_Throw;
         public InputAction @QuickSave => m_Wrapper.m_Field_QuickSave;
         public InputAction @QuickLoad => m_Wrapper.m_Field_QuickLoad;
+        public InputAction @Rename => m_Wrapper.m_Field_Rename;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -914,6 +937,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @QuickLoad.started += instance.OnQuickLoad;
             @QuickLoad.performed += instance.OnQuickLoad;
             @QuickLoad.canceled += instance.OnQuickLoad;
+            @Rename.started += instance.OnRename;
+            @Rename.performed += instance.OnRename;
+            @Rename.canceled += instance.OnRename;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -945,6 +971,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @QuickLoad.started -= instance.OnQuickLoad;
             @QuickLoad.performed -= instance.OnQuickLoad;
             @QuickLoad.canceled -= instance.OnQuickLoad;
+            @Rename.started -= instance.OnRename;
+            @Rename.performed -= instance.OnRename;
+            @Rename.canceled -= instance.OnRename;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -1137,6 +1166,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         void OnThrow(InputAction.CallbackContext context);
         void OnQuickSave(InputAction.CallbackContext context);
         void OnQuickLoad(InputAction.CallbackContext context);
+        void OnRename(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

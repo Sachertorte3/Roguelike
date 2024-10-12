@@ -47,6 +47,7 @@ namespace Domain.Model.Item
             IMap map);
 
         public void Repair(IHasInventory player);
+        public void Rename(string name);
         public void SetCursed(IHasInventory player, bool isCursed);
         public bool CanUpgrade(string filter = "");
         public void Upgrade(IHasInventory player, string filter = "");

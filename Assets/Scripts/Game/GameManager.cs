@@ -32,6 +32,7 @@ namespace Game
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         private readonly ChoiceReceiver _choiceReceiver;
+        private readonly TextInputReceiver _textInputReceiver;
         private readonly CharacterControlInputReceiver _receiver;
         private readonly DungeonBluePrintData _dungeonBluePrintData;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
@@ -40,12 +41,13 @@ namespace Game
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
-        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
+        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver,
             CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
         {
             _world = world;
             _turnController = new TurnController(input);
             _choiceReceiver = choiceReceiver;
+            _textInputReceiver = textInputReceiver;
             _receiver = receiver;
             _dungeonBluePrintData = dungeonBluePrintData;
             Globals.GameManager = this;
@@ -109,6 +111,11 @@ namespace Game
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             return await _choiceReceiver.GetChoice(text, choices);
+        }
+
+        public async UniTask<string> GetTextInput()
+        {
+            return await _textInputReceiver.GetTextInput();
         }
 
         public async void LoadMap(Location location, Id<IEntity>? destination = null)

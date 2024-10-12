@@ -14,6 +14,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<int?> _onUseItemActionReceived = new(0);
         private readonly AsyncReactiveProperty<int?> _onThrowItemActionReceived = new(0);
         private readonly AsyncReactiveProperty<int?> _onDropItemActionReceived = new(0);
+        private readonly AsyncReactiveProperty<int?> _onRenameItemActionReceived = new(0);
         private bool _enable = true;
 
         internal IReadOnlyAsyncReactiveProperty<(Move action, bool isStarted)> OnMoveInputReceived =>
@@ -22,6 +23,7 @@ namespace Domain.Service.Characters.Behavior
         internal IReadOnlyAsyncReactiveProperty<int?> OnUseItemActionReceived => _onUseItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<int?> OnThrowItemActionReceived => _onThrowItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<int?> OnDropItemActionReceived => _onDropItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<int?> OnRenameItemActionReceived => _onRenameItemActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;
 
         public void SetMoveInput(Direction8 direction, bool isStarted)
@@ -46,6 +48,12 @@ namespace Domain.Service.Characters.Behavior
         {
             if (_enable)
                 _onDropItemActionReceived.Value = _inventoryIndexReceiver.Index;
+        }
+
+        public void SetRenameInput()
+        {
+            if (_enable)
+                _onRenameItemActionReceived.Value = _inventoryIndexReceiver.Index;
         }
 
         public void SetInventoryIndex(int? index)

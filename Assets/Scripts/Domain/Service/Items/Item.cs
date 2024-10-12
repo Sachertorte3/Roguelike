@@ -25,7 +25,8 @@ namespace Domain.Service.Items
         public Id<IItem> Id { get; init; }
         public string BaseName { get; init; }
         public string Name { get; init; }
-        public string UnknownName { get; private set; }
+        private string _unknownName;
+        public string UnknownName => $"?{_unknownName}?";
         public string DebugName => _fullName;
         private string _fullName => _upgradePaths.Count > 0 ? $"{BaseName} +{AppliedUpgrades}" : BaseName;
         private readonly List<UpgradePath> _upgradePaths;
@@ -47,7 +48,7 @@ namespace Domain.Service.Items
             Id = new Id<IItem>(data.Id);
             BaseName = data.BaseName;
             Name = data.Name;
-            UnknownName = data.Placeholder;
+            _unknownName = data.Placeholder;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
                 .WaitForCompletion();
             IsShiny = data.IsShiny;
@@ -135,7 +136,7 @@ namespace Domain.Service.Items
                 Id.ToString(),
                 BaseName,
                 Name,
-                UnknownName,
+                _unknownName,
                 Icon.name,
                 IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
@@ -309,6 +310,14 @@ namespace Domain.Service.Items
         {
             GameLog.Add($"{GetName(player)}は修理された");
             _remainingUsages.Value = _maxUsages;
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
+        public void Rename(string name)
+        {
+            if (name == "")
+                return;
+            _unknownName = name;
             _onItemUpdated.OnNext(Unit.Default);
         }
 

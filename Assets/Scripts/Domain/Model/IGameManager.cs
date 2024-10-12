@@ -8,6 +8,7 @@ namespace Domain.Model
     public interface IGameManager
     {
         public UniTask<int> GetChoice(string? text, params string[] choices);
+        public UniTask<string> GetTextInput();
         public void LoadMap(Location location, Id<IEntity> from);
     }
 }

@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class CurseItemEffect : IEffect
+    public class CurseItemEffect : IActorlessEffect
     {
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
@@ -30,7 +30,8 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 0.25f;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(target, map);
+        public UniTask Apply(ITargetOfEffect target, IMap map)
         {
             var notCursedItems = target.Inventory.AllItems.Where(item => !item.IsCursed).ToArray();
             if (notCursedItems.Any())

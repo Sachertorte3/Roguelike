@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Domain.Model.Map;
@@ -26,11 +28,16 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            foreach (var position in positions)
+            var placeablePositions = positions.Where(position => map.CanPlace(position, false, false, false, EntityLayer.Middle));
+            if (placeablePositions.Any())
             {
-                for (var i = 0; i < _count; i++)
+                foreach (var position in placeablePositions.GetAtRandom(_count))
                 {
-                    map.SpawnRandomEnemy(position, false, false);
+                    map.SpawnRandomEnemy(
+                        position,
+                        false,
+                        false
+                    );
                 }
             }
 

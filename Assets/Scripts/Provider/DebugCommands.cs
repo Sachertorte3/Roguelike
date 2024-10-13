@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -9,9 +10,11 @@ using Domain.Service.Logs;
 using Game;
 using IngameDebugConsole;
 using Unity.Logging;
+using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
+using Logger = Unity.Logging.Logger;
 
 namespace Provider
 {
@@ -26,8 +29,19 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-            DebugLogConsole.AddCommandInstance("test", "テスト", "Test", this);
-            DebugLogConsole.AddCommandInstance("log", "画面にログを出力します。", "AddLog", this);
+#region Log
+            DebugLogConsole.AddCommandInstance(
+                "log",
+                "画面にログを出力します。",
+                "AddLog",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "setLogLevel",
+                "ログレベルを設定します。",
+                "SetLogLevel",
+                this);
+#endregion
+#region Character
             DebugLogConsole.AddCommandInstance(
                 "FindCharacter",
                 "指定した位置にいるキャラクターのIDを取得します。",
@@ -43,6 +57,8 @@ namespace Provider
                 "指定した位置にいるキャラクターのJsonを取得します。",
                 "GetCharacterJson",
                 this);
+#endregion
+#region Item
             DebugLogConsole.AddCommandInstance(
                 "GiveItem",
                 "指定した対象のインベントリに指定したアイテムを追加します。",
@@ -63,6 +79,8 @@ namespace Provider
                 "プレイヤーのインベントリに指定したアイテムを追加します。",
                 "GivePrefixedItemPlayer",
                 this);
+#endregion
+#region Spawn
             DebugLogConsole.AddCommandInstance(
                 "SpawnItem",
                 "指定した位置に指定したアイテムをスポーンします。",
@@ -78,6 +96,7 @@ namespace Provider
                 "指定した位置に指定した敵をスポーンします。",
                 "SpawnEnemy",
                 this);
+#endregion
             DebugLogConsole.AddCommandInstance(
                 "MoveLevelTo",
                 "指定したマップに移動します。",
@@ -85,14 +104,28 @@ namespace Provider
                 this);
         }
 
-        private void Test(string message)
-        {
-            Debug.Log(message);
-        }
-
         private void AddLog(string log)
         {
             GameLog.Add(log);
+        }
+
+        private void SetLogLevel(LogLevel level)
+        {
+            try
+            {
+                Log.Logger = new Logger(
+                    new LoggerConfig()
+                    .SyncMode.FullSync()
+                    .WriteTo.UnityDebugLog(
+                        minLevel: level,
+                        captureStackTrace: true)
+                );
+                Log.Info($"LogLevelを{level}に設定しました。");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         private ICharacter GetTarget(string target)

@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class RemoveUpgradeEffect : IEffect
+    public class RemoveUpgradeEffect : IActorlessEffect
     {
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
@@ -30,7 +30,8 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 0.1f;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(target, map);
+        public UniTask Apply(ITargetOfEffect target, IMap map)
         {
             var upgradedItems = target.Inventory.AllItems.Where(item => item.AppliedUpgrades > 0).ToArray();
             if (upgradedItems.Any())

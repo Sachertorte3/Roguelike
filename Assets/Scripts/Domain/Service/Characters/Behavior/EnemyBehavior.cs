@@ -157,11 +157,13 @@ namespace Domain.Service.Characters.Behavior
             else if (_homePosition.HasValue)
             {
                 Log.Debug($"[Think] Home position is {_homePosition}.");
+                _lastTarget = null;
                 _lastTargetPosition = _homePosition.Value.Position;
             }
             else
             {
                 Log.Debug("[Think] Wandering around.");
+                _lastTarget = null;
                 _lastTargetPosition = null;
             }
 

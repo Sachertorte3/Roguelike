@@ -31,12 +31,9 @@ namespace View
                 child.enabled = visible;
             }
 
-            foreach (var child in transform.GetComponentsInChildren<ParticleSystem>())
+            foreach (var child in transform.GetComponentsInChildren<ParticleSystemRenderer>())
             {
-                if (visible)
-                    child.Play();
-                else
-                    child.Stop();
+                child.enabled = visible;
             }
         }
     }

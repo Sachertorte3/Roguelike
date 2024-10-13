@@ -42,17 +42,16 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 5486256464210165771
+        rid: 5486256560184492036
       <Area>k__BackingField:
-        rid: 5486256464210165770
-      <Effects>k__BackingField:
-      - rid: 2541219281251860488
+        rid: -2
+      <Effects>k__BackingField: []
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u96F7\u3092\u653E\u3063\u305F\u3002"
-    CoolTime: 3
+      <Log>k__BackingField: 
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -80,25 +79,10 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860488
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers:
-        - _element: 3
-          _power: 5
-        _criticalRate: 0
     - rid: 5486256464210165769
       type: {class: Worm, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 5486256464210165770
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 5486256560184492036
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256464210165771
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        NumberOfTarget: 1
-        TargetAlly: 0
-        TargetEnemy: 1
-        TargetNeutral: 0
-        TargetSelf: 0

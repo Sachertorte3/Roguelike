@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30B3\u30A6\u30E2\u30EA"
+  m_Name: "\u86FE"
   m_EditorClassIdentifier: 
-  Name: "\u30B3\u30A6\u30E2\u30EA"
+  Name: "\u86FE"
   Group: 1
   CharacterType:
-    rid: 6064254728247705600
+    rid: 5486256560184492032
   IsBoss: 0
-  Hp: 5
-  Aggression: 1
+  Hp: 12
+  Aggression: 4
   Behavior:
     wanderAround: 1
     Default: 1
@@ -32,7 +32,7 @@ MonoBehaviour:
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
-  MoveSpeed: 3
+  MoveSpeed: 2
   IsHard: 0
   IsHeavy: 0
   IsFlying: 1
@@ -42,16 +42,16 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 2541219281251860496
+        rid: 5486256464210165763
       <Area>k__BackingField:
-        rid: 2541219281251860490
+        rid: 5486256464210165764
       <Effects>k__BackingField:
-      - rid: 2541219281251860491
+      - rid: 5486256464210165765
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 2
+      <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F\u3002"
+      <Log>k__BackingField: "\u306E\u653B\u6483"
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -67,38 +67,34 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
-    data:
-    - Key: 4
-      Value: 2
+    data: []
   ConditionResistance:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
-    items:
-    - Item: {fileID: 11400000, guid: 741ad8c6dab58b84c83d8c7423fd4bd6, type: 2}
-      Weight: 1
+    items: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860490
+    - rid: 5486256464210165763
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256464210165764
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
         Length: 1
-    - rid: 2541219281251860491
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 5486256464210165765
+      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 0
-          _power: 3
-        _criticalRate: 0
-    - rid: 2541219281251860496
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 6064254728247705600
-      type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}
+        - _element: 5
+          _power: 6
+        _rate: 0.5
+    - rid: 5486256560184492032
+      type: {class: Moth, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Type: 0
+        Type: 2

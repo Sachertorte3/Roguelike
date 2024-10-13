@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u3069\u308D\u3069\u308D"
+  m_Name: "\u30B3\u30A6\u30E2\u30EA"
   m_EditorClassIdentifier: 
-  Name: "\u3069\u308D\u3069\u308D"
+  Name: "\u30B3\u30A6\u30E2\u30EA"
   Group: 1
   CharacterType:
-    rid: 5486256507571666951
+    rid: 6064254728247705600
   IsBoss: 0
-  Hp: 8
+  Hp: 3
   Aggression: 1
   Behavior:
-    wanderAround: 0
-    Default: 0
+    wanderAround: 1
+    Default: 1
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
@@ -32,40 +32,27 @@ MonoBehaviour:
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
-  MoveSpeed: 2
+  MoveSpeed: 3
   IsHard: 0
-  IsHeavy: 1
-  IsFlying: 0
+  IsHeavy: 0
+  IsFlying: 1
   CanThroughWalls: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 2541219281251860495
+        rid: 2541219281251860496
       <Area>k__BackingField:
-        rid: 2541219281251860492
+        rid: 2541219281251860490
       <Effects>k__BackingField:
-      - rid: 2541219281251860493
+      - rid: 2541219281251860491
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
+      <RushDistance>k__BackingField: 2
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
+      <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F\u3002"
     CoolTime: 0
-  - Skill:
-      <Position>k__BackingField:
-        rid: 5486256507571666954
-      <Area>k__BackingField:
-        rid: 5486256507571666953
-      <Effects>k__BackingField:
-      - rid: 5486256507571666952
-      <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u5CA9\u3092\u98DB\u3070\u3057\u305F"
-    CoolTime: 1
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -80,52 +67,38 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
-    data: []
+    data:
+    - Key: 4
+      Value: 2
   ConditionResistance:
     data: []
   DropItemRate: 0.05
   DropItemTable:
     items:
-    - Item: {fileID: 11400000, guid: ad1e9b5ff56f79b4eb94b02d030649f3, type: 2}
+    - Item: {fileID: 11400000, guid: 741ad8c6dab58b84c83d8c7423fd4bd6, type: 2}
       Weight: 1
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219281251860492
+    - rid: 2541219281251860490
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
         Length: 1
-    - rid: 2541219281251860493
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers:
-        - _element: 0
-          _power: 4
-        _criticalRate: 0
-    - rid: 2541219281251860495
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256507571666951
-      type: {class: Puddle, ns: Domain.Model.Character.Type, asm: Domain.Model}
-      data:
-        Type: 0
-    - rid: 5486256507571666952
+    - rid: 2541219281251860491
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
         - _element: 0
           _power: 3
         _criticalRate: 0
-    - rid: 5486256507571666953
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 2541219281251860496
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256507571666954
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+    - rid: 6064254728247705600
+      type: {class: Bat, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
-        Icon:
-          _name: icons_full_16_170
-        CanHitLayer: 01000000
+        Type: 0

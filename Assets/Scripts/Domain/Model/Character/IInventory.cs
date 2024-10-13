@@ -16,5 +16,6 @@ namespace Domain.Model.Item
         public IItem? GetItem(int index);
         public int GetItemIndex(IItem item);
         public bool TryAdd(IItem item);
+        public IItem? Replace(IItem? item, int index);
     }
 }

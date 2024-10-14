@@ -31,11 +31,7 @@ namespace Domain.Service.Characters
             (
                 name: Name,
                 characterType: new Human("Chara_Hero1_USM"),
-                behavior: new BehaviorMemento(
-                    new BehaviorData(),
-                    null,
-                    null
-                ),
+                behavior: PlayerBehavior.Build(),
                 status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, CommonSenseParameters.PlayerNaturalRecoveryRate,
                     new(), new(), new(), 10, false, false, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),

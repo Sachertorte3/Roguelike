@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -11,49 +10,29 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class TeleportEffect : IActorlessEffect
+    public class TeleportEffect : ActorlessEntityTargetEffect
     {
-        public Impact Impact => Impact.Neutral;
-        public Color Color => Colors.SkyBlue;
+        public override Impact Impact => Impact.Neutral;
+        public override Color Color => Colors.SkyBlue;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override async UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
-            return Apply((IEntity)target, map);
-        }
-
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
-        {
-            return Apply(target, map);
-        }
-
-        public UniTask Apply(ITargetOfEffect target, IMap map)
-        {
-            return Apply((IEntity)target, map);
-        }
-
-        public async UniTask Apply(IEntity target, IMap map)
-        {
-            var position = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom();
-            target.Teleport(position);
+            var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom();
+            target.Teleport(randomPosition);
             await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return 0.1f;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return "テレポート";
         }

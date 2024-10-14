@@ -7,38 +7,28 @@ using Utilities;
 
 namespace Domain.Service.Effect
 {
-    public class ClearConditionEffect : IActorlessEffect
+    public class ClearConditionEffect : ActorlessEntityTargetEffect
     {
-        public Color Color => Colors.LightSkyBlue;
-        public Impact Impact => Impact.Beneficial;
+        public override Color Color => Colors.LightSkyBlue;
+        public override Impact Impact => Impact.Beneficial;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
-        {
-            return Apply(target, map);
-        }
-
-        public UniTask Apply(ITargetOfEffect target, IMap map)
+        public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             target.ClearCondition();
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return 0;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 500;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return "全状態異常解除";
         }

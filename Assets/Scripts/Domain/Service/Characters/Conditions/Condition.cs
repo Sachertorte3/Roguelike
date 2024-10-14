@@ -79,6 +79,11 @@ namespace Domain.Service.Characters.Conditions
             return _removalCondition.IsFinishedByDamage();
         }
 
+        public bool EqualsConditionType(System.Type conditionType)
+        {
+            return _condition.GetType() == conditionType;
+        }
+
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
         {
             return new ConditionMemento

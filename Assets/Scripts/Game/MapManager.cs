@@ -750,7 +750,7 @@ namespace Game
             {
                 var item = character.ReplaceInventory(null, index);
                 if (item != null)
-                    ItemManager.SpawnItem(item,
+                    SpawnItem(item,
                         FindBlankPositionFrom(character.CurrentPosition,
                             position => IsBlankAndStandable(position, EntityLayer.Bottom)));
             }

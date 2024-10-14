@@ -491,10 +491,10 @@ namespace Domain.Service.Characters
             return _statusManager.LoseHp(value);
         }
 
-        public void ListenToAlert(IActorOfEffect actor)
+        public void ListenToAlert(Vector2Int position)
         {
             _statusManager.RemoveConditionType(typeof(Slept));
-            _behavior.KnowLocationOf(this, actor);
+            _behavior.KnowLocationOf(position);
         }
 
         public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)

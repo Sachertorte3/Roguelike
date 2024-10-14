@@ -204,7 +204,7 @@ namespace Domain.Service.Characters.Behavior
             return null;
         }
 
-        public void KnowLocationOf(IHasBehavior self, IActorOfEffect target) { }
+        public void KnowLocationOf(Vector2Int position) { }
 
         public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
         {

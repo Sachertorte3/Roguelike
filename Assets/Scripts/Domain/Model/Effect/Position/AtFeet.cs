@@ -7,7 +7,7 @@ namespace Domain.Model.Effect.Position
     public class AtFeet : IActorlessEffectPosition
     {
         public bool IsDirectional => false;
-        
+
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IEffectMap map) => Get(position, direction, map);
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
@@ -21,10 +21,8 @@ namespace Domain.Model.Effect.Position
             return 1;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
+
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

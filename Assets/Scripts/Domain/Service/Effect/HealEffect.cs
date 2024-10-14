@@ -11,20 +11,15 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class HealEffect : IEffect
+    public class HealEffect : EntityTargetEffect
     {
-        [MinValue(1)] [SerializeField] private int _power;
+        [MinValue(1)][SerializeField] private int _power;
 
-        public HealEffect(int power)
-        {
-            _power = power;
-        }
+        public override Color Color => Colors.Green;
 
-        public Color Color => Colors.Green;
+        public override Impact Impact => Impact.Beneficial;
 
-        public Impact Impact => Impact.Beneficial;
-
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var value = Formula.CalcHeal(_power);
             GameLog.Add($"{target.GetName(map.Player)}は{value}回復");
@@ -32,7 +27,7 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             var lostRatio = (float)(target.CurrentMaxHp - target.CurrentHp) / target.CurrentMaxHp;
             var healRatio = (float)Formula.CalcHeal(_power) / target.CurrentMaxHp;
@@ -49,12 +44,12 @@ namespace Domain.Service.Effect
             return 0;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return Formula.EvaluateHeal(_power);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
@@ -69,7 +64,7 @@ namespace Domain.Service.Effect
             };
         }
 
-        public string Info()
+        public override string Info()
         {
             return $"回復\n威力: {_power}";
         }

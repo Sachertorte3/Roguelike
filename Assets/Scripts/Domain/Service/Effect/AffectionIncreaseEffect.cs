@@ -10,35 +10,30 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class AffectionIncreaseEffect : IEffect
+    public class AffectionIncreaseEffect : EntityTargetEffect
     {
         [MinValue(1)][SerializeField] private float _power;
 
-        public Color Color => Colors.HotPink;
+        public override Color Color => Colors.HotPink;
 
-        public Impact Impact => Impact.Beneficial;
+        public override Impact Impact => Impact.Beneficial;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _power;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 100;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return $"好感度上昇\n威力: {_power}";
         }

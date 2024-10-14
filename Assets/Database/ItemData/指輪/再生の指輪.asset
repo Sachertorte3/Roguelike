@@ -15,7 +15,7 @@ MonoBehaviour:
   Category: 5
   Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 3
+  _rarity: 1
   EffectType: 0
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
@@ -54,7 +54,7 @@ MonoBehaviour:
     - rid: 2541219158355345436
       type: {class: NaturalHeal, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 0.8
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

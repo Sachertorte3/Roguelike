@@ -12,35 +12,35 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class BlowAwayEffect : IEffect
+    public class BlowAwayEffect : EntityTargetEffect
     {
-        [MinValue(1)] [SerializeField] private int _distance;
+        [MinValue(1)][SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
             _distance = distance;
         }
 
-        public Color Color => Colors.LightGreen;
+        public override Color Color => Colors.LightGreen;
 
-        public Impact Impact => Impact.Harmful;
+        public override Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             if (!target.IsHeavy)
             {
-                await Apply(actor, (IEntity)target, map);
+                await Apply(actor, (IEntity)target, position, map);
             }
         }
 
-        public async UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
+        public override async UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
         {
             var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
             if (direction.HasValue)
                 await target.BlowAway(actor, direction.Value, _distance, map);
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             if (target.IsHeavy)
             {
@@ -49,12 +49,12 @@ namespace Domain.Service.Effect
             return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return CommonSenseParameters.BlowAwayPrice(_distance);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             return new Dictionary<UpgradePath, UpgradeData>
             {
@@ -69,7 +69,7 @@ namespace Domain.Service.Effect
             };
         }
 
-        public string Info()
+        public override string Info()
         {
             return $"吹き飛ばし{_distance}マス";
         }

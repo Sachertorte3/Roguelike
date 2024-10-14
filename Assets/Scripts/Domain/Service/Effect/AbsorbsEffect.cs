@@ -10,15 +10,15 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class AbsorbsEffect : IEffect
+    public class AbsorbsEffect : EntityTargetEffect
     {
         [SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1)] [SerializeField] private float _rate;
+        [Range(0, 1)][SerializeField] private float _rate;
         private float _fixedRate => Mathf.Clamp(_rate, 0, 1);
 
-        public Color Color => Colors.Yellow;
+        public override Color Color => Colors.Yellow;
 
-        public Impact Impact => Impact.Harmful;
+        public override Impact Impact => Impact.Harmful;
 
         public void MultiplyPower(float multiplier)
         {
@@ -28,7 +28,7 @@ namespace Domain.Service.Effect
             }
         }
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var value = Formula.Calc(actor, target, _elementPowers);
             var loseValue = target.LoseHp(value);
@@ -36,7 +36,7 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             var damage = Formula.Calc(actor, target, _elementPowers);
             var heal = damage * _fixedRate;
@@ -57,12 +57,12 @@ namespace Domain.Service.Effect
             return value;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return Formula.EvaluateDamage(_elementPowers) * (1 + _fixedRate);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var elementPower in _elementPowers)
@@ -88,7 +88,7 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
-        public string Info()
+        public override string Info()
         {
             var info = "HP吸収\n威力: ";
             info += string.Join(" ", _elementPowers.Select(e => e.Info()));

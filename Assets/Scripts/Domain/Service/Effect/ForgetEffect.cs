@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Map;
@@ -9,14 +8,12 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class ForgetEffect : IActorlessEffect
+    public class ForgetEffect : ActorlessEntityTargetEffect
     {
-        public Color Color => Colors.White;
+        public override Color Color => Colors.White;
+        public override Impact Impact => Impact.Harmful;
 
-        public Impact Impact => Impact.Harmful;
-
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(target, map);
-        public UniTask Apply(ITargetOfEffect target, IMap map)
+        public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             target.ClearKnownItems(map);
             target.ClearAffiliation(map);
@@ -24,22 +21,17 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return 0.2f;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 100;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return $"忘却";
         }

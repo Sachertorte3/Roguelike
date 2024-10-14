@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u304D\u306E\u3053"
+  m_Name: "\u30DE\u30B8\u30AB\u30EB\u30B8\u30A7\u30EB"
   m_EditorClassIdentifier: 
-  Name: "\u304D\u306E\u3053"
+  Name: "\u30DE\u30B8\u30AB\u30EB\u30B8\u30A7\u30EB"
   Group: 1
   CharacterType:
-    rid: 2541219158355345419
+    rid: 2541219158355345428
   IsBoss: 0
-  Hp: 5
+  Hp: 6
   Aggression: 1
   Behavior:
     wanderAround: 1
@@ -42,30 +42,30 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: 4274951402137321474
+        rid: -2
       <Area>k__BackingField:
-        rid: 4274951402137321473
+        rid: -2
       <Effects>k__BackingField:
-      - rid: 7729039033147064320
+      - rid: -2
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u6BD2\u6DB2\u3092\u5410\u3044\u305F\u3002"
-    CoolTime: 2
-  HasLastSkill: 0
+      <Log>k__BackingField: 
+    CoolTime: 0
+  HasLastSkill: 1
   LastSkill:
     <Position>k__BackingField:
-      rid: -2
+      rid: 2541219158355345427
     <Area>k__BackingField:
-      rid: -2
+      rid: 5486256397401194502
     <Effects>k__BackingField:
-    - rid: -2
+    - rid: 2541219158355345426
     <Repeats>k__BackingField: 1
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
-    <Log>k__BackingField: 
+    <Log>k__BackingField: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
   ElementDamageRateMultiplier:
     data: []
   ConditionResistance:
@@ -78,22 +78,23 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2541219158355345419
-      type: {class: Mushroom, ns: Domain.Model.Character.Type, asm: Domain.Model}
+    - rid: 2541219158355345426
+      type: {class: SpawnCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _character:
+          _name: "\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7"
+        _count: 2
+        _inheritsShiny: 0
+    - rid: 2541219158355345427
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2541219158355345428
+      type: {class: SlimeSmall, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 4274951402137321473
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 5486256397401194502
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
-        Length: 2
-    - rid: 4274951402137321474
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 7729039033147064320
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u6BD2"
-        _probabilityOfSuccess: 0
+        Radius: 1

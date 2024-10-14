@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model.Character;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -15,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class AttackEffect : IEffect
+    public class AttackEffect : EntityTargetEffect
     {
         [RequiredListLength(1, null)]
         [SerializeField]
@@ -38,11 +36,10 @@ namespace Domain.Service.Effect
             }
         }
 
-        public Color Color => Colors.Red;
+        public override Color Color => Colors.Red;
+        public override Impact Impact => Impact.Harmful;
 
-        public Impact Impact => Impact.Harmful;
-
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
+        public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             if (Random.value < _fixedCriticalRate)
             {
@@ -58,7 +55,7 @@ namespace Domain.Service.Effect
             }
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             var result = Mathf.Min(1,
                              Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) /
@@ -70,14 +67,14 @@ namespace Domain.Service.Effect
             return result;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             var result = Formula.EvaluateDamage(_elementPowers) * (1 - _fixedCriticalRate) +
                          Formula.EvaluateDamage(_elementPowers, true) * _fixedCriticalRate;
             return result;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
         {
             var upgrades = new Dictionary<UpgradePath, UpgradeData>();
             foreach (var elementPower in _elementPowers)
@@ -103,7 +100,7 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
-        public string Info()
+        public override string Info()
         {
             var info = $"攻撃\n威力: {string.Join(" ", _elementPowers.Select(e => e.Info()))}";
             if (_fixedCriticalRate > 0)

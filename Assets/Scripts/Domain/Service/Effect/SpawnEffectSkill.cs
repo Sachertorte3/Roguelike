@@ -138,7 +138,7 @@ namespace Domain.Service.Effect
             if (_effects.Any(effect =>
                 effect is AttackEffect ||
                 effect is AbsorbsEffect ||
-                effect is ExplosionEffect ||
+                effect is PercentageDamageEffect ||
                 effect is BreakEffect))
             {
                 map.SetGrasses(area, false);
@@ -155,7 +155,7 @@ namespace Domain.Service.Effect
                         switch (target)
                         {
                             case ICharacter character:
-                                await effect.Apply(actor, character, map);
+                                await effect.Apply(actor, character, position, map);
 
                                 if (effect.Impact == Impact.Harmful)
                                 {
@@ -181,7 +181,7 @@ namespace Domain.Service.Effect
                                 }
                                 break;
                             default:
-                                await effect.Apply(actor, target, map);
+                                await effect.Apply(actor, target, position, map);
                                 break;
                         }
                     }

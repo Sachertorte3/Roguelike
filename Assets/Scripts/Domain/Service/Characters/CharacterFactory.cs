@@ -36,7 +36,7 @@ namespace Domain.Service.Characters
                     null,
                     null
                 ),
-                status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, 0.1f,
+                status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, CommonSenseParameters.PlayerNaturalRecoveryRate,
                     new(), new(), new(), 10, false, false, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,

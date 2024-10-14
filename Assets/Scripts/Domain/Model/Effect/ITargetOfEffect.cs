@@ -2,6 +2,7 @@
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect
@@ -41,6 +42,6 @@ namespace Domain.Model.Effect
         public void ClearCondition();
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
-        public void ListenToAlert(IActorOfEffect actor);
+        public void ListenToAlert(Vector2Int position);
     }
 }

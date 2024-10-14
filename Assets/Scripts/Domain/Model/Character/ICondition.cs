@@ -14,5 +14,6 @@ namespace Domain.Model.Character
         public void UpdateTurn(IHasCondition hasCondition);
         public bool ShouldDelete(bool characterVisible);
         public bool ShouldDeleteByDamage();
+        public bool EqualsConditionType(System.Type conditionType);
     }
 }

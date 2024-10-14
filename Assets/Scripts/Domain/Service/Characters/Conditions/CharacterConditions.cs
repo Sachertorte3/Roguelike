@@ -7,6 +7,7 @@ using Domain.Model.Condition;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -52,7 +53,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void RemoveType(Type conditionType)
         {
-            var removedConditions = _conditions.Where(condition => condition.GetType() == conditionType).ToList();
+            var removedConditions = _conditions.Where(condition => condition.EqualsConditionType(conditionType)).ToList();
             foreach (var condition in removedConditions)
             {
                 _conditions.Remove(condition);

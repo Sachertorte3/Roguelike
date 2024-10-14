@@ -46,10 +46,7 @@ namespace Domain.Model.Effect.Position
             return 2;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

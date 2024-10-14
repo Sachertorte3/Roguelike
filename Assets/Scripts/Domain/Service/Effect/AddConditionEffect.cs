@@ -39,9 +39,8 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 1;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(actor.Id, target, map);
-
-        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply(Id<IEntity>.Empty, target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map) => Apply(actor.Id, target, map);
+        public UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map) => Apply(Id<IEntity>.Empty, target, map);
 
         public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)
         {
@@ -59,21 +58,24 @@ namespace Domain.Service.Effect
 
             return UniTask.CompletedTask;
         }
+        public UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map) => UniTask.CompletedTask;
+        public UniTask Apply(IEntity target, Vector2Int position, IMap map) => UniTask.CompletedTask;
+
+        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
+        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _condition.Value.Evaluate(target) * _probabilityOfSuccess;
         }
+        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions) => 0;
 
         public float EvaluatePrice()
         {
             return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

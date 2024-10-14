@@ -14,17 +14,16 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class SpawnCharacterEffect : IActorlessEffect
+    public class SpawnCharacterEffect : ActorlessFieldTargetEffect
     {
         [Required][SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
         [MinValue(1)][SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
-        public Color Color => Colors.MediumPurple;
+        public override Color Color => Colors.MediumPurple;
+        public override Impact Impact => Impact.Neutral;
 
-        public Impact Impact => Impact.Neutral;
-
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
+        public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
             var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
@@ -44,7 +43,7 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
+        public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
@@ -61,22 +60,17 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
             return 50f / CommonSenseParameters.MonsterMaxHealth;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return $"召喚: {_character.Value.Name} {_count}体";
         }

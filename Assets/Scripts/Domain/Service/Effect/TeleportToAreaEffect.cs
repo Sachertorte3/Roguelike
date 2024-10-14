@@ -11,12 +11,12 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class TeleportToAreaEffect : IEffect
+    public class TeleportToAreaEffect : FieldTargetEffect
     {
-        public Impact Impact => Impact.Neutral;
-        public Color Color => Colors.SkyBlue;
+        public override Impact Impact => Impact.Neutral;
+        public override Color Color => Colors.SkyBlue;
 
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
+        public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
             var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
@@ -30,29 +30,19 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
-        {
-            return 0;
-        }
-
-        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
+        public override float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
             if (positions.Contains(actor.CurrentPosition))
                 return 0;
             return 0.05f * positions.Average(pos => VectorExtension.ChebyshevDistance(actor.CurrentPosition, pos));
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return "テレポート";
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
@@ -13,16 +12,15 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class CurseItemEffect : IActorlessEffect
+    public class CurseItemEffect : ActorlessEntityTargetEffect
     {
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
         [Range(0, 1)]
         private float _probabilityOfSuccess = 0.25f;
 
-        public Color Color => Colors.MediumPurple;
-
-        public Impact Impact => Impact.Harmful;
+        public override Color Color => Colors.MediumPurple;
+        public override Impact Impact => Impact.Harmful;
 #if UNITY_EDITOR
         private void OnProbabilityOfSuccessChanged()
         {
@@ -30,8 +28,7 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 0.25f;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply(target, map);
-        public UniTask Apply(ITargetOfEffect target, IMap map)
+        public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var notCursedItems = target.Inventory.AllItems.Where(item => !item.IsCursed).ToArray();
             if (notCursedItems.Any())
@@ -49,22 +46,17 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return 0.25f;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 100;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return $"呪い";
         }

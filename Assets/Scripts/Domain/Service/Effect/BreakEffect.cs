@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -13,19 +12,13 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class BreakEffect : IActorlessEffect
+    public class BreakEffect : ActorlessEntityTargetEffect
     {
-        public Color Color => Colors.Black;
-        public Impact Impact => Impact.Harmful;
+        public override Color Color => Colors.Black;
+        public override Impact Impact => Impact.Harmful;
         public bool OnlyApplyToItem = false;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
-
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map) => Apply(target, map);
-
-        public UniTask Apply(ITargetOfEffect target, IMap map) => Apply((IEntity)target, map);
-
-        public UniTask Apply(IEntity target, IMap map)
+        public override UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
             if (!OnlyApplyToItem || target is ItemEntity)
             {
@@ -42,22 +35,17 @@ namespace Domain.Service.Effect
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return 1;
         }
 
-        public float EvaluatePrice()
+        public override float EvaluatePrice()
         {
             return 100f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
-
-        public string Info()
+        public override string Info()
         {
             return "破壊";
         }

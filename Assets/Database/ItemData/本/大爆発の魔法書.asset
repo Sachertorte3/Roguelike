@@ -50,7 +50,7 @@ MonoBehaviour:
     - rid: -2
       type: {class: , ns: , asm: }
     - rid: 5486256534138650625
-      type: {class: ExplosionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _damageRate: 0.9
     - rid: 5486256534138650626

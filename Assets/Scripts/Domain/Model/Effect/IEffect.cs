@@ -10,23 +10,12 @@ namespace Domain.Model.Effect
         public Impact Impact { get; }
         public Color Color { get; }
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IMap map)
-        {
-            return UniTask.CompletedTask;
-        }
-
-        public UniTask Apply(IActorOfEffect actor, IEntity target, IMap map)
-        {
-            return UniTask.CompletedTask;
-        }
-
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
-        {
-            return UniTask.CompletedTask;
-        }
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map);
+        public UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map);
+        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map);
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
-        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions) => 0;
+        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions);
         public float EvaluatePrice();
     }
 }

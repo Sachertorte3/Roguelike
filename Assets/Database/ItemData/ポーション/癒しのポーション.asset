@@ -19,9 +19,9 @@ MonoBehaviour:
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 0
+  SpawnEffectsOnThrow: 1
   IsSameEffect: 0
-  IsSameSkill: 0
+  IsSameSkill: 1
   SkillOnUse:
     <Position>k__BackingField:
       rid: 2541219106150416409
@@ -33,9 +33,9 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
-      rid: -2
+      rid: 4425516923575599140
     <Effects>k__BackingField:
-    - rid: -2
+    - rid: 861543505701896195
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2

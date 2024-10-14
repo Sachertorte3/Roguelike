@@ -84,6 +84,8 @@ namespace Domain.Model.Dungeon
 
         public void Rename(string baseName, string newName)
         {
+            if (newName == "")
+                return;
             _plaseholders[baseName] = newName;
             _onItemRenamed.OnNext(Unit.Default);
         }

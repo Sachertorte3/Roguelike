@@ -378,12 +378,9 @@ namespace Domain.Service.Characters.Behavior
                 .Where(action => action.Doable(character, map));
         }
 
-        public void KnowLocationOf(IHasBehavior self, IActorOfEffect target)
+        public void KnowLocationOf(Vector2Int position)
         {
-            if (self.IsEnemy(target))
-            {
-                _lastTargetPosition = target.CurrentPosition;
-            }
+            _lastTargetPosition = position;
         }
 
         public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)

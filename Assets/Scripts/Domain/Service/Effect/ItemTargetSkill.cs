@@ -82,10 +82,7 @@ namespace Domain.Service.Effect
             return _itemEffect.EvaluatePrice();
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>();
-        }
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
 
         public string Info()
         {

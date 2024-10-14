@@ -13,18 +13,21 @@ namespace Domain.Model.Memento
         [SerializeField] private Option<Location> _homeLocation;
         [SerializeField] private Option<Vector2Int> _homePosition;
         public (Location, Vector2Int)? HomePosition => _homeLocation.HasValue ? (_homeLocation.Value!, _homePosition.Value!) : null;
-        [field: SerializeField] public Option<Vector2Int> LastTargetPosition { get; private set; }
+        [field: SerializeField] public Option<BehaviorState> PreviousState { get; private set; }
+        [field: SerializeField] public Option<Vector2Int> PreviousTargetPosition { get; private set; }
 
         public BehaviorMemento(
             BehaviorData behavior,
             (Location, Vector2Int)? homePosition,
-            Vector2Int? lastTargetPosition
+            BehaviorState? previousState,
+            Vector2Int? previousTargetPosition
         )
         {
             Behavior = behavior;
             _homeLocation = (homePosition?.Item1).ToOption();
             _homePosition = (homePosition?.Item2).ToOption();
-            LastTargetPosition = lastTargetPosition.ToOption();
+            PreviousState = previousState.ToOption();
+            PreviousTargetPosition = previousTargetPosition.ToOption();
         }
     }
 }

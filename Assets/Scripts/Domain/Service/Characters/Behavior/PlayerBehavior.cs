@@ -44,7 +44,12 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorMemento Serialize()
         {
-            return new BehaviorMemento(BehaviorData, _homePosition, null);
+            return new BehaviorMemento(BehaviorData, _homePosition, null, null);
+        }
+
+        public static BehaviorMemento Build()
+        {
+            return new BehaviorMemento(new BehaviorData(), null, null, null);
         }
 
         public bool WanderAround => true;

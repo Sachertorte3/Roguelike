@@ -19,6 +19,8 @@ namespace Domain.Service.Map
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles();
         public IEnumerable<Vector2Int> GetAllGrasses();
         public IEnumerable<Vector2Int> GetAllIces();
+        public bool IsGrass(Vector2Int position);
+        public bool IsIce(Vector2Int position);
         public HashSet<Vector2Int> GetAllWalkablePositions();
         public HashSet<Vector2Int> GetAllPassablePositions();
         public HashSet<Vector2Int> GetAllLightPassablePositions();

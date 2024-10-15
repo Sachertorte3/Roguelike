@@ -16,7 +16,7 @@ namespace Provider
     {
         [Inject]
         public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2,
-            MenuController menuController)
+            SynchronizedFireEntityView _3, MenuController menuController)
         {
             LoggerInit();
             gameManager.State.Subscribe(state =>

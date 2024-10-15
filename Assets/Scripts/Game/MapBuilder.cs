@@ -313,6 +313,7 @@ namespace Game
                 _characters,
                 _items,
                 EventEntityManager.Build(_stairs, _chests, _traps, _bonfire.ToOption()),
+                FireEntityManager.Build(),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),
                 _shop.ToOption(),

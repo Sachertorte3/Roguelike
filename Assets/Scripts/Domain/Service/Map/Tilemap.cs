@@ -133,6 +133,16 @@ namespace Domain.Service.Map
             return _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.FloatingIce).Select(pair => pair.Key);
         }
 
+        public bool IsGrass(Vector2Int position)
+        {
+            return _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.Grass;
+        }
+
+        public bool IsIce(Vector2Int position)
+        {
+            return _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.FloatingIce;
+        }
+
         public bool IsWalkable(Vector2Int position)
         {
             if (GetTile(position).MapOr(false, tile => tile.IsWalkable()))

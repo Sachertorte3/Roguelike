@@ -8,7 +8,7 @@ namespace Utilities
     public static class SerializableDictionaryExtension
     {
         public static SerializableDictionary<TKey, TValue> ToSerializable<TKey, TValue>(
-            this Dictionary<TKey, TValue> dictionary)
+            this IDictionary<TKey, TValue> dictionary)
         {
             return new SerializableDictionary<TKey, TValue>(dictionary);
         }

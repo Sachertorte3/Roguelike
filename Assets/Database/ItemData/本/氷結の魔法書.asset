@@ -29,6 +29,7 @@ MonoBehaviour:
       rid: 861543310686683143
     <Effects>k__BackingField:
     - rid: 4425517220030054409
+    - rid: 5486256600805015552
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -63,3 +64,6 @@ MonoBehaviour:
         - _element: 2
           _power: 10
         _criticalRate: 0
+    - rid: 5486256600805015552
+      type: {class: SpawnIceEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

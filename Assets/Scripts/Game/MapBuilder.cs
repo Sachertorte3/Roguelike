@@ -127,6 +127,11 @@ namespace Game
             }
         }
 
+        private void AddIce(Vector2Int position)
+        {
+            _tilemap.SetIces(new[] { position }, true);
+        }
+
         private int GetCount(float attemptCount)
         {
             var probability = 0.5f;

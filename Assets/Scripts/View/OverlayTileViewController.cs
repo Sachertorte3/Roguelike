@@ -3,11 +3,11 @@ using UnityEngine.Tilemaps;
 
 namespace View
 {
-    public sealed class GrassViewController : MonoBehaviour
+    public sealed class OverlayTileViewController : MonoBehaviour
     {
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private TileBase _grass;
-
+        [SerializeField] private TileBase _ice;
         public void Clear()
         {
             _tilemap.ClearAllTiles();
@@ -18,7 +18,12 @@ namespace View
             SetTile(position, _grass, visibility);
         }
 
-        public void RemoveGrass(Vector2Int position)
+        public void SetIce(Vector2Int position, TileVisibility? visibility = null)
+        {
+            SetTile(position, _ice, visibility);
+        }
+
+        public void RemoveTile(Vector2Int position)
         {
             SetTile(position, null);
         }

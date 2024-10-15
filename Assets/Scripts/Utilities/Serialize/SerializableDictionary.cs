@@ -27,7 +27,7 @@ namespace Utilities
         {
         }
 
-        public SerializableDictionary(Dictionary<TKey, TValue> dictionary)
+        public SerializableDictionary(IDictionary<TKey, TValue> dictionary)
         {
             foreach (var pair in dictionary)
             {

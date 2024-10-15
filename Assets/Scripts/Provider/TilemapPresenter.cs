@@ -17,12 +17,12 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public TilemapPresenter(TileViewController tileView, GrassViewController grassView, World world)
+        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, World world)
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     tileView.Clear();
-                    grassView.Clear();
+                    overlayTileView.Clear();
 
                     var tileSet = map.Type switch
                     {
@@ -39,8 +39,10 @@ namespace Provider
                     {
                         SetTile(tileView, tileData, position, tileSet, map.ShopRect);
                         if (map.TilemapViewer.GetAllGrasses().Contains(position))
-                            grassView.SetGrass(position);
-                        SetVisibility(tileView, grassView, position, GetTileVisibility(map, position));
+                            overlayTileView.SetGrass(position);
+                        if (map.TilemapViewer.GetAllIces().Contains(position))
+                            overlayTileView.SetIce(position);
+                        SetVisibility(tileView, overlayTileView, position, GetTileVisibility(map, position));
                     }
 
                     var mapSize = map.TilemapViewer.Rect;
@@ -66,14 +68,24 @@ namespace Provider
                         }
                     }));
 
-                    _disposables.Add(map.TilemapViewer.OnGrassesChanged.Subscribe(context =>
+                    _disposables.Add(map.TilemapViewer.OnOverlayTilesChanged.Subscribe(context =>
                     {
-                        foreach (var (position, isGrass) in context)
+                        foreach (var (position, category) in context)
                         {
-                            if (isGrass)
-                                grassView.SetGrass(position, GetTileVisibility(map, position));
-                            else
-                                grassView.RemoveGrass(position);
+                            switch (category)
+                            {
+                                case OverlayTileCategory.Grass:
+                                    overlayTileView.SetGrass(position, GetTileVisibility(map, position));
+                                    break;
+                                case OverlayTileCategory.FloatingIce:
+                                    overlayTileView.SetIce(position, GetTileVisibility(map, position));
+                                    break;
+                                case null:
+                                    overlayTileView.RemoveTile(position);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(category), category, null);
+                            }
                         }
                     }));
                     // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
@@ -83,11 +95,11 @@ namespace Provider
                         {
                             if (isKnown)
                             {
-                                SetVisibility(tileView, grassView, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
                             }
                             else
                             {
-                                SetVisibility(tileView, grassView, position, TileVisibility.Transparent);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Transparent);
                             }
                         }
                     }));
@@ -101,12 +113,12 @@ namespace Provider
                                 visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
                             foreach (var position in areaEntered)
                             {
-                                SetVisibility(tileView, grassView, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
                             }
 
                             foreach (var position in areaExited)
                             {
-                                SetVisibility(tileView, grassView, position, TileVisibility.Translucent);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Translucent);
                             }
                         }));
                 },
@@ -161,7 +173,7 @@ namespace Provider
             }
         }
 
-        public void SetVisibility(TileViewController tileView, GrassViewController grassView, Vector2Int position,
+        public void SetVisibility(TileViewController tileView, OverlayTileViewController grassView, Vector2Int position,
             TileVisibility visibility)
         {
             tileView.SetTileColor(position, visibility.GetColor());

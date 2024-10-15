@@ -6,6 +6,7 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Events;
 using Domain.Service.Logs;
 using R3;
 using UnityEngine;
@@ -17,41 +18,56 @@ namespace Domain.Service.Rooms
     {
         public readonly ICharacter Character;
         public readonly EnemyBehavior Behavior;
-        public string? ChoiceMessage => null;
-        private readonly List<EntityEvent> _events;
-        public IReadOnlyList<EntityEvent> Events => _events;
-        public bool CanBeCanceled => true;
+        public IEvent Event { get; init; }
 
         public Ally(ICharacter character, EnemyBehavior behavior, IMap map)
         {
             Character = character;
             Behavior = behavior;
-            _events = new List<EntityEvent>
-            {
-                new EntityEvent("渡す", () => Character.CanUseItem && Character.IsAlly(map.Player),
-                    async (gameManager, map) =>
-                    {
-                        var item = await map.Player.ItemSelector.SelectItem(map.Player.Inventory);
-                        if (item != null)
+            Event = new PlayerEvent(
+                null,
+                true,
+                new List<PlayerChoiceEvent>
+                {
+                    new PlayerChoiceEvent(
+                        "渡す",
+                        () => Character.CanUseItem && Character.IsAlly(map.Player),
+                        async (player, gameManager, map) =>
                         {
-                            var result = character.Inventory.TryAdd(item);
-                            if (result)
+                            var item = await player.ItemSelector.SelectItem(player.Inventory);
+                            if (item != null)
                             {
-                                var index = map.Player.Inventory.GetItemIndex(item);
-                                map.Player.ReplaceInventory(null, index);
-                                GameLog.Add($"{Character.GetName(map.Player)}に{item.GetName(map.Player, map.ItemDatabase)}を渡した。");
-                            }
-                            else
-                            {
-                                GameLog.Add($"{Character.GetName(map.Player)}はこれ以上アイテムを持てない。");
+                                var result = character.Inventory.TryAdd(item);
+                                if (result)
+                                {
+                                    var index = player.Inventory.GetItemIndex(item);
+                                    player.ReplaceInventory(null, index);
+                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemDatabase)}を渡した。");
+                                }
+                                else
+                                {
+                                    GameLog.Add($"{Character.GetName(player)}はこれ以上アイテムを持てない。");
+                                }
                             }
                         }
+                    ),
+                new PlayerChoiceEvent(
+                    "一緒に行動",
+                    () => Character.IsAlly(map.Player),
+                    (player, gameManager, map) =>
+                    {
+                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
+                        return UniTask.CompletedTask;
                     }),
-                new EntityEvent("一緒に行動", () => Character.IsAlly(map.Player),
-                    async (gameManager, map) => { Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false; }),
-                new EntityEvent("敵優先", () => Character.IsAlly(map.Player),
-                    async (gameManager, map) => { Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true; })
-            };
+                new PlayerChoiceEvent(
+                    "敵優先",
+                    () => Character.IsAlly(map.Player),
+                    (player, gameManager, map) => {
+                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
+                        return UniTask.CompletedTask;
+                    })
+                }
+            );
         }
 
         public void Dispose()

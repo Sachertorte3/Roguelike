@@ -60,7 +60,7 @@ namespace Game
             var addedFires = new List<Fire>();
             foreach (var fire in _fireEntities)
             {
-                if (Random.value < 1 / 8f)
+                if (Random.value < 1 / 4f)
                 {
                     destroyedFires.Add(fire);
                 }

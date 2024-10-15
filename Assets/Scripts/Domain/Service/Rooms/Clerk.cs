@@ -6,6 +6,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Map;
+using Domain.Service.Events;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -15,18 +16,23 @@ namespace Domain.Service.Rooms
     public class Clerk : IEventEntity
     {
         public readonly ICharacter Character;
-        public string? ChoiceMessage => null;
-        private readonly List<EntityEvent> _events;
-        public IReadOnlyList<EntityEvent> Events => _events;
-        public bool CanBeCanceled => true;
+        public IEvent Event { get; init; }
 
         public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
-            _events = new List<EntityEvent>
-            {
-                new EntityEvent("代金を支払う", canExecuteEvent, doEvent)
-            };
+            Event = new PlayerEvent(
+                null,
+                true,
+                new List<PlayerChoiceEvent>
+                {
+                    new PlayerChoiceEvent(
+                        "代金を支払う",
+                        canExecuteEvent,
+                        (player, gameManager, map) => doEvent(gameManager, map)
+                    )
+                }
+            );
         }
 
         public void Dispose()

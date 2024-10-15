@@ -5,7 +5,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Character.Type;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -51,7 +50,8 @@ namespace Game
         private ReactiveProperty<bool> _stairsLocked = new(true);
         public ReadOnlyReactiveProperty<bool> MovementEntityLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
-        public bool IsEventExecuting { get; private set; }
+        private int EventExecutionCount;
+        public bool IsEventExecuting => EventExecutionCount > 0;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
             List<CharacterMemento>? partyMembers,
@@ -312,7 +312,7 @@ namespace Game
             return EventEntities
                 .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
-                .Where(eventEntity => eventEntity.Events.Any(e => e.CanExecuteEvent()))
+                .Where(eventEntity => eventEntity.Event.CanExecuteEvent())
                 .FirstOrDefault();
         }
 
@@ -564,47 +564,15 @@ namespace Game
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
-                IsEventExecuting = true;
+                EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
                 {
                     await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged.Message.Position);
                 }
-
-                var eventEntity = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
-                if (eventEntity != null)
-                {
-                    var choices = new List<string>();
-                    var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
-                    foreach (var eventData in executableEvents)
-                    {
-                        choices.Add(eventData.ChoiceText);
-                    }
-
-                    if (eventEntity.CanBeCanceled)
-                    {
-                        choices.Add("やめる");
-                    }
-
-                    var choiceIndex = 0;
-                    if (choices.Count > 1)
-                    {
-                        choiceIndex = await Globals.GameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
-                    }
-
-                    switch (choices[choiceIndex])
-                    {
-                        case "やめる":
-                            break;
-                        default:
-                            await executableEvents[choiceIndex].DoEvent(Globals.GameManager, this);
-                            break;
-                    }
-                }
-
-                IsEventExecuting = false;
+                EventExecutionCount--;
             }).AddTo(_disposables);
 
-            CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(positionChanged =>
+            CharacterManager.CharacterEvents.OnPositionChanged.Subscribe(async positionChanged =>
             {
                 var item = ItemManager.GetItemAt(positionChanged.Message.Position);
                 if (item != null)
@@ -632,6 +600,15 @@ namespace Game
                             $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player, ItemDatabase)}の上に乗った");
                     }
                 }
+
+                EventExecutionCount++;
+                var eventEntity = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
+                if (eventEntity != null)
+                {
+                    if (positionChanged.Character == Player || !eventEntity.Event.IsPlayerOnly)
+                        await eventEntity.Event.DoEvent(positionChanged.Character, Globals.GameManager, this);
+                }
+                EventExecutionCount--;
             }).AddTo(_disposables);
 
             Observable.Merge(

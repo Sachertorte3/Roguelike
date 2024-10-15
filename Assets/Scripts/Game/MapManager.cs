@@ -649,7 +649,12 @@ namespace Game
 
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)
         {
-            _tilemap.SetGrasses(positions, isGrass);
+            _tilemap.SetOverlayTiles(positions, OverlayTileCategory.Grass);
+        }
+
+        public void SetIce(IEnumerable<Vector2Int> positions, bool isIce)
+        {
+            _tilemap.SetOverlayTiles(positions, OverlayTileCategory.FloatingIce);
         }
 
         public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer[] Layers,

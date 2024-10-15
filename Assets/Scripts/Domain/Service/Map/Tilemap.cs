@@ -18,10 +18,10 @@ namespace Domain.Service.Map
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
         private readonly HashSet<Vector2Int> _allLightPassablePositionsSet;
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
-        private readonly Subject<IEnumerable<(Vector2Int Position, bool IsGrass)>> _onGrassesChanged = new();
+        private readonly Subject<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> _onOverlayTilesChanged = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, bool IsKnown)>> _onTilesKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
-        private readonly ObservableHashSet<Vector2Int> _grasses;
+        private readonly ObservableDictionary<Vector2Int, OverlayTileCategory> _overlayTiles;
         private TilemapMemento _mementoCache;
         public readonly int Height;
         public readonly int Width;
@@ -31,7 +31,7 @@ namespace Domain.Service.Map
             Width = memento.Width;
             Height = memento.Height;
             _tiles = memento.Tiles;
-            _grasses = new ObservableHashSet<Vector2Int>(memento.Grasses);
+            _overlayTiles = new ObservableDictionary<Vector2Int, OverlayTileCategory>(memento.OverlayTiles);
 
             _allWalkablePositionsSet = FindAllWalkablePositions().ToHashSet();
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
@@ -61,7 +61,7 @@ namespace Domain.Service.Map
 
                 UpdateMementoCache();
             });
-            OnGrassesChanged.Subscribe(changeGrasses => { UpdateMementoCache(); });
+            OnOverlayTilesChanged.Subscribe(changeOverlayTiles => { UpdateMementoCache(); });
             OnTilesKnownChanged.Subscribe(changeTiles => { UpdateMementoCache(); });
             UpdateMementoCache();
         }
@@ -89,14 +89,14 @@ namespace Domain.Service.Map
                 Width,
                 Height,
                 _tiles,
-                _grasses
+                _overlayTiles
             );
         }
 
         public void UpdateTurn()
         {
             var grasses = new List<Vector2Int>();
-            foreach (var position in _grasses)
+            foreach (var (position, _) in _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.Grass))
             {
                 if (Random.value < 1 / 256f)
                 {
@@ -105,7 +105,7 @@ namespace Domain.Service.Map
                 }
             }
 
-            SetGrasses(grasses, true);
+            SetOverlayTiles(grasses, OverlayTileCategory.Grass);
         }
 
         public TilemapMemento Serialize()
@@ -114,7 +114,7 @@ namespace Domain.Service.Map
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
-        public Observable<IEnumerable<(Vector2Int Position, bool IsGrass)>> OnGrassesChanged => _onGrassesChanged;
+        public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged => _onOverlayTilesChanged;
         public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged => _onTilesKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
 
@@ -125,12 +125,21 @@ namespace Domain.Service.Map
 
         public IEnumerable<Vector2Int> GetAllGrasses()
         {
-            return _grasses.ToArray();
+            return _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.Grass).Select(pair => pair.Key);
+        }
+
+        public IEnumerable<Vector2Int> GetAllIces()
+        {
+            return _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.FloatingIce).Select(pair => pair.Key);
         }
 
         public bool IsWalkable(Vector2Int position)
         {
-            return GetTile(position).MapOr(false, tile => tile.IsWalkable());
+            if (GetTile(position).MapOr(false, tile => tile.IsWalkable()))
+                return true;
+            if (_overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.FloatingIce)
+                return true;
+            return false;
         }
 
         public bool IsPassable(Vector2Int position)
@@ -194,30 +203,31 @@ namespace Domain.Service.Map
             return GetAllTiles().Where(pair => pair.tileData.IsTransparent()).Select(pair => pair.position);
         }
 
-        public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)
+        public void SetOverlayTiles(IEnumerable<Vector2Int> positions, OverlayTileCategory? category)
         {
-            var result = new List<(Vector2Int position, bool isGrass)>();
+            var result = new List<(Vector2Int position, OverlayTileCategory? category)>();
             foreach (var position in positions)
             {
-                if (isGrass != _grasses.Contains(position))
+                OverlayTileCategory? currentCategory = _overlayTiles.ContainsKey(position) ? _overlayTiles[position] : null;
+                if (category != currentCategory)
                 {
-                    if (isGrass)
+                    if (category != null)
                     {
-                        if (GetTile(position).MapOr(false, tile => tile.TileType == TileCategory.Floor))
+                        if (GetTile(position).MapOr(false, tile => tile.TileType == category.Value.GetPlaceableTileCategory()))
                         {
-                            _grasses.Add(position);
-                            result.Add((position, true));
+                            _overlayTiles[position] = category.Value;
+                            result.Add((position, category.Value));
                         }
                     }
                     else
                     {
-                        _grasses.Remove(position);
-                        result.Add((position, false));
+                        _overlayTiles.Remove(position);
+                        result.Add((position, null));
                     }
                 }
             }
 
-            _onGrassesChanged.OnNext(result);
+            _onOverlayTilesChanged.OnNext(result);
         }
 
         public void SetTilesKnown(IEnumerable<Vector2Int> positions, bool isKnown)

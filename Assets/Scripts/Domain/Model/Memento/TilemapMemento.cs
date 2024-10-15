@@ -5,6 +5,7 @@ using System.Linq;
 using Domain.Model.Map;
 using ObservableCollections;
 using UnityEngine;
+using Utilities;
 
 namespace Domain.Model.Memento
 {
@@ -20,11 +21,11 @@ namespace Domain.Model.Memento
                 .Select((x, index) => (new Vector2Int(index % Width, index / Width), new TileData(x)))
                 .ToDictionary(x => x.Item1, x => x.Item2));
 
-        [SerializeField] private Vector2Int[] _grasses;
-        public ObservableHashSet<Vector2Int> Grasses => new(_grasses);
+        [SerializeField] private SerializableDictionary<Vector2Int, OverlayTileCategory> _overlayTiles;
+        public ObservableDictionary<Vector2Int, OverlayTileCategory> OverlayTiles => new(_overlayTiles);
 
         public TilemapMemento(int width, int height, IDictionary<Vector2Int, TileData> tiles,
-            IEnumerable<Vector2Int> grasses)
+            IDictionary<Vector2Int, OverlayTileCategory> overlayTiles)
         {
             var tileMementos = new TileMemento[width * height];
             foreach (var (position, tile) in tiles)
@@ -34,14 +35,14 @@ namespace Domain.Model.Memento
 
             Width = width;
             _tiles = tileMementos;
-            _grasses = grasses.ToArray();
+            _overlayTiles = overlayTiles.ToSerializable();
         }
 
-        public TilemapMemento(int width, TileMemento[] tiles, IEnumerable<Vector2Int> grasses)
+        public TilemapMemento(int width, TileMemento[] tiles, IDictionary<Vector2Int, OverlayTileCategory> overlayTiles)
         {
             Width = width;
             _tiles = tiles;
-            _grasses = grasses.ToArray();
+            _overlayTiles = overlayTiles.ToSerializable();
         }
     }
 }

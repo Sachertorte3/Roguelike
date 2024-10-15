@@ -15,11 +15,12 @@ namespace Domain.Service.Map
     {
         private readonly int _width;
         private readonly TileCategory[] _tiles;
-        private readonly HashSet<Vector2Int> _grasses;
+        private readonly Dictionary<Vector2Int, OverlayTileCategory> _overlayTiles = new();
         private readonly float _waterChance;
         private readonly float _randomValue;
         private readonly Dictionary<Id<Room>, RectInt> _rooms = new();
         public List<Id<Room>> RoomIds => _rooms.Keys.ToList();
+        public Dictionary<Vector2Int, TileCategory> Tiles => _tiles.Select((tile, index) => (new Vector2Int(index % _width, index / _width), tile)).ToDictionary(x => x.Item1, x => x.Item2);
 
         public TilemapBuilder(FieldBluePrint bluePrint, float waterChance)
         {
@@ -52,7 +53,6 @@ namespace Domain.Service.Map
                 }
             }
 
-            _grasses = new();
             foreach (var room in roomRects)
             {
                 var roomId = Id<Room>.Generate();
@@ -144,18 +144,41 @@ namespace Domain.Service.Map
         {
             foreach (var position in positions)
             {
-                if (isGrass != _grasses.Contains(position))
+                var isAlreadyGrass = _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.Grass;
+                if (isGrass != isAlreadyGrass)
                 {
                     if (isGrass)
                     {
                         if (_tiles[position.x + position.y * _width] == TileCategory.Floor)
                         {
-                            _grasses.Add(position);
+                            _overlayTiles[position] = OverlayTileCategory.Grass;
                         }
                     }
                     else
                     {
-                        _grasses.Remove(position);
+                        _overlayTiles.Remove(position);
+                    }
+                }
+            }
+        }
+
+        public void SetIces(IEnumerable<Vector2Int> positions, bool isIce)
+        {
+            foreach (var position in positions)
+            {
+                var isAlreadyIce = _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.FloatingIce;
+                if (isIce != isAlreadyIce)
+                {
+                    if (isIce)
+                    {
+                        if (_tiles[position.x + position.y * _width] == TileCategory.Water)
+                        {
+                            _overlayTiles[position] = OverlayTileCategory.FloatingIce;
+                        }
+                    }
+                    else
+                    {
+                        _overlayTiles.Remove(position);
                     }
                 }
             }
@@ -174,7 +197,7 @@ namespace Domain.Service.Map
             return new TilemapMemento(
                 _width,
                 _tiles.Select(tile => TileData.Build(tile, false)).ToArray(),
-                _grasses
+                _overlayTiles
             );
         }
     }

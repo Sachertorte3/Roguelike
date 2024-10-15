@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Type;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -79,6 +80,7 @@ namespace Game
             ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(map.EventEntities, _stairsLocked);
             ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
+            FireEntityManager = new FireEntityManager(map.Fires);
 
             _dungeonData = data;
 
@@ -178,9 +180,12 @@ namespace Game
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
 
+        public IObservableCollection<Fire> FireEntities => FireEntityManager.FireEntities;
+
         public ItemManager ItemManager { get; init; }
         public EventEntityManager EventEntityManager { get; init; }
         public ThrowAnimationEntityManager ThrowAnimationEntityManager { get; init; }
+        public FireEntityManager FireEntityManager { get; init; }
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
 
         public void Dispose()
@@ -189,6 +194,7 @@ namespace Game
             ItemManager.Dispose();
             EventEntities.ForEach(eventEntity => eventEntity.Dispose());
             ThrowAnimationEntities.ForEach(throwAnimationEntity => throwAnimationEntity.Dispose());
+            FireEntities.ForEach(fireEntity => fireEntity.Dispose());
             _disposables.Dispose();
             Debug.Log("MapManager Disposed");
         }
@@ -215,6 +221,7 @@ namespace Game
             .Concat(Items)
             .Concat(EventEntities)
             .Concat(ThrowAnimationEntities)
+            .Concat(FireEntities)
             .Distinct(new EntityIdComparer());
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position)
@@ -307,6 +314,21 @@ namespace Game
                 .Where(eventEntity => eventEntity.Layer == layer)
                 .Where(eventEntity => eventEntity.Events.Any(e => e.CanExecuteEvent()))
                 .FirstOrDefault();
+        }
+
+        public IEntity? GetEntityAt(Vector2Int position)
+        {
+            return Entities.FirstOrDefault(entity => entity.CurrentPosition == position);
+        }
+
+        public bool IsGrass(Vector2Int position)
+        {
+            return TilemapViewer.IsGrass(position);
+        }
+
+        public bool IsFireAt(Vector2Int position)
+        {
+            return FireEntities.Any(fire => fire.CurrentPosition == position);
         }
 
         public async UniTask ExecuteTrapAt(Vector2Int position, IActorOfEffect actor)
@@ -498,6 +520,7 @@ namespace Game
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 EventEntityManager.Serialize(),
+                FireEntityManager.Serialize(),
                 KeyCharacters.Select(character => character.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
@@ -518,6 +541,7 @@ namespace Game
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
                 EventEntityManager.Serialize(),
+                FireEntityManager.Serialize(),
                 KeyCharacters.Select(character => character.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
@@ -614,7 +638,8 @@ namespace Game
                 ((IEntityGroupEvents)CharacterManager.CharacterEvents).OnPositionChanged,
                 ((IEntityGroupEvents)ItemManager.ItemEntityEvents).OnPositionChanged,
                 ((IEntityGroupEvents)EventEntityManager.EventEntityEvents).OnPositionChanged,
-                ((IEntityGroupEvents)ThrowAnimationEntityManager.EntityEvents).OnPositionChanged
+                ((IEntityGroupEvents)ThrowAnimationEntityManager.EntityEvents).OnPositionChanged,
+                ((IEntityGroupEvents)FireEntityManager.EntityEvents).OnPositionChanged
             ).Subscribe(positionChanged =>
                 positionChanged.Entity.SetVisibility(Player.IsVisible(positionChanged.Message.Position))
             ).AddTo(_disposables);
@@ -639,6 +664,23 @@ namespace Game
                     SpawnRandomEnemy(positions.GetAtRandom(), null, false);
             }
 
+            FireEntityManager.UpdateTurn(this);
+
+            var characters = GetCharactersInArea(FireEntityManager.FireEntities.Select(fire => fire.CurrentPosition));
+            foreach (var character in characters)
+            {
+                character.LoseHp(1);
+                GameLog.Add($"{character.GetName(Player)}は火に焼かれた");
+            }
+            var items = GetItemsInArea(FireEntityManager.FireEntities.Select(fire => fire.CurrentPosition));
+            foreach (var item in items)
+            {
+                item.Destroy();
+                GameLog.Add($"{item.Item.GetName(Player, ItemDatabase)}は灰になった");
+            }
+
+            SetGrasses(FireEntityManager.FireEntities.Select(fire => fire.CurrentPosition), false);
+
             _tilemap.UpdateTurn();
         }
 
@@ -649,12 +691,21 @@ namespace Game
 
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass)
         {
-            _tilemap.SetOverlayTiles(positions, OverlayTileCategory.Grass);
+            _tilemap.SetOverlayTiles(positions, isGrass ? OverlayTileCategory.Grass : null);
         }
 
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce)
         {
-            _tilemap.SetOverlayTiles(positions, OverlayTileCategory.FloatingIce);
+            _tilemap.SetOverlayTiles(positions, isIce ? OverlayTileCategory.FloatingIce : null);
+        }
+
+        public void SpawnFire(IEnumerable<Vector2Int> positions)
+        {
+            foreach (var position in positions)
+            {
+                if (CanPlace(position, false, false, true))
+                    FireEntityManager.Add(new Fire(Fire.Build(position)));
+            }
         }
 
         public record EntityFilter<T>(MapManager Map, IEnumerable<T> Entities, EntityLayer[] Layers,

@@ -38,10 +38,15 @@ namespace View
             DashMilliseconds = dashMilliseconds;
         }
 
+        public void SetPosition(Vector2 position)
+        {
+            transform.position = new Vector3(position.x, position.y, transform.position.z);
+        }
+
         public void Teleport(Vector2Int position)
         {
             _disposable.Disposable = null;
-            transform.position = (Vector3Int)position;
+            SetPosition(position);
             IsMoving = false;
         }
 
@@ -50,7 +55,7 @@ namespace View
             _disposable.Disposable = null;
             if (_isVisible)
             {
-                var position = (Vector3Int)destination - (Vector3Int)direction.Vector();
+                var position = destination - direction.Vector();
                 var elapsedTime = 0f;
 
                 var totalDuration = 1f;
@@ -71,14 +76,14 @@ namespace View
                             {
                                 elapsedTime += Time.deltaTime;
                                 var t = Mathf.Clamp01(elapsedTime / totalDuration);
-                                transform.position = Vector3.Lerp(position, (Vector3Int)destination, t);
+                                SetPosition(Vector2.Lerp(position, destination, t));
                             }
                         },
                         _ => { IsMoving = false; }).AddTo(this);
             }
             else
             {
-                transform.position = (Vector3Int)destination;
+                SetPosition(destination);
             }
         }
     }

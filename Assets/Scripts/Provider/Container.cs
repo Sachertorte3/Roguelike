@@ -29,6 +29,7 @@ namespace Provider
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.Register<SynchronizedThrowAnimationEntityView>(Lifetime.Singleton);
+            builder.Register<SynchronizedFireEntityView>(Lifetime.Singleton);
             builder.RegisterComponent(_dungeonData);
             builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();

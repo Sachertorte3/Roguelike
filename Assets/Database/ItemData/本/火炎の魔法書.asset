@@ -29,6 +29,7 @@ MonoBehaviour:
       rid: 4425517232088416258
     <Effects>k__BackingField:
     - rid: 4425517220030054409
+    - rid: 5486256600805015553
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -66,3 +67,6 @@ MonoBehaviour:
         ContainsSelf: 1
         CanIgnoreWalls: 0
         Radius: 1
+    - rid: 5486256600805015553
+      type: {class: SpawnFireEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

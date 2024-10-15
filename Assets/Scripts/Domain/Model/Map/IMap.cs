@@ -27,6 +27,8 @@ namespace Domain.Model.Map
         public HashSet<ICharacter> GetCharactersInArea(IEnumerable<Vector2Int> area);
         public HashSet<IItemEntity> GetItemsInArea(IEnumerable<Vector2Int> area);
         public HashSet<IEntity> GetEntitiesInArea(IEnumerable<Vector2Int> area);
+        public IEntity? GetEntityAt(Vector2Int position);
+        public bool IsGrass(Vector2Int position);
         public HashSet<Vector2Int> GetAllLightPassablePositions();
         public IItem? GetItemFromId(Id<IItem> id);
         public bool IsInside(Vector2Int position);
@@ -43,6 +45,7 @@ namespace Domain.Model.Map
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
+        public void SpawnFire(IEnumerable<Vector2Int> positions);
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,

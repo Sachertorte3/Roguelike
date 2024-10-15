@@ -1,17 +1,16 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
-using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
+using Domain.Service.Events;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -88,9 +87,18 @@ namespace Domain.Service.Characters.Behavior
                             return move;
                         else if (eventEntity != null)
                         {
-                            var eventAction = await ChoiceEvent(character, gameManager, map, swap, eventEntity);
-                            if (eventAction != null && eventAction.Doable(character, map))
-                                return eventAction;
+                            switch (eventEntity.Event)
+                            {
+                                case PlayerEvent playerEvent:
+                                    var eventAction = await playerEvent.DoAction(map.Player, gameManager, map, swap);
+                                    if (eventAction != null && eventAction.Doable(character, map))
+                                        return eventAction;
+                                    break;
+                                case CharacterEvent characterEvent:
+                                    if (await characterEvent.DoEvent(map.Player, gameManager, map))
+                                        return new DoNothing();
+                                    break;
+                            }
                         }
                         else if (swap.Doable(character, map))
                             return swap;
@@ -165,48 +173,6 @@ namespace Domain.Service.Characters.Behavior
                 5 => (InputType.RenameItem, null, tasks.result6),
                 _ => throw new IndexOutOfRangeException()
             };
-        }
-
-        private async UniTask<IAction?> ChoiceEvent(IHasBehavior character, IGameManager gameManager, IMap map, Swap swap, IEventEntity eventEntity)
-        {
-            var choices = new List<string>();
-            var firstChoiceIndex = 0;
-            if (swap.Doable(character, map))
-            {
-                choices.Add("入れ替わる");
-                firstChoiceIndex += 1;
-            }
-
-            var executableEvents = eventEntity.Events.Where(e => e.CanExecuteEvent()).ToList();
-            foreach (var eventData in executableEvents)
-            {
-                choices.Add(eventData.ChoiceText);
-            }
-
-            if (eventEntity.CanBeCanceled)
-            {
-                choices.Add("やめる");
-            }
-
-            var choiceIndex = 0;
-            if (choices.Count > 1)
-            {
-                choiceIndex =
-                    await gameManager.GetChoice(eventEntity.ChoiceMessage, choices.ToArray());
-            }
-
-            switch (choices[choiceIndex])
-            {
-                case "入れ替わる":
-                    return swap;
-                case "やめる":
-                    break;
-                default:
-                    await executableEvents[choiceIndex - firstChoiceIndex]
-                        .DoEvent(gameManager, map);
-                    return new DoNothing();
-            }
-            return null;
         }
 
         public void KnowLocationOf(Vector2Int position) { }

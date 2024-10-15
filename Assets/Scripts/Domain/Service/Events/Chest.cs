@@ -27,26 +27,28 @@ namespace Domain.Service.Events
             _item = memento.Item.Map(i => new Item(i));
             _mimic = memento.Mimic;
             _entity = new Entity(memento.Entity);
-            _events = new List<EntityEvent>
-            {
-                new EntityEvent("開ける", CanExecuteEvent, DoEvent)
-            };
+            Event = new PlayerEvent(
+                "宝箱を見つけた",
+                true,
+                new List<PlayerChoiceEvent>{
+                    new PlayerChoiceEvent(
+                        "開ける",
+                        () => true,
+                        async (player, gameManager, map) =>
+                        {
+                            await DoEvent(map);
+                        }
+                    )
+                }
+            );
         }
 
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
 
-        public string ChoiceMessage => "宝箱を見つけた";
-        private readonly List<EntityEvent> _events;
-        public IReadOnlyList<EntityEvent> Events => _events;
-        public bool CanBeCanceled => true;
+        public IEvent Event { get; init; }
         public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        private bool CanExecuteEvent()
-        {
-            return true;
-        }
 
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
@@ -55,7 +57,7 @@ namespace Domain.Service.Events
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
-        private UniTask DoEvent(IGameManager gameManager, IMap mapManager)
+        private UniTask DoEvent(IMap mapManager)
         {
             mapManager.RemoveEventEntity(this);
             if (_item.IsSome)

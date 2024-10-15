@@ -1,29 +1,20 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using Domain.Model.Map;
 
 namespace Domain.Model
 {
     public interface IHasEvent
     {
-        public string? ChoiceMessage { get; }
-        public bool CanBeCanceled { get; }
-        public IReadOnlyList<EntityEvent> Events { get; }
+        public IEvent Event { get; }
     }
 
-    public class EntityEvent
+    public interface IEvent
     {
-        public readonly string ChoiceText;
-        public readonly Func<bool> CanExecuteEvent;
-        public readonly Func<IGameManager, IMap, UniTask> DoEvent;
-
-        public EntityEvent(string choiceText, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
-        {
-            ChoiceText = choiceText;
-            CanExecuteEvent = canExecuteEvent;
-            DoEvent = doEvent;
-        }
+        public bool IsPlayerOnly { get; }
+        public Func<bool> CanExecuteEvent { get; }
+        public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent { get; }
     }
 }

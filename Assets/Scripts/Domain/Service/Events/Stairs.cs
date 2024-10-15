@@ -28,10 +28,18 @@ namespace Domain.Service.Events
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
-            _events = new List<EntityEvent>
-            {
-                new EntityEvent("進む", CanExecuteEvent, DoEvent)
-            };
+            Event = new PlayerEvent(
+                "階段を見つけた",
+                true,
+                new List<PlayerChoiceEvent>
+                {
+                    new PlayerChoiceEvent(
+                        "進む",
+                        CanExecuteEvent,
+                        (player, gameManager, map) => DoEvent(gameManager)
+                    )
+                }
+            );
         }
 
         public void Dispose()
@@ -56,17 +64,14 @@ namespace Domain.Service.Events
             _ => throw new NotImplementedException()
         };
 
-        public string ChoiceMessage => "階段を見つけた";
-        private readonly List<EntityEvent> _events;
-        public IReadOnlyList<EntityEvent> Events => _events;
-        public bool CanBeCanceled => true;
+        public IEvent Event { get; init; }
 
         private bool CanExecuteEvent()
         {
             return !IsLocked.CurrentValue;
         }
 
-        private UniTask DoEvent(IGameManager gameManager, IMap mapManager)
+        private UniTask DoEvent(IGameManager gameManager)
         {
             gameManager.LoadMap(Destination, DestinationId);
             return UniTask.CompletedTask;

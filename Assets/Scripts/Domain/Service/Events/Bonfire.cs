@@ -18,7 +18,10 @@ namespace Domain.Service.Events
         public Bonfire(EntityMemento memento)
         {
             _entity = new Entity(memento);
-            _events = new List<EntityEvent>();
+            Event = new CharacterEvent(
+                () => false,
+                (character, gameManager, map) => UniTask.FromResult(false)
+            );
         }
 
         public Id<IEntity> Id => _entity.Id;
@@ -29,10 +32,7 @@ namespace Domain.Service.Events
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
-        public string ChoiceMessage => "";
-        public bool CanBeCanceled => true;
-        private readonly List<EntityEvent> _events;
-        public IReadOnlyList<EntityEvent> Events => _events;
+        public IEvent Event { get; init; }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {

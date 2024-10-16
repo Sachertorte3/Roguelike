@@ -41,6 +41,7 @@ namespace Domain.Model.Item
         public bool CannotDropIfCursed { get; }
         public bool IdentifyIfGot { get; }
         public bool IdentifyIfUsed { get; }
+        public bool IsCurseIdentified { get; }
         public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }

@@ -53,6 +53,7 @@ namespace Provider
                     item.IsCursed,
                     item.IsShiny,
                     player.IsKnownItem(item),
+                    player.IsKnownItem(item) || item.IsCurseIdentified,
                     item.Info(player, itemDatabase),
                     index);
             }
@@ -80,7 +81,7 @@ namespace Provider
                 index);
             inventoryView.UpdateCursed(
                 item.IsCursed,
-                player.IsKnownItem(item),
+                player.IsKnownItem(item) || item.IsCurseIdentified,
                 index);
             inventoryView.UpdateInfo(item.Info(player, itemDatabase), index);
         }

@@ -24,12 +24,12 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isIdentified)
+        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified, bool isCurseIdentified)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
-            SetCount(count, isIdentified);
-            SetCursed(isCursed, isIdentified);
+            SetCount(count, isCountIdentified);
+            SetCursed(isCursed, isCurseIdentified);
             SetShiny(isShiny);
         }
 

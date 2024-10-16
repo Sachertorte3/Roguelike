@@ -9,7 +9,7 @@ namespace Domain.Service.ItemEffect
     {
         public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
         {
-            var disabledItems = actor.Inventory.AllItems.Where(item => !item.IsCursed);
+            var disabledItems = actor.Inventory.AllItems.Where(item => !item.IsCursed && (actor.IsKnownItem(item) || item.IsCurseIdentified));
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 

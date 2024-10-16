@@ -9,7 +9,6 @@ using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -21,6 +20,7 @@ namespace Domain.Model.Character
     {
         public bool IsLeader { get; }
         public bool IsBoss { get; }
+        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps { get; }
         public bool CanThroughWalls { get; }
         public CharacterState State { get; }
         public void SetWaitState();
@@ -53,7 +53,7 @@ namespace Domain.Model.Character
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map);
         public bool CanMove(Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map);
         public bool CanMove(Direction8 direction, IPassableChecker map);
-        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool  canThroughWalls, IPassableChecker map);
+        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map);
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map);
         public void Turn(Direction8 direction);
         public void FaceNearestCharacter(IMap map);

@@ -46,6 +46,9 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnAffiliationChangedMessage Message)> OnAffiliationChanged =>
             _events.GetObservable<OnAffiliationChangedMessage>();
 
+        public Observable<(ICharacter Character, OnAffectedByTrapFlagsChangedMessage Message)> OnAffectedByTrapFlagsChanged =>
+            _events.GetObservable<OnAffectedByTrapFlagsChangedMessage>();
+
         public void Dispose()
         {
             _events.Dispose();
@@ -86,6 +89,8 @@ namespace Domain.Service.Characters
             _events.Add(character,
                 character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
             _events.Add(character, character.Affiliation.OnAffiliationChanged);
+            _events.Add(character,
+                character.IsAffectedByTraps.Select(isAffectedByTrap => new OnAffectedByTrapFlagsChangedMessage(isAffectedByTrap)));
         }
 
         public void Remove(ICharacter character)

@@ -14,18 +14,18 @@ namespace Domain.Service.Events
     public class CharacterEvent : IEvent
     {
         public bool IsPlayerOnly => false;
-        public Func<bool> CanExecuteEvent { get; init; }
+        public Func<ICharacter, bool> CanExecuteEvent { get; init; }
         private readonly Func<ICharacter, IGameManager, IMap, UniTask> _doEvent;
         public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent => async (character, gameManager, map) =>
         {
-            if (CanExecuteEvent())
+            if (CanExecuteEvent(character))
             {
                 await _doEvent(character, gameManager, map);
                 return true;
             }
             return false;
         };
-        public CharacterEvent(Func<bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
+        public CharacterEvent(Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
         {
             CanExecuteEvent = canExecuteEvent;
             _doEvent = doEvent;
@@ -35,7 +35,7 @@ namespace Domain.Service.Events
     internal class PlayerEvent : IEvent
     {
         public bool IsPlayerOnly => true;
-        public Func<bool> CanExecuteEvent => () => Events.Any(e => e.CanExecuteEvent());
+        public Func<ICharacter, bool> CanExecuteEvent => (character) => Events.Any(e => e.CanExecuteEvent(character));
         public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent { get; init; }
         public readonly string? ChoiceMessage;
         public readonly bool CanBeCanceled;
@@ -52,7 +52,7 @@ namespace Domain.Service.Events
             {
                 var choices = new List<string>();
 
-                var executableEvents = Events.Where(e => e.CanExecuteEvent()).ToList();
+                var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
                 foreach (var eventData in executableEvents)
                 {
                     choices.Add(eventData.ChoiceText);
@@ -90,7 +90,7 @@ namespace Domain.Service.Events
                 firstChoiceIndex += 1;
             }
 
-            var executableEvents = Events.Where(e => e.CanExecuteEvent()).ToList();
+            var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
             foreach (var eventData in executableEvents)
             {
                 choices.Add(eventData.ChoiceText);
@@ -126,18 +126,18 @@ namespace Domain.Service.Events
     {
         public bool IsPlayerOnly => true;
         public string ChoiceText { get; init; }
-        public Func<bool> CanExecuteEvent { get; init; }
+        public Func<ICharacter, bool> CanExecuteEvent { get; init; }
         private readonly Func<ICharacter, IGameManager, IMap, UniTask> _doEvent;
         public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent => async (character, gameManager, map) =>
         {
-            if (CanExecuteEvent())
+            if (CanExecuteEvent(character))
             {
                 await _doEvent(character, gameManager, map);
                 return true;
             }
             return false;
         };
-        public PlayerChoiceEvent(string choiceText, Func<bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
+        public PlayerChoiceEvent(string choiceText, Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
         {
             ChoiceText = choiceText;
             CanExecuteEvent = canExecuteEvent;

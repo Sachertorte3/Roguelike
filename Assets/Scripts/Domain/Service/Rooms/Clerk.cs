@@ -18,7 +18,7 @@ namespace Domain.Service.Rooms
         public readonly ICharacter Character;
         public IEvent Event { get; init; }
 
-        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        public Clerk(ICharacter character, Func<ICharacter, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
             Event = new PlayerEvent(

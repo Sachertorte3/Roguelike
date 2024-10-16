@@ -29,6 +29,7 @@ MonoBehaviour:
       rid: 4425517220030054408
     <Effects>k__BackingField:
     - rid: 4425517220030054409
+    - rid: 5486256623760965632
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -65,3 +66,9 @@ MonoBehaviour:
         - _element: 3
           _power: 5
         _criticalRate: 0
+    - rid: 5486256623760965632
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u9759\u96FB\u6C17"
+        _probabilityOfSuccess: 1

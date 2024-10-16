@@ -108,6 +108,7 @@ namespace Domain.Service.Characters
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
+        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps => _statusManager.IsAffectedByTrap;
         public bool CanThroughWalls { get; init; }
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }

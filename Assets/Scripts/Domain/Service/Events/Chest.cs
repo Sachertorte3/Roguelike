@@ -33,7 +33,7 @@ namespace Domain.Service.Events
                 new List<PlayerChoiceEvent>{
                     new PlayerChoiceEvent(
                         "開ける",
-                        () => true,
+                        (player) => true,
                         async (player, gameManager, map) =>
                         {
                             await DoEvent(map);

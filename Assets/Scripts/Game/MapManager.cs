@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
-using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -312,7 +311,6 @@ namespace Game
             return EventEntities
                 .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
-                .Where(eventEntity => eventEntity.Event.CanExecuteEvent())
                 .FirstOrDefault();
         }
 
@@ -331,12 +329,12 @@ namespace Game
             return FireEntities.Any(fire => fire.CurrentPosition == position);
         }
 
-        public async UniTask ExecuteTrapAt(Vector2Int position, IActorOfEffect actor)
+        public async UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor)
         {
             var trap = GetEventEntityAt(position, EntityLayer.Bottom);
-            if (trap != null && trap is Trap trapEntity)
+            if (trap != null && trap is Trap trapEntity && trapEntity.Event.CanExecuteEvent(actor))
             {
-                await trapEntity.Execute(this, actor);
+                await trapEntity.Event.DoEvent(actor, Globals.GameManager, this);
             }
         }
 
@@ -607,6 +605,16 @@ namespace Game
                 {
                     if (positionChanged.Character == Player || !eventEntity.Event.IsPlayerOnly)
                         await eventEntity.Event.DoEvent(positionChanged.Character, Globals.GameManager, this);
+                }
+                EventExecutionCount--;
+            }).AddTo(_disposables);
+
+            CharacterManager.CharacterEvents.OnAffectedByTrapFlagsChanged.Subscribe(async affectedByTrap =>
+            {
+                EventExecutionCount++;
+                if (affectedByTrap.Message.IsAffectedByTrap)
+                {
+                    await ExecuteTrapAt(affectedByTrap.Character.CurrentPosition, affectedByTrap.Character);
                 }
                 EventExecutionCount--;
             }).AddTo(_disposables);

@@ -14,7 +14,7 @@ namespace Domain.Model
     public interface IEvent
     {
         public bool IsPlayerOnly { get; }
-        public Func<bool> CanExecuteEvent { get; }
+        public Func<ICharacter, bool> CanExecuteEvent { get; }
         public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent { get; }
     }
 }

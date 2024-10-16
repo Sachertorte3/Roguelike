@@ -35,7 +35,7 @@ namespace Domain.Service.Events
                 {
                     new PlayerChoiceEvent(
                         "進む",
-                        CanExecuteEvent,
+                        (player) => CanExecuteEvent(),
                         (player, gameManager, map) => DoEvent(gameManager)
                     )
                 }

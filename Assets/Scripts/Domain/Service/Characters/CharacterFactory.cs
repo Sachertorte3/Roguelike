@@ -5,7 +5,6 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Type;
-using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
@@ -33,7 +32,7 @@ namespace Domain.Service.Characters
                 characterType: new Human("Chara_Hero1_USM"),
                 behavior: PlayerBehavior.Build(),
                 status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, CommonSenseParameters.PlayerNaturalRecoveryRate,
-                    new(), new(), new(), 10, false, false, 1, false),
+                    new(), new(), new(), 10, false, false, true, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
                 skills: new[]
@@ -102,7 +101,7 @@ namespace Domain.Service.Characters
                     isShiny
                         ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
                         : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, data.ConditionResistance, 8, data.IsHard,
-                    data.IsHeavy, data.MoveSpeed.ToWaitTime(), isSlept),
+                    data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
                 skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),

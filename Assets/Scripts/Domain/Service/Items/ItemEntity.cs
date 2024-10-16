@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -111,7 +112,7 @@ namespace Domain.Service.Items
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
             }
-            await map.ExecuteTrapAt(destination, actor);
+            await map.ExecuteTrapAt(destination, actor as ICharacter);
 
             if (Item.CanActivateWhenThrown)
             {

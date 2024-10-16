@@ -40,7 +40,7 @@ namespace Domain.Model.Map
         public bool IsPassableOnMap(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
         public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer);
-        public UniTask ExecuteTrapAt(Vector2Int position, IActorOfEffect actor);
+        public UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor);
         public void UpdateTurn(int turn);
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);

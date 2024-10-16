@@ -6,6 +6,7 @@ namespace Domain.Model.Condition
         Blind,
         OverDrive,
         Hard,
-        Heavy
+        Heavy,
+        IsAffectedByTrap
     }
 }

@@ -100,6 +100,7 @@ namespace Domain.Service.Items
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
             IsCursed = data.IsCursed;
+            CannotUseIfCursed = data.CannotUseIfCursed;
             CannotDropIfCursed = data.CannotDropIfCursed;
             IdentifyIfGot = data.IdentifyIfGot;
             IdentifyIfUsed = data.IdentifyIfUsed;

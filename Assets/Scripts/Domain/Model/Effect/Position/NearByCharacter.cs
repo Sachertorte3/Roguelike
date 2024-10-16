@@ -34,7 +34,7 @@ namespace Domain.Model.Effect.Position
 
         public float EvaluateHitProbability()
         {
-            return NumberOfTarget * 50;
+            return NumberOfTarget;
         }
 
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades()

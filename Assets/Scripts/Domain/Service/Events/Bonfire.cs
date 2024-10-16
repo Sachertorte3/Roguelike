@@ -19,7 +19,7 @@ namespace Domain.Service.Events
         {
             _entity = new Entity(memento);
             Event = new CharacterEvent(
-                () => false,
+                (character) => false,
                 (character, gameManager, map) => UniTask.FromResult(false)
             );
         }

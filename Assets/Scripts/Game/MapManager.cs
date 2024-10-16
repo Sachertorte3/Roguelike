@@ -332,7 +332,7 @@ namespace Game
         public async UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor)
         {
             var trap = GetEventEntityAt(position, EntityLayer.Bottom);
-            if (trap != null && trap is Trap trapEntity && trapEntity.Event.CanExecuteEvent(actor))
+            if (trap != null && trap is Trap trapEntity)
             {
                 await trapEntity.Event.DoEvent(actor, Globals.GameManager, this);
             }

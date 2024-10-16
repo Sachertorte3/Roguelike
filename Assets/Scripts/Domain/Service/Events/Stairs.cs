@@ -36,7 +36,7 @@ namespace Domain.Service.Events
                     new PlayerChoiceEvent(
                         "進む",
                         (player) => CanExecuteEvent(),
-                        (player, gameManager, map) => DoEvent(gameManager)
+                        (gameManager, map) => DoEvent(gameManager)
                     )
                 }
             );

@@ -14,70 +14,67 @@ namespace Domain.Service.Events
     public class CharacterEvent : IEvent
     {
         public bool IsPlayerOnly => false;
-        public Func<ICharacter, bool> CanExecuteEvent { get; init; }
+        private readonly Func<ICharacter, bool> _canExecuteEvent;
         private readonly Func<ICharacter, IGameManager, IMap, UniTask> _doEvent;
-        public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent => async (character, gameManager, map) =>
+        public CharacterEvent(Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
         {
-            if (CanExecuteEvent(character))
+            _canExecuteEvent = canExecuteEvent;
+            _doEvent = doEvent;
+        }
+        public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
+        {
+            if (_canExecuteEvent(character))
             {
                 await _doEvent(character, gameManager, map);
                 return true;
             }
             return false;
-        };
-        public CharacterEvent(Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
-        {
-            CanExecuteEvent = canExecuteEvent;
-            _doEvent = doEvent;
         }
     }
 
     internal class PlayerEvent : IEvent
     {
         public bool IsPlayerOnly => true;
-        public Func<ICharacter, bool> CanExecuteEvent => (character) => Events.Any(e => e.CanExecuteEvent(character));
-        public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent { get; init; }
         public readonly string? ChoiceMessage;
         public readonly bool CanBeCanceled;
         public readonly IReadOnlyList<PlayerChoiceEvent> Events;
-        public readonly string ChoiceText;
 
         public PlayerEvent(string? choiceMessage, bool canBeCanceled, List<PlayerChoiceEvent> choices)
         {
             ChoiceMessage = choiceMessage;
             CanBeCanceled = canBeCanceled;
             Events = choices;
+        }
 
-            DoEvent = async (character, gameManager, map) =>
+        public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
+        {
+            var choices = new List<string>();
+
+            var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
+            foreach (var eventData in executableEvents)
             {
-                var choices = new List<string>();
+                choices.Add(eventData.ChoiceText);
+            }
 
-                var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
-                foreach (var eventData in executableEvents)
-                {
-                    choices.Add(eventData.ChoiceText);
-                }
+            if (CanBeCanceled)
+            {
+                choices.Add("やめる");
+            }
 
-                if (CanBeCanceled)
-                {
-                    choices.Add("やめる");
-                }
+            var choiceIndex = 0;
+            if (choices.Count > 1)
+            {
+                choiceIndex = await gameManager.GetChoice(ChoiceMessage, choices.ToArray());
+            }
 
-                var choiceIndex = 0;
-                if (choices.Count > 1)
-                {
-                    choiceIndex = await gameManager.GetChoice(ChoiceMessage, choices.ToArray());
-                }
-
-                switch (choices[choiceIndex])
-                {
-                    case "やめる":
-                        return false;
-                    default:
-                        await executableEvents[choiceIndex].DoEvent(character, gameManager, map);
-                        return true;
-                }
-            };
+            switch (choices[choiceIndex])
+            {
+                case "やめる":
+                    return false;
+                default:
+                    await executableEvents[choiceIndex].DoEvent(character, gameManager, map);
+                    return true;
+            }
         }
 
         public async UniTask<IAction?> DoAction(ICharacter character, IGameManager gameManager, IMap map, Swap swap)
@@ -126,22 +123,23 @@ namespace Domain.Service.Events
     {
         public bool IsPlayerOnly => true;
         public string ChoiceText { get; init; }
-        public Func<ICharacter, bool> CanExecuteEvent { get; init; }
-        private readonly Func<ICharacter, IGameManager, IMap, UniTask> _doEvent;
-        public Func<ICharacter, IGameManager, IMap, UniTask<bool>> DoEvent => async (character, gameManager, map) =>
+        private readonly Func<ICharacter, bool> _canExecuteEvent;
+        private readonly Func<IGameManager, IMap, UniTask> _doEvent;
+        public PlayerChoiceEvent(string choiceText, Func<ICharacter, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        {
+            ChoiceText = choiceText;
+            _canExecuteEvent = canExecuteEvent;
+            _doEvent = doEvent;
+        }
+        public bool CanExecuteEvent(ICharacter character) => _canExecuteEvent(character);
+        public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
         {
             if (CanExecuteEvent(character))
             {
-                await _doEvent(character, gameManager, map);
+                await _doEvent(gameManager, map);
                 return true;
             }
             return false;
-        };
-        public PlayerChoiceEvent(string choiceText, Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
-        {
-            ChoiceText = choiceText;
-            CanExecuteEvent = canExecuteEvent;
-            _doEvent = doEvent;
         }
     }
 }

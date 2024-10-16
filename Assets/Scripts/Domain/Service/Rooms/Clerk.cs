@@ -29,7 +29,7 @@ namespace Domain.Service.Rooms
                     new PlayerChoiceEvent(
                         "代金を支払う",
                         canExecuteEvent,
-                        (player, gameManager, map) => doEvent(gameManager, map)
+                        (gameManager, map) => doEvent(gameManager, map)
                     )
                 }
             );

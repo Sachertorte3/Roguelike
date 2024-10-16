@@ -32,8 +32,9 @@ namespace Domain.Service.Rooms
                     new PlayerChoiceEvent(
                         "渡す",
                         (player) => Character.CanUseItem && Character.IsAlly(player),
-                        async (player, gameManager, map) =>
+                        async (gameManager, map) =>
                         {
+                            var player = map.Player;
                             var item = await player.ItemSelector.SelectItem(player.Inventory);
                             if (item != null)
                             {
@@ -54,7 +55,7 @@ namespace Domain.Service.Rooms
                 new PlayerChoiceEvent(
                     "一緒に行動",
                     (player) => Character.IsAlly(player),
-                    (player, gameManager, map) =>
+                    (gameManager, map) =>
                     {
                         Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
                         return UniTask.CompletedTask;
@@ -62,7 +63,7 @@ namespace Domain.Service.Rooms
                 new PlayerChoiceEvent(
                     "敵優先",
                     (player) => Character.IsAlly(player),
-                    (player, gameManager, map) => {
+                    (gameManager, map) => {
                         Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
                         return UniTask.CompletedTask;
                     })

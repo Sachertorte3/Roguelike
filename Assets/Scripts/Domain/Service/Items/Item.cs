@@ -108,9 +108,9 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string GetName(IHasInventory character, ItemDatabase itemDatabase)
+        public string GetName(IHasInventory player, ItemDatabase itemDatabase)
         {
-            if (character.IsKnownItem(this))
+            if (player.IsKnownItem(this))
                 return _fullName;
             return UnknownName(itemDatabase);
         }

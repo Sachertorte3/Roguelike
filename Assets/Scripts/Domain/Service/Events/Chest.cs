@@ -9,6 +9,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Entities;
 using Domain.Service.Items;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -34,7 +35,7 @@ namespace Domain.Service.Events
                     new PlayerChoiceEvent(
                         "開ける",
                         (player) => true,
-                        async (player, gameManager, map) =>
+                        async (gameManager, map) =>
                         {
                             await DoEvent(map);
                         }
@@ -57,16 +58,24 @@ namespace Domain.Service.Events
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
-        private UniTask DoEvent(IMap mapManager)
+        private UniTask DoEvent(IMap map)
         {
-            mapManager.RemoveEventEntity(this);
+            map.RemoveEventEntity(this);
             if (_item.IsSome)
             {
-                mapManager.SpawnItem(_item.Value, CurrentPosition);
+                if (map.Player.TryAddToInventory(_item.Value))
+                {
+                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemDatabase)}を手に入れた");
+                }
+                else
+                {
+                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemDatabase)}を拾えなかった");
+                    map.SpawnItem(_item.Value, CurrentPosition);
+                }
             }
             else
             {
-                mapManager.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
+                map.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
             }
 
             return UniTask.CompletedTask;

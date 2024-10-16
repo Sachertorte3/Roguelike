@@ -8,6 +8,7 @@ using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
+using UnityEngine;
 
 namespace Domain.Service.Events
 {
@@ -79,6 +80,12 @@ namespace Domain.Service.Events
 
         public async UniTask<IAction?> DoAction(ICharacter character, IGameManager gameManager, IMap map, Swap swap)
         {
+            var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
+            if (!executableEvents.Any())
+            {
+                return null;
+            }
+
             var choices = new List<string>();
             var firstChoiceIndex = 0;
             if (swap.Doable(character, map))
@@ -87,7 +94,6 @@ namespace Domain.Service.Events
                 firstChoiceIndex += 1;
             }
 
-            var executableEvents = Events.Where(e => e.CanExecuteEvent(character)).ToList();
             foreach (var eventData in executableEvents)
             {
                 choices.Add(eventData.ChoiceText);

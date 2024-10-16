@@ -15,6 +15,7 @@ namespace Game
         public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
         private readonly List<Trap> _traps = new();
+        private readonly List<Money> _money = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
@@ -43,6 +44,13 @@ namespace Game
                 Spawn(trap);
             }
 
+            foreach (var moneyMemento in eventEntities.Money)
+            {
+                var money = new Money(moneyMemento);
+                _money.Add(money);
+                Spawn(money);
+            }
+
             _bonfire = eventEntities.Bonfire.Map(bonfire => new Bonfire(bonfire));
             if (_bonfire.HasValue)
                 Spawn(_bonfire.Value!);
@@ -57,18 +65,20 @@ namespace Game
                 Stairs.Select(stairs => stairs.Serialize()).ToList(),
                 _chests.Select(chest => chest.Serialize()).ToList(),
                 _traps.Select(trap => trap.Serialize()).ToList(),
+                _money.Select(money => money.Serialize()).ToList(),
                 _bonfire.Map(bonfire => bonfire.Serialize())
             );
         }
 
         public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
-            IEnumerable<TrapMemento> traps, Option<EntityMemento> bonfire)
+            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<EntityMemento> bonfire)
         {
             return new EventEntitiesMemento
             (
                 stairs.ToList(),
                 chests.ToList(),
                 traps.ToList(),
+                money.ToList(),
                 bonfire
             );
         }
@@ -103,6 +113,10 @@ namespace Game
             else if (eventEntity is Trap trap)
             {
                 _traps.Remove(trap);
+            }
+            else if (eventEntity is Money money)
+            {
+                _money.Remove(money);
             }
             else if (eventEntity is Bonfire)
             {

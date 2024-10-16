@@ -28,6 +28,7 @@ namespace Game
         private readonly List<StairsMemento> _stairs = new();
         private readonly List<ChestMemento> _chests = new();
         private readonly List<TrapMemento> _traps = new();
+        private readonly List<MoneyMemento> _money = new();
         private EntityMemento? _bonfire;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
@@ -132,25 +133,21 @@ namespace Game
             _tilemap.SetIces(new[] { position }, true);
         }
 
-        private int GetCount(float attemptCount)
-        {
-            var probability = 0.5f;
-            return MathExtension.RandomBinomialApproxValue(attemptCount * 2, probability);
-        }
-
         private void CreateRoom(DungeonMapData data, Id<Room> roomId)
         {
             if (data.RoundRoomCorner)
                 _tilemap.RoundRoomCorner(roomId);
 
-            var characterCount = GetCount(data.CharacterCount);
-            var itemCount = GetCount(data.ItemCount);
+            var itemCount = data.ItemCount();
+            var moneyCount = data.MoneyCount();
             var chestCount = Random.value < data.ChestChance ? 1 : 0;
-            var trapCount = GetCount(data.TrapCount);
+            var characterCount = data.CharacterCount();
+            var trapCount = data.TrapCount();
 
-            AddCharactersToRoom(data, roomId, characterCount);
             AddItemsToRoom(data, roomId, itemCount);
+            AddMoneyToRoom(data, roomId, moneyCount);
             AddChestsToRoom(data, roomId, chestCount);
+            AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
         }
 
@@ -188,6 +185,7 @@ namespace Game
                 _tilemap.RoundRoomCorner(roomId);
 
             AddItemsToRoom(data, roomId, 5);
+            AddMoneyToRoom(data, roomId, 3);
             AddChestsToRoom(data, roomId, 1);
             AddTrapsToRoom(data, roomId, 3);
 
@@ -223,11 +221,13 @@ namespace Game
                 _characters.Add(character);
             }
 
-            var itemCount = GetCount(data.ItemCount);
+            var itemCount = data.ItemCount();
+            var moneyCount = data.MoneyCount();
             var chestCount = Random.value < data.ChestChance ? 1 : 0;
-            var trapCount = GetCount(data.TrapCount);
+            var trapCount = data.TrapCount();
 
             AddItemsToRoom(data, roomId, itemCount);
+            AddMoneyToRoom(data, roomId, moneyCount);
             AddChestsToRoom(data, roomId, chestCount);
             AddTrapsToRoom(data, roomId, trapCount);
 
@@ -250,6 +250,14 @@ namespace Game
             {
                 var item = data.ItemDatabase.GetRandomItem();
                 _items.Add(ItemFactory.Build(position, Item.Build(item)));
+            }
+        }
+
+        public void AddMoneyToRoom(DungeonMapData data, Id<Room> roomId, int count)
+        {
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
+            {
+                _money.Add(Money.Build(position, data.MoneyAmount()));
             }
         }
 
@@ -312,7 +320,7 @@ namespace Game
                 _tilemap.Build(),
                 _characters,
                 _items,
-                EventEntityManager.Build(_stairs, _chests, _traps, _bonfire.ToOption()),
+                EventEntityManager.Build(_stairs, _chests, _traps, _money, _bonfire.ToOption()),
                 FireEntityManager.Build(),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),

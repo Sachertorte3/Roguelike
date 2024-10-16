@@ -73,13 +73,13 @@ namespace Domain.Service.Items
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.IsBlank(result + direction.Vector(), EntityLayer.Middle))
+                if (map.CanPlace(result + direction.Vector(), true, false, false, EntityLayer.Middle))
                 {
                     result += direction.Vector();
                 }
                 else
                 {
-                    if (map.IsPassableOnMap(result + direction.Vector()))
+                    if (map.CanPlace(result + direction.Vector(), true, false, true, EntityLayer.Middle))
                     {
                         result += direction.Vector();
                     }

@@ -88,6 +88,8 @@ namespace Domain.Model.Dungeon
                 floorData.MonsterHouseChance,
                 floorData.RestRoomChance,
                 floorData.Room.ItemCount,
+                floorData.Room.MoneyCount,
+                floorData.Room.MoneyAverage,
                 floorData.Room.CharacterCount,
                 floorData.Room.TrapCount,
                 floorData.ExistBoss,

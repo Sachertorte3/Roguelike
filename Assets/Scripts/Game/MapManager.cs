@@ -306,12 +306,12 @@ namespace Game
                 .Where(p => visibleArea.Contains(p));
         }
 
-        public IEventEntity? GetEventEntityAt(Vector2Int position, EntityLayer layer)
+        public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer)
         {
             return EventEntities
                 .Where(eventEntity => eventEntity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Layer == layer)
-                .FirstOrDefault();
+                .ToList();
         }
 
         public IEntity? GetEntityAt(Vector2Int position)
@@ -331,10 +331,13 @@ namespace Game
 
         public async UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor)
         {
-            var trap = GetEventEntityAt(position, EntityLayer.Bottom);
-            if (trap != null && trap is Trap trapEntity)
+            var eventEntities = GetEventEntityAt(position, EntityLayer.Bottom);
+            foreach (var eventEntity in eventEntities)
             {
-                await trapEntity.Event.DoEvent(actor, Globals.GameManager, this);
+                if (eventEntity is Trap trapEntity)
+                {
+                    await trapEntity.Event.DoEvent(actor, Globals.GameManager, this);
+                }
             }
         }
 
@@ -600,8 +603,8 @@ namespace Game
                 }
 
                 EventExecutionCount++;
-                var eventEntity = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
-                if (eventEntity != null)
+                var eventEntities = GetEventEntityAt(positionChanged.Message.Position, EntityLayer.Bottom);
+                foreach (var eventEntity in eventEntities)
                 {
                     if (positionChanged.Character == Player || !eventEntity.Event.IsPlayerOnly)
                         await eventEntity.Event.DoEvent(positionChanged.Character, Globals.GameManager, this);

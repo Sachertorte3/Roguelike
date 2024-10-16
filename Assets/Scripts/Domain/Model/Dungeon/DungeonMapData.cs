@@ -3,6 +3,8 @@ using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using RandomDungeonWithBluePrint;
+using UnityEngine;
+using Utilities;
 using Utilities.Table;
 
 namespace Domain.Model.Dungeon
@@ -30,12 +32,22 @@ namespace Domain.Model.Dungeon
         float ShopChance,
         float MonsterHouseChance,
         float RestRoomChance,
-        float ItemCount,
-        float CharacterCount,
-        float TrapCount,
+        float ItemAttempt,
+        float MoneyAttempt,
+        float MoneyAverage,
+        float CharacterAttempt,
+        float TrapAttempt,
         bool ExistBoss,
         List<EnemyData> Boss,
         EnemyData Clerk,
         EnemyData Mimic
-    );
+    )
+    {
+        private int GetCount(float trials) => RandUtils.Binomial(trials * 2, 0.5f);
+        public int ItemCount() => GetCount(ItemAttempt);
+        public int MoneyCount() => GetCount(MoneyAttempt);
+        public int CharacterCount() => GetCount(CharacterAttempt);
+        public int TrapCount() => GetCount(TrapAttempt);
+        public int MoneyAmount() => Mathf.CeilToInt(RandUtils.LogNormalFromMean(MoneyAverage, MoneyAverage / 100f));
+    }
 }

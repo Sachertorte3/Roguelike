@@ -31,13 +31,15 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool CannotDropIfCursed { get; private set; }
         [field: SerializeField] public bool IdentifyIfGot { get; private set; }
         [field: SerializeField] public bool IdentifyIfUsed { get; private set; }
+        [field: SerializeField] public bool IsCurseIdentified { get; private set; }
         [field: SerializeField] public int UpgradeLimit { get; private set; }
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
 
-        public ItemMemento(string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny, ItemState state,
+        public ItemMemento(
+            string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny, ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
-            bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot, bool identifyIfUsed, int upgradeLimit, IConditionData[] conditions)
+            bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot, bool identifyIfUsed, bool isCurseIdentified, int upgradeLimit, IConditionData[] conditions)
         {
             Id = id;
             Category = category;
@@ -59,14 +61,16 @@ namespace Domain.Model.Memento
             CannotDropIfCursed = cannotDropIfCursed;
             IdentifyIfGot = identifyIfGot;
             IdentifyIfUsed = identifyIfUsed;
+            IsCurseIdentified = isCurseIdentified;
             UpgradeLimit = upgradeLimit;
             Conditions = conditions;
         }
 
-        public ItemMemento CopyWith(string? id = null, ItemCategory? category = null, string? baseName = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
+        public ItemMemento CopyWith(
+            string? id = null, ItemCategory? category = null, string? baseName = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
             List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null, Option<ISkillMemento>? skillOnThrow = null,
             bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null, int? remainingUsages = null,
-            bool? isCursed = null, bool? cannotUseIfCursed = null, bool? cannotDropIfCursed = null, bool? identifyIfGot = null, bool? identifyIfUsed = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
+            bool? isCursed = null, bool? cannotUseIfCursed = null, bool? cannotDropIfCursed = null, bool? identifyIfGot = null, bool? identifyIfUsed = null, bool? isCurseIdentified = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
         {
             return new ItemMemento(
                 id ?? Id,
@@ -89,6 +93,7 @@ namespace Domain.Model.Memento
                 cannotDropIfCursed ?? CannotDropIfCursed,
                 identifyIfGot ?? IdentifyIfGot,
                 identifyIfUsed ?? IdentifyIfUsed,
+                isCurseIdentified ?? IsCurseIdentified,
                 upgradeLimit ?? UpgradeLimit,
                 conditions ?? Conditions
             );

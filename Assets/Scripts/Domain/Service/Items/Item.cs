@@ -104,6 +104,7 @@ namespace Domain.Service.Items
             CannotDropIfCursed = data.CannotDropIfCursed;
             IdentifyIfGot = data.IdentifyIfGot;
             IdentifyIfUsed = data.IdentifyIfUsed;
+            IsCurseIdentified = data.IsCurseIdentified;
             UpgradeLimit = data.UpgradeLimit;
             _conditions = data.Conditions.ToList();
         }
@@ -134,6 +135,7 @@ namespace Domain.Service.Items
         public bool CannotDropIfCursed { get; init; }
         public bool IdentifyIfGot { get; init; }
         public bool IdentifyIfUsed { get; init; }
+        public bool IsCurseIdentified { get; private set; }
         public int UpgradeLimit { get; init; }
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
@@ -162,6 +164,7 @@ namespace Domain.Service.Items
                 cannotDropIfCursed: CannotDropIfCursed,
                 identifyIfGot: IdentifyIfGot,
                 identifyIfUsed: IdentifyIfUsed,
+                isCurseIdentified: IsCurseIdentified,
                 upgradeLimit: UpgradeLimit,
                 conditions: _conditions.ToArray()
             );
@@ -203,6 +206,7 @@ namespace Domain.Service.Items
                 cannotDropIfCursed: data.CannotDropIfCursed,
                 identifyIfGot: data.IdentifyIfGot,
                 identifyIfUsed: data.IdentifyIfUsed,
+                isCurseIdentified: false,
                 upgradeLimit: data.UpgradeLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
@@ -221,6 +225,7 @@ namespace Domain.Service.Items
             if (IsCursed && CannotUseIfCursed)
             {
                 GameLog.Add($"{GetName(actor, map.ItemDatabase)}は呪われているため使用できない");
+                SetCurseIdentified(true);
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -332,8 +337,10 @@ namespace Domain.Service.Items
 
         public void SetCursed(IHasInventory actor, ItemDatabase itemDatabase, bool isCursed)
         {
+            SetCurseIdentified(true);
             if (IsCursed == isCursed)
             {
+                _onCursedChanged.OnNext(isCursed);
                 return;
             }
 
@@ -347,6 +354,12 @@ namespace Domain.Service.Items
                 GameLog.Add($"{GetName(actor, itemDatabase)}の呪いは解かれた");
             }
             _onCursedChanged.OnNext(isCursed);
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
+        public void SetCurseIdentified(bool isCurseIdentified)
+        {
+            IsCurseIdentified = isCurseIdentified;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
@@ -475,11 +488,17 @@ namespace Domain.Service.Items
             }
             else
             {
-                var info = $"{State.GetDescription()}{UnknownName(itemDatabase)}";
+                var info = $"{State.GetDescription()}{UnknownName(itemDatabase)}\n";
+                if (IsCurseIdentified && IsCursed)
+                    info += $"呪われている\n";
+                else if (IsCurseIdentified && !IsCursed)
+                    info += $"呪われていない\n";
+                else
+                    info += $"呪い状態不明\n";
                 if (CanActivateWhenUsed)
-                    info += $"\n使用可能";
+                    info += $"使用可能\n";
                 if (CanActivateWhenThrown)
-                    info += $"\n投擲可能";
+                    info += $"投擲可能\n";
                 return info;
             }
         }
@@ -488,8 +507,12 @@ namespace Domain.Service.Items
 
         public string FullInfo()
         {
-            var info = $"{State.GetDescription()}{_fullName}";
-            info += $"\n価格: {Price}\n";
+            var info = $"{State.GetDescription()}{_fullName}\n";
+            info += $"価格: {Price}\n";
+            if (IsCursed)
+                info += $"呪われている\n";
+            else
+                info += $"呪われていない\n";
             if (_usable)
             {
                 if (_hasSameSkill)

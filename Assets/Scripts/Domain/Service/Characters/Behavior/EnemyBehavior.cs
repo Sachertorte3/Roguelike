@@ -171,13 +171,7 @@ namespace Domain.Service.Characters.Behavior
             {
                 visibleLeaders = visibleLeaders.Append(map.Player);
             }
-            
-            Debug.Log(visibleEnemies.Count());
-            foreach (var enemy in visibleEnemies)
-            {
-                Debug.Log(enemy);
-                Debug.Log(enemy.CurrentPosition);
-            }
+
             var targetedEnemy = visibleEnemies.MinByOrDefault(enemy => VectorExtension.ChebyshevDistance(character.CurrentPosition, enemy.CurrentPosition), null);
             var targetedLeader = visibleLeaders.MaxByOrDefault(leader => character.Affiliation.GetAffection(leader.Affiliation), null);
 

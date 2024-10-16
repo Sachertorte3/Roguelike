@@ -68,4 +68,8 @@ MonoBehaviour:
     - rid: 5486256542496849938
       type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        OnlyApplyToItem: 1
+        ApplyToCharacter: 0
+        ApplyToItem: 1
+        ApplyToMoney: 1
+        ApplyToTrap: 1
+        ApplyToChest: 1

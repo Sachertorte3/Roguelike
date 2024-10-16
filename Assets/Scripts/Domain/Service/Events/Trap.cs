@@ -16,14 +16,14 @@ namespace Domain.Service.Events
 {
     public class Trap : ISerializable<TrapMemento>, IIconEventEntity
     {
-        private readonly string _name;
+        public readonly string Name;
         private readonly Entity _entity;
         private readonly SpawnEffectSkill _skill;
         private readonly float _probabilityOfBreaking;
 
         public Trap(TrapMemento memento)
         {
-            _name = memento.Name;
+            Name = memento.Name;
             _entity = new Entity(memento.Entity);
             _skill = new SpawnEffectSkill(memento.Skill);
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
@@ -59,7 +59,7 @@ namespace Domain.Service.Events
 
         public TrapMemento Serialize()
         {
-            return new TrapMemento(_name, _entity.Serialize(), _skill.Serialize(), _probabilityOfBreaking);
+            return new TrapMemento(Name, _entity.Serialize(), _skill.Serialize(), _probabilityOfBreaking);
         }
 
         public static TrapMemento Build(TrapData trap, Vector2Int position)
@@ -70,11 +70,11 @@ namespace Domain.Service.Events
 
         public async UniTask Execute(IMap map, IActorOfEffect actor)
         {
-            GameLog.Add($"{_name}が起動した");
+            GameLog.Add($"{Name}が起動した");
             await _skill.Use(actor, CurrentPosition, DirectionMethods.AllDirections.GetAtRandom(), map);
             if (Random.value < _probabilityOfBreaking)
             {
-                GameLog.Add($"{_name}は壊れた");
+                GameLog.Add($"{Name}は壊れた");
                 _entity.Destroy();
             }
         }

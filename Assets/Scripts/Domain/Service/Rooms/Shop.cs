@@ -33,7 +33,7 @@ namespace Domain.Service.Rooms
         {
             Clerk = new Clerk(
                 clerk,
-                (player) => (CanExecute && GetSalePrice(mapManager) > 0) || GetPurchasePrice(mapManager) > 0,
+                (player) => CanExecute && (GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0),
                 (_, map) =>
                 {
                     Purchase(map);

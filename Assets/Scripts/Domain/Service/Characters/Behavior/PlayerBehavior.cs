@@ -80,27 +80,30 @@ namespace Domain.Service.Characters.Behavior
 
                         var swap = new Swap(move.Direction);
                         var destination = character.CurrentPosition + move.Direction.Vector();
-                        var eventEntity = map.GetEventEntityAt(destination, EntityLayer.Middle);
+                        var eventEntities = map.GetEventEntityAt(destination, EntityLayer.Middle);
                         character.Turn(move.Direction);
 
                         if (move.Doable(character, map))
                             return move;
-                        else if (eventEntity != null)
+                        if (eventEntities.Any())
                         {
-                            switch (eventEntity.Event)
+                            foreach (var eventEntity in eventEntities)
                             {
-                                case PlayerEvent playerEvent:
-                                    var eventAction = await playerEvent.DoAction(map.Player, gameManager, map, swap);
-                                    if (eventAction != null && eventAction.Doable(character, map))
-                                        return eventAction;
-                                    break;
-                                case CharacterEvent characterEvent:
-                                    if (await characterEvent.DoEvent(map.Player, gameManager, map))
-                                        return new DoNothing();
-                                    break;
+                                switch (eventEntity.Event)
+                                {
+                                    case PlayerEvent playerEvent:
+                                        var eventAction = await playerEvent.DoAction(map.Player, gameManager, map, swap);
+                                        if (eventAction != null && eventAction.Doable(character, map))
+                                            return eventAction;
+                                        break;
+                                    case CharacterEvent characterEvent:
+                                        if (await characterEvent.DoEvent(map.Player, gameManager, map))
+                                            return new DoNothing();
+                                        break;
+                                }
                             }
                         }
-                        else if (swap.Doable(character, map))
+                        if (swap.Doable(character, map))
                             return swap;
                         break;
                     case InputType.UseItem:

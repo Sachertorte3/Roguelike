@@ -13,8 +13,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "支配";
         public ParticleType ParticleType => ParticleType.None;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は支配された";
         public string DeleteLog => "は支配から解放された";
 

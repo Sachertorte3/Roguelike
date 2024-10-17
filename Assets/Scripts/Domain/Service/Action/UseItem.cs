@@ -11,7 +11,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return Item.CanActivateWhenUsed;
+            return !actor.CannotAct && Item.CanActivateWhenUsed;
         }
 
         public async UniTask Do(IActor actor, IMap map, IInput input)

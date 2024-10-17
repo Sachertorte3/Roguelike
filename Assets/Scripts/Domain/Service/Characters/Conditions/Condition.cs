@@ -21,8 +21,6 @@ namespace Domain.Service.Characters.Conditions
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
-        public bool CanAct => _condition.CanAct;
-        public bool CausesConfusion => _condition.CausesConfusion;
 
         public ConditionMemento Serialize()
         {

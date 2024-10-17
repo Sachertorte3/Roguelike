@@ -12,13 +12,12 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "睡眠";
         public ParticleType ParticleType => ParticleType.Sleep;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => false;
-        public bool CausesConfusion => false;
         public string InflictLog => "は眠りについた";
         public string DeleteLog => "は眠りから覚めた";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.CannotAct);
             hasCondition.StatusManager.AddFlagStat(FlagStatType.Blind);
         }
 
@@ -29,12 +28,13 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CannotAct);
             hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Blind);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CanAct ? CommonSenseParameters.OneTurnStunEquivalentHpReduction : 0;
+            return target.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
         }
 
         public float EvaluatePrice()

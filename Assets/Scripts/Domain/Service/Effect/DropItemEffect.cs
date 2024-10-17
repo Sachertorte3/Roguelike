@@ -12,12 +12,12 @@ using Random = UnityEngine.Random;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class CurseItemEffect : ActorlessEntityTargetEffect
+    public class DropItemEffect : ActorlessEntityTargetEffect
     {
         [OnInspectorInit("OnProbabilityOfSuccessChanged")]
         [SerializeField]
         [Range(0, 1)]
-        private float _probabilityOfSuccess = 0.25f;
+        private float _probabilityOfSuccess = 0.5f;
 
         public override Color Color => Colors.MediumPurple;
         public override Impact Impact => Impact.Harmful;
@@ -25,45 +25,50 @@ namespace Domain.Service.Effect
         private void OnProbabilityOfSuccessChanged()
         {
             if (_probabilityOfSuccess == 0)
-                _probabilityOfSuccess = 0.25f;
+                _probabilityOfSuccess = 0.5f;
         }
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.IsCurseProof)
+            if (target.IsSecureHold)
             {
-                GameLog.Add($"{target.GetName(map.Player)}は呪われない");
+                GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 return UniTask.CompletedTask;
             }
-            var notCursedItems = target.Inventory.AllItems.Where(item => !item.IsCursed).ToArray();
-            if (notCursedItems.Any())
+            var items = target.Inventory.AllItems.ToArray();
+            if (items.Any())
             {
-                var item = notCursedItems.GetAtRandom();
                 if (Random.value < _probabilityOfSuccess)
-                    item.SetCursed(map.Player, map.ItemDatabase, true);
+                {
+                    var item = items.GetAtRandom();
+                    var itemIndex = target.Inventory.GetItemIndex(item);
+                    target.DropItem(itemIndex, map, true);
+                }
                 else
-                    GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}は呪われなかった");
+                {
+                    GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
+                }
             }
             else
             {
-                GameLog.Add($"{target.GetName(map.Player)}は呪いの対象になるアイテムを持っていない");
+                GameLog.Add($"{target.GetName(map.Player)}はアイテムを持っていない");
             }
             return UniTask.CompletedTask;
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0.25f;
+            return 0.1f;
         }
 
         public override float EvaluatePrice()
         {
-            return 100;
+            return 50;
         }
 
         public override string Info()
         {
-            return $"呪い";
+            return $"アイテム弾き";
         }
     }
 }

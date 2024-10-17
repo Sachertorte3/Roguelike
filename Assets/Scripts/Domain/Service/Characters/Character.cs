@@ -95,12 +95,15 @@ namespace Domain.Service.Characters
             });
         }
 
-        public bool CanAct => _statusManager.Conditions.All(condition => condition.CanAct);
+        public bool CannotAct => _statusManager.CannotAct;
+        public bool CannotMove => _statusManager.CannotMove;
         public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
         public bool IsOverDrive => _statusManager.IsOverDrive;
-        public bool IsConfused => _statusManager.Conditions.Any(condition => condition.CausesConfusion);
+        public bool IsConfused => _statusManager.IsConfused;
         public bool IsHard => _statusManager.IsHard;
         public bool IsHeavy => _statusManager.IsHeavy;
+        public bool IsSecureHold => _statusManager.IsSecureHold;
+        public bool IsCurseProof => _statusManager.IsCurseProof;
         public bool IsDead => _statusManager.IsDead || _entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
         public Entity Entity => _entity;
@@ -343,10 +346,18 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public void DropItem(int itemIndex, IMap map)
+        public void DropItem(int itemIndex, IMap map, bool isForced)
         {
             var item = Inventory.GetItem(itemIndex);
-            if (item != null && item.IsCursed && item.CannotDropIfCursed)
+            if (item != null && isForced)
+            {
+                ReplaceInventory(null, itemIndex);
+                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を落とした");
+                map.SpawnItem(item,
+                    map.FindBlankPositionFrom(CurrentPosition,
+                        position => map.IsBlank(position, EntityLayer.Bottom)));
+            }
+            else if (item != null && item.IsCursed && item.CannotDropIfCursed)
             {
                 GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}は呪われていて捨てられない");
             }
@@ -360,7 +371,7 @@ namespace Domain.Service.Characters
                 ReplaceInventory(pickedUpItem?.Item, itemIndex);
                 if (item != null)
                 {
-                    GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を捨てた.");
+                    GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を捨てた");
                     map.SpawnItem(item,
                         map.FindBlankPositionFrom(CurrentPosition,
                             position => map.IsBlank(position, EntityLayer.Bottom)));

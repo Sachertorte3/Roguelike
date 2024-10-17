@@ -12,8 +12,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "盲目";
         public ParticleType ParticleType => ParticleType.Blind;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は盲目になった";
         public string DeleteLog => "の盲目は元に戻った";
 
@@ -34,7 +32,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CanAct ? CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2 : 0;
+            return target.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
         }
 
         public float EvaluatePrice()

@@ -11,7 +11,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return Skill.IsUsable();
+            return !actor.CannotAct && Skill.IsUsable();
         }
 
         public async UniTask Do(IActor actor, IMap map, IInput input)

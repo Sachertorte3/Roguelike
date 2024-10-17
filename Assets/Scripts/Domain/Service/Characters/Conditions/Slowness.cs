@@ -12,8 +12,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "鈍足";
         public ParticleType ParticleType => ParticleType.SlowDown;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は足が遅くなった";
         public string DeleteLog => "は元の速度に戻った";
 

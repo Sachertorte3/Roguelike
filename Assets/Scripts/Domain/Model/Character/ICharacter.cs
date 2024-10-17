@@ -26,7 +26,8 @@ namespace Domain.Model.Character
         public void SetWaitState();
         public int Money { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
-        public bool CanAct { get; }
+        public bool CannotAct { get; }
+        public bool CannotMove { get; }
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<Unit> OnAttacked { get; }

@@ -13,6 +13,7 @@ namespace View
         [SerializeField] private Tiles _volcanoTiles;
         [SerializeField] private Tiles _desertTiles;
         [SerializeField] private Tiles _dungeonTiles;
+        [SerializeField] private Tiles _voidTiles;
 
         private Tiles GetTiles(TileSet type)
         {
@@ -24,6 +25,7 @@ namespace View
                 TileSet.Volcano => _volcanoTiles,
                 TileSet.Desert => _desertTiles,
                 TileSet.Dungeon => _dungeonTiles,
+                TileSet.Void => _voidTiles,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }

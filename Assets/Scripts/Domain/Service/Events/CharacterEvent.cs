@@ -22,6 +22,7 @@ namespace Domain.Service.Events
             _canExecuteEvent = canExecuteEvent;
             _doEvent = doEvent;
         }
+        public bool CanExecuteEvent(ICharacter character) => _canExecuteEvent(character);
         public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
         {
             if (_canExecuteEvent(character))
@@ -46,7 +47,7 @@ namespace Domain.Service.Events
             CanBeCanceled = canBeCanceled;
             Events = choices;
         }
-
+        public bool CanExecuteEvent(ICharacter character) => Events.Where(e => e.CanExecuteEvent(character)).Any();
         public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
         {
             var choices = new List<string>();
@@ -116,13 +117,12 @@ namespace Domain.Service.Events
                 case "入れ替わる":
                     return swap;
                 case "やめる":
-                    break;
+                    return null;
                 default:
                     await executableEvents[choiceIndex - firstChoiceIndex]
                         .DoEvent(character, gameManager, map);
                     return new DoNothing();
             }
-            return null;
         }
     }
     public class PlayerChoiceEvent : IEvent

@@ -7,6 +7,7 @@ namespace View
         Snow,
         Volcano,
         Desert,
-        Dungeon
+        Dungeon,
+        Void
     }
 }

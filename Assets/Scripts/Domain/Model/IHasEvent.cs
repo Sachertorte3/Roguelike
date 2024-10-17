@@ -13,6 +13,7 @@ namespace Domain.Model
     public interface IEvent
     {
         public bool IsPlayerOnly { get; }
+        public bool CanExecuteEvent(ICharacter character);
         public UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map);
     }
 }

@@ -85,7 +85,7 @@ namespace Domain.Service.Characters.Behavior
 
                         if (move.Doable(character, map))
                             return move;
-                        if (eventEntities.Any())
+                        else if (eventEntities.Any() && eventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
                         {
                             foreach (var eventEntity in eventEntities)
                             {
@@ -103,7 +103,7 @@ namespace Domain.Service.Characters.Behavior
                                 }
                             }
                         }
-                        if (swap.Doable(character, map))
+                        else if (swap.Doable(character, map))
                             return swap;
                         break;
                     case InputType.UseItem:

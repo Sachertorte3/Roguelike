@@ -32,6 +32,7 @@ namespace Provider
                         SectionType.Volcano => TileSet.Volcano,
                         SectionType.Desert => TileSet.Desert,
                         SectionType.Dungeon => TileSet.Dungeon,
+                        SectionType.Void => TileSet.Void,
                         _ => throw new ArgumentOutOfRangeException()
                     };
 

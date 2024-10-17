@@ -7,6 +7,7 @@ namespace Domain.Model.Dungeon
         Snow,
         Volcano,
         Desert,
-        Dungeon
+        Dungeon,
+        Void
     }
 }

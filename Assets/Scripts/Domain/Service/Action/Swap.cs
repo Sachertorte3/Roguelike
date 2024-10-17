@@ -12,7 +12,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return actor.CanSwap(Direction, map);
+            return !actor.CannotAct && !actor.CannotMove && actor.CanSwap(Direction, map);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)

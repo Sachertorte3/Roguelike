@@ -12,8 +12,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "防護";
         public ParticleType ParticleType => ParticleType.PowerUp;
         public Impact Impact => Impact.Beneficial;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は守りを固めた";
         public string DeleteLog => "の守りは元に戻った";
 

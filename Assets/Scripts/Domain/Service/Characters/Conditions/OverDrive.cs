@@ -11,8 +11,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "オーバードライブ";
         public ParticleType ParticleType => ParticleType.None;
         public Impact Impact => Impact.Beneficial;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "以外の時が止まった";
         public string DeleteLog => "以外の時が動き出した";
 

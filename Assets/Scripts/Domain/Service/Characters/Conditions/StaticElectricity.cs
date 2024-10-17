@@ -11,8 +11,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "帯電";
         public ParticleType ParticleType => ParticleType.Paralysis;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は電気を帯びた";
         public string DeleteLog => "は電気が抜けた";
 

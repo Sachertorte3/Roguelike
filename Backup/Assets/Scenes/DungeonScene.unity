@@ -1932,7 +1932,7 @@ GameObject:
   - component: {fileID: 878990524}
   - component: {fileID: 878990521}
   m_Layer: 0
-  m_Name: Grassmap
+  m_Name: OverlayTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2440,6 +2440,11 @@ MonoBehaviour:
     ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
     Water: {fileID: 11400000, guid: fec8e3a22d85e65449d3ef1a18e8e4a7, type: 2}
     Wall: {fileID: 11400000, guid: a2cc768f9d19d8f4c9403de88ee45280, type: 2}
+  _voidTiles:
+    Floor: {fileID: 11400000, guid: 9502ad11fa630da47abd9a7e61b78342, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 2b94313fe065f184db978e715046b254, type: 2}
+    Wall: {fileID: 11400000, guid: 63cbc726f0363c04d82c99a2e4a5692a, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
   m_ObjectHideFlags: 0

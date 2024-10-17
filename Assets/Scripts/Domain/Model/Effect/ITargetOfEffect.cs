@@ -15,12 +15,15 @@ namespace Domain.Model.Effect
         public float GetElementDamageRateMultiplier(Element element);
         public float GetConditionResistance(ConditionTemplate condition);
         public IInventory Inventory { get; }
+        public bool CannotAct { get; }
+        public bool CannotMove { get; }
         public bool IsClairvoyant { get; }
         public bool IsOverDrive { get; }
         public bool IsConfused { get; }
         public bool IsHard { get; }
         public bool IsHeavy { get; }
-        public bool CanAct { get; }
+        public bool IsSecureHold { get; }
+        public bool IsCurseProof { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
 
@@ -43,5 +46,6 @@ namespace Domain.Model.Effect
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
         public void ListenToAlert(Vector2Int position);
+        public void DropItem(int itemIndex, IMap map, bool isForced);
     }
 }

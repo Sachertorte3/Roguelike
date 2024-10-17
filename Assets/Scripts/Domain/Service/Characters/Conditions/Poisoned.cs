@@ -15,8 +15,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"毒({Power})";
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => "は毒にかかった";
         public string DeleteLog => "は毒が治った";
         [MinValue(1)] public int Power = 1;

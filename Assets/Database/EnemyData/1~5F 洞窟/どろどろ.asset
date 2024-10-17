@@ -47,6 +47,7 @@ MonoBehaviour:
         rid: 2541219281251860492
       <Effects>k__BackingField:
       - rid: 2541219281251860493
+      - rid: 5486256623760965634
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
@@ -129,3 +130,9 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_170
         CanHitLayer: 01000000
+    - rid: 5486256623760965634
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u62D8\u675F"
+        _probabilityOfSuccess: 0.5

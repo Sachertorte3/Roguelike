@@ -12,13 +12,12 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "麻痺";
         public ParticleType ParticleType => ParticleType.Paralysis;
         public Impact Impact => Impact.Harmful;
-        public bool CanAct => false;
-        public bool CausesConfusion => false;
         public string InflictLog => "は麻痺した";
         public string DeleteLog => "は体が動くようになった";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,11 +27,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CannotAct);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CanAct ? CommonSenseParameters.OneTurnStunEquivalentHpReduction : 0;
+            return target.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
         }
 
         public float EvaluatePrice()

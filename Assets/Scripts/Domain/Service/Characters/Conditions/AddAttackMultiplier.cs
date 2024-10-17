@@ -14,8 +14,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"{Element}攻撃倍率(+{AddedMultiplier:P0})";
         public ParticleType ParticleType => ParticleType.BloodRage;
         public Impact Impact => Impact.Beneficial;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
         public string InflictLog => $"は{Element}属性の攻撃力が上がった";
         public string DeleteLog => $"の{Element}属性の攻撃力は元に戻った";
         public Element Element;

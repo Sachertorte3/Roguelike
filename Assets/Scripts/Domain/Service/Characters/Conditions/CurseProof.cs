@@ -6,16 +6,17 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    internal class Clairvoyant : IConditionData
+    internal class CurseProof : IConditionData
     {
-        public string Name => "千里眼";
-        public ParticleType ParticleType => ParticleType.Relieve;
+        public string Name => "呪い無効";
+        public ParticleType ParticleType => ParticleType.None;
         public Impact Impact => Impact.Beneficial;
-        public string InflictLog => "はよく見えるようになった";
-        public string DeleteLog => "の視界は元に戻った";
+        public string InflictLog => "は呪いを受けなくなった";
+        public string DeleteLog => "";
+
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.StatusManager.AddFlagStat(FlagStatType.CurseProof);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,12 +26,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CurseProof);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsClairvoyant ? 0 : 0.05f;
+            return 0.1f;
         }
 
         public float EvaluatePrice()

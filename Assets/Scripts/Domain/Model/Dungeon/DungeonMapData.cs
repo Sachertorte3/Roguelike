@@ -48,6 +48,6 @@ namespace Domain.Model.Dungeon
         public int MoneyCount() => GetCount(MoneyAttempt);
         public int CharacterCount() => GetCount(CharacterAttempt);
         public int TrapCount() => GetCount(TrapAttempt);
-        public int MoneyAmount() => Mathf.CeilToInt(RandUtils.LogNormalFromMean(MoneyAverage, MoneyAverage / 100f));
+        public int MoneyAmount() => Mathf.CeilToInt(RandUtils.LogNormalFromMean(MoneyAverage, 1));
     }
 }

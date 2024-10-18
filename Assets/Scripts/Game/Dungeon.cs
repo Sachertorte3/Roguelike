@@ -67,15 +67,22 @@ namespace Game
             return _dungeonData.CreateMapData(level, _itemDatabase);
         }
 
-        public MapMemento CreateMapManager(Id<IMap> id, int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
-            Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId)
+        public MapMemento CreateMapManager(Id<IMap> id,
+        int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
+            Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId,
+            Location? magicCircleLocation, Id<IEntity>? magicCircleId, Id<IEntity>? magicCircleDestinationId,
+            Location? magicCirclePrevLocation, Id<IEntity>? magicCirclePrevId, Id<IEntity>? magicCirclePrevDestinationId)
         {
             var dungeonData = CreateMapData(level);
             var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData, new Location(_dungeonData.name, level));
             if (ExistLevel(level + 1))
-                mapBuilder.AddDownStairs(dungeonData, level, downStairsId, downStairsDestinationId);
+                mapBuilder.AddDownStairs(dungeonData, new Location(_dungeonData.name, level + 1), downStairsId, downStairsDestinationId);
             if (ExistLevel(level - 1))
-                mapBuilder.AddUpStairs(dungeonData, level, upStairsId, upStairsDestinationId);
+                mapBuilder.AddUpStairs(dungeonData, new Location(_dungeonData.name, level - 1), upStairsId, upStairsDestinationId);
+            if (magicCircleLocation != null)
+                mapBuilder.AddMagicCircle(dungeonData, magicCircleLocation, magicCircleId, magicCircleDestinationId);
+            if (magicCirclePrevLocation != null)
+                mapBuilder.AddMagicCircle(dungeonData, magicCirclePrevLocation, magicCirclePrevId, magicCirclePrevDestinationId);
             return mapBuilder.Build(id);
         }
     }

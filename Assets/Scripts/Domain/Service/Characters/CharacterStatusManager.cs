@@ -300,7 +300,7 @@ namespace Domain.Service.Characters
             (
                 stats: CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
                     elementDamageRateMultiplier, conditionResistance, viewRange, waitTime),
-                cannotActFlags: 0,
+                cannotActFlags: isSlept ? 1 : 0,
                 cannotMoveFlags: 0,
                 confusedFlags: 0,
                 clairvoyantFlags: 0,

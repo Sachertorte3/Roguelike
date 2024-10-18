@@ -61,6 +61,8 @@ namespace Domain.Service.Events
                 .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion(),
             MovementEntityType.DownStairs => Addressables
                 .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion(),
+            MovementEntityType.MagicCircle => Addressables
+                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_71]").WaitForCompletion(),
             _ => throw new NotImplementedException()
         };
 

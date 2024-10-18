@@ -68,21 +68,12 @@ namespace Game
         }
 
         public MapMemento CreateMapManager(Id<IMap> id,
-        int level, Id<IEntity>? upStairsId, Id<IEntity>? upStairsDestinationId,
-            Id<IEntity>? downStairsId, Id<IEntity>? downStairsDestinationId,
-            Location? magicCircleLocation, Id<IEntity>? magicCircleId, Id<IEntity>? magicCircleDestinationId,
-            Location? magicCirclePrevLocation, Id<IEntity>? magicCirclePrevId, Id<IEntity>? magicCirclePrevDestinationId)
+        int level, IEnumerable<MovementData> movementData)
         {
             var dungeonData = CreateMapData(level);
             var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData, new Location(_dungeonData.name, level));
-            if (ExistLevel(level + 1))
-                mapBuilder.AddDownStairs(dungeonData, new Location(_dungeonData.name, level + 1), downStairsId, downStairsDestinationId);
-            if (ExistLevel(level - 1))
-                mapBuilder.AddUpStairs(dungeonData, new Location(_dungeonData.name, level - 1), upStairsId, upStairsDestinationId);
-            if (magicCircleLocation != null)
-                mapBuilder.AddMagicCircle(dungeonData, magicCircleLocation, magicCircleId, magicCircleDestinationId);
-            if (magicCirclePrevLocation != null)
-                mapBuilder.AddMagicCircle(dungeonData, magicCirclePrevLocation, magicCirclePrevId, magicCirclePrevDestinationId);
+            foreach (var data in movementData)
+                mapBuilder.AddMovementEntity(data);
             return mapBuilder.Build(id);
         }
     }

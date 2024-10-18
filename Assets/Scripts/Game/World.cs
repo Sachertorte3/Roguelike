@@ -124,83 +124,51 @@ namespace Game
 
         private MapMemento CreateMap(Location location, Id<IMap> id)
         {
-            Id<IEntity>? upStairsId = null;
-            Id<IEntity>? upStairsDestinationId = null;
-            Id<IEntity>? downStairsId = null;
-            Id<IEntity>? downStairsDestinationId = null;
-            Id<IEntity>? magicCircleId = null;
-            Id<IEntity>? magicCircleDestinationId = null;
-            Id<IEntity>? magicCirclePrevId = null;
-            Id<IEntity>? magicCirclePrevDestinationId = null;
+            List<MovementData> movementData = new();
+            var upStairsLocation = new Location(location.MapName, location.Level - 1);
             if (_dungeons[location.MapName].ExistLevel(location.Level - 1))
             {
-                var prevMapId = _dungeons[location.MapName].GetMapId(location.Level - 1);
-                if (_maps.ContainsKey(prevMapId))
-                {
-                    var prevMap = _maps[prevMapId];
-                    var downStairs =
-                        prevMap.EventEntities.Stairs
-                        .Where(stairs => stairs.Type == MovementEntityType.DownStairs)
-                        .First(stairs => stairs.Destination == location);
-                    upStairsId = downStairs.DestinationId;
-                    upStairsDestinationId = new Id<IEntity>(downStairs.Entity.Id);
-                }
+                movementData.Add(CreateMovementData(MovementEntityType.UpStairs, MovementEntityType.DownStairs, location, upStairsLocation));
             }
 
+            var downStairsLocation = new Location(location.MapName, location.Level + 1);
             if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
             {
-                var nextMapId = _dungeons[location.MapName].GetMapId(location.Level + 1);
-                if (_maps.ContainsKey(nextMapId))
-                {
-                    var nextMap = _maps[nextMapId];
-                    var upStairs =
-                        nextMap.EventEntities.Stairs
-                        .Where(stairs => stairs.Type == MovementEntityType.UpStairs)
-                        .First(stairs => stairs.Destination == location);
-                    downStairsId = upStairs.DestinationId;
-                    downStairsDestinationId = new Id<IEntity>(upStairs.Entity.Id);
-                }
+                movementData.Add(CreateMovementData(MovementEntityType.DownStairs, MovementEntityType.UpStairs, location, downStairsLocation));
             }
 
             var magicCircleLocation = new Location("Void", location.Level+2);
             _magicCircleLocations.Add(location, magicCircleLocation);
             if (Random.value < 1f)
             {
-                var nextMapId = _dungeons[magicCircleLocation.MapName].GetMapId(magicCircleLocation.Level);
-                if (_maps.ContainsKey(nextMapId))
-                {
-                    var nextMap = _maps[nextMapId];
-                    var magicCircle =
-                        nextMap.EventEntities.Stairs
-                        .Where(stairs => stairs.Type == MovementEntityType.MagicCircle)
-                        .First(stairs => stairs.Destination == location);
-                    magicCircleId = magicCircle.DestinationId;
-                    magicCircleDestinationId = new Id<IEntity>(magicCircle.Entity.Id);
-                }
+                movementData.Add(CreateMovementData(MovementEntityType.MagicCircle, MovementEntityType.MagicCircle, location, magicCircleLocation));
             }
 
-            Location? magicCirclePrevLocation = null;
             if (_magicCircleLocations.Reverse.ContainsKey(location))
             {
-                magicCirclePrevLocation = _magicCircleLocations.Reverse[location];
-                var prevMapId = _dungeons[magicCirclePrevLocation.MapName].GetMapId(magicCirclePrevLocation.Level);
-                if (_maps.ContainsKey(prevMapId))
-                {
-                    var prevMap = _maps[prevMapId];
-                    var magicCircle =
-                        prevMap.EventEntities.Stairs
-                        .Where(stairs => stairs.Type == MovementEntityType.MagicCircle)
-                        .First(stairs => stairs.Destination == location);
-                    magicCirclePrevId = magicCircle.DestinationId;
-                    magicCirclePrevDestinationId = new Id<IEntity>(magicCircle.Entity.Id);
-                }
+                var magicCirclePrevLocation = _magicCircleLocations.Reverse[location];
+                movementData.Add(CreateMovementData(MovementEntityType.MagicCircle, MovementEntityType.MagicCircle, location, magicCirclePrevLocation));
             }
 
             return _dungeons[location.MapName].CreateMapManager(id, location.Level,
-                upStairsId, upStairsDestinationId,
-                downStairsId, downStairsDestinationId,
-                magicCircleLocation, magicCircleId, magicCircleDestinationId,
-                magicCirclePrevLocation, magicCirclePrevId, magicCirclePrevDestinationId);
+                movementData);
+        }
+
+        private MovementData CreateMovementData(MovementEntityType type, MovementEntityType destinationType, Location current, Location destination)
+        {
+                var mapId = _dungeons[destination.MapName].GetMapId(destination.Level);
+                if (_maps.ContainsKey(mapId))
+                {
+                    var map = _maps[mapId];
+                    var destinationEntity =
+                        map.EventEntities.Stairs
+                        .Where(stairs => stairs.Type == destinationType)
+                        .First(stairs => stairs.Destination == current);
+                    var id = destinationEntity.DestinationId;
+                    var destinationId = new Id<IEntity>(destinationEntity.Entity.Id);
+                    return new MovementData(type, destination, id, destinationId);
+                }
+                return new MovementData(type, destination, null, null);
         }
 
         public MapManager LoadMap(Location location, Id<IEntity>? destination)

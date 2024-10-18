@@ -294,37 +294,14 @@ namespace Game
             }
         }
 
-        public void AddUpStairs(DungeonMapData data, Location destination, Id<IEntity>? upStairsId,
-            Id<IEntity>? upStairsDestinationId)
+        public void AddMovementEntity(MovementData data)
         {
-            if (upStairsId != null && upStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, GetRandomStairPosition(), upStairsId,
-                    destination, upStairsDestinationId));
+            if (data.Id != null && data.DestinationId != null)
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
+                    data.Destination, data.DestinationId));
             else
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, GetRandomStairPosition(),
-                    destination));
-        }
-
-        public void AddDownStairs(DungeonMapData data, Location destination, Id<IEntity>? downStairsId,
-            Id<IEntity>? downStairsDestinationId)
-        {
-            if (downStairsId != null && downStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, GetRandomStairPosition(), downStairsId,
-                    destination, downStairsDestinationId));
-            else
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, GetRandomStairPosition(),
-                    destination));
-        }
-
-        public void AddMagicCircle(DungeonMapData data, Location destination, Id<IEntity>? magicCircleId,
-            Id<IEntity>? magicCircleDestinationId)
-        {
-            if (magicCircleId != null && magicCircleDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.MagicCircle, GetRandomStairPosition(), magicCircleId,
-                    destination, magicCircleDestinationId));
-            else
-                _stairs.Add(Stairs.Build(MovementEntityType.MagicCircle, GetRandomStairPosition(),
-                    destination));
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
+                    data.Destination));
         }
 
         public MapMemento Build(Id<IMap> id)

@@ -14,6 +14,7 @@ namespace Domain.Model.Dungeon
         public int Depth => Floors.Sum(floor => floor.Depth);
         public SectionType Type;
         public bool RoundRoomCorner;
+        public bool CaveInOneRoom;
         [Range(0, 1)] public float WaterChance;
         [RequiredListLength(1, null)] public List<FloorData> Floors;
         private bool _existChest => Floors.Any(floor => floor.Room.ChestChance > 0);

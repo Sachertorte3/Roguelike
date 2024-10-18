@@ -140,6 +140,8 @@ namespace Game
         {
             if (data.RoundRoomCorner)
                 _tilemap.RoundRoomCorner(roomId);
+            else if (data.CaveInOneRoom)
+                _tilemap.CaveInOneRoom(roomId);
 
             var itemCount = data.ItemCount();
             var moneyCount = data.MoneyCount();

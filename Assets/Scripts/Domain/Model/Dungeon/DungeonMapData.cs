@@ -27,6 +27,7 @@ namespace Domain.Model.Dungeon
         float MimicChance,
         float WeaponChanceInChest,
         bool RoundRoomCorner,
+        bool CaveInOneRoom,
         float WaterChance,
         float GrassChance,
         float ShopChance,

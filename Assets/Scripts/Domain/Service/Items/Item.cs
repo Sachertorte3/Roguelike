@@ -314,12 +314,26 @@ namespace Domain.Service.Items
             );
         }
 
+        public float EvaluateBasePrice()
+        {
+            var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
+            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
+                               new ProjectileImpact().EvaluateHitProbability();
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * MaxUsages;
+            price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
+            if (IsCursed)
+            {
+                price *= 0.8f;
+            }
+            return price;
+        }
+
         public float EvaluatePrice()
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
             {

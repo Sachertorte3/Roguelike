@@ -20,14 +20,11 @@ namespace Domain.Model.Character
     {
         public bool IsLeader { get; }
         public bool IsBoss { get; }
-        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps { get; }
         public bool CanThroughWalls { get; }
         public CharacterState State { get; }
         public void SetWaitState();
         public int Money { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
-        public bool CannotAct { get; }
-        public bool CannotMove { get; }
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<Unit> OnAttacked { get; }

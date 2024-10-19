@@ -32,7 +32,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
+            return target.StatusManager.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
         }
 
         public float EvaluatePrice()

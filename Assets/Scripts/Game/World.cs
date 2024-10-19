@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using BidirectionalMap;
 using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
@@ -26,7 +25,7 @@ namespace Game
         private HashSet<Id<IMap>> _updatedMapIds = new();
         private CharacterControlInputReceiver _receiver;
         private Dictionary<string, Dungeon> _dungeons = new();
-        private BiMap<Location, Location> _magicCircleLocations = new();
+        private Dictionary<Location, List<MapConnection>> _movements = new();
 
         [Inject]
         public World(CharacterControlInputReceiver receiver)
@@ -40,10 +39,30 @@ namespace Game
             _dungeons = new Dictionary<string, Dungeon>();
             _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
             _dungeons["Void"] = new Dungeon(Dungeon.Build(Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Void.asset").WaitForCompletion()));
-            _magicCircleLocations = new BiMap<Location, Location>();
+            _movements = new Dictionary<Location, List<MapConnection>>();
+            for (int i = 1; i <= 10; i++)
+            {
+                var movement = new MapConnection(MovementEntityType.MagicCircle, new Location("Void", 1));
+                var reverse = new MapConnection(MovementEntityType.MagicCircle, new Location("Dungeon", i));
+                AddMovement(movement, reverse);
+            }
             _maps = new Dictionary<Id<IMap>, MapMemento>();
             _updatedMapIds = new HashSet<Id<IMap>>();
             _activeMap.Value = null;
+        }
+
+        public void AddMovement(MapConnection movement, MapConnection reverse)
+        {
+            if (!_movements.ContainsKey(reverse.Destination))
+            {
+                _movements[reverse.Destination] = new List<MapConnection>();
+            }
+            _movements[reverse.Destination].Add(movement);
+            if (!_movements.ContainsKey(movement.Destination))
+            {
+                _movements[movement.Destination] = new List<MapConnection>();
+            }
+            _movements[movement.Destination].Add(reverse);
         }
 
         public DungeonMapData GetDungeonMapData(Location location)
@@ -54,7 +73,7 @@ namespace Game
         public MapManager LoadWorld(WorldMemento memento, List<(string, MapMemento)> maps)
         {
             _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
-            _magicCircleLocations = memento.MagicCircleLocations;
+            _movements = memento.Movements;
             _maps = memento.MapIds.ToDictionary(
                 mapId => new Id<IMap>(mapId),
                 mapId => maps.First(map => map.Item1 == mapId).Item2
@@ -88,7 +107,7 @@ namespace Game
             return new WorldMemento
             (
                 _dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
-                _magicCircleLocations,
+                _movements,
                 playerData,
                 _maps.Select(map => map.Key.ToString()).ToList(),
                 _activeLocation
@@ -128,47 +147,41 @@ namespace Game
             var upStairsLocation = new Location(location.MapName, location.Level - 1);
             if (_dungeons[location.MapName].ExistLevel(location.Level - 1))
             {
-                movementData.Add(CreateMovementData(MovementEntityType.UpStairs, MovementEntityType.DownStairs, location, upStairsLocation));
+                movementData.Add(CreateMovementData(MovementEntityType.UpStairs, location, upStairsLocation));
             }
 
             var downStairsLocation = new Location(location.MapName, location.Level + 1);
             if (_dungeons[location.MapName].ExistLevel(location.Level + 1))
             {
-                movementData.Add(CreateMovementData(MovementEntityType.DownStairs, MovementEntityType.UpStairs, location, downStairsLocation));
+                movementData.Add(CreateMovementData(MovementEntityType.DownStairs, location, downStairsLocation));
             }
 
-            var magicCircleLocation = new Location("Void", location.Level+2);
-            _magicCircleLocations.Add(location, magicCircleLocation);
-            if (Random.value < 1f)
+            if (_movements.ContainsKey(location))
             {
-                movementData.Add(CreateMovementData(MovementEntityType.MagicCircle, MovementEntityType.MagicCircle, location, magicCircleLocation));
-            }
-
-            if (_magicCircleLocations.Reverse.ContainsKey(location))
-            {
-                var magicCirclePrevLocation = _magicCircleLocations.Reverse[location];
-                movementData.Add(CreateMovementData(MovementEntityType.MagicCircle, MovementEntityType.MagicCircle, location, magicCirclePrevLocation));
+                foreach (var movement in _movements[location])
+                {
+                    movementData.Add(CreateMovementData(movement.Type, location, movement.Destination));
+                }
             }
 
             return _dungeons[location.MapName].CreateMapManager(id, location.Level,
                 movementData);
         }
 
-        private MovementData CreateMovementData(MovementEntityType type, MovementEntityType destinationType, Location current, Location destination)
+        private MovementData CreateMovementData(MovementEntityType type, Location current, Location destination)
         {
-                var mapId = _dungeons[destination.MapName].GetMapId(destination.Level);
-                if (_maps.ContainsKey(mapId))
-                {
-                    var map = _maps[mapId];
-                    var destinationEntity =
-                        map.EventEntities.Stairs
-                        .Where(stairs => stairs.Type == destinationType)
-                        .First(stairs => stairs.Destination == current);
-                    var id = destinationEntity.DestinationId;
-                    var destinationId = new Id<IEntity>(destinationEntity.Entity.Id);
-                    return new MovementData(type, destination, id, destinationId);
-                }
-                return new MovementData(type, destination, null, null);
+            var mapId = _dungeons[destination.MapName].GetMapId(destination.Level);
+            if (_maps.ContainsKey(mapId))
+            {
+                var map = _maps[mapId];
+                var destinationEntity =
+                    map.EventEntities.Stairs
+                    .First(stairs => stairs.Destination == current);
+                var id = destinationEntity.DestinationId;
+                var destinationId = new Id<IEntity>(destinationEntity.Entity.Id);
+                return new MovementData(type, destination, id, destinationId);
+            }
+            return new MovementData(type, destination, null, null);
         }
 
         public MapManager LoadMap(Location location, Id<IEntity>? destination)
@@ -201,4 +214,5 @@ namespace Game
             return map;
         }
     }
+    public record MovementData(MovementEntityType Type, Location Destination, Id<IEntity>? Id, Id<IEntity>? DestinationId);
 }

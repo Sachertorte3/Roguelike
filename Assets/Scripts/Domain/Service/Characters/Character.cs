@@ -95,15 +95,6 @@ namespace Domain.Service.Characters
             });
         }
 
-        public bool CannotAct => _statusManager.CannotAct;
-        public bool CannotMove => _statusManager.CannotMove;
-        public bool IsClairvoyant => _statusManager.VisionRange.IsClairvoyant;
-        public bool IsOverDrive => _statusManager.IsOverDrive;
-        public bool IsConfused => _statusManager.IsConfused;
-        public bool IsHard => _statusManager.IsHard;
-        public bool IsHeavy => _statusManager.IsHeavy;
-        public bool IsSecureHold => _statusManager.IsSecureHold;
-        public bool IsCurseProof => _statusManager.IsCurseProof;
         public bool IsDead => _statusManager.IsDead || _entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
         public Entity Entity => _entity;
@@ -111,7 +102,6 @@ namespace Domain.Service.Characters
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
-        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps => _statusManager.IsAffectedByTrap;
         public bool CanThroughWalls { get; init; }
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
@@ -562,7 +552,7 @@ namespace Domain.Service.Characters
         {
             State = CharacterState.Think;
             var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
-            if (IsConfused)
+            if (StatusManager.IsConfused)
             {
                 action = RegenerateConfuseAction(this, map, action);
             }

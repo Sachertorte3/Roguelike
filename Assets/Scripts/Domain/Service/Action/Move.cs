@@ -10,7 +10,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.CannotAct && !actor.CannotMove && actor.CanMove(Direction, map);
+            return !actor.StatusManager.CannotAct && !actor.StatusManager.CannotMove && actor.CanMove(Direction, map);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)

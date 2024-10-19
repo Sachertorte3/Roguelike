@@ -24,11 +24,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Position>k__BackingField:
-      rid: 5486256292201496578
+      rid: 5486256676450863751
     <Area>k__BackingField:
-      rid: 5486256292201496579
+      rid: 5486256676450863752
     <Effects>k__BackingField:
-    - rid: 5486256378686996490
+    - rid: 5486256676450863753
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -39,7 +39,7 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
-  UsageLimit: 5
+  UsageLimit: 3
   UpgradeLimit: 3
   PassiveConditions: []
   references:
@@ -47,15 +47,15 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5486256292201496578
-      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        Icon:
-          _name: icons_full_16_138
-        CanHitLayer: 0100000000000000
-    - rid: 5486256292201496579
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 5486256676450863751
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256378686996490
-      type: {class: TeleportToAreaEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+    - rid: 5486256676450863752
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 5
+    - rid: 5486256676450863753
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data: 

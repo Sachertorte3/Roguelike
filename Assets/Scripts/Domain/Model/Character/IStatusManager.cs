@@ -8,8 +8,15 @@ namespace Domain.Model.Character
     public interface IStatusManager
     {
         public IStats Stats { get; }
-        public bool IsDead { get; }
+        public bool CannotAct { get; }
+        public bool CannotMove { get; }
         public bool IsOverDrive { get; }
+        public bool IsConfused { get; }
+        public bool IsHard { get; }
+        public bool IsHeavy { get; }
+        public bool IsSecureHold { get; }
+        public bool IsCurseProof { get; }
+        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps { get; }
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }

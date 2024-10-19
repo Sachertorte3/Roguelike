@@ -76,7 +76,7 @@ namespace Game
                         if (character.State != CharacterState.Wait)
                             continue;
 
-                        if (!character.CannotAct && !character.IsDead)
+                        if (!character.StatusManager.CannotAct && !character.IsDead)
                         {
                             if (character == map.Player)
                             {

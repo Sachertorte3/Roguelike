@@ -30,7 +30,7 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.IsCurseProof)
+            if (target.StatusManager.IsCurseProof)
             {
                 GameLog.Add($"{target.GetName(map.Player)}は呪われない");
                 return UniTask.CompletedTask;

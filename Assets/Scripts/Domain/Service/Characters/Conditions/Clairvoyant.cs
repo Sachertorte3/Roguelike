@@ -30,7 +30,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsClairvoyant ? 0 : 0.05f;
+            return target.VisionRange.IsClairvoyant ? 0 : 0.05f;
         }
 
         public float EvaluatePrice()

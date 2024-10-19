@@ -31,7 +31,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.IsOverDrive ? 0 : 1f;
+            return target.StatusManager.IsOverDrive ? 0 : 1f;
         }
 
         public float EvaluatePrice()

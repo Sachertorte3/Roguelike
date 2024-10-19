@@ -9,21 +9,14 @@ namespace Domain.Model.Effect
 {
     public interface ITargetOfEffect : IEntity
     {
+        public IStatusManager StatusManager { get; }
+        public IVisionRange VisionRange { get; }
         public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);
         public float GetConditionResistance(ConditionTemplate condition);
         public IInventory Inventory { get; }
-        public bool CannotAct { get; }
-        public bool CannotMove { get; }
-        public bool IsClairvoyant { get; }
-        public bool IsOverDrive { get; }
-        public bool IsConfused { get; }
-        public bool IsHard { get; }
-        public bool IsHeavy { get; }
-        public bool IsSecureHold { get; }
-        public bool IsCurseProof { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }
 

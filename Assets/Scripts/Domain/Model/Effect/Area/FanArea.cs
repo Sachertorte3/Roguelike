@@ -68,7 +68,7 @@ namespace Domain.Model.Effect.Area
 
             if (!ContainsSelf)
                 area.Remove(position);
-            if (CanIgnoreWalls)
+            if (CanIgnoreWalls || Radius <= 1)
                 return area;
             var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle), position,
                 Radius + 0.5f);

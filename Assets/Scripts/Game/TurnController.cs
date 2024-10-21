@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
+using Domain.Model.Setting;
 using R3;
 using Stats;
 using Unity.Logging;
@@ -78,7 +79,7 @@ namespace Game
 
                         if (!character.StatusManager.CannotAct && !character.IsDead)
                         {
-                            if (character == map.Player)
+                            if (character == map.Player && Settings.AutoSave.CurrentValue)
                             {
                                 Globals.GameManager.Save();
                             }

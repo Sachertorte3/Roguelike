@@ -14,7 +14,6 @@ namespace Domain.Model.Dungeon
     public class DungeonBluePrintData : ScriptableObject
     {
         public MasterItemDataBase MasterItemDataBase;
-        public Placeholders Placeholders;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
@@ -60,7 +59,7 @@ namespace Domain.Model.Dungeon
             throw new InvalidOperationException("指定されたレベルに対応するフロアが見つかりません。");
         }
 
-        public DungeonMapData CreateMapData(int level, ItemDatabase itemDatabase)
+        public DungeonMapData CreateMapData(int level)
         {
             var sectionData = GetSectionData(level);
             var floorData = GetFloorData(level);
@@ -68,7 +67,7 @@ namespace Domain.Model.Dungeon
                 Name: name,
                 Type: sectionData.Type,
                 Field: floorData.Field,
-                ItemDatabase: itemDatabase,
+                ItemDatabase: new ItemDatabase(MasterItemDataBase, SpawnItem),
                 WeaponPrefixes: WeaponPrefixes,
                 ChestItems: MasterItemDataBase.ChestItems,
                 Traps: Traps,

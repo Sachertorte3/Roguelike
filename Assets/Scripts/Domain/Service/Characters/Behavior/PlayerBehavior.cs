@@ -145,7 +145,7 @@ namespace Domain.Service.Characters.Behavior
                         {
                             item = character.Inventory.GetItem(itemIndex.Value);
                             if (item == null) break;
-                            map.ItemDatabase.Rename(item.BaseName, await gameManager.GetTextInput());
+                            map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
                         }
                         break;
                     default:

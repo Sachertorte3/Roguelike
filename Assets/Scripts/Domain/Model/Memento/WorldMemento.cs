@@ -16,15 +16,16 @@ namespace Domain.Model.Memento
         [field: SerializeField] public CharacterMemento Player { get; private set; }
         [field: SerializeField] public List<string> MapIds { get; private set; }
         [field: SerializeField] public Location CurrentLocation { get; private set; }
-
+        [field: SerializeField] public ItemPlaceholdersMemento ItemPlaceholders { get; private set; }
         public WorldMemento(Dictionary<string, DungeonMemento> dungeons, Dictionary<Location, List<MapConnection>> movements, CharacterMemento player,
-            List<string> mapIds, Location currentLocation)
+            List<string> mapIds, Location currentLocation, ItemPlaceholdersMemento itemPlaceholders)
         {
             _dungeons = dungeons.ToSerializable();
             _movements = movements.ToSerializable();
             Player = player;
             MapIds = mapIds;
             CurrentLocation = currentLocation;
+            ItemPlaceholders = itemPlaceholders;
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using Domain.Model.Dungeon;
-using Domain.Service.Characters.Behavior;
+﻿using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
-using UnityEngine;
 using Utilities;
 using VContainer;
 using VContainer.Unity;
@@ -13,8 +11,6 @@ namespace Provider
 {
     internal class Container : LifetimeScope
     {
-        [SerializeField] private DungeonBluePrintData _dungeonData;
-
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<GameManager>(Lifetime.Singleton);
@@ -30,7 +26,6 @@ namespace Provider
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.Register<SynchronizedThrowAnimationEntityView>(Lifetime.Singleton);
             builder.Register<SynchronizedFireEntityView>(Lifetime.Singleton);
-            builder.RegisterComponent(_dungeonData);
             builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<OverlayTileViewController>();

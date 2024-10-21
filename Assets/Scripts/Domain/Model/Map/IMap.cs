@@ -16,6 +16,7 @@ namespace Domain.Model.Map
     {
         public Location Location { get; }
         public ItemDatabase ItemDatabase { get; }
+        public ItemPlaceholders ItemPlaceholders { get; }
         public ICharacter Player { get; }
         public bool IsEventExecuting { get; }
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }

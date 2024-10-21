@@ -65,11 +65,11 @@ namespace Domain.Service.Events
             {
                 if (map.Player.TryAddToInventory(_item.Value))
                 {
-                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemDatabase)}を手に入れた");
+                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
-                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemDatabase)}を拾えなかった");
+                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
                     map.SpawnItem(_item.Value, CurrentPosition);
                 }
             }

@@ -1251,7 +1251,6 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _dungeonData: {fileID: 11400000, guid: 884b3df8cbbbc2042a625b68cea2698a, type: 2}
 --- !u!1 &485765853
 GameObject:
   m_ObjectHideFlags: 0

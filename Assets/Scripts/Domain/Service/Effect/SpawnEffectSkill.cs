@@ -208,7 +208,7 @@ namespace Domain.Service.Effect
             }
 
             var area = GetArea(actor, position, direction, map, true);
-            var characters = map.GetCharactersInArea(area.ToHashSet());
+            var characters = map.GetCharactersInArea(area);
             var totalEvaluation = 0f;
 
             if (characters.Count <= 0)

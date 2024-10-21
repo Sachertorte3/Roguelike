@@ -195,6 +195,9 @@ namespace Domain.Service.Characters
                    CanMoveIgnoreEntity(position, direction, map);
         }
 
+        public bool CanMoveIgnoreEntity(Direction8 direction, IPassableChecker map) =>
+            CanMoveIgnoreEntity(CurrentPosition, direction, map);
+
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
             if (CanThroughWalls)

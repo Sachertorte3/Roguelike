@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
@@ -34,7 +33,6 @@ namespace Game
         private readonly ChoiceReceiver _choiceReceiver;
         private readonly TextInputReceiver _textInputReceiver;
         private readonly CharacterControlInputReceiver _receiver;
-        private readonly DungeonBluePrintData _dungeonBluePrintData;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
         private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
@@ -42,14 +40,13 @@ namespace Game
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver,
-            CharacterControlInputReceiver receiver, DungeonBluePrintData dungeonBluePrintData)
+            CharacterControlInputReceiver receiver)
         {
             _world = world;
             _turnController = new TurnController(input);
             _choiceReceiver = choiceReceiver;
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
-            _dungeonBluePrintData = dungeonBluePrintData;
             Globals.GameManager = this;
         }
 
@@ -102,7 +99,7 @@ namespace Game
         {
             Log.Debug("Start CreateWorld");
             await StopMap();
-            _world.CreateNew(_dungeonBluePrintData);
+            _world.CreateNew();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
             Log.Debug("End CreateWorld");
             return map;
@@ -162,7 +159,7 @@ namespace Game
             }
             else
             {
-                _world.CreateNew(_dungeonBluePrintData);
+                _world.CreateNew();
                 map = _world.LoadMap(new Location("Dungeon", 1), null);
             }
 

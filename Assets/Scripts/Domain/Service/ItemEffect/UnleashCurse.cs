@@ -13,9 +13,9 @@ namespace Domain.Service.ItemEffect
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemDatabase itemDatabase)
+        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            item.SetCursed(actor, itemDatabase, false);
+            item.SetCursed(actor, itemPlaceholders, false);
         }
 
         public float EvaluatePrice()

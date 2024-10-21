@@ -18,9 +18,9 @@ namespace Domain.Service.ItemEffect
             return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemDatabase itemDatabase)
+        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            item.Upgrade(actor, itemDatabase, _filter);
+            item.Upgrade(actor, itemPlaceholders, _filter);
         }
 
         public float EvaluatePrice()

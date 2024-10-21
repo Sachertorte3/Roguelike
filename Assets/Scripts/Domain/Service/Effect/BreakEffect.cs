@@ -31,7 +31,7 @@ namespace Domain.Service.Effect
             }
             else if (target is ItemEntity item && ApplyToItem)
             {
-                GameLog.Add($"{item.Item.GetName(map.Player, map.ItemDatabase)}は破壊された");
+                GameLog.Add($"{item.Item.GetName(map.Player, map.ItemPlaceholders)}は破壊された");
             }
             else if (target is Money money && ApplyToMoney)
             {

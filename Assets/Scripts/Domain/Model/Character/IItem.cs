@@ -18,10 +18,10 @@ namespace Domain.Model.Item
     {
         public Id<IItem> Id { get; }
         public string BaseName { get; }
-        public string UnknownName(ItemDatabase itemDatabase);
+        public string UnknownName(ItemPlaceholders itemPlaceholders);
         public string RevealedName { get; }
         public string DebugName { get; }
-        public string GetName(IHasInventory player, ItemDatabase itemDatabase);
+        public string GetName(IHasInventory player, ItemPlaceholders itemPlaceholders);
         public Sprite Icon { get; }
         public bool IsShiny { get; }
         public ItemState State { get; }
@@ -52,12 +52,12 @@ namespace Domain.Model.Item
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map);
 
-        public void Repair(IHasInventory player, ItemDatabase itemDatabase);
-        public void SetCursed(IHasInventory player, ItemDatabase itemDatabase, bool isCursed);
+        public void Repair(IHasInventory player, ItemPlaceholders itemPlaceholders);
+        public void SetCursed(IHasInventory player, ItemPlaceholders itemPlaceholders, bool isCursed);
         public bool CanUpgrade(string filter = "");
-        public void Upgrade(IHasInventory player, ItemDatabase itemDatabase, string filter = "");
-        public void Downgrade(IHasInventory player, ItemDatabase itemDatabase);
-        public string Info(IHasInventory player, ItemDatabase itemDatabase);
+        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "");
+        public void Downgrade(IHasInventory player, ItemPlaceholders itemPlaceholders);
+        public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders);
         public string DebugInfo();
     }
 }

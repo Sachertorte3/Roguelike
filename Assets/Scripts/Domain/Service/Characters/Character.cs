@@ -270,12 +270,12 @@ namespace Domain.Service.Characters
 
         public async UniTask UseItem(IItem item, Direction8 direction, IMap map)
         {
-            Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemDatabase)}\ndirection:{direction}");
+            Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
 
             if (item.CanActivateWhenUsed)
             {
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を使った");
+                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
                     async spawnEffect =>
                     {
@@ -307,14 +307,14 @@ namespace Domain.Service.Characters
         {
             if (item.IsCursed && item.CannotDropIfCursed)
             {
-                GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}は呪われていて投げられない");
+                GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
             }
             else
             {
                 _inventory.Remove(item);
-                Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemDatabase)}\n direction:{direction}");
+                Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
                 Turn(direction);
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を投げた");
+                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
                 var destination =
                     ItemEntity.GetThrowDestination(CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
                 if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
@@ -342,26 +342,26 @@ namespace Domain.Service.Characters
             if (item != null && isForced)
             {
                 ReplaceInventory(null, itemIndex);
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を落とした");
+                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(CurrentPosition,
                         position => map.IsBlank(position, EntityLayer.Bottom)));
             }
             else if (item != null && item.IsCursed && item.CannotDropIfCursed)
             {
-                GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}は呪われていて捨てられない");
+                GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
             }
             else
             {
                 var pickedUpItem = map.TryPickUpAt(CurrentPosition, true);
                 if (pickedUpItem != null)
                 {
-                    GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemDatabase)}を拾った");
+                    GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
                 }
                 ReplaceInventory(pickedUpItem?.Item, itemIndex);
                 if (item != null)
                 {
-                    GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemDatabase)}を捨てた");
+                    GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
                     map.SpawnItem(item,
                         map.FindBlankPositionFrom(CurrentPosition,
                             position => map.IsBlank(position, EntityLayer.Bottom)));
@@ -598,7 +598,7 @@ namespace Domain.Service.Characters
         {
             if (!IsKnownItem(item))
             {
-                GameLog.Add($"{item.UnknownName(_map.ItemDatabase)}は{item.RevealedName}だった");
+                GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
                 _knownItemNames.Add(item.BaseName);
             }
         }

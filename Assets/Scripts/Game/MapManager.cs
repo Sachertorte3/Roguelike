@@ -37,6 +37,7 @@ namespace Game
         public int Level => Location.Level;
         public SectionType Type => _dungeonData.Type;
         public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
+        public ItemPlaceholders ItemPlaceholders { get; init; }
         private readonly CompositeDisposable _disposables = new();
         private readonly Tilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -54,10 +55,11 @@ namespace Game
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
             List<CharacterMemento>? partyMembers,
-            Vector2Int? playerPosition, CharacterControlInputReceiver receiver)
+            Vector2Int? playerPosition, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
             Id = map.Id;
             Location = map.Location;
+            ItemPlaceholders = itemPlaceholders;
 
             _tilemap = new Tilemap(map.Tilemap);
 
@@ -588,7 +590,7 @@ namespace Game
                         if (positionChanged.Character.TryAddToInventory(item.Item))
                         {
                             if (positionChanged.Character == Player)
-                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemDatabase)}</color>を拾った");
+                                GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
                         }
                         else
                         {
@@ -598,7 +600,7 @@ namespace Game
                     else
                     {
                         GameLog.Add(
-                            $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player, ItemDatabase)}の上に乗った");
+                            $"{positionChanged.Character.GetName(Player)}は{item.Item.GetName(Player, ItemPlaceholders)}の上に乗った");
                     }
                 }
 
@@ -664,7 +666,7 @@ namespace Game
             foreach (var item in items)
             {
                 item.Destroy();
-                GameLog.Add($"{item.Item.GetName(Player, ItemDatabase)}は灰になった");
+                GameLog.Add($"{item.Item.GetName(Player, ItemPlaceholders)}は灰になった");
             }
 
             SetGrasses(FireEntityManager.FireEntities.Select(fire => fire.CurrentPosition), false);

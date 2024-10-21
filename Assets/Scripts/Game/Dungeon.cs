@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -14,7 +13,6 @@ namespace Game
     {
         private readonly DungeonBluePrintData _dungeonData;
         private readonly Dictionary<int, Id<IMap>> _mapIds;
-        private readonly ItemDatabase _itemDatabase;
 
         public Dungeon(DungeonMemento memento)
         {
@@ -22,7 +20,6 @@ namespace Game
                 .LoadAssetAsync<DungeonBluePrintData>(
                     $"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
-            _itemDatabase = new ItemDatabase(memento.ItemTable, _dungeonData.MasterItemDataBase, _dungeonData.SpawnItem);
         }
 
         public DungeonMemento Serialize()
@@ -31,8 +28,7 @@ namespace Game
             (
                 _dungeonData.name,
                 new Dictionary<int, string>(_mapIds.ToDictionary(mapIds => mapIds.Key,
-                    mapIds => mapIds.Value.ToString())),
-                _itemDatabase.Serialize()
+                    mapIds => mapIds.Value.ToString()))
             );
         }
 
@@ -41,8 +37,7 @@ namespace Game
             return new DungeonMemento
             (
                 _dungeonData.name,
-                new Dictionary<int, string>(),
-                ItemDatabase.Build(_dungeonData.Placeholders)
+                new Dictionary<int, string>()
             );
         }
 
@@ -64,7 +59,7 @@ namespace Game
 
         public DungeonMapData CreateMapData(int level)
         {
-            return _dungeonData.CreateMapData(level, _itemDatabase);
+            return _dungeonData.CreateMapData(level);
         }
 
         public MapMemento CreateMapManager(Id<IMap> id,

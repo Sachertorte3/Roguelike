@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -222,7 +221,7 @@ namespace Provider
                 if (character.Inventory.TryAdd(item))
                 {
                     var map = _world.ActiveMap.CurrentValue;
-                    Log.Info($"{item.GetName(map.Player, map.ItemDatabase)}を{target}のインベントリに追加しました。");
+                    Log.Info($"{item.GetName(map.Player, map.ItemPlaceholders)}を{target}のインベントリに追加しました。");
                 }
                 else
                 {
@@ -252,7 +251,7 @@ namespace Provider
                 }
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
                 var map = _world.ActiveMap.CurrentValue;
-                Log.Info($"{spawnedItem.Item.GetName(map.Player, map.ItemDatabase)}を{position}にスポーンしました。");
+                Log.Info($"{spawnedItem.Item.GetName(map.Player, map.ItemPlaceholders)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

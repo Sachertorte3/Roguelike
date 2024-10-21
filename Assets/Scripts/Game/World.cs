@@ -19,26 +19,32 @@ namespace Game
     {
         private ReactiveProperty<MapManager?> _activeMap = new();
         private Location _activeLocation;
-        private Dungeon _activeDungeon => _dungeons[_activeLocation.MapName];
         private Id<IMap> _activeMapId => GetMapId(_activeLocation);
         private Dictionary<Id<IMap>, MapMemento> _maps = new();
         private HashSet<Id<IMap>> _updatedMapIds = new();
-        private CharacterControlInputReceiver _receiver;
         private Dictionary<string, Dungeon> _dungeons = new();
         private Dictionary<Location, List<MapConnection>> _movements = new();
+        private ItemPlaceholders _itemPlaceholders;
+        private Placeholders _placeholders;
+        private CharacterControlInputReceiver _receiver;
 
         [Inject]
         public World(CharacterControlInputReceiver receiver)
         {
             Globals.World = this;
             _receiver = receiver;
+            _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/Placeholders.asset").WaitForCompletion();
         }
 
-        public void CreateNew(DungeonBluePrintData dungeonData)
+        public void CreateNew()
         {
-            _dungeons = new Dictionary<string, Dungeon>();
-            _dungeons[dungeonData.name] = new Dungeon(Dungeon.Build(dungeonData));
-            _dungeons["Void"] = new Dungeon(Dungeon.Build(Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Void.asset").WaitForCompletion()));
+            var mainDungeon = Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Dungeon.asset").WaitForCompletion();
+            var voidDungeon = Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Void.asset").WaitForCompletion();
+            _dungeons = new Dictionary<string, Dungeon> {
+                { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) },
+                { "Void", new Dungeon(Dungeon.Build(voidDungeon)) }
+            };
+            _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(_placeholders), _placeholders);
             _movements = new Dictionary<Location, List<MapConnection>>();
             for (int i = 1; i <= 10; i++)
             {
@@ -73,6 +79,7 @@ namespace Game
         public MapManager LoadWorld(WorldMemento memento, List<(string, MapMemento)> maps)
         {
             _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
+            _itemPlaceholders = new ItemPlaceholders(memento.ItemPlaceholders, _placeholders);
             _movements = memento.Movements;
             _maps = memento.MapIds.ToDictionary(
                 mapId => new Id<IMap>(mapId),
@@ -92,7 +99,7 @@ namespace Game
 
             MapManager map = new(mapMemento,
                 GetDungeonMapData(memento.CurrentLocation), memento.Player,
-                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver);
+                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver, _itemPlaceholders);
 
             _activeLocation = memento.CurrentLocation;
             _activeMap.Value = map;
@@ -110,7 +117,8 @@ namespace Game
                 _movements,
                 playerData,
                 _maps.Select(map => map.Key.ToString()).ToList(),
-                _activeLocation
+                _activeLocation,
+                _itemPlaceholders.Serialize()
             );
         }
 
@@ -207,7 +215,7 @@ namespace Game
             }
 
             MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData,
-                characters, initialPosition, _receiver);
+                characters, initialPosition, _receiver, _itemPlaceholders);
 
             _activeLocation = location;
             _activeMap.Value = map;

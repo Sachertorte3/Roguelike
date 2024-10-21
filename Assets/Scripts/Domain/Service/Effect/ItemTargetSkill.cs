@@ -37,7 +37,7 @@ namespace Domain.Service.Effect
             );
         }
 
-        public async UniTask<ISkillResult> Use(IHasInventory player, IItem item, ItemDatabase itemDatabase)
+        public async UniTask<ISkillResult> Use(IHasInventory player, IItem item, ItemPlaceholders itemPlaceholders)
         {
             var selfIndex = player.Inventory.GetItemIndex(item);
             var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(player);
@@ -47,7 +47,7 @@ namespace Domain.Service.Effect
                 var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
-                    _itemEffect.Apply(player, selectedItem, itemDatabase);
+                    _itemEffect.Apply(player, selectedItem, itemPlaceholders);
                     return ItemTargetSkillResult.Success;
                 }
             }
@@ -63,7 +63,7 @@ namespace Domain.Service.Effect
                     }
                     else
                     {
-                        _itemEffect.Apply(player, selectedItem, itemDatabase);
+                        _itemEffect.Apply(player, selectedItem, itemPlaceholders);
                     }
                     return ItemTargetSkillResult.Success;
                 }

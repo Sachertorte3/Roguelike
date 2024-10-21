@@ -43,7 +43,7 @@ namespace Domain.Service.Rooms
                                 {
                                     var index = player.Inventory.GetItemIndex(item);
                                     player.ReplaceInventory(null, index);
-                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemDatabase)}を渡した。");
+                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {

@@ -18,7 +18,7 @@ namespace Domain.Service.ItemEffect
             return Enumerable.Empty<int>();
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemDatabase itemDatabase)
+        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
         {
             actor.Inventory.Replace(new Item(_item), actor.Inventory.GetItemIndex(item));
         }

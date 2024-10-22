@@ -11,7 +11,7 @@ namespace Domain.Service.Characters.Behavior
 {
     internal sealed class IntelligentDashController
     {
-        private Direction8 _lastMoveDirection;
+        private Direction8? _lastMoveDirection;
         public async UniTask Wait(IHasBehavior character, IMap map)
         {
             if (character.CanMove(character.CurrentDirection, map) &&
@@ -63,7 +63,7 @@ namespace Domain.Service.Characters.Behavior
                 var canMoveDirections = DirectionMethods.AllDirections
                     .Where(direction => !direction.IsDiagonal())
                     .Where(direction => character.CanMove(direction, map))
-                    .Where(direction => direction != _lastMoveDirection.Reverse());
+                    .Where(direction => direction != _lastMoveDirection?.Reverse());
                 if (canMoveDirections.Count() == 1)
                     return new Move(canMoveDirections.First());
             }

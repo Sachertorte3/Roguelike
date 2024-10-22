@@ -102,7 +102,7 @@ namespace Domain.Service.Rooms
 
         private IEnumerable<IItem> GetItemsInRoom(IMap mapManager)
         {
-            return mapManager.GetItemsInArea(Rect.RectRange()).Select(item => item.Item);
+            return mapManager.Items.In(Rect.RectRange()).Select(item => item.Item);
         }
 
         private void SetShopItems(IEnumerable<IItem> items)

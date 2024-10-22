@@ -102,7 +102,7 @@ namespace Domain.Service.Events
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.CanPlace(result + direction.Vector(), false, false, false, EntityLayer.Middle))
+                if (map.At(result + direction.Vector()).CanPlace(false, false, false, EntityLayer.Middle))
                 {
                     result += direction.Vector();
                 }
@@ -123,7 +123,7 @@ namespace Domain.Service.Events
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
-                    position => map.CanPlace(position, false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
+                    position => map.At(position).CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
             }
         }
 

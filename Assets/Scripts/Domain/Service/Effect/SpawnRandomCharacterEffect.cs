@@ -22,7 +22,7 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.CanPlace(position, false, false, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))

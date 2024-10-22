@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
@@ -12,16 +13,16 @@ namespace Domain.Model.Effect.Position
         public List<EntityLayer> CanHitLayer = new() { EntityLayer.Middle };
         public bool IsDirectional => true;
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
-            IEffectMap map)
+            IMap map)
         {
             var pos = position;
             for (var i = 0; i < CommonSenseParameters.ThrowDistance; i++)
             {
-                if (map.IsBlank(pos + direction.Vector(), CanHitLayer.ToArray()))
+                if (map.At(pos + direction.Vector()).IsBlankIgnoreWall(CanHitLayer.ToArray()))
                 {
                     pos += direction.Vector();
                 }
-                else if (map.IsPassableOnMap(pos + direction.Vector()))
+                else if (map.At(pos + direction.Vector()).IsPassableOnMap())
                 {
                     pos += direction.Vector();
                     break;
@@ -36,7 +37,7 @@ namespace Domain.Model.Effect.Position
         }
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
+            IMap map)
         {
             return Get(position, direction, map);
         }

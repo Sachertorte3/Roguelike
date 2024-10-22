@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Character;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -16,17 +18,17 @@ namespace Domain.Model.Effect.Position
         public bool IsDirectional => false;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
+            IMap map)
         {
             var positions = new List<Vector2Int>();
             if (TargetSelf)
                 positions.Add(actor.CurrentPosition);
             if (TargetAlly)
-                positions.AddRange(map.GetVisibleAllyPositions(actor, actor.VisibleArea));
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Ally).Positions());
             if (TargetNeutral)
-                positions.AddRange(map.GetVisibleNeutralPositions(actor, actor.VisibleArea));
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Neutral).Positions());
             if (TargetEnemy)
-                positions.AddRange(map.GetVisibleEnemyPositions(actor, actor.VisibleArea));
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Enemy).Positions());
             return positions
                 .OrderBy(p => Vector2Int.Distance(p, position))
                 .Take(NumberOfTarget);

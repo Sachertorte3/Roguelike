@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -91,7 +92,7 @@ namespace Game
 
         private void SetAllCharacterPosition()
         {
-            _allCharacterPositions = _characters.Select(character => character.CurrentPosition).ToHashSet();
+            _allCharacterPositions = _characters.Positions().ToHashSet();
         }
     }
 }

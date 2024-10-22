@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
@@ -44,7 +45,7 @@ namespace Domain.Model.Character
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Vector2Int CurrentPosition { get; }
-        public ICharacterSkill[] Skills { get; }
+        public IReadOnlyList<ICharacterSkill> Skills { get; }
         public IVisionRange VisionRange { get; }
         public int CurrentMaxHp { get; }
         public int CurrentHp { get; }

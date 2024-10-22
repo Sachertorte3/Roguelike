@@ -35,7 +35,7 @@ namespace Domain.Service.Characters
                     new(), new(), new(), 10, false, false, true, 1, false),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
-                skills: new[]
+                skills: new List<CharacterSkillMemento>
                 {
                     CharacterSkill.Build(
                         SpawnEffectSkill.Build(
@@ -104,7 +104,7 @@ namespace Domain.Service.Characters
                     data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
                 entity: Entity.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
-                skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToArray(),
+                skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToList(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory: inventory,
                 knownItemNames: new List<string>(),

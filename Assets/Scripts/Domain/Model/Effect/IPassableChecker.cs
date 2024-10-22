@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using UnityEngine;
 
 namespace Domain.Model.Effect
@@ -7,17 +8,9 @@ namespace Domain.Model.Effect
     public interface IPassableChecker
     {
         public ICharacter Player { get; }
-        public HashSet<Vector2Int> GetAllBlankPositionsOn(params EntityLayer[] layers);
-        public HashSet<Vector2Int> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers);
-        public HashSet<Vector2Int> GetAllWalkablePositions(IAffiliation affiliation);
-        public bool CanPlace(Vector2Int position, bool isFlying, bool canIgnoreWall, bool ignoreEntity,
-            params EntityLayer[] layers);
-        public bool IsInside(Vector2Int position);
-        public bool IsBlankIgnoreWall(Vector2Int position, params EntityLayer[] layers);
-        public bool IsBlank(Vector2Int position, params EntityLayer[] layers);
-        public bool IsBlankAndStandable(Vector2Int position, params EntityLayer[] layers);
-        public bool IsWalkable(Vector2Int position, IAffiliation affiliation);
-        public bool IsWalkableOnMap(Vector2Int position);
-        public bool IsPassableOnMap(Vector2Int position);
+        public IMapPosition At(Vector2Int position);
+        public IEnumerable<IMapPosition> GetAllBlankPositionsOn(params EntityLayer[] layers);
+        public IEnumerable<IMapPosition> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers);
+        public IEnumerable<IMapPosition> GetAllWalkablePositions(IAffiliation affiliation);
     }
 }

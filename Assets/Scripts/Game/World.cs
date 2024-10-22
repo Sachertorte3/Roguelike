@@ -208,8 +208,7 @@ namespace Game
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
                 playerData = _activeMap.CurrentValue.Player.Serialize();
-                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize())
-                    .ToList();
+                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
 
                 _activeMap.CurrentValue.Dispose();
             }

@@ -11,7 +11,7 @@ namespace Domain.Model.Map
     {
         public static IEnumerable<ICharacter> GetVisibleCharacters(this IMap map, IHasBehavior character)
         {
-            return map.GetCharactersInArea(character.VisionRange.VisibleArea).Where(c => c != character);
+            return map.Characters.In(character.VisionRange.VisibleArea).Where(c => c != character);
         }
 
         public static IEnumerable<ICharacter> GetCharactersCanSeePosition(this IMap map, Vector2Int position)

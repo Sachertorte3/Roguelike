@@ -17,7 +17,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public CharacterStatusMemento Status { get; private set; }
         [field: SerializeField] public EntityMemento Entity { get; private set; }
         [field: SerializeField] public Direction8 Direction { get; private set; }
-        [field: SerializeField] public CharacterSkillMemento[] Skills { get; private set; }
+        [field: SerializeField] public List<CharacterSkillMemento> Skills { get; private set; }
         [field: SerializeField] public Option<SpawnEffectSkillMemento> LastSkill { get; private set; }
         [field: SerializeField] public InventoryMemento Inventory { get; private set; }
         [field: SerializeField] public List<string> KnownItemNames { get; private set; }
@@ -39,7 +39,7 @@ namespace Domain.Model.Memento
             CharacterStatusMemento status,
             EntityMemento entity,
             Direction8 direction,
-            CharacterSkillMemento[] skills,
+            List<CharacterSkillMemento> skills,
             Option<SpawnEffectSkillMemento> lastSkill,
             InventoryMemento inventory,
             List<string> knownItemNames,
@@ -84,7 +84,7 @@ namespace Domain.Model.Memento
             CharacterStatusMemento? status = null,
             EntityMemento? entity = null,
             Direction8? direction = null,
-            CharacterSkillMemento[]? skills = null,
+            List<CharacterSkillMemento>? skills = null,
             Option<SpawnEffectSkillMemento>? lastSkill = null,
             InventoryMemento? inventory = null,
             List<string>? knownItemNames = null,

@@ -53,13 +53,12 @@ namespace Domain.Service.Characters.Behavior
 
         private Move DashFilter(Move move, IHasBehavior character, bool isStarted, IMap map, IInput input)
         {
-            if (!input.IsDash() || isStarted) return move;
-            var inStraightway = DirectionMethods.AllDirections
-                .Where(direction => !direction.IsDiagonal())
-                .Where(direction => character.CanMoveIgnoreEntity(direction, map))
-                .Count() == 2;
-            if (inStraightway)
+            if (!input.IsDash() || isStarted)
+                return move;
+            if (InPathway(character, map))
             {
+                if (_lastMoveDirection.HasValue && character.CanMove(_lastMoveDirection.Value, map))
+                    return new Move(_lastMoveDirection.Value);
                 var canMoveDirections = DirectionMethods.AllDirections
                     .Where(direction => !direction.IsDiagonal())
                     .Where(direction => character.CanMove(direction, map))
@@ -68,6 +67,23 @@ namespace Domain.Service.Characters.Behavior
                     return new Move(canMoveDirections.First());
             }
             return move;
+        }
+        private bool InPathway(IHasBehavior character, IMap map)
+        {
+            var canMoveDirections = DirectionMethods.AllDirections
+                .Where(direction => character.CanMoveIgnoreEntity(direction, map))
+                .ToList();
+
+            bool isStraightPathClear = canMoveDirections
+                .Where(direction => !direction.IsDiagonal())
+                .Count() == 2;
+
+            bool noValidDiagonalPath = !canMoveDirections
+                .Where(direction => direction.IsDiagonal())
+                .Any(direction => canMoveDirections.Contains(direction.Rotate45Clockwise()) &&
+                                  canMoveDirections.Contains(direction.Rotate45AntiClockwise()));
+
+            return isStraightPathClear && noValidDiagonalPath;
         }
     }
 }

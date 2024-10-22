@@ -17,8 +17,7 @@ namespace Domain.Service.Action
 
         public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            var target = map.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
-                .FirstOrDefault();
+            var target = map.Characters.At(actor.CurrentPosition + Direction.Vector()).FirstOrDefault();
             if (target == null)
                 throw new InvalidOperationException("target is null");
             actor.Move(Direction, input).Forget();

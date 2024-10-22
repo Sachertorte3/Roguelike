@@ -67,7 +67,7 @@ namespace Game
                 var positions = DirectionMethods
                     .AllDirections
                     .Select(direction => fire.CurrentPosition + direction.Vector())
-                    .Where(position => map.CanPlace(position, false, false, true));
+                    .Where(position => map.At(position).CanPlace(false, false, true));
                 foreach (var position in positions)
                 {
                     if (Random.value < GetProbabilityOfFireSpreading(position, map))
@@ -90,7 +90,7 @@ namespace Game
             var value = 1 / 64f;
             if (map.IsGrass(position))
                 value += 1 / 16f;
-            var entity = map.GetEntityAt(position);
+            var entity = map.Entities.At(position).FirstOrDefault();
             if (entity != null)
                 value += 1 / 32f;
             return value;

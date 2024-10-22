@@ -39,8 +39,8 @@ namespace Domain.Service.Rooms
             GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
-                mapManager.SpawnRandomEnemy(mapManager.GetBlankAndStandablePositionsInArea(Rect.RectRange())
-                    .GetAtRandom(), false, false);
+                mapManager.SpawnRandomEnemy(mapManager.GetAllBlankAndStandablePositionsOn().In(Rect.RectRange())
+                    .GetAtRandom().Position, false, false);
             }
 
             await UniTask.Delay(1000);

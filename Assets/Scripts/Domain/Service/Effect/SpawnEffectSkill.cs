@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
@@ -148,7 +149,7 @@ namespace Domain.Service.Effect
             {
                 foreach (var effect in _effects)
                 {
-                    foreach (var target in map.GetEntitiesInArea(area)
+                    foreach (var target in map.Entities.In(area)
                                 .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
                                 .Reverse())
                     {
@@ -208,10 +209,10 @@ namespace Domain.Service.Effect
             }
 
             var area = GetArea(actor, position, direction, map, true);
-            var characters = map.GetCharactersInArea(area);
+            var characters = map.Characters.In(area);
             var totalEvaluation = 0f;
 
-            if (characters.Count <= 0)
+            if (characters.Count() <= 0)
             {
                 return -1;
             }

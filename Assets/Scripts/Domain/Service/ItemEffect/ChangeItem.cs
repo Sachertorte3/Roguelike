@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
@@ -13,9 +11,9 @@ namespace Domain.Service.ItemEffect
     {
         [SerializeField] private ItemData _item;
 
-        public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
+        public bool CanApplyTo(IHasInventory actor, IItem item)
         {
-            return Enumerable.Empty<int>();
+            return true;
         }
 
         public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)

@@ -314,25 +314,36 @@ namespace Domain.Service.Characters
             }
             else
             {
-                _inventory.Remove(item);
                 Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
                 Turn(direction);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
                 var destination =
                     ItemEntity.GetThrowDestination(CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
-                if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+                if (_inventory.Remove(item))
                 {
-                    _onAttacked.OnNext(Unit.Default);
-                    await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
-                }
+                    if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+                    {
+                        _onAttacked.OnNext(Unit.Default);
+                        await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
+                    }
 
-                var itemEntity = map.SpawnItem(item,
-                    map.FindBlankPositionFrom(destination, position => map.At(position).IsBlank(EntityLayer.Bottom)));
-                await map.ExecuteTrapAt(destination, this);
-                item = itemEntity.Item;
-                if (item.CanActivateWhenThrown)
+                    var itemEntity = map.SpawnItem(item,
+                        map.FindBlankPositionFrom(destination, position => map.At(position).IsBlank(EntityLayer.Bottom)));
+
+                    await map.ExecuteTrapAt(destination, this);
+                    item = itemEntity.Item;
+                    if (item.CanActivateWhenThrown)
+                    {
+                        await item.UseWhenThrown(this, destination, direction, map);
+                    }
+                }
+                else
                 {
-                    var result = await item.UseWhenThrown(this, destination, direction, map);
+                    var itemEntity = map.Items.At(CurrentPosition).FirstOrDefault();
+                    if (itemEntity != null)
+                    {
+                        await itemEntity.BlowAway(this, direction, CommonSenseParameters.ThrowDistance, map);
+                    }
                 }
             }
 

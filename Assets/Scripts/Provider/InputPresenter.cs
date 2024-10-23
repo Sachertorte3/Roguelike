@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Game;
 using IngameDebugConsole;
 using R3;
@@ -58,7 +59,7 @@ namespace Provider
                 })
             );
 
-            inventoryView.OnFocusChanged.Subscribe(index => actionReceiver.SetInventoryIndex(index));
+            inventoryView.OnFocusChanged.Subscribe(focus => actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.isGroundItem, focus.isEmpty)));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {

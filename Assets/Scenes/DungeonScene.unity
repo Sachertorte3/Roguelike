@@ -4965,6 +4965,10 @@ PrefabInstance:
       propertyPath: _emptyIcon
       value: 
       objectReference: {fileID: 571617074, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+    - target: {fileID: -1911200426149780450, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
+      propertyPath: _groundItemIcon
+      value: 
+      objectReference: {fileID: 286837363, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
     - target: {fileID: 615100321150736510, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
       propertyPath: m_Pivot.x
       value: 0

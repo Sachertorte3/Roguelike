@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
@@ -12,10 +10,9 @@ namespace Domain.Service.ItemEffect
     {
         [SerializeField] private string _filter = "";
 
-        public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
+        public bool CanApplyTo(IHasInventory actor, IItem item)
         {
-            var disabledItems = actor.Inventory.AllItems.Where(item => !item.CanUpgrade(_filter));
-            return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
+            return !item.CanUpgrade(_filter);
         }
 
         public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)

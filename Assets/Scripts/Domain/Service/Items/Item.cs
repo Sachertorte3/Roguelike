@@ -231,7 +231,7 @@ namespace Domain.Service.Items
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(actor, this, map.ItemPlaceholders)
+                itemTargetSkill => itemTargetSkill.Use(actor, this, map)
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -260,7 +260,7 @@ namespace Domain.Service.Items
                 itemTargetSkill =>
                 {
                     Log.Error("The item is not configured to activate this type of skill when thrown.");
-                    return itemTargetSkill.Use((IActor)actor, this, map.ItemPlaceholders);
+                    return itemTargetSkill.Use((IActor)actor, this, map);
                 }
             );
             if (result.Result != SkillResult.Cancelled)

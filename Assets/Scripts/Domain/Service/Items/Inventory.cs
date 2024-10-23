@@ -152,12 +152,12 @@ namespace Domain.Service.Items
             return Replace(null, index);
         }
 
-        public IItem? Remove(IItem item)
+        public bool Remove(IItem item)
         {
             var index = _items.IndexOf(item);
             if (index < 0)
-                return null;
-            return Replace(null, index);
+                return false;
+            return Replace(null, index) != null;
         }
     }
 }

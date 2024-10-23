@@ -1,4 +1,6 @@
 #nullable enable
+using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
@@ -15,13 +17,21 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public PlayerInventoryPresenter(World world, InventoryView inventoryView)
+        public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     _disposables.Add(map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
                         ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player, map.ItemPlaceholders);
+                    }));
+                    _disposables.Add(gameManager.Turn.Subscribe(position =>
+                    {
+                        var item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault();
+                        if (item != null)
+                            inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
+                        else
+                            inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
                     }));
                     _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {

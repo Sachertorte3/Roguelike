@@ -383,7 +383,7 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+        public UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             return UniTask.FromResult<IItem?>(null);
         }

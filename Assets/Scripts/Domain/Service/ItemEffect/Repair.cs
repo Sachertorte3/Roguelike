@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 
@@ -7,10 +5,9 @@ namespace Domain.Service.ItemEffect
 {
     public class Repair : IItemEffect
     {
-        public IEnumerable<int> GetDisabledItemIndexes(IHasInventory actor)
+        public bool CanApplyTo(IHasInventory actor, IItem item)
         {
-            var disabledItems = actor.Inventory.AllItems.Where(item => item.RemainingUses.CurrentValue == item.MaxUsages);
-            return disabledItems.Select(item => actor.Inventory.GetItemIndex(item));
+            return item.RemainingUses.CurrentValue < item.MaxUsages;
         }
 
         public void Apply(IHasInventory player, IItem item, ItemPlaceholders itemPlaceholders)

@@ -17,7 +17,14 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalUpgradeLimit: 0
-  AdditionalConditions:
-  - Condition:
-      _name: "\u7761\u7720"
-    Probability: 0.2
+  AdditionalEffects:
+  - rid: 5486256783268773893
+  references:
+    version: 2
+    RefIds:
+    - rid: 5486256783268773893
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u7761\u7720"
+        _probabilityOfSuccess: 0.2

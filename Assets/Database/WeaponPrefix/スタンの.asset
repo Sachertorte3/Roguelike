@@ -17,7 +17,14 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalUpgradeLimit: 0
-  AdditionalConditions:
-  - Condition:
-      _name: "\u30B9\u30BF\u30F3"
-    Probability: 0.25
+  AdditionalEffects:
+  - rid: 5486256783268773888
+  references:
+    version: 2
+    RefIds:
+    - rid: 5486256783268773888
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u30B9\u30BF\u30F3"
+        _probabilityOfSuccess: 0.25

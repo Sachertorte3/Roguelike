@@ -375,28 +375,25 @@ MonoBehaviour:
   - Type: 0
     RoundRoomCorner: 0
     CaveInOneRoom: 0
-    WaterChance: 1
+    WaterChance: 0
     Floors:
     - Depth: 3
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      Template: 2
-      _prefixChance: 0.2
-      _shinyChance: 0
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0
-      _shopChance: 0.1
-      _monsterHouseChance: 1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -411,45 +408,38 @@ MonoBehaviour:
     Floors:
     - Depth: 6
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      Template: 0
-      _prefixChance: 0.2
-      _shinyChance: 0
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0
-      _shopChance: 0.1
-      _monsterHouseChance: 1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 1
-      _prefixChance: 0
-      _shinyChance: 0
-      _sleepChance: 0
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0
-      _monsterHouseChance: 0
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 1
-      _boss:
-      - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -468,65 +458,55 @@ MonoBehaviour:
     Floors:
     - Depth: 3
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Template: 0
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Template: 2
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 1
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss:
-      - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -545,45 +525,38 @@ MonoBehaviour:
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Template: 0
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 1
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss:
-      - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -602,45 +575,38 @@ MonoBehaviour:
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Template: 0
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 1
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss:
-      - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -661,45 +627,38 @@ MonoBehaviour:
     Floors:
     - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Template: 0
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     - Depth: 1
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Template: 1
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0.5
-      _mimicChance: 0.1
-      _grassChance: 0.3
-      _shopChance: 0.1
-      _monsterHouseChance: 0.1
-      _restRoomChance: 0.1
-      _room:
-        ChestChance: 0.1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 1
-        TrapCount: 0
-      _existBoss: 0
-      _boss:
-      - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
@@ -718,24 +677,21 @@ MonoBehaviour:
     Floors:
     - Depth: 1
       Field: {fileID: 11400000, guid: a7563f1f16a4a4cac9010cd6933a7d3e, type: 2}
-      Template: 3
-      _prefixChance: 0.2
-      _shinyChance: 0.01
-      _sleepChance: 0
-      _mimicChance: 0
-      _grassChance: 0
-      _shopChance: 0
-      _monsterHouseChance: 0
-      _restRoomChance: 0
-      _room:
-        ChestChance: 1
-        ItemCount: 1
-        MoneyCount: 0
-        MoneyAverage: 0
-        CharacterCount: 3
-        TrapCount: 5
-      _existBoss: 0
-      _boss: []
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}

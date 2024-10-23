@@ -39,25 +39,17 @@ namespace Game
         public void CreateNew()
         {
             var mainDungeon = Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Dungeon.asset").WaitForCompletion();
-            var voidDungeon = Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Void.asset").WaitForCompletion();
             _dungeons = new Dictionary<string, Dungeon> {
                 { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) },
-                { "Void", new Dungeon(Dungeon.Build(voidDungeon)) }
             };
             _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(_placeholders), _placeholders);
             _movements = new Dictionary<Location, List<MapConnection>>();
-            for (int i = 1; i <= 10; i++)
-            {
-                var movement = new MapConnection(MovementEntityType.MagicCircle, new Location("Void", 1));
-                var reverse = new MapConnection(MovementEntityType.MagicCircle, new Location("Dungeon", i));
-                AddMovement(movement, reverse);
-            }
             _maps = new Dictionary<Id<IMap>, MapMemento>();
             _updatedMapIds = new HashSet<Id<IMap>>();
             _activeMap.Value = null;
         }
 
-        public void AddMovement(MapConnection movement, MapConnection reverse)
+        public void AddBidirectionalMovement(MapConnection movement, MapConnection reverse)
         {
             if (!_movements.ContainsKey(reverse.Destination))
             {

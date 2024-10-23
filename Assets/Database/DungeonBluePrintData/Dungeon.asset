@@ -373,7 +373,7 @@ MonoBehaviour:
       Weight: 1
   Sections:
   - Type: 0
-    RoundRoomCorner: 0
+    RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0
     Floors:

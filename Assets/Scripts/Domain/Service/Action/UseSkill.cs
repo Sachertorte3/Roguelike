@@ -2,26 +2,25 @@
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Effect;
-using Domain.Model.Map;
 using Utilities;
 
 namespace Domain.Service.Action
 {
     internal record UseSkill(ICharacterSkill Skill, Direction8 Direction) : IAction
     {
-        public bool Doable(IActor actor, IMap map)
+        public bool Doable(IActor actor, IMap world)
         {
-            return !actor.StatusManager.CannotAct && Skill.IsUsable();
+            return Skill.IsUsable();
         }
 
-        public async UniTask Do(IActor actor, IMap map, IInput input)
+        public async UniTask Do(IActor actor, IMap world, IInput input)
         {
-            await actor.UseSkill(Skill, Direction, map);
+            await actor.UseSkill(Skill, Direction, world);
         }
 
-        public float Evaluate(IActor actor, IMap map)
+        public float Evaluate(IActor actor, IMap world)
         {
-            return Skill.Evaluate(actor, actor.CurrentPosition, Direction, map);
+            return Skill.Evaluate(actor, actor.CurrentPosition, Direction, world);
         }
 
         public string Info()

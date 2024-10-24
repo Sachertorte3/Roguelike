@@ -6,7 +6,7 @@ namespace Utilities
     {
         public Angle(float value)
         {
-            Value = (value % 360 + 360) % 360;
+            Value = ((value % 360) + 360) % 360;
         }
 
         public Angle(Vector2 vector) : this(Vector2.SignedAngle(Vector2.right, vector))

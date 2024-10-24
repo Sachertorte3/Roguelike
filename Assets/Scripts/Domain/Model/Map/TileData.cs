@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Domain.Model.Memento;
 
 namespace Domain.Model.Map
 {
@@ -17,31 +16,18 @@ namespace Domain.Model.Map
         public TileMemento Serialize()
         {
             return new TileMemento
-            (
-                TileType,
-                IsKnown
-            );
+            {
+                TileType = TileType,
+                IsKnown = IsKnown
+            };
         }
 
         public static TileMemento Build(TileCategory tileType, bool isKnown)
         {
             return new TileMemento
-            (
-                tileType,
-                isKnown
-            );
-        }
-
-        public bool IsWalkable()
-        {
-            return TileType switch
             {
-                TileCategory.Floor => true,
-                TileCategory.Water => false,
-                TileCategory.Wall => false,
-                TileCategory.UnbreakableWall => false,
-                TileCategory.Blank => false,
-                _ => throw new InvalidEnumArgumentException()
+                TileType = tileType,
+                IsKnown = isKnown
             };
         }
 
@@ -50,20 +36,6 @@ namespace Domain.Model.Map
             return TileType switch
             {
                 TileCategory.Floor => true,
-                TileCategory.Water => true,
-                TileCategory.Wall => false,
-                TileCategory.UnbreakableWall => false,
-                TileCategory.Blank => false,
-                _ => throw new InvalidEnumArgumentException()
-            };
-        }
-
-        public bool IsTransparent()
-        {
-            return TileType switch
-            {
-                TileCategory.Floor => true,
-                TileCategory.Water => true,
                 TileCategory.Wall => false,
                 TileCategory.UnbreakableWall => false,
                 TileCategory.Blank => false,

@@ -9,7 +9,6 @@ namespace View
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
-        private bool _isMenuOpen;
 
         public InputReceiver()
         {
@@ -18,13 +17,11 @@ namespace View
             {
                 _actions.Field.Disable();
                 _actions.Menu.Enable();
-                _isMenuOpen = true;
             }));
             _disposables.Add(OnMenuClosing.Subscribe(_ =>
             {
                 _actions.Field.Enable();
                 _actions.Menu.Disable();
-                _isMenuOpen = false;
             }));
         }
 
@@ -40,9 +37,6 @@ namespace View
 
         public Observable<Unit> OnThrowPerformed => _actions.Field.Throw.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnDropPerformed => _actions.Field.Drop.AsObservable().Select(context => Unit.Default);
-        public Observable<Unit> OnDoNothingPerformed => _actions.Field.DoNothing.AsObservable().Select(context => Unit.Default);
-        public bool IsDoNothingPerformed => _actions.Field.DoNothing.IsPressed();
-        public Observable<Unit> OnRenamePerformed => _actions.Field.Rename.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnQuickSave => _actions.Field.QuickSave.AsObservable().Select(context => Unit.Default);
@@ -56,23 +50,6 @@ namespace View
         ~InputReceiver()
         {
             Dispose();
-        }
-
-        public void Enable()
-        {
-            if (!_isMenuOpen)
-            {
-                _actions.Field.Enable();
-            }
-            else
-            {
-                _actions.Menu.Enable();
-            }
-        }
-
-        public void Disable()
-        {
-            _actions.Disable();
         }
     }
 }

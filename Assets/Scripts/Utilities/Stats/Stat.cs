@@ -8,11 +8,10 @@ namespace Stats
         public ReadOnlyReactiveProperty<float> Value { get; }
         public float CurrentValue { get; }
     }
-
     public class Stat : IDisposable
     {
         private float _baseValue;
-        private float _additiveValue;
+        private float _additiveValue = 0;
         private float _additiveMultiplier = 1;
         private float _multiplicativeMultiplier = 1;
 

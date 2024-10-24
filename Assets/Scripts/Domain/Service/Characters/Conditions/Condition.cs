@@ -1,8 +1,5 @@
-﻿using Domain.Model;
-using Domain.Model.Character;
+﻿using Domain.Model.Character;
 using Domain.Model.Condition;
-using Domain.Model.Memento;
-using Domain.Service.Logs;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -13,52 +10,35 @@ namespace Domain.Service.Characters.Conditions
         private readonly RemovalConditionData _removalCondition;
         private int _elapsedTurn;
 
-        public Condition(ConditionMemento memento)
+        public Condition(IConditionData condition, RemovalConditionData removalCondition, int elapsedTurn = 0)
         {
-            _elapsedTurn = memento.ElapsedTurns;
-            _condition = memento.Condition;
-            _removalCondition = memento.RemovalCondition;
+            _elapsedTurn = elapsedTurn;
+            _condition = condition;
+            _removalCondition = removalCondition;
         }
 
         public ParticleType ParticleType => _condition.ParticleType;
+        public bool CanAct => _condition.CanAct;
+        public bool CausesConfusion => _condition.CausesConfusion;
 
         public ConditionMemento Serialize()
         {
             return new ConditionMemento
-            (
-                _condition,
-                _removalCondition,
-                _elapsedTurn
-            );
-        }
-
-        public ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition,
-            int elapsedTurn = 0)
-        {
-            return new ConditionMemento
-            (
-                condition,
-                removalCondition,
-                elapsedTurn
-            );
-        }
-
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
-        {
-            if (_condition.InflictLog != "")
             {
-                GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
-            }
-            _condition.Inflict(hasCondition, actor);
+                Condition = _condition,
+                RemovalCondition = _removalCondition,
+                ElapsedTurns = _elapsedTurn
+            };
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
+        public void Inflict(IHasCondition hasCondition)
         {
-            if (_condition.DeleteLog != "")
-            {
-                GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
-            }
-            _condition.Delete(hasCondition, actor);
+            _condition.Inflict(hasCondition);
+        }
+
+        public void Delete(IHasCondition hasCondition)
+        {
+            _condition.Delete(hasCondition);
         }
 
         public void UpdateTurn(IHasCondition hasCondition)
@@ -67,29 +47,19 @@ namespace Domain.Service.Characters.Conditions
             _condition.Persist(hasCondition);
         }
 
-        public bool ShouldDelete(bool characterVisible)
+        public bool ShouldDelete(bool enemyVisible)
         {
-            return _removalCondition.IsFinished(_elapsedTurn, characterVisible);
-        }
-
-        public bool ShouldDeleteByDamage()
-        {
-            return _removalCondition.IsFinishedByDamage();
-        }
-
-        public bool EqualsConditionType(System.Type conditionType)
-        {
-            return _condition.GetType() == conditionType;
+            return _removalCondition.IsFinished(_elapsedTurn, enemyVisible);
         }
 
         public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
         {
             return new ConditionMemento
-            (
-                condition,
-                removalCondition,
-                0
-            );
+            {
+                Condition = condition,
+                RemovalCondition = removalCondition,
+                ElapsedTurns = 0
+            };
         }
     }
 }

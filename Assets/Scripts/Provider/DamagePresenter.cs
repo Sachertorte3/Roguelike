@@ -1,5 +1,5 @@
 using Domain.Model.Setting;
-using Game;
+using Model.Game;
 using R3;
 using Utilities;
 using VContainer;
@@ -31,7 +31,7 @@ namespace Provider
                     }));
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnDamageReceived.Subscribe(damageChanged =>
                     {
-                        if (damageChanged.Character.Visibility.CurrentValue)
+                        if (damageChanged.Character.Visibility.CurrentValue == true)
                         {
                             var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 /
                                                             damageChanged.Character.StatusManager.Stats.MaxHp
@@ -43,7 +43,7 @@ namespace Provider
                     }));
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnHealReceived.Subscribe(healChanged =>
                     {
-                        if (healChanged.Character.Visibility.CurrentValue)
+                        if (healChanged.Character.Visibility.CurrentValue == true)
                         {
                             var healPercentageFromMaxHp = healChanged.Message.Heal * 100 /
                                                           healChanged.Character.StatusManager.Stats.MaxHp.CurrentValue;

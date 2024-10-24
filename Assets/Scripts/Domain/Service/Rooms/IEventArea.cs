@@ -1,13 +1,11 @@
-using Cysharp.Threading.Tasks;
-using Domain.Model;
-using Domain.Model.Map;
+using Domain.Service.Events;
 using UnityEngine;
 
-namespace Domain.Service.Rooms
+namespace Model.Game
 {
     public interface IEventArea
     {
         public RectInt Rect { get; init; }
-        public UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int currentPosition);
+        public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition);
     }
 }

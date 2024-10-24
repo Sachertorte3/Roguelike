@@ -1,9 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using Utilities;
 
@@ -12,34 +10,31 @@ namespace Domain.Service.Characters.Conditions
     [Serializable]
     internal class Poisoned : IConditionData
     {
-        public string Name => $"毒({Power})";
+        public string Name => $"毒(ダメージ:{Power})";
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は毒にかかった";
-        public string DeleteLog => "は毒が治った";
+        public bool CanAct => true;
+        public bool CausesConfusion => false;
         [MinValue(1)] public int Power = 1;
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, -Power);
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, -Power);
         }
 
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
-        }
+        public UniTask Persist(IHasCondition hasCondition) => UniTask.CompletedTask;
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return (float)Power / CommonSenseParameters.PlayerMaxHealth;
+            return (float)Power / 100;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
             return Power;
         }

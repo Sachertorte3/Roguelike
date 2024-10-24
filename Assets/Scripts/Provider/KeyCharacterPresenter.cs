@@ -1,6 +1,6 @@
 #nullable enable
 using System.Linq;
-using Game;
+using Model.Game;
 using ObservableCollections;
 using R3;
 using UI;
@@ -12,34 +12,29 @@ namespace Provider
 {
     public class KeyCharacterPresenter
     {
-        public KeyCharacterPresenter(World world, SynchronizedCharacterView characters,
-            SynchronizedIconEntityView iconEntities)
+        public KeyCharacterPresenter(World world, SynchronizedCharacterView characters, SynchronizedIconEntityView iconEntities)
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
-            {
-                var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
-                var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")
-                    .WaitForCompletion();
-                foreach (var movementEntity in movementEntities)
                 {
-                    var movementLock = Object.Instantiate(lockPrefab, movementEntity.transform)
-                        .GetComponent<StairsLock>();
-                    movementLock.SetVisibility(movementEntity.GetComponent<SpriteRenderer>().enabled);
-                    movementLock.SetCount(map.KeyCharacters.Count);
-                    map.KeyCharacters.ObserveCountChanged().Subscribe(count => movementLock.SetCount(count))
-                        .AddTo(movementLock);
-                    map.MovementEntityLocked.Where(isLocked => !isLocked).Subscribe(_ => { movementLock.UnLock(); })
-                        .AddTo(movementLock);
-                }
-
-                foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
-                {
-                    var keyPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Key.prefab")
+                    var downStairs = iconEntities.Get(map.DownStairs);
+                    var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")
                         .WaitForCompletion();
-                    var key = Object.Instantiate(keyPrefab, character.transform);
-                    key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
-                }
-            });
+                    var stairsLock = Object.Instantiate(lockPrefab, downStairs.transform).GetComponent<StairsLock>();
+                    stairsLock.SetVisibility(downStairs.GetComponent<SpriteRenderer>().enabled);
+                    stairsLock.SetCount(map.KeyCharacters.Count);
+                    map.KeyCharacters.ObserveCountChanged().Subscribe(count => stairsLock.SetCount(count)).AddTo(stairsLock);
+                    map.DownStairsLocked.Where(isLocked => !isLocked).Subscribe(_ =>
+                    {
+                        stairsLock.UnLock();
+                    }).AddTo(stairsLock);
+                    foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
+                    {
+                        var keyPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Key.prefab")
+                            .WaitForCompletion();
+                        var key = Object.Instantiate(keyPrefab, character.transform);
+                        key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
+                    }
+                });
         }
     }
 }

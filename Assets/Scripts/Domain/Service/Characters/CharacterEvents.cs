@@ -2,6 +2,7 @@
 using System;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Model.Message;
 using Domain.Service.Entities;
 using R3;
@@ -31,6 +32,9 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnDestroyedMessage Message)> OnDestroyed =>
             _events.GetObservable<OnDestroyedMessage>();
 
+        public Observable<(ICharacter Character, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
+            _events.GetObservable<OnEffectSpawnedMessage>();
+
         public Observable<(ICharacter Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged =>
             _events.GetObservable<OnVisibleAreaChangedMessage>();
 
@@ -43,11 +47,8 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnHealReceivedMessage Message)> OnHealReceived =>
             _events.GetObservable<OnHealReceivedMessage>();
 
-        public Observable<(ICharacter Character, OnAffiliationChangedMessage Message)> OnAffiliationChanged =>
-            _events.GetObservable<OnAffiliationChangedMessage>();
-
-        public Observable<(ICharacter Character, OnAffectedByTrapFlagsChangedMessage Message)> OnAffectedByTrapFlagsChanged =>
-            _events.GetObservable<OnAffectedByTrapFlagsChangedMessage>();
+        public Observable<(ICharacter Character, OnAffectionChangedMessage Message)> OnAffectionChanged =>
+            _events.GetObservable<OnAffectionChangedMessage>();
 
         public void Dispose()
         {
@@ -82,15 +83,14 @@ namespace Domain.Service.Characters
                 character.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(character, character.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(character, character.OnDestroyed.Select(_ => new OnDestroyedMessage()));
+            _events.Add(character, character.OnEffectSpawned);
             _events.Add(character, character.VisionRange.OnVisibleAreaChanged);
             _events.Add(character, character.OnPickUpItem.Select(_ => new OnPickUpItemMessage()));
             _events.Add(character,
                 character.StatusManager.OnDamageReceived.Select(damage => new OnDamageReceivedMessage(damage)));
             _events.Add(character,
                 character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
-            _events.Add(character, character.Affiliation.OnAffiliationChanged);
-            _events.Add(character,
-                character.StatusManager.IsAffectedByTraps.Select(isAffectedByTrap => new OnAffectedByTrapFlagsChangedMessage(isAffectedByTrap)));
+            _events.Add(character, character.Affiliation.OnAffectionChanged);
         }
 
         public void Remove(ICharacter character)

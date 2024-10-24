@@ -3,7 +3,6 @@ using System;
 using Domain.Model.Condition;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Model.Character
 {
@@ -16,8 +15,7 @@ namespace Domain.Model.Character
         public AdditionalConditionData(IConditionData condition, RemovalConditionData removalCondition,
             float probability)
         {
-            Condition = new ScriptableObjectSerializable<ConditionTemplate>(
-                new ConditionTemplate(condition, removalCondition));
+            Condition = new(new ConditionTemplate(condition, removalCondition));
             Probability = probability;
         }
 

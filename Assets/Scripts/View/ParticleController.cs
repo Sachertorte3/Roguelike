@@ -9,7 +9,6 @@ namespace View
     {
         private Dictionary<ParticleType, int> _particleCounter = new();
         private Dictionary<ParticleType, GameObject> _particles = new();
-        [HideInInspector] [SerializeField] private int _sortingLayerID;
 
         public void Add(ParticleType particleType)
         {
@@ -24,13 +23,9 @@ namespace View
             {
                 var EffectPrefab = Addressables.LoadAssetAsync<GameObject>(particleType.GetPath()).WaitForCompletion();
                 var particle = Instantiate(EffectPrefab, transform);
-                foreach (var particleSystem in particle.GetComponentsInChildren<ParticleSystem>())
-                {
-                    particleSystem.GetComponent<Renderer>().sortingLayerID = _sortingLayerID;
-                }
-
                 _particles.Add(particleType, particle);
                 _particleCounter.Add(particleType, 1);
+                particle.SetActive(GetComponent<Renderer>().enabled);
             }
         }
 
@@ -49,17 +44,6 @@ namespace View
                 _particles.Remove(particleType);
                 _particleCounter.Remove(particleType);
             }
-        }
-
-        public void Clear()
-        {
-            foreach (var particle in _particles)
-            {
-                Destroy(particle.Value);
-            }
-
-            _particles.Clear();
-            _particleCounter.Clear();
         }
     }
 }

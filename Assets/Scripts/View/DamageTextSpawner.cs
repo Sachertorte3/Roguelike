@@ -25,8 +25,7 @@ namespace View
             damageText.GetComponent<LifeTimer>().LifeTimeMilliseconds = textDisplayMilliseconds;
             var text = Instantiate(damageText, canvas.transform);
             text.text = value.ToString();
-            var random = new Vector2(Random.value - 0.5f, Random.value - 0.5f);
-            text.transform.position = position + new Vector2(0, 0.5f) + random;
+            text.transform.position = position + new Vector2(0, 0.5f);
             if (percentageFromMaxHP > 100)
             {
                 text.fontSize = 1f;

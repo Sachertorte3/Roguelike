@@ -2,81 +2,48 @@
 using System.Collections.Generic;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Domain.Model.Dungeon;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Domain.Model.Item
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
     public class ItemData : ScriptableObject, IHasInfo, IHasRarity
     {
-        public ItemCategory Category;
         [Required] public Sprite Icon;
-        public bool IsShiny;
-        public bool CannotUseIfCursed => Category != ItemCategory.Weapons;
-        public bool CannotDropIfCursed => Category == ItemCategory.Weapons;
-        public bool IdentifyIfGot => Category == ItemCategory.Weapons;
-        public bool IdentifyIfUsed => Category != ItemCategory.Wands;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
-
         #region spawn effect
-
-        [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath;
-
-        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")]
-        public bool SpawnEffectsOnUse = true;
-
-        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")]
-        public bool SpawnEffectsOnThrow;
+        [ShowIf("SpawnEffectsOnUse")] public bool UseOnDeath = false;
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnUse = true;
+        [ShowIf("@EffectType == ItemEffectType.SpawnEffect")] public bool SpawnEffectsOnThrow = false;
 
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow && !IsSameSkill")]
         public bool IsSameEffect;
-
         [ShowIf("@SpawnEffectsOnUse && SpawnEffectsOnThrow")]
         public bool IsSameSkill;
 
         [ShowIf("SpawnEffectsOnUse")] public SkillDataOnUse? SkillOnUse;
         [ShowIf("SpawnEffectsOnThrow")] public SkillDataOnThrow? SkillOnThrow;
-
         #endregion
-
         #region item target
-
-        [ShowIf("@EffectType == ItemEffectType.ItemTarget")]
-        [SerializeReference]
-        [Required]
-        public IItemEffect? ItemEffect;
-
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget"), SerializeReference, Required] public IItemEffect? ItemEffect;
         #endregion
-
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
-        public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
-        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit,
-            List<IConditionData> conditions)
+        private ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, int usageLimit, List<IConditionData> conditions)
         {
             name = itemName;
             Icon = icon;
-            IsShiny = isShiny;
             _rarity = rarity;
             UseOnDeath = useOnDeath;
             UsageLimit = usageLimit;
             PassiveConditions = conditions;
         }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
+        public ItemData(string itemName, Sprite icon, Rarity rarity,
+            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill, bool useOnDeath, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.SpawnEffect;
             SpawnEffectsOnUse = skillOnUse != null;
@@ -86,33 +53,14 @@ namespace Domain.Model.Item
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
         }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
+        public ItemData(string itemName, Sprite icon, Rarity rarity, bool useOnDeath, IItemEffect itemEffect, int usageLimit, List<IConditionData> conditions) : this(itemName, icon, rarity, useOnDeath, usageLimit, conditions)
         {
             EffectType = ItemEffectType.ItemTarget;
             ItemEffect = itemEffect;
         }
 
-        private bool _usable => EffectType switch
-        {
-            ItemEffectType.SpawnEffect => SpawnEffectsOnUse || SpawnEffectsOnThrow,
-            ItemEffectType.ItemTarget => ItemEffect != null,
-            _ => false
-        };
-
-        public void AddEffects(List<IEffect> effects)
-        {
-            if (SkillOnUse != null)
-            {
-                SkillOnUse.Effects.AddRange(effects);
-            }
-            if (SkillOnThrow != null)
-            {
-                SkillOnThrow.Effects.AddRange(effects);
-            }
-        }
+        public string Name => name.SetColored(Rarity.GetColor());
+        private bool _usable => SpawnEffectsOnUse || SpawnEffectsOnThrow;
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -145,43 +93,18 @@ namespace Domain.Model.Item
 
             if (IsSameEffect && SkillOnUse != null && SkillOnThrow != null)
             {
-                SkillOnThrow.SetSameEffect(SkillOnUse);
+                SkillOnThrow.Effect = SkillOnUse.Effect;
             }
 
             if (IsSameSkill && SkillOnUse != null)
             {
-                if (SkillOnThrow == null)
-                {
-                    SkillOnThrow =
-                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects, CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
-                }
-                else
-                {
-                    SkillOnThrow =
-                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects, SkillOnThrow.ProbabilityOfSuccess);
-                }
+                SkillOnThrow = new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effect);
             }
-
-            if (SkillOnUse != null)
-            {
-                SkillOnUse.OnValidate();
-            }
-
-            if (SkillOnThrow != null)
-            {
-                SkillOnThrow.OnValidate();
-            }
-
-            if (UpgradeLimit == 0)
-            {
-                UpgradeLimit = 3;
-            }
-            EditorUtility.SetDirty(this);
         }
 #endif
         public string Info()
         {
-            var info = $"{name}\n";
+            var info = $"{Name}\n";
             if (_usable)
             {
                 if (IsSameSkill)

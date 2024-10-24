@@ -16,7 +16,7 @@ MonoBehaviour:
     rid: 2541219281251860521
   RemovalCondition:
     RemoveByElapsedTurn: 1
-    Duration: 8
+    Duration: 5
     RemoveByDamage: 0
     Probability: 0
     RemoveByEnemyNearby: 0

@@ -1,13 +1,8 @@
 #nullable enable
-using System;
-using Cysharp.Threading.Tasks;
-using Game;
-using R3;
+using Model.Game;
 using Unity.Logging;
 using Unity.Logging.Sinks;
-using UnityEngine;
 using VContainer;
-using View.UI;
 using Logger = Unity.Logging.Logger;
 
 namespace Provider
@@ -15,25 +10,10 @@ namespace Provider
     public class Presenter
     {
         [Inject]
-        public Presenter(GameManager gameManager, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2,
-            SynchronizedFireEntityView _3, MenuController menuController)
+        public Presenter(GameManager gameManager, SynchronizedIconEntityView _)
         {
             LoggerInit();
-            gameManager.State.Subscribe(state =>
-            {
-                switch (state)
-                {
-                    case GameState.Title:
-                        Log.Debug("Title");
-                        gameManager.Title().Forget();
-                        menuController.TitleMenu();
-                        break;
-                    case GameState.Dungeon:
-                        Log.Debug("Dungeon");
-                        menuController.DungeonMenu();
-                        break;
-                }
-            });
+            gameManager.Load();
         }
 
         private void LoggerInit()
@@ -49,38 +29,32 @@ namespace Provider
             );
             Log.Debug("Init Logger");
         }
-
         private static LoggerConfig EditorConfiguration()
-        {
-            return new LoggerConfig()
+            => new LoggerConfig()
                 .SyncMode.FullSync()
-                .WriteTo.UnityDebugLog(
+                //.RedirectUnityLogs(log:true)
+                .WriteTo.UnityEditorConsole(
                     minLevel: LogLevel.Info,
                     captureStackTrace: true);
-        }
 
         private static LoggerConfig DevelopmentConfiguration()
-        {
-            return new LoggerConfig()
+            => new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    $"{Application.persistentDataPath}/Logs/logging_dev/client_dev_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging_dev/client_dev_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel: LogLevel.Debug,
                     captureStackTrace: true,
                     outputTemplate: "{Timestamp} [{Level}] {Message}{NewLine}{Stacktrace}");
-        }
 
         private static LoggerConfig ReleaseConfiguration()
-        {
-            return new LoggerConfig()
+            => new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
                 .WriteTo.File(
-                    $"{Application.persistentDataPath}/Logs/logging/client_release_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
+                    absFileName: $"{UnityEngine.Application.persistentDataPath}/Logs/logging/client_release_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log",
                     minLevel: LogLevel.Info,
                     captureStackTrace: false,
                     outputTemplate: "{Timestamp} [{Level}] {Message}");
-        }
     }
 }

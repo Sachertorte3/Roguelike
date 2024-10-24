@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Utilities;
@@ -11,11 +10,12 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "千里眼";
         public ParticleType ParticleType => ParticleType.Relieve;
         public Impact Impact => Impact.Beneficial;
-        public string InflictLog => "はよく見えるようになった";
-        public string DeleteLog => "の視界は元に戻った";
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public bool CanAct => true;
+        public bool CausesConfusion => false;
+
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.AddClairvoyantFlags();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -23,19 +23,52 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.RemoveClairvoyantFlags();
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.VisionRange.IsClairvoyant ? 0 : 0.05f;
+            return target.IsClairvoyant ? 0 : 0.1f;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
-            return 10f;
+            return 10;
+        }
+    }
+    internal class OverDrive : IConditionData
+    {
+        public string Name => "オーバードライブ";
+        public ParticleType ParticleType => ParticleType.None;
+        public Impact Impact => Impact.Beneficial;
+        public bool CanAct => true;
+        public bool CausesConfusion => false;
+
+        public void Inflict(IHasCondition hasCondition)
+        {
+            hasCondition.AddOverDriveFlags();
+        }
+
+        public UniTask Persist(IHasCondition hasCondition)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public void Delete(IHasCondition hasCondition)
+        {
+            hasCondition.RemoveOverDriveFlags();
+        }
+
+        public float Evaluate(ITargetOfEffect target)
+        {
+            return target.IsOverDrive ? 0 : 1f;
+        }
+
+        public float EvaluateDamage()
+        {
+            return 20;
         }
     }
 }

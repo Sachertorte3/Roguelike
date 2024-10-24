@@ -1,12 +1,12 @@
 #nullable enable
-using Domain.Model.Dungeon;
+using System.Collections.Generic;
 
 namespace Domain.Model.Item
 {
     public interface IItemEffect : IHasInfo
     {
-        public bool CanApplyTo(IHasInventory actor, IItem item);
-        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders);
+        public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory);
+        public void Apply(IItem item);
         public float EvaluatePrice();
     }
 }

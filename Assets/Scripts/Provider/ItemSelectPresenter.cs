@@ -1,5 +1,5 @@
 #nullable enable
-using Game;
+using Model.Game;
 using R3;
 using Utilities;
 using VContainer;

@@ -1,9 +1,8 @@
 #nullable enable
-
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Domain.Model.Effect;
+using System.Collections.Generic;
+using Domain.Model.Character;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,14 +19,13 @@ namespace Domain.Model.Item
         public Rarity Rarity => _rarity;
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
-        public int AdditionalUpgradeLimit = 0;
-        [SerializeReference] public List<IEffect> AdditionalEffects = new();
+        public List<AdditionalConditionData> AdditionalConditions = new();
 #if UNITY_EDITOR
         private void OnValidate()
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
-            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
 #endif
     }

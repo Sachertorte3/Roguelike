@@ -139,7 +139,7 @@ namespace Ruccho.Fang
             if (value)
             {
                 tileData.sprite = combination.Frames[(int)(combination.Frames.Length * GetRandom(position))];
-                tileData.flags |= TileFlags.LockTransform;
+                tileData.flags |= (TileFlags.LockTransform | TileFlags.LockColor);
                 tileData.colliderType = colliderType;
 
                 if (isSlope)

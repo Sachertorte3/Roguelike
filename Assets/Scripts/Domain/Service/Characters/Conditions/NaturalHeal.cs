@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
@@ -12,13 +11,13 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"自然治癒({Power})";
         public ParticleType ParticleType => ParticleType.HealGreen;
         public Impact Impact => Impact.Beneficial;
-        public string InflictLog => "は自然治癒力が上がった";
-        public string DeleteLog => "は自然治癒力はもとに戻った";
-        [MinValue(0)] public float Power;
+        public bool CanAct => true;
+        public bool CausesConfusion => false;
+        [MinValue(1)] public int Power = 1;
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -26,17 +25,17 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.RemoveStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.RemoveStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return Power / target.CurrentMaxHp;
+            return (float)Power / target.CurrentMaxHp;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
             return Power;
         }

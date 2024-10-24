@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Utilities;
 
 namespace View.UI
 {
@@ -12,9 +11,7 @@ namespace View.UI
     internal class InventoryItemView : Selectable, ISelectHandler
     {
         [SerializeField] private Image _icon;
-        [SerializeField] private TMP_Text _count;
-        [SerializeField] private Image _cursedIcon;
-        private ParticleController _particles => _icon.GetComponent<ParticleController>();
+        [SerializeField] private TMP_Text _text;
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
 
@@ -24,13 +21,11 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified, bool isCurseIdentified)
+        public void SetIcon(Sprite icon, int? count)
         {
             _icon.sprite = icon;
             _icon.enabled = true;
-            SetCount(count, isCountIdentified);
-            SetCursed(isCursed, isCurseIdentified);
-            SetShiny(isShiny);
+            SetCount(count);
         }
 
         public void Remove()
@@ -38,56 +33,30 @@ namespace View.UI
             _icon.sprite = null;
             _icon.enabled = false;
             RemoveCount();
-            SetCursed(false, true);
-            SetShiny(false);
         }
 
-        public void SetCursed(bool isCursed, bool isIdentified)
+        public void SetCount(int? count)
         {
-            if (!isIdentified)
-            {
-                _cursedIcon.enabled = false;
-            }
+            if (count.HasValue)
+                _text.text = count.ToString();
             else
-            {
-                _cursedIcon.enabled = isCursed;
-            }
-        }
-
-        public void SetShiny(bool isShiny)
-        {
-            if (isShiny)
-                _particles.Add(ParticleType.ShinyStar);
-            else
-                _particles.Clear();
-        }
-
-        public void SetCount(int? count, bool isIdentified)
-        {
-            if (!isIdentified)
-                _count.text = "?";
-            else if (count.HasValue)
-                _count.text = count.ToString();
-            else
-                _count.text = "";
+                _text.text = "";
         }
 
         public void RemoveCount()
         {
-            _count.text = "";
+            _text.text = "";
         }
 
         public void Disable()
         {
             _icon.color = Color.gray;
-            _cursedIcon.color = Color.gray;
             interactable = false;
         }
 
         public void Enable()
         {
             _icon.color = Color.white;
-            _cursedIcon.color = Color.white;
             interactable = true;
         }
     }

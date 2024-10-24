@@ -2,31 +2,30 @@
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Utilities;
 
 namespace Domain.Service.Action
 {
     internal record ThrowItem(IItem Item, Direction8 Direction) : IAction
     {
-        public bool Doable(IActor actor, IMap map)
+        public bool Doable(IActor actor, IMap world)
         {
-            return !actor.StatusManager.CannotAct;
+            return true;
         }
 
-        public async UniTask Do(IActor actor, IMap map, IInput input)
+        public async UniTask Do(IActor actor, IMap world, IInput input)
         {
-            await actor.ThrowItem(Item, Direction, map);
+            await actor.ThrowItem(Item, Direction, world);
         }
 
-        public float Evaluate(IActor actor, IMap map)
+        public float Evaluate(IActor actor, IMap world)
         {
-            return actor.EvaluateThrow(Item, Direction, map);
+            return actor.EvaluateThrow(Item, Direction, world);
         }
 
         public string Info()
         {
-            return $"ThrowItem: Item:{Item.DebugInfo()}, Direction:{Direction}";
+            return $"ThrowItem: Item:{Item.Info()}, Direction:{Direction}";
         }
     }
 }

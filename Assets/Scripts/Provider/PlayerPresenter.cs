@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using Domain.Model.Setting;
-using Game;
+using Model.Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -20,11 +20,6 @@ namespace Provider
             CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
-                    if (map.Player.CurrentHp <= 0)
-                    {
-                        return;
-                    }
-
                     var playerView = characters.Get(map.Player);
 
                     var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
@@ -32,8 +27,7 @@ namespace Provider
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                    _disposable.Add(Observable
-                        .Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                    _disposable.Add(Observable.Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
                         .Subscribe(_ =>
                         {
                             var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 /
@@ -50,7 +44,10 @@ namespace Provider
                             }
                         }));
                 },
-                map => { _disposable.Clear(); });
+                map =>
+                {
+                    _disposable.Clear();
+                });
         }
     }
 }

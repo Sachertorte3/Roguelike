@@ -27,14 +27,14 @@ namespace Domain.Service.Map.Tests
         public void IndexTest1(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
-            Assert.AreEqual(new TileData(TileData.Build(TileCategory.Blank, false)), map.Get(position));
+            Assert.AreEqual(new TileData(TileData.Build(TileCategory.Blank, false)), map.GetTile(position));
         }
 
         [TestCaseSource(nameof(IndexTest2Cases))]
         public void IndexTest2(int width, int height, Vector2Int position)
         {
             var map = new Tilemap(width, height);
-            Assert.Throws<ArgumentOutOfRangeException>(() => map.Get(position));
+            Assert.Throws<ArgumentOutOfRangeException>(() => map.GetTile(position));
         }
     }
 }

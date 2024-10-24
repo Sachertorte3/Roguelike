@@ -1,22 +1,27 @@
 using System.Collections.Generic;
+using System.Linq;
+using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect.Area
 {
-    public class FanArea : IDirectionalArea
+    public class FanArea : IArea
     {
         public bool ContainsSelf;
+        public bool CanIgnoreWalls;
         [MinValue(1)] public int Radius;
 
-        public FanArea(int radius, bool containsSelf)
+        public FanArea(int radius, bool containsSelf, bool canIgnoreWalls)
         {
             Radius = radius;
             ContainsSelf = containsSelf;
+            CanIgnoreWalls = canIgnoreWalls;
         }
 
-        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction, IMap map)
         {
             var area = new List<Vector2Int>();
 
@@ -28,13 +33,13 @@ namespace Domain.Model.Effect.Area
                 case Direction8.Right:
                     var deltaVec = direction.Vector();
                     var perpVec = direction.Rotate90Clockwise().Vector();
-                    for (var i = 1; i <= Radius; i++)
+                    for (var i = 0; i <= Radius; i++)
                     {
                         for (var j = -i; j <= i; j++)
                         {
-                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
+                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + (i * deltaVec) + (j * perpVec));
+                                area.Add(position + i * deltaVec + j * perpVec);
                             }
                         }
                     }
@@ -47,15 +52,13 @@ namespace Domain.Model.Effect.Area
                 case Direction8.DownRight:
                     var clockwiseVec = direction.Rotate45Clockwise().Vector();
                     var anticlockwiseVec = direction.Rotate45AntiClockwise().Vector();
-                    for (var i = 1; i <= Radius; i++)
+                    for (var i = 0; i <= Radius; i++)
                     {
-                        area.Add(position + (i * clockwiseVec));
-                        for (var j = 1; j <= Radius; j++)
+                        for (var j = 0; j <= Radius; j++)
                         {
-                            area.Add(position + (j * anticlockwiseVec));
-                            if ((i * i) + (j * j) <= (Radius + 0.5f) * (Radius + 0.5f))
+                            if (i * i + j * j <= (Radius + 0.5f) * (Radius + 0.5f))
                             {
-                                area.Add(position + (i * clockwiseVec) + (j * anticlockwiseVec));
+                                area.Add(position + i * clockwiseVec + j * anticlockwiseVec);
                             }
                         }
                     }
@@ -63,23 +66,41 @@ namespace Domain.Model.Effect.Area
                     break;
             }
 
-            return area;
+            if (!ContainsSelf)
+                area.Remove(position);
+            if (CanIgnoreWalls || Radius <= 1)
+                return area;
+            var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle).Values().ToHashSet(), position,
+                Radius + 0.5f);
+            return area.Where(p => reachable.Contains(p));
         }
 
         public float EvaluateArea()
         {
-            return Mathf.PI * Radius * Radius / 4;
+            return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius) / 2;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("半径"), new UpgradeData("半径+1", () => Radius += 1) }
+                {
+                    new UpgradePath("半径"),
+                    new UpgradeData(
+                        "半径+1",
+                        () => Radius += 1,
+                        () => Radius -= 1
+                    )
+                }
             };
+        }
 
         public string Info()
         {
-            return $"扇形(90°) 半径{Radius}マス{(ContainsSelf ? "(原点含む)" : "")}";
+            var info = $"扇形(90°) 半径{Radius}マス";
+            if (ContainsSelf) info += "(原点含む)";
+            if (CanIgnoreWalls) info += "(壁無視)";
+            return info;
         }
     }
 }

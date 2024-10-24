@@ -1,26 +1,30 @@
+#nullable enable
 using Cysharp.Threading.Tasks;
 using R3;
-using UnityEngine;
+using Unity.Logging;
 
 namespace Domain.Service.Events
 {
     public class ChoiceReceiver
     {
-        private readonly Subject<(string text, string[] choices)> _onShownChoice = new();
-        public Observable<(string text, string[] choices)> OnShownChoice => _onShownChoice;
+        private readonly Subject<(string? text, string[] choices)> _onShownChoice = new();
+        public Observable<(string? text, string[] choices)> OnShownChoice => _onShownChoice;
         private readonly AsyncReactiveProperty<int> _onReceivedChoicedIndex = new(-1);
-        public async UniTask<int> GetChoice(string text, string[] choices)
+
+        public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
-            Debug.Log("GetChoice");
-            SetChoices(text, choices);
+            Log.Debug($"GetChoice: {text} {string.Join(", ", choices)}");
+            ShowChoices(text, choices);
             var index = await _onReceivedChoicedIndex.WaitAsync();
-            Debug.Log($"GetChoice: {index}");
+            Log.Debug($"GetChoice: {choices[index]} {index}");
             return index;
         }
-        internal void SetChoices(string text, string[] choices)
+
+        private void ShowChoices(string? text, string[] choices)
         {
             _onShownChoice.OnNext((text, choices));
         }
+
         public void SetChoicedIndex(int index)
         {
             _onReceivedChoicedIndex.Value = index;

@@ -2,11 +2,11 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
-using Domain.Model.Message;
-using Domain.Model.Setting;
-using Domain.Service.Effect;
+using Domain.Model.Memento;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
@@ -17,7 +17,6 @@ namespace Domain.Service.Items
     internal class ItemEntity : IItemEntity
     {
         private readonly Entity _entity;
-        private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
 
         public ItemEntity(ItemEntityMemento item)
         {
@@ -28,13 +27,11 @@ namespace Domain.Service.Items
         public IItem Item { get; init; }
 
         public Sprite Icon => Item.Icon;
-        public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
         public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
 
         public void Dispose()
         {
             _entity.Dispose();
-            _onEffectSpawned.Dispose();
         }
 
         public Id<IEntity> Id => _entity.Id;
@@ -42,7 +39,7 @@ namespace Domain.Service.Items
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
@@ -56,60 +53,71 @@ namespace Domain.Service.Items
             _entity.Destroy();
         }
 
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
+        }
+
         public ItemEntityMemento Serialize()
         {
             return new ItemEntityMemento
-            {
-                Item = Item.Serialize(),
-                Entity = _entity.Serialize()
-            };
+            (
+                Item.Serialize(),
+                _entity.Serialize()
+            );
         }
 
-        public async UniTask Throw(IActor actor, Direction8 direction, IMap map)
+        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
         {
-            while (map.IsPassable(CurrentPosition + direction.Vector()))
-            {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
-            }
+            var result = position;
 
-            if (map.IsMapPassable(CurrentPosition + direction.Vector()))
+            for (var i = 0; i < distance; i++)
             {
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value);
-            }
-
-            if (Item.CanActivateWhenThrown)
-            {
-                var isUsed = await Item.UseWhenThrown(actor, CurrentPosition, direction, map);
-                if (isUsed && Item.SkillOnThrow.Value is SpawnEffectSkill spawnEffect)
+                if (map.At(result + direction.Vector()).CanPlace(true, false, false, EntityLayer.Middle))
                 {
-                    _onEffectSpawned.OnNext(new OnEffectSpawnedMessage(
-                        spawnEffect.GetArea(actor, CurrentPosition, direction, map),
-                        spawnEffect.Color)
-                    );
+                    result += direction.Vector();
+                }
+                else
+                {
+                    if (map.At(result + direction.Vector()).CanPlace(true, false, true, EntityLayer.Middle))
+                    {
+                        result += direction.Vector();
+                    }
+
+                    break;
                 }
             }
-            if (map.IsOverlapped(CurrentPosition, Layer))
-            {
-                var position = map.FindBlankPositionFrom(CurrentPosition, position => map.IsBlank(position, Layer));
-                _entity.Teleport(position);
-            }
+
+            return result;
         }
-        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction, IMap map)
+
+        public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction,
+            int distance, IMap map)
         {
             if (item.CanActivateWhenThrown)
                 return 0;
 
-            while (map.IsPassable(position + direction.Vector()))
-            {
-                position += direction.Vector();
-            }
+            var destination = GetThrowDestination(position, direction, distance, map);
 
-            if (map.IsMapPassable(position + direction.Vector()))
-            {
-                position += direction.Vector();
-            }
+            return item.EvaluateWhenThrown(actor, destination, direction, map);
+        }
 
-            return item.EvaluateWhenThrown(actor, position, direction, map);
+        public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
+            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            {
+                _entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
+                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                    position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
+            }
+            await map.ExecuteTrapAt(destination, actor as ICharacter);
+
+            if (Item.CanActivateWhenThrown)
+            {
+                var result = await Item.UseWhenThrown(actor, destination, direction, map);
+            }
         }
 
         ~ItemEntity()

@@ -1,28 +1,31 @@
-﻿using Domain.Model.Map;
-using Domain.Service.Events;
+﻿using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Map;
+using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 
-namespace Model.Game
+namespace Domain.Service.Rooms
 {
     public abstract class Room<TMemento> : ISerializable<TMemento>, IEventArea
     {
-        protected bool hasEntered = false;
-        protected bool hasEverEntered = false;
+        protected bool hasEntered;
+        protected bool hasEverEntered;
         public bool CanExecute { get; protected set; } = true;
-        private ReactiveProperty<bool> _isInside = new();
+        private ReactiveProperty<bool> _isInside;
         public ReadOnlyReactiveProperty<bool> IsInside => _isInside;
 
-        public Room(RoomMemento data)
+        public Room(RoomMemento data, Vector2Int playerPosition)
         {
             Rect = data.Room;
-            hasEntered = data.hasEntered;
-            hasEverEntered = data.hasEverEntered;
+            _isInside = new ReactiveProperty<bool>(Rect.Contains(playerPosition));
+            hasEntered = data.HasEntered;
+            hasEverEntered = data.HasEverEntered;
         }
 
         public RectInt Rect { get; init; }
 
-        public void UpdatePosition(IGameManager gameManager, IMapManager mapManager, Vector2Int currentPosition)
+        public async UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int currentPosition)
         {
             if (!CanExecute)
                 return;
@@ -30,25 +33,25 @@ namespace Model.Game
             _isInside.Value = Rect.Contains(currentPosition);
             if (_isInside.Value)
             {
-                UpdateTurnIfInside(gameManager, mapManager);
+                await UpdateTurnIfInside(gameManager, mapManager);
                 if (!hasEntered)
                 {
                     if (!hasEverEntered)
                     {
-                        FirstTimeEnter(gameManager, mapManager);
+                        await FirstTimeEnter(gameManager, mapManager);
                         hasEverEntered = true;
                     }
 
-                    EveryTimeEnter(gameManager, mapManager);
+                    await EveryTimeEnter(gameManager, mapManager);
                     hasEntered = true;
                 }
             }
             else
             {
-                UpdateTurnIfNotInside(gameManager, mapManager);
+                await UpdateTurnIfNotInside(gameManager, mapManager);
                 if (hasEntered)
                 {
-                    EveryTimeExit(gameManager, mapManager);
+                    await EveryTimeExit(gameManager, mapManager);
                     hasEntered = false;
                 }
             }
@@ -56,24 +59,29 @@ namespace Model.Game
 
         public abstract TMemento Serialize();
 
-        protected virtual void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask UpdateTurnIfInside(IGameManager gameManager, IMap mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void FirstTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask FirstTimeEnter(IGameManager gameManager, IMap mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void EveryTimeEnter(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeEnter(IGameManager gameManager, IMap mapManager)
         {
+            return UniTask.CompletedTask;
         }
 
-        protected virtual void EveryTimeExit(IGameManager gameManager, IMapManager mapManager)
+        protected virtual UniTask EveryTimeExit(IGameManager gameManager, IMap mapManager)
         {
+            return UniTask.CompletedTask;
         }
     }
 }

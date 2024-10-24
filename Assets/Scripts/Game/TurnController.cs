@@ -4,21 +4,25 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
+using Domain.Model.Setting;
+using R3;
 using Stats;
 using Unity.Logging;
 using UnityEngine;
 
-namespace Model.Game
+namespace Game
 {
     public sealed class TurnController
     {
         private readonly GameInput _input;
         private CancellationTokenSource _cancellationTokenSource;
-        private bool _isRunning = false;
+        private bool _isRunning;
         private UniTaskCompletionSource _runCompletionSource;
-        private int _turn = 1;
+        private ReactiveProperty<int> _turn = new(1);
         private int _turnInLevel = 1;
         private Resource _turnWaitTime { get; init; }
+        public ReadOnlyReactiveProperty<int> Turn => _turn;
 
         public TurnController(GameInput input)
         {
@@ -26,7 +30,7 @@ namespace Model.Game
             _turnWaitTime = new Resource(1);
         }
 
-        public async void Run(IMap map)
+        public async void Run(IGameManager gameManager, IMap map)
         {
             if (_isRunning)
                 throw new Exception("Turn is already running");
@@ -36,25 +40,30 @@ namespace Model.Game
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
-
-                map.UpdateTurn(_turn);
                 var characters = map.Characters.ToList();
                 if (characters.Any(character => character.StatusManager.IsOverDrive))
                 {
                     characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
                 }
-                var minWaitTime = characters.Min(character => character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+
+                var minWaitTime = characters.Min(character =>
+                    character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+                minWaitTime = Mathf.Min(minWaitTime,
+                    _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
+                _turnWaitTime.Gain(minWaitTime);
 
                 if (_turnWaitTime.IsFull())
                 {
-                    _turnWaitTime.Set(0);
+                    _turn.Value++;
+                    _turnInLevel++;
+                    Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
+                    map.UpdateTurn(_turn.CurrentValue);
                 }
-                _turnWaitTime.Gain(minWaitTime);
 
                 foreach (var character in characters)
                 {
-                    if (characters.Any(character => character.StatusManager.IsOverDrive) && !character.StatusManager.IsOverDrive)
+                    if (characters.Any(character => character.StatusManager.IsOverDrive) &&
+                        !character.StatusManager.IsOverDrive)
                         continue;
 
                     if (_turnWaitTime.IsFull())
@@ -65,38 +74,62 @@ namespace Model.Game
                     character.StatusManager.AddWaitTime(minWaitTime);
                     if (character.StatusManager.IsWaitTimeFull())
                     {
-                        character.StatusManager.ResetWaitTime();
+                        if (character.State != CharacterState.Wait)
+                            continue;
 
-                        if (character.CanAct && !character.StatusManager.IsDead)
+                        if (!character.StatusManager.CannotAct && !character.IsDead)
                         {
+                            if (character == map.Player && Settings.AutoSave.CurrentValue)
+                            {
+                                Globals.GameManager.Save();
+                            }
                             Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
-                            await character.DoNextAction(map, _input);
+                            try
+                            {
+                                await character.DoNextAction(gameManager, map, _input).AttachExternalCancellation(_cancellationTokenSource.Token);
+                            }
+                            catch (OperationCanceledException e)
+                            {
+                                Log.Error(e);
+                            }
                         }
                         else
                         {
                             Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
                         }
-                    }
 
-                    await UniTask.WaitWhile(() => map.IsEventExecuting);
+                        if (map.IsEventExecuting)
+                        {
+                            await UniTask.WaitWhile(() => map.IsEventExecuting);
+                        }
+                    }
 
                     if (_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         _isRunning = false;
                         _runCompletionSource.TrySetResult();
-                        Log.Debug($"[Turn] loop canceled.");
+                        Log.Debug("[Turn] loop canceled.");
                         return;
                     }
                 }
 
-                Globals.GameManager.Save();
+                foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
+                {
+                    if (character.State != CharacterState.Wait && character.State != CharacterState.Finish)
+                    {
+                        await UniTask.WaitUntil(() =>
+                            character.State == CharacterState.Wait || character.State == CharacterState.Finish);
+                    }
+                    character.StatusManager.ResetWaitTime();
+                    character.SetWaitState();
+                }
 
-                await characters.Select(character =>
-                    UniTask.WaitUntil(() => character.State == CharacterState.Wait));
-
-                _turn++;
-                _turnInLevel++;
+                if (_turnWaitTime.IsFull())
+                {
+                    _turnWaitTime.Set(0);
+                }
             }
+
             _isRunning = false;
             _runCompletionSource.TrySetResult();
         }

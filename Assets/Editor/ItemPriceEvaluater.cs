@@ -2,33 +2,35 @@ using Domain.Model.Item;
 using Domain.Service.Items;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
-using UnityEngine;
 
-[CustomEditor(typeof(ItemData))]
-public class ItemDataEditor : OdinEditor
+namespace Editor
 {
-    private float _evaluatedPrice;
-    protected override void OnEnable()
+    [CustomEditor(typeof(ItemData))]
+    public class ItemDataEditor : OdinEditor
     {
-        base.OnEnable();
-        _evaluatedPrice = EvaluatePrice();
-    }
-    public override void OnInspectorGUI()
-    {
-        EditorGUI.BeginChangeCheck();
-        base.OnInspectorGUI();
-        EditorGUILayout.Space();
-        if (EditorGUI.EndChangeCheck())
+        private float _evaluatedPrice;
+        protected override void OnEnable()
         {
+            base.OnEnable();
             _evaluatedPrice = EvaluatePrice();
         }
-        EditorGUILayout.LabelField($"Evaluated Price: {_evaluatedPrice}G");
-    }
+        public override void OnInspectorGUI()
+        {
+            EditorGUI.BeginChangeCheck();
+            base.OnInspectorGUI();
+            EditorGUILayout.Space();
+            if (EditorGUI.EndChangeCheck())
+            {
+                _evaluatedPrice = EvaluatePrice();
+            }
+            EditorGUILayout.LabelField($"Evaluated Price: {_evaluatedPrice}G");
+        }
 
-    private float EvaluatePrice()
-    {
-        ItemData itemData = (ItemData)target;
-        Item item = new Item(itemData);
-        return item.EvaluatePrice();
+        private float EvaluatePrice()
+        {
+            ItemData itemData = (ItemData)target;
+            Item item = new Item(itemData);
+            return item.EvaluatePrice();
+        }
     }
 }

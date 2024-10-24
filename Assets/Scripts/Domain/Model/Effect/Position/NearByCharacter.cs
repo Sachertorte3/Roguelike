@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Character;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -13,39 +15,51 @@ namespace Domain.Model.Effect.Position
         public bool TargetEnemy;
         public bool TargetNeutral;
         public bool TargetSelf;
+        public bool IsDirectional => false;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
+            IMap map)
         {
             var positions = new List<Vector2Int>();
             if (TargetSelf)
                 positions.Add(actor.CurrentPosition);
             if (TargetAlly)
-                positions.AddRange(map.GetAllyPositions(actor));
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Ally).Positions());
             if (TargetNeutral)
-                positions.AddRange(map.GetNeutralPositions(actor));
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Neutral).Positions());
             if (TargetEnemy)
-                positions.AddRange(map.GetEnemyPositions(actor));
-            return positions.OrderBy(p => Vector2Int.Distance(p, position)).Take(NumberOfTarget);
+                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Enemy).Positions());
+            return positions
+                .OrderBy(p => Vector2Int.Distance(p, position))
+                .Take(NumberOfTarget);
         }
 
         public float EvaluateHitProbability()
         {
-            return NumberOfTarget * 50;
+            return NumberOfTarget;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
-            new()
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
             {
-                { new UpgradePath("対象数"), new UpgradeData("対象数+1", () => NumberOfTarget += 1) }
+                {
+                    new UpgradePath("対象数"),
+                    new UpgradeData(
+                        "対象数+1",
+                        () => NumberOfTarget += 1,
+                        () => NumberOfTarget -= 1
+                    )
+                }
             };
+        }
 
         public string Info()
         {
-            string info = "近くの";
+            var info = "近くの";
             if (TargetAlly && TargetNeutral && TargetEnemy)
             {
-                info += $"キャラクター";
+                info += "キャラクター";
             }
             else
             {
@@ -56,6 +70,7 @@ namespace Domain.Model.Effect.Position
 
                 info += string.Join("、", targets);
             }
+
             if (TargetSelf) info += "（自分含む）";
             info += $"{NumberOfTarget}体";
 

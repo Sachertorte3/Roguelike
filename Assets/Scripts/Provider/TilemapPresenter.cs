@@ -1,7 +1,9 @@
 ﻿#nullable enable
+using System;
 using System.Linq;
+using Domain.Model.Dungeon;
 using Domain.Model.Map;
-using Model.Game;
+using Game;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -15,95 +17,109 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public TilemapPresenter(TileViewController tileView, TileMaskController tileMask, World world)
+        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, World world)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(mapLoaded =>
+            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     tileView.Clear();
+                    overlayTileView.Clear();
 
-                    foreach (var (position, tileData) in mapLoaded.TilemapViewer.GetAllTiles())
+                    var tileSet = map.Type switch
                     {
-                        SetTile(tileView, tileData, position, mapLoaded.ShopRect);
-                    }
+                        SectionType.Cave => TileSet.Cave,
+                        SectionType.Forest => TileSet.Forest,
+                        SectionType.Snow => TileSet.Snow,
+                        SectionType.Volcano => TileSet.Volcano,
+                        SectionType.Desert => TileSet.Desert,
+                        SectionType.Dungeon => TileSet.Dungeon,
+                        SectionType.Void => TileSet.Void,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
 
-                    var mapSize = mapLoaded.TilemapViewer.Rect;
-                    for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
+                    foreach (var (position, tileData) in map.TilemapViewer.GetAllTiles())
                     {
-                        tileView.SetUnbreakableWall(new Vector2Int(x, -1));
-                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height));
-                    }
-                    for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
-                    {
-                        tileView.SetUnbreakableWall(new Vector2Int(-1, y));
-                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y));
-                    }
-                    for (int x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
-                    {
-                        tileMask.SetTileTransparent(new Vector2Int(x, -1));
-                        tileMask.SetTileTransparent(new Vector2Int(x, mapSize.y + mapSize.height));
-                    }
-                    for (int y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
-                    {
-                        tileMask.SetTileTransparent(new Vector2Int(-1, y));
-                        tileMask.SetTileTransparent(new Vector2Int(mapSize.x + mapSize.width, y));
+                        SetTile(tileView, tileData, position, tileSet, map.ShopRect);
+                        if (map.TilemapViewer.GetAllGrasses().Contains(position))
+                            overlayTileView.SetGrass(position);
+                        if (map.TilemapViewer.GetAllIces().Contains(position))
+                            overlayTileView.SetIce(position);
+                        SetVisibility(tileView, overlayTileView, position, GetTileVisibility(map, position));
                     }
 
-                    foreach (var (position, tileData) in mapLoaded.TilemapViewer.GetAllTiles())
+                    var mapSize = map.TilemapViewer.Rect;
+                    for (var x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
                     {
-                        // HACK: Separating this due to a bug when not separated
-                        if (tileData.IsKnown)
-                        {
-                            if (mapLoaded.VisibleArea.Contains(position))
-                            {
-                                tileMask.SetTileVisible(position);
-                            }
-                            else
-                            {
-                                tileMask.SetTileTranslucent(position);
-                            }
-                        }
-                        else
-                        {
-                            tileMask.SetTileTransparent(position);
-                        }
+                        tileView.SetUnbreakableWall(new Vector2Int(x, -1), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), tileSet,
+                            TileVisibility.Transparent);
                     }
 
-                    _disposables.Add(mapLoaded.TilemapViewer.OnTilesChanged.Subscribe(context =>
+                    for (var y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
+                    {
+                        tileView.SetUnbreakableWall(new Vector2Int(-1, y), tileSet, TileVisibility.Transparent);
+                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), tileSet,
+                            TileVisibility.Transparent);
+                    }
+
+                    _disposables.Add(map.TilemapViewer.OnTilesChanged.Subscribe(context =>
                     {
                         foreach (var (position, tile) in context)
                         {
-                            SetTile(tileView, tile, position, mapLoaded.ShopRect);
+                            SetTile(tileView, tile, position, tileSet, map.ShopRect);
+                        }
+                    }));
+
+                    _disposables.Add(map.TilemapViewer.OnOverlayTilesChanged.Subscribe(context =>
+                    {
+                        foreach (var (position, category) in context)
+                        {
+                            switch (category)
+                            {
+                                case OverlayTileCategory.Grass:
+                                    overlayTileView.SetGrass(position, GetTileVisibility(map, position));
+                                    break;
+                                case OverlayTileCategory.FloatingIce:
+                                    overlayTileView.SetIce(position, GetTileVisibility(map, position));
+                                    break;
+                                case null:
+                                    overlayTileView.RemoveTile(position);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(category), category, null);
+                            }
                         }
                     }));
                     // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
-                    _disposables.Add(mapLoaded.TilemapViewer.OnTilesKnownChanged.Subscribe(context =>
+                    _disposables.Add(map.TilemapViewer.OnTilesKnownChanged.Subscribe(context =>
                     {
-                        foreach (var (position, tile) in context)
+                        foreach (var (position, isKnown) in context)
                         {
-                            if (tile.IsKnown)
+                            if (isKnown)
                             {
-                                tileMask.SetTileVisible(position);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
                             }
                             else
                             {
-                                tileMask.SetTileTransparent(position);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Transparent);
                             }
                         }
                     }));
                     // HACK: Here.
-                    _disposables.Add(mapLoaded.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(
+                    _disposables.Add(map.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(
                         visibleAreaChanged =>
                         {
-                            var areaEntered = visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
-                            var areaExited = visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
+                            var areaEntered =
+                                visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
+                            var areaExited =
+                                visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
                             foreach (var position in areaEntered)
                             {
-                                tileMask.SetTileVisible(position);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
                             }
 
                             foreach (var position in areaExited)
                             {
-                                tileMask.SetTileTranslucent(position);
+                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Translucent);
                             }
                         }));
                 },
@@ -120,23 +136,49 @@ namespace Provider
             _disposables.Dispose();
         }
 
-        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, RectInt? shop)
+        public TileVisibility GetTileVisibility(MapManager map, Vector2Int position)
+        {
+            if (map.TilemapViewer.GetTile(position).MapOr(false, tile => tile.IsKnown))
+            {
+                if (map.VisibleArea.Contains(position))
+                {
+                    return TileVisibility.Visible;
+                }
+
+                return TileVisibility.Translucent;
+            }
+
+            return TileVisibility.Transparent;
+        }
+
+        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, TileSet type,
+            RectInt? shop, TileVisibility? visibility = null)
         {
             switch (tileData.TileType)
             {
-                case TileCategory.Wall:
-                    tileView.SetWall(position);
-                    break;
-                case TileCategory.UnbreakableWall:
-                    tileView.SetUnbreakableWall(position);
-                    break;
                 case TileCategory.Floor:
                     if (shop.HasValue && shop.Value.Contains(position))
-                        tileView.SetShopFloor(position);
+                        tileView.SetShopFloor(position, type, visibility);
                     else
-                        tileView.SetFloor(position);
+                        tileView.SetFloor(position, type, visibility);
+                    break;
+                case TileCategory.Water:
+                    tileView.SetWater(position, type, visibility);
+                    break;
+                case TileCategory.Wall:
+                    tileView.SetWall(position, type, visibility);
+                    break;
+                case TileCategory.UnbreakableWall:
+                    tileView.SetUnbreakableWall(position, type, visibility);
                     break;
             }
+        }
+
+        public void SetVisibility(TileViewController tileView, OverlayTileViewController grassView, Vector2Int position,
+            TileVisibility visibility)
+        {
+            tileView.SetTileColor(position, visibility.GetColor());
+            grassView.SetTileColor(position, visibility.GetColor());
         }
     }
 }

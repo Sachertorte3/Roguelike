@@ -2,7 +2,6 @@
 using System;
 using Domain.Model;
 using Domain.Service.Entities;
-using Domain.Service.Events;
 using R3;
 using Utilities.Messages;
 
@@ -15,7 +14,8 @@ namespace Domain.Service.Items
         public Observable<(IEventEntity EventEntity, OnPositionChangedMessage Message)> OnPositionChanged =>
             _events.GetObservable<OnPositionChangedMessage>();
 
-        public Observable<(IEventEntity EventEntity, OnMoveMessage Message)> OnMove => _events.GetObservable<OnMoveMessage>();
+        public Observable<(IEventEntity EventEntity, OnMoveMessage Message)> OnMove =>
+            _events.GetObservable<OnMoveMessage>();
 
         public Observable<(IEventEntity EventEntity, OnTeleportMessage Message)> OnTeleport =>
             _events.GetObservable<OnTeleportMessage>();
@@ -47,8 +47,10 @@ namespace Domain.Service.Items
 
         public void Add(IEventEntity eventEntity)
         {
-            _events.Add(eventEntity, eventEntity.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
-            _events.Add(eventEntity, eventEntity.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
+            _events.Add(eventEntity,
+                eventEntity.Position.Select(positionChanged => new OnPositionChangedMessage(positionChanged)));
+            _events.Add(eventEntity,
+                eventEntity.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(eventEntity, eventEntity.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
             _events.Add(eventEntity, eventEntity.OnDestroyed.Select(destroyed => new OnDestroyedMessage()));
         }

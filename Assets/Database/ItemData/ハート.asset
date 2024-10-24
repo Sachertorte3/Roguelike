@@ -12,31 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u30CF\u30FC\u30C8"
   m_EditorClassIdentifier: 
+  Category: 6
   Icon: {fileID: -567209263, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  _rarity: 0
-  Price: 100
+  IsShiny: 0
+  _rarity: 2
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
+  IsSameEffect: 0
   IsSameSkill: 1
   SkillOnUse:
-    Area:
-      rid: 4425516923575599127
-    Effect:
-      rid: 4425517307579858944
-    Position:
+    <Position>k__BackingField:
       rid: 2541219106150416402
-  SkillOnThrow:
-    Area:
+    <Area>k__BackingField:
       rid: 4425516923575599127
-    Effect:
-      rid: 4425517307579858944
+    <Effects>k__BackingField:
+    - rid: 4425517307579858944
+    <Repeats>k__BackingField: 1
+    <ProbabilityOfSuccess>k__BackingField: 0.95
+  SkillOnThrow:
+    <Area>k__BackingField:
+      rid: 4425516923575599127
+    <Effects>k__BackingField:
+    - rid: 4425517307579858944
+    <ProbabilityOfSuccess>k__BackingField: 0.9
+  ItemEffect:
+    rid: -2
   UsageLimit: 1
+  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2541219106150416402
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 

@@ -1,5 +1,5 @@
 #nullable enable
-using Model.Game;
+using Game;
 using R3;
 using Utilities;
 using VContainer;
@@ -14,20 +14,25 @@ namespace Provider
         {
             var disposable = new CompositeDisposable();
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
-            {
-                if (map.Shop != null)
                 {
-                    disposable.Add(map.Shop.IsInside.Subscribe(isInside =>
+                    if (map.Shop != null)
                     {
-                        shopInfoView.SetVisibility(isInside);
-                    }));
-                    disposable.Add(Observable.EveryUpdate().Subscribe(_ =>
+                        disposable.Add(map.Shop.IsInside.SubscribeToAll(isInside =>
+                        {
+                            shopInfoView.SetVisibility(isInside);
+                        }));
+                        disposable.Add(Observable.EveryUpdate().Subscribe(_ =>
+                        {
+                            shopInfoView.SetInfo(map.Player.Money, map.Shop.GetPurchasePrice(map),
+                                map.Shop.GetSalePrice(map));
+                        }));
+                    }
+                    else
                     {
-                        shopInfoView.SetInfo(map.Player.Money, map.Shop.GetPurchasePrice(map), map.Shop.GetSalePrice(map));
-                    }));
-                }
-            },
-            _ => disposable.Clear());
+                        shopInfoView.SetVisibility(false);
+                    }
+                },
+                _ => disposable.Clear());
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Utilities
         public static object DeepCopy(this object target)
         {
             object result;
-            BinaryFormatter b = new BinaryFormatter();
-            MemoryStream mem = new MemoryStream();
+            BinaryFormatter b = new();
+            MemoryStream mem = new();
             try
             {
                 b.Serialize(mem, target);
@@ -20,16 +20,18 @@ namespace Utilities
             {
                 mem.Close();
             }
+
             return result;
         }
     }
+
     public static class DeepCopyHelper
     {
         public static T DeepCopy<T>(this T target)
         {
             T result;
-            BinaryFormatter b = new BinaryFormatter();
-            MemoryStream mem = new MemoryStream();
+            BinaryFormatter b = new();
+            MemoryStream mem = new();
             try
             {
                 b.Serialize(mem, target);
@@ -40,6 +42,7 @@ namespace Utilities
             {
                 mem.Close();
             }
+
             return result;
         }
     }

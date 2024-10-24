@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 
-namespace Model.Game
+namespace Game
 {
     public sealed class CharacterManager : IDisposable
     {
@@ -26,15 +29,18 @@ namespace Model.Game
             CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
             CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
 
-            var player = _factory.CreatePlayer(playerData, receiver, new ReactiveProperty<bool>(false), map);
+            var player = _factory.CreatePlayer(playerData, receiver, map);
             if (Player != null)
             {
                 PlayerEvents.Remove(Player);
             }
 
             Player = player;
-            AddCharacter(player);
-            PlayerEvents.Add(player);
+            if (player.CurrentHp > 0)
+            {
+                AddCharacter(player);
+                PlayerEvents.Add(player);
+            }
         }
 
         public readonly ICharacter Player;
@@ -68,7 +74,15 @@ namespace Model.Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior), new ReactiveProperty<bool>(false), map));
+            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map));
+        }
+
+        public Ally SpawnAlly(CharacterMemento data, IMap map)
+        {
+            var behavior = new EnemyBehavior(data.Behavior, map.Location);
+            return new Ally(
+                AddCharacter(_factory.CreateCharacter(data, behavior, map)),
+                behavior, map);
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()
@@ -78,7 +92,7 @@ namespace Model.Game
 
         private void SetAllCharacterPosition()
         {
-            _allCharacterPositions = _characters.Select(character => character.CurrentPosition).ToHashSet();
+            _allCharacterPositions = _characters.Positions().ToHashSet();
         }
     }
 }

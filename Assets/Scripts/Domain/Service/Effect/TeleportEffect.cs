@@ -1,38 +1,38 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Map;
+using Domain.Model.Setting;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class TeleportEffect : IEffect
+    public class TeleportEffect : ActorlessEntityTargetEffect
     {
-        public Impact Impact => Impact.Neutral;
-        public Color Color => Colors.SkyBlue;
+        public override Impact Impact => Impact.Neutral;
+        public override Color Color => Colors.SkyBlue;
 
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public override async UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
-            var position = map.GetAllPassablePositions().GetAtRandom();
-            target.Teleport(position);
-            return UniTask.CompletedTask;
+            var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom().Position;
+            target.Teleport(randomPosition);
+            await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return 0;
+            return 0.1f;
         }
 
-        public float EvaluateDamage()
+        public override float EvaluatePrice()
         {
-            return 50;
+            return 50f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
-
-        public string Info()
+        public override string Info()
         {
             return "テレポート";
         }

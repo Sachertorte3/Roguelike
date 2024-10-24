@@ -26,9 +26,6 @@ namespace Domain.Service.Items
         public Observable<(IItemEntity Item, OnDestroyedMessage Message)> OnDestroyed =>
             _events.GetObservable<OnDestroyedMessage>();
 
-        public Observable<(IItemEntity Item, OnEffectSpawnedMessage Message)> OnEffectSpawned =>
-            _events.GetObservable<OnEffectSpawnedMessage>();
-
         public void Dispose()
         {
             _events.Dispose();
@@ -57,8 +54,6 @@ namespace Domain.Service.Items
             _events.Add(item, item.OnDisabled.Select(disabled => new OnDisabledMessage()));
             _events.Add(item, item.OnMove.Select(move => new OnMoveMessage(move.direction, move.destination)));
             _events.Add(item, item.OnTeleport.Select(teleport => new OnTeleportMessage(teleport)));
-            _events.Add(item,
-                item.OnEffectSpawned.Select(useSkill => new OnEffectSpawnedMessage(useSkill.Area, useSkill.Color)));
             _events.Add(item, item.OnDestroyed.Select(destroyed => new OnDestroyedMessage()));
         }
 

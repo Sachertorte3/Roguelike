@@ -1,4 +1,7 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
+using Domain.Model.Effect;
+using Domain.Model.Map;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -9,13 +12,15 @@ namespace Domain.Model
     {
         public Id<IEntity> Id { get; }
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
-        public Vector2Int CurrentPosition { get; }
+        public Vector2Int CurrentPosition => Position.CurrentValue;
         public ReadOnlyReactiveProperty<bool> Visibility { get; }
         public EntityLayer Layer { get; }
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove { get; }
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove { get; }
         public Observable<Vector2Int> OnTeleport { get; }
         public Observable<Unit> OnDestroyed { get; }
         public void SetVisibility(bool visibility);
         public void Destroy();
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map);
+        public void Teleport(Vector2Int position);
     }
 }

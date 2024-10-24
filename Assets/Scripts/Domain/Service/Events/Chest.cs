@@ -1,9 +1,15 @@
+#nullable enable
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character;
+using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Entities;
 using Domain.Service.Items;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -14,32 +20,64 @@ namespace Domain.Service.Events
     public class Chest : ISerializable<ChestMemento>, IIconEventEntity
     {
         private Entity _entity;
-        private Item _item;
+        private Option<Item> _item;
+        private Option<EnemyData> _mimic;
 
         public Chest(ChestMemento memento)
         {
-            _item = new Item(memento.Item);
+            _item = memento.Item.Map(i => new Item(i));
+            _mimic = memento.Mimic;
             _entity = new Entity(memento.Entity);
+            Event = new PlayerEvent(
+                "宝箱を見つけた",
+                true,
+                new List<PlayerChoiceEvent>{
+                    new PlayerChoiceEvent(
+                        "開ける",
+                        (player) => true,
+                        async (gameManager, map) =>
+                        {
+                            await DoEvent(map);
+                        }
+                    )
+                }
+            );
         }
 
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
 
-        public EventTrigger Trigger => EventTrigger.Touch;
+        public IEvent Event { get; init; }
         public Id<IEntity> Id => _entity.Id;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-        public bool CanExecuteEvent => true;
+
         public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
         public Vector2Int CurrentPosition => _entity.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
         public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => _entity.OnMove;
+        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
-        public UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
+        private UniTask DoEvent(IMap map)
         {
-            mapManager.SpawnItem(_item, CurrentPosition);
-            mapManager.RemoveEventEntity(this);
+            map.RemoveEventEntity(this);
+            if (_item.IsSome)
+            {
+                if (map.Player.TryAddToInventory(_item.Value))
+                {
+                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
+                }
+                else
+                {
+                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
+                    map.SpawnItem(_item.Value, CurrentPosition);
+                }
+            }
+            else
+            {
+                map.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
+            }
+
             return UniTask.CompletedTask;
         }
 
@@ -58,22 +96,69 @@ namespace Domain.Service.Events
             _entity.Destroy();
         }
 
+        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
+        {
+            var result = position;
+
+            for (var i = 0; i < distance; i++)
+            {
+                if (map.At(result + direction.Vector()).CanPlace(false, false, false, EntityLayer.Middle))
+                {
+                    result += direction.Vector();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
+            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            {
+                _entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
+                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                    position => map.At(position).CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
+            }
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
+        }
+
         public ChestMemento Serialize()
         {
             return new ChestMemento
-            {
-                Item = _item.Serialize(),
-                Entity = _entity.Serialize()
-            };
+            (
+                _item.Map(i => i.Serialize()),
+                _mimic,
+                _entity.Serialize()
+            );
         }
 
-        public static ChestMemento Build(Vector2Int position, ItemData item)
+        public static ChestMemento Build(Vector2Int position, ItemData item) => Build(position, new Item(item).Serialize());
+        public static ChestMemento Build(Vector2Int position, ItemMemento item)
         {
             return new ChestMemento
-            {
-                Item = new Item(item).Serialize(),
-                Entity = Entity.Build(position, EntityLayer.Middle)
-            };
+            (
+                item,
+                Entity.Build(position, EntityLayer.Middle)
+            );
+        }
+
+        public static ChestMemento Build(Vector2Int position, EnemyData mimic)
+        {
+            return new ChestMemento
+            (
+                mimic,
+                Entity.Build(position, EntityLayer.Middle)
+            );
         }
     }
 }

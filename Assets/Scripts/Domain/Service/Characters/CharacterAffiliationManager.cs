@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
+using Domain.Model.Memento;
 using R3;
+using Stats;
 using UnityEngine;
 using Utilities;
 
@@ -12,61 +13,88 @@ namespace Domain.Service.Characters
 {
     public class CharacterAffiliationManager : IAffiliation, ISerializable<AffiliationMemento>
     {
-        private const float AffectionAllyThreshold = 1f; // 味方と見なす好感度の閾値
+        private const float AffectionAllyThreshold = 2f; // 味方と見なす好感度の閾値
         private const float AffectionEnemyThreshold = 0f; // 敵と見なす好感度の閾値
-        private const float BaseAllyValue = 1.2f; // 味方グループの基本好感度
+        private const float BaseAllyValue = 1f; // 味方グループの基本好感度
         private const float BaseEnemyValue = -1f; // 敵対グループの基本好感度
 
         private readonly Dictionary<Id<IEntity>, float> _affections;
         private readonly Id<IEntity> _id;
-        private readonly Subject<OnAffectionChangedMessage> _onAffectionChanged = new();
+        private readonly Subject<OnAffiliationChangedMessage> _onAffiliationChanged = new();
         private IAffiliation? _player;
+        private readonly Dictionary<(Id<IEntity>, AffiliationType), FlagStat> _forcedAffiliationFlags = new();
 
         public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IAffiliation? player)
         {
             _id = id;
             Group = data.Group;
-            _affections = data.Affiliations.Select(x => (x.Key, x.Value)).ToDictionary(x => new Id<IEntity>(x.Item1), x => x.Item2);
+            _affections = data.Affiliations;
+            _forcedAffiliationFlags = data.ForcedAffiliationFlags;
             _player = player;
         }
 
         public Id<IEntity> Id => _id;
-        public Observable<OnAffectionChangedMessage> OnAffectionChanged => _onAffectionChanged;
+        public Observable<OnAffiliationChangedMessage> OnAffiliationChanged => _onAffiliationChanged;
 
         public CharacterGroup Group { get; private set; }
 
-        public bool IsAlly(IAffiliation other)
+        public void Clear()
+        {
+            foreach (var key in _affections.Keys.ToList())
+            {
+                _affections.Remove(key);
+                _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(key));
+            }
+        }
+
+        public AffiliationType GetAffiliationType(IAffiliation other)
         {
             if (other.Id == Id)
             {
-                return true;
+                return AffiliationType.Ally;
+            }
+
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Enemy)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Enemy)].CurrentValue)
+            {
+                return AffiliationType.Enemy;
+            }
+
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Ally)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Ally)].CurrentValue)
+            {
+                return AffiliationType.Ally;
+            }
+
+            if (_forcedAffiliationFlags.ContainsKey((other.Id, AffiliationType.Neutral)) &&
+                _forcedAffiliationFlags[(other.Id, AffiliationType.Neutral)].CurrentValue)
+            {
+                return AffiliationType.Neutral;
             }
 
             if (other != _player && _player != null && IsAlly(_player))
             {
-                return other.IsAlly(_player);
+                return other.GetAffiliationType(_player);
             }
 
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
+            var totalAffection = GetAffection(other);
 
-            return totalAffection > AffectionAllyThreshold;
+            return totalAffection switch
+            {
+                > AffectionAllyThreshold => AffiliationType.Ally,
+                < AffectionEnemyThreshold => AffiliationType.Enemy,
+                _ => AffiliationType.Neutral
+            };
+        }
+
+        public bool IsAlly(IAffiliation other)
+        {
+            return GetAffiliationType(other) == AffiliationType.Ally;
         }
 
         public bool IsEnemy(IAffiliation other)
         {
-            if (other.Id == Id)
-            {
-                return false;
-            }
-
-            if (other != _player && _player != null && IsAlly(_player))
-            {
-                return other.IsEnemy(_player);
-            }
-
-            var totalAffection = GetAffectionByGroup(other) + GetAffection(other.Id);
-
-            return totalAffection < AffectionEnemyThreshold;
+            return GetAffiliationType(other) == AffiliationType.Enemy;
         }
 
         public void OnCharacterAttacked(IAffiliation attacker, IAffiliation target, float impact)
@@ -77,13 +105,12 @@ namespace Domain.Service.Characters
                 return;
             }
 
-            if (target == this)
+            if (target.Id == Id)
             {
                 ModifyAffection(attacker.Id, -impact); // 攻撃されると好感度が減少
             }
             else if (attacker.Id == Id)
             {
-                return;
             }
             else
             {
@@ -121,7 +148,6 @@ namespace Domain.Service.Characters
             }
             else if (healer == this)
             {
-                return;
             }
             else
             {
@@ -148,26 +174,29 @@ namespace Domain.Service.Characters
         public AffiliationMemento Serialize()
         {
             return new AffiliationMemento
-            {
-                Group = Group,
-                Affiliations = new(_affections.Select(x => (x.Key.Value, x.Value)).ToDictionary(x => x.Item1, x => x.Item2))
-            };
+            (
+                Group,
+                _affections,
+                _forcedAffiliationFlags
+            );
         }
 
-        public static AffiliationMemento Build(CharacterGroup group, AffiliationMemento? affiliation, Id<IEntity>? id)
+        public static AffiliationMemento Build(CharacterGroup group, IAffiliation? affiliation = null)
         {
-
-            var affiliationDict = new Dictionary<int, float>();
-            if (affiliation != null && id != null)
+            var affiliationDict = new Dictionary<Id<IEntity>, float>();
+            var forcedAffiliationFlags = new Dictionary<(Id<IEntity>, AffiliationType), FlagStat>();
+            if (affiliation != null)
             {
-                affiliationDict = new(affiliation.Affiliations);
-                affiliationDict[id.Value] = 5f;
+                affiliationDict = affiliation.Serialize().Affiliations;
+                forcedAffiliationFlags[(affiliation.Id, AffiliationType.Ally)] = new FlagStat(1);
             }
+
             return new AffiliationMemento
-            {
-                Group = group,
-                Affiliations = new(affiliationDict)
-            };
+            (
+                group,
+                affiliationDict,
+                forcedAffiliationFlags
+            );
         }
 
         public void ModifyAffection(Id<IEntity> targetId, float change)
@@ -183,7 +212,7 @@ namespace Domain.Service.Characters
             }
 
             _affections[targetId] += change;
-            _onAffectionChanged.OnNext(new OnAffectionChangedMessage(targetId, _affections[targetId]));
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(targetId));
         }
 
         public void UpdateTurn(IEnumerable<IAffiliation> visibleCharacters)
@@ -199,6 +228,46 @@ namespace Domain.Service.Characters
             }
         }
 
+        public float GetAffection(IAffiliation target)
+        {
+            return GetAffectionByGroup(target) + GetAffectionByRelation(target.Id);
+        }
+
+        public void AddForceAffiliation(Id<IEntity> target, AffiliationType type)
+        {
+            if (target == Id)
+            {
+                return;
+            }
+
+            if (!_forcedAffiliationFlags.ContainsKey((target, type)))
+            {
+                _forcedAffiliationFlags[(target, type)] = new FlagStat(1);
+            }
+            else
+            {
+                _forcedAffiliationFlags[(target, type)].AddFlags();
+            }
+
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
+        }
+
+        public void RemoveForceAffiliation(Id<IEntity> target, AffiliationType type)
+        {
+            if (target == Id)
+            {
+                return;
+            }
+
+            _forcedAffiliationFlags[(target, type)].RemoveFlags();
+            if (_forcedAffiliationFlags[(target, type)].CurrentFlags <= 0)
+            {
+                _forcedAffiliationFlags.Remove((target, type));
+            }
+
+            _onAffiliationChanged.OnNext(new OnAffiliationChangedMessage(target));
+        }
+
         private float GetAffectionByGroup(IAffiliation target)
         {
             if (target.Id == Id)
@@ -210,14 +279,22 @@ namespace Domain.Service.Characters
             {
                 (CharacterGroup.Human, CharacterGroup.Human) => BaseAllyValue,
                 (CharacterGroup.Human, CharacterGroup.Monster) => BaseEnemyValue,
+                (CharacterGroup.Human, CharacterGroup.Outcast) => BaseEnemyValue,
+
                 (CharacterGroup.Monster, CharacterGroup.Human) => BaseEnemyValue,
                 (CharacterGroup.Monster, CharacterGroup.Monster) => 0,
+                (CharacterGroup.Monster, CharacterGroup.Outcast) => BaseEnemyValue,
+
+                (CharacterGroup.Outcast, CharacterGroup.Human) => BaseEnemyValue,
+                (CharacterGroup.Outcast, CharacterGroup.Monster) => BaseEnemyValue,
+                (CharacterGroup.Outcast, CharacterGroup.Outcast) => BaseEnemyValue,
+
                 (CharacterGroup.Neutral, _) => 0,
                 _ => 0
             };
         }
 
-        private float GetAffection(Id<IEntity> target)
+        private float GetAffectionByRelation(Id<IEntity> target)
         {
             if (target == Id)
             {

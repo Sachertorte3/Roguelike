@@ -1,90 +1,128 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Map;
+using Domain.Model;
+using Domain.Model.Memento;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 
-namespace Model.Game
+namespace Game
 {
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
-        private readonly UpStairs _upStairs;
-        public readonly DownStairs DownStairs;
+        public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
+        private readonly List<Trap> _traps = new();
+        private readonly List<Money> _money = new();
+        private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
-        private ObservableList<IIconEventEntity> _eventEntitiesAndIcons = new();
+        private ObservableList<IEventEntity> _standaloneEventEntities = new();
         public EventEntityEvents EventEntityEvents = new();
 
-        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedDownStairs)
+        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
-            DownStairs = new(eventEntities.DownStairs, isLockedDownStairs);
-            Add(DownStairs);
+            foreach (var stairsMemento in eventEntities.Stairs)
+            {
+                var stairs = new Stairs(stairsMemento, isLockedStairs);
+                Stairs.Add(stairs);
+                Spawn(stairs);
+            }
 
-            _upStairs = new(eventEntities.UpStairs);
-            Add(_upStairs);
+            foreach (var chestMemento in eventEntities.Chests)
+            {
+                var chest = new Chest(chestMemento);
+                _chests.Add(chest);
+                Spawn(chest);
+            }
 
-            foreach (var chest in eventEntities.Chests)
-                Add(new Chest(chest));
+            foreach (var trapMemento in eventEntities.Traps)
+            {
+                var trap = new Trap(trapMemento);
+                _traps.Add(trap);
+                Spawn(trap);
+            }
+
+            foreach (var moneyMemento in eventEntities.Money)
+            {
+                var money = new Money(moneyMemento);
+                _money.Add(money);
+                Spawn(money);
+            }
+
+            _bonfire = eventEntities.Bonfire.Map(bonfire => new Bonfire(bonfire));
+            if (_bonfire.HasValue)
+                Spawn(_bonfire.Value!);
 
             EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
         }
-        public static EventEntitiesMemento Build(DownStairsMemento downStairs, UpStairsMemento? upStairs, IEnumerable<ChestMemento> chests)
-        {
-            return new EventEntitiesMemento
-            {
-                DownStairs = downStairs,
-                UpStairs = upStairs,
-                Chests = chests.ToList()
-            };
-        }
+
         public EventEntitiesMemento Serialize()
         {
             return new EventEntitiesMemento
-            {
-                DownStairs = DownStairs.Serialize(),
-                UpStairs = _upStairs?.Serialize(),
-                Chests = _chests.Select(chest => chest.Serialize()).ToList()
-            };
+            (
+                Stairs.Select(stairs => stairs.Serialize()).ToList(),
+                _chests.Select(chest => chest.Serialize()).ToList(),
+                _traps.Select(trap => trap.Serialize()).ToList(),
+                _money.Select(money => money.Serialize()).ToList(),
+                _bonfire.Map(bonfire => bonfire.Serialize())
+            );
+        }
+
+        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
+            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<EntityMemento> bonfire)
+        {
+            return new EventEntitiesMemento
+            (
+                stairs.ToList(),
+                chests.ToList(),
+                traps.ToList(),
+                money.ToList(),
+                bonfire
+            );
         }
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
-        public IObservableCollection<IIconEventEntity> EventEntitiesAndIcons => _eventEntitiesAndIcons;
+        public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
 
-        public void Add(Chest chest)
+        public void Spawn(IEventEntity eventEntity)
         {
-            _chests.Add(chest);
-            _eventEntities.Add(chest);
-            _eventEntitiesAndIcons.Add(chest);
-            EventEntityEvents.Add(chest);
+            _standaloneEventEntities.Add(eventEntity);
+            Add(eventEntity);
         }
 
         public void Add(IEventEntity eventEntity)
         {
             _eventEntities.Add(eventEntity);
-            if (eventEntity is IIconEventEntity iconEventEntity)
-            {
-                _eventEntitiesAndIcons.Add(iconEventEntity);
-            }
             EventEntityEvents.Add(eventEntity);
-        }
-
-        public void Remove(Chest chest)
-        {
-            _chests.Remove(chest);
-            _eventEntities.Remove(chest);
-            _eventEntitiesAndIcons.Remove(chest);
         }
 
         public void Remove(IEventEntity eventEntity)
         {
             _eventEntities.Remove(eventEntity);
-            if (eventEntity is IIconEventEntity eventEntityAndIcon)
+            _standaloneEventEntities.Remove(eventEntity);
+            if (eventEntity is Chest chest)
             {
-                _eventEntitiesAndIcons.Remove(eventEntityAndIcon);
+                _chests.Remove(chest);
             }
+            else if (eventEntity is Stairs stairs)
+            {
+                Stairs.Remove(stairs);
+            }
+            else if (eventEntity is Trap trap)
+            {
+                _traps.Remove(trap);
+            }
+            else if (eventEntity is Money money)
+            {
+                _money.Remove(money);
+            }
+            else if (eventEntity is Bonfire)
+            {
+                _bonfire = Option<Bonfire>.None;
+            }
+
             EventEntityEvents.Remove(eventEntity);
         }
     }

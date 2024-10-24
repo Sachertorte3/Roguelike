@@ -30,9 +30,9 @@ namespace View
         {
             if (_audioSource.clip == clip)
             {
-                Debug.Log(clip.name);
                 return;
             }
+
             _audioSource.clip = clip;
             _audioSource.Play();
         }

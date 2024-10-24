@@ -16,7 +16,8 @@ MonoBehaviour:
   _rarity: 0
   PowerMagnification: 0.5
   UsageLimitMagnification: 0.2
-  AdditionalConditions: []
+  AdditionalUpgradeLimit: -1
+  AdditionalEffects: []
   references:
     version: 2
     RefIds: []

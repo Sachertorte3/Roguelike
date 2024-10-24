@@ -9,13 +9,11 @@ namespace View.UI
     public class ChoiceButton : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _text;
+
         public void Construct(string text, Action onClick)
         {
             _text.text = text;
-            GetComponent<Button>().onClick.AddListener(() =>
-            {
-                onClick();
-            });
+            GetComponent<Button>().onClick.AddListener(() => { onClick(); });
         }
     }
 }

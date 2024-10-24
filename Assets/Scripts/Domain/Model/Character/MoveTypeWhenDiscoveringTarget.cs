@@ -1,4 +1,3 @@
-#nullable enable
 namespace Domain.Model.Character
 {
     public enum MoveTypeWhenDiscoveringTarget
@@ -6,6 +5,6 @@ namespace Domain.Model.Character
         NoMove,
         Chase,
         Wander,
-        Escape,
+        Escape
     }
 }

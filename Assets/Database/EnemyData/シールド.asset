@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: "\u30B7\u30FC\u30EB\u30C9"
   m_EditorClassIdentifier: 
   Name: "\u30B7\u30FC\u30EB\u30C9"
-  Group: 1
+  Group: 3
   CharacterType:
     rid: 2541219246146060303
   IsBoss: 0
-  Hp: 20
+  Hp: 5
   Aggression: 1
   Behavior:
-    wanderAround: 1
-    Default: 1
+    wanderAround: 0
+    Default: 0
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
@@ -31,40 +31,35 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
-  MoveSpeed: 1
+    PrioritizeEnemiesOverLeaders: 1
+  MoveSpeed: 2
+  IsHard: 1
+  IsHeavy: 1
+  IsFlying: 0
+  CanThroughWalls: 0
   CanPickUp: 0
   CanUseItem: 0
-  Skills:
-  - Skill:
-      Area:
-        rid: 7729039033147064324
-      Effect:
-        rid: 7729039033147064325
-      Position:
-        rid: 7729039033147064326
-      RushDistance: 0
-      Log: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-    CoolTime: 0
-  - Skill:
-      Area:
-        rid: 7729039033147064327
-      Effect:
-        rid: 7729039033147064329
-      Position:
-        rid: 7729039033147064328
-      RushDistance: 0
-      Log: "\u306F\u56DE\u5FA9\u9B54\u6CD5\u3092\u5531\u3048\u305F\u3002"
-    CoolTime: 0
+  Skills: []
   HasLastSkill: 0
   LastSkill:
-    Area:
-      rid: 2541219246146060294
-    Effect:
-      rid: 2541219246146060296
-    Position:
+    <Position>k__BackingField:
       rid: 2541219246146060297
-    RushDistance: 0
-    Log: "\u306F\u7206\u767A\u3057\u305F\u3002"
+    <Area>k__BackingField:
+      rid: 2541219246146060294
+    <Effects>k__BackingField:
+    - rid: 2541219246146060296
+    <Repeats>k__BackingField: 1
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ProbabilityOfSuccess>k__BackingField: 1
+    <Log>k__BackingField: "\u306F\u7206\u767A\u3057\u305F\u3002"
+  ElementDamageRateMultiplier:
+    data: []
+  ConditionResistance:
+    data: []
+  DropItemRate: 0
+  DropItemTable:
+    items: []
   references:
     version: 2
     RefIds:
@@ -72,14 +67,13 @@ MonoBehaviour:
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 1
+        CanIgnoreWalls: 0
         Radius: 2
     - rid: 2541219246146060296
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 0
+        _elementPowers: []
         _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
     - rid: 2541219246146060297
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -87,33 +81,3 @@ MonoBehaviour:
       type: {class: Shield, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 7729039033147064324
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 0
-        Length: 1
-    - rid: 7729039033147064325
-      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _power: 5
-        _criticalRate: 0
-        _blowAwayDistance: 0
-        _additionalConditions: []
-    - rid: 7729039033147064326
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 7729039033147064327
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 7729039033147064328
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        NumberOfTarget: 1
-        TargetAlly: 1
-        TargetEnemy: 0
-        TargetNeutral: 1
-        TargetSelf: 0
-    - rid: 7729039033147064329
-      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _power: 8

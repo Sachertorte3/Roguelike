@@ -1,40 +1,38 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class DigEffect : IEffect
+    public class DigEffect : ActorlessFieldTargetEffect
     {
-        public Color Color => Colors.Brown;
-        public Impact Impact => Impact.Neutral;
+        public override Color Color => Colors.Brown;
+        public override Impact Impact => Impact.Neutral;
 
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
+        public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
             map.RemoveWalls(positions);
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
-            return 1;
+            return 0;
         }
 
-        public float EvaluateDamage()
+        public override float EvaluatePrice()
         {
-            return 15;
+            return 15f;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
-
-        public string Info()
+        public override string Info()
         {
-            return $"壁堀り";
+            return "壁堀り";
         }
     }
 }

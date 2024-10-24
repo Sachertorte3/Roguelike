@@ -3,36 +3,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
-using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
-using Domain.Service.Rooms;
 using R3;
-using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
-namespace Model.Game
+namespace Domain.Service.Rooms
 {
     public class Shop : Room<ShopMemento>, IShop, IDisposable
     {
         public readonly Clerk Clerk;
+
         private record ShopItemCache(Id<IItem> Id, int Price);
+
         private HashSet<ShopItemCache> _shopItems = new();
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMapManager mapManager) : base(data.Room)
+        public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room,
+            mapManager.Player.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
-                () => (CanExecute && GetSalePrice(mapManager) > 0) || GetPurchasePrice(mapManager) > 0,
-                mapManager => { Purchase(mapManager); return UniTask.CompletedTask; }
+                (player) => CanExecute && (GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0),
+                (_, map) =>
+                {
+                    Purchase(map);
+                    return UniTask.CompletedTask;
+                }
             );
 
             if (data.IsStolen)
@@ -41,19 +47,7 @@ namespace Model.Game
                 return;
             }
 
-            var itemsInRoom = GetItemsInRoom(mapManager);
-            var itemMementosInRoom = itemsInRoom.Select(item => item.Id);
-            foreach (var item in data.Items)
-            {
-                if (!itemMementosInRoom.Contains(new Id<IItem>(item.Id)))
-                {
-                    Debug.Log(itemsInRoom.Count());
-                    Debug.Log(data.Items.Count);
-                    throw new Exception("ItemNotFound: I can't find an item that should be in the shop.");
-                }
-            }
-
-            SetShopItems(itemsInRoom);
+            _shopItems = data.Items.Select(item => new ShopItemCache(new Id<IItem>(item.Id), item.Price)).ToHashSet();
         }
 
         public void Dispose()
@@ -66,49 +60,49 @@ namespace Model.Game
             Dispose();
         }
 
-        public static ShopMemento Build(RectInt rect, EntityMemento entity, List<ItemEntityMemento> items)
+        public static ShopMemento Build(RectInt rect, Id<IEntity> clerkId, List<ItemEntityMemento> items)
         {
             return new ShopMemento
-            {
-                Room = new RoomMemento
-                {
-                    Room = rect,
-                    hasEntered = false,
-                    hasEverEntered = false
-                },
-                Clerk = entity,
-                Items = items.Select(item => new ShopItemMemento
-                {
-                    Id = item.Item.Id,
-                    Price = new Item(item.Item).Price
-                }).ToList(),
-                IsStolen = false
-            };
+            (
+                new RoomMemento
+                (
+                    rect,
+                    false,
+                    false
+                ),
+                clerkId,
+                items.Select(item => new ShopItemMemento
+                (
+                    item.Item.Id,
+                    new Item(item.Item).Price
+                )).ToList(),
+                false
+            );
         }
 
         public override ShopMemento Serialize()
         {
             return new ShopMemento
-            {
-                Room = new RoomMemento
-                {
-                    Room = Rect,
-                    hasEntered = hasEntered,
-                    hasEverEntered = hasEverEntered
-                },
-                Clerk = Clerk.Character.Serialize().Entity,
-                Items = _shopItems.Select(item => new ShopItemMemento
-                {
-                    Id = item.Id.Value,
-                    Price = item.Price
-                }).ToList(),
-                IsStolen = _isStolen.Value
-            };
+            (
+                new RoomMemento
+                (
+                    Rect,
+                    hasEntered,
+                    hasEverEntered
+                ),
+                Clerk.Id,
+                _shopItems.Select(item => new ShopItemMemento
+                (
+                    item.Id.ToString(),
+                    item.Price
+                )).ToList(),
+                _isStolen.Value
+            );
         }
 
-        private IEnumerable<IItem> GetItemsInRoom(IMapManager mapManager)
+        private IEnumerable<IItem> GetItemsInRoom(IMap mapManager)
         {
-            return mapManager.GetItemsInArea(Rect.RectRange()).Select(item => item.Item);
+            return mapManager.Items.In(Rect.RectRange()).Select(item => item.Item);
         }
 
         private void SetShopItems(IEnumerable<IItem> items)
@@ -119,14 +113,16 @@ namespace Model.Game
                 item.SetState(ItemState.ShopItem);
             }
         }
-        private void RemoveMark(IMapManager mapManager, IEnumerable<ShopItemCache> items)
+
+        private void RemoveMark(IMap mapManager, IEnumerable<ShopItemCache> items)
         {
             foreach (var item in items)
             {
                 mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
             }
         }
-        private void MarkItemsAsStolen(IMapManager mapManager)
+
+        private void MarkItemsAsStolen(IMap mapManager)
         {
             foreach (var item in _shopItems)
             {
@@ -134,36 +130,40 @@ namespace Model.Game
             }
         }
 
-        private IEnumerable<ShopItemCache> GetMissingItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetMissingItems(IMap mapManager)
         {
             var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State == ItemState.ShopItem);
             var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
             return purchaseItems;
         }
-        public int GetPurchasePrice(IMapManager mapManager)
+
+        public int GetPurchasePrice(IMap mapManager)
         {
             var purchaseItems = GetMissingItems(mapManager);
             return purchaseItems.Sum(item => item.Price);
         }
 
-        private IEnumerable<ShopItemCache> GetAddedItems(IMapManager mapManager)
+        private IEnumerable<ShopItemCache> GetAddedItems(IMap mapManager)
         {
             var saleItems = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
             return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
-        public int GetSalePrice(IMapManager mapManager)
+
+        public int GetSalePrice(IMap mapManager)
         {
             var saleItems = GetAddedItems(mapManager);
             return Mathf.RoundToInt(saleItems.Sum(item => item.Price) / 2f);
         }
 
-        public void Purchase(IMapManager mapManager)
+        public void Purchase(IMap mapManager)
         {
             if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
             {
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
                 mapManager.Player.AddMoney(GetSalePrice(mapManager));
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
                 mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
                 var purchaseItems = GetMissingItems(mapManager);
                 RemoveMark(mapManager, purchaseItems);
@@ -171,34 +171,28 @@ namespace Model.Game
             }
             else
             {
-                GameLog.Add($"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
+                GameLog.Add(
+                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
             }
         }
 
-        public void Stolen(IMapManager mapManager)
+        public void Stolen(IMap mapManager)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
-            Clerk.ReducesFavorabilityTowardsThief(mapManager.Player);
-            Clerk.Character.AddCondition(new Clairvoyant(), new RemovalConditionData());
+            Clerk.OpposingThief(mapManager.Player);
+            Clerk.Character.AddCondition(Id<IEntity>.Empty, new Clairvoyant(), new RemovalConditionData());
             MarkItemsAsStolen(mapManager);
             CanExecute = false;
             _isStolen.Value = true;
         }
 
-        protected override void UpdateTurnIfNotInside(IGameManager gameManager, IMapManager mapManager)
+        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap mapManager)
         {
             var missingItems = GetMissingItems(mapManager);
             if (missingItems.Any())
             {
                 Stolen(mapManager);
-            }
-        }
-
-        protected override void UpdateTurnIfInside(IGameManager gameManager, IMapManager mapManager)
-        {
-            foreach (var item in _shopItems)
-            {
-                Log.Debug(item.ToString());
+                await UniTask.Delay(1000);
             }
         }
     }

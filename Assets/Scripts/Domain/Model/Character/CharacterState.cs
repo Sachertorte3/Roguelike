@@ -4,6 +4,7 @@
     {
         Think,
         Act,
-        Wait
+        Wait,
+        Finish
     }
 }

@@ -6,10 +6,15 @@ using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Item;
+using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
+using Domain.Service.Events;
+using Domain.Service.Items;
 using R3;
 using Unity.Logging;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Behavior
@@ -21,58 +26,90 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
+        private (Location, Vector2Int)? _homePosition;
+        private enum InputType
+        {
+            Move,
+            UseItem,
+            ThrowItem,
+            DropItem,
+            DoNothing,
+            RenameItem
+        }
 
         public PlayerBehavior(CharacterControlInputReceiver receiver)
         {
             _receiver = receiver;
         }
 
+        public BehaviorMemento Serialize()
+        {
+            return new BehaviorMemento(BehaviorData, _homePosition, null, null);
+        }
+
+        public static BehaviorMemento Build()
+        {
+            return new BehaviorMemento(new BehaviorData(), null, null, null);
+        }
+
         public bool WanderAround => true;
 
-        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IMap world, IInput input)
+        public async UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
+            IInput input)
         {
-            Log.Debug("[PlayerThink] Start waiting input...");
-            if (input.IsDash()) await _intelligentDashController.Wait(character, world);
+            Log.Debug("[Think] Start waiting input...");
+            if (input.IsDash()) await _intelligentDashController.Wait(character, map);
 
-            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
-            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-
+            var tasks = InitializeTasks();
             _receiver.ReadInput();
+            var result = await tasks;
 
-            var firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
             while (true)
             {
-                switch (firstCompletedTask.winArgumentIndex)
+                switch (result.type)
                 {
-                    case 0:
-                        var (move, started) = firstCompletedTask.result1;
+                    case InputType.Move:
+                        var (move, started) = result.move.Value;
                         if (input.IsNoMove())
                         {
                             character.Turn(move.Direction);
+                            break;
                         }
-                        else
+
+                        if (Settings.IntelligentDash.Value)
+                            move = _intelligentDashController.Filter(move, character, started, map, input);
+
+                        var swap = new Swap(move.Direction);
+                        var destination = character.CurrentPosition + move.Direction.Vector();
+                        var eventEntities = map.GetEventEntityAt(destination, EntityLayer.Middle);
+                        character.Turn(move.Direction);
+
+                        if (move.Doable(character, map))
+                            return move;
+                        else if (eventEntities.Any() && eventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
                         {
-                            if (Settings.IntelligentDash.Value)
-                                move = _intelligentDashController.Filter(move, character, started, world, input);
-
-                            var swap = new Swap(move.Direction);
-                            character.Turn(move.Direction);
-                            if (move.Doable(character, world))
-                                return move;
-                            else if (world.IsTouchableEventEntityAt(character.CurrentPosition + move.Direction.Vector(), EntityLayer.Middle))
+                            foreach (var eventEntity in eventEntities)
                             {
-                                await world.Touch(character.CurrentPosition + move.Direction.Vector());
-                                return new DoNothing();
+                                switch (eventEntity.Event)
+                                {
+                                    case PlayerEvent playerEvent:
+                                        var eventAction = await playerEvent.DoAction(map.Player, gameManager, map, swap);
+                                        if (eventAction != null && eventAction.Doable(character, map))
+                                            return eventAction;
+                                        break;
+                                    case CharacterEvent characterEvent:
+                                        if (await characterEvent.DoEvent(map.Player, gameManager, map))
+                                            return new DoNothing();
+                                        break;
+                                }
                             }
-                            else if (swap.Doable(character, world))
-                                return swap;
                         }
-
+                        else if (swap.Doable(character, map))
+                            return swap;
                         break;
-                    case 1:
-                        var itemIndex = firstCompletedTask.result2;
-                        var item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
+                    case InputType.UseItem:
+                        var focus = result.focus;
+                        var item = focus.GetItem(character.Inventory, map);
                         IAction action;
 
                         if (item == null)
@@ -80,40 +117,82 @@ namespace Domain.Service.Characters.Behavior
                         else
                             action = new UseItem(item, character.CurrentDirection);
 
-                        if (action.Doable(character, world)) return action;
+                        if (action.Doable(character, map)) return action;
                         break;
-                    case 2:
-                        itemIndex = firstCompletedTask.result3;
-                        item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
+                    case InputType.ThrowItem:
+                        focus = result.focus;
+                        item = focus.GetItem(character.Inventory, map);
                         if (item != null)
                         {
                             action = new ThrowItem(item, character.CurrentDirection);
-                            if (action.Doable(character, world)) return action;
+                            if (action.Doable(character, map)) return action;
                         }
 
+                        break;
+                    case InputType.DropItem:
+                        focus = result.focus;
+                        if (focus.isEmpty || focus.isGroundItem)
+                            break;
+                        action = new DropItem(focus.index);
+                        if (action.Doable(character, map)) return action;
+                        break;
+                    case InputType.DoNothing:
+                        await UniTask.Yield();
+                        return new DoNothing();
+                    case InputType.RenameItem:
+                        focus = result.focus;
+                        item = focus.GetItem(character.Inventory, map);
+                        if (item != null)
+                        {
+                            map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
+                        }
                         break;
                     default:
                         throw new IndexOutOfRangeException();
                 }
 
-                moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-                useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
-                throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-                firstCompletedTask = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask);
+                result = await InitializeTasks();
             }
         }
-        public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+
+        private async UniTask<(InputType type, (Move action, bool isStarted)? move, ItemFocus? focus)> InitializeTasks()
+        {
+            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
+            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
+            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
+            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
+            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
+            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
+
+            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
+            return tasks.winArgumentIndex switch
+            {
+                0 => (InputType.Move, tasks.result1, null),
+                1 => (InputType.UseItem, null, tasks.result2),
+                2 => (InputType.ThrowItem, null, tasks.result3),
+                3 => (InputType.DropItem, null, tasks.result4),
+                4 => (InputType.DoNothing, null, null),
+                5 => (InputType.RenameItem, null, tasks.result6),
+                _ => throw new IndexOutOfRangeException()
+            };
+        }
+
+        public void KnowLocationOf(Vector2Int position) { }
+
+        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
 
-            int? index;
+            ItemFocus? focus;
             do
             {
-                index = await _receiver.OnUseItemActionReceived.WaitAsync();
-            } while (index.HasValue && disabledItemIds.Contains(index.Value));
+                focus = await _receiver.OnUseItemActionReceived.WaitAsync();
+            } while (!focus.isEmpty && disabledItemIds.Contains(focus.index));
 
             _onItemSelect.OnNext(new OnItemSelectMessage(false, new int[0]));
-            return index == null ? null : inventory.GetItem(index.Value);
+            if (focus.isEmpty)
+                return null;
+            return focus.GetItem(inventory, map);
         }
     }
 }

@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -10,12 +12,12 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "加速";
         public ParticleType ParticleType => ParticleType.FastSpeed;
         public Impact Impact => Impact.Beneficial;
-        public bool CanAct => true;
-        public bool CausesConfusion => false;
+        public string InflictLog => "は加速した";
+        public string DeleteLog => "の加速は元に戻った";
 
-        public void Inflict(IHasCondition hasCondition)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.MultiplyStat(StatType.WaitTime, 0.5f);
+            hasCondition.StatusManager.MultiplyStat(StatType.WaitTime, 0.5f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -23,19 +25,19 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.DivideStat(StatType.WaitTime, 0.5f);
+            hasCondition.StatusManager.DivideStat(StatType.WaitTime, 0.5f);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return 0.1f;
+            return CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
         }
 
-        public float EvaluateDamage()
+        public float EvaluatePrice()
         {
-            return 20;
+            return 20f;
         }
     }
 }

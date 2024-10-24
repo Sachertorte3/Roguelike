@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Memento;
 using R3;
 using Stats;
+using Utilities;
 
 namespace Domain.Service.Characters.Stats
 {
@@ -14,9 +15,11 @@ namespace Domain.Service.Characters.Stats
         public CharacterStats(CharacterStatsMemento memento)
         {
             Hp = new IntResource(memento.Hp);
-            HpNaturalRecoveryAmount = new IntStat(memento.HpNaturalRecoveryAmount);
-            ElementAttackMultiplier = memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
-            ElementDamageRateMultiplier = memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            HpNaturalRecoveryAmount = new Stat(memento.HpNaturalRecoveryAmount);
+            ElementAttackMultiplier =
+                memento.ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+            ElementDamageRateMultiplier =
+                memento.ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
             ViewRange = new Stat(memento.ViewRange);
             WaitTime = new Resource(memento.WaitTime);
             foreach (Element element in Enum.GetValues(typeof(Element)))
@@ -25,46 +28,52 @@ namespace Domain.Service.Characters.Stats
                 {
                     ElementAttackMultiplier[element] = new Stat(1);
                 }
+
                 if (!ElementDamageRateMultiplier.ContainsKey(element))
                 {
                     ElementDamageRateMultiplier[element] = new Stat(1);
                 }
             }
+            ConditionResistance = memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
         }
 
         public CharacterStatsMemento Serialize()
         {
             return new CharacterStatsMemento
-            {
-                Hp = Hp.GetData(),
-                HpNaturalRecoveryAmount = HpNaturalRecoveryAmount.GetData(),
-                ElementAttackMultiplier = new(ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                ElementDamageRateMultiplier = new(ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData())),
-                ViewRange = ViewRange.GetData(),
-                WaitTime = WaitTime.GetData(),
-            };
+            (
+                Hp.GetData(),
+                HpNaturalRecoveryAmount.GetData(),
+                ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
+                ElementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
+                ConditionResistance.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
+                ViewRange.GetData(),
+                WaitTime.GetData()
+            );
         }
 
-        public static CharacterStatsMemento Build(int maxHp, int hpNaturalRecoveryAmount, float attackMultiplier, Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier, float viewRange, float waitTime, bool isSlept)
+        public static CharacterStatsMemento Build(int maxHp, float hpNaturalRecoveryAmount,
+            Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, float waitTime)
         {
             return new CharacterStatsMemento
-            {
-                Hp = new ResourceData(new StatData(maxHp), maxHp),
-                HpNaturalRecoveryAmount = new StatData(hpNaturalRecoveryAmount),
-                ElementAttackMultiplier = new SerializableDictionary<Element, StatData>(elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                ElementDamageRateMultiplier = new SerializableDictionary<Element, StatData>(elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value))),
-                ViewRange = new StatData(viewRange),
-                WaitTime = new ResourceData(new StatData(waitTime), waitTime),
-            };
+            (
+                new ResourceData(new StatData(maxHp), maxHp),
+                new StatData(hpNaturalRecoveryAmount),
+                elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
+                elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
+                conditionResistance.ToDictionary(pair => pair.Key.name, pair => new StatData(pair.Value)),
+                new StatData(viewRange),
+                new ResourceData(new StatData(waitTime), waitTime)
+            );
         }
 
         public IntResource Hp { get; init; }
-        public IntStat HpNaturalRecoveryAmount { get; init; }
+        public Stat HpNaturalRecoveryAmount { get; init; }
         public Stat ViewRange { get; init; }
         public Resource WaitTime { get; init; }
         public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
         public Dictionary<Element, Stat> ElementDamageRateMultiplier { get; init; }
-
+        public Dictionary<string, Stat> ConditionResistance { get; init; }
         public void Dispose()
         {
             Hp.Dispose();
@@ -75,9 +84,15 @@ namespace Domain.Service.Characters.Stats
             {
                 element.Dispose();
             }
+
             foreach (var element in ElementDamageRateMultiplier.Values)
             {
                 element.Dispose();
+            }
+
+            foreach (var condition in ConditionResistance.Values)
+            {
+                condition.Dispose();
             }
         }
 
@@ -85,8 +100,8 @@ namespace Domain.Service.Characters.Stats
         public int CurrentHp => Hp.Value.CurrentValue;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.MaxValue;
         public int CurrentMaxHp => Hp.MaxValue.CurrentValue;
-        public ReadOnlyReactiveProperty<int> HpNaturalRecoveryAmountValue => HpNaturalRecoveryAmount.Value;
-        public int CurrentHpNaturalRecoveryAmount => HpNaturalRecoveryAmount.CurrentValue;
+        public ReadOnlyReactiveProperty<float> HpNaturalRecoveryAmountValue => HpNaturalRecoveryAmount.Value;
+        public float CurrentHpNaturalRecoveryAmount => HpNaturalRecoveryAmount.CurrentValue;
         public ReadOnlyReactiveProperty<float> ViewRangeValue => ViewRange.Value;
         public float CurrentViewRange => ViewRange.CurrentValue;
         public float CurrentMaxWaitTime => WaitTime.MaxValue.CurrentValue;
@@ -99,7 +114,7 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
-                _ => throw new ArgumentException($"Invalid stat type: {type}"),
+                _ => throw new ArgumentException($"Invalid stat type: {type}")
             };
         }
 
@@ -111,6 +126,15 @@ namespace Domain.Service.Characters.Stats
         public float GetElementDamageRateMultiplier(Element element)
         {
             return ElementDamageRateMultiplier[element].CurrentValue;
+        }
+
+        public float GetConditionResistance(ConditionTemplate condition)
+        {
+            if (ConditionResistance.ContainsKey(condition.name))
+            {
+                return ConditionResistance[condition.name].CurrentValue;
+            }
+            return 0f;
         }
 
         public void AddStatValue(StatType type, float value)

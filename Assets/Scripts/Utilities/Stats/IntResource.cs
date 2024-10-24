@@ -7,31 +7,33 @@ namespace Stats
     public class IntResource : IDisposable
     {
         public readonly IntStat _max;
-        private readonly ReactiveProperty<int> _value;
+        private readonly ReactiveProperty<float> _value;
 
         public IntResource(int maxValue)
         {
             _max = new IntStat(maxValue);
-            _value = new ReactiveProperty<int>(maxValue);
+            _value = new ReactiveProperty<float>(maxValue);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
         public IntResource(int maxValue, int value)
         {
             _max = new IntStat(maxValue);
-            _value = new ReactiveProperty<int>(value);
+            _value = new ReactiveProperty<float>(value);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
         public IntResource(ResourceData data)
         {
             _max = new IntStat(data.Max);
-            _value = new ReactiveProperty<int>(Mathf.RoundToInt(data.Value));
+            _value = new ReactiveProperty<float>(data.Value);
             MaxValue.Subscribe(_ => clampCurrentValue());
         }
 
         public ReadOnlyReactiveProperty<int> MaxValue => _max.Value;
-        public ReadOnlyReactiveProperty<int> Value => _value.Select(v => Mathf.RoundToInt(v)).ToReadOnlyReactiveProperty();
+
+        public ReadOnlyReactiveProperty<int> Value =>
+            _value.Select(v => Mathf.FloorToInt(v)).ToReadOnlyReactiveProperty();
 
         public void Dispose()
         {
@@ -53,25 +55,27 @@ namespace Stats
             _value.Value = Mathf.Clamp(Value.CurrentValue, 0, MaxValue.CurrentValue);
         }
 
-        public int Lose(int value)
+        public int Lose(float value)
         {
             if (value < 0)
             {
                 throw new ArgumentException("Value cannot be negative");
             }
+
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(Value.CurrentValue - value, 0, MaxValue.CurrentValue);
             return oldValue - Value.CurrentValue;
         }
 
-        public int Gain(int value)
+        public int Gain(float value)
         {
             if (value < 0)
             {
                 throw new ArgumentException("Value cannot be negative");
             }
+
             var oldValue = Value.CurrentValue;
-            _value.Value = Mathf.Clamp(Value.CurrentValue + value, 0, MaxValue.CurrentValue);
+            _value.Value = Mathf.Clamp(_value.CurrentValue + value, 0, MaxValue.CurrentValue);
             return Value.CurrentValue - oldValue;
         }
 

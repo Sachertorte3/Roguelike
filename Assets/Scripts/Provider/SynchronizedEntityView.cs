@@ -5,20 +5,20 @@ using Domain.Model.Setting;
 using R3;
 using UnityEngine;
 using View;
-using Object = UnityEngine.Object;
 
 namespace Provider
 {
-    public abstract class SynchronizedEntityView<T, TView> where T : IEntity where TView : Component
+    public abstract class SynchronizedEntityView<T, TView> where T : class, IEntity where TView : Component
     {
         private readonly BiMap<T, TView> _viewDict = new();
-        protected abstract TView _viewPrefab { get; }
+        protected abstract TView ViewPrefab(T obj);
         protected abstract InputReceiver _inputReceiver { get; init; }
 
         protected abstract EntityView GetEntityView(TView view);
+
         public virtual void Add(T obj)
         {
-            var view = Object.Instantiate(_viewPrefab);
+            var view = Object.Instantiate(ViewPrefab(obj));
             _viewDict.Add(obj, view);
             InitializeView(obj, view);
             ConstructEntity(obj, GetEntityView(view));
@@ -34,9 +34,19 @@ namespace Provider
         protected abstract void InitializeView(T item, TView view);
         protected abstract void CleanupView(T item, TView view);
 
+        public T? TryGet(TView view)
+        {
+            return _viewDict.Reverse.ContainsKey(view) ? _viewDict.Reverse[view] : null;
+        }
+
         public T Get(TView view)
         {
             return _viewDict.Reverse[view];
+        }
+
+        public TView? TryGet(T obj)
+        {
+            return _viewDict.Forward.ContainsKey(obj) ? _viewDict.Forward[obj] : null;
         }
 
         public TView Get(T obj)
@@ -47,13 +57,15 @@ namespace Provider
         public void ConstructEntity(IEntity entity, EntityView entityView)
         {
             entityView.Construct(_inputReceiver);
-            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction)).AddTo(entityView);
+            entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction, move.isThrown))
+                .AddTo(entityView);
             entity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);
+            Settings.ThrowMilliseconds.Subscribe(value => entityView.SetThrowMilliseconds(value)).AddTo(entityView);
             Settings.MoveMilliseconds.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
             Settings.DashMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.transform.position = (Vector3Int)entity.CurrentPosition;
+            spriteView.transform.position = new Vector3(entity.CurrentPosition.x, entity.CurrentPosition.y, spriteView.transform.position.z);
             entity.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
     }

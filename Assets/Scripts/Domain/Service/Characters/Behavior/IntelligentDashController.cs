@@ -2,44 +2,46 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Map;
 using Domain.Model.Setting;
 using Domain.Service.Action;
-using Unity.Logging;
 using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
     internal sealed class IntelligentDashController
     {
-        public async UniTask Wait(IHasBehavior character, IMap world)
+        private Direction8? _lastMoveDirection;
+        public async UniTask Wait(IHasBehavior character, IMap map)
         {
-            if (character.CanMove(character.CurrentDirection, world) &&
-                character.CanMove(character.CurrentDirection.Reverse(), world) &&
+            if (character.CanMove(character.CurrentDirection, map) &&
+                character.CanMove(character.CurrentDirection.Reverse(), map) &&
                 (
-                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise(), world) &&
-                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise(), world))
-                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise(), world) &&
-                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise(), world))
+                    (character.CanMove(character.CurrentDirection.Rotate90Clockwise(), map) &&
+                     !character.CanMove(character.CurrentDirection.Reverse().Rotate45AntiClockwise(), map))
+                    || (character.CanMove(character.CurrentDirection.Rotate90AntiClockwise(), map) &&
+                        !character.CanMove(character.CurrentDirection.Reverse().Rotate45Clockwise(), map))
                 )
                )
                 await UniTask.Delay(Settings.DashPauseMilliseconds.Value);
         }
 
-        public Move Filter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
+        public Move Filter(Move move, IHasBehavior character, bool isStarted, IMap map, IInput input)
         {
-            move = MoveFilter(move, character, world);
-            move = DashFilter(move, character, started, world, input);
+            move = MoveFilter(move, character, map);
+            move = DashFilter(move, character, isStarted, map, input);
+            _lastMoveDirection = move.Direction;
             return move;
         }
 
-        private Move MoveFilter(Move move, IHasBehavior character, IMap world)
+        private Move MoveFilter(Move move, IHasBehavior character, IMap map)
         {
-            if (!character.CanMove(move.Direction, world))
+            if (!character.CanMove(move.Direction, map) && move.Direction.IsDiagonal())
             {
                 var directionRotateClockwise = move.Direction.Rotate45Clockwise();
-                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, world);
+                var canMoveDirectionRotateClockwise = character.CanMove(directionRotateClockwise, map);
                 var directionRotateAntiClockwise = move.Direction.Rotate45AntiClockwise();
-                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise, world);
+                var canMoveDirectionRotateAntiClockwise = character.CanMove(directionRotateAntiClockwise, map);
                 if (canMoveDirectionRotateClockwise && !canMoveDirectionRotateAntiClockwise)
                     return new Move(directionRotateClockwise);
                 if (!canMoveDirectionRotateClockwise && canMoveDirectionRotateAntiClockwise)
@@ -49,32 +51,39 @@ namespace Domain.Service.Characters.Behavior
             return move;
         }
 
-        private Move DashFilter(Move move, IHasBehavior character, bool started, IMap world, IInput input)
+        private Move DashFilter(Move move, IHasBehavior character, bool isStarted, IMap map, IInput input)
         {
-            if (!IsDashingStraight(started, input)) return move;
-            var canMoveDirections = DirectionMethods.AllDirections
-                .Where(direction => character.CanMove(direction, world))
-                .ToHashSet();
-            var inStraightway = canMoveDirections.Count() == 2;
-            if (inStraightway)
+            if (!input.IsDash() || isStarted)
+                return move;
+            if (InPathway(character, map))
             {
-                var lastMoveDirection = character.CurrentDirection;
-                if (!canMoveDirections.Remove(lastMoveDirection.Reverse()))
-                {
-                    Log.Info(
-                        $"The possible position of the previous turn based on the character's direction({character.CurrentDirection}) is not a passage.");
-                    return move;
-                }
-
-                return new Move(canMoveDirections.First());
+                if (_lastMoveDirection.HasValue && character.CanMove(_lastMoveDirection.Value, map))
+                    return new Move(_lastMoveDirection.Value);
+                var canMoveDirections = DirectionMethods.AllDirections
+                    .Where(direction => !direction.IsDiagonal())
+                    .Where(direction => character.CanMove(direction, map))
+                    .Where(direction => direction != _lastMoveDirection?.Reverse());
+                if (canMoveDirections.Count() == 1)
+                    return new Move(canMoveDirections.First());
             }
-
             return move;
         }
-
-        public bool IsDashingStraight(bool started, IInput input)
+        private bool InPathway(IHasBehavior character, IMap map)
         {
-            return input.IsDash() && !started;
+            var canMoveDirections = DirectionMethods.AllDirections
+                .Where(direction => character.CanMoveIgnoreEntity(direction, map))
+                .ToList();
+
+            bool isStraightPathClear = canMoveDirections
+                .Where(direction => !direction.IsDiagonal())
+                .Count() == 2;
+
+            bool noValidDiagonalPath = !canMoveDirections
+                .Where(direction => direction.IsDiagonal())
+                .Any(direction => canMoveDirections.Contains(direction.Rotate45Clockwise()) &&
+                                  canMoveDirections.Contains(direction.Rotate45AntiClockwise()));
+
+            return isStraightPathClear && noValidDiagonalPath;
         }
     }
 }

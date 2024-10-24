@@ -16,10 +16,11 @@ MonoBehaviour:
     rid: 2541219281251860498
   RemovalCondition:
     RemoveByElapsedTurn: 1
-    Duration: 10
+    Duration: 20
     RemoveByDamage: 0
     Probability: 0
-    RemoveByEnemyNearby: 0
+    RemoveByCharacterNearby: 0
+    CharacterNearbyProbability: 0
   references:
     version: 2
     RefIds:

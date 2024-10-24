@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Domain.Model
+
+namespace Utilities
 {
     [Serializable]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
@@ -21,14 +22,19 @@ namespace Domain.Model
                 Value = value;
             }
         }
-        public SerializableDictionary() { }
-        public SerializableDictionary(Dictionary<TKey, TValue> dictionary)
+
+        public SerializableDictionary()
+        {
+        }
+
+        public SerializableDictionary(IDictionary<TKey, TValue> dictionary)
         {
             foreach (var pair in dictionary)
             {
                 this[pair.Key] = pair.Value;
             }
         }
+
         public void OnBeforeSerialize()
         {
             data.Clear();

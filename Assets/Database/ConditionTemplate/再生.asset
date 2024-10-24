@@ -26,4 +26,4 @@ MonoBehaviour:
     - rid: 2541219281251860522
       type: {class: NaturalHeal, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Power: 1
+        Power: 0.4

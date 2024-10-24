@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2849968466592906649}
   - component: {fileID: 926727143422699943}
-  - component: {fileID: 6266126048023543632}
   - component: {fileID: 8570048861825497505}
   m_Layer: 0
   m_Name: Effect
@@ -74,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -730893165
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -86,19 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6266126048023543632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5035348176490280049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfdcc592c10c61846a1f566d34d2909c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LifeTimeMilliseconds: 100
 --- !u!114 &8570048861825497505
 MonoBehaviour:
   m_ObjectHideFlags: 0

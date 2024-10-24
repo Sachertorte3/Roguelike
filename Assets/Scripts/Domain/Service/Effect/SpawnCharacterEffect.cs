@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -11,28 +14,21 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class SpawnCharacterEffect : IEffect
+    public class SpawnCharacterEffect : ActorlessFieldTargetEffect
     {
-        [Required, SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
-        [MinValue(1), SerializeField] private int _count;
+        [Required][SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
+        [MinValue(1)][SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
-        public SpawnCharacterEffect(EnemyData character, int count, bool inheritsShiny)
+        public override Color Color => Colors.MediumPurple;
+        public override Impact Impact => Impact.Neutral;
+
+        public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            _character = new(character);
-            _count = count;
-            _inheritsShiny = inheritsShiny;
-        }
-
-        public Color Color => Colors.MediumPurple;
-
-        public Impact Impact => Impact.Neutral;
-
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
-        {
-            foreach (var position in positions)
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            if (placeablePositions.Any())
             {
-                for (var i = 0; i < _count; i++)
+                foreach (var position in placeablePositions.GetAtRandom(_count))
                 {
                     map.SpawnEnemy(
                         _character.Value,
@@ -43,24 +39,40 @@ namespace Domain.Service.Effect
                     );
                 }
             }
+
             return UniTask.CompletedTask;
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            return 0;
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            if (placeablePositions.Any())
+            {
+                foreach (var position in placeablePositions.GetAtRandom(_count))
+                {
+                    map.SpawnEnemy(
+                        _character.Value,
+                        position
+                    );
+                }
+            }
+
+            return UniTask.CompletedTask;
         }
 
-        public float EvaluateDamage()
+        public override float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
-            return 50;
+            return 50f / CommonSenseParameters.MonsterMaxHealth;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
-
-        public string Info()
+        public override float EvaluatePrice()
         {
-            return $"召喚: {_character.Value.Name}\n{_count}体";
+            return 50f;
+        }
+
+        public override string Info()
+        {
+            return $"召喚: {_character.Value.Name} {_count}体";
         }
     }
 }

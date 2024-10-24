@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Sirenix.OdinInspector;
 using Random = UnityEngine.Random;
 
@@ -7,13 +8,14 @@ namespace Domain.Model.Condition
     [Serializable]
     public class RemovalConditionData
     {
-        public bool RemoveByElapsedTurn = false;
+        public bool RemoveByElapsedTurn;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
-        public bool RemoveByDamage = false;
-        [ShowIf("@RemoveByDamage")] public float Probability;
-        public bool RemoveByEnemyNearby = false;
+        public bool RemoveByDamage;
+        [ShowIf("@RemoveByDamage")] [Range(0, 1)] public float Probability;
+        public bool RemoveByCharacterNearby;
+        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)] public float CharacterNearbyProbability;
 
-        public RemovalConditionData(int duration = -1, float probability = -1, bool removeByEnemyNearby = false)
+        public RemovalConditionData(int duration = -1, float damageProbability = -1, float characterNearbyProbability = -1)
         {
             if (duration > 0)
             {
@@ -21,24 +23,33 @@ namespace Domain.Model.Condition
                 Duration = duration;
             }
 
-            if (probability > 0)
+            if (damageProbability > 0)
             {
                 RemoveByDamage = true;
-                Probability = probability;
+                Probability = damageProbability;
             }
 
-            RemoveByEnemyNearby = removeByEnemyNearby;
+            if (characterNearbyProbability > 0)
+            {
+                RemoveByCharacterNearby = true;
+                CharacterNearbyProbability = characterNearbyProbability;
+            }
         }
 
-        public bool IsFinished(int elapsedTurns, bool enemyVisible)
+        public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByDamage && Random.value < Probability) ||
-                   (RemoveByEnemyNearby && enemyVisible);
+                   (RemoveByCharacterNearby && characterVisible && Random.value < CharacterNearbyProbability);
         }
+
+        public bool IsFinishedByDamage()
+        {
+            return RemoveByDamage && Random.value < Probability;
+        }
+
         public float EvaluateTurn()
         {
-            float estimatedTurns = float.MaxValue;
+            var estimatedTurns = float.MaxValue;
 
             if (RemoveByElapsedTurn)
             {
@@ -47,16 +58,20 @@ namespace Domain.Model.Condition
 
             if (RemoveByDamage)
             {
-                float damageTurns = 1 / Probability;
+                var damageTurns = 1 / Probability;
                 if (damageTurns < estimatedTurns)
                 {
                     estimatedTurns = damageTurns;
                 }
             }
 
-            if (RemoveByEnemyNearby)
+            if (RemoveByCharacterNearby)
             {
-                estimatedTurns = 0;
+                var enemyNearbyTurns = 1 / CharacterNearbyProbability;
+                if (enemyNearbyTurns < estimatedTurns)
+                {
+                    estimatedTurns = enemyNearbyTurns;
+                }
             }
 
             return estimatedTurns;

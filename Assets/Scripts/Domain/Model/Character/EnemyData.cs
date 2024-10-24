@@ -1,13 +1,16 @@
 #nullable enable
-using Domain.Model.Character.Type;
-using Sirenix.OdinInspector;
-using UnityEditor;
-using UnityEngine;
-using Domain.Model.Effect;
 using System;
+using Domain.Model.Character.Type;
+using Domain.Model.Effect;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
+using Sirenix.OdinInspector;
+using UnityEngine;
+using Utilities;
+using Utilities.Table;
 
 #if UNITY_EDITOR
+using UnityEditor;
 using System.IO;
 #endif
 
@@ -19,28 +22,46 @@ namespace Domain.Model.Character
         [ReadOnly][Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Monster;
         [SerializeReference] public ICharacterType CharacterType;
-        public bool IsBoss = false;
+        public bool IsBoss;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
         public BehaviorData Behavior;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
-        public bool CanPickUp = false;
-        public bool CanUseItem = false;
+        public bool IsHard;
+        public bool IsHeavy;
+        public bool IsFlying;
+        public bool CanThroughWalls;
+        public bool CanPickUp;
+        public bool CanUseItem;
         public EnemySkillData[] Skills;
-        public bool HasLastSkill = false;
+        public bool HasLastSkill;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
-        [Range(0, 1)] public float DropItemRate = 0;
+        public SerializableDictionary<ConditionTemplate, float> ConditionResistance;
+        [Range(0, 1)] public float DropItemRate;
         [ShowIf("@DropItemRate > 0")] public Table<ItemData> DropItemTable;
 #if UNITY_EDITOR
         private void OnValidate()
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
-            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(this);
+
+            foreach (var skill in Skills)
+            {
+                skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
+            }
+
+            if (LastSkill != null)
+            {
+                LastSkill.OnValidate(1);
+            }
+
+            EditorUtility.SetDirty(this);
         }
 #endif
     }
+
     [Serializable]
     public class EnemySkillData
     {

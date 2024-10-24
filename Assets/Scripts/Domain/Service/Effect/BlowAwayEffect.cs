@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -9,42 +12,64 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class BlowAwayEffect : IEffect
+    public class BlowAwayEffect : EntityTargetEffect
     {
-        [MinValue(1), SerializeField] private int _distance;
+        [MinValue(1)][SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
             _distance = distance;
         }
 
-        public Color Color => Colors.LightGreen;
+        public override Color Color => Colors.LightGreen;
 
-        public Impact Impact => Impact.Harmful;
+        public override Impact Impact => Impact.Harmful;
 
-        public async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map)
+        public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            await target.BlowAway(
-                DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition).Value,
-                _distance, map);
+            if (!target.StatusManager.IsHeavy)
+            {
+                await Apply(actor, (IEntity)target, position, map);
+            }
         }
 
-        public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
+        public override async UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
         {
-            return _distance * 0.05f;
+            var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+            if (direction.HasValue)
+                await target.BlowAway(actor, direction.Value, _distance, map);
         }
 
-        public float EvaluateDamage()
+        public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            return _distance;
+            if (target.StatusManager.IsHeavy)
+            {
+                return 0f;
+            }
+            return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new()
+        public override float EvaluatePrice()
         {
-            { new UpgradePath("吹き飛ばし距離"), new UpgradeData("吹き飛ばし距離+1", () => _distance += 1) }
-        };
+            return CommonSenseParameters.BlowAwayPrice(_distance);
+        }
 
-        public string Info()
+        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        {
+            return new Dictionary<UpgradePath, UpgradeData>
+            {
+                {
+                    new UpgradePath("吹き飛ばし距離"),
+                    new UpgradeData(
+                        "吹き飛ばし距離+1",
+                        () => _distance += 1,
+                        () => _distance -= 1
+                    )
+                }
+            };
+        }
+
+        public override string Info()
         {
             return $"吹き飛ばし{_distance}マス";
         }

@@ -9,64 +9,342 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba9802facda18e2428736d2c4483f993, type: 3}
+  m_Script: {fileID: 11500000, guid: a77cbbf8b5440294e8b713251d2c050c, type: 3}
   m_Name: Dungeon
   m_EditorClassIdentifier: Domain.Model:Domain.Model:DungeonBluePrintData
   MasterItemDataBase:
-    Consumables:
+    Potions:
       items:
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
-      - {fileID: 11400000, guid: 1133706f121733840aa8b9af92d71fd4, type: 2}
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+      - {fileID: 11400000, guid: 0299f6328f2795248adce3e46d009493, type: 2}
       - {fileID: 11400000, guid: 39691e5dea321a64fbb7e0cd664d6261, type: 2}
       - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
-      - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
       - {fileID: 11400000, guid: 208881b119b976244a51307120cf9e28, type: 2}
       - {fileID: 11400000, guid: edf0f6bc35c73d74bb59f02584bb0ab5, type: 2}
-      - {fileID: 11400000, guid: 0299f6328f2795248adce3e46d009493, type: 2}
+      - {fileID: 11400000, guid: 61fdd57571425724b9720bd243ca7544, type: 2}
+      - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+      - {fileID: 11400000, guid: 69708070d58333b45838e656a14c6fb3, type: 2}
+      - {fileID: 11400000, guid: 9e7ec03b1c9b98c4c821f48965d78fcb, type: 2}
+    Scrolls:
+      items:
+      - {fileID: 11400000, guid: 05490fe8cb870984c893e036bce07295, type: 2}
+      - {fileID: 11400000, guid: 7b70ff2864835eb479d3552172b5763a, type: 2}
+      - {fileID: 11400000, guid: e16cf9694809f024f825f15a0c27e878, type: 2}
+      - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+      - {fileID: 11400000, guid: 04798754c79f8bb46922b957a944a4ef, type: 2}
+      - {fileID: 11400000, guid: 33eea7551848a164c9dcf92d8b8ede2c, type: 2}
+      - {fileID: 11400000, guid: dde14a99d714bfd48933ba0589629d5e, type: 2}
+      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
       - {fileID: 11400000, guid: f5954a8ba66a98444ace7667d7ee2362, type: 2}
+      - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
+      - {fileID: 11400000, guid: a5f438da92afbff4aab8da4eb5b28ddb, type: 2}
+      - {fileID: 11400000, guid: a1b351b314ba1944cada32a9266ff9c1, type: 2}
+    Books:
+      items:
+      - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
+      - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
+      - {fileID: 11400000, guid: 2d495872fc952f943aa04d73c68be98e, type: 2}
+      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
+      - {fileID: 11400000, guid: dc2e4bf948103ff4a91bc99c2bef4daf, type: 2}
+      - {fileID: 11400000, guid: 1241945755b385d49abae08e61459767, type: 2}
+      - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
+      - {fileID: 11400000, guid: a45b2517dbe9e4f4aa71e690ae6dde82, type: 2}
+      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+      - {fileID: 11400000, guid: 5403f5394d48afa45b46c07ed1e7ecb0, type: 2}
+      - {fileID: 11400000, guid: 126a7455f357c4c4caf977d668299681, type: 2}
+    Wands:
+      items:
+      - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+      - {fileID: 11400000, guid: 5bbf8af4e6664114a86949a781c43ebb, type: 2}
+      - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+      - {fileID: 11400000, guid: bd7b184c81a4f884ea259981d5108472, type: 2}
+      - {fileID: 11400000, guid: 0ed5fe0cbff036b42a54319cf7cb3370, type: 2}
+      - {fileID: 11400000, guid: a880eb13c44c7844e9ffa96c34c8efa5, type: 2}
+      - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+      - {fileID: 11400000, guid: 82cd42b9fc0e70e4dbaf5977771fb17d, type: 2}
+      - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
+      - {fileID: 11400000, guid: 8e61822138f1edc49946e7205d25ac7e, type: 2}
+      - {fileID: 11400000, guid: fe2f17a31e873dc45b8c5d3ab92b353d, type: 2}
     Weapons:
       items:
+      - {fileID: 11400000, guid: 5aca68febc4c42147a691066dc7cffdf, type: 2}
       - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
       - {fileID: 11400000, guid: f2a6d946be267f342b2e6213d596b6fa, type: 2}
-      - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
       - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
-      - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
-      - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
-      - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
-      - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
-      - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+      - {fileID: 11400000, guid: 5103575ddf74cae4fb586df79db17ad9, type: 2}
+      - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
+      - {fileID: 11400000, guid: 120c6a5438a8e7141bacf67dd9f824ff, type: 2}
+      - {fileID: 11400000, guid: cf377fdb98246864ba3b4028cee97d6b, type: 2}
+      - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
+      - {fileID: 11400000, guid: da5d05fbbfcca204ebcb378535e0ce4d, type: 2}
+      - {fileID: 11400000, guid: 547c6406d235e8144adf3ad4a605dbef, type: 2}
+      - {fileID: 11400000, guid: 7464067b6bc22ea4aa84d8224832c41e, type: 2}
     Artifacts:
       items:
+      - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
+      - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
+      - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
       - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: de80b70acd79c8345a76525a6d06bccb, type: 2}
+      - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
+      - {fileID: 11400000, guid: 4798026eef4cbc047972a682dd18d20b, type: 2}
+      - {fileID: 11400000, guid: df2cd4f4ac8b9534e9da61d73e8a81a0, type: 2}
+      - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
+      - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
+      - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
+    Others:
+      items:
+      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+    ChestItems:
+      items:
+      - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
+      - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
       - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
       - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
-    UpgradeMaterials:
+      - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
+      - {fileID: 11400000, guid: df2cd4f4ac8b9534e9da61d73e8a81a0, type: 2}
+      - {fileID: 11400000, guid: 4798026eef4cbc047972a682dd18d20b, type: 2}
+      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: de80b70acd79c8345a76525a6d06bccb, type: 2}
+      - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
+      - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
+    ShopItems:
       items:
-      - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+      - Item:
+          Items:
+            items:
+            - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
+            - {fileID: 11400000, guid: 0299f6328f2795248adce3e46d009493, type: 2}
+            - {fileID: 11400000, guid: 39691e5dea321a64fbb7e0cd664d6261, type: 2}
+            - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
+            - {fileID: 11400000, guid: 9e7ec03b1c9b98c4c821f48965d78fcb, type: 2}
+            - {fileID: 11400000, guid: 208881b119b976244a51307120cf9e28, type: 2}
+            - {fileID: 11400000, guid: 69708070d58333b45838e656a14c6fb3, type: 2}
+            - {fileID: 11400000, guid: edf0f6bc35c73d74bb59f02584bb0ab5, type: 2}
+            - {fileID: 11400000, guid: 61fdd57571425724b9720bd243ca7544, type: 2}
+            - {fileID: 11400000, guid: e48b0c3b637091144adcd72bc495ac75, type: 2}
+            - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+            - {fileID: 11400000, guid: 05490fe8cb870984c893e036bce07295, type: 2}
+            - {fileID: 11400000, guid: 7b70ff2864835eb479d3552172b5763a, type: 2}
+            - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
+            - {fileID: 11400000, guid: e16cf9694809f024f825f15a0c27e878, type: 2}
+            - {fileID: 11400000, guid: f5954a8ba66a98444ace7667d7ee2362, type: 2}
+            - {fileID: 11400000, guid: 395ed785793a3454f8955f436261c438, type: 2}
+            - {fileID: 11400000, guid: 04798754c79f8bb46922b957a944a4ef, type: 2}
+            - {fileID: 11400000, guid: 33eea7551848a164c9dcf92d8b8ede2c, type: 2}
+            - {fileID: 11400000, guid: dde14a99d714bfd48933ba0589629d5e, type: 2}
+            - {fileID: 11400000, guid: a5f438da92afbff4aab8da4eb5b28ddb, type: 2}
+            - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
+            - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
+            - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
+            - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
+            - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
+            - {fileID: 11400000, guid: df2cd4f4ac8b9534e9da61d73e8a81a0, type: 2}
+            - {fileID: 11400000, guid: 4798026eef4cbc047972a682dd18d20b, type: 2}
+            - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+            - {fileID: 11400000, guid: de80b70acd79c8345a76525a6d06bccb, type: 2}
+            - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
+            - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
+            - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
+            - {fileID: 11400000, guid: 9491a6945b80ac2419eca57173534fa2, type: 2}
+            - {fileID: 11400000, guid: 2d495872fc952f943aa04d73c68be98e, type: 2}
+            - {fileID: 11400000, guid: 97355b76c4cf12b4fac129d4928c908e, type: 2}
+            - {fileID: 11400000, guid: 5403f5394d48afa45b46c07ed1e7ecb0, type: 2}
+            - {fileID: 11400000, guid: dc2e4bf948103ff4a91bc99c2bef4daf, type: 2}
+            - {fileID: 11400000, guid: 1241945755b385d49abae08e61459767, type: 2}
+            - {fileID: 11400000, guid: f74e22d6bc7ef4e45aa6d54bce4befa2, type: 2}
+            - {fileID: 11400000, guid: a45b2517dbe9e4f4aa71e690ae6dde82, type: 2}
+            - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
+            - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
+            - {fileID: 11400000, guid: 5bbf8af4e6664114a86949a781c43ebb, type: 2}
+            - {fileID: 11400000, guid: 0991fe41fbd35644aa6f41f21d2de0d7, type: 2}
+            - {fileID: 11400000, guid: bd7b184c81a4f884ea259981d5108472, type: 2}
+            - {fileID: 11400000, guid: 0ed5fe0cbff036b42a54319cf7cb3370, type: 2}
+            - {fileID: 11400000, guid: a880eb13c44c7844e9ffa96c34c8efa5, type: 2}
+            - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
+            - {fileID: 11400000, guid: 82cd42b9fc0e70e4dbaf5977771fb17d, type: 2}
+            - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
+            - {fileID: 11400000, guid: 5aca68febc4c42147a691066dc7cffdf, type: 2}
+            - {fileID: 11400000, guid: da5d05fbbfcca204ebcb378535e0ce4d, type: 2}
+            - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
+            - {fileID: 11400000, guid: f2a6d946be267f342b2e6213d596b6fa, type: 2}
+            - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
+            - {fileID: 11400000, guid: 5103575ddf74cae4fb586df79db17ad9, type: 2}
+            - {fileID: 11400000, guid: 93fba1f199bd22645bf0e86d3b88ef11, type: 2}
+            - {fileID: 11400000, guid: 120c6a5438a8e7141bacf67dd9f824ff, type: 2}
+            - {fileID: 11400000, guid: cf377fdb98246864ba3b4028cee97d6b, type: 2}
+            - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
+            - {fileID: 11400000, guid: 547c6406d235e8144adf3ad4a605dbef, type: 2}
+            - {fileID: 11400000, guid: 7464067b6bc22ea4aa84d8224832c41e, type: 2}
+            - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+        Weight: 1
   SpawnItem:
-    Consumables: 250
-    Weapons: 20
-    Artifacts: 1
-    UpgradeMaterials: 10
-  ChestItem:
-    Consumables: 10
-    Weapons: 20
-    Artifacts: 1
-    UpgradeMaterials: 10
-  WeaponMolds:
+    Potions: 10
+    Scrolls: 10
+    Books: 10
+    Wands: 10
+    Weapons: 10
+    Artifacts: 5
+    Others: 1
+  Traps:
     items:
-    - Item: {fileID: 11400000, guid: 6cd5c19ac0e883c40bc6152522b5c698, type: 2}
+    - Item:
+        <Name>k__BackingField: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871962
+          <Area>k__BackingField:
+            rid: 5486256311944871960
+          <Effects>k__BackingField:
+          - rid: 5486256311944871961
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
-    - Item: {fileID: 11400000, guid: ead2f380670a1d1488dfe7423ad2c933, type: 2}
+    - Item:
+        <Name>k__BackingField: "\u6BD2\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871979
+          <Area>k__BackingField:
+            rid: 5486256311944871977
+          <Effects>k__BackingField:
+          - rid: 5486256311944871978
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
-    - Item: {fileID: 11400000, guid: dbc5b93b16d7f7b4ebf3691538ed4593, type: 2}
+    - Item:
+        <Name>k__BackingField: "\u6DF7\u4E71\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871976
+          <Area>k__BackingField:
+            rid: 5486256311944871974
+          <Effects>k__BackingField:
+          - rid: 5486256311944871975
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
-    - Item: {fileID: 11400000, guid: 1e2d8aed5d5d4e74595c61c6d92c1fa4, type: 2}
+    - Item:
+        <Name>k__BackingField: "\u7761\u7720\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871965
+          <Area>k__BackingField:
+            rid: 5486256311944871963
+          <Effects>k__BackingField:
+          - rid: 5486256311944871966
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
-    - Item: {fileID: 11400000, guid: 8e05eeaadc1776346b7d862c5efd0c32, type: 2}
+    - Item:
+        <Name>k__BackingField: "\u920D\u8DB3\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871982
+          <Area>k__BackingField:
+            rid: 5486256311944871980
+          <Effects>k__BackingField:
+          - rid: 5486256311944871981
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u9EBB\u75FA\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871985
+          <Area>k__BackingField:
+            rid: 5486256311944871983
+          <Effects>k__BackingField:
+          - rid: 5486256311944871984
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u7652\u3057\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871969
+          <Area>k__BackingField:
+            rid: 5486256311944871967
+          <Effects>k__BackingField:
+          - rid: 5486256311944871968
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u53EC\u559A\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256396100960258
+          <Area>k__BackingField:
+            rid: 5486256623760965642
+          <Effects>k__BackingField:
+          - rid: 5486256396100960257
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u7206\u767A\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256311944871973
+          <Area>k__BackingField:
+            rid: 5486256396100960260
+          <Effects>k__BackingField:
+          - rid: 5486256579196485632
+          - rid: 5486256396100960271
+          - rid: 5486256406402433024
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 1
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u8B66\u5831\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256447100289027
+          <Area>k__BackingField:
+            rid: 5486256447100289028
+          <Effects>k__BackingField:
+          - rid: 5486256447100289029
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u546A\u3044\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256623760965644
+          <Area>k__BackingField:
+            rid: 5486256623760965645
+          <Effects>k__BackingField:
+          - rid: 5486256623760965646
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
+      Weight: 1
+    - Item:
+        <Name>k__BackingField: "\u62D8\u675F\u306E\u7F60"
+        <Skill>k__BackingField:
+          <Position>k__BackingField:
+            rid: 5486256542496849965
+          <Area>k__BackingField:
+            rid: 5486256542496849966
+          <Effects>k__BackingField:
+          - rid: 5486256623760965647
+          <Repeats>k__BackingField: 1
+          <ProbabilityOfSuccess>k__BackingField: 0.95
+        <ProbabilityOfBreaking>k__BackingField: 0.5
       Weight: 1
   WeaponPrefixes:
     items:
@@ -80,203 +358,207 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 99ba06601f6355b43911e3bba3b7d0af, type: 2}
     - {fileID: 11400000, guid: 3b4f31dabf5cd1242beb71ef0a112de4, type: 2}
     - {fileID: 11400000, guid: 321f7f5d414d0054d9efa3ee4688df9d, type: 2}
+    - {fileID: 11400000, guid: 6b31827b922d46f45927b1cf8fed8a6b, type: 2}
+    - {fileID: 11400000, guid: 78e07b459ad88ea42ab66d35f52f8014, type: 2}
     - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+  Npcs:
+    items:
+    - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 932a468b28bc5904182a8c42d183162c, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: e6e832fc910bf184d954432955bb19fe, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: fb975fa25b2723141ae866c824617494, type: 2}
+      Weight: 1
   Sections:
-  - Floors:
-    - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 5
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 0
-      Boss:
-      - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
-    WeaponChanceInChest: 0.8
-    ShopItems:
-      items:
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
-      - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
-    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
-    Enemies:
-      items:
-      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
-        Weight: 1
-    Materials:
-      items:
-      - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 1
-  - Floors:
-    - Depth: 4
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 0.05
-      MonsterHouseChance: 0
-      Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      Room:
-        ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
-    - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
-      - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
-    WeaponChanceInChest: 0.8
-    ShopItems:
-      items:
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
-      - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
-    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
-    Enemies:
-      items:
-      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
-        Weight: 1
-    Materials:
-      items:
-      - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 1
-  - Floors:
+  - Type: 0
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0
+    Floors:
     - Depth: 3
-      PrefixChance: 0.2
+      Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+      PrefixChance: 0.1
       ShinyChance: 0.01
-      SleepChance: 0.5
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
       ShopChance: 0.05
       MonsterHouseChance: 0.05
-      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
-        ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
       Boss: []
-    - Depth: 1
-      PrefixChance: 0.2
-      ShinyChance: 0.01
-      SleepChance: 0.5
-      ShopChance: 1
-      MonsterHouseChance: 0.05
-      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
-        ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
-      Boss: []
-    - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
-      - {fileID: 11400000, guid: efaf890b40f7fc240b3ef37971f6f983, type: 2}
     WeaponChanceInChest: 0.8
-    ShopItems:
-      items:
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
-      - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+  - Type: 0
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.25
+    Floors:
+    - Depth: 6
+      Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    - Depth: 1
+      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
+        Weight: 1
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
         Weight: 1
+  - Type: 1
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.25
+    Floors:
+    - Depth: 3
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    - Depth: 1
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    - Depth: 1
+      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
       - Item: {fileID: 11400000, guid: e9c4afc157185444ca463a93304707ad, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 9a8d4fcb820b16b49a9fd6f06102a63d, type: 2}
         Weight: 1
       - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
         Weight: 1
-    Materials:
-      items:
-      - Item: {fileID: 11400000, guid: d4dddf7e284b8a949b4476ede2c728fa, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 1
-  - Floors:
+  - Type: 1
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.5
+    Floors:
     - Depth: 4
-      PrefixChance: 0.2
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      PrefixChance: 0.1
       ShinyChance: 0.01
-      SleepChance: 0.5
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
       ShopChance: 0.05
       MonsterHouseChance: 0.05
-      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
-        ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
       Boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
-      - {fileID: 11400000, guid: 94c194319c4806244af0cddd6be62281, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
-      - {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
-    ShopItems:
-      items:
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
-      - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -286,56 +568,47 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: c3c61fb9e1e447e46a157efb056fc530, type: 2}
-        Weight: 1
-    Materials:
-      items:
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
-        Weight: 1
-  - Floors:
+  - Type: 5
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 1
+    Floors:
     - Depth: 4
-      PrefixChance: 0.2
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      PrefixChance: 0.1
       ShinyChance: 0.01
-      SleepChance: 0.5
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
       ShopChance: 0.05
       MonsterHouseChance: 0.05
-      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      Room:
-        ChestChance: 0.1
-        ItemCount: 2
-        WeaponCount: 1
-        CharacterCount: 2
-      existBoss: 0
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
       Boss: []
     - Depth: 1
-      PrefixChance: 0
-      ShinyChance: 0
-      SleepChance: 0
-      ShopChance: 0
-      MonsterHouseChance: 0
       Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      Room:
-        ChestChance: 0
-        ItemCount: 0
-        WeaponCount: 0
-        CharacterCount: 0
-      existBoss: 1
-      Boss:
-      - {fileID: 11400000, guid: 6fd32df8dbcc9314a8be35ea233b0f3d, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-      - {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
     WeaponChanceInChest: 0.8
-    ShopItems:
-      items:
-      - {fileID: 11400000, guid: e9e3c0dc1c99c0541acfad4909ca107b, type: 2}
-      - {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
-      - {fileID: 11400000, guid: df05b4c19505b7e489d3903ed03dc15c, type: 2}
-      - {fileID: 11400000, guid: 5ba1245cc167ba44ea142ff9bc8ed273, type: 2}
-      - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
@@ -347,9 +620,235 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
         Weight: 1
-    Materials:
+  - Type: 4
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0
+    Floors:
+    - Depth: 4
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    - Depth: 1
+      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
       items:
-      - Item: {fileID: 11400000, guid: e12dc69c42393c646bf2fe00febfcf0d, type: 2}
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
         Weight: 3
-      - Item: {fileID: 11400000, guid: dbdb418c623f3a1498e2223cc53da1d7, type: 2}
+      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
+        Weight: 3
+      - Item: {fileID: 11400000, guid: 7b8d9caf8a0f37a4f83b24e4620e807e, type: 2}
         Weight: 1
+  - Type: 6
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    Floors:
+    - Depth: 1
+      Field: {fileID: 11400000, guid: a7563f1f16a4a4cac9010cd6933a7d3e, type: 2}
+      PrefixChance: 0.1
+      ShinyChance: 0.01
+      SleepChance: 0.75
+      MimicChance: 0.1
+      GrassChance: 0.3
+      ShopChance: 0.05
+      MonsterHouseChance: 0.05
+      RestRoomChance: 0.05
+      ChestChance: 0.1
+      ItemCount: 2
+      MoneyCount: 1
+      MoneyAverage: 100
+      CharacterCount: 1
+      TrapCount: 0.5
+      Boss: []
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+        Weight: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 5486256311944871960
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871961
+      type: {class: TeleportEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 5486256311944871962
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871963
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871965
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871966
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u7761\u7720"
+        _probabilityOfSuccess: 1
+    - rid: 5486256311944871967
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871968
+      type: {class: ClearConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 5486256311944871969
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871973
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871974
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871975
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u6DF7\u4E71"
+        _probabilityOfSuccess: 1
+    - rid: 5486256311944871976
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871977
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871978
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u6BD2"
+        _probabilityOfSuccess: 1
+    - rid: 5486256311944871979
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871980
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871981
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u920D\u8DB3"
+        _probabilityOfSuccess: 1
+    - rid: 5486256311944871982
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871983
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256311944871984
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u9EBB\u75FA"
+        _probabilityOfSuccess: 1
+    - rid: 5486256311944871985
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256396100960257
+      type: {class: SpawnRandomCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _count: 3
+    - rid: 5486256396100960258
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256396100960260
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 1
+        CanIgnoreWalls: 1
+        Radius: 2
+    - rid: 5486256396100960271
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 5486256406402433024
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        ApplyToCharacter: 0
+        ApplyToItem: 1
+        ApplyToMoney: 1
+        ApplyToTrap: 1
+        ApplyToChest: 1
+    - rid: 5486256447100289027
+      type: {class: AllCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256447100289028
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256447100289029
+      type: {class: AlertEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 5486256542496849965
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256542496849966
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256579196485632
+      type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _damageRate: 0.5
+    - rid: 5486256623760965642
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 1
+        CanIgnoreWalls: 0
+        Radius: 1
+    - rid: 5486256623760965644
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 5486256623760965645
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 5486256623760965646
+      type: {class: CurseItemEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _probabilityOfSuccess: 0.5
+    - rid: 5486256623760965647
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u62D8\u675F"
+        _probabilityOfSuccess: 1

@@ -5,11 +5,17 @@ using UnityEngine;
 
 namespace Domain.Model.Effect
 {
-    public record UpgradeData(string Description, System.Action Upgrade);
+    public record UpgradeData(string Description, System.Action Upgrade, System.Action Downgrade);
+
     public interface IHasUpgrades
     {
         public Dictionary<UpgradePath, UpgradeData> GetUpgrades();
-        public IEnumerable<UpgradePath> GenerateUpgradePaths() => GetUpgrades().Keys;
+
+        public IEnumerable<UpgradePath> GenerateUpgradePaths()
+        {
+            return GetUpgrades().Keys;
+        }
+
         public string GetUpgradeDescription(UpgradePath path)
         {
             var upgrades = GetUpgrades();
@@ -21,10 +27,13 @@ namespace Domain.Model.Effect
                 {
                     Debug.Log(upgrade.Key);
                 }
+
                 throw new Exception($"UpgradePath {path} not found");
             }
+
             return upgrades[path].Description;
         }
+
         public void ApplyUpgrade(UpgradePath path)
         {
             var upgrades = GetUpgrades();
@@ -36,8 +45,10 @@ namespace Domain.Model.Effect
                 {
                     Debug.Log(upgrade.Key);
                 }
+
                 throw new Exception($"UpgradePath {path} not found");
             }
+
             upgrades[path].Upgrade();
         }
     }

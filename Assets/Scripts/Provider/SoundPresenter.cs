@@ -1,5 +1,5 @@
 using Domain.Model.Setting;
-using Model.Game;
+using Game;
 using R3;
 using Utilities;
 using VContainer;
@@ -29,11 +29,12 @@ namespace Provider
                             }
                         }));
                     }
+
                     _disposable.Add(map.CharacterManager.CharacterEvents.OnPickUpItem.Subscribe(itemChanged =>
                     {
                         seManager.PickupSE();
                     }));
-                    _disposable.Add(map.CharacterManager.CharacterEvents.OnEffectSpawned.Subscribe(attackChanged =>
+                    _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
                     {
                         seManager.AttackSE();
                     }));

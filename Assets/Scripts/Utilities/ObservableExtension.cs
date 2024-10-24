@@ -22,7 +22,7 @@ namespace Utilities
                 addAction(item);
             }
 
-            return new CompositeDisposable()
+            return new CompositeDisposable
             {
                 list.ObserveAdd()
                     .Select(i => i.Value)

@@ -1,29 +1,45 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Model.Evaluation;
+using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect.Position
 {
-    public class ProjectileImpact : IEffectPosition
+    public class ProjectileImpact : IActorlessEffectPosition
     {
         [Required] public IconSerializable Icon;
-
-        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map)
+        public List<EntityLayer> CanHitLayer = new() { EntityLayer.Middle };
+        public bool IsDirectional => true;
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
+            IMap map)
         {
             var pos = position;
-            while (map.IsPassable(pos + direction.Vector()))
+            for (var i = 0; i < CommonSenseParameters.ThrowDistance; i++)
             {
-                pos += direction.Vector();
-            }
-
-            if (map.IsMapPassable(pos + direction.Vector()))
-            {
-                pos += direction.Vector();
+                if (map.At(pos + direction.Vector()).IsBlankIgnoreWall(CanHitLayer.ToArray()))
+                {
+                    pos += direction.Vector();
+                }
+                else if (map.At(pos + direction.Vector()).IsPassableOnMap())
+                {
+                    pos += direction.Vector();
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return new[] { pos };
+        }
+
+        public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IMap map)
+        {
+            return Get(position, direction, map);
         }
 
         public float EvaluateHitProbability()

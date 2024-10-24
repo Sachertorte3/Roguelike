@@ -5,6 +5,7 @@ namespace View.UI
     public class DungeonMenu : MonoBehaviour, IMenu
     {
         [SerializeField] private InventoryView _inventory;
+
         public void Show()
         {
             gameObject.SetActive(true);

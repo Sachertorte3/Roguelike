@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using System;
 using Domain.Model;
-using Model.Game;
+using Domain.Model.Map;
+using Domain.Service.Events;
+using Game;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,11 +13,15 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedIconEntityView : SynchronizedEntityView<IIconEntity, EntityView>, IDisposable
+    public class SynchronizedIconEntityView : SynchronizedEntityView<IEventEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
-        protected override EntityView GetEntityView(EntityView view) => view;
+
+        protected override EntityView GetEntityView(EntityView view)
+        {
+            return view;
+        }
 
         [Inject]
         public SynchronizedIconEntityView(World world, InputReceiver inputReceiver)
@@ -23,14 +29,29 @@ namespace Provider
             _inputReceiver = inputReceiver;
 
             world.ActiveMap.SubscribeToAllIgnoreNull(
-                map => _disposable.Disposable = map.EventEntitiesAndIcons.SubscribeToAll(Add, Remove),
-                map => map.EventEntitiesAndIcons.ForEach(entity => Remove(entity))
+                map => _disposable.Disposable =
+                    map.EventEntityManager.StandaloneEventEntities.SubscribeToAll(Add, Remove),
+                map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
         }
 
-        protected override EntityView _viewPrefab =>
-            Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+        protected override EntityView ViewPrefab(IEventEntity eventEntity)
+        {
+            if (eventEntity is Bonfire)
+            {
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
+                    .GetComponent<EntityView>();
+            }
+
+            if (eventEntity.Layer == EntityLayer.Middle)
+            {
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Chest.prefab").WaitForCompletion()
+                    .GetComponent<EntityView>();
+            }
+
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
+        }
 
         public void Dispose()
         {
@@ -42,13 +63,21 @@ namespace Provider
             Dispose();
         }
 
-        protected override void InitializeView(IIconEntity eventEntity, EntityView entityView)
+        protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.GetComponent<SpriteRenderer>().sprite = eventEntity.Icon;
+            if (eventEntity is IIconEntity iconEventEntity)
+                spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
+            if (eventEntity is Stairs stairs)
+            {
+                if (stairs.Type == MovementEntityType.UpStairs)
+                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                else
+                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            }
         }
 
-        protected override void CleanupView(IIconEntity item, EntityView view)
+        protected override void CleanupView(IEventEntity item, EntityView view)
         {
         }
     }

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 
-namespace Model.Game
+namespace Game
 {
     public static class Globals
     {

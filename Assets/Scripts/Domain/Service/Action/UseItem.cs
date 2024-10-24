@@ -2,30 +2,31 @@
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Utilities;
 
 namespace Domain.Service.Action
 {
     internal record UseItem(IItem Item, Direction8 Direction) : IAction
     {
-        public bool Doable(IActor actor, IMap world)
+        public bool Doable(IActor actor, IMap map)
         {
-            return Item.CanActivateWhenUsed;
+            return !actor.StatusManager.CannotAct && Item.CanActivateWhenUsed;
         }
 
-        public async UniTask Do(IActor actor, IMap world, IInput input)
+        public async UniTask Do(IActor actor, IMap map, IInput input)
         {
-            await actor.UseItem(Item, Direction, world);
+            await actor.UseItem(Item, Direction, map);
         }
 
-        public float Evaluate(IActor actor, IMap world)
+        public float Evaluate(IActor actor, IMap map)
         {
-            return Item.EvaluateWhenUsed(actor, actor.CurrentPosition, Direction, world);
+            return Item.EvaluateWhenUsed(actor, actor.CurrentPosition, Direction, map);
         }
 
         public string Info()
         {
-            return $"UseItem: Item:{Item.Info()}, Direction:{Direction}";
+            return $"UseItem: Item:{Item.DebugInfo()}, Direction:{Direction}";
         }
     }
 }

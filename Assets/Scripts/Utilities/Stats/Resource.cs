@@ -106,7 +106,7 @@ namespace Stats
         {
             _max.AddMultiplier(-value);
         }
-        
+
         public void DivideMaxValue(float value)
         {
             _max.Multiply(1 / value);

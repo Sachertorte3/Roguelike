@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,6 +11,7 @@ namespace View
     public class CharacterView : MonoBehaviour, IDirectional
     {
         private readonly ReactiveProperty<Direction8> _direction = new();
+        private Animator _animator;
         private SpriteRenderer _groupMarker;
         private SpriteHpBar _hpBar;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
@@ -24,7 +26,9 @@ namespace View
             var animation = Addressables
                 .LoadAssetAsync<RuntimeAnimatorController>($"Assets/Animations/{characterTypeName}.controller")
                 .WaitForCompletion();
-            GetComponent<Animator>().runtimeAnimatorController = Instantiate(animation);
+
+            _animator = GetComponent<Animator>();
+            _animator.runtimeAnimatorController = Instantiate(animation);
 
             var groupMarker = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/GroupMarker.prefab")
                 .WaitForCompletion();
@@ -37,7 +41,7 @@ namespace View
 
         public void SetScale(float value)
         {
-            transform.localScale = new(value, value, 1);
+            transform.localScale = new Vector3(value, value, 1);
         }
 
         public void Turn(Direction8 direction)
@@ -60,6 +64,21 @@ namespace View
         public void UpdateHpBar(float maxHp, float hp)
         {
             _hpBar.SetValue(maxHp, hp);
+        }
+
+        public void PlayAttackAnimation()
+        {
+            _animator.SetBool("Attack", true);
+        }
+
+        public async UniTask PlayWalkAnimation()
+        {
+            _animator.SetBool("Walk", true);
+            _animator.speed = 2;
+            var entityView = GetComponent<EntityView>();
+            await UniTask.WaitUntil(() => !entityView.IsMoving);
+            _animator.SetBool("Walk", false);
+            _animator.speed = 1;
         }
     }
 }

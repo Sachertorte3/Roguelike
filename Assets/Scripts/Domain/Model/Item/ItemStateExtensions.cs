@@ -10,7 +10,7 @@ namespace Domain.Model.Item
                 ItemState.ShopItem => "[売品]",
                 ItemState.UsedShopItem => "[売品(使用済み)]",
                 ItemState.Stolen => "[盗品]",
-                ItemState.None => "",
+                ItemState.None => ""
             };
         }
     }

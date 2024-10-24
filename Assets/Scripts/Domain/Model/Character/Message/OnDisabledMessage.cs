@@ -1,4 +1,4 @@
 ﻿namespace Domain.Model.Message
 {
-    public record OnDisabledMessage;
+    public record OnDisabledMessage();
 }

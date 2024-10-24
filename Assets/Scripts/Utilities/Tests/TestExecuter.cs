@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Utilities.Tests
             var testRunnerApi = ScriptableObject.CreateInstance<TestRunnerApi>();
 
             // 実行するテストを指定
-            var filter = new Filter
+            var filter = new Filter()
             {
                 testMode = TestMode.EditMode
             };

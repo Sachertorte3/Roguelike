@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
-using Domain.Model.Map;
 using Domain.Service.Action;
 using Unity.Logging;
 using UnityEngine;
@@ -11,56 +11,27 @@ using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public class MoveCostCalculator
-    {
-        private IHasBehavior _character;
-        private IMap _map;
-        private bool _canSwap;
-        public MoveCostCalculator(IHasBehavior character, IMap map, bool canSwap)
-        {
-            _character = character;
-            _map = map;
-            _canSwap = canSwap;
-        }
-
-        public float Calculate(Vector2Int pos, Direction8 direction)
-        {
-            if (_character.CanMove(pos, direction, _map))
-                return 1;
-            if (_canSwap && _character.CanSwap(pos, direction, _map))
-                return 2;
-            return float.PositiveInfinity;
-        }
-    }
-
     internal sealed class Chase : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap map)
+            IMap world)
         {
-            var calculator = new MoveCostCalculator(character, map, true);
-            var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
+            var route = new AStar(world.GetAllPassablePositions()).Calc(character.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
-                Log.Debug("[Think]Already reached the target position");
+                Log.Debug($"Already reached the target position");
                 return Enumerable.Empty<Move>();
             }
 
             var direction = DirectionMethods.FromVector(route[1] - route[0]);
 
-            var move = new Move(direction!.Value, 0.01f);
-            var swap = new Swap(direction!.Value, 0.01f);
-            if (move.Doable(character, map))
+            var move = new Move(direction, 0.01f);
+            if (move.Doable(character, world))
             {
                 return new List<Move> { move };
             }
 
-            if (swap.Doable(character, map))
-            {
-                //return new List<Swap> { swap };
-            }
-
-            Log.Debug($"[Think]Move to {direction} is not doable");
+            Log.Debug($"Move to {direction} is not doable");
             return Enumerable.Empty<Move>();
         }
     }

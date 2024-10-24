@@ -12,48 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u56DE\u5FA9\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
-  Category: 0
-  Icon: {fileID: -85694764, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  IsShiny: 0
-  _rarity: 0
+  Icon: {fileID: 187119880, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _rarity: 1
+  Price: 100
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
   SpawnEffectsOnThrow: 1
-  IsSameEffect: 0
   IsSameSkill: 1
   SkillOnUse:
-    <Position>k__BackingField:
+    Area:
+      rid: 4425516923575599143
+    Effect:
+      rid: 2541219238315819008
+    Position:
       rid: 2541219106150416404
-    <Area>k__BackingField:
-      rid: 4425516923575599143
-    <Effects>k__BackingField:
-    - rid: 2541219238315819008
-    <Repeats>k__BackingField: 1
-    <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
-    <Area>k__BackingField:
+    Area:
       rid: 4425516923575599143
-    <Effects>k__BackingField:
-    - rid: 2541219238315819008
-    <ProbabilityOfSuccess>k__BackingField: 0.9
-  ItemEffect:
-    rid: -2
+    Effect:
+      rid: 2541219238315819008
   UsageLimit: 1
-  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2541219106150416404
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
     - rid: 2541219238315819008
       type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _power: 50
+        _power: 20
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

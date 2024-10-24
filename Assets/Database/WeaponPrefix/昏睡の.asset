@@ -16,15 +16,7 @@ MonoBehaviour:
   _rarity: 3
   PowerMagnification: 1
   UsageLimitMagnification: 1
-  AdditionalUpgradeLimit: 0
-  AdditionalEffects:
-  - rid: 5486256783268773889
-  references:
-    version: 2
-    RefIds:
-    - rid: 5486256783268773889
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u660F\u7761"
-        _probabilityOfSuccess: 0.2
+  AdditionalConditions:
+  - Condition:
+      _name: "\u660F\u7761"
+    Probability: 0.2

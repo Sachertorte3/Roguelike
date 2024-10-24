@@ -20,7 +20,7 @@ MonoBehaviour:
   Hp: 256
   Aggression: 1
   Behavior:
-    wanderAround: 1
+    wanderAround: 0
     Default: 1
     PrioritizeMovement: 0
     UseTopBound: 0
@@ -31,86 +31,52 @@ MonoBehaviour:
     distanceBottomBound: 3
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
-    PrioritizeEnemiesOverLeaders: 0
   MoveSpeed: 3
-  IsHard: 0
-  IsHeavy: 0
-  IsFlying: 0
-  CanThroughWalls: 0
   CanPickUp: 0
-  CanUseItem: 1
+  CanUseItem: 0
   Skills:
   - Skill:
-      <Position>k__BackingField:
-        rid: 2541219281251860526
-      <Area>k__BackingField:
+      Area:
         rid: 2541219281251860524
-      <Effects>k__BackingField:
-      - rid: 2541219281251860525
-      <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u6025\u6240\u7A81\u304D\u3092\u653E\u3063\u305F\u3002"
+      Effect:
+        rid: 2541219281251860525
+      Position:
+        rid: 2541219281251860526
+      RushDistance: 0
+      Log: "\u306F\u6025\u6240\u7A81\u304D\u3092\u653E\u3063\u305F\u3002"
     CoolTime: 1
   - Skill:
-      <Position>k__BackingField:
-        rid: 2541219281251860530
-      <Area>k__BackingField:
+      Area:
         rid: 2541219281251860528
-      <Effects>k__BackingField:
-      - rid: 2541219281251860529
-      <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u706B\u3092\u5439\u3044\u305F\u3002"
+      Effect:
+        rid: 2541219281251860529
+      Position:
+        rid: 2541219281251860530
+      RushDistance: 0
+      Log: "\u306F\u706B\u3092\u5439\u3044\u305F\u3002"
     CoolTime: 1
   - Skill:
-      <Position>k__BackingField:
-        rid: 2541219281251860533
-      <Area>k__BackingField:
+      Area:
         rid: 2541219281251860531
-      <Effects>k__BackingField:
-      - rid: 2541219281251860532
-      <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u8DB3\u6255\u3044\u3092\u653E\u3063\u305F\u3002"
+      Effect:
+        rid: 2541219281251860532
+      Position:
+        rid: 2541219281251860533
+      RushDistance: 0
+      Log: "\u306F\u8DB3\u6255\u3044\u3092\u653E\u3063\u305F\u3002"
     CoolTime: 2
-  - Skill:
-      <Position>k__BackingField:
-        rid: 5486256464210165760
-      <Area>k__BackingField:
-        rid: 5486256464210165761
-      <Effects>k__BackingField:
-      - rid: 5486256464210165762
-      <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u6025\u63A5\u8FD1\u3057\u305F\u3002"
-    CoolTime: 10
   HasLastSkill: 0
   LastSkill:
-    <Position>k__BackingField:
+    Area:
       rid: -2
-    <Area>k__BackingField:
+    Effect:
       rid: -2
-    <Effects>k__BackingField:
-    - rid: -2
-    <Repeats>k__BackingField: 1
-    <RushDistance>k__BackingField: 0
-    <BackStepDistance>k__BackingField: 0
-    <ProbabilityOfSuccess>k__BackingField: 1
-    <Log>k__BackingField: 
+    Position:
+      rid: -2
+    RushDistance: 0
+    Log: 
   ElementDamageRateMultiplier:
     data: []
-  ConditionResistance:
-    data:
-    - Key: {fileID: 11400000, guid: 187dac2f1aa620b4dac961390ed7a6f1, type: 2}
-      Value: 1
   DropItemRate: 0
   DropItemTable:
     items: []
@@ -123,7 +89,6 @@ MonoBehaviour:
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        CanIgnoreWalls: 0
         Length: 1
     - rid: 2541219281251860525
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -132,6 +97,8 @@ MonoBehaviour:
         - _element: 0
           _power: 25
         _criticalRate: 1
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219281251860526
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -139,7 +106,6 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        CanIgnoreWalls: 0
         Radius: 4
     - rid: 2541219281251860529
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -148,6 +114,8 @@ MonoBehaviour:
         - _element: 1
           _power: 20
         _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions: []
     - rid: 2541219281251860530
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -155,7 +123,6 @@ MonoBehaviour:
       type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
-        CanIgnoreWalls: 0
         Radius: 1
     - rid: 2541219281251860532
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
@@ -164,6 +131,11 @@ MonoBehaviour:
         - _element: 0
           _power: 15
         _criticalRate: 0
+        _blowAwayDistance: 0
+        _additionalConditions:
+        - Condition:
+            _name: "\u30B9\u30BF\u30F3"
+          Probability: 1
     - rid: 2541219281251860533
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -171,17 +143,3 @@ MonoBehaviour:
       type: {class: Witch, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
-    - rid: 5486256464210165760
-      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data:
-        NumberOfTarget: 1
-        TargetAlly: 0
-        TargetEnemy: 1
-        TargetNeutral: 0
-        TargetSelf: 0
-    - rid: 5486256464210165761
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256464210165762
-      type: {class: TeleportToAreaEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 

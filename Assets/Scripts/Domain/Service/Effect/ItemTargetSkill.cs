@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
-using Domain.Model.Map;
-using Domain.Model.Memento;
-using Domain.Service.Logs;
 
 namespace Domain.Service.Effect
 {
     public class ItemTargetSkill : ISerializable<ItemTargetSkillMemento>, ISkill
     {
         private readonly IItemEffect _itemEffect;
-        public bool IsDirectional => false;
 
         public ItemTargetSkill(ItemTargetSkillMemento memento)
         {
@@ -25,68 +21,30 @@ namespace Domain.Service.Effect
         public ItemTargetSkillMemento Serialize()
         {
             return new ItemTargetSkillMemento
-            (
-                _itemEffect
-            );
+            {
+                ItemEffect = _itemEffect
+            };
         }
 
         public static ItemTargetSkillMemento Build(IItemEffect itemEffect)
         {
             return new ItemTargetSkillMemento
-            (
-                itemEffect
-            );
+            {
+                ItemEffect = itemEffect
+            };
         }
 
-        public async UniTask<ISkillResult> Use(IActor player, IItem item, IMap map)
+        public async UniTask<bool> Use(IActor actor, IItem item)
         {
-            var selfIndex = player.Inventory.GetItemIndex(item);
-            var disabledItemIndexes = new List<int>();
-            foreach (var inventoryItem in player.Inventory.AllItems)
-            {
-                if (!_itemEffect.CanApplyTo(player, inventoryItem))
-                {
-                    var index = player.Inventory.GetItemIndex(inventoryItem);
-                    disabledItemIndexes.Add(index);
-                }
-            }
-            var groundItem = map.Items.At(player.CurrentPosition).FirstOrDefault()?.Item;
-            if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
-            {
-                disabledItemIndexes.Add(map.Player.Inventory.MaxItemCount);
-            }
-            disabledItemIndexes.Add(selfIndex);
-            if (player.IsKnownItem(item))
-            {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, disabledItemIndexes.ToArray());
-                if (selectedItem != null)
-                {
-                    _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
-                    return ItemTargetSkillResult.Success;
-                }
-            }
-            else
-            {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, new[] { selfIndex });
-                if (selectedItem != null)
-                {
-                    var selectedItemIndex = player.Inventory.GetItemIndex(selectedItem);
-                    if (disabledItemIndexes.Contains(selectedItemIndex))
-                    {
-                        GameLog.Add($"しかし効果はなかった。");
-                    }
-                    else
-                    {
-                        _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
-                    }
-                    return ItemTargetSkillResult.Success;
-                }
-            }
-
-            return ItemTargetSkillResult.Cancelled;
+            var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(actor.Inventory);
+            disabledItemIndexes = disabledItemIndexes.Append(actor.Inventory.GetItemIndex(item));
+            var selectedItem = await actor.ItemSelecter.SelectItem(actor.Inventory, disabledItemIndexes.ToArray());
+            if (selectedItem != null)
+                _itemEffect.Apply(selectedItem);
+            return selectedItem != null;
         }
 
-        public float Evaluate(IActor player, IItem item)
+        public float Evaluate(IActor actor, IItem item)
         {
             return 0;
         }

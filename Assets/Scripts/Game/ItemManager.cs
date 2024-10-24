@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Item;
-using Domain.Model.Memento;
+using Domain.Model.Map;
 using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 using VContainer;
 
-namespace Game
+namespace Model.Game
 {
     public sealed class ItemManager : IDisposable
     {
@@ -26,7 +26,6 @@ namespace Game
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
             ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
-            ItemEntityEvents.OnDestroyed.Subscribe(dead => _items.Remove(dead.Item));
         }
 
         public IObservableCollection<IItemEntity> Items => _items;
@@ -50,7 +49,7 @@ namespace Game
 
         public IItemEntity SpawnItem(IItem item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item.Serialize()));
+            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item));
             AddItem(itemEntity);
             return itemEntity;
         }
@@ -69,7 +68,7 @@ namespace Game
 
         private void SetAllItemPosition()
         {
-            _allItemPositions = Items.Positions().ToHashSet();
+            _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
         }
 
         public IItemEntity? GetItemAt(Vector2Int position)
@@ -77,29 +76,20 @@ namespace Game
             return _items.FirstOrDefault(item => item.CurrentPosition == position);
         }
 
-        public bool CanPickUpAt(Vector2Int position, bool pickUpShopItem = false)
+        public IItemEntity? TryPickUp(Vector2Int position, bool pickUpShopItem = false)
         {
             var item = GetItemAt(position);
             if (item == null)
-                return false;
-
-            return pickUpShopItem || item.Item.State != ItemState.ShopItem;
-        }
-
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool pickUpShopItem = false)
-        {
-            if (!CanPickUpAt(position, pickUpShopItem))
                 return null;
 
-            var item = GetItemAt(position)!;
-            _items.Remove(item);
-            ItemEntityEvents.Remove(item);
-            return item;
-        }
-
-        public IItemEntity PickUpAt(Vector2Int position, bool pickUpShopItem = false)
-        {
-            return TryPickUpAt(position, pickUpShopItem) ?? throw new Exception("item cannot be picked up");
+            if (pickUpShopItem || item.Item.State != ItemState.ShopItem)
+            {
+                _items.Remove(item);
+                ItemEntityEvents.Remove(item);
+                return item;
+            }
+            else
+                return null;
         }
     }
 }

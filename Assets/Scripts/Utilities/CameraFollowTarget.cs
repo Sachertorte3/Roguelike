@@ -16,10 +16,5 @@ namespace Utilities
         {
             target = obj;
         }
-
-        public void SetPosition(Vector3 position)
-        {
-            gameObject.transform.position = position + relative;
-        }
     }
 }

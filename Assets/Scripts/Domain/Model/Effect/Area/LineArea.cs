@@ -1,65 +1,42 @@
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect.Area
 {
-    public class LineArea : IArea
+    public class LineArea : IDirectionalArea
     {
         public bool ContainsSelf;
-        public bool CanIgnoreWalls;
         [MinValue(1)] public int Length;
 
-        public LineArea(int length, bool containsSelf, bool canIgnoreWalls)
+        public LineArea(int length, bool containsSelf)
         {
             Length = length;
-            CanIgnoreWalls = canIgnoreWalls;
             ContainsSelf = containsSelf;
         }
 
-        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction, IMap map)
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
         {
-            var area = (ContainsSelf ? Enumerable.Range(0, Length + 1) : Enumerable.Range(1, Length))
-                .Select(i => position + direction.Vector() * i);
-            foreach (var pos in area)
-            {
-                yield return pos;
-                if (!CanIgnoreWalls && !map.At(pos).IsBlank(EntityLayer.Middle))
-                    break;
-            }
+            return (ContainsSelf ? Enumerable.Range(0, Length + 1) : Enumerable.Range(1, Length))
+                .Select(i => position + (direction.Vector() * i));
         }
 
         public float EvaluateArea()
         {
-            if (CanIgnoreWalls)
-                return Mathf.Sqrt(Length) * 2 - 1;
-            return Mathf.Sqrt(Length);
+            return Length;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return new Dictionary<UpgradePath, UpgradeData>
+        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() =>
+            new()
             {
-                {
-                    new UpgradePath("長さ"),
-                    new UpgradeData(
-                        "長さ+1",
-                        () => Length += 1,
-                        () => Length -= 1
-                    )
-                }
+                { new UpgradePath("長さ"), new UpgradeData("長さ+1", () => Length += 1) }
             };
-        }
 
         public string Info()
         {
-            var info = $"直線 長さ{Length}マス";
-            if (ContainsSelf) info += "(原点含む)";
-            if (CanIgnoreWalls) info += "(壁無視)";
-            return info;
+            return $"直線 長さ{Length}マス{(ContainsSelf ? "(原点含む)" : "")}";
         }
     }
 }

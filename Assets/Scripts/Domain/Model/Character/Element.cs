@@ -7,6 +7,6 @@ namespace Domain.Model.Character
         Ice,
         Thunder,
         Light,
-        Dark
+        Dark,
     }
 }

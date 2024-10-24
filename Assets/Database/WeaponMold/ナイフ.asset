@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd1427b9181161458a8f7aaf63977fb, type: 3}
+  m_Name: "\u30CA\u30A4\u30D5"
+  m_EditorClassIdentifier: 
+  Name: "\u30CA\u30A4\u30D5"
+  Icon: {fileID: -118445534, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  PowerMagnification: 1
+  UsageLimit: 22
+  Area:
+    rid: 4425516878087061506
+  Position:
+    rid: 2541219106150416418
+  references:
+    version: 2
+    RefIds:
+    - rid: 2541219106150416418
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 4425516878087061506
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        Length: 1

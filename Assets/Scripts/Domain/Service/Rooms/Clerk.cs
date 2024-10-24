@@ -1,11 +1,7 @@
-#nullable enable
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
-using Domain.Model.Map;
 using Domain.Service.Events;
 using R3;
 using UnityEngine;
@@ -16,47 +12,42 @@ namespace Domain.Service.Rooms
     public class Clerk : IEventEntity
     {
         public readonly ICharacter Character;
-        public IEvent Event { get; init; }
+        private readonly Func<bool> _canExecuteEvent;
+        public bool CanExecuteEvent => _canExecuteEvent();
+        private readonly Func<IMapManager, UniTask> _doEvent;
 
-        public Clerk(ICharacter character, Func<ICharacter, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        public Clerk(ICharacter character, Func<bool> canExecuteEvent, Func<IMapManager, UniTask> doEvent)
         {
             Character = character;
-            Event = new PlayerEvent(
-                null,
-                true,
-                new List<PlayerChoiceEvent>
-                {
-                    new PlayerChoiceEvent(
-                        "代金を支払う",
-                        canExecuteEvent,
-                        (gameManager, map) => doEvent(gameManager, map)
-                    )
-                }
-            );
+            _canExecuteEvent = canExecuteEvent;
+            _doEvent = doEvent;
         }
-
         public void Dispose()
         {
             Character.Dispose();
         }
-
         ~Clerk()
         {
             Dispose();
         }
-
+        public EventTrigger Trigger => EventTrigger.Touch;
         public Id<IEntity> Id => Character.Id;
         public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
         public Vector2Int CurrentPosition => Character.CurrentPosition;
         public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;
         public EntityLayer Layer => Character.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => Character.OnMove;
+        public Observable<(Direction8 direction, Vector2Int destination)> OnMove => Character.OnMove;
         public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
         public Observable<Unit> OnDestroyed => Character.OnDestroyed;
 
-        public void OpposingThief(ICharacter thief)
+        public async UniTask DoEvent(IGameManager gameManager, IMapManager mapManager)
         {
-            Character.Affiliation.AddForceAffiliation(thief.Id, AffiliationType.Enemy);
+            await _doEvent(mapManager);
+        }
+
+        public void ReducesFavorabilityTowardsThief(ICharacter thief)
+        {
+            Character.Affiliation.OnCharacterAttacked(thief.Affiliation, Character.Affiliation, 1f);
         }
 
         public void SetVisibility(bool visibility)
@@ -67,16 +58,6 @@ namespace Domain.Service.Rooms
         public void Destroy()
         {
             Character.Destroy();
-        }
-
-        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
-        {
-            return Character.BlowAway(actor, direction, distance, map);
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            Character.Teleport(position);
         }
     }
 }

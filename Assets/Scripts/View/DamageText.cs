@@ -8,7 +8,7 @@ namespace UI
 
         private void Update()
         {
-            transform.position += new Vector3(0, speed, 0);
+            transform.position = transform.position + new Vector3(0, speed, 0);
         }
     }
 }

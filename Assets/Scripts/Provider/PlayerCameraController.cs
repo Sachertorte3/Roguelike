@@ -1,6 +1,5 @@
 #nullable enable
-using Game;
-using UnityEngine;
+using Model.Game;
 using Utilities;
 using VContainer;
 
@@ -13,12 +12,6 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
             {
-                if (map.Player.CurrentHp <= 0)
-                {
-                    camera.SetPosition((Vector3Int)map.Player.CurrentPosition);
-                    return;
-                }
-
                 var playerView = characters.Get(map.Player);
                 camera.SetTarget(playerView.gameObject);
             });

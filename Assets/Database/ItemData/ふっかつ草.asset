@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u3075\u3063\u304B\u3064\u8349"
   m_EditorClassIdentifier: 
-  Category: 6
   Icon: {fileID: -307257721, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
-  IsShiny: 0
   _rarity: 3
   EffectType: 1
   UseOnDeath: 1
@@ -23,24 +21,20 @@ MonoBehaviour:
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
-    <Position>k__BackingField:
-      rid: 2541219106150416409
-    <Area>k__BackingField:
+    Area:
       rid: 4425516923575599140
-    <Effects>k__BackingField:
-    - rid: 2541219281251860484
-    <Repeats>k__BackingField: 1
-    <ProbabilityOfSuccess>k__BackingField: 0.95
+    Effect:
+      rid: 2541219281251860484
+    Position:
+      rid: 2541219106150416409
   SkillOnThrow:
-    <Area>k__BackingField:
+    Area:
       rid: -2
-    <Effects>k__BackingField:
-    - rid: -2
-    <ProbabilityOfSuccess>k__BackingField: 0.9
+    Effect:
+      rid: -2
   ItemEffect:
     rid: -2
   UsageLimit: 1
-  UpgradeLimit: 3
   PassiveConditions: []
   references:
     version: 2

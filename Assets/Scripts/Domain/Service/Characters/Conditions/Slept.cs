@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -12,13 +10,12 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "睡眠";
         public ParticleType ParticleType => ParticleType.Sleep;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は眠りについた";
-        public string DeleteLog => "は眠りから覚めた";
+        public bool CanAct => false;
+        public bool CausesConfusion => false;
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.CannotAct);
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.Blind);
+            hasCondition.RemoveStatMultiplier(StatType.ViewRange, 0.25f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -26,20 +23,19 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CannotAct);
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Blind);
+            hasCondition.AddStatMultiplier(StatType.ViewRange, 0.25f);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.StatusManager.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
+            return target.CanAct ? 0 : 0.3f;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
-            return CommonSenseParameters.OneTurnStunEquivalentDamage;
+            return 5;
         }
     }
 }

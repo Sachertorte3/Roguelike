@@ -6,7 +6,6 @@ namespace View.UI
     public class DungeonInfoView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _floorText;
-
         public void SetInfo(string name, int floor)
         {
             if (floor > 0)

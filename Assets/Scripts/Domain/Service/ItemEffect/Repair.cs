@@ -1,28 +1,21 @@
-using Domain.Model.Dungeon;
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Item;
 
 namespace Domain.Service.ItemEffect
 {
     public class Repair : IItemEffect
     {
-        public bool CanApplyTo(IHasInventory actor, IItem item)
+        public IEnumerable<int> GetDisabledItemIndexes(IInventory inventory)
         {
-            return item.RemainingUses.CurrentValue < item.MaxUsages;
+            var disabledItems = inventory.AllItems.Where(item => item.RemainingUses.CurrentValue == item.MaxUsages);
+            return disabledItems.Select(item => inventory.GetItemIndex(item));
         }
-
-        public void Apply(IHasInventory player, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IItem item)
         {
-            item.Repair(player, itemPlaceholders);
+            item.Repair();
         }
-
-        public float EvaluatePrice()
-        {
-            return 500;
-        }
-
-        public string Info()
-        {
-            return "修理";
-        }
+        public float EvaluatePrice() => 500;
+        public string Info() => "修理";
     }
 }

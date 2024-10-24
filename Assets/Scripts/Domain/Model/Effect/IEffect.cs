@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model.Map;
 using UnityEngine;
 
 namespace Domain.Model.Effect
@@ -9,13 +8,9 @@ namespace Domain.Model.Effect
     {
         public Impact Impact { get; }
         public Color Color { get; }
-
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map);
-        public UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map);
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map);
-
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, IPassableChecker map) => UniTask.CompletedTask;
+        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
-        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions);
-        public float EvaluatePrice();
+        public float EvaluateDamage();
     }
 }

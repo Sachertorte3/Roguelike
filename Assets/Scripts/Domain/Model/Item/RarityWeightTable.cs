@@ -4,17 +4,18 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Utilities.Table;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Domain.Model.Item
 {
     [Serializable]
     public class RarityWeightTable<T> : ITable<T> where T : IHasRarity
     {
-        [RequiredListLength(1, null)] [SerializeField]
+        [RequiredListLength(1, null)]
+        [SerializeField]
         private List<T> items = new();
-
-        public List<T> Items => items;
 
         public T GetRandomItem()
         {

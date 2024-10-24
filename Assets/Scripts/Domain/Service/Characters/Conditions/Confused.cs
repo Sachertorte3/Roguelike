@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -12,12 +10,11 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "混乱";
         public ParticleType ParticleType => ParticleType.Confusion;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は混乱した";
-        public string DeleteLog => "は正気に戻った";
+        public bool CanAct => true;
+        public bool CausesConfusion => true;
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.Confused);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,19 +22,18 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Confused);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.StatusManager.IsConfused ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
+            return target.IsConfused ? 0 : 0.2f;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
-            return 5f;
+            return 2;
         }
     }
 }

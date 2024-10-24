@@ -25,15 +25,16 @@ namespace View
             {
                 child.enabled = visible;
             }
-
             foreach (var child in transform.GetComponentsInChildren<MeshRenderer>())
             {
                 child.enabled = visible;
             }
-
-            foreach (var child in transform.GetComponentsInChildren<ParticleSystemRenderer>())
+            foreach (var child in transform.GetComponentsInChildren<ParticleSystem>())
             {
-                child.enabled = visible;
+                if (visible)
+                    child.Play();
+                else
+                    child.Stop();
             }
         }
     }

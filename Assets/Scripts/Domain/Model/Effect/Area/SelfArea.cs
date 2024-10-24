@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
@@ -7,14 +6,14 @@ namespace Domain.Model.Effect.Area
 {
     public class SelfArea : INotDirectionalArea
     {
-        public IEnumerable<Vector2Int> Get(Vector2Int position, IMap map)
+        public IEnumerable<Vector2Int> Get(Vector2Int position)
         {
             return new List<Vector2Int> { position };
         }
 
-        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction, IMap map)
+        public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction)
         {
-            return Get(position, map);
+            return Get(position);
         }
 
         public float EvaluateArea()

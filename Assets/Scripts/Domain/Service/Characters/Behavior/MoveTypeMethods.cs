@@ -5,8 +5,7 @@ namespace Domain.Service.Characters.Behavior
 {
     public static class MoveTypeMethods
     {
-        public static IBehaviorWhenDiscoveringTarget ToDiscoveredTargetBehavior(
-            this MoveTypeWhenDiscoveringTarget moveType)
+        public static IBehaviorWhenDiscoveringTarget ToDiscoveredTargetBehavior(this MoveTypeWhenDiscoveringTarget moveType)
         {
             return moveType switch
             {
@@ -14,7 +13,7 @@ namespace Domain.Service.Characters.Behavior
                 MoveTypeWhenDiscoveringTarget.Chase => new Chase(),
                 MoveTypeWhenDiscoveringTarget.Wander => new Wander(),
                 MoveTypeWhenDiscoveringTarget.Escape => new Escape(),
-                _ => new NoMove()
+                _ => new NoMove(),
             };
         }
     }

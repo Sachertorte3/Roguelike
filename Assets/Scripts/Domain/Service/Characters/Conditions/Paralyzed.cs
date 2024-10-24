@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
-using Domain.Model.Evaluation;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -12,12 +10,11 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "麻痺";
         public ParticleType ParticleType => ParticleType.Paralysis;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は麻痺した";
-        public string DeleteLog => "は体が動くようになった";
+        public bool CanAct => false;
+        public bool CausesConfusion => false;
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Inflict(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,19 +22,18 @@ namespace Domain.Service.Characters.Conditions
             return UniTask.CompletedTask;
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
+        public void Delete(IHasCondition hasCondition)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CannotAct);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.StatusManager.CannotAct ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
+            return target.CanAct ? 0.3f : 0;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateDamage()
         {
-            return CommonSenseParameters.OneTurnStunEquivalentDamage;
+            return 5;
         }
     }
 }

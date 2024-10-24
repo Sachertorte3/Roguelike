@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
@@ -157,14 +158,16 @@ namespace Domain.Service.Characters.Behavior
 
         private async UniTask<(InputType type, (Move action, bool isStarted)? move, ItemFocus? focus)> InitializeTasks()
         {
-            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
-            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
-            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync();
-            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync();
-            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync();
-            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync();
+            var cancellationToken = new CancellationTokenSource();
+            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync(cancellationToken.Token);
+            var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync(cancellationToken.Token);
+            var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync(cancellationToken.Token);
+            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync(cancellationToken.Token);
+            var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync(cancellationToken.Token);
+            var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync(cancellationToken.Token);
 
             var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
+            cancellationToken.Cancel();
             return tasks.winArgumentIndex switch
             {
                 0 => (InputType.Move, tasks.result1, null),

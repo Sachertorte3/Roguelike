@@ -74,7 +74,7 @@ namespace Domain.Model.Character
 
         public bool IsVisible(Vector2Int position)
         {
-            return VisionRange.VisibleArea.Contains(position);
+            return VisionRange.IsVisible(position);
         }
     }
 }

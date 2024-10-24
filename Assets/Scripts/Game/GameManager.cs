@@ -179,11 +179,13 @@ namespace Game
 
         public void WriteData(string path, string saveData)
         {
+            /*
             if (saveData.Contains("❰") || saveData.Contains("❱"))
             {
                 throw new Exception("Save data is corrupted");
             }
             saveData = Regex.Replace(saveData, @"<(.+?)>k__BackingField", "❰$1❱");
+            */
             File.WriteAllText(path, saveData);
         }
 
@@ -195,7 +197,9 @@ namespace Game
             }
 
             var saveDataStr = File.ReadAllText(path);
+            /*
             saveDataStr = Regex.Replace(saveDataStr, @"❰(.+?)❱", "<$1>k__BackingField");
+            */
             return saveDataStr;
         }
 

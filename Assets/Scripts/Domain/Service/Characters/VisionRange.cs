@@ -2,7 +2,6 @@
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
-using Domain.Model.Message;
 using R3;
 using Stats;
 using UnityEngine;
@@ -19,8 +18,8 @@ namespace Domain.Service.Characters
         private bool _canThroughWalls;
         public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
         public bool IsBlind => _blindFlags.CurrentValue;
-        private HashSet<Vector2Int> _visibleArea = new();
-        private Subject<OnVisibleAreaChangedMessage> _onVisibleAreaChanged = new();
+        private Subject<Unit> _onVisibleAreaChanged = new();
+        private readonly IMap _map;
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
             int clairvoyantFlags, int blindFlags, bool canThroughWalls, IMap map)
@@ -31,20 +30,27 @@ namespace Domain.Service.Characters
             _blindFlags = new FlagStat(blindFlags);
             _canThroughWalls = canThroughWalls;
             _position.Subscribe(currentPosition =>
-                ChangeVisibleArea(Calc(currentPosition, map)));
-            _range.Subscribe(range => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
+                ChangeVisibleArea());
+            _range.Subscribe(_ => ChangeVisibleArea());
             _clairvoyantFlags
                 .Value
-                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
+                .Subscribe(_ => ChangeVisibleArea());
             _blindFlags
                 .Value
-                .Subscribe(_ => ChangeVisibleArea(Calc(_position.CurrentValue, map)));
+                .Subscribe(_ => ChangeVisibleArea());
+            _map = map;
         }
 
-        public IReadOnlyCollection<Vector2Int> VisibleArea => _visibleArea;
+        public IReadOnlyCollection<Vector2Int> VisibleArea
+        {
+            get
+            {
+                return Calc(_position.CurrentValue);
+            }
+        }
         public int ClairvoyantFlags => _clairvoyantFlags.CurrentFlags;
         public int BlindFlags => _blindFlags.CurrentFlags;
-        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged => _onVisibleAreaChanged;
+        public Observable<Unit> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
         public void AddClairvoyantFlags()
         {
@@ -66,34 +72,37 @@ namespace Domain.Service.Characters
             _blindFlags.RemoveFlags();
         }
 
-        public void Refresh(IMap map)
+        public void Refresh()
         {
-            ChangeVisibleArea(Calc(_position.CurrentValue, map));
+            ChangeVisibleArea();
         }
 
-        private void ChangeVisibleArea(HashSet<Vector2Int> area)
+        private void ChangeVisibleArea()
         {
-            var oldArea = _visibleArea;
-            _visibleArea = area;
-            _onVisibleAreaChanged.OnNext(new OnVisibleAreaChangedMessage(area, oldArea));
+            _onVisibleAreaChanged.OnNext(Unit.Default);
         }
 
-        private HashSet<Vector2Int> Calc(Vector2Int position, IMap map)
+        public bool IsVisible(Vector2Int position)
         {
-            var range = _range.CurrentValue;
+            return _map.IsVisible(_position.CurrentValue, position, _range.CurrentValue + 0.5f);
+        }
+
+        private HashSet<Vector2Int> Calc(Vector2Int position)
+        {
+            var range = _range.CurrentValue + 0.5f;
             if (_canThroughWalls)
             {
                 if (IsClairvoyant)
-                    return map.GetAllPositions();
+                    return _map.GetAllPositions();
                 var viewRadiusSq = IsBlind ? 1.5f * 1.5f : range * range;
-                return map.GetAllPositions().Where(
+                return _map.GetAllPositions().Where(
                     pos => (position - pos).sqrMagnitude <= viewRadiusSq).ToHashSet();
             }
             if (IsClairvoyant)
-                return ViewCalculator.ComputeFullVisibility(map.GetAllLightPassablePositions());
+                return ViewCalculator.ComputeFullVisibility(_map.GetAllLightPassablePositions());
             if (IsBlind)
-                return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, 1.5f);
-            return ViewCalculator.ComputeCircle(map.GetAllLightPassablePositions(), position, range);
+                return _map.GetVisibleArea(position, 1.5f);
+            return _map.GetVisibleArea(position, range);
         }
     }
 }

@@ -80,5 +80,10 @@ namespace Game
         {
             return TilemapViewer.IsPassable(Position);
         }
+
+        public bool IsLightPassable()
+        {
+            return TilemapViewer.IsTransparent(Position);
+        }
     }
 }

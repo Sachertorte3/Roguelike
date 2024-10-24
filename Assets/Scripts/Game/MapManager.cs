@@ -431,10 +431,10 @@ namespace Game
 
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
-                _tilemap.SetTilesKnown(areaChanged.Message.NewArea, true);
+                _tilemap.SetTilesKnown(Player.VisionRange.VisibleArea, true);
 
                 foreach (var entity in Entities)
-                    entity.SetVisibility(areaChanged.Message.NewArea.Contains(entity.CurrentPosition));
+                    entity.SetVisibility(Player.IsVisible(entity.CurrentPosition));
             }).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
@@ -508,7 +508,17 @@ namespace Game
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {
-                CharacterManager.Characters.ForEach(character => character.VisionRange.Refresh(this));
+                _fullVisibleArea = null;
+                foreach (var (position, _) in tileChanged)
+                {
+                    var visibleArea = GetVisibleArea(position);
+                    foreach (var pos in visibleArea)
+                    {
+                        _visionCache.Remove(pos);
+                    }
+                    _tilemap.SetTilesKnown(visibleArea, true);
+                    Characters.In(visibleArea).ForEach(character => character.VisionRange.Refresh());
+                }
             }).AddTo(_disposables);
         }
 
@@ -610,6 +620,54 @@ namespace Game
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
         {
             return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsWalkable, position);
+        }
+
+        private Dictionary<Vector2Int, HashSet<Vector2Int>> _visionCache = new();
+        private HashSet<Vector2Int>? _fullVisibleArea;
+
+        public bool IsVisible(Vector2Int from, Vector2Int to, float radius)
+        {
+            if ((from - to).sqrMagnitude > radius * radius)
+                return false;
+            if (_visionCache.TryGetValue(from, out var area))
+                return area.Contains(to);
+            else if (_visionCache.TryGetValue(to, out area))
+                return area.Contains(from);
+            UpdateVisibleAreaCache(from);
+            return _visionCache[from].Contains(to);
+        }
+
+        public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius)
+        {
+            return GetVisibleArea(from).Where(x => (x - from).sqrMagnitude <= radius * radius).ToHashSet();
+        }
+
+        public HashSet<Vector2Int> GetVisibleArea(Vector2Int from)
+        {
+            if (_visionCache.TryGetValue(from, out var area))
+                return area;
+            UpdateVisibleAreaCache(from);
+            return _visionCache[from];
+        }
+
+        public HashSet<Vector2Int> GetFullVisibleArea()
+        {
+            if (_fullVisibleArea == null)
+                _fullVisibleArea = ViewCalculator.ComputeFullVisibility(_tilemap.GetAllLightPassablePositions());
+            return _fullVisibleArea;
+        }
+
+        private void UpdateVisibleAreaCache(Vector2Int from)
+        {
+            _visionCache[from] = ViewCalculator.FieldOfView(from, _tilemap.Size, pos => !At(pos).IsLightPassable());
+        }
+
+        public HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position,
+            float radius)
+        {
+            var viewRadiusSq = radius * radius;
+            var viewArea = ViewCalculator.FieldOfView(position, _tilemap.Size, pos => passables.Contains(pos));
+            return viewArea.Where(x => (x - position).sqrMagnitude <= viewRadiusSq).ToHashSet();
         }
     }
 }

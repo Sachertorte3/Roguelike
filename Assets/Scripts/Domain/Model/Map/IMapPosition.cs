@@ -16,5 +16,6 @@ namespace Domain.Model.Map
         public bool IsWalkable(IAffiliation actor);
         public bool IsWalkableOnMap();
         public bool IsPassableOnMap();
+        public bool IsLightPassable();
     }
 }

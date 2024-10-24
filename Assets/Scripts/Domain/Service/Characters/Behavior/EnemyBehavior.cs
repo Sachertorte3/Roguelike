@@ -168,9 +168,8 @@ namespace Domain.Service.Characters.Behavior
 
         private BehaviorResult GenerateNextBehaviorResult(IHasBehavior character, IMap map)
         {
-            var visibleCharacters = map.GetVisibleCharacters(character);
-            var visibleEnemies = visibleCharacters.Where(c => character.IsEnemy(c));
-            var visibleLeaders = visibleCharacters.Where(c => character.IsAlly(c) && c.IsLeader);
+            var visibleEnemies = map.Characters.FromAffiliation(character, AffiliationType.Enemy).IsVisible(character.CurrentPosition);
+            var visibleLeaders = map.Characters.Where(c => c.IsLeader).FromAffiliation(character, AffiliationType.Ally).IsVisible(character.CurrentPosition);
             if (character.IsAlly(map.Player))
             {
                 visibleLeaders = visibleLeaders.Append(map.Player);
@@ -205,7 +204,7 @@ namespace Domain.Service.Characters.Behavior
             if (_previousResult.State == BehaviorState.ApproachingToObserve)
             {
                 if (CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map)
-                && !character.VisionRange.VisibleArea.Contains(_previousResult.TargetPosition.Value))
+                && !character.VisionRange.IsVisible(_previousResult.TargetPosition.Value))
                 {
                     return _previousResult;
                 }

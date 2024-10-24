@@ -105,13 +105,14 @@ namespace Provider
                         }
                     }));
                     // HACK: Here.
-                    _disposables.Add(map.CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(
-                        visibleAreaChanged =>
+                    var previousVisibleArea = map.VisibleArea;
+                    _disposables.Add(map.CharacterManager.PlayerEvents.OnVisibleAreaChanged
+                        .Select(x => x.Character.VisionRange.VisibleArea)
+                        .Subscribe(visibleAreaChanged =>
                         {
-                            var areaEntered =
-                                visibleAreaChanged.Message.NewArea.Except(visibleAreaChanged.Message.OldArea);
-                            var areaExited =
-                                visibleAreaChanged.Message.OldArea.Except(visibleAreaChanged.Message.NewArea);
+                            var areaEntered = visibleAreaChanged.Except(previousVisibleArea);
+                            var areaExited = previousVisibleArea.Except(visibleAreaChanged);
+                            previousVisibleArea = visibleAreaChanged;
                             foreach (var position in areaEntered)
                             {
                                 SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
@@ -140,7 +141,7 @@ namespace Provider
         {
             if (map.TilemapViewer.GetTile(position).MapOr(false, tile => tile.IsKnown))
             {
-                if (map.VisibleArea.Contains(position))
+                if (map.Player.IsVisible(position))
                 {
                     return TileVisibility.Visible;
                 }

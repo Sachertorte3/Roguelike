@@ -34,6 +34,10 @@ namespace Domain.Model
         {
             return ie.Where(item => viewer.Affiliation.GetAffiliationType(item.Affiliation) == type);
         }
+        public static IEnumerable<T> IsVisible<T>(this IEnumerable<T> ie, Vector2Int position) where T : ICharacter
+        {
+            return ie.Where(item => item.VisionRange.IsVisible(position));
+        }
         public static IEnumerable<Vector2Int> Positions<T>(this IEnumerable<T> ie) where T : IEntity
         {
             return ie.Select(item => item.CurrentPosition);

@@ -61,40 +61,6 @@ namespace Domain.Model.Item
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 
-        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit,
-            List<IConditionData> conditions)
-        {
-            name = itemName;
-            Icon = icon;
-            IsShiny = isShiny;
-            _rarity = rarity;
-            UseOnDeath = useOnDeath;
-            UsageLimit = usageLimit;
-            PassiveConditions = conditions;
-        }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
-        {
-            EffectType = ItemEffectType.SpawnEffect;
-            SpawnEffectsOnUse = skillOnUse != null;
-            SpawnEffectsOnThrow = skillOnThrow != null;
-            IsSameEffect = isSameEffect;
-            IsSameSkill = isSameSkill;
-            SkillOnUse = skillOnUse;
-            SkillOnThrow = skillOnThrow;
-        }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
-        {
-            EffectType = ItemEffectType.ItemTarget;
-            ItemEffect = itemEffect;
-        }
-
         private bool _usable => EffectType switch
         {
             ItemEffectType.SpawnEffect => SpawnEffectsOnUse || SpawnEffectsOnThrow,

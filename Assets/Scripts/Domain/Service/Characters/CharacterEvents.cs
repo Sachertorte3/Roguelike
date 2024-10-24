@@ -31,8 +31,8 @@ namespace Domain.Service.Characters
         public Observable<(ICharacter Character, OnDestroyedMessage Message)> OnDestroyed =>
             _events.GetObservable<OnDestroyedMessage>();
 
-        public Observable<(ICharacter Character, OnVisibleAreaChangedMessage Message)> OnVisibleAreaChanged =>
-            _events.GetObservable<OnVisibleAreaChangedMessage>();
+        public Observable<(ICharacter Character, Unit Message)> OnVisibleAreaChanged =>
+            _events.GetObservable<Unit>();
 
         public Observable<(ICharacter Character, OnPickUpItemMessage Message)> OnPickUpItem =>
             _events.GetObservable<OnPickUpItemMessage>();

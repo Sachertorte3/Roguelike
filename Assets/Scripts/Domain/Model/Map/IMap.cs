@@ -53,5 +53,9 @@ namespace Domain.Model.Map
         public void RemoveEventEntity(IEventEntity entity);
         public HashSet<Vector2Int> AllCharacterPositions();
         public HashSet<Vector2Int> AllItemPositions();
+        public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
+        public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);
+        public HashSet<Vector2Int> GetFullVisibleArea();
+        public HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position, float radius);
     }
 }

@@ -17,7 +17,14 @@ MonoBehaviour:
   PowerMagnification: 1
   UsageLimitMagnification: 1
   AdditionalUpgradeLimit: 0
-  AdditionalConditions:
-  - Condition:
-      _name: "\u76F2\u76EE"
-    Probability: 0.25
+  AdditionalEffects:
+  - rid: 5486256783268773892
+  references:
+    version: 2
+    RefIds:
+    - rid: 5486256783268773892
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u76F2\u76EE"
+        _probabilityOfSuccess: 0.25

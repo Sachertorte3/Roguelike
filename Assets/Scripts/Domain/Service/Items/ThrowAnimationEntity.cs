@@ -34,11 +34,11 @@ namespace Domain.Service.Items
         {
             for (var i = 0; i < distance; i++)
             {
-                if (map.IsBlank(CurrentPosition + direction.Vector(), canHitLayer))
+                if (map.At(CurrentPosition + direction.Vector()).IsBlank(canHitLayer))
                 {
                     await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
                 }
-                else if (map.IsPassableOnMap(CurrentPosition + direction.Vector()))
+                else if (map.At(CurrentPosition + direction.Vector()).IsPassableOnMap())
                 {
                     await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
                     break;

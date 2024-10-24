@@ -65,11 +65,11 @@ namespace Domain.Service.Events
             {
                 if (map.Player.TryAddToInventory(_item.Value))
                 {
-                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemDatabase)}を手に入れた");
+                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
-                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemDatabase)}を拾えなかった");
+                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
                     map.SpawnItem(_item.Value, CurrentPosition);
                 }
             }
@@ -102,7 +102,7 @@ namespace Domain.Service.Events
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.CanPlace(result + direction.Vector(), false, false, false, EntityLayer.Middle))
+                if (map.At(result + direction.Vector()).CanPlace(false, false, false, EntityLayer.Middle))
                 {
                     result += direction.Vector();
                 }
@@ -123,7 +123,7 @@ namespace Domain.Service.Events
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
-                    position => map.CanPlace(position, false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
+                    position => map.At(position).CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
             }
         }
 

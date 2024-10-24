@@ -98,13 +98,13 @@ namespace Domain.Service.Events
 
             for (var i = 0; i < distance; i++)
             {
-                if (map.CanPlace(result + direction.Vector(), true, false, false, EntityLayer.Middle))
+                if (map.At(result + direction.Vector()).CanPlace(true, false, false, EntityLayer.Middle))
                 {
                     result += direction.Vector();
                 }
                 else
                 {
-                    if (map.CanPlace(result + direction.Vector(), true, false, true, EntityLayer.Middle))
+                    if (map.At(result + direction.Vector()).CanPlace(true, false, true, EntityLayer.Middle))
                     {
                         result += direction.Vector();
                     }
@@ -124,7 +124,7 @@ namespace Domain.Service.Events
                 _entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
                 _entity.Teleport(map.FindBlankPositionFrom(destination,
-                    position => map.IsBlankAndStandable(position, EntityLayer.Bottom)));
+                    position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
             await map.ExecuteTrapAt(destination, actor as ICharacter);
         }

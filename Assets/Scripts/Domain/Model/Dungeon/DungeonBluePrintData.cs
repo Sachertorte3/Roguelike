@@ -14,7 +14,6 @@ namespace Domain.Model.Dungeon
     public class DungeonBluePrintData : ScriptableObject
     {
         public MasterItemDataBase MasterItemDataBase;
-        public Placeholders Placeholders;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
@@ -60,42 +59,43 @@ namespace Domain.Model.Dungeon
             throw new InvalidOperationException("指定されたレベルに対応するフロアが見つかりません。");
         }
 
-        public DungeonMapData CreateMapData(int level, ItemDatabase itemDatabase)
+        public DungeonMapData CreateMapData(int level)
         {
             var sectionData = GetSectionData(level);
             var floorData = GetFloorData(level);
             return new DungeonMapData(
-                name,
-                sectionData.Type,
-                floorData.Field,
-                itemDatabase,
-                WeaponPrefixes,
-                MasterItemDataBase.ChestItems,
-                Traps,
+                Name: name,
+                Type: sectionData.Type,
+                Field: floorData.Field,
+                ItemDatabase: new ItemDatabase(MasterItemDataBase, SpawnItem),
+                WeaponPrefixes: WeaponPrefixes,
+                ChestItems: MasterItemDataBase.ChestItems,
+                Traps: Traps,
                 MasterItemDataBase.ShopItems,
-                sectionData.Enemies,
-                Npcs,
-                floorData.PrefixChance,
-                floorData.ShinyChance,
-                floorData.SleepChance,
-                floorData.Room.ChestChance,
-                floorData.MimicChance,
-                sectionData.WeaponChanceInChest,
-                sectionData.RoundRoomCorner,
-                sectionData.WaterChance,
-                floorData.GrassChance,
-                floorData.ShopChance,
-                floorData.MonsterHouseChance,
-                floorData.RestRoomChance,
-                floorData.Room.ItemCount,
-                floorData.Room.MoneyCount,
-                floorData.Room.MoneyAverage,
-                floorData.Room.CharacterCount,
-                floorData.Room.TrapCount,
-                floorData.ExistBoss,
-                floorData.Boss,
-                sectionData.Clerk,
-                sectionData.Mimic
+                Enemies: sectionData.Enemies,
+                Npcs: Npcs,
+                PrefixChance: floorData.PrefixChance,
+                ShinyChance: floorData.ShinyChance,
+                SleepChance: floorData.SleepChance,
+                ChestChance: floorData.ChestChance,
+                MimicChance: floorData.MimicChance,
+                WeaponChanceInChest: sectionData.WeaponChanceInChest,
+                RoundRoomCorner: sectionData.RoundRoomCorner,
+                CaveInOneRoom: sectionData.CaveInOneRoom,
+                WaterChance: sectionData.WaterChance,
+                GrassChance: floorData.GrassChance,
+                ShopChance: floorData.ShopChance,
+                MonsterHouseChance: floorData.MonsterHouseChance,
+                RestRoomChance: floorData.RestRoomChance,
+                ItemAttempt: floorData.ItemCount,
+                MoneyAttempt: floorData.MoneyCount,
+                MoneyAverage: floorData.MoneyAverage,
+                CharacterAttempt: floorData.CharacterCount,
+                TrapAttempt: floorData.TrapCount,
+                ExistBoss: floorData.ExistBoss,
+                Boss: floorData.Boss,
+                Clerk: sectionData.Clerk,
+                Mimic: sectionData.Mimic
             );
         }
     }

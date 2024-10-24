@@ -11,6 +11,7 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -107,8 +108,8 @@ namespace Domain.Service.Characters.Behavior
                             return swap;
                         break;
                     case InputType.UseItem:
-                        var itemIndex = result.itemIndex;
-                        var item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
+                        var focus = result.focus;
+                        var item = focus.GetItem(character.Inventory, map);
                         IAction action;
 
                         if (item == null)
@@ -119,8 +120,8 @@ namespace Domain.Service.Characters.Behavior
                         if (action.Doable(character, map)) return action;
                         break;
                     case InputType.ThrowItem:
-                        itemIndex = result.itemIndex;
-                        item = itemIndex == null ? null : character.Inventory.GetItem(itemIndex.Value);
+                        focus = result.focus;
+                        item = focus.GetItem(character.Inventory, map);
                         if (item != null)
                         {
                             action = new ThrowItem(item, character.CurrentDirection);
@@ -129,23 +130,21 @@ namespace Domain.Service.Characters.Behavior
 
                         break;
                     case InputType.DropItem:
-                        itemIndex = result.itemIndex;
-                        if (itemIndex != null)
-                        {
-                            action = new DropItem(itemIndex.Value);
-                            if (action.Doable(character, map)) return action;
-                        }
+                        focus = result.focus;
+                        if (focus.isEmpty || focus.isGroundItem)
+                            break;
+                        action = new DropItem(focus.index);
+                        if (action.Doable(character, map)) return action;
                         break;
                     case InputType.DoNothing:
                         await UniTask.Yield();
                         return new DoNothing();
                     case InputType.RenameItem:
-                        itemIndex = result.itemIndex;
-                        if (itemIndex != null)
+                        focus = result.focus;
+                        item = focus.GetItem(character.Inventory, map);
+                        if (item != null)
                         {
-                            item = character.Inventory.GetItem(itemIndex.Value);
-                            if (item == null) break;
-                            map.ItemDatabase.Rename(item.BaseName, await gameManager.GetTextInput());
+                            map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
                         }
                         break;
                     default:
@@ -156,7 +155,7 @@ namespace Domain.Service.Characters.Behavior
             }
         }
 
-        private async UniTask<(InputType type, (Move action, bool isStarted)? move, int? itemIndex)> InitializeTasks()
+        private async UniTask<(InputType type, (Move action, bool isStarted)? move, ItemFocus? focus)> InitializeTasks()
         {
             UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync();
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync();
@@ -180,18 +179,20 @@ namespace Domain.Service.Characters.Behavior
 
         public void KnowLocationOf(Vector2Int position) { }
 
-        public async UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
 
-            int? index;
+            ItemFocus? focus;
             do
             {
-                index = await _receiver.OnUseItemActionReceived.WaitAsync();
-            } while (index.HasValue && disabledItemIds.Contains(index.Value));
+                focus = await _receiver.OnUseItemActionReceived.WaitAsync();
+            } while (!focus.isEmpty && disabledItemIds.Contains(focus.index));
 
             _onItemSelect.OnNext(new OnItemSelectMessage(false, new int[0]));
-            return index == null ? null : inventory.GetItem(index.Value);
+            if (focus.isEmpty)
+                return null;
+            return focus.GetItem(inventory, map);
         }
     }
 }

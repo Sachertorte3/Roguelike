@@ -27,7 +27,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (!target.IsHeavy)
+            if (!target.StatusManager.IsHeavy)
             {
                 await Apply(actor, (IEntity)target, position, map);
             }
@@ -42,7 +42,7 @@ namespace Domain.Service.Effect
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            if (target.IsHeavy)
+            if (target.StatusManager.IsHeavy)
             {
                 return 0f;
             }

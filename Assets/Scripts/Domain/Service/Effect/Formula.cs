@@ -11,7 +11,7 @@ namespace Domain.Service.Effect
         public static int Calc(IActorOfEffect actor, ITargetOfEffect target, List<ElementPower> powers,
             bool isCritical = false)
         {
-            if (target.IsHard && !isCritical)
+            if (target.StatusManager.IsHard && !isCritical)
                 return 1;
 
             var elementDamages = new List<float>();

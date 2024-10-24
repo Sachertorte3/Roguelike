@@ -42,7 +42,7 @@ MonoBehaviour:
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
-  - rid: 5486256623760965640
+  - rid: 5486256623760965641
   references:
     version: 2
     RefIds:
@@ -60,6 +60,6 @@ MonoBehaviour:
         _condition:
           _name: 
         _probabilityOfSuccess: 0
-    - rid: 5486256623760965640
-      type: {class: SecureHold, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 5486256623760965641
+      type: {class: CurseProof, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data: 

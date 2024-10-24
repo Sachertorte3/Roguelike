@@ -29,7 +29,7 @@ namespace Domain.Service.Events
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
             var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
             Event = new CharacterEvent(
-                (character) => character.IsAffectedByTraps.CurrentValue,
+                (character) => character.StatusManager.IsAffectedByTraps.CurrentValue,
                 async (character, gameManager, map) =>
                 {
                     await Execute(map, character);

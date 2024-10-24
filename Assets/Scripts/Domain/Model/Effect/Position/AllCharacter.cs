@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
 
@@ -9,10 +10,10 @@ namespace Domain.Model.Effect.Position
         public bool IsDirectional => false;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IEffectMap map) => Get(position, direction, map);
+            IMap map) => Get(position, direction, map);
 
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
-            IEffectMap map)
+            IMap map)
         {
             return map.AllCharacterPositions();
         }

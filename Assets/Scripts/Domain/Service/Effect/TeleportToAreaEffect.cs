@@ -18,14 +18,14 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 actor.Teleport(placeablePositions.GetAtRandom());
             }
             else
             {
-                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.CanPlace(pos, actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
+                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
             }
             return UniTask.CompletedTask;
         }

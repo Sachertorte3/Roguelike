@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -8,8 +9,7 @@ namespace Domain.Model.Action
 {
     public interface IActor : IActorOfEffect, IHasInventory
     {
-        public bool CannotAct { get; }
-        public bool CannotMove { get; }
+        public IStatusManager StatusManager { get; }
         public Direction8 CurrentDirection { get; }
         public void DoNothing();
         public bool CanSwap(Direction8 direction, IMap map);

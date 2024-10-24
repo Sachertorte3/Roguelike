@@ -17,7 +17,7 @@ namespace Domain.Service.Map
         private readonly TileCategory[] _tiles;
         private readonly Dictionary<Vector2Int, OverlayTileCategory> _overlayTiles = new();
         private readonly float _waterChance;
-        private readonly float _randomValue;
+        private readonly float _randomValueForWater;
         private readonly Dictionary<Id<Room>, RectInt> _rooms = new();
         public List<Id<Room>> RoomIds => _rooms.Keys.ToList();
         public Dictionary<Vector2Int, TileCategory> Tiles => _tiles.Select((tile, index) => (new Vector2Int(index % _width, index / _width), tile)).ToDictionary(x => x.Item1, x => x.Item2);
@@ -28,7 +28,7 @@ namespace Domain.Service.Map
             _width = field.Grid.Size.x + 2;
             _tiles = new TileCategory[_width * (field.Grid.Size.y + 2)];
             _waterChance = waterChance;
-            _randomValue = Random.value * 1024;
+            _randomValueForWater = Random.value * 1024;
             var roomRects = field.Rooms.Select(room => room.Rect)
                 .Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
 
@@ -62,11 +62,30 @@ namespace Domain.Service.Map
 
         private TileCategory GetNotWalkableCategory(int x, int y)
         {
-            if (_waterChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + _randomValue, y / 16f + _randomValue)) < _waterChance)
+            if (_waterChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + _randomValueForWater, y / 16f + _randomValueForWater)) < _waterChance)
             {
                 return TileCategory.Water;
             }
             return TileCategory.Wall;
+        }
+
+        public void CaveInOneRoom(Id<Room> roomId)
+        {
+            var room = _rooms[roomId];
+            var randomValue = Random.value * 1024;
+            foreach (var position in room.RectRange())
+            {
+                var distanceFromEdgeX = Mathf.Min(position.x - room.xMin, room.xMax - position.x);
+                var distanceFromEdgeY = Mathf.Min(position.y - room.yMin, room.yMax - position.y);
+                var distanceFromEdge = Mathf.Min(distanceFromEdgeX, distanceFromEdgeY);
+
+                var value = Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue));
+                value += Mathf.Pow(0.5f, distanceFromEdge / 4f);
+                if (value > 0.5f)
+                {
+                    _tiles[position.x + position.y * _width] = TileCategory.Wall;
+                }
+            }
         }
 
         public void RoundRoomCorner(Id<Room> roomId)

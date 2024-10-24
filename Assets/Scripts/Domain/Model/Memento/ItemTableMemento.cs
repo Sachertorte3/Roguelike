@@ -7,22 +7,22 @@ using Utilities;
 namespace Domain.Model.Memento
 {
     [Serializable]
-    public class ItemDatabaseMemento
+    public class ItemPlaceholdersMemento
     {
         [field: SerializeField] public SerializableDictionary<string, string> Placeholders { get; private set; }
-        [field: SerializeField] public CategoryPlaceholders PotionPlaceholders { get; private set; }
-        [field: SerializeField] public CategoryPlaceholders ScrollPlaceholders { get; private set; }
-        [field: SerializeField] public CategoryPlaceholders BookPlaceholders { get; private set; }
-        [field: SerializeField] public CategoryPlaceholders WandPlaceholders { get; private set; }
-        [field: SerializeField] public CategoryPlaceholders ArtifactPlaceholders { get; private set; }
+        [field: SerializeField] public PlaceholderIndexes PotionPlaceholders { get; private set; }
+        [field: SerializeField] public PlaceholderIndexes ScrollPlaceholders { get; private set; }
+        [field: SerializeField] public PlaceholderIndexes BookPlaceholders { get; private set; }
+        [field: SerializeField] public PlaceholderIndexes WandPlaceholders { get; private set; }
+        [field: SerializeField] public PlaceholderIndexes ArtifactPlaceholders { get; private set; }
 
-        public ItemDatabaseMemento(
+        public ItemPlaceholdersMemento(
             Dictionary<string, string> placeholders,
-            CategoryPlaceholders potionPlaceholders,
-            CategoryPlaceholders scrollPlaceholders,
-            CategoryPlaceholders bookPlaceholders,
-            CategoryPlaceholders wandPlaceholders,
-            CategoryPlaceholders artifactPlaceholders
+            PlaceholderIndexes potionPlaceholders,
+            PlaceholderIndexes scrollPlaceholders,
+            PlaceholderIndexes bookPlaceholders,
+            PlaceholderIndexes wandPlaceholders,
+            PlaceholderIndexes artifactPlaceholders
         )
         {
             Placeholders = placeholders.ToSerializable();

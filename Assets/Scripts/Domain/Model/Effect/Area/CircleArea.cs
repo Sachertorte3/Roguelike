@@ -23,10 +23,10 @@ namespace Domain.Model.Effect.Area
 
         public IEnumerable<Vector2Int> Get(Vector2Int position, IMap map)
         {
-            if (CanIgnoreWalls)
+            if (CanIgnoreWalls || Radius <= 1)
                 return EnumerableExtension.CircleRange(position, Radius + 0.5f)
                     .Where(p => ContainsSelf || p != position);
-            return ViewCalculator.ComputeCircle(map.GetAllBlankPositionsOn(EntityLayer.Middle), position, Radius + 0.5f)
+            return ViewCalculator.ComputeCircle(map.GetAllBlankPositionsOn(EntityLayer.Middle).Values().ToHashSet(), position, Radius + 0.5f)
                 .Where(p => ContainsSelf || p != position);
         }
 

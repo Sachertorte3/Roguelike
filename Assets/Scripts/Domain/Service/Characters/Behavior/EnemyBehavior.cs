@@ -125,7 +125,11 @@ namespace Domain.Service.Characters.Behavior
             }
 
             var actions = new List<IAction>();
-            if (PrioritizeMovement(character, result.TargetPosition))
+            if (!result.IsDiscoveringCharacter())
+            {
+                actions.AddRange(GenerateMoveActionsDoable(character, result, map));
+            }
+            else if (PrioritizeMovement(character, result.TargetPosition))
             {
                 Log.Debug($"[Think] Prioritize Movement.");
                 actions.AddRange(GenerateMoveActionsDoable(character, result, map));
@@ -379,7 +383,7 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public UniTask<IItem?> SelectItem(IInventory inventory, params int[] disabledItemIds)
+        public UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             return UniTask.FromResult<IItem?>(null);
         }

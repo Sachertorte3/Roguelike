@@ -90,7 +90,7 @@ namespace Domain.Service.Characters
                 character.StatusManager.OnHealReceived.Select(heal => new OnHealReceivedMessage(heal)));
             _events.Add(character, character.Affiliation.OnAffiliationChanged);
             _events.Add(character,
-                character.IsAffectedByTraps.Select(isAffectedByTrap => new OnAffectedByTrapFlagsChangedMessage(isAffectedByTrap)));
+                character.StatusManager.IsAffectedByTraps.Select(isAffectedByTrap => new OnAffectedByTrapFlagsChangedMessage(isAffectedByTrap)));
         }
 
         public void Remove(ICharacter character)

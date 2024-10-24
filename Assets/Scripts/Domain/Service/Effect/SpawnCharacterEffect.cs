@@ -25,7 +25,7 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))
@@ -45,7 +45,7 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.CanPlace(position, _character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))

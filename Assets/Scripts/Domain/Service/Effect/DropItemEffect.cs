@@ -30,7 +30,7 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.IsSecureHold)
+            if (target.StatusManager.IsSecureHold)
             {
                 GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 return UniTask.CompletedTask;

@@ -33,7 +33,7 @@ namespace Domain.Service.Characters
         private readonly FlagStat _heavyFlags;
         private readonly FlagStat _secureHoldFlags;
         private readonly FlagStat _curseProofFlags;
-        private readonly FlagStat _isAffectedByTrapFlags;
+        private readonly FlagStat _isAffectedByTrapsFlags;
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
         {
@@ -49,7 +49,7 @@ namespace Domain.Service.Characters
             _heavyFlags = new FlagStat(data.HeavyFlags);
             _secureHoldFlags = new FlagStat(data.SecureHoldFlags);
             _curseProofFlags = new FlagStat(data.CurseProofFlags);
-            _isAffectedByTrapFlags = new FlagStat(data.IsAffectedByTrapFlags);
+            _isAffectedByTrapsFlags = new FlagStat(data.IsAffectedByTrapFlags);
         }
 
         public void Dispose()
@@ -73,7 +73,7 @@ namespace Domain.Service.Characters
                 _heavyFlags.CurrentFlags,
                 _secureHoldFlags.CurrentFlags,
                 _curseProofFlags.CurrentFlags,
-                _isAffectedByTrapFlags.CurrentFlags,
+                _isAffectedByTrapsFlags.CurrentFlags,
                 _conditions.ConditionsWithInflicter.Select(x => (x.actor, x.condition.Serialize())).ToList()
             );
         }
@@ -89,7 +89,7 @@ namespace Domain.Service.Characters
         public bool IsHeavy => _heavyFlags.CurrentValue;
         public bool IsSecureHold => _secureHoldFlags.CurrentValue;
         public bool IsCurseProof => _curseProofFlags.CurrentValue;
-        public ReadOnlyReactiveProperty<bool> IsAffectedByTrap => _isAffectedByTrapFlags.Value;
+        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps => _isAffectedByTrapsFlags.Value;
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -221,7 +221,7 @@ namespace Domain.Service.Characters
                     _curseProofFlags.AddFlags();
                     break;
                 case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapFlags.AddFlags();
+                    _isAffectedByTrapsFlags.AddFlags();
                     break;
             }
         }
@@ -258,7 +258,7 @@ namespace Domain.Service.Characters
                     _curseProofFlags.RemoveFlags();
                     break;
                 case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapFlags.RemoveFlags();
+                    _isAffectedByTrapsFlags.RemoveFlags();
                     break;
             }
         }
@@ -300,7 +300,7 @@ namespace Domain.Service.Characters
             (
                 stats: CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
                     elementDamageRateMultiplier, conditionResistance, viewRange, waitTime),
-                cannotActFlags: 0,
+                cannotActFlags: isSlept ? 1 : 0,
                 cannotMoveFlags: 0,
                 confusedFlags: 0,
                 clairvoyantFlags: 0,

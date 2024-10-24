@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Action;
-using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
 
@@ -37,23 +38,36 @@ namespace Domain.Service.Effect
             );
         }
 
-        public async UniTask<ISkillResult> Use(IHasInventory player, IItem item, ItemDatabase itemDatabase)
+        public async UniTask<ISkillResult> Use(IActor player, IItem item, IMap map)
         {
             var selfIndex = player.Inventory.GetItemIndex(item);
-            var disabledItemIndexes = _itemEffect.GetDisabledItemIndexes(player);
-            disabledItemIndexes = disabledItemIndexes.Append(selfIndex);
+            var disabledItemIndexes = new List<int>();
+            foreach (var inventoryItem in player.Inventory.AllItems)
+            {
+                if (!_itemEffect.CanApplyTo(player, inventoryItem))
+                {
+                    var index = player.Inventory.GetItemIndex(inventoryItem);
+                    disabledItemIndexes.Add(index);
+                }
+            }
+            var groundItem = map.Items.At(player.CurrentPosition).FirstOrDefault()?.Item;
+            if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
+            {
+                disabledItemIndexes.Add(map.Player.Inventory.MaxItemCount);
+            }
+            disabledItemIndexes.Add(selfIndex);
             if (player.IsKnownItem(item))
             {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, disabledItemIndexes.ToArray());
+                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
-                    _itemEffect.Apply(player, selectedItem, itemDatabase);
+                    _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
                     return ItemTargetSkillResult.Success;
                 }
             }
             else
             {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, new[] { selfIndex });
+                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, new[] { selfIndex });
                 if (selectedItem != null)
                 {
                     var selectedItemIndex = player.Inventory.GetItemIndex(selectedItem);
@@ -63,7 +77,7 @@ namespace Domain.Service.Effect
                     }
                     else
                     {
-                        _itemEffect.Apply(player, selectedItem, itemDatabase);
+                        _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
                     }
                     return ItemTargetSkillResult.Success;
                 }

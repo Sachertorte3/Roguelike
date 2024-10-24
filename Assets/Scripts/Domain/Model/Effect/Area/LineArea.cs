@@ -27,7 +27,7 @@ namespace Domain.Model.Effect.Area
             foreach (var pos in area)
             {
                 yield return pos;
-                if (!CanIgnoreWalls && !map.IsBlank(pos, EntityLayer.Middle))
+                if (!CanIgnoreWalls && !map.At(pos).IsBlank(EntityLayer.Middle))
                     break;
             }
         }

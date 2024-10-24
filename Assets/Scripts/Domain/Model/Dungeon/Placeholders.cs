@@ -1,9 +1,10 @@
 using System;
+using UnityEngine;
 
 namespace Domain.Model.Dungeon
 {
-    [Serializable]
-    public class Placeholders
+    [CreateAssetMenu(fileName = "Placeholders", menuName = "ScriptableObject/Placeholders")]
+    public class Placeholders : ScriptableObject
     {
         public CategoryPlaceholders PotionPlaceholders;
         public CategoryPlaceholders ScrollPlaceholders;

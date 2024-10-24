@@ -1,9 +1,10 @@
 #nullable enable
 
 using System.Collections.Generic;
-using Domain.Model.Character;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Domain.Model.Effect;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -20,7 +21,7 @@ namespace Domain.Model.Item
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
         public int AdditionalUpgradeLimit = 0;
-        public List<AdditionalConditionData> AdditionalConditions = new();
+        [SerializeReference] public List<IEffect> AdditionalEffects = new();
 #if UNITY_EDITOR
         private void OnValidate()
         {

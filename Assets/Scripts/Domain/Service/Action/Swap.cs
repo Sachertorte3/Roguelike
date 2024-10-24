@@ -12,13 +12,12 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.CannotAct && !actor.CannotMove && actor.CanSwap(Direction, map);
+            return !actor.StatusManager.CannotAct && !actor.StatusManager.CannotMove && actor.CanSwap(Direction, map);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            var target = map.GetCharactersInArea(new[] { actor.CurrentPosition + Direction.Vector() })
-                .FirstOrDefault();
+            var target = map.Characters.At(actor.CurrentPosition + Direction.Vector()).FirstOrDefault();
             if (target == null)
                 throw new InvalidOperationException("target is null");
             actor.Move(Direction, input).Forget();

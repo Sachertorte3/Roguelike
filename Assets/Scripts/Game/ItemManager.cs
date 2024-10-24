@@ -69,7 +69,7 @@ namespace Game
 
         private void SetAllItemPosition()
         {
-            _allItemPositions = Items.Select(item => item.CurrentPosition).ToHashSet();
+            _allItemPositions = Items.Positions().ToHashSet();
         }
 
         public IItemEntity? GetItemAt(Vector2Int position)

@@ -1,6 +1,8 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
+using Domain.Model.Item;
 using Domain.Model.Setting;
 using Domain.Service.Effect;
 using Game;
@@ -46,9 +48,17 @@ namespace Provider
                         }
 
                         var focus = inventoryView.CurrentFocus;
-                        if (focus != null)
+                        if (!focus.isEmpty)
                         {
-                            var item = map.Player.Inventory.GetItem(focus.Value);
+                            IItem? item = null;
+                            if (focus.isGroundItem)
+                            {
+                                item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault()?.Item;
+                            }
+                            else
+                            {
+                                item = map.Player.Inventory.GetItem(focus.index);
+                            }
                             if (item != null && map.Player.IsKnownItem(item))
                             {
                                 if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)

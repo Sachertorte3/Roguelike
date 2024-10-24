@@ -35,9 +35,9 @@ namespace Domain.Service.Effect
             {
                 var item = upgradedItems.GetAtRandom();
                 if (Random.value < _probabilityOfSuccess)
-                    item.Downgrade(map.Player, map.ItemDatabase);
+                    item.Downgrade(map.Player, map.ItemPlaceholders);
                 else
-                    GameLog.Add($"{item.GetName(map.Player, map.ItemDatabase)}の強化は消えなかった");
+                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");
             }
             else
             {

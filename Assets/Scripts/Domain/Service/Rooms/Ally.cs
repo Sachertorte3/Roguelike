@@ -35,7 +35,7 @@ namespace Domain.Service.Rooms
                         async (gameManager, map) =>
                         {
                             var player = map.Player;
-                            var item = await player.ItemSelector.SelectItem(player.Inventory);
+                            var item = await player.ItemSelector.SelectItem(player.Inventory, map);
                             if (item != null)
                             {
                                 var result = character.Inventory.TryAdd(item);
@@ -43,7 +43,7 @@ namespace Domain.Service.Rooms
                                 {
                                     var index = player.Inventory.GetItemIndex(item);
                                     player.ReplaceInventory(null, index);
-                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemDatabase)}を渡した。");
+                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {

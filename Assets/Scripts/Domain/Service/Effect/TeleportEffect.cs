@@ -17,7 +17,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
-            var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom();
+            var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom().Position;
             target.Teleport(randomPosition);
             await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
         }

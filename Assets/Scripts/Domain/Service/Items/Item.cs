@@ -27,7 +27,7 @@ namespace Domain.Service.Items
         public ItemCategory Category { get; init; }
         public string BaseName { get; init; }
         public string RevealedName { get; init; }
-        public string UnknownName(ItemDatabase itemDatabase) => $"?{itemDatabase.GetPlaceholder(BaseName, Category)}?";
+        public string UnknownName(ItemPlaceholders itemPlaceholders) => $"?{itemPlaceholders.GetPlaceholder(BaseName, Category)}?";
         public string DebugName => _fullName;
         private string _fullName => _upgradePaths.Count > 0 ? $"{RevealedName} +{AppliedUpgrades}" : RevealedName;
         private readonly List<UpgradePath> _upgradePaths;
@@ -109,11 +109,11 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string GetName(IHasInventory player, ItemDatabase itemDatabase)
+        public string GetName(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
             if (player.IsKnownItem(this))
                 return _fullName;
-            return UnknownName(itemDatabase);
+            return UnknownName(itemPlaceholders);
         }
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
@@ -224,14 +224,14 @@ namespace Domain.Service.Items
         {
             if (IsCursed && CannotUseIfCursed)
             {
-                GameLog.Add($"{GetName(actor, map.ItemDatabase)}は呪われているため使用できない");
+                GameLog.Add($"{GetName(actor, map.ItemPlaceholders)}は呪われているため使用できない");
                 SetCurseIdentified(true);
                 return SpawnEffectSkillResult.Failed;
             }
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(actor, this, map.ItemDatabase)
+                itemTargetSkill => itemTargetSkill.Use(actor, this, map)
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -260,7 +260,7 @@ namespace Domain.Service.Items
                 itemTargetSkill =>
                 {
                     Log.Error("The item is not configured to activate this type of skill when thrown.");
-                    return itemTargetSkill.Use((IActor)actor, this, map.ItemDatabase);
+                    return itemTargetSkill.Use((IActor)actor, this, map);
                 }
             );
             if (result.Result != SkillResult.Cancelled)
@@ -314,12 +314,12 @@ namespace Domain.Service.Items
             );
         }
 
-        public float EvaluatePrice()
+        public float EvaluateBasePrice()
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * _remainingUsages.CurrentValue;
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * MaxUsages;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
             {
@@ -328,14 +328,28 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public void Repair(IHasInventory player, ItemDatabase itemDatabase)
+        public float EvaluatePrice()
         {
-            GameLog.Add($"{GetName(player, itemDatabase)}は修理された");
+            var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
+            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
+                               new ProjectileImpact().EvaluateHitProbability();
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
+            price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
+            if (IsCursed)
+            {
+                price *= 0.8f;
+            }
+            return price;
+        }
+
+        public void Repair(IHasInventory player, ItemPlaceholders itemPlaceholders)
+        {
+            GameLog.Add($"{GetName(player, itemPlaceholders)}は修理された");
             _remainingUsages.Value = _maxUsages;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void SetCursed(IHasInventory actor, ItemDatabase itemDatabase, bool isCursed)
+        public void SetCursed(IHasInventory actor, ItemPlaceholders itemPlaceholders, bool isCursed)
         {
             SetCurseIdentified(true);
             if (IsCursed == isCursed)
@@ -347,11 +361,11 @@ namespace Domain.Service.Items
             IsCursed = isCursed;
             if (isCursed)
             {
-                GameLog.Add($"{GetName(actor, itemDatabase)}は呪われた");
+                GameLog.Add($"{GetName(actor, itemPlaceholders)}は呪われた");
             }
             else
             {
-                GameLog.Add($"{GetName(actor, itemDatabase)}の呪いは解かれた");
+                GameLog.Add($"{GetName(actor, itemPlaceholders)}の呪いは解かれた");
             }
             _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
@@ -442,7 +456,7 @@ namespace Domain.Service.Items
             return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
         }
 
-        public void Upgrade(IHasInventory player, ItemDatabase itemDatabase, string filter = "")
+        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "")
         {
             var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
             if (player.IsKnownItem(this))
@@ -451,14 +465,14 @@ namespace Domain.Service.Items
             }
             else
             {
-                GameLog.Add($"{GetName(player, itemDatabase)}は何かの効果を得た");
+                GameLog.Add($"{GetName(player, itemPlaceholders)}は何かの効果を得た");
             }
             upgrade.Upgrade();
             _upgradePaths.Add(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Downgrade(IHasInventory player, ItemDatabase itemDatabase)
+        public void Downgrade(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
             if (_upgradePaths.Count == 0)
             {
@@ -474,13 +488,13 @@ namespace Domain.Service.Items
             }
             else
             {
-                GameLog.Add($"{GetName(player, itemDatabase)}の何かの効果は消えた");
+                GameLog.Add($"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
             }
             upgrade.Downgrade();
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public string Info(IHasInventory player, ItemDatabase itemDatabase)
+        public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
             if (player.IsKnownItem(this))
             {
@@ -488,7 +502,7 @@ namespace Domain.Service.Items
             }
             else
             {
-                var info = $"{State.GetDescription()}{UnknownName(itemDatabase)}\n";
+                var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
                 if (IsCurseIdentified && IsCursed)
                     info += $"呪われている\n";
                 else if (IsCurseIdentified && !IsCursed)

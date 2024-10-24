@@ -25,9 +25,9 @@ namespace Domain.Service.Items
                     }
                 }
 
-                foreach (var condition in prefix.AdditionalConditions)
+                foreach (var effect in prefix.AdditionalEffects)
                 {
-                    spawnEffectSkillMemento.Effect.Add(new AddConditionEffect(condition));
+                    spawnEffectSkillMemento.Effect.Add(effect);
                 }
             }
             item = item.CopyWith(

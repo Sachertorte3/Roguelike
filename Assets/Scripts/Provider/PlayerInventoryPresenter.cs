@@ -1,4 +1,6 @@
 #nullable enable
+using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
@@ -15,35 +17,43 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public PlayerInventoryPresenter(World world, InventoryView inventoryView)
+        public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
                     _disposables.Add(map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
-                        ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player, map.ItemDatabase);
+                        ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player, map.ItemPlaceholders);
+                    }));
+                    _disposables.Add(gameManager.Turn.Subscribe(position =>
+                    {
+                        var item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault();
+                        if (item != null)
+                            inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
+                        else
+                            inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
                     }));
                     _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
-                        UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player, map.ItemDatabase);
+                        UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player, map.ItemPlaceholders);
                     }));
                     _disposables.Add(map.Player.OnKnownItemUpdated.Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, map.Player, map.ItemDatabase);
+                        UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
                     }));
-                    _disposables.Add(map.ItemDatabase.OnItemRenamed.Subscribe(_ =>
+                    _disposables.Add(map.ItemPlaceholders.OnItemRenamed.Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, map.Player, map.ItemDatabase);
+                        UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
                     }));
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
                     {
-                        ReplaceItemView(inventoryView, map.Player.Inventory.GetItem(i), i, map.Player, map.ItemDatabase);
+                        ReplaceItemView(inventoryView, map.Player.Inventory.GetItem(i), i, map.Player, map.ItemPlaceholders);
                     }
                 },
                 _ => _disposables.Clear());
         }
 
-        public void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, ICharacter player, ItemDatabase itemDatabase)
+        public void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
             if (item != null)
             {
@@ -54,7 +64,7 @@ namespace Provider
                     item.IsShiny,
                     player.IsKnownItem(item),
                     player.IsKnownItem(item) || item.IsCurseIdentified,
-                    item.Info(player, itemDatabase),
+                    item.Info(player, itemPlaceholders),
                     index);
             }
             else
@@ -63,17 +73,17 @@ namespace Provider
             }
         }
 
-        public void UpdateAllItemViews(InventoryView inventoryView, ICharacter player, ItemDatabase itemDatabase)
+        public void UpdateAllItemViews(InventoryView inventoryView, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
             for (var i = 0; i < player.Inventory.MaxItemCount; i++)
             {
                 var item = player.Inventory.GetItem(i);
                 if (item != null)
-                    UpdateItemView(inventoryView, item, i, player, itemDatabase);
+                    UpdateItemView(inventoryView, item, i, player, itemPlaceholders);
             }
         }
 
-        public void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player, ItemDatabase itemDatabase)
+        public void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
             inventoryView.UpdateCount(
                 item.Usable ? item.RemainingUses.CurrentValue : null,
@@ -83,7 +93,7 @@ namespace Provider
                 item.IsCursed,
                 player.IsKnownItem(item) || item.IsCurseIdentified,
                 index);
-            inventoryView.UpdateInfo(item.Info(player, itemDatabase), index);
+            inventoryView.UpdateInfo(item.Info(player, itemPlaceholders), index);
         }
     }
 }

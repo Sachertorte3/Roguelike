@@ -33,8 +33,7 @@ namespace Game
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
-        private readonly Vector2Int _upStairPosition;
-        private readonly Vector2Int _downStairPosition;
+        private readonly List<Id<Room>> _canPlaceStairRooms = new();
         private readonly Dictionary<Id<Room>, HashSet<Vector2Int>> _blankPositionsInRooms;
 
         public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Location location)
@@ -72,8 +71,7 @@ namespace Game
                 CreateRoom(data, room);
             }
 
-            _downStairPosition = GetRandomBlankPositionInRoom(roomIds.GetAtRandom());
-            _upStairPosition = GetRandomBlankPositionInRoom(roomIds.GetAtRandom());
+            _canPlaceStairRooms = roomIds.ToList();
 
             if (data.ExistBoss)
             {
@@ -116,6 +114,11 @@ namespace Game
             return positions;
         }
 
+        public Vector2Int GetRandomStairPosition()
+        {
+            return GetRandomBlankPositionInRoom(_canPlaceStairRooms.GetAtRandom());
+        }
+
         private void AddGrasses(DungeonMapData data, Id<Room> roomId)
         {
             var randomValue = Random.value * 1024;
@@ -137,6 +140,8 @@ namespace Game
         {
             if (data.RoundRoomCorner)
                 _tilemap.RoundRoomCorner(roomId);
+            else if (data.CaveInOneRoom)
+                _tilemap.CaveInOneRoom(roomId);
 
             var itemCount = data.ItemCount();
             var moneyCount = data.MoneyCount();
@@ -289,26 +294,14 @@ namespace Game
             }
         }
 
-        public void AddUpStairs(DungeonMapData data, int level, Id<IEntity>? upStairsId,
-            Id<IEntity>? upStairsDestinationId)
+        public void AddMovementEntity(MovementData data)
         {
-            if (upStairsId != null && upStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition, upStairsId,
-                    new Location(data.Name, level - 1), upStairsDestinationId));
+            if (data.Id != null && data.DestinationId != null)
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
+                    data.Destination, data.DestinationId));
             else
-                _stairs.Add(Stairs.Build(MovementEntityType.UpStairs, _upStairPosition,
-                    new Location(data.Name, level - 1)));
-        }
-
-        public void AddDownStairs(DungeonMapData data, int level, Id<IEntity>? downStairsId,
-            Id<IEntity>? downStairsDestinationId)
-        {
-            if (downStairsId != null && downStairsDestinationId != null)
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition, downStairsId,
-                    new Location(data.Name, level + 1), downStairsDestinationId));
-            else
-                _stairs.Add(Stairs.Build(MovementEntityType.DownStairs, _downStairPosition,
-                    new Location(data.Name, level + 1)));
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
+                    data.Destination));
         }
 
         public MapMemento Build(Id<IMap> id)

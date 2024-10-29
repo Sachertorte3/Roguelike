@@ -66,8 +66,8 @@ namespace Domain.Service.Characters
                 _cannotActFlags.CurrentFlags,
                 _cannotMoveFlags.CurrentFlags,
                 _confusedFlags.CurrentFlags,
-                _visionRange.ClairvoyantFlags,
-                _visionRange.BlindFlags,
+                _visionRange.ClairvoyantFlags.CurrentFlags,
+                _visionRange.BlindFlags.CurrentFlags,
                 _overDriveFlags.CurrentFlags,
                 _hardFlags.CurrentFlags,
                 _heavyFlags.CurrentFlags,
@@ -189,78 +189,31 @@ namespace Domain.Service.Characters
             _stats.RemoveElementAttackMultiplier(element, value);
         }
 
+        private FlagStat GetFlagStat(FlagStatType type)
+        {
+            return type switch
+            {
+                FlagStatType.CannotAct => _cannotActFlags,
+                FlagStatType.CannotMove => _cannotMoveFlags,
+                FlagStatType.Clairvoyant => _visionRange.ClairvoyantFlags,
+                FlagStatType.Blind => _visionRange.BlindFlags,
+                FlagStatType.OverDrive => _overDriveFlags,
+                FlagStatType.Hard => _hardFlags,
+                FlagStatType.Heavy => _heavyFlags,
+                FlagStatType.SecureHold => _secureHoldFlags,
+                FlagStatType.CurseProof => _curseProofFlags,
+                FlagStatType.IsAffectedByTrap => _isAffectedByTrapsFlags,
+            };
+        }
+
         public void AddFlagStat(FlagStatType type)
         {
-            switch (type)
-            {
-                case FlagStatType.CannotAct:
-                    _cannotActFlags.AddFlags();
-                    break;
-                case FlagStatType.CannotMove:
-                    _cannotMoveFlags.AddFlags();
-                    break;
-                case FlagStatType.Clairvoyant:
-                    _visionRange.AddClairvoyantFlags();
-                    break;
-                case FlagStatType.Blind:
-                    _visionRange.AddBlindFlags();
-                    break;
-                case FlagStatType.OverDrive:
-                    _overDriveFlags.AddFlags();
-                    break;
-                case FlagStatType.Hard:
-                    _hardFlags.AddFlags();
-                    break;
-                case FlagStatType.Heavy:
-                    _heavyFlags.AddFlags();
-                    break;
-                case FlagStatType.SecureHold:
-                    _secureHoldFlags.AddFlags();
-                    break;
-                case FlagStatType.CurseProof:
-                    _curseProofFlags.AddFlags();
-                    break;
-                case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapsFlags.AddFlags();
-                    break;
-            }
+            GetFlagStat(type).AddFlags();
         }
 
         public void RemoveFlagStat(FlagStatType type)
         {
-            switch (type)
-            {
-                case FlagStatType.CannotAct:
-                    _cannotActFlags.RemoveFlags();
-                    break;
-                case FlagStatType.CannotMove:
-                    _cannotMoveFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Clairvoyant:
-                    _visionRange.RemoveClairvoyantFlags();
-                    break;
-                case FlagStatType.Blind:
-                    _visionRange.RemoveBlindFlags();
-                    break;
-                case FlagStatType.OverDrive:
-                    _overDriveFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Hard:
-                    _hardFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Heavy:
-                    _heavyFlags.RemoveFlags();
-                    break;
-                case FlagStatType.SecureHold:
-                    _secureHoldFlags.RemoveFlags();
-                    break;
-                case FlagStatType.CurseProof:
-                    _curseProofFlags.RemoveFlags();
-                    break;
-                case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapsFlags.RemoveFlags();
-                    break;
-            }
+            GetFlagStat(type).RemoveFlags();
         }
 
         public void AddWaitTime(float value)

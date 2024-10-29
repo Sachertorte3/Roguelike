@@ -335,6 +335,17 @@ namespace Game
                 .Where(position => position.IsBlank(layers));
         }
 
+        public IMapPosition? GetRandomBlankPositionOn(params EntityLayer[] layers)
+        {
+            foreach (var position in TilemapViewer.GetAllPassablePositions().Shuffled())
+            {
+                var mapPosition = At(position);
+                if (mapPosition.IsBlank(layers))
+                    return mapPosition;
+            }
+            return null;
+        }
+
         public IEnumerable<IMapPosition> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers)
         {
             return TilemapViewer
@@ -399,7 +410,7 @@ namespace Game
                 KeyCharacters.Select(character => character.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetAllBlankPositionsOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).GetAtRandom().Position
+                GetRandomBlankPositionOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).Position
             );
         }
 
@@ -420,7 +431,7 @@ namespace Game
                 KeyCharacters.Select(character => character.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetAllBlankPositionsOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).GetAtRandom().Position
+                GetRandomBlankPositionOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).Position
             );
         }
 

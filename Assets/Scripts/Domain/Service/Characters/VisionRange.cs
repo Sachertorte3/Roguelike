@@ -13,11 +13,11 @@ namespace Domain.Service.Characters
     {
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
-        private readonly FlagStat _clairvoyantFlags;
-        private readonly FlagStat _blindFlags;
+        public readonly FlagStat ClairvoyantFlags;
+        public readonly FlagStat BlindFlags;
         private bool _canThroughWalls;
-        public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
-        public bool IsBlind => _blindFlags.CurrentValue;
+        public bool IsClairvoyant => ClairvoyantFlags.CurrentValue;
+        public bool IsBlind => BlindFlags.CurrentValue;
         private Subject<Unit> _onVisibleAreaChanged = new();
         private readonly IMap _map;
 
@@ -26,16 +26,16 @@ namespace Domain.Service.Characters
         {
             _position = position;
             _range = range;
-            _clairvoyantFlags = new FlagStat(clairvoyantFlags);
-            _blindFlags = new FlagStat(blindFlags);
+            ClairvoyantFlags = new FlagStat(clairvoyantFlags);
+            BlindFlags = new FlagStat(blindFlags);
             _canThroughWalls = canThroughWalls;
             _position.Subscribe(currentPosition =>
                 ChangeVisibleArea());
             _range.Subscribe(_ => ChangeVisibleArea());
-            _clairvoyantFlags
+            ClairvoyantFlags
                 .Value
                 .Subscribe(_ => ChangeVisibleArea());
-            _blindFlags
+            BlindFlags
                 .Value
                 .Subscribe(_ => ChangeVisibleArea());
             _map = map;
@@ -48,29 +48,7 @@ namespace Domain.Service.Characters
                 return Calc(_position.CurrentValue);
             }
         }
-        public int ClairvoyantFlags => _clairvoyantFlags.CurrentFlags;
-        public int BlindFlags => _blindFlags.CurrentFlags;
         public Observable<Unit> OnVisibleAreaChanged => _onVisibleAreaChanged;
-
-        public void AddClairvoyantFlags()
-        {
-            _clairvoyantFlags.AddFlags();
-        }
-
-        public void RemoveClairvoyantFlags()
-        {
-            _clairvoyantFlags.RemoveFlags();
-        }
-
-        public void AddBlindFlags()
-        {
-            _blindFlags.AddFlags();
-        }
-
-        public void RemoveBlindFlags()
-        {
-            _blindFlags.RemoveFlags();
-        }
 
         public void Refresh()
         {
@@ -99,7 +77,7 @@ namespace Domain.Service.Characters
                     pos => (position - pos).sqrMagnitude <= viewRadiusSq).ToHashSet();
             }
             if (IsClairvoyant)
-                return ViewCalculator.ComputeFullVisibility(_map.GetAllLightPassablePositions());
+                return _map.GetFullVisibleArea();
             if (IsBlind)
                 return _map.GetVisibleArea(position, 1.5f);
             return _map.GetVisibleArea(position, range);

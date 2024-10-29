@@ -372,39 +372,6 @@ MonoBehaviour:
     - Item: {fileID: 11400000, guid: fb975fa25b2723141ae866c824617494, type: 2}
       Weight: 1
   Sections:
-  - Type: 6
-    RoundRoomCorner: 0
-    CaveInOneRoom: 1
-    WaterChance: 0
-    Floors:
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 0ac9ea2145800e845b4f4b40ea9e8cca, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 0
-      TrapCount: 10
-      Boss: []
-    WeaponChanceInChest: 0.8
-    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
-    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
-    Enemies:
-      items:
-      - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
-        Weight: 1
-      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
-        Weight: 1
-      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
-        Weight: 1
   - Type: 0
     RoundRoomCorner: 1
     CaveInOneRoom: 0

@@ -114,6 +114,7 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
+                StatType.WaitTime => CurrentWaitTime,
                 _ => throw new ArgumentException($"Invalid stat type: {type}")
             };
         }

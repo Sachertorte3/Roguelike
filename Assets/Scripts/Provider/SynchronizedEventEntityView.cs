@@ -42,12 +42,17 @@ namespace Provider
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            if (eventEntity is Money)
+            else if (eventEntity is Money)
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Money.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            if (eventEntity is Stairs stairs)
+            else if (eventEntity is Trap)
+            {
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Trap.prefab").WaitForCompletion()
+                    .GetComponent<EntityView>();
+            }
+            else if (eventEntity is Stairs stairs)
             {
                 switch (stairs.Type)
                 {

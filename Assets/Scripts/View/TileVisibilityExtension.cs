@@ -11,7 +11,7 @@ namespace View
             {
                 TileVisibility.Visible => Color.white,
                 TileVisibility.Translucent => new Color(0.5f, 0.5f, 0.5f, 1f),
-                TileVisibility.Transparent => Color.black,
+                TileVisibility.Transparent => new Color(0f, 0f, 0f, 0f),
                 _ => throw new ArgumentOutOfRangeException(nameof(visibility), visibility, null)
             };
         }

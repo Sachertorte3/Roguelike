@@ -42,14 +42,36 @@ namespace Provider
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
+            if (eventEntity is Money)
+            {
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Money.prefab").WaitForCompletion()
+                    .GetComponent<EntityView>();
+            }
+            if (eventEntity is Stairs stairs)
+            {
+                switch (stairs.Type)
+                {
+                    case MovementEntityType.UpStairs:
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/UpStairs.prefab").WaitForCompletion()
+                            .GetComponent<EntityView>();
+                    case MovementEntityType.DownStairs:
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/DownStairs.prefab").WaitForCompletion()
+                            .GetComponent<EntityView>();
+                    case MovementEntityType.MagicCircle:
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/MagicCircle.prefab").WaitForCompletion()
+                            .GetComponent<EntityView>();
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
 
             if (eventEntity.Layer == EntityLayer.Middle)
             {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Chest.prefab").WaitForCompletion()
+                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Entity.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
 
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Stairs.prefab").WaitForCompletion()
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/EntityBottom.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
         }
 
@@ -68,13 +90,6 @@ namespace Provider
             var spriteView = entityView.GetComponent<SpriteView>();
             if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
-            if (eventEntity is Stairs stairs)
-            {
-                if (stairs.Type == MovementEntityType.UpStairs)
-                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 2;
-                else
-                    entityView.GetComponent<SpriteRenderer>().sortingOrder = 0;
-            }
         }
 
         protected override void CleanupView(IEventEntity item, EntityView view)

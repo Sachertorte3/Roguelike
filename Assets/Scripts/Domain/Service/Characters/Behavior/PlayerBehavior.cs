@@ -71,7 +71,7 @@ namespace Domain.Service.Characters.Behavior
                 {
                     case InputType.Move:
                         var (move, started) = result.move.Value;
-                        if (input.IsNoMove())
+                        if (input.IsNoMove() || character.StatusManager.CannotMove)
                         {
                             character.Turn(move.Direction);
                             break;

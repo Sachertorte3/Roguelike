@@ -13,7 +13,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Stairs : IDisposable, ISerializable<StairsMemento>, IIconEventEntity, IMovementEntity
+    public class Stairs : IDisposable, ISerializable<StairsMemento>, IEventEntity, IMovementEntity
     {
         public MovementEntityType Type { get; init; }
         public Location Destination { get; init; }
@@ -54,17 +54,6 @@ namespace Domain.Service.Events
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        public Sprite Icon => Type switch
-        {
-            MovementEntityType.UpStairs => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion(),
-            MovementEntityType.DownStairs => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion(),
-            MovementEntityType.MagicCircle => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_71]").WaitForCompletion(),
-            _ => throw new NotImplementedException()
-        };
 
         public IEvent Event { get; init; }
 
@@ -117,7 +106,7 @@ namespace Domain.Service.Events
             (
                 type,
                 destination,
-                entity: Entity.Build(id, position, EntityLayer.Bottom),
+                entity: Entity.Build(id, position, type == MovementEntityType.UpStairs ? EntityLayer.Middle : EntityLayer.Bottom),
                 destinationId: destinationId
             );
         }

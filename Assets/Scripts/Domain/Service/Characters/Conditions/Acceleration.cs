@@ -32,7 +32,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
+            return 1 / CommonSenseParameters.AttacksToDefeatPlayer;
         }
 
         public float EvaluatePrice()

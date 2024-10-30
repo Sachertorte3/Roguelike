@@ -8,7 +8,6 @@ using Domain.Model.Memento;
 using Domain.Service.Entities;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
@@ -106,7 +105,7 @@ namespace Domain.Service.Events
             (
                 type,
                 destination,
-                entity: Entity.Build(id, position, type == MovementEntityType.UpStairs ? EntityLayer.Middle : EntityLayer.Bottom),
+                entity: Entity.Build(id, position, EntityLayer.Bottom),
                 destinationId: destinationId
             );
         }

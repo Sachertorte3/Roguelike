@@ -9,12 +9,11 @@ using Domain.Service.Entities;
 using Domain.Service.Logs;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Trap : ISerializable<TrapMemento>, IIconEventEntity
+    public class Trap : ISerializable<TrapMemento>, IEventEntity
     {
         public readonly string Name;
         private readonly Entity _entity;
@@ -45,9 +44,6 @@ namespace Domain.Service.Events
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
         public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        public Sprite Icon => Addressables
-            .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_1260]").WaitForCompletion();
 
         public IEvent Event { get; init; }
 

@@ -8,8 +8,8 @@ namespace Domain.Model.Evaluation
         public const int AttacksToDefeatMonster = 2;
         public const int AttacksToDefeatPlayer = 10;
         public const float AttacksPerTurn = 0.05f;
-        public const float HpReductionPerTurn = 1 / AttacksToDefeatMonster;
-        public const float DamagePerAttack = MonsterMaxHealth / AttacksToDefeatMonster;
+        public const float HpReductionPerTurn = 1 / AttacksToDefeatPlayer;
+        public const float DamagePerAttack = MonsterMaxHealth / AttacksToDefeatPlayer;
         public const float OneTurnStunEquivalentHpReduction = OneTurnStunEquivalentDamage / MonsterMaxHealth;
         public const float OneTurnStunEquivalentDamage = 5;
         public const float EvaluateCoefficient = 0.05f;

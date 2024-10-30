@@ -16,7 +16,6 @@ namespace Provider
     public class SynchronizedCharacterView : SynchronizedEntityView<ICharacter, CharacterView>
     {
         private readonly SerialDisposable _disposable = new();
-        private readonly EffectViewSpawner _effectViewSpawner;
         protected override InputReceiver _inputReceiver { get; init; }
         private readonly World _world;
 
@@ -26,9 +25,8 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
+        public SynchronizedCharacterView(InputReceiver receiver, World world)
         {
-            _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
             _world = world;
 
@@ -41,7 +39,7 @@ namespace Provider
         protected override CharacterView ViewPrefab(ICharacter _)
         {
             return Addressables
-                .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
+                .LoadAssetAsync<GameObject>("Assets/Prefabs/Character.prefab").WaitForCompletion()
                 .GetComponent<CharacterView>();
         }
 
@@ -70,15 +68,20 @@ namespace Provider
                     characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue))
                 .AddTo(characterView);
 
-            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(),
+            characterView.GetComponent<OverrideSprite>().SetTexture(
+                character.CharacterType.TypeName(),
                 character.CharacterType.SubtypeName(),
                 character.CharacterType.TypeName() == "Human");
 
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
-            character.OnMove.Where(move => !move.isThrown).Subscribe(move => characterView.PlayWalkAnimation().Forget())
+            character.OnMove
+                .Where(move => !move.isThrown)
+                .Subscribe(move => characterView.PlayWalkAnimation().Forget())
                 .AddTo(characterView);
-            character.OnAttacked.Subscribe(useSkill => characterView.PlayAttackAnimation()).AddTo(characterView);
+            character.OnAttacked
+                .Subscribe(useSkill => characterView.PlayAttackAnimation())
+                .AddTo(characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)

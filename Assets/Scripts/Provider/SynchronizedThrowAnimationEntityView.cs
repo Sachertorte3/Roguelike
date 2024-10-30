@@ -35,7 +35,7 @@ namespace Provider
 
         protected override EntityView ViewPrefab(ThrowAnimationEntity _)
         {
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Chest.prefab").WaitForCompletion()
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Entity.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
         }
 

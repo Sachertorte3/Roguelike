@@ -165,8 +165,7 @@ namespace Game
             var visibleArea = CharacterManager.Player.VisionRange.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
 
-            foreach (var entity in Entities)
-                entity.SetVisibility(visibleArea.Contains(entity.CurrentPosition));
+            UpdateVisibility(Entities);
 
             if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
                 || map.Characters.Any(character => character.IsShiny))
@@ -272,6 +271,22 @@ namespace Game
         public IMapPosition At(Vector2Int position)
         {
             return new MapPosition(position, this, TilemapViewer);
+        }
+
+        public void UpdateVisibility(IEnumerable<IEntity> entities)
+        {
+            foreach (var entity in entities)
+                UpdateVisibility(entity);
+        }
+
+        public void UpdateVisibility(IEntity entity)
+        {
+            bool visibility;
+            if (IsGrass(entity.CurrentPosition) && entity.Layer == EntityLayer.Bottom)
+                visibility = false;
+            else
+                visibility = Player.IsVisible(entity.CurrentPosition);
+            entity.SetVisibility(visibility);
         }
 
         public ICharacter? GetCharacterFromId(Id<IEntity> id)
@@ -443,9 +458,7 @@ namespace Game
             CharacterManager.PlayerEvents.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
                 _tilemap.SetTilesKnown(Player.VisionRange.VisibleArea, true);
-
-                foreach (var entity in Entities)
-                    entity.SetVisibility(Player.IsVisible(entity.CurrentPosition));
+                UpdateVisibility(Entities);
             }).AddTo(_disposables);
 
             CharacterManager.PlayerEvents.OnPositionChanged.Subscribe(async positionChanged =>
@@ -514,8 +527,21 @@ namespace Game
                 ((IEntityGroupEvents)ThrowAnimationEntityManager.EntityEvents).OnPositionChanged,
                 ((IEntityGroupEvents)FireEntityManager.EntityEvents).OnPositionChanged
             ).Subscribe(positionChanged =>
-                positionChanged.Entity.SetVisibility(Player.IsVisible(positionChanged.Message.Position))
+                UpdateVisibility(positionChanged.Entity)
             ).AddTo(_disposables);
+
+            _tilemap.OnOverlayTilesChanged.Subscribe(overlayTilesChanged =>
+            {
+                foreach (var (position, category) in overlayTilesChanged)
+                {
+                    var entity = Entities.At(position);
+                    foreach (var e in entity)
+                    {
+                        if (e.Layer == EntityLayer.Bottom)
+                            UpdateVisibility(e);
+                    }
+                }
+            }).AddTo(_disposables);
 
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {

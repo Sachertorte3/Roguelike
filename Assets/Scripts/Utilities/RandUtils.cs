@@ -158,7 +158,7 @@ namespace Utilities
 
             for (int i = n - 1; i > 0; i--)
             {
-                int k = Random.Range(0, n + 1);
+                int k = Random.Range(0, i + 1);
                 T value = list[k];
                 list[k] = list[i];
                 list[i] = value;

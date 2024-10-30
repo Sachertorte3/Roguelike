@@ -12,8 +12,9 @@ namespace View
     {
         private readonly ReactiveProperty<Direction8> _direction = new();
         private Animator _animator;
-        private SpriteRenderer _groupMarker;
-        private SpriteHpBar _hpBar;
+        [SerializeField] private SpriteRenderer _groupMarker;
+        [SerializeField] private SpriteRenderer _minimapMarker;
+        [SerializeField] private SpriteHpBar _hpBar;
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
 
         public Direction8 GetDirection()
@@ -30,13 +31,7 @@ namespace View
             _animator = GetComponent<Animator>();
             _animator.runtimeAnimatorController = Instantiate(animation);
 
-            var groupMarker = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/GroupMarker.prefab")
-                .WaitForCompletion();
-            _groupMarker = Instantiate(groupMarker, transform).GetComponent<SpriteRenderer>();
             UpdateGroupMarker(isEnemy, isAlly);
-
-            var hpBar = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/HpBar.prefab").WaitForCompletion();
-            _hpBar = Instantiate(hpBar, transform).GetComponent<SpriteHpBar>();
         }
 
         public void SetScale(float value)
@@ -59,6 +54,7 @@ namespace View
                 _ => Color.clear
             };
             _groupMarker.color = color;
+            _minimapMarker.color = new Color(color.r, color.g, color.b, 1);
         }
 
         public void UpdateHpBar(float maxHp, float hp)

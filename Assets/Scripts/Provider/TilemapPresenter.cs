@@ -17,7 +17,7 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, World world)
+        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, World world)
         {
             world.ActiveMap.SubscribeToAllIgnoreNull(map =>
                 {
@@ -38,12 +38,12 @@ namespace Provider
 
                     foreach (var (position, tileData) in map.TilemapViewer.GetAllTiles())
                     {
-                        SetTile(tileView, tileData, position, tileSet, map.ShopRect);
+                        SetTile(tileView, minimapController, tileData, position, tileSet, map.ShopRect);
                         if (map.TilemapViewer.GetAllGrasses().Contains(position))
                             overlayTileView.SetGrass(position);
                         if (map.TilemapViewer.GetAllIces().Contains(position))
                             overlayTileView.SetIce(position);
-                        SetVisibility(tileView, overlayTileView, position, GetTileVisibility(map, position));
+                        SetVisibility(tileView, overlayTileView, minimapController, position, GetTileVisibility(map, position));
                     }
 
                     var mapSize = map.TilemapViewer.Rect;
@@ -65,7 +65,7 @@ namespace Provider
                     {
                         foreach (var (position, tile) in context)
                         {
-                            SetTile(tileView, tile, position, tileSet, map.ShopRect);
+                            SetTile(tileView, minimapController, tile, position, tileSet, map.ShopRect);
                         }
                     }));
 
@@ -96,11 +96,11 @@ namespace Provider
                         {
                             if (isKnown)
                             {
-                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Visible);
                             }
                             else
                             {
-                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Transparent);
+                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Transparent);
                             }
                         }
                     }));
@@ -115,12 +115,12 @@ namespace Provider
                             previousVisibleArea = visibleAreaChanged;
                             foreach (var position in areaEntered)
                             {
-                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Visible);
                             }
 
                             foreach (var position in areaExited)
                             {
-                                SetVisibility(tileView, overlayTileView, position, TileVisibility.Translucent);
+                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Translucent);
                             }
                         }));
                 },
@@ -152,34 +152,44 @@ namespace Provider
             return TileVisibility.Transparent;
         }
 
-        public void SetTile(TileViewController tileView, TileData tileData, Vector2Int position, TileSet type,
+        public void SetTile(TileViewController tileView, MinimapController minimapController, TileData tileData, Vector2Int position, TileSet type,
             RectInt? shop, TileVisibility? visibility = null)
         {
             switch (tileData.TileType)
             {
                 case TileCategory.Floor:
                     if (shop.HasValue && shop.Value.Contains(position))
+                    {
                         tileView.SetShopFloor(position, type, visibility);
+                        minimapController.SetShopFloor(position, visibility);
+                    }
                     else
+                    {
                         tileView.SetFloor(position, type, visibility);
+                        minimapController.SetFloor(position, visibility);
+                    }
                     break;
                 case TileCategory.Water:
                     tileView.SetWater(position, type, visibility);
+                    minimapController.SetWater(position, visibility);
                     break;
                 case TileCategory.Wall:
                     tileView.SetWall(position, type, visibility);
+                    minimapController.SetWall(position, visibility);
                     break;
                 case TileCategory.UnbreakableWall:
                     tileView.SetUnbreakableWall(position, type, visibility);
+                    minimapController.SetUnbreakableWall(position, visibility);
                     break;
             }
         }
 
-        public void SetVisibility(TileViewController tileView, OverlayTileViewController grassView, Vector2Int position,
+        public void SetVisibility(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, Vector2Int position,
             TileVisibility visibility)
         {
             tileView.SetTileColor(position, visibility.GetColor());
-            grassView.SetTileColor(position, visibility.GetColor());
+            overlayTileView.SetTileColor(position, visibility.GetColor());
+            minimapController.SetTileColor(position, visibility.GetColor());
         }
     }
 }

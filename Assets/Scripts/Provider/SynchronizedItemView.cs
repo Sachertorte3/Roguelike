@@ -40,7 +40,7 @@ namespace Provider
 
         protected override EntityView ViewPrefab(IItemEntity _)
         {
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/ItemView.prefab").WaitForCompletion()
+            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Item.prefab").WaitForCompletion()
                 .GetComponent<EntityView>();
         }
 

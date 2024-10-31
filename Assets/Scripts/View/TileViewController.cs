@@ -75,27 +75,17 @@ namespace View
             return color;
         }
 
-        public void SetTileColor(Vector2Int position, Color color)
+        public void SetTileVisibility(Vector2Int position, TileVisibility visibility)
+        {
+            SetTileColor(position, visibility.GetColor());
+        }
+
+        private void SetTileColor(Vector2Int position, Color color)
         {
             _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, 0), TileFlags.None);
             _tilemap.SetColor(new Vector3Int(position.x, position.y, 0), color);
             _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, -1), TileFlags.None);
             _tilemap.SetColor(new Vector3Int(position.x, position.y, -1), color);
-        }
-
-        public void SetTileTransparent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Transparent.GetColor());
-        }
-
-        public void SetTileTranslucent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Translucent.GetColor());
-        }
-
-        public void SetTileVisible(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Visible.GetColor());
         }
     }
 }

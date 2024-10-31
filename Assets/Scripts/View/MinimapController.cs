@@ -40,7 +40,7 @@ namespace View
 
         private void SetTile(Vector2Int position, TileBase tile, TileVisibility? visibility = null)
         {
-            var color = visibility?.GetColor() ?? GetTileColor(position);
+            var color = visibility?.GetMinimapColor() ?? GetTileColor(position);
             _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
             SetTileColor(position, color);
         }
@@ -51,25 +51,15 @@ namespace View
             return color;
         }
 
-        public void SetTileColor(Vector2Int position, Color color)
+        public void SetTileVisibility(Vector2Int position, TileVisibility visibility)
+        {
+            SetTileColor(position, visibility.GetMinimapColor());
+        }
+
+        private void SetTileColor(Vector2Int position, Color color)
         {
             _tilemap.SetTileFlags(new Vector3Int(position.x, position.y, 0), TileFlags.None);
             _tilemap.SetColor(new Vector3Int(position.x, position.y, 0), color);
-        }
-
-        public void SetTileTransparent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Transparent.GetColor());
-        }
-
-        public void SetTileTranslucent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Translucent.GetColor());
-        }
-
-        public void SetTileVisible(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Visible.GetColor());
         }
     }
 }

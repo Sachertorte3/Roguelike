@@ -380,7 +380,7 @@ MonoBehaviour:
     - Depth: 3
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       PrefixChance: 0.1
-      ShinyChance: 0.01
+      ShinyChance: 1
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3

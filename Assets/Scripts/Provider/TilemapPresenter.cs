@@ -187,9 +187,9 @@ namespace Provider
         public void SetVisibility(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, Vector2Int position,
             TileVisibility visibility)
         {
-            tileView.SetTileColor(position, visibility.GetColor());
-            overlayTileView.SetTileColor(position, visibility.GetColor());
-            minimapController.SetTileColor(position, visibility.GetColor());
+            tileView.SetTileVisibility(position, visibility);
+            overlayTileView.SetTileVisibility(position, visibility);
+            minimapController.SetTileVisibility(position, visibility);
         }
     }
 }

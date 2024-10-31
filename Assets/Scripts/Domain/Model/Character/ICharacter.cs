@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Character.Type;
@@ -71,7 +70,6 @@ namespace Domain.Model.Character
         public void UpdateTurn();
         public void AddMoney(int value);
         public void ReduceMoney(int value);
-
         public bool IsVisible(Vector2Int position)
         {
             return VisionRange.IsVisible(position);

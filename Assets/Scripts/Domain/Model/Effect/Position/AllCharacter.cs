@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -23,7 +24,9 @@ namespace Domain.Model.Effect.Position
             return 300;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "全キャラクター";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

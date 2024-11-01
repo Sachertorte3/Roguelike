@@ -12,12 +12,12 @@ namespace Domain.Service.ItemEffect
 
         public bool CanApplyTo(IHasInventory actor, IItem item)
         {
-            return !item.CanUpgrade(_filter);
+            return item.CanAnyUpgrade(_filter);
         }
 
         public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            item.Upgrade(actor, itemPlaceholders, _filter);
+            item.RandomUpgrade(actor, itemPlaceholders, _filter);
         }
 
         public float EvaluatePrice()

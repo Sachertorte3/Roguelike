@@ -1,15 +1,25 @@
 using System.IO;
 using System.Linq;
 
-namespace Domain.Model.Effect
+namespace Domain.Model.Item
 {
     public record UpgradePath
     {
-        private string _path;
+        private readonly string _path;
 
         public UpgradePath(params string[] path)
         {
             _path = Path.Combine(path);
+        }
+
+        public string GetUpgradeName()
+        {
+            return _path.Split(Path.DirectorySeparatorChar).Last();
+        }
+
+        public string Peek()
+        {
+            return _path.Split(Path.DirectorySeparatorChar).First();
         }
 
         public override string ToString()
@@ -17,17 +27,15 @@ namespace Domain.Model.Effect
             return _path;
         }
 
-        public void Prepend(string prefix)
+        public UpgradePath Prepend(string prefix)
         {
-            _path = Path.Combine(prefix, _path);
+            return new UpgradePath(Path.Combine(prefix, _path));
         }
 
-        public string Pop()
+        public UpgradePath Pop()
         {
             var segments = _path.Split(Path.DirectorySeparatorChar);
-            var firstSegment = segments.First();
-            _path = Path.Combine(segments[1..]);
-            return firstSegment;
+            return new UpgradePath(Path.Combine(segments[1..]));
         }
 
         public static UpgradePath Join(UpgradePath path1, UpgradePath path2)

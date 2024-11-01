@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -75,7 +76,9 @@ namespace Domain.Service.Effect
             return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "状態付与";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

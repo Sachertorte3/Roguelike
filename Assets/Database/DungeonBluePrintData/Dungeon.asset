@@ -380,7 +380,7 @@ MonoBehaviour:
     - Depth: 3
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       PrefixChance: 0.1
-      ShinyChance: 1
+      ShinyChance: 0.01
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3
@@ -400,6 +400,8 @@ MonoBehaviour:
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
         Weight: 1
   - Type: 0
     RoundRoomCorner: 1

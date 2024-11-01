@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using UnityEngine;
@@ -45,7 +46,9 @@ namespace Domain.Service.Effect
             return Formula.EvaluateExplosionDamage(_damageRate);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public override string UpgradePathName => "割合ダメージ";
+        public override List<UpgradeData> GetUpgrades() => new();
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

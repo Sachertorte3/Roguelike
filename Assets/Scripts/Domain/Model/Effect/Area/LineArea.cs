@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -39,20 +40,19 @@ namespace Domain.Model.Effect.Area
             return Mathf.Sqrt(Length);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "直線";
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("長さ"),
-                    new UpgradeData(
-                        "長さ+1",
-                        () => Length += 1,
-                        () => Length -= 1
-                    )
-                }
+                new UpgradeData(
+                    "長さ+1",
+                    () => Length += 1,
+                    () => Length -= 1
+                )
             };
         }
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

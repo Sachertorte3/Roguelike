@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -27,28 +28,24 @@ namespace Domain.Service.Effect
             _power = Mathf.RoundToInt(_power * multiplier);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => $"[{Element}]威力";
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("威力[小]", Element.ToString()),
-                    new UpgradeData(
-                        $"[{Element}]威力[小]",
-                        () => _power += 2,
-                        () => _power -= 2
-                    )
-                },
-                {
-                    new UpgradePath("威力[大]", Element.ToString()),
-                    new UpgradeData(
-                        $"[{Element}]威力[大]",
-                        () => _power += 3,
-                        () => _power -= 3
-                    )
-                }
+                new UpgradeData(
+                    $"[{Element}]強化[小]",
+                    () => _power += 2,
+                    () => _power -= 2
+                ),
+                new UpgradeData(
+                    $"[{Element}]強化[大]",
+                    () => _power += 3,
+                    () => _power -= 3
+                )
             };
         }
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

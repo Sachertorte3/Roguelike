@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -40,20 +41,19 @@ namespace Domain.Model.Effect.Area
             return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius);
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "円";
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("半径"),
-                    new UpgradeData(
-                        "半径+1",
-                        () => Radius += 1,
-                        () => Radius -= 1
-                    )
-                }
+                new UpgradeData(
+                    "半径+1",
+                    () => Radius += 1,
+                    () => Radius -= 1
+                )
             };
         }
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

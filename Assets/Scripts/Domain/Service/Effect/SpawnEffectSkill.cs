@@ -8,6 +8,7 @@ using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
@@ -41,7 +42,7 @@ namespace Domain.Service.Effect
             _log = log;
         }
 
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.Repeats,
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effects, data.Repeats,
             data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
@@ -262,28 +263,18 @@ namespace Domain.Service.Effect
             return price * ProbabilityOfSuccess;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "スキル";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
+            var children = new List<IHasUpgrades>();
             foreach (var effect in _effects)
             {
-                foreach (var path in effect.GenerateUpgradePaths())
-                {
-                    upgrades[UpgradePath.Join("効果", path)] = effect.GetUpgrades()[path];
-                }
+                children.Add(effect);
             }
-
-            foreach (var path in _position.GenerateUpgradePaths())
-            {
-                upgrades[UpgradePath.Join("発動位置", path)] = _position.GetUpgrades()[path];
-            }
-
-            foreach (var path in _area.GenerateUpgradePaths())
-            {
-                upgrades[UpgradePath.Join("範囲", path)] = _area.GetUpgrades()[path];
-            }
-
-            return upgrades;
+            children.Add(_position);
+            children.Add(_area);
+            return children;
         }
 
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)

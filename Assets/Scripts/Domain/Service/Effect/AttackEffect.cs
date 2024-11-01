@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -74,21 +75,14 @@ namespace Domain.Service.Effect
             return result;
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "攻撃";
+        public override List<UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
-            foreach (var elementPower in _elementPowers)
-            {
-                foreach (var upgrade in elementPower.GetUpgrades())
-                {
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
+            var upgrades = new List<UpgradeData>();
 
             if (_criticalRate > 0 && _criticalRate < 1f)
             {
                 upgrades.Add(
-                    new UpgradePath("クリティカル率"),
                     new UpgradeData(
                         "クリティカル率+5%",
                         () => _criticalRate += 0.05f,
@@ -98,6 +92,11 @@ namespace Domain.Service.Effect
             }
 
             return upgrades;
+        }
+
+        public override List<IHasUpgrades> GetChildren()
+        {
+            return _elementPowers.Cast<IHasUpgrades>().ToList();
         }
 
         public override string Info()

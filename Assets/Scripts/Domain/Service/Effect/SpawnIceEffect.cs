@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -30,6 +31,10 @@ namespace Domain.Service.Effect
         {
             return 50f;
         }
+
+        public override string UpgradePathName => "氷生成";
+        public override List<UpgradeData> GetUpgrades() => new();
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

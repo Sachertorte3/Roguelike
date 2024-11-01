@@ -23,7 +23,7 @@ namespace Domain.Model.Effect
 
         public abstract string UpgradePathName { get; }
         public abstract List<UpgradeData> GetUpgrades();
-        public abstract List<IHasUpgrades> GetChildren();
+        public abstract Dictionary<string, IHasUpgrades> GetChildren();
         public abstract string Info();
     }
 }

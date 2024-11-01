@@ -263,17 +263,16 @@ namespace Domain.Service.Effect
             return price * ProbabilityOfSuccess;
         }
 
-        public string UpgradePathName => "スキル";
         public List<UpgradeData> GetUpgrades() => new();
-        public List<IHasUpgrades> GetChildren()
+        public Dictionary<string, IHasUpgrades> GetChildren()
         {
-            var children = new List<IHasUpgrades>();
+            var children = new Dictionary<string, IHasUpgrades>();
             foreach (var effect in _effects)
             {
-                children.Add(effect);
+                children.Add(effect.UpgradePathName, effect);
             }
-            children.Add(_position);
-            children.Add(_area);
+            children.Add(_position.UpgradePathName, _position);
+            children.Add(_area.UpgradePathName, _area);
             return children;
         }
 

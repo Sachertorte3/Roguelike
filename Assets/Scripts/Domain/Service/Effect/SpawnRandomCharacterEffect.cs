@@ -51,7 +51,7 @@ namespace Domain.Service.Effect
 
         public override string UpgradePathName => "ランダム召喚";
         public override List<UpgradeData> GetUpgrades() => new();
-        public override List<IHasUpgrades> GetChildren() => new();
+        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

@@ -19,9 +19,9 @@ namespace Domain.Model.Item
                 Debug.Log($"ApplyUpgrade: {name}");
                 foreach (var childa in hasUpgrades.GetChildren())
                 {
-                    Debug.Log(childa.UpgradePathName);
+                    Debug.Log(childa.Key);
                 }
-                var child = hasUpgrades.GetChildren().First(child => child.UpgradePathName == name);
+                var child = hasUpgrades.GetChildren()[name];
                 child.ApplyUpgrade(path.Pop());
             }
         }
@@ -39,9 +39,9 @@ namespace Domain.Model.Item
                 Debug.Log($"ApplyDowngrade: {name}");
                 foreach (var childa in hasUpgrades.GetChildren())
                 {
-                    Debug.Log(childa.UpgradePathName);
+                    Debug.Log(childa.Key);
                 }
-                var child = hasUpgrades.GetChildren().First(child => child.UpgradePathName == name);
+                var child = hasUpgrades.GetChildren()[name];
                 child.ApplyDowngrade(path.Pop());
             }
         }
@@ -49,9 +49,9 @@ namespace Domain.Model.Item
         {
             var paths = new List<UpgradePath>();
             paths.AddRange(hasUpgrades.GetUpgradeNames().Select(name => new UpgradePath(name)));
-            foreach (var child in hasUpgrades.GetChildren())
+            foreach (var (childName, child) in hasUpgrades.GetChildren())
             {
-                var childrenPaths = child.GetUpgradePathsRecursively().Select(path => path.Prepend(child.UpgradePathName));
+                var childrenPaths = child.GetUpgradePathsRecursively().Select(path => path.Prepend(childName));
                 paths.AddRange(childrenPaths);
             }
             return paths;

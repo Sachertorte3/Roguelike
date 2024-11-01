@@ -52,7 +52,7 @@ namespace Domain.Model.Effect.Position
                 )
             };
         }
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

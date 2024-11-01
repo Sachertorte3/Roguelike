@@ -79,9 +79,9 @@ namespace Domain.Service.Effect
             }
             return upgrades;
         }
-        public override List<IHasUpgrades> GetChildren()
+        public override Dictionary<string, IHasUpgrades> GetChildren()
         {
-            return _elementPowers.Cast<IHasUpgrades>().ToList();
+            return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
         }
 
         public override string Info()

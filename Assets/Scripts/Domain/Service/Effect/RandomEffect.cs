@@ -80,7 +80,7 @@ namespace Domain.Service.Effect
 
         public string UpgradePathName => "ランダム";
         public List<UpgradeData> GetUpgrades() => new();
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

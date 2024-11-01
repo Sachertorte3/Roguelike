@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Domain.Service.Effect
     public class ElementPower : IHasInfo, IHasUpgrades
     {
         [SerializeField] private Element _element;
-        [MinValue(1)] [SerializeField] private int _power;
+        [MinValue(1)][SerializeField] private int _power;
         public Element Element => _element;
         public int Power => _power;
 
@@ -45,7 +44,7 @@ namespace Domain.Service.Effect
                 )
             };
         }
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

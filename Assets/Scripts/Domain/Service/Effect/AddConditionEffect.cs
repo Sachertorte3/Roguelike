@@ -78,7 +78,7 @@ namespace Domain.Service.Effect
 
         public string UpgradePathName => "状態付与";
         public List<UpgradeData> GetUpgrades() => new();
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

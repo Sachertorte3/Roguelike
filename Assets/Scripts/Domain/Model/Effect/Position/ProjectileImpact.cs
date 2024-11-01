@@ -50,7 +50,7 @@ namespace Domain.Model.Effect.Position
 
         public string UpgradePathName => "着弾地点";
         public List<UpgradeData> GetUpgrades() => new();
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

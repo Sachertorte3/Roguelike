@@ -13,5 +13,6 @@ namespace Domain.Model.Effect
             IMap map);
 
         public float EvaluateHitProbability();
+        public string UpgradePathName { get; }
     }
 }

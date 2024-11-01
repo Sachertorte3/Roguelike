@@ -25,7 +25,7 @@ namespace Domain.Model.Effect.Position
 
         public string UpgradePathName => "その場";
         public List<UpgradeData> GetUpgrades() => new();
-        public List<IHasUpgrades> GetChildren() => new();
+        public Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

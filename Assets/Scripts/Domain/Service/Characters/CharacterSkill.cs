@@ -70,9 +70,8 @@ namespace Domain.Service.Characters
             return _skill.EvaluatePrice();
         }
 
-        public string UpgradePathName => "スキル";
         public List<UpgradeData> GetUpgrades() => _skill.GetUpgrades();
-        public List<IHasUpgrades> GetChildren() => _skill.GetChildren();
+        public Dictionary<string, IHasUpgrades> GetChildren() => _skill.GetChildren();
 
         public void UpdateTurn()
         {

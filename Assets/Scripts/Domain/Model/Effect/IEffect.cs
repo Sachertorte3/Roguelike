@@ -18,5 +18,7 @@ namespace Domain.Model.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
         public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions);
         public float EvaluatePrice();
+
+        public string UpgradePathName { get; }
     }
 }

@@ -377,7 +377,6 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 #region Upgrade
-        public string UpgradePathName => "アイテム";
         public List<UpgradeData> GetUpgrades()
         {
             var upgrades = new List<UpgradeData>();
@@ -412,28 +411,18 @@ namespace Domain.Service.Items
             }
             return upgrades;
         }
-        public List<IHasUpgrades> GetChildren()
+        public Dictionary<string, IHasUpgrades> GetChildren()
         {
-            var children = new List<IHasUpgrades>();
+            var children = new Dictionary<string, IHasUpgrades>();
             if (SkillOnUse.HasValue)
             {
-                children.Add(SkillOnUse.Expect("SkillOnUse is null"));
+                children.Add("使用時", SkillOnUse.Expect("SkillOnUse is null"));
             }
             if (SkillOnThrow.HasValue)
             {
-                children.Add(SkillOnThrow.Expect("SkillOnThrow is null"));
+                children.Add("投擲時", SkillOnThrow.Expect("SkillOnThrow is null"));
             }
             return children;
-        }
-
-        public bool CanUpgrade(UpgradePath path)
-        {
-            if (_upgradePaths.Count >= UpgradeLimit)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public bool CanAnyUpgrade(string filter = "")

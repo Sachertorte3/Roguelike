@@ -62,7 +62,7 @@ namespace Domain.Service.Effect
                 )
             };
         }
-        public override List<IHasUpgrades> GetChildren() => new();
+        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -49,20 +50,19 @@ namespace Domain.Service.Effect
             return Formula.EvaluateHeal(_power);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "回復";
+        public override List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("回復量"),
-                    new UpgradeData(
-                        "回復量+3",
-                        () => _power += 3,
-                        () => _power -= 3
-                    )
-                }
+                new UpgradeData(
+                    "回復量+3",
+                    () => _power += 3,
+                    () => _power -= 3
+                )
             };
         }
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

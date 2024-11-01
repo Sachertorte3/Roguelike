@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -77,7 +78,9 @@ namespace Domain.Service.Effect
             return Effects.Average(effect => effect.EvaluatePrice());
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "ランダム";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

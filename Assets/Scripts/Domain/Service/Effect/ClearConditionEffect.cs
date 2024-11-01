@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -27,6 +28,10 @@ namespace Domain.Service.Effect
         {
             return 500;
         }
+
+        public override string UpgradePathName => "全状態異常解除";
+        public override List<UpgradeData> GetUpgrades() => new();
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

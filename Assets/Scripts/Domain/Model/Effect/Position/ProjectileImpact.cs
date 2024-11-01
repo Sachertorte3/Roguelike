@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -47,7 +48,9 @@ namespace Domain.Model.Effect.Position
             return 2;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "着弾地点";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

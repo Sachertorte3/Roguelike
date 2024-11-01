@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Setting;
 using UnityEngine;
@@ -31,6 +33,10 @@ namespace Domain.Service.Effect
         {
             return 50f;
         }
+
+        public override string UpgradePathName => "テレポート";
+        public override List<UpgradeData> GetUpgrades() => new();
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

@@ -21,7 +21,7 @@ using Utilities;
 
 namespace Domain.Service.Items
 {
-    public class Item : IItem
+    public class Item : IItem, IHasUpgrades
     {
         public Id<IItem> Id { get; init; }
         public ItemCategory Category { get; init; }
@@ -376,14 +376,14 @@ namespace Domain.Service.Items
             IsCurseIdentified = isCurseIdentified;
             _onItemUpdated.OnNext(Unit.Default);
         }
-
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+#region Upgrade
+        public string UpgradePathName => "アイテム";
+        public List<UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
+            var upgrades = new List<UpgradeData>();
             if (_maxUsages > 1)
             {
                 upgrades.Add(
-                    new UpgradePath("使用可能回数[小]"),
                     new UpgradeData("使用可能回数[小]",
                     () =>
                     {
@@ -397,7 +397,6 @@ namespace Domain.Service.Items
                     })
                 );
                 upgrades.Add(
-                    new UpgradePath("使用可能回数[大]"),
                     new UpgradeData("使用可能回数[大]",
                     () =>
                     {
@@ -411,64 +410,67 @@ namespace Domain.Service.Items
                     })
                 );
             }
-
-            if (SkillOnUse.HasValue)
-            {
-                var skillUpgrades = SkillOnUse.Expect("SkillOnUse is null").GetUpgrades();
-                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("使用時"));
-                foreach (var upgrade in skillUpgrades)
-                {
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
-
-            if (SkillOnThrow.HasValue)
-            {
-                var skillUpgrades = SkillOnThrow.Expect("SkillOnThrow is null").GetUpgrades();
-                skillUpgrades.ForEach(upgrade => upgrade.Key.Prepend("投擲時"));
-                foreach (var upgrade in skillUpgrades)
-                {
-                    if (_hasSameEffect && upgrade.Key.Contains("効果"))
-                    {
-                        continue;
-                    }
-
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
-
             return upgrades;
         }
+        public List<IHasUpgrades> GetChildren()
+        {
+            var children = new List<IHasUpgrades>();
+            if (SkillOnUse.HasValue)
+            {
+                children.Add(SkillOnUse.Expect("SkillOnUse is null"));
+            }
+            if (SkillOnThrow.HasValue)
+            {
+                children.Add(SkillOnThrow.Expect("SkillOnThrow is null"));
+            }
+            return children;
+        }
 
-        public bool CanUpgrade(string filter = "")
+        public bool CanUpgrade(UpgradePath path)
         {
             if (_upgradePaths.Count >= UpgradeLimit)
             {
                 return false;
             }
 
-            var upgrades = GetUpgrades();
+            return true;
+        }
+
+        public bool CanAnyUpgrade(string filter = "")
+        {
+            if (_upgradePaths.Count >= UpgradeLimit)
+            {
+                return false;
+            }
+
+            var upgrades = this.GetUpgradePathsRecursively();
             if (filter == "")
             {
                 return upgrades.Any();
             }
 
-            return upgrades.Any(upgrade => upgrade.Key.Contains(filter));
+            return upgrades.Any(upgrade => upgrade.Contains(filter));
         }
 
-        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "")
+        public void RandomUpgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "")
         {
-            var (path, upgrade) = GetUpgrades().Where(upgrade => upgrade.Key.Contains(filter)).GetAtRandom();
+            var path = this.GetUpgradePathsRecursively().Where(upgrade => upgrade.Contains(filter)).GetAtRandom();
+            Upgrade(player, itemPlaceholders, path);
+        }
+
+        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, UpgradePath path)
+        {
             if (player.IsKnownItem(this))
             {
-                GameLog.Add($"{_fullName}は{upgrade.Description}の効果を得た");
+                GameLog.Add($"{_fullName}は{path.GetUpgradeName()}の効果を得た");
             }
             else
             {
                 GameLog.Add($"{GetName(player, itemPlaceholders)}は何かの効果を得た");
             }
-            upgrade.Upgrade();
             _upgradePaths.Add(path);
+            Log.Debug($"Upgrade: {path}");
+            this.ApplyUpgrade(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
@@ -480,20 +482,20 @@ namespace Domain.Service.Items
             }
 
             var path = _upgradePaths.GetAtRandom();
-            _upgradePaths.Remove(path);
-            var upgrade = GetUpgrades()[path];
             if (player.IsKnownItem(this))
             {
-                GameLog.Add($"{_fullName}の{upgrade.Description}は消えた");
+                GameLog.Add($"{_fullName}の{path.GetUpgradeName()}は消えた");
             }
             else
             {
                 GameLog.Add($"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
             }
-            upgrade.Downgrade();
+            _upgradePaths.Remove(path);
+            Log.Debug($"Downgrade: {path}");
+            this.ApplyDowngrade(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
-
+#endregion
         public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
             if (player.IsKnownItem(this))
@@ -571,13 +573,13 @@ namespace Domain.Service.Items
                 info += "死亡時に自動的に使用される\n";
             }
 
-            if (_upgradePaths.Any() || CanUpgrade())
+            if (_upgradePaths.Any() || CanAnyUpgrade())
             {
                 info += $"アップグレード ({_upgradePaths.Count}/{UpgradeLimit})\n";
 
                 foreach (var path in _upgradePaths)
                 {
-                    info += $"{GetUpgrades()[path].Description}\n";
+                    info += $"{path.GetUpgradeName()}\n";
                 }
             }
 

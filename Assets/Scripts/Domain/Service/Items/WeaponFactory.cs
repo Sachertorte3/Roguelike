@@ -13,7 +13,7 @@ namespace Domain.Service.Items
             var effects = item.SkillOnUse.Value;
             if (effects != null && effects is SpawnEffectSkillMemento spawnEffectSkillMemento)
             {
-                foreach (var effect in spawnEffectSkillMemento.Effect)
+                foreach (var effect in spawnEffectSkillMemento.Effects)
                 {
                     if (effect is AttackEffect attackEffect)
                     {
@@ -27,7 +27,7 @@ namespace Domain.Service.Items
 
                 foreach (var effect in prefix.AdditionalEffects)
                 {
-                    spawnEffectSkillMemento.Effect.Add(effect);
+                    spawnEffectSkillMemento.Effects.Add(effect);
                 }
             }
             item = item.CopyWith(

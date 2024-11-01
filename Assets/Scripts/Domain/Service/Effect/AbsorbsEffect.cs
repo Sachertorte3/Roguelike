@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -62,21 +63,13 @@ namespace Domain.Service.Effect
             return Formula.EvaluateDamage(_elementPowers) * (1 + _fixedRate);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "HP吸収";
+        public override List<UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
-            foreach (var elementPower in _elementPowers)
-            {
-                foreach (var upgrade in elementPower.GetUpgrades())
-                {
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
-
+            var upgrades = new List<UpgradeData>();
             if (_rate < 1f)
             {
                 upgrades.Add(
-                    new UpgradePath("吸収割合"),
                     new UpgradeData(
                         "吸収割合+10%",
                         () => _rate += 0.1f,
@@ -84,8 +77,11 @@ namespace Domain.Service.Effect
                     )
                 );
             }
-
             return upgrades;
+        }
+        public override List<IHasUpgrades> GetChildren()
+        {
+            return _elementPowers.Cast<IHasUpgrades>().ToList();
         }
 
         public override string Info()

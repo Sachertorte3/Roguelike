@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -65,6 +67,10 @@ namespace Domain.Service.Effect
         {
             return 50;
         }
+
+        public override string UpgradePathName => "アイテム弾き";
+        public override List<UpgradeData> GetUpgrades() => new();
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -39,20 +40,19 @@ namespace Domain.Model.Effect.Position
             return NumberOfTarget;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "近くのキャラクター";
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("対象数"),
-                    new UpgradeData(
-                        "対象数+1",
-                        () => NumberOfTarget += 1,
-                        () => NumberOfTarget -= 1
-                    )
-                }
+                new UpgradeData(
+                    "対象数+1",
+                    () => NumberOfTarget += 1,
+                    () => NumberOfTarget -= 1
+                )
             };
         }
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

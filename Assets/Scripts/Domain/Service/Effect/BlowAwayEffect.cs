@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -54,20 +55,20 @@ namespace Domain.Service.Effect
             return CommonSenseParameters.BlowAwayPrice(_distance);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "吹き飛ばし";
+        public override List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("吹き飛ばし距離"),
-                    new UpgradeData(
-                        "吹き飛ばし距離+1",
-                        () => _distance += 1,
-                        () => _distance -= 1
-                    )
-                }
+                new UpgradeData(
+                    "吹き飛ばし距離+1",
+                    () => _distance += 1,
+                    () => _distance -= 1
+                )
             };
         }
+
+        public override List<IHasUpgrades> GetChildren() => new();
 
         public override string Info()
         {

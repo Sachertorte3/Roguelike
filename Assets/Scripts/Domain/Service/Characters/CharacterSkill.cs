@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
@@ -69,10 +70,9 @@ namespace Domain.Service.Characters
             return _skill.EvaluatePrice();
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            return _skill.GetUpgrades();
-        }
+        public string UpgradePathName => "スキル";
+        public List<UpgradeData> GetUpgrades() => _skill.GetUpgrades();
+        public List<IHasUpgrades> GetChildren() => _skill.GetChildren();
 
         public void UpdateTurn()
         {

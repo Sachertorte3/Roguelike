@@ -1,3 +1,5 @@
+using Domain.Model.Item;
+
 namespace Domain.Model.Effect
 {
     public interface ISkill : IHasUpgrades

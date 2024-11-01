@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -22,7 +23,9 @@ namespace Domain.Model.Effect.Area
             return 1;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "1マス";
+        public List<UpgradeData> GetUpgrades() => new();
+        public List<IHasUpgrades> GetChildren() => new();
 
         public string Info()
         {

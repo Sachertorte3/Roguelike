@@ -7,6 +7,7 @@ using Domain.Model.Memento;
 using R3;
 using Stats;
 using Utilities;
+using UnityEngine;
 
 namespace Domain.Service.Characters.Stats
 {
@@ -121,19 +122,19 @@ namespace Domain.Service.Characters.Stats
 
         public float GetElementAttackMultiplier(Element element)
         {
-            return ElementAttackMultiplier[element].CurrentValue;
+            return Mathf.Max(0, ElementAttackMultiplier[element].CurrentValue);
         }
 
         public float GetElementDamageRateMultiplier(Element element)
         {
-            return ElementDamageRateMultiplier[element].CurrentValue;
+            return Mathf.Max(0, ElementDamageRateMultiplier[element].CurrentValue);
         }
 
         public float GetConditionResistance(ConditionTemplate condition)
         {
             if (ConditionResistance.ContainsKey(condition.name))
             {
-                return ConditionResistance[condition.name].CurrentValue;
+                return Mathf.Max(0, ConditionResistance[condition.name].CurrentValue);
             }
             return 0f;
         }

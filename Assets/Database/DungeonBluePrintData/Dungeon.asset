@@ -401,8 +401,6 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
-        Weight: 1
   - Type: 0
     RoundRoomCorner: 1
     CaveInOneRoom: 0

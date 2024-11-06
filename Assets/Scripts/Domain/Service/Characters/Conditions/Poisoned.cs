@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Harmful;
         public string InflictLog => "は毒にかかった";
         public string DeleteLog => "は毒が治った";
-        [MinValue(1)] public int Power = 1;
+        [MinValue(0)] public float Power = 1;
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
@@ -36,7 +36,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return (float)Power / CommonSenseParameters.PlayerMaxHealth;
+            return Power / CommonSenseParameters.PlayerMaxHealth;
         }
 
         public float EvaluatePrice()

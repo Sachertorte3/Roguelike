@@ -26,6 +26,7 @@ namespace View
                 var particle = Instantiate(EffectPrefab, transform);
                 foreach (var particleSystem in particle.GetComponentsInChildren<ParticleSystem>())
                 {
+                    particleSystem.gameObject.layer = gameObject.layer;
                     particleSystem.GetComponent<Renderer>().sortingLayerID = _sortingLayerID;
                 }
 

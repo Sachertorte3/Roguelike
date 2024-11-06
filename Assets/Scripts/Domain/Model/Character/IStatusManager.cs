@@ -29,6 +29,8 @@ namespace Domain.Model.Character
         public void DivideStat(StatType type, float value);
         public void AddElementAttackMultiplier(Element element, float value);
         public void RemoveElementAttackMultiplier(Element element, float value);
+        public void AddElementDamageRateMultiplier(Element element, float value);
+        public void RemoveElementDamageRateMultiplier(Element element, float value);
         public void AddFlagStat(FlagStatType type);
         public void RemoveFlagStat(FlagStatType type);
         public int LoseHp(float value, bool notifyOnlyActualLoss = false);

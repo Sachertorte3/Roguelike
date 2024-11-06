@@ -19,7 +19,7 @@ namespace Domain.Model.Effect.Position
             var pos = position;
             for (var i = 0; i < CommonSenseParameters.ThrowDistance; i++)
             {
-                if (map.At(pos + direction.Vector()).IsBlankIgnoreWall(CanHitLayer.ToArray()))
+                if (map.At(pos + direction.Vector()).IsBlank(CanHitLayer.ToArray()))
                 {
                     pos += direction.Vector();
                 }

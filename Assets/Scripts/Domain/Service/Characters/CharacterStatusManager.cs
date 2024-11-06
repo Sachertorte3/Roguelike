@@ -184,9 +184,19 @@ namespace Domain.Service.Characters
             _stats.AddElementAttackMultiplier(element, value);
         }
 
+        public void AddElementDamageRateMultiplier(Element element, float value)
+        {
+            _stats.AddElementDamageRateMultiplier(element, value);
+        }
+
         public void RemoveElementAttackMultiplier(Element element, float value)
         {
             _stats.RemoveElementAttackMultiplier(element, value);
+        }
+
+        public void RemoveElementDamageRateMultiplier(Element element, float value)
+        {
+            _stats.RemoveElementDamageRateMultiplier(element, value);
         }
 
         private FlagStat GetFlagStat(FlagStatType type)

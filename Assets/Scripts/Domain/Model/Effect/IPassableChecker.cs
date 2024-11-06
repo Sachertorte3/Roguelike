@@ -7,7 +7,6 @@ namespace Domain.Model.Effect
 {
     public interface IPassableChecker
     {
-        public ICharacter Player { get; }
         public IMapPosition At(Vector2Int position);
         public IEnumerable<IMapPosition> GetAllBlankPositionsOn(params EntityLayer[] layers);
         public IEnumerable<IMapPosition> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers);

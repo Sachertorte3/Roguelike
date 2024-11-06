@@ -143,6 +143,7 @@ namespace Domain.Service.Characters
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
 
+#region CanMove
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
         ///     if the destination is not passable.
@@ -208,6 +209,56 @@ namespace Domain.Service.Characters
                        (map.At(position + direction.Rotate45Clockwise().Vector()).IsPassableOnMap() &&
                         map.At(position + direction.Rotate45AntiClockwise().Vector()).IsPassableOnMap()));
         }
+#endregion
+#region Action
+        public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
+        {
+            State = CharacterState.Think;
+            var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
+            if (StatusManager.IsConfused)
+            {
+                action = RegenerateConfuseAction(this, map, action);
+            }
+
+            State = CharacterState.Act;
+            await action.Do(this, map, input);
+        }
+
+        private IAction RegenerateConfuseAction(IHasBehavior character, IMap map, IAction action)
+        {
+            switch (action)
+            {
+                case Move _:
+                case Swap _:
+                    var moves = new List<IAction>();
+                    foreach (var direction in DirectionMethods.AllDirections)
+                    {
+                        var move = new Move(direction);
+                        var swap = new Swap(direction);
+                        if (move.Doable(character, map))
+                            moves.Add(move);
+                        else if (swap.Doable(character, map))
+                            moves.Add(swap);
+                    }
+
+                    return moves.GetAtRandom();
+
+                case UseSkill useSkill:
+                    return useSkill with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case UseItem useItem:
+                    return useItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case ThrowItem throwItem:
+                    return throwItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
+
+                case DoNothing _:
+                    return action;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
 
         public void Turn(Direction8 direction)
         {
@@ -242,6 +293,23 @@ namespace Domain.Service.Characters
             Turn(direction);
             await _entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+
+            State = CharacterState.Finish;
+        }
+
+        public async UniTask ForceMove(Direction8 direction, IInput input)
+        {
+            State = CharacterState.Act;
+            Turn(direction);
+            await _entity.Move(direction,
+                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+
+            State = CharacterState.Finish;
+        }
+
+        public void Teleport(Vector2Int position)
+        {
+            _entity.Teleport(position);
 
             State = CharacterState.Finish;
         }
@@ -389,12 +457,7 @@ namespace Domain.Service.Characters
         {
             return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
         }
-
-        public int GainHp(int value)
-        {
-            return _statusManager.GainHp(value);
-        }
-
+#endregion
         public void Dispose()
         {
             _disposable.Dispose();
@@ -471,21 +534,24 @@ namespace Domain.Service.Characters
                 _entity.Teleport(position);
             }
         }
+#region Status
+        public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
+        public int CurrentHp => _statusManager.Stats.CurrentHp;
 
-        public void Teleport(Vector2Int position)
+        public int GainHp(int value)
         {
-            _entity.Teleport(position);
+            return _statusManager.GainHp(value);
+        }
 
-            State = CharacterState.Finish;
+        public int LoseHp(int value)
+        {
+            return _statusManager.LoseHp(value);
         }
 
         public float GetStatValue(StatType statType)
         {
             return _statusManager.GetStatValue(statType);
         }
-
-        public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
-        public int CurrentHp => _statusManager.Stats.CurrentHp;
 
         public float GetElementAttackMultiplier(Element element)
         {
@@ -502,17 +568,6 @@ namespace Domain.Service.Characters
             return _statusManager.Stats.GetConditionResistance(condition);
         }
 
-        public int LoseHp(int value)
-        {
-            return _statusManager.LoseHp(value);
-        }
-
-        public void ListenToAlert(Vector2Int position)
-        {
-            _statusManager.RemoveConditionType(typeof(Slept));
-            _behavior.KnowLocationOf(position);
-        }
-
         public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)
         {
             _statusManager.AddCondition(actor, condition, removalCondition);
@@ -522,27 +577,32 @@ namespace Domain.Service.Characters
         {
             _statusManager.ClearCondition();
         }
+#endregion
+#region ItemKnowledge
+        public void AddKnownItem(IItem item)
+        {
+            if (!IsKnownItem(item))
+            {
+                GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
+                _knownItemNames.Add(item.BaseName);
+            }
+        }
+
+        public bool IsKnownItem(IItem item)
+        {
+            return _knownItemNames.Contains(item.BaseName);
+        }
 
         public void ClearKnownItems(IMap map)
         {
             _knownItemNames.Clear();
             GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
         }
-
-        public void ClearAffiliation(IMap map)
+#endregion
+        public void ListenToAlert(Vector2Int position)
         {
-            _affiliationManager.Clear();
-            GameLog.Add($"{GetName(map.Player)}は他のキャラクターのことを忘れてしまった");
-        }
-
-        public async UniTask ForceMove(Direction8 direction, IInput input)
-        {
-            State = CharacterState.Act;
-            Turn(direction);
-            await _entity.Move(direction,
-                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
-
-            State = CharacterState.Finish;
+            _statusManager.RemoveConditionType(typeof(Slept));
+            _behavior.KnowLocationOf(position);
         }
 
         public void WasAttackedBy(IActorOfEffect actor, float impact)
@@ -562,17 +622,10 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
+        public void ClearAffiliation(IMap map)
         {
-            State = CharacterState.Think;
-            var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
-            if (StatusManager.IsConfused)
-            {
-                action = RegenerateConfuseAction(this, map, action);
-            }
-
-            State = CharacterState.Act;
-            await action.Do(this, map, input);
+            _affiliationManager.Clear();
+            GameLog.Add($"{GetName(map.Player)}は他のキャラクターのことを忘れてしまった");
         }
 
         public bool CanPickUpItem()
@@ -608,20 +661,6 @@ namespace Domain.Service.Characters
             _skills.ForEach(x => x.UpdateTurn());
         }
 
-        public void AddKnownItem(IItem item)
-        {
-            if (!IsKnownItem(item))
-            {
-                GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
-                _knownItemNames.Add(item.BaseName);
-            }
-        }
-
-        public bool IsKnownItem(IItem item)
-        {
-            return _knownItemNames.Contains(item.BaseName);
-        }
-
         public void AddMoney(int value)
         {
             Log.Debug($"{_name}:AddMoney {_money}+={value}");
@@ -637,42 +676,6 @@ namespace Domain.Service.Characters
         ~Character()
         {
             Dispose();
-        }
-
-        private IAction RegenerateConfuseAction(IHasBehavior character, IMap map, IAction action)
-        {
-            switch (action)
-            {
-                case Move _:
-                case Swap _:
-                    var moves = new List<IAction>();
-                    foreach (var direction in DirectionMethods.AllDirections)
-                    {
-                        var move = new Move(direction);
-                        var swap = new Swap(direction);
-                        if (move.Doable(character, map))
-                            moves.Add(move);
-                        else if (swap.Doable(character, map))
-                            moves.Add(swap);
-                    }
-
-                    return moves.GetAtRandom();
-
-                case UseSkill useSkill:
-                    return useSkill with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case UseItem useItem:
-                    return useItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case ThrowItem throwItem:
-                    return throwItem with { Direction = DirectionMethods.AllDirections.GetAtRandom() };
-
-                case DoNothing _:
-                    return action;
-
-                default:
-                    throw new InvalidOperationException();
-            }
         }
     }
 }

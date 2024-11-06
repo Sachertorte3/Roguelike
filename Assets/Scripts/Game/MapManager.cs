@@ -380,17 +380,6 @@ namespace Game
             return result.Select(position => At(position));
         }
 
-        public IEnumerable<IMapPosition> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area,
-            params EntityLayer[] layers)
-        {
-            return GetAllBlankAndStandablePositionsOn(layers).In(area);
-        }
-
-        public HashSet<Vector2Int> GetAllLightPassablePositions()
-        {
-            return TilemapViewer.GetAllLightPassablePositions();
-        }
-
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor)
         {
             var calculator = new MoveCostCalculator(actor, this, true);

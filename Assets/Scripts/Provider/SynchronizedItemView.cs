@@ -13,24 +13,20 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedItemView : SynchronizedEntityView<IItemEntity, EntityView>, IDisposable
+    public class SynchronizedItemView : SynchronizedEntityView<IItemEntity, ItemView>, IDisposable
     {
         private readonly SerialDisposable _disposable = new();
-        private readonly EffectViewSpawner _effectViewSpawner;
         protected override InputReceiver _inputReceiver { get; init; }
-        private readonly World _world;
 
-        protected override EntityView GetEntityView(EntityView view)
+        protected override EntityView GetEntityView(ItemView view)
         {
-            return view;
+            return view.GetComponent<EntityView>();
         }
 
         [Inject]
-        public SynchronizedItemView(World world, EffectViewSpawner effectViewSpawner, InputReceiver inputReceiver)
+        public SynchronizedItemView(World world, InputReceiver inputReceiver)
         {
-            _effectViewSpawner = effectViewSpawner;
             _inputReceiver = inputReceiver;
-            _world = world;
 
             world.ActiveMap.SubscribeToAllIgnoreNull(
                 map => _disposable.Disposable = map.Items.SubscribeToAll(Add, Remove),
@@ -38,10 +34,10 @@ namespace Provider
             );
         }
 
-        protected override EntityView ViewPrefab(IItemEntity _)
+        protected override ItemView ViewPrefab(IItemEntity _)
         {
             return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Item.prefab").WaitForCompletion()
-                .GetComponent<EntityView>();
+                .GetComponent<ItemView>();
         }
 
         public void Dispose()
@@ -54,13 +50,16 @@ namespace Provider
             Dispose();
         }
 
-        protected override void InitializeView(IItemEntity item, EntityView entityView)
+        protected override void InitializeView(IItemEntity item, ItemView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.GetComponent<SpriteRenderer>().sprite = item.Icon;
+
+            var itemView = entityView.GetComponent<ItemView>();
+            itemView.SetShiny(item.Item.IsShiny);
         }
 
-        protected override void CleanupView(IItemEntity item, EntityView view)
+        protected override void CleanupView(IItemEntity item, ItemView view)
         {
         }
     }

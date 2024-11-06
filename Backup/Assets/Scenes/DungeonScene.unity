@@ -131,7 +131,6 @@ GameObject:
   - component: {fileID: 30726409}
   - component: {fileID: 30726413}
   - component: {fileID: 30726412}
-  - component: {fileID: 30726411}
   - component: {fileID: 30726410}
   m_Layer: 3
   m_Name: Minimap
@@ -178,19 +177,6 @@ MonoBehaviour:
     ShopFloor: {fileID: 11400000, guid: a10d4cbfcb1dc8f418b7a354b5fb72b7, type: 2}
     Water: {fileID: 0}
     Wall: {fileID: 0}
---- !u!114 &30726411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30726408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcada32b13037b045b1c0f754cfa9b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tilemap: {fileID: 30726413}
 --- !u!483693784 &30726412
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -949,7 +935,7 @@ GameObject:
   - component: {fileID: 319495281}
   - component: {fileID: 319495280}
   - component: {fileID: 319495279}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: WorldCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2088,7 +2074,6 @@ GameObject:
   - component: {fileID: 878990519}
   - component: {fileID: 878990523}
   - component: {fileID: 878990522}
-  - component: {fileID: 878990524}
   - component: {fileID: 878990521}
   m_Layer: 0
   m_Name: OverlayTilemap
@@ -2219,19 +2204,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &878990524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 878990518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcada32b13037b045b1c0f754cfa9b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tilemap: {fileID: 878990523}
 --- !u!1 &883410306
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,7 +2499,6 @@ GameObject:
   - component: {fileID: 986205757}
   - component: {fileID: 986205760}
   - component: {fileID: 986205759}
-  - component: {fileID: 986205761}
   - component: {fileID: 986205758}
   m_Layer: 0
   m_Name: Tilemap
@@ -2691,19 +2662,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &986205761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986205756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcada32b13037b045b1c0f754cfa9b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tilemap: {fileID: 986205760}
 --- !u!1 &1026227638
 GameObject:
   m_ObjectHideFlags: 0
@@ -3493,7 +3451,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 11.28125
+  orthographic size: 11.21875
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -3987,11 +3945,11 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.28125
+  orthographic size: 11.21875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 23
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

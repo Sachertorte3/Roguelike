@@ -7,10 +7,8 @@ using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Entities;
 using Domain.Service.Items;
 using Domain.Service.Logs;
-using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
@@ -19,7 +17,7 @@ namespace Domain.Service.Events
 {
     public class Chest : ISerializable<ChestMemento>, IIconEventEntity
     {
-        private Entity _entity;
+        public Entity Entity { get; init; }
         private Option<Item> _item;
         private Option<EnemyData> _mimic;
 
@@ -27,7 +25,7 @@ namespace Domain.Service.Events
         {
             _item = memento.Item.Map(i => new Item(i));
             _mimic = memento.Mimic;
-            _entity = new Entity(memento.Entity);
+            Entity = new Entity(memento.Entity);
             Event = new PlayerEvent(
                 "宝箱を見つけた",
                 true,
@@ -48,15 +46,6 @@ namespace Domain.Service.Events
             .WaitForCompletion();
 
         public IEvent Event { get; init; }
-        public Id<IEntity> Id => _entity.Id;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
 
         private UniTask DoEvent(IMap map)
         {
@@ -70,12 +59,12 @@ namespace Domain.Service.Events
                 else
                 {
                     GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
-                    map.SpawnItem(_item.Value, CurrentPosition);
+                    map.SpawnItem(_item.Value, Entity.CurrentPosition);
                 }
             }
             else
             {
-                map.SpawnEnemy(_mimic.Value, CurrentPosition, isSlept: false, isShiny: false);
+                map.SpawnEnemy(_mimic.Value, Entity.CurrentPosition, isSlept: false, isShiny: false);
             }
 
             return UniTask.CompletedTask;
@@ -83,17 +72,7 @@ namespace Domain.Service.Events
 
         public void Dispose()
         {
-            _entity.Dispose();
-        }
-
-        public void SetVisibility(bool visibility)
-        {
-            _entity.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            _entity.Destroy();
+            Entity.Dispose();
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
@@ -117,19 +96,14 @@ namespace Domain.Service.Events
 
         public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
-            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
-            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            var destination = GetThrowDestination(Entity.CurrentPosition, direction, distance, map);
+            if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
             {
-                _entity.SetVisibility(false);
-                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                Entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, EntityLayer.Middle);
+                Entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.At(position).CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
             }
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            _entity.Teleport(position);
         }
 
         public ChestMemento Serialize()
@@ -138,7 +112,7 @@ namespace Domain.Service.Events
             (
                 _item.Map(i => i.Serialize()),
                 _mimic,
-                _entity.Serialize()
+                Entity.Serialize()
             );
         }
 

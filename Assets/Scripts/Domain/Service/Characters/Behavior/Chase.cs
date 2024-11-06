@@ -39,7 +39,7 @@ namespace Domain.Service.Characters.Behavior
             IMap map)
         {
             var calculator = new MoveCostCalculator(character, map, true);
-            var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
+            var route = new AStar(calculator.Calculate).Calc(character.Entity.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
                 Log.Debug("[Think]Already reached the target position");

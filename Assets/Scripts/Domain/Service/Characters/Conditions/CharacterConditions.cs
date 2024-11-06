@@ -28,10 +28,10 @@ namespace Domain.Service.Characters.Conditions
                 _inflicterMap.Add(condition, actor);
             }
 
-            _disposables.Add(_conditions.ObserveAdd()
-                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player)));
-            _disposables.Add(_conditions.ObserveRemove()
-                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player)));
+            _conditions.ObserveAdd()
+                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player)).AddTo(_disposables);
+            _conditions.ObserveRemove()
+                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player)).AddTo(_disposables);
         }
 
         public IObservableCollection<ICondition> Conditions => _conditions;

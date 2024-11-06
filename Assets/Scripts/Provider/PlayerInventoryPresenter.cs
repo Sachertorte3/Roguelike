@@ -19,32 +19,32 @@ namespace Provider
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
-                    _disposables.Add(map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
+                    map.Player.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
                         ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player, map.ItemPlaceholders);
-                    }));
-                    _disposables.Add(gameManager.Turn.Subscribe(position =>
+                    }).AddTo(_disposables);
+                    gameManager.Turn.Subscribe(position =>
                     {
-                        var item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault();
+                        var item = map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault();
                         if (item != null)
                             inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
                         else
                             inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
-                    }));
-                    _disposables.Add(map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
+                    }).AddTo(_disposables);
+                    map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
                         UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player, map.ItemPlaceholders);
-                    }));
-                    _disposables.Add(map.Player.OnKnownItemUpdated.Subscribe(_ =>
+                    }).AddTo(_disposables);
+                    map.Player.OnKnownItemUpdated.Subscribe(_ =>
                     {
                         UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
-                    }));
-                    _disposables.Add(map.ItemPlaceholders.OnItemRenamed.Subscribe(_ =>
+                    }).AddTo(_disposables);
+                    map.ItemPlaceholders.OnItemRenamed.Subscribe(_ =>
                     {
                         UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
-                    }));
+                    }).AddTo(_disposables);
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
                     {
                         ReplaceItemView(inventoryView, map.Player.Inventory.GetItem(i), i, map.Player, map.ItemPlaceholders);

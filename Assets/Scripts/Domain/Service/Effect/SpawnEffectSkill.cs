@@ -151,7 +151,7 @@ namespace Domain.Service.Effect
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
-                                .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
+                                .OrderBy(target => Vector2.Distance(target.Entity.CurrentPosition, position))
                                 .Reverse())
                     {
                         switch (target)
@@ -164,7 +164,7 @@ namespace Domain.Service.Effect
                                     var impactValue = effect.Evaluate(actor, character);
                                     character.WasAttackedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
                                         .Where(target => target != actor && target != actor)
                                         .ForEach(c =>
                                             c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
@@ -175,7 +175,7 @@ namespace Domain.Service.Effect
                                     var impactValue = effect.Evaluate(actor, character);
                                     character.WasHealedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
                                         .Where(target => target != actor && target != actor)
                                         .ForEach(c =>
                                             c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,

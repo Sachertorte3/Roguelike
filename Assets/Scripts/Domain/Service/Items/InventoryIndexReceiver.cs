@@ -13,7 +13,7 @@ namespace Domain.Service.Items
             if (isEmpty)
                 return null;
             if (isGroundItem)
-                return map.Items.At(map.Player.CurrentPosition).FirstOrDefault()?.Item;
+                return map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault()?.Item;
             return inventory.GetItem(index);
         }
     }

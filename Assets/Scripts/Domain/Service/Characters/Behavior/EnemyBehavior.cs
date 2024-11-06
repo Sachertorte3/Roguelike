@@ -115,7 +115,7 @@ namespace Domain.Service.Characters.Behavior
 
             if (result.TargetPosition != null)
             {
-                var relativeVector = result.TargetPosition.Value - character.CurrentPosition;
+                var relativeVector = result.TargetPosition.Value - character.Entity.CurrentPosition;
                 if (VectorExtension.ChebyshevDistance(relativeVector) <= 1)
                 {
                     var direction = DirectionMethods.NearestDirectionFromVector(relativeVector);
@@ -168,36 +168,36 @@ namespace Domain.Service.Characters.Behavior
 
         private BehaviorResult GenerateNextBehaviorResult(IHasBehavior character, IMap map)
         {
-            var visibleEnemies = map.Characters.FromAffiliation(character, AffiliationType.Enemy).IsVisible(character.CurrentPosition);
-            var visibleLeaders = map.Characters.Where(c => c.IsLeader).FromAffiliation(character, AffiliationType.Ally).IsVisible(character.CurrentPosition);
+            var visibleEnemies = map.Characters.FromAffiliation(character, AffiliationType.Enemy).IsVisible(character.Entity.CurrentPosition);
+            var visibleLeaders = map.Characters.Where(c => c.IsLeader).FromAffiliation(character, AffiliationType.Ally).IsVisible(character.Entity.CurrentPosition);
             if (character.IsAlly(map.Player))
             {
                 visibleLeaders = visibleLeaders.Append(map.Player);
             }
 
-            var targetedEnemy = visibleEnemies.MinByOrDefault(enemy => VectorExtension.ChebyshevDistance(character.CurrentPosition, enemy.CurrentPosition), null);
+            var targetedEnemy = visibleEnemies.MinByOrDefault(enemy => VectorExtension.ChebyshevDistance(character.Entity.CurrentPosition, enemy.Entity.CurrentPosition), null);
             var targetedLeader = visibleLeaders.MaxByOrDefault(leader => character.Affiliation.GetAffection(leader.Affiliation), null);
 
             if (BehaviorData.PrioritizeEnemiesOverLeaders)
             {
                 if (targetedEnemy != null)
                 {
-                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.CurrentPosition);
+                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.Entity.CurrentPosition);
                 }
                 else if (targetedLeader != null)
                 {
-                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.CurrentPosition);
+                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.Entity.CurrentPosition);
                 }
             }
             else
             {
                 if (targetedLeader != null)
                 {
-                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.CurrentPosition);
+                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.Entity.CurrentPosition);
                 }
                 else if (targetedEnemy != null)
                 {
-                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.CurrentPosition);
+                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.Entity.CurrentPosition);
                 }
             }
 
@@ -241,8 +241,8 @@ namespace Domain.Service.Characters.Behavior
 
         public bool CanReachButNotAtTarget(IHasBehavior character, Vector2Int targetPosition, IMap map)
         {
-            return character.CurrentPosition != targetPosition
-                   && map.IsReachable(character.CurrentPosition, targetPosition, character);
+            return character.Entity.CurrentPosition != targetPosition
+                   && map.IsReachable(character.Entity.CurrentPosition, targetPosition, character);
         }
 
         public bool IsChasingEnemy()
@@ -252,7 +252,7 @@ namespace Domain.Service.Characters.Behavior
 
         private float GetDistance(IHasBehavior character, Vector2Int targetPosition)
         {
-            var distance = VectorExtension.ChebyshevDistance(character.CurrentPosition, targetPosition);
+            var distance = VectorExtension.ChebyshevDistance(character.Entity.CurrentPosition, targetPosition);
             return distance;
         }
 

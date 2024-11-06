@@ -12,6 +12,7 @@ using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using Utilities;
 
 namespace Game
 {
@@ -19,27 +20,26 @@ namespace Game
     {
         private readonly ObservableList<ICharacter> _characters = new();
         private readonly CharacterFactory _factory = new();
-        public readonly CharacterEvents CharacterEvents = new();
-        public readonly CharacterEvents PlayerEvents = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
         public CharacterManager(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
+            _characters.SubscribeToAllObservables(
+                character => character.Entity.Position,
+                (character, _) => SetAllCharacterPosition()
+            );
+            _characters.SubscribeToAllObservables(
+                character => character.Entity.OnDestroyed,
+                (character, _) => _characters.Remove(character)
+            );
 
             var player = _factory.CreatePlayer(playerData, receiver, map);
-            if (Player != null)
-            {
-                PlayerEvents.Remove(Player);
-            }
 
             Player = player;
             if (player.CurrentHp > 0)
             {
                 AddCharacter(player);
-                PlayerEvents.Add(player);
             }
         }
 
@@ -50,8 +50,6 @@ namespace Game
         public void Dispose()
         {
             _characters.ForEach(character => character.Dispose());
-            PlayerEvents.Dispose();
-            CharacterEvents.Dispose();
         }
 
         ~CharacterManager()
@@ -62,14 +60,12 @@ namespace Game
         public ICharacter AddCharacter(ICharacter character)
         {
             _characters.Add(character);
-            CharacterEvents.Add(character);
             return character;
         }
 
         public void RemoveCharacter(ICharacter character)
         {
             _characters.Remove(character);
-            CharacterEvents.Remove(character);
         }
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)

@@ -18,7 +18,7 @@ namespace Provider
             StatLine statLine)
         {
             CompositeDisposable _disposable = new();
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     if (map.Player.CurrentHp <= 0)
                     {

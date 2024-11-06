@@ -40,7 +40,7 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 1;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map) => Apply(actor.Id, target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map) => Apply(actor.Entity.Id, target, map);
         public UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map) => Apply(Id<IEntity>.Empty, target, map);
 
         public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)

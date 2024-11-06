@@ -23,7 +23,7 @@ namespace Domain.Model.Effect.Position
         {
             var positions = new List<Vector2Int>();
             if (TargetSelf)
-                positions.Add(actor.CurrentPosition);
+                positions.Add(actor.Entity.CurrentPosition);
             if (TargetAlly)
                 positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Ally).Positions());
             if (TargetNeutral)

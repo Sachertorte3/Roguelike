@@ -21,7 +21,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap map)
         {
-            return Skill.Evaluate(actor, actor.CurrentPosition, Direction, map);
+            return Skill.Evaluate(actor, actor.Entity.CurrentPosition, Direction, map);
         }
 
         public string Info()

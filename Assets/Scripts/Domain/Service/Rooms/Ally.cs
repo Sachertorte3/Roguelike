@@ -8,7 +8,6 @@ using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
-using R3;
 using UnityEngine;
 using Utilities;
 
@@ -17,6 +16,7 @@ namespace Domain.Service.Rooms
     public class Ally : IEventEntity
     {
         public readonly ICharacter Character;
+        public Entity Entity => Character.Entity;
         public readonly EnemyBehavior Behavior;
         public IEvent Event { get; init; }
 
@@ -81,33 +81,9 @@ namespace Domain.Service.Rooms
             Dispose();
         }
 
-        public Id<IEntity> Id => Character.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
-        public Vector2Int CurrentPosition => Character.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;
-        public EntityLayer Layer => Character.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => Character.OnMove;
-        public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
-        public Observable<Unit> OnDestroyed => Character.OnDestroyed;
-
-        public void SetVisibility(bool visibility)
-        {
-            Character.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            Character.Destroy();
-        }
-
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return Character.BlowAway(actor, direction, distance, map);
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            Character.Teleport(position);
         }
     }
 }

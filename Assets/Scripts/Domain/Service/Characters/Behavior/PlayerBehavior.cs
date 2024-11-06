@@ -81,7 +81,7 @@ namespace Domain.Service.Characters.Behavior
                             move = _intelligentDashController.Filter(move, character, started, map, input);
 
                         var swap = new Swap(move.Direction);
-                        var destination = character.CurrentPosition + move.Direction.Vector();
+                        var destination = character.Entity.CurrentPosition + move.Direction.Vector();
                         var eventEntities = map.GetEventEntityAt(destination, EntityLayer.Middle);
                         character.Turn(move.Direction);
 

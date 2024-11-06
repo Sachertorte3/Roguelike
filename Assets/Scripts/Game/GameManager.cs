@@ -86,7 +86,7 @@ namespace Game
 
             _world.ActiveMap.Subscribe(map =>
             {
-                _disposable.Disposable = map.Player.OnDestroyed.Subscribe(async _ =>
+                _disposable.Disposable = map.Player.Entity.OnDestroyed.Subscribe(async _ =>
                 {
                     await StopMap();
                     Save();

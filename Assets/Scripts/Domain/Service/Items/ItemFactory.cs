@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using Domain.Model;
 using Domain.Model.Memento;
-using Domain.Service.Entities;
 using UnityEngine;
 
 namespace Domain.Service.Items

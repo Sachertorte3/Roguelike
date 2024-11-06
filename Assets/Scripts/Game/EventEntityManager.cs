@@ -4,9 +4,9 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Memento;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using ObservableCollections;
 using R3;
+using Utilities;
 
 namespace Game
 {
@@ -19,7 +19,6 @@ namespace Game
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
-        public EventEntityEvents EventEntityEvents = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
@@ -55,7 +54,10 @@ namespace Game
             if (_bonfire.HasValue)
                 Spawn(_bonfire.Value!);
 
-            EventEntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.EventEntity));
+            _eventEntities.SubscribeToAllObservables(
+                eventEntity => eventEntity.Entity.OnDestroyed,
+                (eventEntity, _) => Remove(eventEntity)
+            );
         }
 
         public EventEntitiesMemento Serialize()
@@ -95,7 +97,6 @@ namespace Game
         public void Add(IEventEntity eventEntity)
         {
             _eventEntities.Add(eventEntity);
-            EventEntityEvents.Add(eventEntity);
         }
 
         public void Remove(IEventEntity eventEntity)
@@ -122,8 +123,6 @@ namespace Game
             {
                 _bonfire = Option<Bonfire>.None;
             }
-
-            EventEntityEvents.Remove(eventEntity);
         }
     }
 }

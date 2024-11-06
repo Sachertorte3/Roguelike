@@ -15,7 +15,7 @@ namespace Domain.Service.Characters.Behavior
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
-            var relativePosition = character.CurrentPosition - targetPosition;
+            var relativePosition = character.Entity.CurrentPosition - targetPosition;
             var directions = DirectionMethods.NearDirectionsFromVector(relativePosition);
             IEnumerable<Move> moves;
             if (directions != null)

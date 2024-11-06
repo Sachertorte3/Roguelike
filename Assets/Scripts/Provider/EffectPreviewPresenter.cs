@@ -23,7 +23,7 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var previews = new List<GameObject>();
-            world.ActiveMap.SubscribeToAllIgnoreNull(
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
                 map =>
                 {
                     disposables.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
@@ -53,7 +53,7 @@ namespace Provider
                             IItem? item = null;
                             if (focus.isGroundItem)
                             {
-                                item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault()?.Item;
+                                item = map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault()?.Item;
                             }
                             else
                             {
@@ -63,7 +63,7 @@ namespace Provider
                             {
                                 if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                                 {
-                                    var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition,
+                                    var area = spawnEffectSkill.GetArea(map.Player, map.Player.Entity.CurrentPosition,
                                         map.Player.CurrentDirection, map, true);
                                     var color = spawnEffectSkill.Color;
                                     color.a = 0.25f;

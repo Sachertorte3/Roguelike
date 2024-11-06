@@ -5,7 +5,6 @@ using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Entities;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -16,14 +15,14 @@ namespace Domain.Service.Events
     {
         public MovementEntityType Type { get; init; }
         public Location Destination { get; init; }
-        private readonly Entity _entity;
+        public Entity Entity { get; init; }
         public Id<IEntity> DestinationId { get; init; }
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
 
         public Stairs(StairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             Type = data.Type;
-            _entity = new Entity(data.Entity);
+            Entity = new Entity(data.Entity);
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
@@ -43,16 +42,8 @@ namespace Domain.Service.Events
 
         public void Dispose()
         {
-            _entity.Dispose();
+            Entity.Dispose();
         }
-
-        public Id<IEntity> Id => _entity.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public IEvent Event { get; init; }
 
@@ -67,24 +58,9 @@ namespace Domain.Service.Events
             return UniTask.CompletedTask;
         }
 
-        public void SetVisibility(bool visibility)
-        {
-            _entity.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            _entity.Destroy();
-        }
-
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return UniTask.CompletedTask;
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            _entity.Teleport(position);
         }
 
         public StairsMemento Serialize()
@@ -93,7 +69,7 @@ namespace Domain.Service.Events
             (
                 Type,
                 Destination,
-                entity: _entity.Serialize(),
+                entity: Entity.Serialize(),
                 destinationId: DestinationId
             );
         }

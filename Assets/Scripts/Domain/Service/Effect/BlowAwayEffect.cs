@@ -36,7 +36,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
         {
-            var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+            var direction = DirectionMethods.NearestDirectionFromVector(target.Entity.CurrentPosition - actor.Entity.CurrentPosition);
             if (direction.HasValue)
                 await target.BlowAway(actor, direction.Value, _distance, map);
         }

@@ -50,7 +50,7 @@ namespace Domain.Service.Effect
                     disabledItemIndexes.Add(index);
                 }
             }
-            var groundItem = map.Items.At(player.CurrentPosition).FirstOrDefault()?.Item;
+            var groundItem = map.Items.At(player.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
             {
                 disabledItemIndexes.Add(map.Player.Inventory.MaxItemCount);

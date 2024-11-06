@@ -5,7 +5,6 @@ using Domain.Model.Map;
 using R3;
 using Stats;
 using UnityEngine;
-using Utilities;
 
 namespace Domain.Service.Characters
 {
@@ -29,8 +28,7 @@ namespace Domain.Service.Characters
             ClairvoyantFlags = new FlagStat(clairvoyantFlags);
             BlindFlags = new FlagStat(blindFlags);
             _canThroughWalls = canThroughWalls;
-            _position.Subscribe(currentPosition =>
-                ChangeVisibleArea());
+            _position.Subscribe(_ => ChangeVisibleArea());
             _range.Subscribe(_ => ChangeVisibleArea());
             ClairvoyantFlags
                 .Value

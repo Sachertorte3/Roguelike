@@ -19,7 +19,7 @@ namespace Provider
         [Inject]
         public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, World world)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     tileView.Clear();
                     overlayTileView.Clear();
@@ -61,15 +61,15 @@ namespace Provider
                             TileVisibility.Transparent);
                     }
 
-                    _disposables.Add(map.TilemapViewer.OnTilesChanged.Subscribe(context =>
+                    map.TilemapViewer.OnTilesChanged.Subscribe(context =>
                     {
                         foreach (var (position, tile) in context)
                         {
                             SetTile(tileView, minimapController, tile, position, tileSet, map.ShopRect);
                         }
-                    }));
+                    }).AddTo(_disposables);
 
-                    _disposables.Add(map.TilemapViewer.OnOverlayTilesChanged.Subscribe(context =>
+                    map.TilemapViewer.OnOverlayTilesChanged.Subscribe(context =>
                     {
                         foreach (var (position, category) in context)
                         {
@@ -88,9 +88,9 @@ namespace Provider
                                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
                             }
                         }
-                    }));
+                    }).AddTo(_disposables);
                     // HACK: The following subscription might conflict with the one below if their handling logic diverges in the future.
-                    _disposables.Add(map.TilemapViewer.OnTilesKnownChanged.Subscribe(context =>
+                    map.TilemapViewer.OnTilesKnownChanged.Subscribe(context =>
                     {
                         foreach (var (position, isKnown) in context)
                         {
@@ -103,11 +103,11 @@ namespace Provider
                                 SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Transparent);
                             }
                         }
-                    }));
+                    }).AddTo(_disposables);
                     // HACK: Here.
                     var previousVisibleArea = map.VisibleArea;
-                    _disposables.Add(map.CharacterManager.PlayerEvents.OnVisibleAreaChanged
-                        .Select(x => x.Character.VisionRange.VisibleArea)
+                    map.Player.VisionRange.OnVisibleAreaChanged
+                        .Select(x => map.Player.VisionRange.VisibleArea)
                         .Subscribe(visibleAreaChanged =>
                         {
                             var areaEntered = visibleAreaChanged.Except(previousVisibleArea);
@@ -122,7 +122,7 @@ namespace Provider
                             {
                                 SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Translucent);
                             }
-                        }));
+                        }).AddTo(_disposables);
                 },
                 _ => _disposables.Clear());
         }

@@ -1,14 +1,13 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Service.Entities
+namespace Domain.Model
 {
-    internal class Entity : IDisposable, ISerializable<EntityMemento>
+    public class Entity : IDisposable, ISerializable<EntityMemento>
     {
         public readonly Id<IEntity> Id;
         private readonly EntityLayer _layer;
@@ -29,7 +28,7 @@ namespace Domain.Service.Entities
         public ReadOnlyReactiveProperty<Vector2Int> Position => _position;
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _onMove;
         public Observable<Vector2Int> OnTeleport => _onTeleport;
-        public ReadOnlyReactiveProperty<bool> VisibleByPlayer => _visibleByPlayer;
+        public ReadOnlyReactiveProperty<bool> Visibility => _visibleByPlayer;
         public EntityLayer Layer => _layer;
         public ReadOnlyReactiveProperty<bool> IsDestroyed => _isDestroyed;
         public Observable<Unit> OnDestroyed => IsDestroyed.Where(isDestroyed => isDestroyed).AsUnitObservable();
@@ -85,7 +84,7 @@ namespace Domain.Service.Entities
         {
             _position.Value += direction.Vector();
             _onMove.OnNext((direction, CurrentPosition, isThrown));
-            if (VisibleByPlayer.CurrentValue) await UniTask.Delay(moveMilliseconds);
+            if (Visibility.CurrentValue) await UniTask.Delay(moveMilliseconds);
         }
 
         public void Destroy()

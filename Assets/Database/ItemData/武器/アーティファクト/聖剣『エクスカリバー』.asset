@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u8056\u5263\u300E\u30A8\u30AF\u30B9\u30AB\u30EA\u30D0\u30FC\u300F"
   m_EditorClassIdentifier: 
   Category: 4
-  Icon: {fileID: 1165330622, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1707327581, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 1
   _rarity: 4
   EffectType: 1
@@ -26,23 +26,22 @@ MonoBehaviour:
     <Position>k__BackingField:
       rid: 2541219106150416405
     <Area>k__BackingField:
-      rid: 5486256409939279872
+      rid: 3794997484628475915
     <Effects>k__BackingField:
-    - rid: 3794997484628475906
+    - rid: 3794997484628475916
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 2541219281251860483
     <Effects>k__BackingField:
-    - rid: 3794997484628475906
+    - rid: 3794997484628475916
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
   UsageLimit: 60
   UpgradeLimit: 5
-  PassiveConditions:
-  - rid: 3794997484628475905
+  PassiveConditions: []
   references:
     version: 2
     RefIds:
@@ -54,22 +53,16 @@ MonoBehaviour:
     - rid: 2541219281251860483
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 3794997484628475905
-      type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data:
-        Power: 1
-    - rid: 3794997484628475906
-      type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _elementPowers:
-        - _element: 0
-          _power: 6
-        - _element: 5
-          _power: 4
-        _rate: 0.5
-    - rid: 5486256409939279872
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 3794997484628475915
+      type: {class: FanArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:
         ContainsSelf: 0
         CanIgnoreWalls: 0
-        Length: 1
+        Radius: 1
+    - rid: 3794997484628475916
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 12
+        _criticalRate: 0

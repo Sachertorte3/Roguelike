@@ -26,33 +26,41 @@ namespace Domain.Model.Map
         public IObservableCollection<IItemEntity> Items { get; }
 
         public HashSet<Vector2Int> GetAllPositions();
-        public IEnumerable<IMapPosition> GetBlankAndStandablePositionsInArea(IEnumerable<Vector2Int> area,
-            params EntityLayer[] layers);
-        public IMapPosition At(Vector2Int position);
-        public bool IsGrass(Vector2Int position);
-        public HashSet<Vector2Int> GetAllLightPassablePositions();
-        public IItem? GetItemFromId(Id<IItem> id);
+
         public bool IsInside(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
+
+        public IItem? GetItemFromId(Id<IItem> id);
         public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer);
+
         public UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor);
+
         public void UpdateTurn(int turn);
+
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
+
+        public bool IsGrass(Vector2Int position);
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
-        public void SpawnFire(IEnumerable<Vector2Int> positions);
+
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
             bool? isSlept = null, bool? isShiny = null);
+        public void SpawnFire(IEnumerable<Vector2Int> positions);
         public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
             int distance, params EntityLayer[] canHitLayer);
         public void SpawnEffect(IEnumerable<Vector2Int> area, Color color);
+
         public IItemEntity? TryPickUpAt(Vector2Int position, bool isShopItem);
+
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
+
         public void RemoveEventEntity(IEventEntity entity);
+
         public HashSet<Vector2Int> AllCharacterPositions();
         public HashSet<Vector2Int> AllItemPositions();
+
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);
         public HashSet<Vector2Int> GetFullVisibleArea();

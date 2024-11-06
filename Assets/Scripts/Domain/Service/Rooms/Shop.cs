@@ -29,7 +29,7 @@ namespace Domain.Service.Rooms
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
         public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room,
-            mapManager.Player.CurrentPosition)
+            mapManager.Player.Entity.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
@@ -90,7 +90,7 @@ namespace Domain.Service.Rooms
                     hasEntered,
                     hasEverEntered
                 ),
-                Clerk.Id,
+                Clerk.Entity.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
                     item.Id.ToString(),

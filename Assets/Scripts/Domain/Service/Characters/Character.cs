@@ -18,7 +18,6 @@ using Domain.Service.Action;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Characters.Conditions;
 using Domain.Service.Effect;
-using Domain.Service.Entities;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using ObservableCollections;
@@ -34,7 +33,7 @@ namespace Domain.Service.Characters
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
         private readonly ReactiveProperty<Direction8> _direction;
-        private readonly Entity _entity;
+        public Entity Entity { get; init; }
         private readonly Inventory _inventory;
         private readonly ObservableHashSet<string> _knownItemNames = new();
         private readonly Subject<Unit> _onAttacked = new();
@@ -52,16 +51,16 @@ namespace Domain.Service.Characters
         {
             _name = data.Name;
             CharacterType = data.CharacterType;
-            _entity = new Entity(data.Entity);
+            Entity = new Entity(data.Entity);
             _direction = new ReactiveProperty<Direction8>(data.Direction);
-            _statusManager = new CharacterStatusManager(data.Status, Position, this, map);
+            _statusManager = new CharacterStatusManager(data.Status, Entity.Position, this, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToList();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
             _inventory = new Inventory(data.Inventory, this);
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
             _behavior = behavior;
             CanThroughWalls = data.CanThroughWalls;
-            _affiliationManager = new CharacterAffiliationManager(Id, data.Affiliation, map.Player?.Affiliation);
+            _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player?.Affiliation);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
@@ -89,15 +88,14 @@ namespace Domain.Service.Characters
                 if (IsDead)
                 {
                     if (_lastSkill != null)
-                        await _lastSkill.Use(this, CurrentPosition, CurrentDirection, _map);
+                        await _lastSkill.Use(this, Entity.CurrentPosition, CurrentDirection, _map);
                     _onDead.OnNext(Unit.Default);
                 }
             });
         }
 
-        public bool IsDead => _statusManager.IsDead || _entity.IsDestroyed.CurrentValue;
+        public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
-        public Entity Entity => _entity;
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
@@ -117,7 +115,7 @@ namespace Domain.Service.Characters
         public string GetName(IHasAffiliation player) => GetName(player, false);
         public string GetName(IHasAffiliation player, bool ignoreVisibility)
         {
-            if (!ignoreVisibility && !Visibility.CurrentValue)
+            if (!ignoreVisibility && !Entity.Visibility.CurrentValue)
             {
                 return "何者か";
             }
@@ -143,7 +141,7 @@ namespace Domain.Service.Characters
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
 
-#region CanMove
+        #region CanMove
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
         ///     if the destination is not passable.
@@ -156,12 +154,12 @@ namespace Domain.Service.Characters
 
         public bool CanMove(Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map)
         {
-            return CanMove(CurrentPosition, direction, isFlying, canThroughWalls, map);
+            return CanMove(Entity.CurrentPosition, direction, isFlying, canThroughWalls, map);
         }
 
         public bool CanMove(Direction8 direction, IPassableChecker map)
         {
-            return CanMove(CurrentPosition, direction, IsFlying, CanThroughWalls, map);
+            return CanMove(Entity.CurrentPosition, direction, IsFlying, CanThroughWalls, map);
         }
 
         public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map)
@@ -179,7 +177,7 @@ namespace Domain.Service.Characters
 
         public bool CanSwap(Direction8 direction, IMap map)
         {
-            return CanSwap(CurrentPosition, direction, map);
+            return CanSwap(Entity.CurrentPosition, direction, map);
         }
 
         public bool CanSwap(Vector2Int position, Direction8 direction, IMap map)
@@ -197,7 +195,7 @@ namespace Domain.Service.Characters
         }
 
         public bool CanMoveIgnoreEntity(Direction8 direction, IPassableChecker map) =>
-            CanMoveIgnoreEntity(CurrentPosition, direction, map);
+            CanMoveIgnoreEntity(Entity.CurrentPosition, direction, map);
 
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
@@ -209,8 +207,8 @@ namespace Domain.Service.Characters
                        (map.At(position + direction.Rotate45Clockwise().Vector()).IsPassableOnMap() &&
                         map.At(position + direction.Rotate45AntiClockwise().Vector()).IsPassableOnMap()));
         }
-#endregion
-#region Action
+        #endregion
+        #region Action
         public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
         {
             State = CharacterState.Think;
@@ -270,9 +268,9 @@ namespace Domain.Service.Characters
             var nearestCharacterDirection = map.GetVisibleCharacters(this)
                 .Where(x => x != this)
                 .Select(x => (character: x,
-                    direction: DirectionMethods.FromVectorStrict(x.CurrentPosition - CurrentPosition)))
+                    direction: DirectionMethods.FromVectorStrict(x.Entity.CurrentPosition - Entity.CurrentPosition)))
                 .Where(x => x.direction.HasValue)
-                .OrderBy(x => VectorExtension.ChebyshevDistance(x.character.CurrentPosition, CurrentPosition))
+                .OrderBy(x => VectorExtension.ChebyshevDistance(x.character.Entity.CurrentPosition, Entity.CurrentPosition))
                 .ThenByDescending(x => CurrentDirection.AngleTo(x.direction.Value).Value)
                 .FirstOrDefault().direction;
             if (nearestCharacterDirection.HasValue)
@@ -289,9 +287,9 @@ namespace Domain.Service.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{CurrentPosition + direction.Vector()}");
+            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{Entity.CurrentPosition + direction.Vector()}");
             Turn(direction);
-            await _entity.Move(direction,
+            await Entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
 
             State = CharacterState.Finish;
@@ -301,7 +299,7 @@ namespace Domain.Service.Characters
         {
             State = CharacterState.Act;
             Turn(direction);
-            await _entity.Move(direction,
+            await Entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
 
             State = CharacterState.Finish;
@@ -309,7 +307,7 @@ namespace Domain.Service.Characters
 
         public void Teleport(Vector2Int position)
         {
-            _entity.Teleport(position);
+            Entity.Teleport(position);
 
             State = CharacterState.Finish;
         }
@@ -321,10 +319,10 @@ namespace Domain.Service.Characters
             for (var i = 0; i < skill.RushDistance; i++)
             {
                 if (CanMove(direction, map))
-                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }
 
-            var result = await skill.Use(this, CurrentPosition, direction, map);
+            var result = await skill.Use(this, Entity.CurrentPosition, direction, map);
             if (result.Result == SkillResult.Success)
             {
                 _onAttacked.OnNext(Unit.Default);
@@ -333,7 +331,7 @@ namespace Domain.Service.Characters
             for (var i = 0; i < skill.BackStepDistance; i++)
             {
                 if (CanMove(direction.Reverse(), map))
-                    await _entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.Value, true);
             }
 
             State = CharacterState.Finish;
@@ -350,14 +348,14 @@ namespace Domain.Service.Characters
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
                     async spawnEffect =>
                     {
-                        var result = await item.Use(this, CurrentPosition, direction, map);
+                        var result = await item.Use(this, Entity.CurrentPosition, direction, map);
                         if (result.Result == SkillResult.Success)
                         {
                             _onAttacked.OnNext(Unit.Default);
                         }
                         return result;
                     },
-                    async itemTarget => await item.Use(this, CurrentPosition, direction, map)
+                    async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
                 );
                 if (result.Result == SkillResult.Success)
                 {
@@ -386,13 +384,13 @@ namespace Domain.Service.Characters
                 Turn(direction);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
                 var destination =
-                    ItemEntity.GetThrowDestination(CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
+                    ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
                 if (_inventory.Remove(item))
                 {
-                    if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+                    if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
                     {
                         _onAttacked.OnNext(Unit.Default);
-                        await map.ShowThrowAnimation(item.Icon, CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
+                        await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
                     }
 
                     var itemEntity = map.SpawnItem(item,
@@ -407,7 +405,7 @@ namespace Domain.Service.Characters
                 }
                 else
                 {
-                    var itemEntity = map.Items.At(CurrentPosition).FirstOrDefault();
+                    var itemEntity = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
                     if (itemEntity != null)
                     {
                         await itemEntity.BlowAway(this, direction, CommonSenseParameters.ThrowDistance, map);
@@ -426,7 +424,7 @@ namespace Domain.Service.Characters
                 ReplaceInventory(null, itemIndex);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
-                    map.FindBlankPositionFrom(CurrentPosition,
+                    map.FindBlankPositionFrom(Entity.CurrentPosition,
                         position => map.At(position).IsBlank(EntityLayer.Bottom)));
             }
             else if (item != null && item.IsCursed && item.CannotDropIfCursed)
@@ -435,7 +433,7 @@ namespace Domain.Service.Characters
             }
             else
             {
-                var pickedUpItem = map.TryPickUpAt(CurrentPosition, true);
+                var pickedUpItem = map.TryPickUpAt(Entity.CurrentPosition, true);
                 if (pickedUpItem != null)
                 {
                     GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
@@ -445,7 +443,7 @@ namespace Domain.Service.Characters
                 {
                     GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
                     map.SpawnItem(item,
-                        map.FindBlankPositionFrom(CurrentPosition,
+                        map.FindBlankPositionFrom(Entity.CurrentPosition,
                             position => map.At(position).IsBlank(EntityLayer.Bottom)));
                 }
             }
@@ -455,36 +453,18 @@ namespace Domain.Service.Characters
 
         public float EvaluateThrow(IItem item, Direction8 direction, IMap map)
         {
-            return ItemEntity.EvaluateThrow(item, CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
+            return ItemEntity.EvaluateThrow(item, Entity.CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
         }
-#endregion
+        #endregion
         public void Dispose()
         {
             _disposable.Dispose();
-            _entity.Dispose();
+            Entity.Dispose();
             _inventory.Dispose();
             _direction.Dispose();
         }
 
-        public Id<IEntity> Id => _entity.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
         public Observable<Unit> OnDead => _onDead;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        public void SetVisibility(bool visibility)
-        {
-            _entity.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            _onDead.OnNext(Unit.Default);
-        }
 
         public IReadOnlyList<ICharacterSkill> Skills => _skills;
 
@@ -499,7 +479,7 @@ namespace Domain.Service.Characters
                 CharacterType,
                 _behavior.Serialize(),
                 _statusManager.Serialize(),
-                _entity.Serialize(),
+                Entity.Serialize(),
                 _direction.CurrentValue,
                 _skills.Select(x => x.Serialize()).ToList(),
                 _lastSkill.ToOption().Map(x => x.Serialize()),
@@ -524,17 +504,17 @@ namespace Domain.Service.Characters
             {
                 if (!CanMove(direction, true, CanThroughWalls, map))
                     break;
-                await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }
 
-            if (!map.At(CurrentPosition).CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle))
+            if (!map.At(Entity.CurrentPosition).CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle))
             {
-                var position = map.FindBlankPositionFrom(CurrentPosition,
+                var position = map.FindBlankPositionFrom(Entity.CurrentPosition,
                     position => map.At(position).IsBlank(EntityLayer.Middle));
-                _entity.Teleport(position);
+                Entity.Teleport(position);
             }
         }
-#region Status
+        #region Status
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
 
@@ -577,8 +557,8 @@ namespace Domain.Service.Characters
         {
             _statusManager.ClearCondition();
         }
-#endregion
-#region ItemKnowledge
+        #endregion
+        #region ItemKnowledge
         public void AddKnownItem(IItem item)
         {
             if (!IsKnownItem(item))
@@ -598,7 +578,7 @@ namespace Domain.Service.Characters
             _knownItemNames.Clear();
             GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
         }
-#endregion
+        #endregion
         public void ListenToAlert(Vector2Int position)
         {
             _statusManager.RemoveConditionType(typeof(Slept));
@@ -607,7 +587,7 @@ namespace Domain.Service.Characters
 
         public void WasAttackedBy(IActorOfEffect actor, float impact)
         {
-            var direction = DirectionMethods.NearestDirectionFromVector(actor.CurrentPosition - CurrentPosition);
+            var direction = DirectionMethods.NearestDirectionFromVector(actor.Entity.CurrentPosition - Entity.CurrentPosition);
             if (direction.HasValue)
             {
                 Turn(direction.Value);

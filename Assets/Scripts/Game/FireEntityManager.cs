@@ -5,7 +5,6 @@ using Domain.Model;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -16,7 +15,6 @@ namespace Game
     public class FireEntityManager
     {
         private readonly ObservableList<Fire> _fireEntities = new();
-        public FireEntityEvents EntityEvents = new();
 
         public FireEntityManager(FireEntitiesMemento memento)
         {
@@ -24,7 +22,10 @@ namespace Game
             {
                 Add(new Fire(fireMemento));
             }
-            EntityEvents.OnDestroyed.Subscribe(destroyed => Remove(destroyed.Entity));
+            _fireEntities.SubscribeToAllObservables(
+                entity => entity.Entity.OnDestroyed,
+                (entity, destroyed) => Remove(entity)
+            );
         }
 
         public FireEntitiesMemento Serialize()
@@ -41,17 +42,15 @@ namespace Game
 
         public void Add(Fire entity)
         {
-            if (!_fireEntities.Any(fire => entity.CurrentPosition == fire.CurrentPosition))
+            if (!_fireEntities.Any(fire => entity.Entity.CurrentPosition == fire.Entity.CurrentPosition))
             {
                 _fireEntities.Add(entity);
-                EntityEvents.Add(entity);
             }
         }
 
         public void Remove(Fire entity)
         {
             _fireEntities.Remove(entity);
-            EntityEvents.Remove(entity);
         }
 
         public void UpdateTurn(IMap map)
@@ -66,7 +65,7 @@ namespace Game
                 }
                 var positions = DirectionMethods
                     .AllDirections
-                    .Select(direction => fire.CurrentPosition + direction.Vector())
+                    .Select(direction => fire.Entity.CurrentPosition + direction.Vector())
                     .Where(position => map.At(position).CanPlace(false, false, true));
                 foreach (var position in positions)
                 {
@@ -78,7 +77,7 @@ namespace Game
             }
             foreach (var fire in destroyedFires)
             {
-                fire.Destroy();
+                fire.Entity.Destroy();
             }
             foreach (var fire in addedFires)
             {
@@ -90,8 +89,7 @@ namespace Game
             var value = 1 / 64f;
             if (map.IsGrass(position))
                 value += 1 / 16f;
-            var entity = map.Entities.At(position).FirstOrDefault();
-            if (entity != null)
+            if (map.Entities.At(position).Any())
                 value += 1 / 32f;
             return value;
         }

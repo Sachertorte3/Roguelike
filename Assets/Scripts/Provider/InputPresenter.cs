@@ -49,7 +49,7 @@ namespace Provider
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllIgnoreNull(
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
                 map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
                 {
                     if (isNoMove)
@@ -67,7 +67,7 @@ namespace Provider
                 choiceReceiver.SetChoicedIndex(index);
             });
 
-            textInputReceiver.OnShownTextInput.Subscribe(async _ => 
+            textInputReceiver.OnShownTextInput.Subscribe(async _ =>
             {
                 var text = await menuController.GetTextInput();
                 textInputReceiver.SetTextInput(text);

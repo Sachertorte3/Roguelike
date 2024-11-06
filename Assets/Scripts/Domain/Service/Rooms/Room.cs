@@ -25,12 +25,12 @@ namespace Domain.Service.Rooms
 
         public RectInt Rect { get; init; }
 
-        public async UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int currentPosition)
+        public async UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int CurrentPosition)
         {
             if (!CanExecute)
                 return;
 
-            _isInside.Value = Rect.Contains(currentPosition);
+            _isInside.Value = Rect.Contains(CurrentPosition);
             if (_isInside.Value)
             {
                 await UpdateTurnIfInside(gameManager, mapManager);

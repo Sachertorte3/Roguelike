@@ -22,7 +22,7 @@ namespace Game
         }
         public bool IsOverlapped(params EntityLayer[] layers)
         {
-            return Map.Entities.On(layers).Count(entity => entity.CurrentPosition == Position) > 1;
+            return Map.Entities.On(layers).Count(entity => entity.Entity.CurrentPosition == Position) > 1;
         }
 
         public bool IsBlankIgnoreWall(params EntityLayer[] layers)

@@ -51,7 +51,7 @@ namespace Domain.Service.Effect
             {
                 return UniTask.CompletedTask;
             }
-            target.Destroy();
+            target.Entity.Destroy();
             return UniTask.CompletedTask;
         }
 

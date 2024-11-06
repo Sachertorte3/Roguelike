@@ -4,8 +4,6 @@ using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Map;
 using Domain.Model.Setting;
-using Domain.Service.Entities;
-using R3;
 using UnityEngine;
 using Utilities;
 
@@ -13,20 +11,12 @@ namespace Domain.Service.Items
 {
     public class ThrowAnimationEntity : IEntity
     {
-        private readonly Entity _entity;
+        public Entity Entity { get; init; }
         public readonly Sprite Icon;
-        public Id<IEntity> Id => _entity.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public ThrowAnimationEntity(Vector2Int position, Sprite icon)
         {
-            _entity = new Entity(Entity.Build(position, EntityLayer.Middle));
+            Entity = new Entity(Entity.Build(position, EntityLayer.Middle));
             Icon = icon;
         }
 
@@ -34,13 +24,13 @@ namespace Domain.Service.Items
         {
             for (var i = 0; i < distance; i++)
             {
-                if (map.At(CurrentPosition + direction.Vector()).IsBlank(canHitLayer))
+                if (map.At(Entity.CurrentPosition + direction.Vector()).IsBlank(canHitLayer))
                 {
-                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
                 }
-                else if (map.At(CurrentPosition + direction.Vector()).IsPassableOnMap())
+                else if (map.At(Entity.CurrentPosition + direction.Vector()).IsPassableOnMap())
                 {
-                    await _entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
                     break;
                 }
                 else
@@ -49,32 +39,17 @@ namespace Domain.Service.Items
                 }
             }
 
-            return CurrentPosition;
-        }
-
-        public void SetVisibility(bool visibility)
-        {
-            _entity.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            _entity.Destroy();
+            return Entity.CurrentPosition;
         }
 
         public void Dispose()
         {
-            _entity.Dispose();
+            Entity.Dispose();
         }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return UniTask.CompletedTask;
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            _entity.Teleport(position);
         }
     }
 }

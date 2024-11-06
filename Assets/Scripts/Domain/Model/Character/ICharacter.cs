@@ -38,12 +38,6 @@ namespace Domain.Model.Character
         public IAffiliation Affiliation { get; }
         public Direction8 CurrentDirection { get; }
         public IInventory Inventory { get; }
-        public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
-        public ReadOnlyReactiveProperty<bool> Visibility { get; }
-        public EntityLayer Layer { get; }
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove { get; }
-        public Observable<Vector2Int> OnTeleport { get; }
-        public Vector2Int CurrentPosition { get; }
         public IReadOnlyList<ICharacterSkill> Skills { get; }
         public IVisionRange VisionRange { get; }
         public int CurrentMaxHp { get; }
@@ -55,8 +49,6 @@ namespace Domain.Model.Character
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map);
         public void Turn(Direction8 direction);
         public void FaceNearestCharacter(IMap map);
-        public void SetVisibility(bool visibility);
-        public void Teleport(Vector2Int position);
         public int GainHp(int value);
         public int LoseHp(int value);
         public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition);

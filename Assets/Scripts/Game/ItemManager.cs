@@ -9,6 +9,7 @@ using Domain.Service.Items;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using Utilities;
 using VContainer;
 
 namespace Game
@@ -18,15 +19,15 @@ namespace Game
         private readonly ItemFactory _factory = new();
         private readonly ObservableList<IItemEntity> _items = new();
         private HashSet<Vector2Int> _allItemPositions = new();
-        public ItemEntityEvents ItemEntityEvents = new();
+        private CompositeDisposable _disposables = new();
 
         [Inject]
         public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            ItemEntityEvents.OnPositionChanged.Subscribe(_ => SetAllItemPosition());
-            ItemEntityEvents.OnDisabled.Subscribe(dead => _items.Remove(dead.Item));
-            ItemEntityEvents.OnDestroyed.Subscribe(dead => _items.Remove(dead.Item));
+            _items.SubscribeToAllObservables(item => item.Entity.Position, (item, position) => SetAllItemPosition()).AddTo(_disposables);
+            _items.SubscribeToAllObservables(item => item.OnDisabled, (item, dead) => _items.Remove(item)).AddTo(_disposables);
+            _items.SubscribeToAllObservables(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item)).AddTo(_disposables);
         }
 
         public IObservableCollection<IItemEntity> Items => _items;
@@ -34,7 +35,7 @@ namespace Game
         public void Dispose()
         {
             _items.ForEach(item => item.Dispose());
-            ItemEntityEvents.Dispose();
+            _disposables.Dispose();
         }
 
         ~ItemManager()
@@ -45,7 +46,6 @@ namespace Game
         public void AddItem(IItemEntity item)
         {
             _items.Add(item);
-            ItemEntityEvents.Add(item);
         }
 
         public IItemEntity SpawnItem(IItem item, Vector2Int spawnPosition)
@@ -74,7 +74,7 @@ namespace Game
 
         public IItemEntity? GetItemAt(Vector2Int position)
         {
-            return _items.FirstOrDefault(item => item.CurrentPosition == position);
+            return _items.FirstOrDefault(item => item.Entity.CurrentPosition == position);
         }
 
         public bool CanPickUpAt(Vector2Int position, bool pickUpShopItem = false)
@@ -93,7 +93,6 @@ namespace Game
 
             var item = GetItemAt(position)!;
             _items.Remove(item);
-            ItemEntityEvents.Remove(item);
             return item;
         }
 

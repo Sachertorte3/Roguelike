@@ -14,43 +14,49 @@ namespace Provider
         [Inject]
         public DamagePresenter(World world, DamageTextSpawner damageTextSpawner, FlushController flushController)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     damageTextSpawner.DeleteAllText();
-                    _disposable.Add(map.CharacterManager.PlayerEvents.OnDamageReceived.Subscribe(damageChanged =>
-                    {
-                        var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 /
-                                                        damageChanged.Character.StatusManager.Stats.MaxHp.CurrentValue;
-                        var hpPercentageFromMaxHp = damageChanged.Character.StatusManager.Stats.HpValue.CurrentValue *
-                            100 / damageChanged.Character.StatusManager.Stats.MaxHp.CurrentValue;
-                        if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
-                            hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                    _disposable.Add(map.Player.StatusManager.OnDamageReceived.Subscribe(damageChanged =>
                         {
-                            flushController.Flush(Settings.FlushDuration.Value);
+                            var damagePercentageFromMaxHp = damageChanged * 100 /
+                                                            map.Player.StatusManager.Stats.MaxHp.CurrentValue;
+                            var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue *
+                            100 / map.Player.StatusManager.Stats.MaxHp.CurrentValue;
+                            if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
+                                hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                            {
+                                flushController.Flush(Settings.FlushDuration.Value);
+                            }
                         }
-                    }));
-                    _disposable.Add(map.CharacterManager.CharacterEvents.OnDamageReceived.Subscribe(damageChanged =>
-                    {
-                        if (damageChanged.Character.Visibility.CurrentValue)
+                    ));
+                    _disposable.Add(map.Characters.SubscribeToAllObservables(
+                        character => character.StatusManager.OnDamageReceived,
+                        (character, damageChanged) =>
                         {
-                            var damagePercentageFromMaxHp = damageChanged.Message.Damage * 100 /
-                                                            damageChanged.Character.StatusManager.Stats.MaxHp
-                                                                .CurrentValue;
-                            damageTextSpawner.ShowDamage(damageChanged.Character.CurrentPosition,
-                                damageChanged.Message.Damage, damagePercentageFromMaxHp,
-                                Settings.DamageTextDisplayTime.Value);
+                            if (character.Entity.Visibility.CurrentValue)
+                            {
+                                var damagePercentageFromMaxHp = damageChanged * 100 /
+                                                                character.StatusManager.Stats.MaxHp.CurrentValue;
+                                damageTextSpawner.ShowDamage(character.Entity.CurrentPosition,
+                                    damageChanged, damagePercentageFromMaxHp,
+                                    Settings.DamageTextDisplayTime.Value);
+                            }
                         }
-                    }));
-                    _disposable.Add(map.CharacterManager.CharacterEvents.OnHealReceived.Subscribe(healChanged =>
-                    {
-                        if (healChanged.Character.Visibility.CurrentValue)
+                    ));
+                    _disposable.Add(map.Characters.SubscribeToAllObservables(
+                        character => character.StatusManager.OnHealReceived,
+                        (character, healChanged) =>
                         {
-                            var healPercentageFromMaxHp = healChanged.Message.Heal * 100 /
-                                                          healChanged.Character.StatusManager.Stats.MaxHp.CurrentValue;
-                            damageTextSpawner.ShowHeal(healChanged.Character.CurrentPosition, healChanged.Message.Heal,
-                                healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
+                            if (character.Entity.Visibility.CurrentValue)
+                            {
+                                var healPercentageFromMaxHp = healChanged * 100 /
+                                                          character.StatusManager.Stats.MaxHp.CurrentValue;
+                                damageTextSpawner.ShowHeal(character.Entity.CurrentPosition, healChanged,
+                                    healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
+                            }
                         }
-                    }));
+                    ));
                 },
                 _ => _disposable.Clear());
         }

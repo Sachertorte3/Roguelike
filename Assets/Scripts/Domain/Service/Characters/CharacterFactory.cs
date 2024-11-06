@@ -13,7 +13,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Effect;
-using Domain.Service.Entities;
 using Domain.Service.Items;
 using R3;
 using UnityEngine;

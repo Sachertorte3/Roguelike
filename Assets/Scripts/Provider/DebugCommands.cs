@@ -138,7 +138,7 @@ namespace Provider
             {
                 var character =
                     _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character =>
-                        character.Id.ToString() == guid.ToString());
+                        character.Entity.Id.ToString() == guid.ToString());
                 if (character == null)
                 {
                     throw new Exception("指定されたキャラクターが見つかりません。");
@@ -153,8 +153,8 @@ namespace Provider
         private void ShowCharacter(ICharacter character)
         {
             var info = $"{character.GetName(_world.ActiveMap.CurrentValue.Player, true)}\n"
-                       + $"Id: {character.Id}\n"
-                       + $"Position: {character.Position.CurrentValue}\n"
+                       + $"Id: {character.Entity.Id}\n"
+                       + $"Position: {character.Entity.CurrentPosition}\n"
                        + $"CharacterType: {character.CharacterType.SubtypeName()}";
             Log.Info(info);
         }
@@ -168,7 +168,7 @@ namespace Provider
         {
             var character =
                 _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character =>
-                    character.Position.CurrentValue == position);
+                    character.Entity.CurrentPosition == position);
             if (character != null)
             {
                 ShowCharacter(character);

@@ -2,7 +2,6 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
-using Domain.Model.Setting;
 using Game;
 using R3;
 using UnityEngine;
@@ -30,8 +29,8 @@ namespace Provider
             _inputReceiver = receiver;
             _world = world;
 
-            world.ActiveMap.SubscribeToAllIgnoreNull(
-                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAll(Add, Remove),
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAllItems(Add, Remove),
                 map => map.Characters.ForEach(character => Remove(character))
             );
         }
@@ -62,9 +61,9 @@ namespace Provider
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 
-            character.StatusManager.Stats.HpValue.SubscribeToAll(hp =>
+            character.StatusManager.Stats.HpValue.SubscribeToAllItems(hp =>
                 characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
-            character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp =>
+            character.StatusManager.Stats.MaxHp.SubscribeToAllItems(maxHp =>
                     characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue))
                 .AddTo(characterView);
 
@@ -75,7 +74,7 @@ namespace Provider
 
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
-            character.OnMove
+            character.Entity.OnMove
                 .Where(move => !move.isThrown)
                 .Subscribe(move => characterView.PlayWalkAnimation().Forget())
                 .AddTo(characterView);
@@ -86,7 +85,7 @@ namespace Provider
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)
                 particleController.Add(ParticleType.ShinyStar);
-            character.StatusManager.Conditions.SubscribeToAll(
+            character.StatusManager.Conditions.SubscribeToAllItems(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             ).AddTo(particleController);

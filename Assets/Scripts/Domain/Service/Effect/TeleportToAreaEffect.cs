@@ -22,20 +22,20 @@ namespace Domain.Service.Effect
             var placeablePositions = positions.Where(pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
-                actor.Teleport(placeablePositions.GetAtRandom());
+                actor.Entity.Teleport(placeablePositions.GetAtRandom());
             }
             else
             {
-                actor.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
+                actor.Entity.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
             }
             return UniTask.CompletedTask;
         }
 
         public override float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
-            if (positions.Contains(actor.CurrentPosition))
+            if (positions.Contains(actor.Entity.CurrentPosition))
                 return 0;
-            return 0.05f * positions.Average(pos => VectorExtension.ChebyshevDistance(actor.CurrentPosition, pos));
+            return 0.05f * positions.Average(pos => VectorExtension.ChebyshevDistance(actor.Entity.CurrentPosition, pos));
         }
 
         public override float EvaluatePrice()

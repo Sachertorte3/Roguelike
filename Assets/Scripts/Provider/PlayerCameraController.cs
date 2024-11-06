@@ -11,11 +11,11 @@ namespace Provider
         [Inject]
         public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
                 if (map.Player.CurrentHp <= 0)
                 {
-                    targetCamera.SetPosition((Vector3Int)map.Player.CurrentPosition);
+                    targetCamera.SetPosition((Vector3Int)map.Player.Entity.CurrentPosition);
                     return;
                 }
 

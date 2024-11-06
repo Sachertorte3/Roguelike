@@ -28,9 +28,9 @@ namespace Provider
         {
             _inputReceiver = inputReceiver;
 
-            world.ActiveMap.SubscribeToAllIgnoreNull(
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
                 map => _disposable.Disposable =
-                    map.EventEntityManager.StandaloneEventEntities.SubscribeToAll(Add, Remove),
+                    map.EventEntityManager.StandaloneEventEntities.SubscribeToAllItems(Add, Remove),
                 map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
         }
@@ -70,7 +70,7 @@ namespace Provider
                 }
             }
 
-            if (eventEntity.Layer == EntityLayer.Middle)
+            if (eventEntity.Entity.Layer == EntityLayer.Middle)
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Entity.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();

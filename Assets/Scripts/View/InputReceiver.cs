@@ -14,18 +14,18 @@ namespace View
         public InputReceiver()
         {
             _actions.Field.Enable();
-            _disposables.Add(OnMenuOpening.Subscribe(_ =>
+            OnMenuOpening.Subscribe(_ =>
             {
                 _actions.Field.Disable();
                 _actions.Menu.Enable();
                 _isMenuOpen = true;
-            }));
-            _disposables.Add(OnMenuClosing.Subscribe(_ =>
+            }).AddTo(_disposables);
+            OnMenuClosing.Subscribe(_ =>
             {
                 _actions.Field.Enable();
                 _actions.Menu.Disable();
                 _isMenuOpen = false;
-            }));
+            }).AddTo(_disposables);
         }
 
         public Observable<Vector2> OnMovePerformed =>

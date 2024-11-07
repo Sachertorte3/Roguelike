@@ -16,13 +16,13 @@ namespace View
 
         public void NormalBGM()
         {
-            Log.Debug("Change BGM to Normal");
+            Log.Debug("[BGM]Change BGM to Normal");
             ChangeBGM(_normalBGM);
         }
 
         public void StolenBGM()
         {
-            Log.Debug("Change BGM to Stolen");
+            Log.Debug("[BGM]Change BGM to Stolen");
             ChangeBGM(_stolenBGM);
         }
 

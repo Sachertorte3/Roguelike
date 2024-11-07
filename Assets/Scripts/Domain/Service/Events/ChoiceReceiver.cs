@@ -13,10 +13,10 @@ namespace Domain.Service.Events
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
-            Log.Debug($"GetChoice: {text} {string.Join(", ", choices)}");
+            Log.Debug($"[Menu]GetChoice: {text} {string.Join(", ", choices)}");
             ShowChoices(text, choices);
             var index = await _onReceivedChoicedIndex.WaitAsync();
-            Log.Debug($"GetChoice: {choices[index]} {index}");
+            Log.Debug($"[Menu]GetChoice: {choices[index]} {index}");
             return index;
         }
 

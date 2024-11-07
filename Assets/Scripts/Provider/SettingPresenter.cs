@@ -12,7 +12,7 @@ namespace Provider
         [Inject]
         public SettingPresenter(SettingWindow settingWindow)
         {
-            Log.Debug("Set options");
+            Log.Debug("[Menu]Set options window");
             foreach (var option in Settings.GetOptions())
                 switch (option)
                 {

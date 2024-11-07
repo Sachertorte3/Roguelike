@@ -7,6 +7,7 @@ using Domain.Service.Events;
 using ObservableCollections;
 using R3;
 using Utilities;
+using Unity.Logging;
 
 namespace Game
 {

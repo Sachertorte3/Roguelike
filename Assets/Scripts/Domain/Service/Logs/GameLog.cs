@@ -1,4 +1,5 @@
 ﻿using R3;
+using Unity.Logging;
 
 namespace Domain.Service.Logs
 {
@@ -12,6 +13,7 @@ namespace Domain.Service.Logs
         public static void Add(string log)
         {
             _onLogOutput.OnNext(log);
+            Log.Info($"[GameLog]{log}");
         }
 
         public static void Clear()

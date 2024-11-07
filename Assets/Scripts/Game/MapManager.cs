@@ -80,11 +80,11 @@ namespace Game
             EventEntityManager = new EventEntityManager(map.EventEntities, _stairsLocked);
             ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
             FireEntityManager = new FireEntityManager(map.Fires);
-            _entities.AddWith(Characters, character => character).AddTo(_disposables);
-            _entities.AddWith(Items, item => item).AddTo(_disposables);
-            _entities.AddWith(EventEntities, eventEntity => eventEntity).AddTo(_disposables);
-            _entities.AddWith(ThrowAnimationEntities, throwAnimationEntity => throwAnimationEntity).AddTo(_disposables);
-            _entities.AddWith(FireEntities, fire => fire).AddTo(_disposables);
+            _entities.AddWith(Characters).AddTo(_disposables);
+            _entities.AddWith(Items).AddTo(_disposables);
+            _entities.AddWith(EventEntities).AddTo(_disposables);
+            _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
+            _entities.AddWith(FireEntities).AddTo(_disposables);
 
             _dungeonData = data;
 
@@ -203,7 +203,6 @@ namespace Game
             ThrowAnimationEntities.ForEach(throwAnimationEntity => throwAnimationEntity.Dispose());
             FireEntities.ForEach(fireEntity => fireEntity.Dispose());
             _disposables.Dispose();
-            Debug.Log("MapManager Disposed");
         }
 
         public IReadOnlyCollection<Vector2Int> VisibleArea => Player.VisionRange.VisibleArea;

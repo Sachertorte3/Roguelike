@@ -26,7 +26,7 @@ namespace Utilities
 
         public static HashSet<Vector2Int> FieldOfView(Vector2Int position, Vector2Int mapSize, Func<Vector2Int, bool> funcTileBlocked)
         {
-            Log.Debug($"FieldOfView: {position}");
+            Log.Debug($"[View]Calculate fieldOfView from {position}");
             HashSet<Vector2Int> visited = new()
             {
                 position

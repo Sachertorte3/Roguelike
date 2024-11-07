@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
+using Unity.Logging;
 
 namespace Utilities
 {
@@ -122,15 +123,18 @@ namespace Utilities
         }
 
         public static IDisposable AddWith<T, U>(this ObservableList<U> collectionA,
+            IObservableCollection<T> collectionB) where T : notnull, U
+        {
+            return AddWith(collectionA, collectionB, x => x);
+        }
+
+        public static IDisposable AddWith<T, U>(this ObservableList<U> collectionA,
             IObservableCollection<T> collectionB, Func<T, U> selector) where T : notnull
         {
-            var itemsToAdd = collectionB.Select(selector).Except(collectionA).ToList();
-            foreach (var item in itemsToAdd)
-            {
-                collectionA.Add(item);
-            }
-
-            return collectionB.SubscribeToAllItems(add => collectionA.Add(selector(add)), remove => collectionA.Remove(selector(remove)));
+            return collectionB.SubscribeToAllItems(
+                add => collectionA.Add(selector(add)),
+                remove => collectionA.Remove(selector(remove))
+            );
         }
 
         public static IDisposable LiveSynchronizeWith<T>(this ICollection<T> collectionA,

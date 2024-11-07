@@ -111,7 +111,7 @@ namespace Domain.Service.Characters.Behavior
             IInput input)
         {
             var result = GenerateNextBehaviorResult(character, map);
-            Log.Debug($"[Think] Result: {result.State} {result.TargetPosition}");
+            Log.Debug($"[Think]Result: {result.State} {result.TargetPosition}");
 
             if (result.TargetPosition != null)
             {
@@ -131,7 +131,7 @@ namespace Domain.Service.Characters.Behavior
             }
             else if (PrioritizeMovement(character, result.TargetPosition))
             {
-                Log.Debug($"[Think] Prioritize Movement.");
+                Log.Debug($"[Think]Prioritize Movement.");
                 actions.AddRange(GenerateMoveActionsDoable(character, result, map));
                 if (!actions.Any(action => action.Evaluate(character, map) > 0))
                 {
@@ -142,7 +142,7 @@ namespace Domain.Service.Characters.Behavior
             }
             else
             {
-                Log.Debug($"[Think] Not Prioritize Movement.");
+                Log.Debug($"[Think]Not Prioritize Movement.");
                 actions.AddRange(GenerateUseSkillActionsDoable(character, map));
                 actions.AddRange(GenerateUseItemActionsDoable(character, map));
                 actions.AddRange(GenerateThrowItemActionsDoable(character, map));
@@ -155,7 +155,7 @@ namespace Domain.Service.Characters.Behavior
             var validActions = actions.Where(action => action.Evaluate(character, map) > 0);
             foreach (var actionTemp in validActions)
             {
-                Log.Debug($"[Think] {actionTemp.Info()} {actionTemp.Evaluate(character, map)}");
+                Log.Debug($"[Think]{actionTemp.Info()} {actionTemp.Evaluate(character, map)}");
             }
 
             var action = await UniTask.FromResult(validActions.MaxByOrDefault(
@@ -271,15 +271,15 @@ namespace Domain.Service.Characters.Behavior
                     var distance = GetDistance(character, targetPosition);
                     if (_greaterThanTopBound != null && distance > _distanceTopBound)
                     {
-                        Log.Debug($"[Think] Distance is greater than top bound {_distanceTopBound}.");
+                        Log.Debug($"[Think]Distance is greater than top bound {_distanceTopBound}.");
                         return _greaterThanTopBound;
                     }
                     if (_lessThanBottomBound != null && distance < _distanceBottomBound)
                     {
-                        Log.Debug($"[Think] Distance is less than bottom bound {_distanceBottomBound}.");
+                        Log.Debug($"[Think]Distance is less than bottom bound {_distanceBottomBound}.");
                         return _lessThanBottomBound;
                     }
-                    Log.Debug("[Think] Behavior is Default.");
+                    Log.Debug("[Think]Behavior is Default.");
                     return _default;
                 case BehaviorState.MovingToLastKnownEnemyPosition:
                 case BehaviorState.MovingToLastKnownLeaderPosition:

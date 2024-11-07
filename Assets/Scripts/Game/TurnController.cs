@@ -56,7 +56,7 @@ namespace Game
                 {
                     _turn.Value++;
                     _turnInLevel++;
-                    Log.Debug($"[Turn] Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
+                    Log.Debug($"[Turn]Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
                     map.UpdateTurn(_turn.CurrentValue);
                 }
 
@@ -83,7 +83,7 @@ namespace Game
                             {
                                 Globals.GameManager.Save();
                             }
-                            Log.Debug($"[Turn] {character.GetName(map.Player)} think...");
+                            Log.Debug($"[Turn]{character.GetName(map.Player)} think...");
                             try
                             {
                                 await character.DoNextAction(gameManager, map, _input).AttachExternalCancellation(_cancellationTokenSource.Token);
@@ -95,7 +95,7 @@ namespace Game
                         }
                         else
                         {
-                            Log.Debug($"[Turn] {character.GetName(map.Player)} cannot act.");
+                            Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
                         }
 
                         if (map.IsEventExecuting)
@@ -108,7 +108,7 @@ namespace Game
                     {
                         _isRunning = false;
                         _runCompletionSource.TrySetResult();
-                        Log.Debug("[Turn] loop canceled.");
+                        Log.Debug("[Turn]Loop canceled.");
                         return;
                     }
                 }
@@ -140,7 +140,7 @@ namespace Game
             _turnInLevel = 1;
             _cancellationTokenSource.Cancel();
             await _runCompletionSource.Task;
-            Log.Debug("[Turn] Stop");
+            Log.Debug("[Turn]Stop");
         }
     }
 }

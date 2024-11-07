@@ -13,7 +13,6 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using VContainer;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace Game
@@ -97,11 +96,11 @@ namespace Game
 
         public async UniTask<MapManager> CreateWorld()
         {
-            Log.Debug("Start CreateWorld");
+            Log.Debug("[Game]Start CreateWorld");
             await StopMap();
             _world.CreateNew();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
-            Log.Debug("End CreateWorld");
+            Log.Debug("[Game]End CreateWorld");
             return map;
         }
 
@@ -117,13 +116,13 @@ namespace Game
 
         public async void LoadMap(Location location, Id<IEntity>? destination = null)
         {
-            Log.Debug("Start LoadMap");
+            Log.Debug("[Game]Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
             Save();
             _turnController.Run(this, map);
             _receiver.Enable(true);
-            Log.Debug("End LoadMap");
+            Log.Debug("[Game]End LoadMap");
         }
 
         public void Save()

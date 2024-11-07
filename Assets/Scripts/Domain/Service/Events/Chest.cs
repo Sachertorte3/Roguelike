@@ -12,6 +12,7 @@ using Domain.Service.Logs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Unity.Logging;
 
 namespace Domain.Service.Events
 {

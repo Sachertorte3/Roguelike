@@ -46,7 +46,7 @@ namespace View.UI
 
         public void SwitchMenu(IMenu menu)
         {
-            Log.Info($"SwitchMenu: {menu}");
+            Log.Info($"[Menu]SwitchMenu: {menu}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -65,7 +65,7 @@ namespace View.UI
 
         public void PushMenu(IMenu pushedMenu)
         {
-            Log.Info($"PushMenu: {pushedMenu}");
+            Log.Info($"[Menu]PushMenu: {pushedMenu}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -82,7 +82,7 @@ namespace View.UI
 
         public void AddMenu(IMenu addedMenu)
         {
-            Log.Info($"AddMenu: {addedMenu}");
+            Log.Info($"[Menu]AddMenu: {addedMenu}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -99,7 +99,7 @@ namespace View.UI
         public void PopMenu()
         {
             var poppedMenu = _menuStack.Pop();
-            Log.Info($"PopMenu: {poppedMenu}");
+            Log.Info($"[Menu]PopMenu: {poppedMenu}");
             _selectedObject[poppedMenu] = EventSystem.current.currentSelectedGameObject;
             if (_menuStack.Count > 0)
             {

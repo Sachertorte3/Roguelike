@@ -24,12 +24,12 @@ namespace Provider
                 switch (state)
                 {
                     case GameState.Title:
-                        Log.Debug("Title");
+                        Log.Debug("[Game]Change to title scene.");
                         gameManager.Title().Forget();
                         menuController.TitleMenu();
                         break;
                     case GameState.Dungeon:
-                        Log.Debug("Dungeon");
+                        Log.Debug("[Game]Change to dungeon scene.");
                         menuController.DungeonMenu();
                         break;
                 }
@@ -47,7 +47,7 @@ namespace Provider
                 ReleaseConfiguration()
 #endif
             );
-            Log.Debug("Init Logger");
+            Log.Debug("[Game]Init Logger");
         }
 
         private static LoggerConfig EditorConfiguration()

@@ -576,6 +576,7 @@ namespace Domain.Service.Characters
         public void ClearKnownItems(IMap map)
         {
             _knownItemNames.Clear();
+            map.ItemPlaceholders.ClearPlayerAssignedNames();
             GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
         }
         #endregion

@@ -564,13 +564,13 @@ namespace Game
 
             FireEntityManager.UpdateTurn(this);
 
-            var characters = Characters.In(FireEntityManager.FireEntities.Positions());
+            var characters = Characters.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var character in characters)
             {
                 character.LoseHp(1);
                 GameLog.Add($"{character.GetName(Player)}は火に焼かれた");
             }
-            var items = Items.In(FireEntityManager.FireEntities.Positions());
+            var items = Items.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var item in items)
             {
                 item.Entity.Destroy();

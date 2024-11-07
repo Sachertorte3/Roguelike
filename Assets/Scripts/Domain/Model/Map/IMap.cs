@@ -64,6 +64,6 @@ namespace Domain.Model.Map
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);
         public HashSet<Vector2Int> GetFullVisibleArea();
-        public HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position, float radius);
+        public HashSet<Vector2Int> ComputeCircle(Func<Vector2Int, bool> isTileBlocked, Vector2Int position, float radius);
     }
 }

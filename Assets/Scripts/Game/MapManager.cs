@@ -688,11 +688,11 @@ namespace Game
             _visionCache[from] = ViewCalculator.FieldOfView(from, _tilemap.Size, pos => !At(pos).IsLightPassable());
         }
 
-        public HashSet<Vector2Int> ComputeCircle(HashSet<Vector2Int> passables, Vector2Int position,
+        public HashSet<Vector2Int> ComputeCircle(Func<Vector2Int, bool> isTileBlocked, Vector2Int position,
             float radius)
         {
             var viewRadiusSq = radius * radius;
-            var viewArea = ViewCalculator.FieldOfView(position, _tilemap.Size, pos => passables.Contains(pos));
+            var viewArea = ViewCalculator.FieldOfView(position, _tilemap.Size, isTileBlocked);
             return viewArea.Where(x => (x - position).sqrMagnitude <= viewRadiusSq).ToHashSet();
         }
     }

@@ -9,6 +9,7 @@ namespace Domain.Model.Dungeon
     {
         private Placeholders _placeholderData;
         private Dictionary<string, string> _placeholders = new();
+        private Dictionary<string, string> _playerAssignedNames = new();
         private PlaceholderIndexes _potionPlaceholderIndexes;
         private PlaceholderIndexes _scrollPlaceholderIndexes;
         private PlaceholderIndexes _bookPlaceholderIndexes;
@@ -32,6 +33,7 @@ namespace Domain.Model.Dungeon
         {
             return new ItemPlaceholdersMemento(
                 _placeholders,
+                _playerAssignedNames,
                 _potionPlaceholderIndexes,
                 _scrollPlaceholderIndexes,
                 _bookPlaceholderIndexes,
@@ -44,6 +46,7 @@ namespace Domain.Model.Dungeon
         {
             return new ItemPlaceholdersMemento(
                 new Dictionary<string, string>(),
+                new Dictionary<string, string>(),
                 new PlaceholderIndexes(placeholders.PotionPlaceholders),
                 new PlaceholderIndexes(placeholders.ScrollPlaceholders),
                 new PlaceholderIndexes(placeholders.BookPlaceholders),
@@ -55,6 +58,8 @@ namespace Domain.Model.Dungeon
         public string GetPlaceholder(ItemData item) => GetPlaceholder(item.name, item.Category);
         public string GetPlaceholder(string baseName, ItemCategory category)
         {
+            if (_playerAssignedNames.ContainsKey(baseName))
+                return _playerAssignedNames[baseName];
             if (!_placeholders.ContainsKey(baseName))
             {
                 var placeholder = category switch
@@ -75,8 +80,13 @@ namespace Domain.Model.Dungeon
         {
             if (newName == "")
                 return;
-            _placeholders[baseName] = newName;
+            _playerAssignedNames[baseName] = newName;
             _onItemRenamed.OnNext(Unit.Default);
+        }
+
+        public void ClearPlayerAssignedNames()
+        {
+            _playerAssignedNames.Clear();
         }
     }
 }

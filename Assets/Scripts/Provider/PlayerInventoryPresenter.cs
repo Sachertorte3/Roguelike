@@ -4,6 +4,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Game;
 using R3;
 using Utilities;
@@ -27,11 +28,7 @@ namespace Provider
                     }).AddTo(_disposables);
                     gameManager.Turn.Subscribe(position =>
                     {
-                        var item = map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault();
-                        if (item != null)
-                            inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
-                        else
-                            inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
+                        UpdateGroundItemView(inventoryView, map);
                     }).AddTo(_disposables);
                     map.Player.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
@@ -39,11 +36,11 @@ namespace Provider
                     }).AddTo(_disposables);
                     map.Player.OnKnownItemUpdated.Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
+                        UpdateAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
                     map.ItemPlaceholders.OnItemRenamed.Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, map.Player, map.ItemPlaceholders);
+                        UpdateAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
                     for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
                     {
@@ -53,7 +50,7 @@ namespace Provider
                 _ => _disposables.Clear());
         }
 
-        public void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
+        private void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
             if (item != null)
             {
@@ -73,17 +70,27 @@ namespace Provider
             }
         }
 
-        public void UpdateAllItemViews(InventoryView inventoryView, ICharacter player, ItemPlaceholders itemPlaceholders)
+        private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
         {
-            for (var i = 0; i < player.Inventory.MaxItemCount; i++)
+            for (var i = 0; i < map.Player.Inventory.MaxItemCount; i++)
             {
-                var item = player.Inventory.GetItem(i);
+                var item = map.Player.Inventory.GetItem(i);
                 if (item != null)
-                    UpdateItemView(inventoryView, item, i, player, itemPlaceholders);
+                    UpdateItemView(inventoryView, item, i, map.Player, map.ItemPlaceholders);
             }
+            UpdateGroundItemView(inventoryView, map);
         }
 
-        public void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
+        private void UpdateGroundItemView(InventoryView inventoryView, IMap map)
+        {
+            var item = map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault();
+            if (item != null)
+                inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
+            else
+                inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
+        }
+
+        private void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
             inventoryView.UpdateCount(
                 item.Usable ? item.RemainingUses.CurrentValue : null,

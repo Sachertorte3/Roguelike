@@ -10,6 +10,7 @@ namespace Domain.Model.Memento
     public class ItemPlaceholdersMemento
     {
         [field: SerializeField] public SerializableDictionary<string, string> Placeholders { get; private set; }
+        [field: SerializeField] public SerializableDictionary<string, string> PlayerAssignedNames { get; private set; }
         [field: SerializeField] public PlaceholderIndexes PotionPlaceholders { get; private set; }
         [field: SerializeField] public PlaceholderIndexes ScrollPlaceholders { get; private set; }
         [field: SerializeField] public PlaceholderIndexes BookPlaceholders { get; private set; }
@@ -18,6 +19,7 @@ namespace Domain.Model.Memento
 
         public ItemPlaceholdersMemento(
             Dictionary<string, string> placeholders,
+            Dictionary<string, string> playerAssignedNames,
             PlaceholderIndexes potionPlaceholders,
             PlaceholderIndexes scrollPlaceholders,
             PlaceholderIndexes bookPlaceholders,
@@ -26,6 +28,7 @@ namespace Domain.Model.Memento
         )
         {
             Placeholders = placeholders.ToSerializable();
+            PlayerAssignedNames = playerAssignedNames.ToSerializable();
             PotionPlaceholders = potionPlaceholders;
             ScrollPlaceholders = scrollPlaceholders;
             BookPlaceholders = bookPlaceholders;

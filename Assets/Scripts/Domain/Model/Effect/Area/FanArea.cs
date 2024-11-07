@@ -71,7 +71,7 @@ namespace Domain.Model.Effect.Area
                 area.Remove(position);
             if (CanIgnoreWalls || Radius <= 1)
                 return area;
-            var reachable = map.ComputeCircle(map.GetAllBlankPositionsOn(EntityLayer.Middle).Values().ToHashSet(), position,
+            var reachable = map.ComputeCircle(position => !map.At(position).IsBlank(EntityLayer.Middle), position,
                 Radius + 0.5f);
             return area.Where(p => reachable.Contains(p));
         }

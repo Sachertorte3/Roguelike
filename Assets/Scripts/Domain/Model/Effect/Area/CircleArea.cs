@@ -27,7 +27,7 @@ namespace Domain.Model.Effect.Area
             if (CanIgnoreWalls || Radius <= 1)
                 return EnumerableExtension.CircleRange(position, Radius + 0.5f)
                     .Where(p => ContainsSelf || p != position);
-            return map.ComputeCircle(map.GetAllBlankPositionsOn(EntityLayer.Middle).Values().ToHashSet(), position, Radius + 0.5f)
+            return map.ComputeCircle(position => !map.At(position).IsBlank(EntityLayer.Middle), position, Radius + 0.5f)
                 .Where(p => ContainsSelf || p != position);
         }
 

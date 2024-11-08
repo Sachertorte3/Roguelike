@@ -342,7 +342,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
 
-            if (item.CanActivateWhenUsed)
+            if (item.CanActivateWhenUsedA)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
@@ -398,7 +398,7 @@ namespace Domain.Service.Characters
 
                     await map.ExecuteTrapAt(destination, this);
                     item = itemEntity.Item;
-                    if (item.CanActivateWhenThrown)
+                    if (item.CanActivateWhenThrownA)
                     {
                         await item.UseWhenThrown(this, destination, direction, map);
                     }
@@ -624,6 +624,17 @@ namespace Domain.Service.Characters
                     AddKnownItem(item);
                 }
                 return true;
+            }
+
+            return false;
+        }
+
+        public bool TryPickUpItem(IMap map, bool canPickUpShopItem)
+        {
+            var item = map.TryPickUpAt(Entity.CurrentPosition, canPickUpShopItem);
+            if (item != null)
+            {
+                return TryAddToInventory(item.Item);
             }
 
             return false;

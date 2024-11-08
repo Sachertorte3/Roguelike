@@ -26,7 +26,11 @@ namespace Game
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             _items.SubscribeToAllObservables(item => item.Entity.Position, (item, position) => SetAllItemPosition()).AddTo(_disposables);
-            _items.SubscribeToAllObservables(item => item.OnDisabled, (item, dead) => _items.Remove(item)).AddTo(_disposables);
+            _items.SubscribeToAllObservables(item => item.OnDisabled, (item, dead) =>
+            {
+                if (item.Item.AutoDestroyWhenDisabled)
+                    _items.Remove(item);
+            }).AddTo(_disposables);
             _items.SubscribeToAllObservables(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item)).AddTo(_disposables);
         }
 
@@ -77,18 +81,18 @@ namespace Game
             return _items.FirstOrDefault(item => item.Entity.CurrentPosition == position);
         }
 
-        public bool CanPickUpAt(Vector2Int position, bool pickUpShopItem = false)
+        public bool CanPickUpAt(Vector2Int position, bool canPickUpShopItem = false)
         {
             var item = GetItemAt(position);
             if (item == null)
                 return false;
 
-            return pickUpShopItem || item.Item.State != ItemState.ShopItem;
+            return canPickUpShopItem || item.Item.State != ItemState.ShopItem;
         }
 
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool pickUpShopItem = false)
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem = false)
         {
-            if (!CanPickUpAt(position, pickUpShopItem))
+            if (!CanPickUpAt(position, canPickUpShopItem))
                 return null;
 
             var item = GetItemAt(position)!;

@@ -616,7 +616,7 @@ namespace Game
             return CharacterManager.GetAllCharacterPositions();
         }
 
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool isShopItem) => ItemManager.TryPickUpAt(position, isShopItem);
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem) => ItemManager.TryPickUpAt(position, canPickUpShopItem);
 
         public void DropAllItem(ICharacter character)
         {

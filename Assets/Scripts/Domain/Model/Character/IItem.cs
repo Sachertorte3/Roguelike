@@ -27,11 +27,14 @@ namespace Domain.Model.Item
         public ItemState State { get; }
         public bool UseOnDeath { get; }
         public int Price { get; }
-        public bool CanActivateWhenUsed { get; }
-        public bool CanActivateWhenThrown { get; }
+        public bool HasActivatableSkillWhenUsed { get; }
+        public bool HasActivatableSkillWhenThrown { get; }
+        public bool CanActivateWhenUsedA { get; }
+        public bool CanActivateWhenThrownA { get; }
         public Option<ISkill> SkillOnUse { get; }
         public Option<ISkill> SkillOnThrow { get; }
-        public bool Usable => CanActivateWhenUsed || CanActivateWhenThrown;
+        public bool HasActivatableSkill { get; }
+        public bool CanActivate { get; }
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public bool IsDisabled { get; }
@@ -42,6 +45,7 @@ namespace Domain.Model.Item
         public bool IdentifyIfGot { get; }
         public bool IdentifyIfUsed { get; }
         public bool IsCurseIdentified { get; }
+        public bool AutoDestroyWhenDisabled { get; }
         public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }

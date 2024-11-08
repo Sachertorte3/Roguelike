@@ -74,7 +74,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"アイテム弾き";
+            return $"対象の持つアイテムを落とさせる\n";
         }
     }
 }

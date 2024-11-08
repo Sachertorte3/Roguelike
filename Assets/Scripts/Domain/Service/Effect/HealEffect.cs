@@ -66,7 +66,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"回復\n威力: {_power}";
+            return $"威力{_power}の回復を行う\n";
         }
     }
 }

@@ -71,7 +71,13 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return "破壊";
+            var targets = new List<string>();
+            if (ApplyToCharacter) targets.Add("キャラクター");
+            if (ApplyToItem) targets.Add("アイテム");
+            if (ApplyToMoney) targets.Add("お金");
+            if (ApplyToTrap) targets.Add("罠");
+            if (ApplyToChest) targets.Add("宝箱");
+            return $"{string.Join("、", targets)}を破壊する\n";
         }
     }
 }

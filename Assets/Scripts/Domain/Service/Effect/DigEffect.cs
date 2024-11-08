@@ -37,7 +37,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return "壁堀り";
+            return "壁を掘る\n";
         }
     }
 }

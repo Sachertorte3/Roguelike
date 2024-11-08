@@ -121,14 +121,14 @@ namespace Domain.Service.Items
         public ItemState State { get; private set; }
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
-        public bool CanActivateWhenUsedA => SkillOnUse.HasValue && !IsDisabled;
-        public bool CanActivateWhenThrownA => SkillOnThrow.HasValue && !IsDisabled;
+        public bool CanActivateWhenUsed => SkillOnUse.HasValue && !IsDisabled;
+        public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
         public Option<ISkill> SkillOnUse => _skillOnUse;
         public Option<ISkill> SkillOnThrow => _skillOnThrow;
         private readonly bool _hasSameEffect;
         private readonly bool _hasSameSkill;
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
-        public bool CanActivate => CanActivateWhenUsedA || CanActivateWhenThrownA;
+        public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool UseOnDeath { get; init; }
         public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
@@ -383,7 +383,7 @@ namespace Domain.Service.Items
             IsCurseIdentified = isCurseIdentified;
             _onItemUpdated.OnNext(Unit.Default);
         }
-#region Upgrade
+        #region Upgrade
         public List<UpgradeData> GetUpgrades()
         {
             var upgrades = new List<UpgradeData>();
@@ -491,7 +491,7 @@ namespace Domain.Service.Items
             this.ApplyDowngrade(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
-#endregion
+        #endregion
         public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
             if (player.IsKnownItem(this))
@@ -502,34 +502,52 @@ namespace Domain.Service.Items
             {
                 var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
                 if (IsCurseIdentified && IsCursed)
-                    info += $"呪われている\n";
+                    info += $"それは呪われている\n";
                 else if (IsCurseIdentified && !IsCursed)
-                    info += $"呪われていない\n";
+                    info += $"それは呪われていない\n";
                 else
-                    info += $"呪い状態不明\n";
+                    info += $"それは呪われているかわからない\n";
                 if (HasActivatableSkillWhenUsed)
-                    info += $"使用可能\n";
+                    info += $"それは使用可能である\n";
                 if (HasActivatableSkillWhenThrown)
-                    info += $"投擲可能\n";
+                    info += $"それは投擲可能である\n";
                 return info;
             }
         }
 
         public string DebugInfo() => FullInfo();
 
+//例
+//硬いダガー (47/48)
+//376Gの価値がある
+//それは呪われていない
+
+//使用したときの効果...
+//その場の前1マスを対象にして
+//[Physical]属性、威力4の攻撃を行う
+//そのとき10%の確率でクリティカルを発生させる
+//発動は95%の確率で成功する
+
+//投擲したときの効果...
+//その場の1マスを対象にして
+//使用時と同じ効果を発揮する
+//発動は90%の確率で成功する
+
+//アップグレード (0/3)
+
         public string FullInfo()
         {
-            var info = $"{State.GetDescription()}{_fullName}\n";
-            info += $"価格: {Price}\n";
+            var info = $"{State.GetDescription()}{_fullName} ({_remainingUsages.CurrentValue}/{_maxUsages})\n";
+            info += $"{Price}Gの価値がある\n";
             if (IsCursed)
-                info += $"呪われている\n";
+                info += $"それは呪われている\n";
             else
-                info += $"呪われていない\n";
+                info += $"それは呪われていない\n";
             if (HasActivatableSkill)
             {
                 if (_hasSameSkill)
                 {
-                    info += "[使用・投擲時]\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
+                    info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
                         itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                     );
@@ -541,32 +559,37 @@ namespace Domain.Service.Items
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
                         itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
                     );
-                    info += $"発動確率(使用時): {skillOnUseSuccessProbability:P0}\n";
-                    info += $"発動確率(投擲時): {skillOnThrowSuccessProbability:P0}\n";
+                    info += $"使用時の発動は{skillOnUseSuccessProbability:P0}の確率で成功する\n";
+                    info += $"投擲時の発動は{skillOnThrowSuccessProbability:P0}の確率で成功する\n";
                 }
                 else
                 {
                     info += SkillOnUse.MapOr(
                         "",
-                        skill => "[使用時]\n" + skill.Match(
+                        skill => "\n使用したときの効果...\n" + skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
                             itemTargetSkill => itemTargetSkill.Info()
-                        ) + "\n");
+                        ));
 
                     info += SkillOnThrow.MapOr(
                         "",
-                        skill => $"[投擲時]\n" + skill.Match(
+                        skill => "\n投擲したときの効果...\n" + skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnThrow(_hasSameEffect),
                             itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                        ) + "\n");
+                        ));
                 }
-
-                info += $"使用可能回数: {_remainingUsages.CurrentValue}/{_maxUsages}\n";
             }
+
+            info += "\n";
 
             if (UseOnDeath)
             {
-                info += "死亡時に自動的に使用される\n";
+                info += "それは死亡時に自動的に使用される\n";
+            }
+
+            foreach (var condition in PassiveConditions)
+            {
+                info += $"それは{condition.Name}の効果を授ける\n";
             }
 
             if (_upgradePaths.Any() || CanAnyUpgrade())
@@ -577,11 +600,6 @@ namespace Domain.Service.Items
                 {
                     info += $"{path.GetUpgradeName()}\n";
                 }
-            }
-
-            foreach (var condition in PassiveConditions)
-            {
-                info += $"パッシブ効果: {condition.Name}\n";
             }
 
             return info;

@@ -29,7 +29,7 @@ namespace Domain.Model.Effect.Area
 
         public string Info()
         {
-            return "1マス";
+            return "その場";
         }
     }
 }

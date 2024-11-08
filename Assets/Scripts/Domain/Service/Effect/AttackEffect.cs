@@ -101,10 +101,10 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            var info = $"攻撃\n威力: {string.Join(" ", _elementPowers.Select(e => e.Info()))}";
+            var info = $"{string.Join(" ", _elementPowers.Select(e => e.Info()))}の攻撃を行う\n";
             if (_fixedCriticalRate > 0)
             {
-                info += $"\nクリティカル: {_fixedCriticalRate:P0}";
+                info += $"そのとき{_fixedCriticalRate:P0}の確率でクリティカルを発生させる\n";
             }
 
             return info;

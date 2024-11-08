@@ -82,10 +82,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            var info = $"状態付与: {_condition.Value.name}";
-            info += $" 成功率: {_probabilityOfSuccess:P0}";
-
-            return info;
+            return $"{_probabilityOfSuccess:P0}の確率で{_condition.Value.name}状態を付与する\n";
         }
     }
 }

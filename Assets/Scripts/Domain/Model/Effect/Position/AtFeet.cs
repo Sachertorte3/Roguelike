@@ -29,7 +29,7 @@ namespace Domain.Model.Effect.Position
 
         public string Info()
         {
-            return "その場";
+            return "発動場所";
         }
     }
 }

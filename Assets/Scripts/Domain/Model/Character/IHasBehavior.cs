@@ -17,5 +17,6 @@ namespace Domain.Model.Character
         public IVisionRange VisionRange { get; }
         public int CurrentHp { get; }
         public bool CanSwap(Vector2Int position, Direction8 direction, IMap map);
+        public bool TryPickUpItem(IMap map, bool canPickUpShopItem);
     }
 }

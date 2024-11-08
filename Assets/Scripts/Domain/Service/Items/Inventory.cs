@@ -54,7 +54,7 @@ namespace Domain.Service.Items
                             itemChanged.NewValue.RemainingUses.Subscribe(
                                 remainingUses =>
                                 {
-                                    if (remainingUses <= 0)
+                                    if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
                                         Replace(null, itemChanged.Index);
                                 }
                             ));

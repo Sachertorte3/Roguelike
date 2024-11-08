@@ -39,6 +39,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
       - {fileID: 11400000, guid: a5f438da92afbff4aab8da4eb5b28ddb, type: 2}
       - {fileID: 11400000, guid: a1b351b314ba1944cada32a9266ff9c1, type: 2}
+      - {fileID: 11400000, guid: fb359a24044098748adb6a7bd3128eca, type: 2}
     Books:
       items:
       - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}

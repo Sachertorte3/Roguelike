@@ -56,7 +56,7 @@ namespace Provider
             {
                 inventoryView.Replace(
                     item.Icon,
-                    item.Usable ? item.RemainingUses.CurrentValue : null,
+                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
                     item.IsCursed,
                     item.IsShiny,
                     player.IsKnownItem(item),
@@ -85,22 +85,14 @@ namespace Provider
         {
             var item = map.Items.At(map.Player.Entity.CurrentPosition).FirstOrDefault();
             if (item != null)
-                inventoryView.UpdateInfo(item.Item.Info(map.Player, map.ItemPlaceholders), map.Player.Inventory.MaxItemCount);
+                ReplaceItemView(inventoryView, item.Item, map.Player.Inventory.MaxItemCount, map.Player, map.ItemPlaceholders);
             else
-                inventoryView.UpdateInfo("", map.Player.Inventory.MaxItemCount);
+                inventoryView.SetGround();
         }
 
         private void UpdateItemView(InventoryView inventoryView, IItem item, int index, ICharacter player, ItemPlaceholders itemPlaceholders)
         {
-            inventoryView.UpdateCount(
-                item.Usable ? item.RemainingUses.CurrentValue : null,
-                player.IsKnownItem(item),
-                index);
-            inventoryView.UpdateCursed(
-                item.IsCursed,
-                player.IsKnownItem(item) || item.IsCurseIdentified,
-                index);
-            inventoryView.UpdateInfo(item.Info(player, itemPlaceholders), index);
+            ReplaceItemView(inventoryView, item, index, player, itemPlaceholders);
         }
     }
 }

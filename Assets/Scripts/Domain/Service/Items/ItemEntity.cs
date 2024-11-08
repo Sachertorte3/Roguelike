@@ -69,7 +69,7 @@ namespace Domain.Service.Items
         public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction,
             int distance, IMap map)
         {
-            if (item.CanActivateWhenThrown)
+            if (!item.CanActivateWhenThrownA)
                 return 0;
 
             var destination = GetThrowDestination(position, direction, distance, map);
@@ -89,7 +89,7 @@ namespace Domain.Service.Items
             }
             await map.ExecuteTrapAt(destination, actor as ICharacter);
 
-            if (Item.CanActivateWhenThrown)
+            if (Item.CanActivateWhenThrownA)
             {
                 var result = await Item.UseWhenThrown(actor, destination, direction, map);
             }

@@ -132,8 +132,14 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case InputType.DropItem:
                         focus = result.focus;
-                        if (focus.isEmpty || focus.isGroundItem)
+                        if (focus.isEmpty)
                             break;
+                        else if (focus.isGroundItem)
+                        {
+                            if (character.TryPickUpItem(map, true))
+                                return new DoNothing();
+                            break;
+                        }
                         action = new DropItem(focus.index);
                         if (action.Doable(character, map)) return action;
                         break;

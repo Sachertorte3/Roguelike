@@ -57,6 +57,11 @@ namespace View.UI
             UpdateInfo(info, index);
         }
 
+        public void SetGround()
+        {
+            _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
+        }
+
         public void Remove(int index)
         {
             if (_itemViews[index] == null)
@@ -69,16 +74,6 @@ namespace View.UI
         {
             _info[index] = info;
             if (CurrentFocus.index == index) _infoText.text = info;
-        }
-
-        public void UpdateCount(int? count, bool isIdentified, int index)
-        {
-            _itemViews[index].SetCount(count, isIdentified);
-        }
-
-        public void UpdateCursed(bool isCursed, bool isIdentified, int index)
-        {
-            _itemViews[index].SetCursed(isCursed, isIdentified);
         }
 
         public void DisableItems(int[] disabledItemIndexes)

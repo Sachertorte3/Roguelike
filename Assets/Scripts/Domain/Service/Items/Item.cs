@@ -105,6 +105,7 @@ namespace Domain.Service.Items
             IdentifyIfGot = data.IdentifyIfGot;
             IdentifyIfUsed = data.IdentifyIfUsed;
             IsCurseIdentified = data.IsCurseIdentified;
+            AutoDestroyWhenDisabled = data.AutoDestroyWhenDisabled;
             UpgradeLimit = data.UpgradeLimit;
             _conditions = data.Conditions.ToList();
         }
@@ -118,13 +119,16 @@ namespace Domain.Service.Items
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
         public ItemState State { get; private set; }
-        public bool CanActivateWhenUsed => SkillOnUse.HasValue;
-        public bool CanActivateWhenThrown => SkillOnThrow.HasValue;
+        public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
+        public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
+        public bool CanActivateWhenUsedA => SkillOnUse.HasValue && !IsDisabled;
+        public bool CanActivateWhenThrownA => SkillOnThrow.HasValue && !IsDisabled;
         public Option<ISkill> SkillOnUse => _skillOnUse;
         public Option<ISkill> SkillOnThrow => _skillOnThrow;
         private readonly bool _hasSameEffect;
         private readonly bool _hasSameSkill;
-        private bool _usable => CanActivateWhenUsed || CanActivateWhenThrown;
+        public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
+        public bool CanActivate => CanActivateWhenUsedA || CanActivateWhenThrownA;
         public bool UseOnDeath { get; init; }
         public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
@@ -136,6 +140,7 @@ namespace Domain.Service.Items
         public bool IdentifyIfGot { get; init; }
         public bool IdentifyIfUsed { get; init; }
         public bool IsCurseIdentified { get; private set; }
+        public bool AutoDestroyWhenDisabled { get; init; }
         public int UpgradeLimit { get; init; }
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
@@ -165,6 +170,7 @@ namespace Domain.Service.Items
                 identifyIfGot: IdentifyIfGot,
                 identifyIfUsed: IdentifyIfUsed,
                 isCurseIdentified: IsCurseIdentified,
+                autoDestroyWhenDisabled: AutoDestroyWhenDisabled,
                 upgradeLimit: UpgradeLimit,
                 conditions: _conditions.ToArray()
             );
@@ -207,6 +213,7 @@ namespace Domain.Service.Items
                 identifyIfGot: data.IdentifyIfGot,
                 identifyIfUsed: data.IdentifyIfUsed,
                 isCurseIdentified: false,
+                autoDestroyWhenDisabled: data.AutoDestroyWhenDisabled,
                 upgradeLimit: data.UpgradeLimit,
                 conditions: data.PassiveConditions.ToArray()
             );
@@ -500,9 +507,9 @@ namespace Domain.Service.Items
                     info += $"呪われていない\n";
                 else
                     info += $"呪い状態不明\n";
-                if (CanActivateWhenUsed)
+                if (HasActivatableSkillWhenUsed)
                     info += $"使用可能\n";
-                if (CanActivateWhenThrown)
+                if (HasActivatableSkillWhenThrown)
                     info += $"投擲可能\n";
                 return info;
             }
@@ -518,7 +525,7 @@ namespace Domain.Service.Items
                 info += $"呪われている\n";
             else
                 info += $"呪われていない\n";
-            if (_usable)
+            if (HasActivatableSkill)
             {
                 if (_hasSameSkill)
                 {

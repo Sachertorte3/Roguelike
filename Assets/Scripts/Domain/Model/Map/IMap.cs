@@ -52,7 +52,7 @@ namespace Domain.Model.Map
             int distance, params EntityLayer[] canHitLayer);
         public void SpawnEffect(IEnumerable<Vector2Int> area, Color color);
 
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool isShopItem);
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem);
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
 

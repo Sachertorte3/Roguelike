@@ -23,6 +23,7 @@ namespace Domain.Model.Item
         public bool CannotDropIfCursed => Category == ItemCategory.Weapons;
         public bool IdentifyIfGot => Category == ItemCategory.Weapons;
         public bool IdentifyIfUsed => Category != ItemCategory.Wands;
+        public bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;

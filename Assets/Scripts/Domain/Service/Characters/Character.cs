@@ -342,7 +342,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
 
-            if (item.CanActivateWhenUsedA)
+            if (item.CanActivateWhenUsed)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
@@ -398,7 +398,7 @@ namespace Domain.Service.Characters
 
                     await map.ExecuteTrapAt(destination, this);
                     item = itemEntity.Item;
-                    if (item.CanActivateWhenThrownA)
+                    if (item.CanActivateWhenThrown)
                     {
                         await item.UseWhenThrown(this, destination, direction, map);
                     }
@@ -668,6 +668,12 @@ namespace Domain.Service.Characters
         ~Character()
         {
             Dispose();
+        }
+
+        public string Info()
+        {
+            var info = $"{_name}\n";
+            return info;
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"ランダム";
+            return $"何らかの効果を発動する\n";
         }
     }
 }

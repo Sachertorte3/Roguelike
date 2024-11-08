@@ -48,7 +48,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            return $"[{Element}] {Power}";
+            return $"{Element.Name()}属性、威力{Power}";
         }
     }
 }

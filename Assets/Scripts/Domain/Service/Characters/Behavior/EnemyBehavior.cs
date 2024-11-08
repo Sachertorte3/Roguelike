@@ -344,7 +344,7 @@ namespace Domain.Service.Characters.Behavior
             var actions = new List<UseItem>();
             foreach (var item in character.Inventory.AllItems)
             {
-                if (!item.CanActivateWhenUsedA)
+                if (!item.CanActivateWhenUsed)
                     continue;
 
                 if (item.SkillOnUse.MapOr(false, skill => skill.IsDirectional))

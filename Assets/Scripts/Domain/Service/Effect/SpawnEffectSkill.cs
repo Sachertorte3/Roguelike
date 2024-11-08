@@ -280,19 +280,18 @@ namespace Domain.Service.Effect
         {
             var info = "";
             if (Repeats > 1)
-                info += $"発動回数: {Repeats}回\n";
+                info += $"効果は{Repeats}回発動する\n";
+            if (RushDistance > 0)
+                info += $"\n{RushDistance}マス前に進み\n";
+            info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
             foreach (var (effect, index) in _effects.Index())
             {
-                info += $"効果{index + 1}: {effect.Info()}\n";
+                info += effect.Info();
             }
-            info += $"発動位置: {_position.Info()}\n";
-            info += $"範囲: {_area.Info()}";
-            if (RushDistance > 0)
-                info += $"\n突進距離: {RushDistance}";
             if (BackStepDistance > 0)
-                info += $"\n後退距離: {BackStepDistance}";
+                info += $"{BackStepDistance}マス後ろに下がる\n";
             if (!omitProbabilityOfSuccess)
-                info += $"\n発動確率: {ProbabilityOfSuccess:P0}";
+                info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }
 
@@ -300,21 +299,20 @@ namespace Domain.Service.Effect
         {
             var info = "";
             if (Repeats > 1)
-                info += $"発動回数: {Repeats}回\n";
+                info += $"効果は{Repeats}回発動する\n";
+            info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
             if (!omitEffects)
             {
                 foreach (var (effect, index) in _effects.Index())
                 {
-                    info += $"効果{index + 1}: {effect.Info()}\n";
+                    info += effect.Info();
                 }
             }
             else
             {
-                info += "効果: 使用時と同じ\n";
+                info += "使用時と同じ効果を発揮する\n";
             }
-            info += $"発動位置: {_position.Info()}\n";
-            info += $"範囲: {_area.Info()}\n";
-            info += $"発動確率: {ProbabilityOfSuccess:P0}";
+            info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }
     }

@@ -30,7 +30,7 @@ namespace Domain.Model.Effect.Position
 
         public string Info()
         {
-            return "すべてのキャラクター";
+            return "すべてのキャラクターの場所";
         }
     }
 }

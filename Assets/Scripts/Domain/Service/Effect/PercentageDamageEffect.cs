@@ -52,7 +52,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"攻撃\n威力: HPの{_damageRate:P0}";
+            return $"HPの{_damageRate:P0}のダメージを与える\n";
         }
     }
 }

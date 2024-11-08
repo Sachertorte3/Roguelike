@@ -29,8 +29,8 @@ namespace Domain.Model.Item
         public int Price { get; }
         public bool HasActivatableSkillWhenUsed { get; }
         public bool HasActivatableSkillWhenThrown { get; }
-        public bool CanActivateWhenUsedA { get; }
-        public bool CanActivateWhenThrownA { get; }
+        public bool CanActivateWhenUsed { get; }
+        public bool CanActivateWhenThrown { get; }
         public Option<ISkill> SkillOnUse { get; }
         public Option<ISkill> SkillOnThrow { get; }
         public bool HasActivatableSkill { get; }

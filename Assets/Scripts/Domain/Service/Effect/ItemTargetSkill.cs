@@ -101,8 +101,7 @@ namespace Domain.Service.Effect
 
         public string Info()
         {
-            var info = $"効果: {_itemEffect.Info()}";
-            return info;
+            return _itemEffect.Info();
         }
     }
 }

@@ -57,8 +57,8 @@ namespace Domain.Model.Effect.Area
 
         public string Info()
         {
-            var info = $"円 半径{Radius}マス";
-            if (ContainsSelf) info += "(原点含む)";
+            var info = $"半径{Radius}マスの円内部";
+            if (ContainsSelf) info += "(中心含む)";
             if (CanIgnoreWalls) info += "(壁無視)";
             return info;
         }

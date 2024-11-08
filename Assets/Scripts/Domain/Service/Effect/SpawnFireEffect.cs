@@ -38,7 +38,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"炎生成";
+            return $"炎を生成する\n";
         }
     }
 }

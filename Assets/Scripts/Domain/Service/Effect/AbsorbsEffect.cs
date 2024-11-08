@@ -86,9 +86,9 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            var info = "HP吸収\n威力: ";
-            info += string.Join(" ", _elementPowers.Select(e => e.Info()));
-            info += $"\n吸収割合: {_fixedRate:P0}";
+            var info = string.Join(" ", _elementPowers.Select(e => e.Info()));
+            info += $"の攻撃を行う\n";
+            info += $"与えたダメージの{_fixedRate:P0}を吸収する\n";
             return info;
         }
     }

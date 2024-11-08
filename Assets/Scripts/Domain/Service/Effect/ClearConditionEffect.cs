@@ -35,7 +35,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return "全状態異常解除";
+            return "対象の全状態異常を解除する\n";
         }
     }
 }

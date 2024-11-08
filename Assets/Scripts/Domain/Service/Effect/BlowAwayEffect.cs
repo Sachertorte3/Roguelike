@@ -72,7 +72,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"吹き飛ばし{_distance}マス";
+            return $"{_distance}マス吹き飛ばす\n";
         }
     }
 }

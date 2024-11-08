@@ -69,7 +69,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"呪い";
+            return $"対象の持つアイテムに呪いをかける\n";
         }
     }
 }

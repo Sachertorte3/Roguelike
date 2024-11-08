@@ -7,7 +7,6 @@ using Domain.Model.Condition;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions

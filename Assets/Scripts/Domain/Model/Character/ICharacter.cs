@@ -15,7 +15,7 @@ using Utilities;
 
 namespace Domain.Model.Character
 {
-    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IEntity, IActor, IHasBehavior,
+    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IActor, IHasBehavior,
         IActorOfEffect, ITargetOfEffect, IHasCondition
     {
         public bool IsLeader { get; }

@@ -40,7 +40,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"好感度上昇\n威力: {_power}";
+            return $"好感度を{_power}上昇させる\n";
         }
     }
 }

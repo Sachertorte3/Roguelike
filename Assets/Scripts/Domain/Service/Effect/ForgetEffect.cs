@@ -39,7 +39,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"忘却";
+            return $"対象の知識を消去する\n";
         }
     }
 }

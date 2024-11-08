@@ -97,8 +97,8 @@ namespace Domain.Model.Effect.Area
 
         public string Info()
         {
-            var info = $"扇形(90°) 半径{Radius}マス";
-            if (ContainsSelf) info += "(原点含む)";
+            var info = $"半径{Radius}マスの扇形内部(90°)";
+            if (ContainsSelf) info += "(中心含む)";
             if (CanIgnoreWalls) info += "(壁無視)";
             return info;
         }

@@ -49,7 +49,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return "テレポート";
+            return "対象に向かってテレポートする\n";
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return $"警報";
+            return $"警報を鳴らす\n";
         }
     }
 }

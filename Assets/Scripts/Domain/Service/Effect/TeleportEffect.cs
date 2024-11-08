@@ -40,7 +40,7 @@ namespace Domain.Service.Effect
 
         public override string Info()
         {
-            return "テレポート";
+            return "対象をテレポートさせる\n";
         }
     }
 }

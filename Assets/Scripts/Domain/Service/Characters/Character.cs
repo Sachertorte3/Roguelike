@@ -374,43 +374,44 @@ namespace Domain.Service.Characters
 
         public async UniTask ThrowItem(IItem item, Direction8 direction, IMap map)
         {
-            if (item.IsCursed && item.CannotDropIfCursed)
+            Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
+            Turn(direction);
+            if (item.CannotDropIfCursed)
             {
-                GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
+                item.SetCurseIdentified(true);
+                if (item.IsCursed)
+                {
+                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
+                    State = CharacterState.Finish;
+                    return;
+                }
             }
-            else
+
+            GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
+
+            if (!_inventory.Remove(item))
             {
-                Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
-                Turn(direction);
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
-                var destination =
-                    ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
-                if (_inventory.Remove(item))
-                {
-                    if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
-                    {
-                        _onAttacked.OnNext(Unit.Default);
-                        await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
-                    }
+                map.TryPickUpAt(Entity.CurrentPosition, true);
+            }
 
-                    var itemEntity = map.SpawnItem(item,
-                        map.FindBlankPositionFrom(destination, position => map.At(position).IsBlank(EntityLayer.Bottom)));
+            var destination =
+                ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
 
-                    await map.ExecuteTrapAt(destination, this);
-                    item = itemEntity.Item;
-                    if (item.CanActivateWhenThrown)
-                    {
-                        await item.UseWhenThrown(this, destination, direction, map);
-                    }
-                }
-                else
-                {
-                    var itemEntity = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
-                    if (itemEntity != null)
-                    {
-                        await itemEntity.BlowAway(this, direction, CommonSenseParameters.ThrowDistance, map);
-                    }
-                }
+            _onAttacked.OnNext(Unit.Default);
+
+            if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
+            {
+                await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
+            }
+
+            var itemEntity = map.SpawnItem(item,
+                map.FindBlankPositionFrom(destination, position => map.At(position).IsBlank(EntityLayer.Bottom)));
+
+            await map.ExecuteTrapAt(destination, this);
+            item = itemEntity.Item;
+            if (item.CanActivateWhenThrown)
+            {
+                await item.UseWhenThrown(this, destination, direction, map);
             }
 
             State = CharacterState.Finish;
@@ -426,26 +427,33 @@ namespace Domain.Service.Characters
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
                         position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                State = CharacterState.Finish;
+                return;
             }
-            else if (item != null && item.IsCursed && item.CannotDropIfCursed)
+
+            if (item != null && item.CannotDropIfCursed)
             {
-                GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
+                item.SetCurseIdentified(true);
+                if (item.IsCursed)
+                {
+                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
+                    State = CharacterState.Finish;
+                    return;
+                }
             }
-            else
+
+            var pickedUpItem = map.TryPickUpAt(Entity.CurrentPosition, true);
+            if (pickedUpItem != null)
             {
-                var pickedUpItem = map.TryPickUpAt(Entity.CurrentPosition, true);
-                if (pickedUpItem != null)
-                {
-                    GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
-                }
-                ReplaceInventory(pickedUpItem?.Item, itemIndex);
-                if (item != null)
-                {
-                    GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
-                    map.SpawnItem(item,
-                        map.FindBlankPositionFrom(Entity.CurrentPosition,
-                            position => map.At(position).IsBlank(EntityLayer.Bottom)));
-                }
+                GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
+            }
+            ReplaceInventory(pickedUpItem?.Item, itemIndex);
+            if (item != null)
+            {
+                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
+                map.SpawnItem(item,
+                    map.FindBlankPositionFrom(Entity.CurrentPosition,
+                        position => map.At(position).IsBlank(EntityLayer.Bottom)));
             }
 
             State = CharacterState.Finish;

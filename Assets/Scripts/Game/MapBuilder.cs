@@ -172,7 +172,7 @@ namespace Game
             foreach (var position in rect.Value.RectRange())
             {
                 var item = shopItems.GetRandomItem();
-                _items.Add(ItemFactory.Build(position, Item.Build(item, ItemState.ShopItem)));
+                _items.Add(ItemFactory.Build(position, Item.Build(item, state: ItemState.ShopItem)));
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
 

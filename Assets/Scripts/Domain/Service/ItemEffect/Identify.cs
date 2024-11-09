@@ -13,6 +13,7 @@ namespace Domain.Service.ItemEffect
         public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
         {
             actor.AddKnownItem(item);
+            item.SetCurseIdentified(true);
         }
 
         public float EvaluatePrice()

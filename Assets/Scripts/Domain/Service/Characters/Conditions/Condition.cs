@@ -43,7 +43,7 @@ namespace Domain.Service.Characters.Conditions
             );
         }
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
         {
             if (_condition.InflictLog != "")
             {
@@ -52,7 +52,7 @@ namespace Domain.Service.Characters.Conditions
             _condition.Inflict(hasCondition, actor);
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IHasAffiliation player)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
         {
             if (_condition.DeleteLog != "")
             {

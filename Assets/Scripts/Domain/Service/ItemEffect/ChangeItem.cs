@@ -1,4 +1,5 @@
 using System;
+using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
@@ -11,14 +12,14 @@ namespace Domain.Service.ItemEffect
     {
         [SerializeField] private ItemData _item;
 
-        public bool CanApplyTo(IHasInventory actor, IItem item)
+        public bool CanApplyTo(IPlayer player, IItem item)
         {
             return true;
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            actor.Inventory.Replace(new Item(_item), actor.Inventory.GetItemIndex(item));
+            player.Character.Inventory.Replace(new Item(_item), player.Character.Inventory.GetItemIndex(item));
         }
 
         public float EvaluatePrice()

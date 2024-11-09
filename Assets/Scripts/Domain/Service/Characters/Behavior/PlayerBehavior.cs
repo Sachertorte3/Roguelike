@@ -80,29 +80,22 @@ namespace Domain.Service.Characters.Behavior
                         if (Settings.IntelligentDash.Value)
                             move = _intelligentDashController.Filter(move, character, started, map, input);
 
+                        character.Turn(move.Direction);
+
                         var swap = new Swap(move.Direction);
                         var destination = character.Entity.CurrentPosition + move.Direction.Vector();
-                        var eventEntities = map.GetEventEntityAt(destination, EntityLayer.Middle);
-                        character.Turn(move.Direction);
+                        var playerEventEntities = map.PlayerEventEntities.At(destination).On(EntityLayer.Middle);
 
                         if (move.Doable(character, map))
                             return move;
-                        else if (eventEntities.Any() && eventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
+                        else if (playerEventEntities.Any() && playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
                         {
-                            foreach (var eventEntity in eventEntities)
+                            foreach (var eventEntity in playerEventEntities)
                             {
-                                switch (eventEntity.Event)
-                                {
-                                    case PlayerEvent playerEvent:
-                                        var eventAction = await playerEvent.DoAction(map.Player, gameManager, map, swap);
-                                        if (eventAction != null && eventAction.Doable(character, map))
-                                            return eventAction;
-                                        break;
-                                    case CharacterEvent characterEvent:
-                                        if (await characterEvent.DoEvent(map.Player, gameManager, map))
-                                            return new DoNothing();
-                                        break;
-                                }
+                                var eventAction = await eventEntity.Event.DoAction(map.Player, gameManager, map, swap);
+                                if (eventAction != null && eventAction.Doable(character, map))
+                                    return eventAction;
+                                break;
                             }
                         }
                         else if (swap.Doable(character, map))

@@ -31,19 +31,18 @@ namespace Game
             );
             _characters.SubscribeToAllObservables(
                 character => character.Entity.OnDestroyed,
-                (character, _) => _characters.Remove(character)
+                (character, _) => RemoveCharacter(character)
             );
 
-            var player = _factory.CreatePlayer(playerData, receiver, map);
+            Player = _factory.CreatePlayer(playerData, receiver, map);
 
-            Player = player;
-            if (player.CurrentHp > 0)
+            if (Player.Character.CurrentHp > 0)
             {
-                AddCharacter(player);
+                AddCharacter(Player.Character);
             }
         }
 
-        public readonly ICharacter Player;
+        public readonly IPlayer Player;
 
         public IObservableCollection<ICharacter> Characters => _characters;
 
@@ -57,10 +56,10 @@ namespace Game
             Dispose();
         }
 
-        public ICharacter AddCharacter(ICharacter character)
+        public void AddCharacter(ICharacter character)
         {
+            Debug.Log($"AddCharacter: {character.Entity.Position}");
             _characters.Add(character);
-            return character;
         }
 
         public void RemoveCharacter(ICharacter character)
@@ -70,15 +69,17 @@ namespace Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map));
+            var character = _factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map);
+            AddCharacter(character);
+            return character;
         }
 
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Location);
-            return new Ally(
-                AddCharacter(_factory.CreateCharacter(data, behavior, map)),
-                behavior, map);
+            var character = _factory.CreateCharacter(data, behavior, map);
+            AddCharacter(character);
+            return new Ally(character, behavior, map);
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

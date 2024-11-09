@@ -102,7 +102,7 @@ namespace Game
         public WorldMemento Serialize()
         {
             _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
-            var playerData = _activeMap.CurrentValue.Player.Serialize();
+            var playerData = _activeMap.CurrentValue.Player.Character.Serialize();
             return new WorldMemento
             (
                 _dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
@@ -191,7 +191,7 @@ namespace Game
             _updatedMapIds.Add(GetMapId(location));
 
             CharacterMemento? playerData = null;
-            List<CharacterMemento>? characters = null;
+            List<CharacterMemento>? partyMembers = null;
             Vector2Int? initialPosition = destination != null
                 ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
                     .Position
@@ -199,14 +199,14 @@ namespace Game
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
-                playerData = _activeMap.CurrentValue.Player.Serialize();
-                characters = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
+                playerData = _activeMap.CurrentValue.Player.Character.Serialize();
+                partyMembers = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
 
                 _activeMap.CurrentValue.Dispose();
             }
 
             MapManager map = new(mapMemento, _dungeons[location.MapName].CreateMapData(location.Level), playerData,
-                characters, initialPosition, _receiver, _itemPlaceholders);
+                partyMembers, initialPosition, _receiver, _itemPlaceholders);
 
             _activeLocation = location;
             _activeMap.Value = map;

@@ -15,7 +15,7 @@ namespace Provider
             var disposable = new SerialDisposable();
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                disposable.Disposable = map.Player.OnItemSelect.Subscribe(message =>
+                disposable.Disposable = map.Player.Character.OnItemSelect.Subscribe(message =>
                 {
                     if (message.IsWaiting)
                     {

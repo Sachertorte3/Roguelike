@@ -58,7 +58,7 @@ namespace Game
             }
 
             var map = _world.ActiveMap.CurrentValue;
-            if (map.Player.CurrentHp > 0)
+            if (map.Player.Character.CurrentHp > 0)
             {
                 var choice = await GetChoice(null, "Continue", "New Game");
                 _state.Value = GameState.Dungeon;
@@ -85,7 +85,7 @@ namespace Game
 
             _world.ActiveMap.Subscribe(map =>
             {
-                _disposable.Disposable = map.Player.Entity.OnDestroyed.Subscribe(async _ =>
+                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
                 {
                     await StopMap();
                     Save();

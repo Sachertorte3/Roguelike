@@ -105,9 +105,9 @@ namespace Provider
                         }
                     }).AddTo(_disposables);
                     // HACK: Here.
-                    var previousVisibleArea = map.VisibleArea;
-                    map.Player.VisionRange.OnVisibleAreaChanged
-                        .Select(x => map.Player.VisionRange.VisibleArea)
+                    var previousVisibleArea = map.Player.Character.VisionRange.VisibleArea;
+                    map.Player.Character.VisionRange.OnVisibleAreaChanged
+                        .Select(x => map.Player.Character.VisionRange.VisibleArea)
                         .Subscribe(visibleAreaChanged =>
                         {
                             var areaEntered = visibleAreaChanged.Except(previousVisibleArea);
@@ -141,7 +141,7 @@ namespace Provider
         {
             if (map.TilemapViewer.GetTile(position).MapOr(false, tile => tile.IsKnown))
             {
-                if (map.Player.IsVisible(position))
+                if (map.Player.Character.VisionRange.IsVisible(position))
                 {
                     return TileVisibility.Visible;
                 }

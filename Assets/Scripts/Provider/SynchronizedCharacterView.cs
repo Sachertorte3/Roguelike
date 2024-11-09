@@ -56,8 +56,8 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var player = _world.ActiveMap.CurrentValue.Player;
-            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player),
-                character.IsAlly(player));
+            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player.Character),
+                character.IsAlly(player.Character));
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 

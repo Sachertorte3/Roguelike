@@ -11,7 +11,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Stairs : IDisposable, ISerializable<StairsMemento>, IEventEntity, IMovementEntity
+    public class Stairs : IDisposable, ISerializable<StairsMemento>, IPlayerEventEntity, IMovementEntity
     {
         public MovementEntityType Type { get; init; }
         public Location Destination { get; init; }
@@ -45,7 +45,7 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         private bool CanExecuteEvent()
         {

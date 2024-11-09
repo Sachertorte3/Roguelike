@@ -21,16 +21,16 @@ namespace Domain.Service.Characters
         private readonly Dictionary<Id<IEntity>, float> _affections;
         private readonly Id<IEntity> _id;
         private readonly Subject<OnAffiliationChangedMessage> _onAffiliationChanged = new();
-        private IAffiliation? _player;
+        private IAffiliation? _playerAffiliation;
         private readonly Dictionary<(Id<IEntity>, AffiliationType), FlagStat> _forcedAffiliationFlags = new();
 
-        public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IAffiliation? player)
+        public CharacterAffiliationManager(Id<IEntity> id, AffiliationMemento data, IPlayer? player)
         {
             _id = id;
             Group = data.Group;
             _affections = data.Affiliations;
             _forcedAffiliationFlags = data.ForcedAffiliationFlags;
-            _player = player;
+            _playerAffiliation = player?.Character.Affiliation;
         }
 
         public Id<IEntity> Id => _id;
@@ -72,9 +72,9 @@ namespace Domain.Service.Characters
                 return AffiliationType.Neutral;
             }
 
-            if (other != _player && _player != null && IsAlly(_player))
+            if (other != _playerAffiliation && _playerAffiliation != null && IsAlly(_playerAffiliation))
             {
-                return other.GetAffiliationType(_player);
+                return other.GetAffiliationType(_playerAffiliation);
             }
 
             var totalAffection = GetAffection(other);

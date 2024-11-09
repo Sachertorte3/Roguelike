@@ -131,7 +131,7 @@ namespace Provider
         {
             if (target == "Player" || target == "player")
             {
-                return _world.ActiveMap.CurrentValue.Player;
+                return _world.ActiveMap.CurrentValue.Player.Character;
             }
 
             if (Guid.TryParse(target, out var guid))

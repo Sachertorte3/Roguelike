@@ -18,7 +18,7 @@ namespace Domain.Service.Characters.Conditions
         private readonly CompositeDisposable _disposables = new();
 
         public CharacterConditions(IHasCondition hasCondition,
-            List<(Id<IEntity> actor, ConditionMemento condition)> conditions, IHasAffiliation player)
+            List<(Id<IEntity> actor, ConditionMemento condition)> conditions, IPlayer player)
         {
             foreach (var (actor, conditionMemento) in conditions)
             {

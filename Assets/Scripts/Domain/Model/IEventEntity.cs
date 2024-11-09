@@ -1,6 +1,9 @@
 ﻿namespace Domain.Model
 {
-    public interface IEventEntity : IHasEvent, IEntity
+    public interface IEventEntity : IHasCharacterEvent, IEntity
+    {
+    }
+    public interface IPlayerEventEntity : IHasPlayerEvent, IEntity
     {
     }
 }

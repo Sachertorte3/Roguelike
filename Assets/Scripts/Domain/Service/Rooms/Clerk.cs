@@ -11,13 +11,13 @@ using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Clerk : IEventEntity
+    public class Clerk : IPlayerEventEntity
     {
         public readonly ICharacter Character;
         public Entity Entity => Character.Entity;
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
-        public Clerk(ICharacter character, Func<ICharacter, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        public Clerk(ICharacter character, Func<IPlayer, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
             Event = new PlayerEvent(

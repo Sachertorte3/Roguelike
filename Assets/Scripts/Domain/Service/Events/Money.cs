@@ -13,7 +13,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Money : IDisposable, ISerializable<MoneyMemento>, IIconEventEntity
+    public class Money : IDisposable, ISerializable<MoneyMemento>, IPlayerEventEntity, IIconEntity
     {
         public Entity Entity { get; init; }
         public readonly int Amount;
@@ -31,8 +31,8 @@ namespace Domain.Service.Events
                         "拾う(選択肢としては表示されない)",
                         (player) => true,
                         (gameManager, map) => {
-                            map.Player.AddMoney(Amount);
-                            GameLog.Add($"{map.Player.GetName(map.Player)}は{Amount}Gを拾った");
+                            map.Player.Character.AddMoney(Amount);
+                            GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
                             map.RemoveEventEntity(this);
                             return UniTask.CompletedTask;
                         }
@@ -50,8 +50,6 @@ namespace Domain.Service.Events
         {
             Dispose();
         }
-
-
 
         public Sprite Icon => Amount switch
         {
@@ -71,7 +69,7 @@ namespace Domain.Service.Events
                 .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_358]").WaitForCompletion()
         };
 
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         public void SetVisibility(bool visibility)
         {

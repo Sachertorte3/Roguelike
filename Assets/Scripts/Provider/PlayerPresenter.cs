@@ -20,12 +20,12 @@ namespace Provider
             CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
-                    if (map.Player.CurrentHp <= 0)
+                    if (map.Player.Character.CurrentHp <= 0)
                     {
                         return;
                     }
 
-                    var playerView = characters.Get(map.Player);
+                    var playerView = characters.Get(map.Player.Character);
 
                     var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
                         .WaitForCompletion();
@@ -33,13 +33,13 @@ namespace Provider
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
                     _disposable.Add(Observable
-                        .Merge(map.Player.StatusManager.Stats.HpValue, map.Player.StatusManager.Stats.MaxHp)
+                        .Merge(map.Player.Character.StatusManager.Stats.HpValue, map.Player.Character.StatusManager.Stats.MaxHp)
                         .Subscribe(_ =>
                         {
-                            var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue * 100 /
-                                                        map.Player.StatusManager.Stats.MaxHp.CurrentValue;
-                            statLine.SetValue(map.Player.StatusManager.Stats.MaxHp.CurrentValue,
-                                map.Player.StatusManager.Stats.HpValue.CurrentValue);
+                            var hpPercentageFromMaxHp = map.Player.Character.StatusManager.Stats.HpValue.CurrentValue * 100 /
+                                                        map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
+                            statLine.SetValue(map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue,
+                                map.Player.Character.StatusManager.Stats.HpValue.CurrentValue);
                             if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {
                                 statLine.SetTextColor(Color.red);

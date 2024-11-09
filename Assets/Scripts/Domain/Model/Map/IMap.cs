@@ -17,21 +17,21 @@ namespace Domain.Model.Map
         public Location Location { get; }
         public ItemDatabase ItemDatabase { get; }
         public ItemPlaceholders ItemPlaceholders { get; }
-        public ICharacter Player { get; }
+        public IPlayer Player { get; }
         public bool IsEventExecuting { get; }
-        public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
 
         public IEnumerable<IEntity> Entities { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
+        public IObservableCollection<IEventEntity> EventEntities { get; }
+        public IObservableCollection<IPlayerEventEntity> PlayerEventEntities { get; }
 
         public HashSet<Vector2Int> GetAllPositions();
 
         public bool IsInside(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
 
-        public IItem? GetItemFromId(Id<IItem> id);
-        public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer);
+        public IItem? GetItemByIdFromWorldOrInventory(Id<IItem> id);
 
         public UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor);
 
@@ -57,6 +57,7 @@ namespace Domain.Model.Map
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
 
         public void RemoveEventEntity(IEventEntity entity);
+        public void RemoveEventEntity(IPlayerEventEntity entity);
 
         public HashSet<Vector2Int> AllCharacterPositions();
         public HashSet<Vector2Int> AllItemPositions();

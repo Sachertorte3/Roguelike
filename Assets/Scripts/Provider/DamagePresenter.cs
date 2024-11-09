@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using Domain.Model.Setting;
 using Game;
 using R3;
-using Unity.Logging;
 using Utilities;
 using VContainer;
 using View;
@@ -19,12 +17,12 @@ namespace Provider
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     damageTextSpawner.DeleteAllText();
-                    _disposable.Add(map.Player.StatusManager.OnDamageReceived.Subscribe(damageChanged =>
+                    _disposable.Add(map.Player.Character.StatusManager.OnDamageReceived.Subscribe(damageChanged =>
                         {
                             var damagePercentageFromMaxHp = damageChanged * 100 /
-                                                            map.Player.StatusManager.Stats.MaxHp.CurrentValue;
-                            var hpPercentageFromMaxHp = map.Player.StatusManager.Stats.HpValue.CurrentValue *
-                            100 / map.Player.StatusManager.Stats.MaxHp.CurrentValue;
+                                                            map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
+                            var hpPercentageFromMaxHp = map.Player.Character.StatusManager.Stats.HpValue.CurrentValue *
+                            100 / map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
                             if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
                                 hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {

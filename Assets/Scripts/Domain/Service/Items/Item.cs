@@ -176,7 +176,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public static ItemMemento Build(ItemData data, ItemState state = ItemState.None)
+        public static ItemMemento Build(ItemData data, bool isCursed=false, ItemState state = ItemState.None)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -207,7 +207,7 @@ namespace Domain.Service.Items
                 useOnDeath: data.UseOnDeath,
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
-                isCursed: false,
+                isCursed: isCursed,
                 cannotUseIfCursed: data.CannotUseIfCursed,
                 cannotDropIfCursed: data.CannotDropIfCursed,
                 identifyIfGot: data.IdentifyIfGot,
@@ -229,10 +229,10 @@ namespace Domain.Service.Items
 
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            SetCurseIdentified(true);
             if (IsCursed && CannotUseIfCursed)
             {
                 GameLog.Add($"{GetName(actor, map.ItemPlaceholders)}は呪われているため使用できない");
-                SetCurseIdentified(true);
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -492,21 +492,31 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
         #endregion
+        public bool IsInfoIdentified(IHasInventory player) => player.IsKnownItem(this);
+        public string CursedInfo()
+        {
+            if (IsCurseIdentified)
+            {
+                if (IsCursed)
+                    return "それは呪われている\n";
+                else
+                    return "それは呪われていない\n";
+            }
+            else
+            {
+                return "それは呪われているかわからない\n";
+            }
+        }
         public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders)
         {
-            if (player.IsKnownItem(this))
+            if (IsInfoIdentified(player))
             {
                 return FullInfo();
             }
             else
             {
                 var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
-                if (IsCurseIdentified && IsCursed)
-                    info += $"それは呪われている\n";
-                else if (IsCurseIdentified && !IsCursed)
-                    info += $"それは呪われていない\n";
-                else
-                    info += $"それは呪われているかわからない\n";
+                info += CursedInfo();
                 if (HasActivatableSkillWhenUsed)
                     info += $"それは使用可能である\n";
                 if (HasActivatableSkillWhenThrown)
@@ -517,32 +527,11 @@ namespace Domain.Service.Items
 
         public string DebugInfo() => FullInfo();
 
-//例
-//硬いダガー (47/48)
-//376Gの価値がある
-//それは呪われていない
-
-//使用したときの効果...
-//その場の前1マスを対象にして
-//[Physical]属性、威力4の攻撃を行う
-//そのとき10%の確率でクリティカルを発生させる
-//発動は95%の確率で成功する
-
-//投擲したときの効果...
-//その場の1マスを対象にして
-//使用時と同じ効果を発揮する
-//発動は90%の確率で成功する
-
-//アップグレード (0/3)
-
         public string FullInfo()
         {
             var info = $"{State.GetDescription()}{_fullName} ({_remainingUsages.CurrentValue}/{_maxUsages})\n";
             info += $"{Price}Gの価値がある\n";
-            if (IsCursed)
-                info += $"それは呪われている\n";
-            else
-                info += $"それは呪われていない\n";
+            info += CursedInfo();
             if (HasActivatableSkill)
             {
                 if (_hasSameSkill)

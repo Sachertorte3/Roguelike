@@ -58,6 +58,7 @@ namespace Domain.Model.Item
 
         public void Repair(IHasInventory player, ItemPlaceholders itemPlaceholders);
         public void SetCursed(IHasInventory player, ItemPlaceholders itemPlaceholders, bool isCursed);
+        public void SetCurseIdentified(bool isCurseIdentified);
         public bool CanAnyUpgrade(string filter = "");
         public void RandomUpgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "");
         public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, UpgradePath path);

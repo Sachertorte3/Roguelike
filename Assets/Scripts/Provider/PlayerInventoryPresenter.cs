@@ -60,7 +60,7 @@ namespace Provider
                     item.IsCursed,
                     item.IsShiny,
                     player.IsKnownItem(item),
-                    player.IsKnownItem(item) || item.IsCurseIdentified,
+                    item.IsCurseIdentified,
                     item.Info(player, itemPlaceholders),
                     index);
             }

@@ -12,11 +12,10 @@ using Domain.Service.Logs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Unity.Logging;
 
 namespace Domain.Service.Events
 {
-    public class Chest : ISerializable<ChestMemento>, IIconEventEntity
+    public class Chest : ISerializable<ChestMemento>, IPlayerEventEntity, IIconEntity
     {
         public Entity Entity { get; init; }
         private Option<Item> _item;
@@ -46,16 +45,16 @@ namespace Domain.Service.Events
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
 
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         private UniTask DoEvent(IMap map)
         {
             map.RemoveEventEntity(this);
             if (_item.IsSome)
             {
-                if (map.Player.TryAddToInventory(_item.Value))
+                if (map.Player.Character.TryAddToInventory(_item.Value))
                 {
-                    GameLog.Add($"{map.Player.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
+                    GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {

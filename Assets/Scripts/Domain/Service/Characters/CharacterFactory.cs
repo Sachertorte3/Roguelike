@@ -120,14 +120,14 @@ namespace Domain.Service.Characters
             );
         }
 
-        public ICharacter CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public IPlayer CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
-            return new Character(playerData, new PlayerBehavior(receiver), map);
+            return new Player(playerData, receiver, map);
         }
 
         public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IMap map)
         {
-            return new Character(data, behavior, map);
+            return new Character(data, behavior, map, false);
         }
     }
 }

@@ -13,13 +13,13 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                if (map.Player.CurrentHp <= 0)
+                if (map.Player.Character.CurrentHp <= 0)
                 {
-                    targetCamera.SetPosition((Vector3Int)map.Player.Entity.CurrentPosition);
+                    targetCamera.SetPosition((Vector3Int)map.Player.Character.Entity.CurrentPosition);
                     return;
                 }
 
-                var playerView = characters.Get(map.Player);
+                var playerView = characters.Get(map.Player.Character);
                 targetCamera.SetTarget(playerView.gameObject);
                 rectCamera.SetRect(map.TilemapViewer.Rect);
             });

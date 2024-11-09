@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
@@ -110,9 +111,9 @@ namespace Domain.Service.Items
             _conditions = data.Conditions.ToList();
         }
 
-        public string GetName(IHasInventory player, ItemPlaceholders itemPlaceholders)
+        public string GetName(IPlayer player, ItemPlaceholders itemPlaceholders)
         {
-            if (player.IsKnownItem(this))
+            if (player.Character.IsKnownItem(this))
                 return _fullName;
             return UnknownName(itemPlaceholders);
         }
@@ -232,13 +233,13 @@ namespace Domain.Service.Items
             SetCurseIdentified(true);
             if (IsCursed && CannotUseIfCursed)
             {
-                GameLog.Add($"{GetName(actor, map.ItemPlaceholders)}は呪われているため使用できない");
+                GameLog.Add($"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
             }
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(actor, this, map)
+                itemTargetSkill => itemTargetSkill.Use(map.Player, this, map)
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -266,8 +267,7 @@ namespace Domain.Service.Items
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill =>
                 {
-                    Log.Error("The item is not configured to activate this type of skill when thrown.");
-                    return itemTargetSkill.Use((IActor)actor, this, map);
+                    throw new Exception("The item is not configured to activate this type of skill when thrown.");
                 }
             );
             if (result.Result != SkillResult.Cancelled)
@@ -300,7 +300,7 @@ namespace Domain.Service.Items
                 0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
                 )
             );
         }
@@ -316,7 +316,7 @@ namespace Domain.Service.Items
                 0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(actor, this)
+                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
                 )
             );
         }
@@ -349,14 +349,14 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public void Repair(IHasInventory player, ItemPlaceholders itemPlaceholders)
+        public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             GameLog.Add($"{GetName(player, itemPlaceholders)}は修理された");
             _remainingUsages.Value = _maxUsages;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void SetCursed(IHasInventory actor, ItemPlaceholders itemPlaceholders, bool isCursed)
+        public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed)
         {
             SetCurseIdentified(true);
             if (IsCursed == isCursed)
@@ -368,11 +368,11 @@ namespace Domain.Service.Items
             IsCursed = isCursed;
             if (isCursed)
             {
-                GameLog.Add($"{GetName(actor, itemPlaceholders)}は呪われた");
+                GameLog.Add($"{GetName(player, itemPlaceholders)}は呪われた");
             }
             else
             {
-                GameLog.Add($"{GetName(actor, itemPlaceholders)}の呪いは解かれた");
+                GameLog.Add($"{GetName(player, itemPlaceholders)}の呪いは解かれた");
             }
             _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
@@ -448,15 +448,15 @@ namespace Domain.Service.Items
             return upgrades.Any(upgrade => upgrade.Contains(filter));
         }
 
-        public void RandomUpgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "")
+        public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "")
         {
             var path = this.GetUpgradePathsRecursively().Where(upgrade => upgrade.Contains(filter)).GetAtRandom();
             Upgrade(player, itemPlaceholders, path);
         }
 
-        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, UpgradePath path)
+        public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path)
         {
-            if (player.IsKnownItem(this))
+            if (player.Character.IsKnownItem(this))
             {
                 GameLog.Add($"{_fullName}は{path.GetUpgradeName()}の効果を得た");
             }
@@ -470,7 +470,7 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Downgrade(IHasInventory player, ItemPlaceholders itemPlaceholders)
+        public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             if (_upgradePaths.Count == 0)
             {
@@ -478,7 +478,7 @@ namespace Domain.Service.Items
             }
 
             var path = _upgradePaths.GetAtRandom();
-            if (player.IsKnownItem(this))
+            if (player.Character.IsKnownItem(this))
             {
                 GameLog.Add($"{_fullName}の{path.GetUpgradeName()}は消えた");
             }
@@ -492,7 +492,7 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
         #endregion
-        public bool IsInfoIdentified(IHasInventory player) => player.IsKnownItem(this);
+        public bool IsInfoIdentified(IPlayer player) => player.Character.IsKnownItem(this);
         public string CursedInfo()
         {
             if (IsCurseIdentified)
@@ -507,7 +507,7 @@ namespace Domain.Service.Items
                 return "それは呪われているかわからない\n";
             }
         }
-        public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders)
+        public string Info(IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             if (IsInfoIdentified(player))
             {

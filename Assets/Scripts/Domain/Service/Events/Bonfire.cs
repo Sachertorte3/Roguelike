@@ -21,7 +21,7 @@ namespace Domain.Service.Events
             );
         }
 
-        public IEvent Event { get; init; }
+        public ICharacterEvent Event { get; init; }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {

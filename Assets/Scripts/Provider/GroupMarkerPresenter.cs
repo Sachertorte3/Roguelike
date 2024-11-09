@@ -17,12 +17,12 @@ namespace Provider
                 serialDisposable.Disposable = map.Characters.SubscribeToAllObservables(character => character.Affiliation.OnAffiliationChanged,
                     (character, affectionChanged) =>
                     {
-                        if (affectionChanged.Target == map.Player.Affiliation.Id)
+                        if (affectionChanged.Target == map.Player.Character.Affiliation.Id)
                         {
                             var characterView = synchronizedCharacterView.TryGet(character);
                             characterView?.UpdateGroupMarker(
-                                character.Affiliation.IsEnemy(map.Player.Affiliation),
-                                character.Affiliation.IsAlly(map.Player.Affiliation)
+                                character.Affiliation.IsEnemy(map.Player.Character.Affiliation),
+                                character.Affiliation.IsAlly(map.Player.Character.Affiliation)
                             );
                         }
                     });

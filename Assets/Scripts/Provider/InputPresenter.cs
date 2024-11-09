@@ -54,7 +54,7 @@ namespace Provider
                 {
                     if (isNoMove)
                     {
-                        map.Player.FaceNearestCharacter(map);
+                        map.Player.Character.FaceNearestCharacter(map);
                     }
                 })
             );

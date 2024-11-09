@@ -168,11 +168,11 @@ namespace Domain.Service.Characters.Behavior
 
         private BehaviorResult GenerateNextBehaviorResult(IHasBehavior character, IMap map)
         {
-            var visibleEnemies = map.Characters.FromAffiliation(character, AffiliationType.Enemy).IsVisible(character.Entity.CurrentPosition);
-            var visibleLeaders = map.Characters.Where(c => c.IsLeader).FromAffiliation(character, AffiliationType.Ally).IsVisible(character.Entity.CurrentPosition);
-            if (character.IsAlly(map.Player))
+            var visibleEnemies = map.Characters.ByAffiliation(character, AffiliationType.Enemy).IsVisible(character.Entity.CurrentPosition);
+            var visibleLeaders = map.Characters.Where(c => c.IsLeader).ByAffiliation(character, AffiliationType.Ally).IsVisible(character.Entity.CurrentPosition);
+            if (character.IsAlly(map.Player.Character))
             {
-                visibleLeaders = visibleLeaders.Append(map.Player);
+                visibleLeaders = visibleLeaders.Append(map.Player.Character);
             }
 
             var targetedEnemy = visibleEnemies.MinByOrDefault(enemy => VectorExtension.ChebyshevDistance(character.Entity.CurrentPosition, enemy.Entity.CurrentPosition), null);

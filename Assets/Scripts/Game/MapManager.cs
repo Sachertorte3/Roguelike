@@ -83,6 +83,7 @@ namespace Game
             _entities.AddWith(Characters).AddTo(_disposables);
             _entities.AddWith(Items).AddTo(_disposables);
             _entities.AddWith(EventEntities).AddTo(_disposables);
+            _entities.AddWith(PlayerEventEntities).AddTo(_disposables);
             _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
             _entities.AddWith(FireEntities).AddTo(_disposables);
 
@@ -120,7 +121,7 @@ namespace Game
 
             if (map.MonsterHouse.HasValue)
             {
-                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value, Player.Entity.CurrentPosition);
+                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value, Player.Character.Entity.CurrentPosition);
                 _eventAreas.Add(_monsterHouse);
             }
 
@@ -149,7 +150,7 @@ namespace Game
             }
 
             KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
-                .Select(character => GetCharacterFromId(new Id<IEntity>(character)))
+                .Select(character => CharacterManager.Characters.ById(new Id<IEntity>(character)))
                 .Where(character => character != null)
                 .Cast<ICharacter>()
             );
@@ -166,7 +167,7 @@ namespace Game
                 _stairsLocked.Value = false;
             }
 
-            var visibleArea = CharacterManager.Player.VisionRange.VisibleArea;
+            var visibleArea = CharacterManager.Player.Character.VisionRange.VisibleArea;
             _tilemap.SetTilesKnown(visibleArea, true);
 
             UpdateVisibility(Entities);
@@ -178,7 +179,7 @@ namespace Game
             }
         }
 
-        public ICharacter? Player => CharacterManager?.Player;
+        public IPlayer? Player => CharacterManager?.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public ItemManager ItemManager { get; init; }
@@ -189,6 +190,7 @@ namespace Game
         public IObservableCollection<ICharacter> Characters => CharacterManager.Characters;
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
+        public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => EventEntityManager.PlayerEventEntities;
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
         public IObservableCollection<Fire> FireEntities => FireEntityManager.FireEntities;
@@ -200,12 +202,12 @@ namespace Game
             CharacterManager.Dispose();
             ItemManager.Dispose();
             EventEntities.ForEach(eventEntity => eventEntity.Dispose());
+            PlayerEventEntities.ForEach(eventEntity => eventEntity.Dispose());
             ThrowAnimationEntities.ForEach(throwAnimationEntity => throwAnimationEntity.Dispose());
             FireEntities.ForEach(fireEntity => fireEntity.Dispose());
             _disposables.Dispose();
         }
 
-        public IReadOnlyCollection<Vector2Int> VisibleArea => Player.VisionRange.VisibleArea;
         public class EntityIdComparer : IEqualityComparer<IEntity>
         {
             public bool Equals(IEntity? x, IEntity? y)
@@ -282,26 +284,35 @@ namespace Game
             if (IsGrass(entity.Entity.CurrentPosition) && entity.Entity.Layer == EntityLayer.Bottom)
                 visibility = false;
             else
-                visibility = Player.IsVisible(entity.Entity.CurrentPosition);
+                visibility = Player.Character.IsVisible(entity.Entity.CurrentPosition);
             entity.Entity.SetVisibility(visibility);
         }
 
-        public ICharacter? GetCharacterFromId(Id<IEntity> id)
+        public IItem? GetItemByIdFromWorldOrInventory(Id<IItem> id)
         {
-            var character = CharacterManager.Characters.FirstOrDefault(character => character.Entity.Id == id);
-            return character;
-        }
-
-        public IItem? GetItemFromId(Id<IItem> id)
-        {
-            var itemEntity = ItemManager.Items.FirstOrDefault(item => item.Item.Id == id);
-            var item = itemEntity?.Item ?? Player.Inventory.AllItems.FirstOrDefault(i => i.Id == id);
-            return item;
+            var itemEntity = ItemManager.Items.ById(id);
+            if (itemEntity != null)
+                return itemEntity.Item;
+            foreach (var character in Characters)
+            {
+                var item = character.Inventory.AllItems.ById(id);
+                if (item != null)
+                    return item;
+            }
+            return null;
         }
 
         public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer)
         {
             return EventEntities
+                .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.Entity.Layer == layer)
+                .ToList();
+        }
+
+        public List<IPlayerEventEntity> GetPlayerEventEntityAt(Vector2Int position, EntityLayer layer)
+        {
+            return PlayerEventEntities
                 .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Entity.Layer == layer)
                 .ToList();
@@ -393,12 +404,17 @@ namespace Game
             EventEntityManager.Remove(eventEntity);
         }
 
+        public void RemoveEventEntity(IPlayerEventEntity eventEntity)
+        {
+            EventEntityManager.Remove(eventEntity);
+        }
+
         public ITilemapViewer TilemapViewer => _tilemap;
 
         public MapMemento Serialize()
         {
             var characters = Characters.ToList();
-            characters.Remove(Player);
+            characters.Remove(Player.Character);
             return new MapMemento
             (
                 Id,
@@ -418,7 +434,7 @@ namespace Game
         public MapMemento SerializeWithoutPartyMembers()
         {
             var characters = Characters.ToList();
-            characters.Remove(Player);
+            characters.Remove(Player.Character);
             characters.RemoveAll(character => GetFollowingCharacters().Contains(character));
             return new MapMemento
             (
@@ -443,13 +459,13 @@ namespace Game
                 (character, _) => { DropAllItem(character); }
             ).AddTo(_disposables);
 
-            Player.VisionRange.OnVisibleAreaChanged.Subscribe(areaChanged =>
+            Player.Character.VisionRange.OnVisibleAreaChanged.Subscribe(areaChanged =>
             {
-                _tilemap.SetTilesKnown(Player.VisionRange.VisibleArea, true);
+                _tilemap.SetTilesKnown(Player.Character.VisionRange.VisibleArea, true);
                 UpdateVisibility(Entities);
             }).AddTo(_disposables);
 
-            Player.Entity.Position.Subscribe(async positionChanged =>
+            Player.Character.Entity.Position.Subscribe(async positionChanged =>
             {
                 EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
@@ -469,14 +485,14 @@ namespace Game
                         if (character.CanPickUp
                             && character.CanPickUpItem()
                             && ItemManager.CanPickUpAt(positionChanged,
-                                character == Player && Settings.AutoPickUpShopItem.Value))
+                                character.IsPlayer && Settings.AutoPickUpShopItem.Value))
                         {
                             ItemManager.PickUpAt(positionChanged,
-                                character == Player && Settings.AutoPickUpShopItem.Value);
+                                character.IsPlayer && Settings.AutoPickUpShopItem.Value);
                             if (character.TryAddToInventory(item.Item))
                             {
-                                if (character == Player)
-                                    GameLog.Add($"{Player.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
+                                if (character.IsPlayer)
+                                    GameLog.Add($"{Player.Character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
                             }
                             else
                             {
@@ -494,8 +510,15 @@ namespace Game
                     var eventEntities = GetEventEntityAt(positionChanged, EntityLayer.Bottom);
                     foreach (var eventEntity in eventEntities)
                     {
-                        if (character == Player || !eventEntity.Event.IsPlayerOnly)
-                            await eventEntity.Event.DoEvent(character, Globals.GameManager, this);
+                        await eventEntity.Event.DoEvent(character, Globals.GameManager, this);
+                    }
+                    if (character.IsPlayer)
+                    {
+                        var playerEventEntities = GetPlayerEventEntityAt(positionChanged, EntityLayer.Bottom);
+                        foreach (var playerEventEntity in playerEventEntities)
+                        {
+                            await playerEventEntity.Event.DoEvent(Player, Globals.GameManager, this);
+                        }
                     }
                     EventExecutionCount--;
                 }
@@ -557,7 +580,7 @@ namespace Game
         {
             if (Random.value < 1 / 64f)
             {
-                var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values().Except(Player.VisionRange.VisibleArea);
+                var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values().Except(Player.Character.VisionRange.VisibleArea);
                 if (positions.Any())
                     SpawnRandomEnemy(positions.GetAtRandom(), null, false);
             }
@@ -638,9 +661,9 @@ namespace Game
         public IEnumerable<ICharacter> GetFollowingCharacters()
         {
             return CharacterManager.Characters
-                .Where(character => character != Player)
-                .Where(character => character.IsAlly(Player))
-                .Where(character => character.IsVisible(Player.Entity.CurrentPosition));
+                .Where(character => !character.IsPlayer)
+                .Where(character => character.IsAlly(Player.Character))
+                .Where(character => character.IsVisible(Player.Character.Entity.CurrentPosition));
         }
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)

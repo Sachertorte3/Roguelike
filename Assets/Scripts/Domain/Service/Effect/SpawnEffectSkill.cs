@@ -192,7 +192,7 @@ namespace Domain.Service.Effect
                 }
             }
 
-            if (map.VisibleArea.Intersect(area).Any())
+            if (map.Player.Character.VisibleArea.Intersect(area).Any())
             {
                 map.SpawnEffect(area, Color);
                 await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);

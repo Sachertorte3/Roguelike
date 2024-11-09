@@ -11,7 +11,7 @@ namespace Domain.Model.Effect
     {
         public IStatusManager StatusManager { get; }
         public IVisionRange VisionRange { get; }
-        public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
+        public string GetName(IPlayer player, bool ignoreVisibility = false);
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);

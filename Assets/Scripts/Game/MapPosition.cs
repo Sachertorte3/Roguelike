@@ -66,7 +66,7 @@ namespace Game
             var entity = Map.Entities.On(EntityLayer.Middle).At(Position).FirstOrDefault();
             if (entity == null)
                 return true;
-            if (entity is ICharacter character && character != Map.Player)
+            if (entity is ICharacter character && !character.IsPlayer)
                 return !character.Affiliation.IsEnemy(actor);
             return false;
         }

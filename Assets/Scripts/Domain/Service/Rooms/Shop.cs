@@ -29,7 +29,7 @@ namespace Domain.Service.Rooms
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
         public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room,
-            mapManager.Player.Entity.CurrentPosition)
+            mapManager.Player.Character.Entity.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
@@ -114,11 +114,11 @@ namespace Domain.Service.Rooms
             }
         }
 
-        private void RemoveMark(IMap mapManager, IEnumerable<ShopItemCache> items)
+        private void RemoveMark(IMap map, IEnumerable<ShopItemCache> items)
         {
             foreach (var item in items)
             {
-                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
+                map.GetItemByIdFromWorldOrInventory(item.Id)?.SetState(ItemState.None);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Domain.Service.Rooms
         {
             foreach (var item in _shopItems)
             {
-                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.Stolen);
+                mapManager.GetItemByIdFromWorldOrInventory(item.Id)?.SetState(ItemState.Stolen);
             }
         }
 
@@ -155,33 +155,33 @@ namespace Domain.Service.Rooms
             return Mathf.RoundToInt(saleItems.Sum(item => item.Price) / 2f);
         }
 
-        public void Purchase(IMap mapManager)
+        public void Purchase(IMap map)
         {
-            if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
+            if (map.Player.Character.Money + GetSalePrice(map) >= GetPurchasePrice(map))
             {
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
-                mapManager.Player.AddMoney(GetSalePrice(mapManager));
+                    $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
+                map.Player.Character.AddMoney(GetSalePrice(map));
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
-                mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                var purchaseItems = GetMissingItems(mapManager);
-                RemoveMark(mapManager, purchaseItems);
-                SetShopItems(GetItemsInRoom(mapManager));
+                    $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
+                map.Player.Character.ReduceMoney(GetPurchasePrice(map));
+                var purchaseItems = GetMissingItems(map);
+                RemoveMark(map, purchaseItems);
+                SetShopItems(GetItemsInRoom(map));
             }
             else
             {
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
+                    $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map) - GetSalePrice(map)}G</color>持っていなかった");
             }
         }
 
-        public void Stolen(IMap mapManager)
+        public void Stolen(IMap map)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
-            Clerk.OpposingThief(mapManager.Player);
+            Clerk.OpposingThief(map.Player.Character);
             Clerk.Character.AddCondition(Id<IEntity>.Empty, new Clairvoyant(), new RemovalConditionData());
-            MarkItemsAsStolen(mapManager);
+            MarkItemsAsStolen(map);
             CanExecute = false;
             _isStolen.Value = true;
         }

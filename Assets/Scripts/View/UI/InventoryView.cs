@@ -59,7 +59,8 @@ namespace View.UI
 
         public void SetGround()
         {
-            _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
+            if (_itemViews[InventorySize] != null)
+                _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
         }
 
         public void Remove(int index)

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
@@ -21,7 +22,7 @@ namespace Domain.Model.Item
         public string UnknownName(ItemPlaceholders itemPlaceholders);
         public string RevealedName { get; }
         public string DebugName { get; }
-        public string GetName(IHasInventory player, ItemPlaceholders itemPlaceholders);
+        public string GetName(IPlayer player, ItemPlaceholders itemPlaceholders);
         public Sprite Icon { get; }
         public bool IsShiny { get; }
         public ItemState State { get; }
@@ -56,14 +57,14 @@ namespace Domain.Model.Item
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map);
 
-        public void Repair(IHasInventory player, ItemPlaceholders itemPlaceholders);
-        public void SetCursed(IHasInventory player, ItemPlaceholders itemPlaceholders, bool isCursed);
+        public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders);
+        public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed);
         public void SetCurseIdentified(bool isCurseIdentified);
         public bool CanAnyUpgrade(string filter = "");
-        public void RandomUpgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, string filter = "");
-        public void Upgrade(IHasInventory player, ItemPlaceholders itemPlaceholders, UpgradePath path);
-        public void Downgrade(IHasInventory player, ItemPlaceholders itemPlaceholders);
-        public string Info(IHasInventory player, ItemPlaceholders itemPlaceholders);
+        public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "");
+        public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path);
+        public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders);
+        public string Info(IPlayer player, ItemPlaceholders itemPlaceholders);
         public string DebugInfo();
     }
 }

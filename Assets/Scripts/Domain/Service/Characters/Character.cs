@@ -47,8 +47,9 @@ namespace Domain.Service.Characters
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
 
-        internal Character(CharacterMemento data, ICharacterBehavior behavior, IMap map)
+        internal Character(CharacterMemento data, ICharacterBehavior behavior, IMap map, bool isPlayer)
         {
+            IsPlayer = isPlayer;
             _name = data.Name;
             CharacterType = data.CharacterType;
             Entity = new Entity(data.Entity);
@@ -60,7 +61,7 @@ namespace Domain.Service.Characters
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
             _behavior = behavior;
             CanThroughWalls = data.CanThroughWalls;
-            _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player?.Affiliation);
+            _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player);
             _aggression = data.Aggression;
             _money = data.Money;
             IsLeader = data.IsLeader;
@@ -96,6 +97,7 @@ namespace Domain.Service.Characters
 
         public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed.CurrentValue;
         private ICharacterBehavior _behavior { get; }
+        public bool IsPlayer { get; init; }
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
@@ -112,15 +114,15 @@ namespace Domain.Service.Characters
 
         public int Money => _money;
 
-        public string GetName(IHasAffiliation player) => GetName(player, false);
-        public string GetName(IHasAffiliation player, bool ignoreVisibility)
+        public string GetName(IPlayer player) => GetName(player, false);
+        public string GetName(IPlayer player, bool ignoreVisibility)
         {
             if (!ignoreVisibility && !Entity.Visibility.CurrentValue)
             {
                 return "何者か";
             }
 
-            return Affiliation.GetAffiliationType(player.Affiliation) switch
+            return Affiliation.GetAffiliationType(player.Character.Affiliation) switch
             {
                 AffiliationType.Ally => _name.SetColored(Colors.Green),
                 AffiliationType.Enemy => _name.SetColored(Colors.Red),
@@ -188,7 +190,7 @@ namespace Domain.Service.Characters
                 return false;
             if (target.IsEnemy(this))
                 return false;
-            if (target == map.Player)
+            if (target.IsPlayer)
                 return false;
             return target.CanMoveIgnoreEntity(destination, direction.Reverse(), map) &&
                    CanMoveIgnoreEntity(position, direction, map);

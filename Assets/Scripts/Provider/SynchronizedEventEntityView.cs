@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Linq;
 using Domain.Model;
 using Domain.Model.Map;
 using Domain.Service.Events;
@@ -13,9 +14,9 @@ using View;
 
 namespace Provider
 {
-    public class SynchronizedIconEntityView : SynchronizedEntityView<IEventEntity, EntityView>, IDisposable
+    public class SynchronizedIconEntityView : SynchronizedEntityView<IEntity, EntityView>, IDisposable
     {
-        private readonly SerialDisposable _disposable = new();
+        private readonly SerialDisposable[] _disposable = EnumerableExtension.CreateNewInstances<SerialDisposable>(2).ToArray();
         protected override InputReceiver _inputReceiver { get; init; }
 
         protected override EntityView GetEntityView(EntityView view)
@@ -29,13 +30,18 @@ namespace Provider
             _inputReceiver = inputReceiver;
 
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(
-                map => _disposable.Disposable =
+                map => _disposable[0].Disposable =
                     map.EventEntityManager.StandaloneEventEntities.SubscribeToAllItems(Add, Remove),
                 map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+                map => _disposable[1].Disposable =
+                    map.EventEntityManager.StandalonePlayerEventEntities.SubscribeToAllItems(Add, Remove),
+                map => map.EventEntityManager.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
+            );
         }
 
-        protected override EntityView ViewPrefab(IEventEntity eventEntity)
+        protected override EntityView ViewPrefab(IEntity eventEntity)
         {
             if (eventEntity is Bonfire)
             {
@@ -82,7 +88,10 @@ namespace Provider
 
         public void Dispose()
         {
-            _disposable.Dispose();
+            foreach (var disposable in _disposable)
+            {
+                disposable.Dispose();
+            }
         }
 
         ~SynchronizedIconEntityView()
@@ -90,14 +99,14 @@ namespace Provider
             Dispose();
         }
 
-        protected override void InitializeView(IEventEntity eventEntity, EntityView entityView)
+        protected override void InitializeView(IEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();
             if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
         }
 
-        protected override void CleanupView(IEventEntity item, EntityView view)
+        protected override void CleanupView(IEntity item, EntityView view)
         {
         }
     }

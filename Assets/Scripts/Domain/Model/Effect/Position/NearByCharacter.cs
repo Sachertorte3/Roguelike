@@ -25,11 +25,11 @@ namespace Domain.Model.Effect.Position
             if (TargetSelf)
                 positions.Add(actor.Entity.CurrentPosition);
             if (TargetAlly)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Ally).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Ally).Positions());
             if (TargetNeutral)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Neutral).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Neutral).Positions());
             if (TargetEnemy)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Enemy).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Enemy).Positions());
             return positions
                 .OrderBy(p => Vector2Int.Distance(p, position))
                 .Take(NumberOfTarget);

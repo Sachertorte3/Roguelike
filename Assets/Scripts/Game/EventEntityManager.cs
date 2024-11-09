@@ -7,7 +7,6 @@ using Domain.Service.Events;
 using ObservableCollections;
 using R3;
 using Utilities;
-using Unity.Logging;
 
 namespace Game
 {
@@ -20,6 +19,8 @@ namespace Game
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
+        private ObservableList<IPlayerEventEntity> _playerEventEntities = new();
+        private ObservableList<IPlayerEventEntity> _standalonePlayerEventEntities = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
@@ -59,6 +60,10 @@ namespace Game
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
             );
+            _playerEventEntities.SubscribeToAllObservables(
+                eventEntity => eventEntity.Entity.OnDestroyed,
+                (eventEntity, _) => Remove(eventEntity)
+            );
         }
 
         public EventEntitiesMemento Serialize()
@@ -88,10 +93,18 @@ namespace Game
 
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
         public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
+        public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => _playerEventEntities;
+        public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities => _standalonePlayerEventEntities;
 
         public void Spawn(IEventEntity eventEntity)
         {
             _standaloneEventEntities.Add(eventEntity);
+            Add(eventEntity);
+        }
+
+        public void Spawn(IPlayerEventEntity eventEntity)
+        {
+            _standalonePlayerEventEntities.Add(eventEntity);
             Add(eventEntity);
         }
 
@@ -100,10 +113,24 @@ namespace Game
             _eventEntities.Add(eventEntity);
         }
 
+        public void Add(IPlayerEventEntity eventEntity)
+        {
+            _playerEventEntities.Add(eventEntity);
+        }
+
         public void Remove(IEventEntity eventEntity)
         {
             _eventEntities.Remove(eventEntity);
             _standaloneEventEntities.Remove(eventEntity);
+            if (eventEntity is Trap trap)
+            {
+                _traps.Remove(trap);
+            }
+        }
+        public void Remove(IPlayerEventEntity eventEntity)
+        {
+            _playerEventEntities.Remove(eventEntity);
+            _standalonePlayerEventEntities.Remove(eventEntity);
             if (eventEntity is Chest chest)
             {
                 _chests.Remove(chest);
@@ -111,10 +138,6 @@ namespace Game
             else if (eventEntity is Stairs stairs)
             {
                 Stairs.Remove(stairs);
-            }
-            else if (eventEntity is Trap trap)
-            {
-                _traps.Remove(trap);
             }
             else if (eventEntity is Money money)
             {

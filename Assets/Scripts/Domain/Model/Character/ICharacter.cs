@@ -18,13 +18,14 @@ namespace Domain.Model.Character
     public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IActor, IHasBehavior,
         IActorOfEffect, ITargetOfEffect, IHasCondition
     {
+        public bool IsPlayer { get; }
         public bool IsLeader { get; }
         public bool IsBoss { get; }
         public bool CanThroughWalls { get; }
         public CharacterState State { get; }
         public void SetWaitState();
         public int Money { get; }
-        public string GetName(IHasAffiliation player, bool ignoreVisibility = false);
+        public string GetName(IPlayer player, bool ignoreVisibility = false);
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<Unit> OnAttacked { get; }

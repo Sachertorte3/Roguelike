@@ -79,7 +79,7 @@ namespace Game
 
                         if (!character.StatusManager.CannotAct && !character.IsDead)
                         {
-                            if (character == map.Player && Settings.AutoSave.CurrentValue)
+                            if (character.IsPlayer && Settings.AutoSave.CurrentValue)
                             {
                                 Globals.GameManager.Save();
                             }

@@ -38,7 +38,7 @@ namespace Domain.Service.Characters
             ICharacter character, IMap map)
         {
             _stats = new CharacterStats(data.Stats);
-            _conditions = new CharacterConditions(character, data.Conditions, map.Player ?? character);
+            _conditions = new CharacterConditions(character, data.Conditions, map.Player);
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags,
                 character.CanThroughWalls, map);
             _cannotActFlags = new FlagStat(data.CannotActFlags);

@@ -1,4 +1,5 @@
 using System;
+using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
@@ -10,14 +11,14 @@ namespace Domain.Service.ItemEffect
     {
         [SerializeField] private string _filter = "";
 
-        public bool CanApplyTo(IHasInventory actor, IItem item)
+        public bool CanApplyTo(IPlayer player, IItem item)
         {
             return item.CanAnyUpgrade(_filter);
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            item.RandomUpgrade(actor, itemPlaceholders, _filter);
+            item.RandomUpgrade(player, itemPlaceholders, _filter);
         }
 
         public float EvaluatePrice()

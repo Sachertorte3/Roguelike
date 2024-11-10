@@ -46,6 +46,7 @@ namespace Domain.Model.Item
         public bool IdentifyIfGot { get; }
         public bool IdentifyIfUsed { get; }
         public bool IsCurseIdentified { get; }
+        public bool IsInfoIdentified(IPlayer player);
         public bool AutoDestroyWhenDisabled { get; }
         public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }

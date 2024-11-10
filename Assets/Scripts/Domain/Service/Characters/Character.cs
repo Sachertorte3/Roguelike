@@ -344,9 +344,9 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
 
+            GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
             if (item.CanActivateWhenUsed)
             {
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
                     async spawnEffect =>
                     {
@@ -366,12 +366,9 @@ namespace Domain.Service.Characters
                         AddKnownItem(item);
                     }
                 }
-                State = CharacterState.Finish;
             }
-            else
-            {
-                throw new Exception("item cannot use");
-            }
+            
+            State = CharacterState.Finish;
         }
 
         public async UniTask ThrowItem(IItem item, Direction8 direction, IMap map)

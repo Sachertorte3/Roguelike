@@ -6,9 +6,11 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -33,7 +35,7 @@ namespace Domain.Service.Characters
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
         private readonly ReactiveProperty<Direction8> _direction;
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         private readonly Inventory _inventory;
         private readonly ObservableHashSet<string> _knownItemNames = new();
         private readonly Subject<Unit> _onAttacked = new();
@@ -52,7 +54,7 @@ namespace Domain.Service.Characters
             IsPlayer = isPlayer;
             _name = data.Name;
             CharacterType = data.CharacterType;
-            Entity = new Entity(data.Entity);
+            Entity = new EntityBase(data.Entity);
             _direction = new ReactiveProperty<Direction8>(data.Direction);
             _statusManager = new CharacterStatusManager(data.Status, Entity.Position, this, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToList();
@@ -137,7 +139,7 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnKnownItemUpdated => _knownItemNames.ObserveCountChanged().Select(_ => Unit.Default);
         public ICharacterType CharacterType { get; init; }
         public IItemSelector ItemSelector => _behavior;
-        public IStatusManager StatusManager => _statusManager;
+        public IStatusManager Status => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
         public Direction8 CurrentDirection => Direction.CurrentValue;
@@ -215,7 +217,7 @@ namespace Domain.Service.Characters
         {
             State = CharacterState.Think;
             var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
-            if (StatusManager.IsConfused)
+            if (Status.IsFlagStat(FlagStatType.Confused))
             {
                 action = RegenerateConfuseAction(this, map, action);
             }
@@ -367,7 +369,7 @@ namespace Domain.Service.Characters
                     }
                 }
             }
-            
+
             State = CharacterState.Finish;
         }
 

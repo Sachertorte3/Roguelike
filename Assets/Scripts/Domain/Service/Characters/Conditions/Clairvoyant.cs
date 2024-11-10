@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -15,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
         public string DeleteLog => "の視界は元に戻った";
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.Status.AddFlagStat(FlagStatType.Clairvoyant);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -25,12 +27,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.Clairvoyant);
+            hasCondition.Status.RemoveFlagStat(FlagStatType.Clairvoyant);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.VisionRange.IsClairvoyant ? 0 : 0.05f;
+            return target.Status.IsFlagStat(FlagStatType.Clairvoyant) ? 0 : 0.05f;
         }
 
         public float EvaluatePrice()

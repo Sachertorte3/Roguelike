@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Character.Status;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Utilities;
@@ -11,7 +12,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.StatusManager.CannotAct &&
+            return !actor.Status.IsFlagStat(FlagStatType.CannotAct) &&
             (!Item.IsInfoIdentified(map.Player) || Item.CanActivateWhenUsed);
         }
 

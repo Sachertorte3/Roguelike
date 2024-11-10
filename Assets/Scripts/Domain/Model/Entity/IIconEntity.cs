@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Domain.Model
+namespace Domain.Model.Entity
 {
     public interface IIconEntity : IEntity
     {

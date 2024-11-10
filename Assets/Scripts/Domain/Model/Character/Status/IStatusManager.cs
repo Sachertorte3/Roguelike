@@ -1,22 +1,14 @@
 #nullable enable
 using Domain.Model.Condition;
+using Domain.Model.Effect;
 using ObservableCollections;
 using R3;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Character.Status
 {
     public interface IStatusManager
     {
         public IStats Stats { get; }
-        public bool CannotAct { get; }
-        public bool CannotMove { get; }
-        public bool IsOverDrive { get; }
-        public bool IsConfused { get; }
-        public bool IsHard { get; }
-        public bool IsHeavy { get; }
-        public bool IsSecureHold { get; }
-        public bool IsCurseProof { get; }
-        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps { get; }
         public Observable<int> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }
@@ -31,9 +23,12 @@ namespace Domain.Model.Character
         public void RemoveElementAttackMultiplier(Element element, float value);
         public void AddElementDamageRateMultiplier(Element element, float value);
         public void RemoveElementDamageRateMultiplier(Element element, float value);
+
+        public bool IsFlagStat(FlagStatType type);
+        public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type);
         public void AddFlagStat(FlagStatType type);
         public void RemoveFlagStat(FlagStatType type);
-        public int LoseHp(float value, bool notifyOnlyActualLoss = false);
+
         public void AddWaitTime(float value);
         public void ResetWaitTime();
         public bool IsWaitTimeFull();

@@ -8,6 +8,6 @@ namespace Domain.Service.Rooms
     public interface IEventArea
     {
         public RectInt Rect { get; init; }
-        public UniTask UpdatePosition(IGameManager gameManager, IMap mapManager, Vector2Int CurrentPosition);
+        public UniTask UpdatePosition(IGameManager gameManager, IMap map, Vector2Int CurrentPosition);
     }
 }

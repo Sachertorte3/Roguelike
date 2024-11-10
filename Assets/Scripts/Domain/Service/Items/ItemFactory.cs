@@ -1,5 +1,7 @@
 ﻿#nullable enable
 using Domain.Model;
+using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Memento;
 using UnityEngine;
 
@@ -12,7 +14,7 @@ namespace Domain.Service.Items
             return new ItemEntityMemento
             (
                 item,
-                Entity.Build(spawnPosition, EntityLayer.Bottom)
+                EntityBase.Build(spawnPosition, EntityLayer.Bottom)
             );
         }
 

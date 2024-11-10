@@ -1,7 +1,7 @@
-﻿using Domain.Model.Condition;
+﻿using Domain.Model.Effect;
 using R3;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Character.Status
 {
     public interface IStats
     {

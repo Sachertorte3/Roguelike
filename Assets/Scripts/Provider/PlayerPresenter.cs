@@ -33,13 +33,13 @@ namespace Provider
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
                     _disposable.Add(Observable
-                        .Merge(map.Player.Character.StatusManager.Stats.HpValue, map.Player.Character.StatusManager.Stats.MaxHp)
+                        .Merge(map.Player.Character.Status.Stats.HpValue, map.Player.Character.Status.Stats.MaxHp)
                         .Subscribe(_ =>
                         {
-                            var hpPercentageFromMaxHp = map.Player.Character.StatusManager.Stats.HpValue.CurrentValue * 100 /
-                                                        map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
-                            statLine.SetValue(map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue,
-                                map.Player.Character.StatusManager.Stats.HpValue.CurrentValue);
+                            var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue * 100 /
+                                                        map.Player.Character.Status.Stats.MaxHp.CurrentValue;
+                            statLine.SetValue(map.Player.Character.Status.Stats.MaxHp.CurrentValue,
+                                map.Player.Character.Status.Stats.HpValue.CurrentValue);
                             if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {
                                 statLine.SetTextColor(Color.red);

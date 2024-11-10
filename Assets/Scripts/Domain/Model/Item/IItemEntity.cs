@@ -1,10 +1,10 @@
 #nullable enable
 using System;
-using Domain.Model.Item;
+using Domain.Model.Entity;
 using Domain.Model.Memento;
 using R3;
 
-namespace Domain.Model
+namespace Domain.Model.Item
 {
     public interface IItemEntity : IDisposable, ISerializable<ItemEntityMemento>, IIconEntity
     {

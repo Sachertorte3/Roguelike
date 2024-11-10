@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Entity;
 using Domain.Model.Memento;
 using R3;
 using Stats;

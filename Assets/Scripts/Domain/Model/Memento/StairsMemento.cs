@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;

@@ -4,11 +4,11 @@ using Domain.Model.Effect;
 using Domain.Model.Map;
 using Utilities;
 
-namespace Domain.Model
+namespace Domain.Model.Entity
 {
     public interface IEntity : IDisposable
     {
-        public Entity Entity { get; }
+        public EntityBase Entity { get; }
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map);
     }
 }

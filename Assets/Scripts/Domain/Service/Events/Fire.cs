@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using UnityEngine;
@@ -10,11 +10,11 @@ namespace Domain.Service.Events
 {
     public class Fire : ISerializable<EntityMemento>, IEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
 
         public Fire(EntityMemento memento)
         {
-            Entity = new Entity(memento);
+            Entity = new EntityBase(memento);
         }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map) => UniTask.CompletedTask;
@@ -22,7 +22,7 @@ namespace Domain.Service.Events
         public EntityMemento Serialize() => Entity.Serialize();
         public static EntityMemento Build(Vector2Int position)
         {
-            return Entity.Build(position, EntityLayer.Top);
+            return EntityBase.Build(position, EntityLayer.Top);
         }
     }
 }

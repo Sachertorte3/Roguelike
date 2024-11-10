@@ -1,4 +1,4 @@
-namespace Domain.Model.Character
+namespace Domain.Model.Effect
 {
     public static class ElementExtension
     {

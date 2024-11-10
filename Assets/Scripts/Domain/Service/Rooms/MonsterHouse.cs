@@ -34,12 +34,12 @@ namespace Domain.Service.Rooms
             );
         }
 
-        protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap mapManager)
+        protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap map)
         {
             GameLog.Add("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
-                mapManager.SpawnRandomEnemy(mapManager.GetAllBlankAndStandablePositionsOn().In(Rect.RectRange())
+                map.SpawnRandomEnemy(map.GetAllBlankAndStandablePositionsOn().In(Rect.RectRange())
                     .GetAtRandom().Position, false, false);
             }
 

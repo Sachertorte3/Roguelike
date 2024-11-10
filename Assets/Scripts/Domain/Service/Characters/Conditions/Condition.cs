@@ -1,6 +1,7 @@
 ﻿using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
+using Domain.Model.Entity;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
 using Utilities;

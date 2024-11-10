@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -32,7 +33,7 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.StatusManager.IsCurseProof)
+            if (target.Status.IsFlagStat(FlagStatType.CurseProof))
             {
                 GameLog.Add($"{target.GetName(map.Player)}は呪われない");
                 return UniTask.CompletedTask;

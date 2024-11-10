@@ -1,4 +1,5 @@
 ﻿using Domain.Model.Character;
+using Domain.Model.Character.Status;
 
 namespace Domain.Model.Condition
 {
@@ -6,6 +7,6 @@ namespace Domain.Model.Condition
     {
         public string GetName(IPlayer player);
         public IAffiliation Affiliation { get; }
-        public IStatusManager StatusManager { get; }
+        public IStatusManager Status { get; }
     }
 }

@@ -3218,9 +3218,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101, y: -120.70001}
-  m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -95}
+  m_SizeDelta: {x: 1152, y: 500}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &1170533259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3306,7 +3306,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -759.9323, w: -379.38605}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3451,7 +3451,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 10.3671875
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -3945,7 +3945,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 10.3671875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5331,7 +5331,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 615100321150736510, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1056
+      value: 1152
       objectReference: {fileID: 0}
     - target: {fileID: 615100321150736510, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
       propertyPath: m_SizeDelta.y

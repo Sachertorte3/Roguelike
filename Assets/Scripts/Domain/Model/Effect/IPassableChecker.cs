@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Model.Character;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using UnityEngine;
 

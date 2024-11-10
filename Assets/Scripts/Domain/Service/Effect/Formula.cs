@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Domain.Service.Effect
         public static int Calc(IActorOfEffect actor, ITargetOfEffect target, List<ElementPower> powers,
             bool isCritical = false)
         {
-            if (target.StatusManager.IsHard && !isCritical)
+            if (target.Status.IsFlagStat(FlagStatType.Hard) && !isCritical)
                 return 1;
 
             var elementDamages = new List<float>();

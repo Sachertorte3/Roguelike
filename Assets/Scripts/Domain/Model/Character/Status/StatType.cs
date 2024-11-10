@@ -1,10 +1,10 @@
-namespace Domain.Model.Condition
+namespace Domain.Model.Character.Status
 {
     public enum StatType
     {
         MaxHp,
         HpNaturalRecovery,
         ViewRange,
-        WaitTime
+        MaxWaitTime
     }
 }

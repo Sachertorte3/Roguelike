@@ -1,4 +1,4 @@
-namespace Domain.Model
+namespace Domain.Model.Entity
 {
     public enum EntityLayer
     {

@@ -8,6 +8,8 @@ using R3;
 using Stats;
 using Utilities;
 using UnityEngine;
+using Domain.Model.Effect;
+using Domain.Model.Character.Status;
 
 namespace Domain.Service.Characters.Stats
 {
@@ -115,7 +117,7 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
-                StatType.WaitTime => CurrentWaitTime,
+                StatType.MaxWaitTime => CurrentWaitTime,
                 _ => throw new ArgumentException($"Invalid stat type: {type}")
             };
         }
@@ -152,7 +154,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddValue(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.AddMaxValue(value);
                     break;
             }
@@ -196,7 +198,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddMultiplier(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.AddMaxMultiplier(value);
                     break;
             }
@@ -240,7 +242,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.Multiply(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.MultiplyMaxValue(value);
                     break;
             }

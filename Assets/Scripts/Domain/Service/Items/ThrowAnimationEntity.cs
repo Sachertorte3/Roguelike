@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Setting;
 using UnityEngine;
@@ -11,12 +12,12 @@ namespace Domain.Service.Items
 {
     public class ThrowAnimationEntity : IEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         public readonly Sprite Icon;
 
         public ThrowAnimationEntity(Vector2Int position, Sprite icon)
         {
-            Entity = new Entity(Entity.Build(position, EntityLayer.Middle));
+            Entity = new EntityBase(EntityBase.Build(position, EntityLayer.Middle));
             Icon = icon;
         }
 

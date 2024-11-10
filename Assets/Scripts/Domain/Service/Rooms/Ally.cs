@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
@@ -16,7 +17,7 @@ namespace Domain.Service.Rooms
     public class Ally : IPlayerEventEntity
     {
         public readonly ICharacter Character;
-        public Entity Entity => Character.Entity;
+        public EntityBase Entity => Character.Entity;
         public readonly EnemyBehavior Behavior;
         public IPlayerEvent Event { get; init; }
 

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Domain.Model.Entity;
 using UnityEngine;
 
 namespace Domain.Model.Memento

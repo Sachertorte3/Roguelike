@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Item;
 using Domain.Model.Setting;
 using Game;
 using R3;

@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
@@ -15,12 +16,12 @@ namespace Domain.Service.Events
 {
     public class Money : IDisposable, ISerializable<MoneyMemento>, IPlayerEventEntity, IIconEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         public readonly int Amount;
 
         public Money(MoneyMemento data)
         {
-            Entity = new Entity(data.Entity);
+            Entity = new EntityBase(data.Entity);
             Amount = data.Amount;
             Event = new PlayerEvent(
                 null,
@@ -134,7 +135,7 @@ namespace Domain.Service.Events
 
         public static MoneyMemento Build(Vector2Int position, int amount)
         {
-            return new MoneyMemento(Entity.Build(position, EntityLayer.Bottom), amount);
+            return new MoneyMemento(EntityBase.Build(position, EntityLayer.Bottom), amount);
         }
     }
 }

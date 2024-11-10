@@ -1,7 +1,8 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Utilities;
 
@@ -17,7 +18,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.MultiplyStat(StatType.WaitTime, 0.5f);
+            hasCondition.Status.MultiplyStat(StatType.MaxWaitTime, 0.5f);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,7 +28,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.DivideStat(StatType.WaitTime, 0.5f);
+            hasCondition.Status.DivideStat(StatType.MaxWaitTime, 0.5f);
         }
 
         public float Evaluate(ITargetOfEffect target)

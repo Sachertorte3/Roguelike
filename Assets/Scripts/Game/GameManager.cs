@@ -14,6 +14,7 @@ using UnityEngine;
 using Utilities;
 using VContainer;
 using System.Collections.Generic;
+using Domain.Model.Entity;
 
 namespace Game
 {

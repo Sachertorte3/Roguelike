@@ -1,5 +1,6 @@
 #nullable enable
 using Domain.Model.Character;
+using Domain.Model.Entity;
 using UnityEngine;
 
 namespace Domain.Model.Map

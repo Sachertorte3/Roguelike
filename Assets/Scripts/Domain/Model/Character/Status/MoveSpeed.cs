@@ -1,10 +1,4 @@
-#nullable enable
-
-
-#if UNITY_EDITOR
-#endif
-
-namespace Domain.Model.Character
+namespace Domain.Model.Character.Status
 {
     public enum MoveSpeed
     {

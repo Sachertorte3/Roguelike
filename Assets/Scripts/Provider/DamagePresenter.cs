@@ -17,12 +17,12 @@ namespace Provider
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     damageTextSpawner.DeleteAllText();
-                    _disposable.Add(map.Player.Character.StatusManager.OnDamageReceived.Subscribe(damageChanged =>
+                    _disposable.Add(map.Player.Character.Status.OnDamageReceived.Subscribe(damageChanged =>
                         {
                             var damagePercentageFromMaxHp = damageChanged * 100 /
-                                                            map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
-                            var hpPercentageFromMaxHp = map.Player.Character.StatusManager.Stats.HpValue.CurrentValue *
-                            100 / map.Player.Character.StatusManager.Stats.MaxHp.CurrentValue;
+                                                            map.Player.Character.Status.Stats.MaxHp.CurrentValue;
+                            var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue *
+                            100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
                                 hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {
@@ -31,13 +31,13 @@ namespace Provider
                         }
                     ));
                     _disposable.Add(map.Characters.SubscribeToAllObservables(
-                        character => character.StatusManager.OnDamageReceived,
+                        character => character.Status.OnDamageReceived,
                         (character, damageChanged) =>
                         {
                             if (character.Entity.Visibility.CurrentValue)
                             {
                                 var damagePercentageFromMaxHp = damageChanged * 100 /
-                                                                character.StatusManager.Stats.MaxHp.CurrentValue;
+                                                                character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowDamage(character.Entity.CurrentPosition,
                                     damageChanged, damagePercentageFromMaxHp,
                                     Settings.DamageTextDisplayTime.Value);
@@ -45,13 +45,13 @@ namespace Provider
                         }
                     ));
                     _disposable.Add(map.Characters.SubscribeToAllObservables(
-                        character => character.StatusManager.OnHealReceived,
+                        character => character.Status.OnHealReceived,
                         (character, healChanged) =>
                         {
                             if (character.Entity.Visibility.CurrentValue)
                             {
                                 var healPercentageFromMaxHp = healChanged * 100 /
-                                                          character.StatusManager.Stats.MaxHp.CurrentValue;
+                                                          character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowHeal(character.Entity.CurrentPosition, healChanged,
                                     healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
                             }

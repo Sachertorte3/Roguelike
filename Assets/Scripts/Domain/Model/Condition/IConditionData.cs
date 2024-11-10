@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Utilities;
 
 namespace Domain.Model.Condition

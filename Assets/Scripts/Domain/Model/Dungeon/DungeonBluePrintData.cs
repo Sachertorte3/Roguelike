@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
-using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;

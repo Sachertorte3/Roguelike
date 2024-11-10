@@ -12,28 +12,28 @@ namespace Domain.Service.Characters
     {
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
-        public readonly FlagStat ClairvoyantFlags;
-        public readonly FlagStat BlindFlags;
+        private readonly FlagStat _clairvoyantFlags;
+        private readonly FlagStat _blindFlags;
         private bool _canThroughWalls;
-        public bool IsClairvoyant => ClairvoyantFlags.CurrentValue;
-        public bool IsBlind => BlindFlags.CurrentValue;
+        public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
+        public bool IsBlind => _blindFlags.CurrentValue;
         private Subject<Unit> _onVisibleAreaChanged = new();
         private readonly IMap _map;
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
-            int clairvoyantFlags, int blindFlags, bool canThroughWalls, IMap map)
+            FlagStat clairvoyantFlags, FlagStat blindFlags, bool canThroughWalls, IMap map)
         {
             _position = position;
             _range = range;
-            ClairvoyantFlags = new FlagStat(clairvoyantFlags);
-            BlindFlags = new FlagStat(blindFlags);
             _canThroughWalls = canThroughWalls;
+            _clairvoyantFlags = clairvoyantFlags;
+            _blindFlags = blindFlags;
             _position.Subscribe(_ => ChangeVisibleArea());
             _range.Subscribe(_ => ChangeVisibleArea());
-            ClairvoyantFlags
+            _clairvoyantFlags
                 .Value
                 .Subscribe(_ => ChangeVisibleArea());
-            BlindFlags
+            _blindFlags
                 .Value
                 .Subscribe(_ => ChangeVisibleArea());
             _map = map;

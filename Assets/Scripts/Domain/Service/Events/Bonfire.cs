@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using UnityEngine;
@@ -10,11 +11,11 @@ namespace Domain.Service.Events
 {
     public class Bonfire : ISerializable<EntityMemento>, IEventEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
 
         public Bonfire(EntityMemento memento)
         {
-            Entity = new Entity(memento);
+            Entity = new EntityBase(memento);
             Event = new CharacterEvent(
                 (character) => false,
                 (character, gameManager, map) => UniTask.FromResult(false)
@@ -40,7 +41,7 @@ namespace Domain.Service.Events
 
         public static EntityMemento Build(Vector2Int position)
         {
-            return Entity.Build(position, EntityLayer.Middle);
+            return EntityBase.Build(position, EntityLayer.Middle);
         }
     }
 }

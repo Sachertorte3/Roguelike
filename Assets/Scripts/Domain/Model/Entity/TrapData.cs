@@ -1,7 +1,8 @@
 using System;
+using Domain.Model.Effect;
 using UnityEngine;
 
-namespace Domain.Model.Effect
+namespace Domain.Model.Entity
 {
     [Serializable]
     public class TrapData

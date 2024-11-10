@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;

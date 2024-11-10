@@ -4,6 +4,7 @@ using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -15,12 +16,12 @@ namespace Domain.Service.Items
 {
     internal class ItemEntity : IItemEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
 
         public ItemEntity(ItemEntityMemento item)
         {
             Item = new Item(item.Item);
-            Entity = new Entity(item.Entity);
+            Entity = new EntityBase(item.Entity);
         }
 
         public IItem Item { get; init; }

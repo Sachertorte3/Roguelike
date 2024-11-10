@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Action;
+using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -34,7 +36,7 @@ namespace Domain.Model.Character
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public Observable<Unit> OnKnownItemUpdated { get; }
         public ICharacterType CharacterType { get; init; }
-        public IStatusManager StatusManager { get; }
+        public IStatusManager Status { get; }
         public Aggression Aggression { get; }
         public IAffiliation Affiliation { get; }
         public Direction8 CurrentDirection { get; }

@@ -61,10 +61,10 @@ namespace Provider
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 
-            character.StatusManager.Stats.HpValue.SubscribeToAllItems(hp =>
-                characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
-            character.StatusManager.Stats.MaxHp.SubscribeToAllItems(maxHp =>
-                    characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue))
+            character.Status.Stats.HpValue.SubscribeToAllItems(hp =>
+                characterView.UpdateHpBar(character.Status.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
+            character.Status.Stats.MaxHp.SubscribeToAllItems(maxHp =>
+                    characterView.UpdateHpBar(maxHp, character.Status.Stats.HpValue.CurrentValue))
                 .AddTo(characterView);
 
             characterView.GetComponent<OverrideSprite>().SetTexture(
@@ -85,7 +85,7 @@ namespace Provider
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)
                 particleController.Add(ParticleType.ShinyStar);
-            character.StatusManager.Conditions.SubscribeToAllItems(
+            character.Status.Conditions.SubscribeToAllItems(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             ).AddTo(particleController);

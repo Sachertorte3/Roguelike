@@ -1,9 +1,6 @@
-#nullable enable
 using System;
-#if UNITY_EDITOR
-#endif
 
-namespace Domain.Model.Character
+namespace Domain.Model.Character.Status
 {
     public static class MoveSpeedExtensions
     {

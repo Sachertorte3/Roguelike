@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -28,7 +30,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (!target.StatusManager.IsHeavy)
+            if (!target.Status.IsFlagStat(FlagStatType.Heavy))
             {
                 await Apply(actor, (IEntity)target, position, map);
             }
@@ -43,7 +45,7 @@ namespace Domain.Service.Effect
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            if (target.StatusManager.IsHeavy)
+            if (target.Status.IsFlagStat(FlagStatType.Heavy))
             {
                 return 0f;
             }

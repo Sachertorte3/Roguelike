@@ -1,6 +1,7 @@
 #nullable enable
 using BidirectionalMap;
 using Domain.Model;
+using Domain.Model.Entity;
 using Domain.Model.Setting;
 using R3;
 using UnityEngine;

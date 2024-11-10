@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -17,7 +18,7 @@ namespace Domain.Service.Events
 {
     public class Chest : ISerializable<ChestMemento>, IPlayerEventEntity, IIconEntity
     {
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         private Option<Item> _item;
         private Option<EnemyData> _mimic;
 
@@ -25,7 +26,7 @@ namespace Domain.Service.Events
         {
             _item = memento.Item.Map(i => new Item(i));
             _mimic = memento.Mimic;
-            Entity = new Entity(memento.Entity);
+            Entity = new EntityBase(memento.Entity);
             Event = new PlayerEvent(
                 "宝箱を見つけた",
                 true,
@@ -122,7 +123,7 @@ namespace Domain.Service.Events
             return new ChestMemento
             (
                 item,
-                Entity.Build(position, EntityLayer.Middle)
+                EntityBase.Build(position, EntityLayer.Middle)
             );
         }
 
@@ -131,7 +132,7 @@ namespace Domain.Service.Events
             return new ChestMemento
             (
                 mimic,
-                Entity.Build(position, EntityLayer.Middle)
+                EntityBase.Build(position, EntityLayer.Middle)
             );
         }
     }

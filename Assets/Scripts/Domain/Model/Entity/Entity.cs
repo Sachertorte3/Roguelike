@@ -5,9 +5,9 @@ using R3;
 using UnityEngine;
 using Utilities;
 
-namespace Domain.Model
+namespace Domain.Model.Entity
 {
-    public class Entity : IDisposable, ISerializable<EntityMemento>
+    public class EntityBase : IDisposable, ISerializable<EntityMemento>
     {
         public readonly Id<IEntity> Id;
         private readonly EntityLayer _layer;
@@ -17,7 +17,7 @@ namespace Domain.Model
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
         private readonly ReactiveProperty<bool> _isDestroyed = new(false);
 
-        public Entity(EntityMemento data)
+        public EntityBase(EntityMemento data)
         {
             Id = new Id<IEntity>(data.Id);
             _position = new ReactiveProperty<Vector2Int>(data.Position);

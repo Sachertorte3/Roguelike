@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -32,7 +33,7 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.StatusManager.IsSecureHold)
+            if (target.Status.IsFlagStat(FlagStatType.SecureHold))
             {
                 GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 return UniTask.CompletedTask;

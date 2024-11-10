@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Map;
 using Domain.Model.Setting;
 using R3;
@@ -41,13 +42,13 @@ namespace Game
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
                 var characters = map.Characters.ToList();
-                if (characters.Any(character => character.StatusManager.IsOverDrive))
+                if (characters.Any(character => character.Status.IsFlagStat(FlagStatType.OverDrive)))
                 {
-                    characters.RemoveAll(character => !character.StatusManager.IsOverDrive);
+                    characters.RemoveAll(character => !character.Status.IsFlagStat(FlagStatType.OverDrive));
                 }
 
                 var minWaitTime = characters.Min(character =>
-                    character.StatusManager.Stats.CurrentMaxWaitTime - character.StatusManager.Stats.CurrentWaitTime);
+                    character.Status.Stats.CurrentMaxWaitTime - character.Status.Stats.CurrentWaitTime);
                 minWaitTime = Mathf.Min(minWaitTime,
                     _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
                 _turnWaitTime.Gain(minWaitTime);
@@ -62,8 +63,8 @@ namespace Game
 
                 foreach (var character in characters)
                 {
-                    if (characters.Any(character => character.StatusManager.IsOverDrive) &&
-                        !character.StatusManager.IsOverDrive)
+                    if (characters.Any(character => character.Status.IsFlagStat(FlagStatType.OverDrive)) &&
+                        !character.Status.IsFlagStat(FlagStatType.OverDrive))
                         continue;
 
                     if (_turnWaitTime.IsFull())
@@ -71,13 +72,13 @@ namespace Game
                         character.UpdateTurn();
                     }
 
-                    character.StatusManager.AddWaitTime(minWaitTime);
-                    if (character.StatusManager.IsWaitTimeFull())
+                    character.Status.AddWaitTime(minWaitTime);
+                    if (character.Status.IsWaitTimeFull())
                     {
                         if (character.State != CharacterState.Wait)
                             continue;
 
-                        if (!character.StatusManager.CannotAct && !character.IsDead)
+                        if (!character.Status.IsFlagStat(FlagStatType.CannotAct) && !character.IsDead)
                         {
                             if (character.IsPlayer && Settings.AutoSave.CurrentValue)
                             {
@@ -113,14 +114,14 @@ namespace Game
                     }
                 }
 
-                foreach (var character in characters.Where(character => character.StatusManager.IsWaitTimeFull()))
+                foreach (var character in characters.Where(character => character.Status.IsWaitTimeFull()))
                 {
                     if (character.State != CharacterState.Wait && character.State != CharacterState.Finish)
                     {
                         await UniTask.WaitUntil(() =>
                             character.State == CharacterState.Wait || character.State == CharacterState.Finish);
                     }
-                    character.StatusManager.ResetWaitTime();
+                    character.Status.ResetWaitTime();
                     character.SetWaitState();
                 }
 

@@ -1,4 +1,5 @@
 using Domain.Model.Condition;
+using Domain.Model.Entity;
 using Domain.Model.Memento;
 using Utilities;
 

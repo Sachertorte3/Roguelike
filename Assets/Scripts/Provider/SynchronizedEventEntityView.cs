@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Events;
 using Game;

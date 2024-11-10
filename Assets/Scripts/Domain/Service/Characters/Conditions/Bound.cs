@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Utilities;
 
@@ -17,7 +19,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddFlagStat(FlagStatType.CannotMove);
+            hasCondition.Status.AddFlagStat(FlagStatType.CannotMove);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,12 +29,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveFlagStat(FlagStatType.CannotMove);
+            hasCondition.Status.RemoveFlagStat(FlagStatType.CannotMove);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.StatusManager.CannotMove ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
+            return target.Status.IsFlagStat(FlagStatType.CannotMove) ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2;
         }
 
         public float EvaluatePrice()

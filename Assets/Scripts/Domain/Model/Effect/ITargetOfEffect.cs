@@ -1,5 +1,7 @@
 ﻿using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
@@ -9,7 +11,7 @@ namespace Domain.Model.Effect
 {
     public interface ITargetOfEffect : IEntity
     {
-        public IStatusManager StatusManager { get; }
+        public IStatusManager Status { get; }
         public IVisionRange VisionRange { get; }
         public string GetName(IPlayer player, bool ignoreVisibility = false);
         public float GetStatValue(StatType type);

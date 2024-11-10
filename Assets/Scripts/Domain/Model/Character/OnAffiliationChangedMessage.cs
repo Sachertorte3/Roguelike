@@ -1,4 +1,5 @@
-﻿using Utilities;
+﻿using Domain.Model.Entity;
+using Utilities;
 
 namespace Domain.Model.Character
 {

@@ -6,6 +6,8 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -71,7 +73,7 @@ namespace Domain.Service.Characters.Behavior
                 {
                     case InputType.Move:
                         var (move, started) = result.move.Value;
-                        if (input.IsNoMove() || character.StatusManager.CannotMove)
+                        if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
                             break;

@@ -5,7 +5,9 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -525,7 +527,7 @@ namespace Game
             ).AddTo(_disposables);
 
             Characters.SubscribeToAllObservables(
-                character => character.StatusManager.IsAffectedByTraps,
+                character => character.Status.GetFlagProperty(FlagStatType.IsAffectedByTrap),
                 async (character, affectedByTrap) =>
                 {
                     EventExecutionCount++;

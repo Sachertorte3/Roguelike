@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters;
@@ -14,19 +16,19 @@ namespace Domain.Service.Events
     public class Trap : ISerializable<TrapMemento>, IEventEntity
     {
         public readonly string Name;
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         private readonly SpawnEffectSkill _skill;
         private readonly float _probabilityOfBreaking;
 
         public Trap(TrapMemento memento)
         {
             Name = memento.Name;
-            Entity = new Entity(memento.Entity);
+            Entity = new EntityBase(memento.Entity);
             _skill = new SpawnEffectSkill(memento.Skill);
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
             var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
             Event = new CharacterEvent(
-                (character) => character.StatusManager.IsAffectedByTraps.CurrentValue,
+                (character) => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
                 async (character, gameManager, map) =>
                 {
                     await Execute(map, character);
@@ -47,7 +49,7 @@ namespace Domain.Service.Events
 
         public static TrapMemento Build(TrapData trap, Vector2Int position)
         {
-            return new TrapMemento(trap.Name, Entity.Build(position, EntityLayer.Bottom),
+            return new TrapMemento(trap.Name, EntityBase.Build(position, EntityLayer.Bottom),
                 SpawnEffectSkill.Build(trap.Skill), trap.ProbabilityOfBreaking);
         }
 

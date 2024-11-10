@@ -2,6 +2,7 @@
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Map;
 using Unity.Logging;

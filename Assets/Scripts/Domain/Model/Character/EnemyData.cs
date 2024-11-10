@@ -8,6 +8,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using Utilities.Table;
+using Domain.Model.Character.Status;
+
 
 #if UNITY_EDITOR
 using UnityEditor;

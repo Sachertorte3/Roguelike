@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Action;
+using Domain.Model.Character.Status;
 using Domain.Model.Map;
 
 namespace Domain.Service.Action
@@ -9,7 +10,7 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.StatusManager.CannotAct;
+            return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)

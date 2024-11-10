@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Condition;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Model.Message;

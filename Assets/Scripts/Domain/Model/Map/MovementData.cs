@@ -1,8 +1,7 @@
 using System;
-using Domain.Model.Map;
 using UnityEngine;
 
-namespace Domain.Model
+namespace Domain.Model.Map
 {
     [Serializable]
     public class MapConnection

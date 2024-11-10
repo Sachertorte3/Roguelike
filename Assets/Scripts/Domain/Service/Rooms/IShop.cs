@@ -7,7 +7,7 @@ namespace Domain.Service.Rooms
     public interface IShop
     {
         public ReadOnlyReactiveProperty<bool> IsInside { get; }
-        public int GetPurchasePrice(IMap mapManager);
-        public int GetSalePrice(IMap mapManager);
+        public int GetPurchasePrice(IMap map);
+        public int GetSalePrice(IMap map);
     }
 }

@@ -1,4 +1,4 @@
-namespace Domain.Model.Condition
+namespace Domain.Model.Character.Status
 {
     public enum FlagStatType
     {
@@ -12,6 +12,7 @@ namespace Domain.Model.Condition
         Heavy,
         SecureHold,
         CurseProof,
+        Haggle,
         IsAffectedByTrap
     }
 }

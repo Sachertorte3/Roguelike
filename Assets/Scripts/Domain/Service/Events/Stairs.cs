@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using R3;
@@ -15,14 +16,14 @@ namespace Domain.Service.Events
     {
         public MovementEntityType Type { get; init; }
         public Location Destination { get; init; }
-        public Entity Entity { get; init; }
+        public EntityBase Entity { get; init; }
         public Id<IEntity> DestinationId { get; init; }
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
 
         public Stairs(StairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             Type = data.Type;
-            Entity = new Entity(data.Entity);
+            Entity = new EntityBase(data.Entity);
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
@@ -81,7 +82,7 @@ namespace Domain.Service.Events
             (
                 type,
                 destination,
-                entity: Entity.Build(id, position, EntityLayer.Bottom),
+                entity: EntityBase.Build(id, position, EntityLayer.Bottom),
                 destinationId: destinationId
             );
         }

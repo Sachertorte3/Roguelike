@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -32,7 +33,7 @@ namespace Domain.Service.Characters
                 behavior: PlayerBehavior.Build(),
                 status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth, CommonSenseParameters.PlayerNaturalRecoveryRate,
                     new(), new(), new(), 10, false, false, true, 1, false),
-                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
+                entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
                 skills: new List<CharacterSkillMemento>
                 {
@@ -101,7 +102,7 @@ namespace Domain.Service.Characters
                         ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
                         : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, data.ConditionResistance, 8, data.IsHard,
                     data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
-                entity: Entity.Build(spawnPosition, EntityLayer.Middle),
+                entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
                 skills: data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToList(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),

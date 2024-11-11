@@ -407,7 +407,7 @@ namespace Domain.Service.Characters
 
             GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
 
-            if (!_inventory.Remove(item))
+            if (!_inventory.TryRemove(item))
             {
                 map.TryPickUpAt(Entity.CurrentPosition, true);
             }

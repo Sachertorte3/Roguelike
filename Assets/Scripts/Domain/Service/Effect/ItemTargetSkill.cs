@@ -54,7 +54,7 @@ namespace Domain.Service.Effect
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
             {
-                disabledItemIndexes.Add(map.Player.Character.Inventory.MaxItemCount);
+                disabledItemIndexes.Add(map.Player.Character.Inventory.Capacity);
             }
 
             disabledItemIndexes.Add(selfIndex);

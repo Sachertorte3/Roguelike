@@ -42,6 +42,7 @@ namespace Domain.Service.Items
         private readonly ReactiveProperty<int> _remainingUsages;
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
+        private readonly Option<Storage> _storage;
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
         private readonly Subject<bool> _onCursedChanged = new();
@@ -98,6 +99,7 @@ namespace Domain.Service.Items
                 },
                 itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
             ));
+            _storage = new Storage(Storage.Build(5)).ToOption();
             _hasSameEffect = data.HasSameEffect;
             _hasSameSkill = data.HasSameSkill;
             UseOnDeath = data.UseOnDeath;
@@ -135,6 +137,7 @@ namespace Domain.Service.Items
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool UseOnDeath { get; init; }
+        public Option<IStorage> ItemStorage => _storage.Map(storage => (IStorage)storage);
         public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public int MaxUsages => _maxUsages;

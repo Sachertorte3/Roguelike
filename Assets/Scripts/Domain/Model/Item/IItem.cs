@@ -36,6 +36,7 @@ namespace Domain.Model.Item
         public Option<ISkill> SkillOnThrow { get; }
         public bool HasActivatableSkill { get; }
         public bool CanActivate { get; }
+        public Option<IStorage> ItemStorage { get; }
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map);
         public bool IsDisabled { get; }

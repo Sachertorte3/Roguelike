@@ -7,6 +7,8 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Game;
 using R3;
+using Unity.Logging;
+using UnityEngine;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -21,7 +23,7 @@ namespace Provider
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView,
             SubStorageView subStorageView)
         {
-            inventoryView.Initialize();
+            inventoryView.Initialize(subStorageView);
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
                     map.Player.Character.Inventory.OnItemChanged.Subscribe(itemChanged =>
@@ -40,7 +42,7 @@ namespace Provider
                         .AddTo(_disposables);
                     map.ItemPlaceholders.OnItemRenamed.Subscribe(_ => { UpdateAllItemViews(inventoryView, subStorageView, map); })
                         .AddTo(_disposables);
-                    inventoryView.OnFocusChanged.Subscribe(index =>
+                    inventoryView.OnMainFocusChanged.Subscribe(index =>
                     {
                         IItem? item = null;
                         if (index.isEmpty)
@@ -98,13 +100,14 @@ namespace Provider
         private void UpdateSubStorageView(InventoryView inventoryView, SubStorageView subStorageView, IItem? item,
             int index, IPlayer player, ItemPlaceholders itemPlaceholders)
         {
+            Log.Info($"UpdateSubStorageView");
             if (item != null && item.ItemStorage.IsSome)
             {
-                var subStorageItem = item.ItemStorage.Value.GetItem(index);
                 subStorageView.SetCapacity(inventoryView.Get(index), index, item.ItemStorage.Value.Capacity);
                 inventoryView.SetNavigationWithSubStorage(subStorageView, index);
                 for (var i = 0; i < item.ItemStorage.Value.Capacity; i++)
                 {
+                    var subStorageItem = item.ItemStorage.Value.GetItem(i);
                     if (subStorageItem != null)
                         subStorageView.Replace(
                             subStorageItem.Icon,

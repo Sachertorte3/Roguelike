@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -20,15 +19,18 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(pos =>
+                map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 actor.Entity.Teleport(placeablePositions.GetAtRandom());
             }
             else
             {
-                actor.Entity.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(), pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
+                actor.Entity.Teleport(map.FindBlankPositionFrom(positions.GetAtRandom(),
+                    pos => map.At(pos).CanPlace(actor.IsFlying, actor.CanThroughWalls, false, EntityLayer.Middle)));
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -36,7 +38,8 @@ namespace Domain.Service.Effect
         {
             if (positions.Contains(actor.Entity.CurrentPosition))
                 return 0;
-            return 0.05f * positions.Average(pos => VectorExtension.ChebyshevDistance(actor.Entity.CurrentPosition, pos));
+            return 0.05f *
+                   positions.Average(pos => VectorExtension.ChebyshevDistance(actor.Entity.CurrentPosition, pos));
         }
 
         public override float EvaluatePrice()
@@ -45,8 +48,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "テレポート";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

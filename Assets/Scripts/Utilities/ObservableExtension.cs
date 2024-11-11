@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
-using Unity.Logging;
 
 namespace Utilities
 {
@@ -15,7 +14,8 @@ namespace Utilities
             return source.Subscribe(item => target.OnNext(item));
         }
 
-        public static IDisposable SubscribeToAllObservables<T, TMessage>(this IObservableCollection<T> list, Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
+        public static IDisposable SubscribeToAllObservables<T, TMessage>(this IObservableCollection<T> list,
+            Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
         {
             var disposables = new Dictionary<T, IDisposable>();
             var allDisposable = new CompositeDisposable();
@@ -24,6 +24,7 @@ namespace Utilities
                 disposables[item] = selector(item).Subscribe(message => action(item, message));
                 allDisposable.Add(disposables[item]);
             }
+
             list.ObserveAdd().Select(i => i.Value).Subscribe(item =>
             {
                 disposables[item] = selector(item).Subscribe(message => action(item, message));
@@ -38,7 +39,8 @@ namespace Utilities
             {
                 allDisposable.Remove(disposables[value.OldValue]);
                 disposables[value.OldValue].Dispose();
-                disposables[value.NewValue] = selector(value.NewValue).Subscribe(message => action(value.NewValue, message));
+                disposables[value.NewValue] =
+                    selector(value.NewValue).Subscribe(message => action(value.NewValue, message));
                 allDisposable.Add(disposables[value.NewValue]);
             });
             return allDisposable;

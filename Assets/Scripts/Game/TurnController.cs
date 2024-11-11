@@ -8,9 +8,9 @@ using Domain.Model.Character.Status;
 using Domain.Model.Map;
 using Domain.Model.Setting;
 using R3;
-using Stats;
 using Unity.Logging;
 using UnityEngine;
+using Utilities.Stats;
 
 namespace Game
 {
@@ -84,10 +84,12 @@ namespace Game
                             {
                                 Globals.GameManager.Save();
                             }
+
                             Log.Debug($"[Turn]{character.GetName(map.Player)} think...");
                             try
                             {
-                                await character.DoNextAction(gameManager, map, _input).AttachExternalCancellation(_cancellationTokenSource.Token);
+                                await character.DoNextAction(gameManager, map, _input)
+                                    .AttachExternalCancellation(_cancellationTokenSource.Token);
                             }
                             catch (OperationCanceledException e)
                             {
@@ -121,6 +123,7 @@ namespace Game
                         await UniTask.WaitUntil(() =>
                             character.State == CharacterState.Wait || character.State == CharacterState.Finish);
                     }
+
                     character.Status.ResetWaitTime();
                     character.SetWaitState();
                 }

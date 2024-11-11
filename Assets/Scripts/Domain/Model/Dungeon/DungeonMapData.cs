@@ -44,11 +44,34 @@ namespace Domain.Model.Dungeon
         EnemyData Mimic
     )
     {
-        private int GetCount(float trials) => RandUtils.Binomial(trials * 2, 0.5f);
-        public int ItemCount() => GetCount(ItemAttempt);
-        public int MoneyCount() => GetCount(MoneyAttempt);
-        public int CharacterCount() => GetCount(CharacterAttempt);
-        public int TrapCount() => GetCount(TrapAttempt);
-        public int MoneyAmount() => Mathf.CeilToInt(RandUtils.LogNormalFromMean(MoneyAverage, 1));
+        private int GetCount(float trials)
+        {
+            return RandUtils.Binomial(trials * 2, 0.5f);
+        }
+
+        public int ItemCount()
+        {
+            return GetCount(ItemAttempt);
+        }
+
+        public int MoneyCount()
+        {
+            return GetCount(MoneyAttempt);
+        }
+
+        public int CharacterCount()
+        {
+            return GetCount(CharacterAttempt);
+        }
+
+        public int TrapCount()
+        {
+            return GetCount(TrapAttempt);
+        }
+
+        public int MoneyAmount()
+        {
+            return Mathf.CeilToInt(RandUtils.LogNormalFromMean(MoneyAverage, 1));
+        }
     }
 }

@@ -28,10 +28,11 @@ namespace Domain.Service.Events
                 false,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "拾う(選択肢としては表示されない)",
-                        (player) => true,
-                        (gameManager, map) => {
+                        player => true,
+                        (gameManager, map) =>
+                        {
                             map.Player.Character.AddMoney(Amount);
                             GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
                             map.RemoveEventEntity(this);
@@ -116,6 +117,7 @@ namespace Domain.Service.Events
                 Entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
+
             await map.ExecuteTrapAt(destination, actor as ICharacter);
         }
 
@@ -128,8 +130,8 @@ namespace Domain.Service.Events
         {
             return new MoneyMemento
             (
-                entity: Entity.Serialize(),
-                amount: Amount
+                Entity.Serialize(),
+                Amount
             );
         }
 

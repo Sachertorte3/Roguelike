@@ -5,6 +5,7 @@ using Domain.Model.Character;
 using Domain.Model.Character.Type;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

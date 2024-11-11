@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
+using Domain.Model;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Domain.Service.Map
 {
     public interface ITilemapViewer : ISerializable<TilemapMemento>
     {
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged { get; }
-        public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged { get; }
+
+        public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged
+        {
+            get;
+        }
+
         public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged { get; }
         public RectInt Rect { get; }
         public bool IsWalkable(Vector2Int position);

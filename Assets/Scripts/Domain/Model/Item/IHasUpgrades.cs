@@ -6,7 +6,12 @@ namespace Domain.Model.Item
     public interface IHasUpgrades
     {
         public List<UpgradeData> GetUpgrades();
-        public List<string> GetUpgradeNames() => GetUpgrades().Select(upgrade => upgrade.UpgradeName).ToList();
+
+        public List<string> GetUpgradeNames()
+        {
+            return GetUpgrades().Select(upgrade => upgrade.UpgradeName).ToList();
+        }
+
         public Dictionary<string, IHasUpgrades> GetChildren();
     }
 }

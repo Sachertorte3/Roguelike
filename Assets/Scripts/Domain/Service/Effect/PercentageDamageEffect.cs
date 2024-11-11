@@ -13,8 +13,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class PercentageDamageEffect : ActorlessEntityTargetEffect
     {
-        [SerializeField]
-        [Range(0, 1)] private float _damageRate = 0.5f;
+        [SerializeField] [Range(0, 1)] private float _damageRate = 0.5f;
 
         public PercentageDamageEffect(float damageRate)
         {
@@ -36,8 +35,8 @@ namespace Domain.Service.Effect
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             var result = Mathf.Min(1,
-                             Mathf.Min(target.CurrentHp, (float)Formula.CalcExplosionDamage(_damageRate, target)) /
-                             target.CurrentMaxHp);
+                Mathf.Min(target.CurrentHp, (float)Formula.CalcExplosionDamage(_damageRate, target)) /
+                target.CurrentMaxHp);
             return result;
         }
 
@@ -47,8 +46,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "割合ダメージ";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

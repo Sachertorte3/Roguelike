@@ -7,6 +7,7 @@ using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
+using Domain.Model.Memento;
 using ObservableCollections;
 using UnityEngine;
 using Utilities;
@@ -46,11 +47,15 @@ namespace Domain.Model.Map
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
+
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
             bool? isSlept = null, bool? isShiny = null);
+
         public void SpawnFire(IEnumerable<Vector2Int> positions);
+
         public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
             int distance, params EntityLayer[] canHitLayer);
+
         public void SpawnEffect(IEnumerable<Vector2Int> area, Color color);
 
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem);
@@ -66,6 +71,8 @@ namespace Domain.Model.Map
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);
         public HashSet<Vector2Int> GetFullVisibleArea();
-        public HashSet<Vector2Int> ComputeCircle(Func<Vector2Int, bool> isTileBlocked, Vector2Int position, float radius);
+
+        public HashSet<Vector2Int> ComputeCircle(Func<Vector2Int, bool> isTileBlocked, Vector2Int position,
+            float radius);
     }
 }

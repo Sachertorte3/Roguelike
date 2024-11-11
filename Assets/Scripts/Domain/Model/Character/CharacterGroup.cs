@@ -5,6 +5,6 @@
         Human,
         Monster,
         Neutral,
-        Outcast,
+        Outcast
     }
 }

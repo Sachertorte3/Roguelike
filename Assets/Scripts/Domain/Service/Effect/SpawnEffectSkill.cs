@@ -29,7 +29,8 @@ namespace Domain.Service.Effect
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats, int rushDistance,
+        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats,
+            int rushDistance,
             int backStepDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
@@ -42,7 +43,8 @@ namespace Domain.Service.Effect
             _log = log;
         }
 
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effects, data.Repeats,
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effects,
+            data.Repeats,
             data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
@@ -138,10 +140,10 @@ namespace Domain.Service.Effect
 
             var area = GetArea(actor, position, direction, map);
             if (_effects.Any(effect =>
-                effect is AttackEffect ||
-                effect is AbsorbsEffect ||
-                effect is PercentageDamageEffect ||
-                effect is BreakEffect))
+                    effect is AttackEffect ||
+                    effect is AbsorbsEffect ||
+                    effect is PercentageDamageEffect ||
+                    effect is BreakEffect))
             {
                 map.SetGrasses(area, false);
             }
@@ -151,8 +153,8 @@ namespace Domain.Service.Effect
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
-                                .OrderBy(target => Vector2.Distance(target.Entity.CurrentPosition, position))
-                                .Reverse())
+                                 .OrderBy(target => Vector2.Distance(target.Entity.CurrentPosition, position))
+                                 .Reverse())
                     {
                         switch (target)
                         {
@@ -181,6 +183,7 @@ namespace Domain.Service.Effect
                                             c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
                                                 impactValue));
                                 }
+
                                 break;
                             default:
                                 await effect.Apply(actor, target, position, map);
@@ -226,7 +229,8 @@ namespace Domain.Service.Effect
                     {
                         case Impact.Harmful:
                             var affiliationType = actor.Affiliation.GetAffiliationType(target.Affiliation);
-                            totalEvaluation += actor.Aggression.GetAggression(affiliationType) * effect.Evaluate(actor, target);
+                            totalEvaluation += actor.Aggression.GetAggression(affiliationType) *
+                                               effect.Evaluate(actor, target);
                             break;
                         case Impact.Beneficial:
                             if (actor.IsAlly(target))
@@ -245,6 +249,7 @@ namespace Domain.Service.Effect
                             break;
                     }
                 }
+
                 totalEvaluation += effect.Evaluate(actor, area);
             }
 
@@ -258,12 +263,17 @@ namespace Domain.Service.Effect
             {
                 price += effect.EvaluatePrice();
             }
+
             price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
             price *= _area.EvaluateArea();
             return price * ProbabilityOfSuccess;
         }
 
-        public List<UpgradeData> GetUpgrades() => new();
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
         public Dictionary<string, IHasUpgrades> GetChildren()
         {
             var children = new Dictionary<string, IHasUpgrades>();
@@ -271,6 +281,7 @@ namespace Domain.Service.Effect
             {
                 children.Add(effect.UpgradePathName, effect);
             }
+
             children.Add(_position.UpgradePathName, _position);
             children.Add(_area.UpgradePathName, _area);
             return children;
@@ -288,6 +299,7 @@ namespace Domain.Service.Effect
             {
                 info += effect.Info();
             }
+
             if (BackStepDistance > 0)
                 info += $"{BackStepDistance}マス後ろに下がる\n";
             if (!omitProbabilityOfSuccess)
@@ -312,6 +324,7 @@ namespace Domain.Service.Effect
             {
                 info += "使用時と同じ効果を発揮する\n";
             }
+
             info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Domain.Model.Map;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

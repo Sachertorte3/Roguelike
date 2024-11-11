@@ -15,9 +15,9 @@ using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
-using Stats;
 using UnityEngine;
 using Utilities;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters
 {
@@ -29,6 +29,7 @@ namespace Domain.Service.Characters
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
         private readonly Dictionary<FlagStatType, FlagStat> _flagStats = new();
+
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
         {
@@ -58,8 +59,17 @@ namespace Domain.Service.Characters
         public IStats Stats => _stats;
         public IVisionRange VisionRange => _visionRange;
         public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
-        public bool IsFlagStat(FlagStatType type) => GetFlagStat(type).CurrentValue;
-        public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type) => GetFlagStat(type).Value;
+
+        public bool IsFlagStat(FlagStatType type)
+        {
+            return GetFlagStat(type).CurrentValue;
+        }
+
+        public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type)
+        {
+            return GetFlagStat(type).Value;
+        }
+
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -176,6 +186,7 @@ namespace Domain.Service.Characters
                 flagStat = new FlagStat(0);
                 _flagStats[type] = flagStat;
             }
+
             return flagStat;
         }
 
@@ -206,7 +217,8 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy, bool isAffectedByTrap, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy,
+            bool isAffectedByTrap, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -221,20 +233,24 @@ namespace Domain.Service.Characters
                     )
                 );
             }
+
             var flagStats = new Dictionary<FlagStatType, int>();
             if (isSlept)
             {
                 flagStats[FlagStatType.CannotAct] = 1;
                 flagStats[FlagStatType.Blind] = 1;
             }
+
             if (isHard)
             {
                 flagStats[FlagStatType.Hard] = 1;
             }
+
             if (isHeavy)
             {
                 flagStats[FlagStatType.Heavy] = 1;
             }
+
             if (isAffectedByTrap)
             {
                 flagStats[FlagStatType.IsAffectedByTrap] = 1;
@@ -242,10 +258,10 @@ namespace Domain.Service.Characters
 
             return new CharacterStatusMemento
             (
-                stats: CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
+                CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
                     elementDamageRateMultiplier, conditionResistance, viewRange, waitTime),
-                flagStats: flagStats,
-                conditions: conditions
+                flagStats,
+                conditions
             );
         }
 

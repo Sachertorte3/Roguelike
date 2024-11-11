@@ -40,7 +40,8 @@ namespace Domain.Model.Effect
         [field: Required]
         public string Log { get; private set; } = "は行動した";
 
-        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, int rushDistance, int backStepDistance, string log)
+        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, int rushDistance,
+            int backStepDistance, string log)
         {
             Position = position;
             Area = area;
@@ -57,6 +58,7 @@ namespace Domain.Model.Effect
             {
                 Repeats = 1;
             }
+
             if (ProbabilityOfSuccess == 0)
             {
                 ProbabilityOfSuccess = probabilityOfSuccess;
@@ -73,6 +75,7 @@ namespace Domain.Model.Effect
             {
                 info += $"効果{index + 1}: {effect.Info()}\n";
             }
+
             info += $"発動位置: {Position.Info()}\n";
             info += $"範囲: {Area.Info()}\n";
             info += $"発動確率: {ProbabilityOfSuccess:P0}";

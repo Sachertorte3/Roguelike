@@ -42,18 +42,23 @@ namespace Domain.Model.Effect.Area
         }
 
         public string UpgradePathName => "直線";
+
         public List<UpgradeData> GetUpgrades()
         {
             return new List<UpgradeData>
             {
-                new UpgradeData(
+                new(
                     "長さ+1",
                     () => Length += 1,
                     () => Length -= 1
                 )
             };
         }
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {

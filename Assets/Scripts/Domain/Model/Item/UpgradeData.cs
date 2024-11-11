@@ -1,4 +1,6 @@
+using System;
+
 namespace Domain.Model.Item
 {
-    public record UpgradeData(string UpgradeName, System.Action Upgrade, System.Action Downgrade);
+    public record UpgradeData(string UpgradeName, Action Upgrade, Action Downgrade);
 }

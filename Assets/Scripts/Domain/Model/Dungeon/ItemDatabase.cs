@@ -14,7 +14,14 @@ namespace Domain.Model.Dungeon
             _itemCategoryWeight = itemCategoryWeight;
         }
 
-        public ItemData GetRandomItem() => _masterItemDataBase.GetRandomItem(_itemCategoryWeight.GetRandomCategory());
-        public ItemData GetRandomItem(ItemCategory category) => _masterItemDataBase.GetRandomItem(category);
+        public ItemData GetRandomItem()
+        {
+            return _masterItemDataBase.GetRandomItem(_itemCategoryWeight.GetRandomCategory());
+        }
+
+        public ItemData GetRandomItem(ItemCategory category)
+        {
+            return _masterItemDataBase.GetRandomItem(category);
+        }
     }
 }

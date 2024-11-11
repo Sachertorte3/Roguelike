@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
@@ -19,14 +18,14 @@ namespace Domain.Service.Characters.Behavior
             {
                 directions.Add(facingDirection, 0.1f);
                 if (!map.At(character.Entity.CurrentPosition +
-                                           facingDirection.RotateClockwise(new Angle(135)).Vector()).IsWalkableOnMap()
+                            facingDirection.RotateClockwise(new Angle(135)).Vector()).IsWalkableOnMap()
                     && character.CanMove(facingDirection.RotateClockwise(new Angle(90)), false, false, map))
                 {
                     directions.Add(facingDirection.RotateClockwise(new Angle(90)), 0.1f);
                 }
 
                 if (!map.At(character.Entity.CurrentPosition +
-                                           facingDirection.RotateAntiClockwise(new Angle(135)).Vector()).IsWalkableOnMap()
+                            facingDirection.RotateAntiClockwise(new Angle(135)).Vector()).IsWalkableOnMap()
                     && character.CanMove(facingDirection.RotateAntiClockwise(new Angle(90)), false, false, map))
                 {
                     directions.Add(facingDirection.RotateAntiClockwise(new Angle(90)), 0.1f);
@@ -79,10 +78,9 @@ namespace Domain.Service.Characters.Behavior
             {
                 return new[] { new Move(facingDirection, 0.05f) };
             }
-            else
-            {
-                return DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, map)).Select(direction => new Move(direction, 0.02f));
-            }
+
+            return DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, map))
+                .Select(direction => new Move(direction, 0.02f));
         }
 
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,

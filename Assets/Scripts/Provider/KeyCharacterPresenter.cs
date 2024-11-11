@@ -3,10 +3,10 @@ using System.Linq;
 using Game;
 using ObservableCollections;
 using R3;
-using UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using View;
 
 namespace Provider
 {

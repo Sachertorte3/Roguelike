@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
@@ -12,14 +11,15 @@ using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Effect
 {
     [Serializable]
     public class SpawnCharacterEffect : ActorlessFieldTargetEffect
     {
-        [Required][SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
-        [MinValue(1)][SerializeField] private int _count;
+        [Required] [SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
+        [MinValue(1)] [SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
         public override Color Color => Colors.MediumPurple;
@@ -27,7 +27,8 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying,
+                _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))
@@ -47,7 +48,8 @@ namespace Domain.Service.Effect
 
         public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying, _character.Value.CanThroughWalls, false, EntityLayer.Middle));
+            var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying,
+                _character.Value.CanThroughWalls, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))
@@ -73,8 +75,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "召喚";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

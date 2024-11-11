@@ -32,9 +32,9 @@ namespace Domain.Service.Events
                 true,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "進む",
-                        (player) => CanExecuteEvent(),
+                        player => CanExecuteEvent(),
                         (gameManager, map) => DoEvent(gameManager)
                     )
                 }

@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
     public class AbsorbsEffect : EntityTargetEffect
     {
         [SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1)][SerializeField] private float _rate;
+        [Range(0, 1)] [SerializeField] private float _rate;
         private float _fixedRate => Mathf.Clamp(_rate, 0, 1);
 
         public override Color Color => Colors.Yellow;
@@ -45,7 +45,7 @@ namespace Domain.Service.Effect
                 Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
 
             var lostRatio = (float)(actor.CurrentMaxHp - actor.CurrentHp) / actor.CurrentMaxHp;
-            var healRatio = (float)heal / actor.CurrentMaxHp;
+            var healRatio = heal / actor.CurrentMaxHp;
             if (lostRatio >= healRatio)
             {
                 value += healRatio;
@@ -55,6 +55,7 @@ namespace Domain.Service.Effect
             {
                 value += lostRatio;
             }
+
             return value;
         }
 
@@ -64,6 +65,7 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "HP吸収";
+
         public override List<UpgradeData> GetUpgrades()
         {
             var upgrades = new List<UpgradeData>();
@@ -77,8 +79,10 @@ namespace Domain.Service.Effect
                     )
                 );
             }
+
             return upgrades;
         }
+
         public override Dictionary<string, IHasUpgrades> GetChildren()
         {
             return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
@@ -87,7 +91,7 @@ namespace Domain.Service.Effect
         public override string Info()
         {
             var info = string.Join(" ", _elementPowers.Select(e => e.Info()));
-            info += $"の攻撃を行う\n";
+            info += "の攻撃を行う\n";
             info += $"与えたダメージの{_fixedRate:P0}を吸収する\n";
             return info;
         }

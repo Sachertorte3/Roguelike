@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Condition;
+using Domain.Model.Character.Status;
+using Domain.Model.Effect;
 using Domain.Model.Memento;
 using R3;
-using Stats;
-using Utilities;
 using UnityEngine;
-using Domain.Model.Effect;
-using Domain.Model.Character.Status;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters.Stats
 {
@@ -37,7 +36,9 @@ namespace Domain.Service.Characters.Stats
                     ElementDamageRateMultiplier[element] = new Stat(1);
                 }
             }
-            ConditionResistance = memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+
+            ConditionResistance =
+                memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
         }
 
         public CharacterStatsMemento Serialize()
@@ -77,6 +78,7 @@ namespace Domain.Service.Characters.Stats
         public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
         public Dictionary<Element, Stat> ElementDamageRateMultiplier { get; init; }
         public Dictionary<string, Stat> ConditionResistance { get; init; }
+
         public void Dispose()
         {
             Hp.Dispose();
@@ -138,6 +140,7 @@ namespace Domain.Service.Characters.Stats
             {
                 return Mathf.Max(0, ConditionResistance[condition.name].CurrentValue);
             }
+
             return 0f;
         }
 

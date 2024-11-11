@@ -59,11 +59,14 @@ namespace Provider
                             {
                                 item = map.Player.Character.Inventory.GetItem(focus.index);
                             }
+
                             if (item != null && map.Player.Character.IsKnownItem(item))
                             {
-                                if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
+                                if (item.SkillOnUse.HasValue &&
+                                    item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                                 {
-                                    var area = spawnEffectSkill.GetArea(map.Player.Character, map.Player.Character.Entity.CurrentPosition,
+                                    var area = spawnEffectSkill.GetArea(map.Player.Character,
+                                        map.Player.Character.Entity.CurrentPosition,
                                         map.Player.Character.CurrentDirection, map, true);
                                     var color = spawnEffectSkill.Color;
                                     color.a = 0.25f;

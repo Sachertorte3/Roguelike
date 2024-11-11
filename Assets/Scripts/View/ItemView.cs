@@ -7,6 +7,7 @@ namespace View
     public class ItemView : MonoBehaviour
     {
         private bool _isShiny;
+
         public void SetShiny(bool value)
         {
             if (_isShiny == value) return;

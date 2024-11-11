@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +31,7 @@ namespace View.UI
             else
                 _text.text = "";
 
-            foreach ((var choice, var index) in choices.Index())
+            foreach (var (choice, index) in choices.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
                 button.Construct(choice, () => _selectedIndex.Value = index);

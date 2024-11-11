@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
@@ -12,6 +11,7 @@ using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Item
 {

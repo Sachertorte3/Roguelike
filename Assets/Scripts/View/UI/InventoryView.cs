@@ -15,7 +15,7 @@ namespace View.UI
         [SerializeField] private Sprite _groundItemIcon;
         [SerializeField] private Sprite _emptyIcon;
         private readonly ReactiveProperty<int> _focusIndex = new();
-        private readonly string[] _info = new string[InventorySize+1];
+        private readonly string[] _info = new string[InventorySize + 1];
         private readonly InventoryItemView[] _itemViews = new InventoryItemView[InventorySize + 2];
 
         public ReadOnlyReactiveProperty<(int index, bool isGroundItem, bool isEmpty)> OnFocusChanged => _focusIndex
@@ -48,7 +48,8 @@ namespace View.UI
             }
         }
 
-        public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified, bool isCurseIdentified, string info, int index)
+        public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
+            bool isCurseIdentified, string info, int index)
         {
             if (_itemViews[index] == null)
                 _itemViews[index] = Instantiate(_itemViewPrefab, transform);

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -30,6 +29,7 @@ namespace Domain.Service.Effect
                 _index = Enumerable.Range(0, Effects.Count).GetAtRandom();
                 _notRandomized = false;
             }
+
             return Effects[_index].Apply(actor, target, position, map);
         }
 
@@ -40,6 +40,7 @@ namespace Domain.Service.Effect
                 _index = Enumerable.Range(0, Effects.Count).GetAtRandom();
                 _notRandomized = false;
             }
+
             return Effects[_index].Apply(actor, target, position, map);
         }
 
@@ -50,6 +51,7 @@ namespace Domain.Service.Effect
                 _index = Enumerable.Range(0, Effects.Count).GetAtRandom();
                 _notRandomized = false;
             }
+
             var effect = Effects[_index];
             _notRandomized = true;
             return effect.Apply(actor, positions, map);
@@ -65,10 +67,12 @@ namespace Domain.Service.Effect
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
+
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return Effects.Average(effect => ImpactValue(effect.Impact) * effect.Evaluate(actor, target));
         }
+
         public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
         {
             return Effects.Average(effect => ImpactValue(effect.Impact) * effect.Evaluate(actor, positions));
@@ -80,12 +84,20 @@ namespace Domain.Service.Effect
         }
 
         public string UpgradePathName => "ランダム";
-        public List<UpgradeData> GetUpgrades() => new();
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {
-            return $"何らかの効果を発動する\n";
+            return "何らかの効果を発動する\n";
         }
     }
 }

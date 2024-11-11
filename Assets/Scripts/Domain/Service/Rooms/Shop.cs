@@ -35,7 +35,7 @@ namespace Domain.Service.Rooms
         {
             Clerk = new Clerk(
                 clerk,
-                (player) => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
+                player => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
                 (_, map) =>
                 {
                     Purchase(map);
@@ -146,6 +146,7 @@ namespace Domain.Service.Rooms
             {
                 return Mathf.RoundToInt(purchaseItems.Sum(item => item.Price) / 2f);
             }
+
             return purchaseItems.Sum(item => item.Price);
         }
 

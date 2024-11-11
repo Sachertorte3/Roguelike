@@ -17,7 +17,7 @@ namespace Domain.Model.Map
 
         public static IEnumerable<ICharacter> GetCharactersCanSeePosition(this IMap map, Vector2Int position)
         {
-            return map.Characters.Where(character => character.IsVisible(position));
+            return map.Characters.Where(character => character.VisionRange.IsVisible(position));
         }
 
         public static ICharacter? GetCharacter(this IMap map, Id<IEntity> id)

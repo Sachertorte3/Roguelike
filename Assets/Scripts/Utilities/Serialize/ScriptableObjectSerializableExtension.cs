@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine;
 
-namespace Utilities
+namespace Utilities.Serialize
 {
     public static class ScriptableObjectSerializableExtension
     {

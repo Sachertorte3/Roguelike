@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Item;
 using Domain.Model.Map;

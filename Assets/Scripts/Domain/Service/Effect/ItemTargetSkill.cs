@@ -50,15 +50,18 @@ namespace Domain.Service.Effect
                     disabledItemIndexes.Add(index);
                 }
             }
+
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
             {
                 disabledItemIndexes.Add(map.Player.Character.Inventory.MaxItemCount);
             }
+
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, disabledItemIndexes.ToArray());
+                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map,
+                    disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
                     _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
@@ -67,18 +70,20 @@ namespace Domain.Service.Effect
             }
             else
             {
-                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, new[] { selfIndex });
+                var selectedItem =
+                    await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, selfIndex);
                 if (selectedItem != null)
                 {
                     var selectedItemIndex = player.Character.Inventory.GetItemIndex(selectedItem);
                     if (disabledItemIndexes.Contains(selectedItemIndex))
                     {
-                        GameLog.Add($"しかし効果はなかった。");
+                        GameLog.Add("しかし効果はなかった。");
                     }
                     else
                     {
                         _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
                     }
+
                     return ItemTargetSkillResult.Success;
                 }
             }
@@ -96,8 +101,15 @@ namespace Domain.Service.Effect
             return _itemEffect.EvaluatePrice();
         }
 
-        public List<UpgradeData> GetUpgrades() => new();
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {

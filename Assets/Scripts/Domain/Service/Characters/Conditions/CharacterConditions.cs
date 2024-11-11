@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
@@ -29,9 +28,11 @@ namespace Domain.Service.Characters.Conditions
             }
 
             _conditions.ObserveAdd()
-                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player)).AddTo(_disposables);
+                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player))
+                .AddTo(_disposables);
             _conditions.ObserveRemove()
-                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player)).AddTo(_disposables);
+                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player))
+                .AddTo(_disposables);
         }
 
         public IObservableCollection<ICondition> Conditions => _conditions;
@@ -53,7 +54,8 @@ namespace Domain.Service.Characters.Conditions
 
         public void RemoveType(Type conditionType)
         {
-            var removedConditions = _conditions.Where(condition => condition.EqualsConditionType(conditionType)).ToList();
+            var removedConditions =
+                _conditions.Where(condition => condition.EqualsConditionType(conditionType)).ToList();
             foreach (var condition in removedConditions)
             {
                 _conditions.Remove(condition);

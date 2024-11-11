@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UI
+namespace View
 {
     public class DamageText : MonoBehaviour
     {

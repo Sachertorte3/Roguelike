@@ -17,7 +17,8 @@ namespace Provider
         private readonly CompositeDisposable _disposables = new();
 
         [Inject]
-        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, World world)
+        public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView,
+            MinimapController minimapController, World world)
         {
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
@@ -43,7 +44,8 @@ namespace Provider
                             overlayTileView.SetGrass(position);
                         if (map.TilemapViewer.GetAllIces().Contains(position))
                             overlayTileView.SetIce(position);
-                        SetVisibility(tileView, overlayTileView, minimapController, position, GetTileVisibility(map, position));
+                        SetVisibility(tileView, overlayTileView, minimapController, position,
+                            GetTileVisibility(map, position));
                     }
 
                     var mapSize = map.TilemapViewer.Rect;
@@ -96,11 +98,13 @@ namespace Provider
                         {
                             if (isKnown)
                             {
-                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, minimapController, position,
+                                    TileVisibility.Visible);
                             }
                             else
                             {
-                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Transparent);
+                                SetVisibility(tileView, overlayTileView, minimapController, position,
+                                    TileVisibility.Transparent);
                             }
                         }
                     }).AddTo(_disposables);
@@ -115,12 +119,14 @@ namespace Provider
                             previousVisibleArea = visibleAreaChanged;
                             foreach (var position in areaEntered)
                             {
-                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Visible);
+                                SetVisibility(tileView, overlayTileView, minimapController, position,
+                                    TileVisibility.Visible);
                             }
 
                             foreach (var position in areaExited)
                             {
-                                SetVisibility(tileView, overlayTileView, minimapController, position, TileVisibility.Translucent);
+                                SetVisibility(tileView, overlayTileView, minimapController, position,
+                                    TileVisibility.Translucent);
                             }
                         }).AddTo(_disposables);
                 },
@@ -152,7 +158,8 @@ namespace Provider
             return TileVisibility.Transparent;
         }
 
-        public void SetTile(TileViewController tileView, MinimapController minimapController, TileData tileData, Vector2Int position, TileSet type,
+        public void SetTile(TileViewController tileView, MinimapController minimapController, TileData tileData,
+            Vector2Int position, TileSet type,
             RectInt? shop, TileVisibility? visibility = null)
         {
             switch (tileData.TileType)
@@ -168,6 +175,7 @@ namespace Provider
                         tileView.SetFloor(position, type, visibility);
                         minimapController.SetFloor(position, visibility);
                     }
+
                     break;
                 case TileCategory.Water:
                     tileView.SetWater(position, type, visibility);
@@ -184,7 +192,8 @@ namespace Provider
             }
         }
 
-        public void SetVisibility(TileViewController tileView, OverlayTileViewController overlayTileView, MinimapController minimapController, Vector2Int position,
+        public void SetVisibility(TileViewController tileView, OverlayTileViewController overlayTileView,
+            MinimapController minimapController, Vector2Int position,
             TileVisibility visibility)
         {
             tileView.SetTileVisibility(position, visibility);

@@ -1,6 +1,5 @@
 #nullable enable
 using BidirectionalMap;
-using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Setting;
 using R3;
@@ -66,7 +65,8 @@ namespace Provider
             Settings.DashMilliseconds.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
 
             var spriteView = entityView.GetComponent<SpriteView>();
-            spriteView.transform.position = new Vector3(entity.Entity.CurrentPosition.x, entity.Entity.CurrentPosition.y, spriteView.transform.position.z);
+            spriteView.transform.position = new Vector3(entity.Entity.CurrentPosition.x,
+                entity.Entity.CurrentPosition.y, spriteView.transform.position.z);
             entity.Entity.Visibility.Subscribe(visibility => spriteView.SetVisibility(visibility)).AddTo(spriteView);
         }
     }

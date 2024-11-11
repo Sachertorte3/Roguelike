@@ -6,9 +6,9 @@ using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Memento;
 using R3;
-using Stats;
 using UnityEngine;
 using Utilities;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters
 {

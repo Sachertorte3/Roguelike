@@ -14,7 +14,8 @@ namespace Provider
             var serialDisposable = new SerialDisposable();
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                serialDisposable.Disposable = map.Characters.SubscribeToAllObservables(character => character.Affiliation.OnAffiliationChanged,
+                serialDisposable.Disposable = map.Characters.SubscribeToAllObservables(
+                    character => character.Affiliation.OnAffiliationChanged,
                     (character, affectionChanged) =>
                     {
                         if (affectionChanged.Target == map.Player.Character.Affiliation.Id)

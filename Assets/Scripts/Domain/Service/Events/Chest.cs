@@ -13,6 +13,7 @@ using Domain.Service.Logs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Events
 {
@@ -30,14 +31,12 @@ namespace Domain.Service.Events
             Event = new PlayerEvent(
                 "宝箱を見つけた",
                 true,
-                new List<PlayerChoiceEvent>{
-                    new PlayerChoiceEvent(
+                new List<PlayerChoiceEvent>
+                {
+                    new(
                         "開ける",
-                        (player) => true,
-                        async (gameManager, map) =>
-                        {
-                            await DoEvent(map);
-                        }
+                        player => true,
+                        async (gameManager, map) => { await DoEvent(map); }
                     )
                 }
             );
@@ -55,7 +54,8 @@ namespace Domain.Service.Events
             {
                 if (map.Player.Character.TryAddToInventory(_item.Value))
                 {
-                    GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
+                    GameLog.Add(
+                        $"{map.Player.Character.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
@@ -103,7 +103,8 @@ namespace Domain.Service.Events
                 Entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, EntityLayer.Middle);
                 Entity.Teleport(map.FindBlankPositionFrom(destination,
-                    position => map.At(position).CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
+                    position => map.At(position)
+                        .CanPlace(false, false, false, EntityLayer.Bottom, EntityLayer.Middle)));
             }
         }
 
@@ -117,7 +118,11 @@ namespace Domain.Service.Events
             );
         }
 
-        public static ChestMemento Build(Vector2Int position, ItemData item) => Build(position, new Item(item).Serialize());
+        public static ChestMemento Build(Vector2Int position, ItemData item)
+        {
+            return Build(position, new Item(item).Serialize());
+        }
+
         public static ChestMemento Build(Vector2Int position, ItemMemento item)
         {
             return new ChestMemento

@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public static class StringExtension
+namespace Utilities
 {
-    public static string SetColored(this string text, Color color)
+    public static class StringExtension
     {
-        return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
+        public static string SetColored(this string text, Color color)
+        {
+            return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
+        }
     }
 }

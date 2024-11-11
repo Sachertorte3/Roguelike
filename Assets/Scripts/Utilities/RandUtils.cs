@@ -137,14 +137,15 @@ namespace Utilities
                     return rect;
                 }
             }
+
             return null;
         }
 
         public static void Shuffle<T>(this IList<T> list)
         {
-            for (int i = list.Count - 1; i > 0; i--)
+            for (var i = list.Count - 1; i > 0; i--)
             {
-                int j = Random.Range(0, i + 1);
+                var j = Random.Range(0, i + 1);
                 var tmp = list[i];
                 list[i] = list[j];
                 list[j] = tmp;
@@ -154,12 +155,12 @@ namespace Utilities
         public static IEnumerable<T> Shuffled<T>(this IEnumerable<T> ie)
         {
             var list = ie.ToList();
-            int n = list.Count;
+            var n = list.Count;
 
-            for (int i = n - 1; i > 0; i--)
+            for (var i = n - 1; i > 0; i--)
             {
-                int k = Random.Range(0, i + 1);
-                T value = list[k];
+                var k = Random.Range(0, i + 1);
+                var value = list[k];
                 list[k] = list[i];
                 list[i] = value;
                 yield return value;

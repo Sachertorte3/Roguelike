@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
@@ -17,14 +16,15 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnRandomCharacterEffect : ActorlessFieldTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _count;
+        [MinValue(1)] [SerializeField] private int _count;
 
         public override Color Color => Colors.MediumPurple;
         public override Impact Impact => Impact.Neutral;
 
         public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
+            var placeablePositions =
+                positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
             if (placeablePositions.Any())
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))
@@ -51,8 +51,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "ランダム召喚";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

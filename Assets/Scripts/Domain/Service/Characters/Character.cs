@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
@@ -27,6 +26,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Characters
 {
@@ -116,7 +116,11 @@ namespace Domain.Service.Characters
 
         public int Money => _money;
 
-        public string GetName(IPlayer player) => GetName(player, false);
+        public string GetName(IPlayer player)
+        {
+            return GetName(player, false);
+        }
+
         public string GetName(IPlayer player, bool ignoreVisibility)
         {
             if (!ignoreVisibility && !Entity.Visibility.CurrentValue)
@@ -146,6 +150,7 @@ namespace Domain.Service.Characters
         public IInventory Inventory => _inventory;
 
         #region CanMove
+
         /// <summary>
         ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
         ///     if the destination is not passable.
@@ -166,11 +171,13 @@ namespace Domain.Service.Characters
             return CanMove(Entity.CurrentPosition, direction, IsFlying, CanThroughWalls, map);
         }
 
-        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls, IPassableChecker map)
+        public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls,
+            IPassableChecker map)
         {
             if (canThroughWalls)
             {
-                return map.At(position + direction.Vector()).CanPlace(isFlying, canThroughWalls, false, EntityLayer.Middle);
+                return map.At(position + direction.Vector())
+                    .CanPlace(isFlying, canThroughWalls, false, EntityLayer.Middle);
             }
 
             return map.At(position + direction.Vector()).CanPlace(isFlying, canThroughWalls, false, EntityLayer.Middle)
@@ -198,21 +205,27 @@ namespace Domain.Service.Characters
                    CanMoveIgnoreEntity(position, direction, map);
         }
 
-        public bool CanMoveIgnoreEntity(Direction8 direction, IPassableChecker map) =>
-            CanMoveIgnoreEntity(Entity.CurrentPosition, direction, map);
+        public bool CanMoveIgnoreEntity(Direction8 direction, IPassableChecker map)
+        {
+            return CanMoveIgnoreEntity(Entity.CurrentPosition, direction, map);
+        }
 
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
             if (CanThroughWalls)
-                return map.At(position + direction.Vector()).CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle);
+                return map.At(position + direction.Vector())
+                    .CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle);
 
             return map.At(position + direction.Vector()).CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle)
                    && (!direction.IsDiagonal() ||
                        (map.At(position + direction.Rotate45Clockwise().Vector()).IsPassableOnMap() &&
                         map.At(position + direction.Rotate45AntiClockwise().Vector()).IsPassableOnMap()));
         }
+
         #endregion
+
         #region Action
+
         public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
         {
             State = CharacterState.Think;
@@ -274,7 +287,8 @@ namespace Domain.Service.Characters
                 .Select(x => (character: x,
                     direction: DirectionMethods.FromVectorStrict(x.Entity.CurrentPosition - Entity.CurrentPosition)))
                 .Where(x => x.direction.HasValue)
-                .OrderBy(x => VectorExtension.ChebyshevDistance(x.character.Entity.CurrentPosition, Entity.CurrentPosition))
+                .OrderBy(x =>
+                    VectorExtension.ChebyshevDistance(x.character.Entity.CurrentPosition, Entity.CurrentPosition))
                 .ThenByDescending(x => CurrentDirection.AngleTo(x.direction.Value).Value)
                 .FirstOrDefault().direction;
             if (nearestCharacterDirection.HasValue)
@@ -291,7 +305,8 @@ namespace Domain.Service.Characters
 
         public async UniTask Move(Direction8 direction, IInput input)
         {
-            Log.Debug($"[Action]{_name}:Move direction:{direction} destination:{Entity.CurrentPosition + direction.Vector()}");
+            Log.Debug(
+                $"[Action]{_name}:Move direction:{direction} destination:{Entity.CurrentPosition + direction.Vector()}");
             Turn(direction);
             await Entity.Move(direction,
                 input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
@@ -357,6 +372,7 @@ namespace Domain.Service.Characters
                         {
                             _onAttacked.OnNext(Unit.Default);
                         }
+
                         return result;
                     },
                     async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
@@ -375,7 +391,8 @@ namespace Domain.Service.Characters
 
         public async UniTask ThrowItem(IItem item, Direction8 direction, IMap map)
         {
-            Log.Debug($"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
+            Log.Debug(
+                $"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
             Turn(direction);
             if (item.CannotDropIfCursed)
             {
@@ -396,13 +413,15 @@ namespace Domain.Service.Characters
             }
 
             var destination =
-                ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, map);
+                ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance,
+                    map);
 
             _onAttacked.OnNext(Unit.Default);
 
             if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
             {
-                await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction, CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
+                await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction,
+                    CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
             }
 
             var itemEntity = map.SpawnItem(item,
@@ -448,6 +467,7 @@ namespace Domain.Service.Characters
             {
                 GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
             }
+
             ReplaceInventory(pickedUpItem?.Item, itemIndex);
             if (item != null)
             {
@@ -462,9 +482,12 @@ namespace Domain.Service.Characters
 
         public float EvaluateThrow(IItem item, Direction8 direction, IMap map)
         {
-            return ItemEntity.EvaluateThrow(item, Entity.CurrentPosition, this, direction, CommonSenseParameters.ThrowDistance, map);
+            return ItemEntity.EvaluateThrow(item, Entity.CurrentPosition, this, direction,
+                CommonSenseParameters.ThrowDistance, map);
         }
+
         #endregion
+
         public void Dispose()
         {
             _disposable.Dispose();
@@ -523,7 +546,9 @@ namespace Domain.Service.Characters
                 Entity.Teleport(position);
             }
         }
+
         #region Status
+
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
         public int CurrentHp => _statusManager.Stats.CurrentHp;
 
@@ -566,8 +591,11 @@ namespace Domain.Service.Characters
         {
             _statusManager.ClearCondition();
         }
+
         #endregion
+
         #region ItemKnowledge
+
         public void AddKnownItem(IItem item)
         {
             if (!IsKnownItem(item))
@@ -588,7 +616,9 @@ namespace Domain.Service.Characters
             map.ItemPlaceholders.ClearPlayerAssignedNames();
             GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
         }
+
         #endregion
+
         public void ListenToAlert(Vector2Int position)
         {
             _statusManager.RemoveConditionType(typeof(Slept));
@@ -597,7 +627,8 @@ namespace Domain.Service.Characters
 
         public void WasAttackedBy(IActorOfEffect actor, float impact)
         {
-            var direction = DirectionMethods.NearestDirectionFromVector(actor.Entity.CurrentPosition - Entity.CurrentPosition);
+            var direction =
+                DirectionMethods.NearestDirectionFromVector(actor.Entity.CurrentPosition - Entity.CurrentPosition);
             if (direction.HasValue)
             {
                 Turn(direction.Value);
@@ -632,6 +663,7 @@ namespace Domain.Service.Characters
                 {
                     AddKnownItem(item);
                 }
+
                 return true;
             }
 

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Map;
 using Utilities;
@@ -13,7 +13,8 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.Status.IsFlagStat(FlagStatType.CannotAct) && !actor.Status.IsFlagStat(FlagStatType.CannotMove) && actor.CanSwap(Direction, map);
+            return !actor.Status.IsFlagStat(FlagStatType.CannotAct) &&
+                   !actor.Status.IsFlagStat(FlagStatType.CannotMove) && actor.CanSwap(Direction, map);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)

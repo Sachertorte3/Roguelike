@@ -1,9 +1,10 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Map;
+using Domain.Model.Entity;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
@@ -13,17 +14,9 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using VContainer;
-using System.Collections.Generic;
-using Domain.Model.Entity;
 
 namespace Game
 {
-    public enum GameState
-    {
-        Title,
-        Dungeon
-    }
-
     public class GameManager : IGameManager
     {
         private readonly World _world;
@@ -39,7 +32,8 @@ namespace Game
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
-        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver,
+        public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
+            TextInputReceiver textInputReceiver,
             CharacterControlInputReceiver receiver)
         {
             _world = world;
@@ -137,6 +131,7 @@ namespace Game
                 Log.Debug($"[Save]Save map: {map.Id}");
                 WriteData($"Save/{map.Id}.json", JsonUtility.ToJson(map));
             }
+
             Log.Debug("[Save]End Save");
         }
 
@@ -155,6 +150,7 @@ namespace Game
                     var mapData = JsonUtility.FromJson<MapMemento>(ReadData($"Save/{mapId}.json"));
                     maps.Add((mapId, mapData));
                 }
+
                 map = _world.LoadWorld(world, maps);
             }
             else

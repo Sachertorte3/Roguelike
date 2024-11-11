@@ -24,7 +24,8 @@ namespace Utilities
             return result;
         }
 
-        public static HashSet<Vector2Int> FieldOfView(Vector2Int position, Vector2Int mapSize, Func<Vector2Int, bool> funcTileBlocked)
+        public static HashSet<Vector2Int> FieldOfView(Vector2Int position, Vector2Int mapSize,
+            Func<Vector2Int, bool> funcTileBlocked)
         {
             Log.Debug($"[View]Calculate fieldOfView from {position}");
             HashSet<Vector2Int> visited = new()
@@ -61,17 +62,40 @@ namespace Utilities
             public int dx => xf - xi;
             public int dy => yf - yi;
 
-            public bool pBelow(int x, int y) => relativeSlope(x, y) > 0;
-            public bool pBelowOrCollinear(int x, int y) => relativeSlope(x, y) >= 0;
+            public bool pBelow(int x, int y)
+            {
+                return relativeSlope(x, y) > 0;
+            }
 
-            public bool pAbove(int x, int y) => relativeSlope(x, y) < 0;
-            public bool pAboveOrCollinear(int x, int y) => relativeSlope(x, y) <= 0;
+            public bool pBelowOrCollinear(int x, int y)
+            {
+                return relativeSlope(x, y) >= 0;
+            }
 
-            public bool pCollinear(int x, int y) => relativeSlope(x, y) == 0;
+            public bool pAbove(int x, int y)
+            {
+                return relativeSlope(x, y) < 0;
+            }
 
-            public bool lineCollinear(__Line line) => pCollinear(line.xi, line.yi) && pCollinear(line.xf, line.yf);
+            public bool pAboveOrCollinear(int x, int y)
+            {
+                return relativeSlope(x, y) <= 0;
+            }
 
-            public int relativeSlope(int x, int y) => (dy * (xf - x)) - (dx * (yf - y));
+            public bool pCollinear(int x, int y)
+            {
+                return relativeSlope(x, y) == 0;
+            }
+
+            public bool lineCollinear(__Line line)
+            {
+                return pCollinear(line.xi, line.yi) && pCollinear(line.xf, line.yf);
+            }
+
+            public int relativeSlope(int x, int y)
+            {
+                return dy * (xf - x) - dx * (yf - y);
+            }
         }
 
         [Serializable]
@@ -98,12 +122,13 @@ namespace Utilities
             {
                 this.shallowLine = shallowLine;
                 this.steepLine = steepLine;
-                this.shallowBump = null;
-                this.steepBump = null;
+                shallowBump = null;
+                steepBump = null;
             }
         }
 
-        public static void __checkQuadrant(HashSet<Vector2Int> visited, Vector2Int start, int dx, int dy, int extentX, int extentY, Func<Vector2Int, bool> funcTileBlocked)
+        public static void __checkQuadrant(HashSet<Vector2Int> visited, Vector2Int start, int dx, int dy, int extentX,
+            int extentY, Func<Vector2Int, bool> funcTileBlocked)
         {
             List<__View> activeViews = new();
 
@@ -132,17 +157,20 @@ namespace Utilities
             }
         }
 
-        public static void __visitCoord(HashSet<Vector2Int> visited, Vector2Int start, int x, int y, int dx, int dy, int viewIndex, List<__View> activeViews, Func<Vector2Int, bool> funcTileBlocked)
+        public static void __visitCoord(HashSet<Vector2Int> visited, Vector2Int start, int x, int y, int dx, int dy,
+            int viewIndex, List<__View> activeViews, Func<Vector2Int, bool> funcTileBlocked)
         {
             var topLeft = new Vector2Int(x, y + 1);
             var bottomRight = new Vector2Int(x + 1, y);
 
-            while (viewIndex < activeViews.Count && activeViews[viewIndex].steepLine.pBelowOrCollinear(bottomRight.x, bottomRight.y))
+            while (viewIndex < activeViews.Count &&
+                   activeViews[viewIndex].steepLine.pBelowOrCollinear(bottomRight.x, bottomRight.y))
             {
                 viewIndex += 1;
             }
 
-            if (viewIndex == activeViews.Count || activeViews[viewIndex].shallowLine.pAboveOrCollinear(topLeft.x, topLeft.y))
+            if (viewIndex == activeViews.Count ||
+                activeViews[viewIndex].shallowLine.pAboveOrCollinear(topLeft.x, topLeft.y))
                 return;
 
             var real = new Vector2Int(x * dx, y * dy);
@@ -157,7 +185,8 @@ namespace Utilities
             if (!isBlocked)
                 return;
 
-            if (activeViews[viewIndex].shallowLine.pAbove(bottomRight.x, bottomRight.y) && activeViews[viewIndex].steepLine.pBelow(topLeft.x, topLeft.y))
+            if (activeViews[viewIndex].shallowLine.pAbove(bottomRight.x, bottomRight.y) &&
+                activeViews[viewIndex].steepLine.pBelow(topLeft.x, topLeft.y))
                 activeViews.RemoveAt(viewIndex);
             else if (activeViews[viewIndex].shallowLine.pAbove(bottomRight.x, bottomRight.y))
             {

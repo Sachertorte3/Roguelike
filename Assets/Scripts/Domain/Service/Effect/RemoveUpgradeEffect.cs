@@ -16,9 +16,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class RemoveUpgradeEffect : ActorlessEntityTargetEffect
     {
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")]
-        [SerializeField]
-        [Range(0, 1)]
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
         private float _probabilityOfSuccess = 0.1f;
 
         public override Color Color => Colors.SandyBrown;
@@ -45,6 +43,7 @@ namespace Domain.Service.Effect
             {
                 GameLog.Add($"{target.GetName(map.Player)}は強化されたアイテムを持っていない");
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -59,12 +58,20 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "強化解除";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {
-            return $"対象の持つアイテムの強化を解除する\n";
+            return "対象の持つアイテムの強化を解除する\n";
         }
     }
 }

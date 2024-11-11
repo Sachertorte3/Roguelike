@@ -1,4 +1,4 @@
-﻿namespace Domain.Model.Message
+﻿namespace Domain.Model.Character.Message
 {
     public record OnCursedChanged(bool IsCursed, int Index);
 }

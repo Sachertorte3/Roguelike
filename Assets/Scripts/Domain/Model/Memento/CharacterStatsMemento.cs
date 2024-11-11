@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Effect;
-using Stats;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
+using Utilities.Stats;
 
 namespace Domain.Model.Memento
 {
@@ -24,7 +23,8 @@ namespace Domain.Model.Memento
 
         public CharacterStatsMemento(ResourceData hp, StatData hpNaturalRecovery,
             Dictionary<Element, StatData> elementAttackMultiplier,
-            Dictionary<Element, StatData> elementDamageRateMultiplier, Dictionary<string, StatData> conditionResistance, StatData viewRange, ResourceData waitTime)
+            Dictionary<Element, StatData> elementDamageRateMultiplier, Dictionary<string, StatData> conditionResistance,
+            StatData viewRange, ResourceData waitTime)
         {
             Hp = hp;
             HpNaturalRecoveryAmount = hpNaturalRecovery;

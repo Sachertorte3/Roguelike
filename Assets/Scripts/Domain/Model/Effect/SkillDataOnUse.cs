@@ -52,6 +52,7 @@ namespace Domain.Model.Effect
             {
                 Repeats = 1;
             }
+
             if (ProbabilityOfSuccess == 0)
             {
                 ProbabilityOfSuccess = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
@@ -68,6 +69,7 @@ namespace Domain.Model.Effect
             {
                 info += $"効果{index + 1}: {effect.Info()}\n";
             }
+
             info += $"発動位置: {Position.Info()}\n";
             info += $"範囲: {Area.Info()}\n";
             info += $"発動確率: {ProbabilityOfSuccess:P0}";

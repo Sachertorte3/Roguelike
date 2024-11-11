@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 namespace Domain.Model.Item
 {
     public static class HasUpgradesExtensions
@@ -21,10 +22,12 @@ namespace Domain.Model.Item
                 {
                     Debug.Log(childa.Key);
                 }
+
                 var child = hasUpgrades.GetChildren()[name];
                 child.ApplyUpgrade(path.Pop());
             }
         }
+
         public static void ApplyDowngrade(this IHasUpgrades hasUpgrades, UpgradePath path)
         {
             Debug.Log($"ApplyDowngrade: {path}");
@@ -41,10 +44,12 @@ namespace Domain.Model.Item
                 {
                     Debug.Log(childa.Key);
                 }
+
                 var child = hasUpgrades.GetChildren()[name];
                 child.ApplyDowngrade(path.Pop());
             }
         }
+
         public static List<UpgradePath> GetUpgradePathsRecursively(this IHasUpgrades hasUpgrades)
         {
             var paths = new List<UpgradePath>();
@@ -54,6 +59,7 @@ namespace Domain.Model.Item
                 var childrenPaths = child.GetUpgradePathsRecursively().Select(path => path.Prepend(childName));
                 paths.AddRange(childrenPaths);
             }
+
             return paths;
         }
     }

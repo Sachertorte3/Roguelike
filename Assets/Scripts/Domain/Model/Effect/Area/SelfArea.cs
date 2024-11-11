@@ -24,8 +24,16 @@ namespace Domain.Model.Effect.Area
         }
 
         public string UpgradePathName => "1マス";
-        public List<UpgradeData> GetUpgrades() => new();
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {

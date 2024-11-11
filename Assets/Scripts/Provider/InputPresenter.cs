@@ -16,7 +16,8 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world, MenuController menuController,
+            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world,
+            MenuController menuController,
             InventoryView inventoryView)
         {
             Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
@@ -59,7 +60,8 @@ namespace Provider
                 })
             );
 
-            inventoryView.OnFocusChanged.Subscribe(focus => actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.isGroundItem, focus.isEmpty)));
+            inventoryView.OnFocusChanged.Subscribe(focus =>
+                actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.isGroundItem, focus.isEmpty)));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {

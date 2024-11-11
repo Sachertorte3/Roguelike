@@ -1,6 +1,5 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
@@ -21,7 +20,8 @@ namespace Domain.Service.Items
             Icon = icon;
         }
 
-        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, int distance, params EntityLayer[] canHitLayer)
+        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, int distance,
+            params EntityLayer[] canHitLayer)
         {
             for (var i = 0; i < distance; i++)
             {

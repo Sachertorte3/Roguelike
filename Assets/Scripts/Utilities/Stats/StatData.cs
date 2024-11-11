@@ -1,6 +1,6 @@
 using System;
 
-namespace Stats
+namespace Utilities.Stats
 {
     [Serializable]
     public class StatData
@@ -17,19 +17,6 @@ namespace Stats
             AdditiveValue = additiveValue;
             AdditiveMultiplier = additiveMultiplier;
             MultiplicativeMultiplier = multiplicativeMultiplier;
-        }
-    }
-
-    [Serializable]
-    public class ResourceData
-    {
-        public StatData Max;
-        public float Value;
-
-        public ResourceData(StatData max, float value)
-        {
-            Max = max;
-            Value = value;
         }
     }
 }

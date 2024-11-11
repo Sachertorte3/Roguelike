@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Game;

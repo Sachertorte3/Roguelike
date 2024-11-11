@@ -1,15 +1,13 @@
 ﻿using Cysharp.Threading.Tasks;
-using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Utilities;
 
-namespace Domain.Model.Action
+namespace Domain.Model.Character
 {
     public interface IActor : IActorOfEffect, IHasInventory
     {
-        public IStatusManager Status { get; }
         public Direction8 CurrentDirection { get; }
         public void DoNothing();
         public bool CanSwap(Direction8 direction, IMap map);

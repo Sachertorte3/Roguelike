@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
@@ -17,9 +18,21 @@ namespace Domain.Service.Events
             Entity = new EntityBase(memento);
         }
 
-        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map) => UniTask.CompletedTask;
-        public void Dispose() => Entity.Dispose();
-        public EntityMemento Serialize() => Entity.Serialize();
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            Entity.Dispose();
+        }
+
+        public EntityMemento Serialize()
+        {
+            return Entity.Serialize();
+        }
+
         public static EntityMemento Build(Vector2Int position)
         {
             return EntityBase.Build(position, EntityLayer.Top);

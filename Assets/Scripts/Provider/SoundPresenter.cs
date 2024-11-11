@@ -31,15 +31,9 @@ namespace Provider
                     }
 
                     _disposable.Add(map.Characters.SubscribeToAllObservables(character => character.OnPickUpItem,
-                        (character, itemChanged) =>
-                        {
-                            seManager.PickupSE();
-                        }
+                        (character, itemChanged) => { seManager.PickupSE(); }
                     ));
-                    _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
-                    {
-                        seManager.AttackSE();
-                    }));
+                    _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned => { seManager.AttackSE(); }));
                 },
                 _ => _disposable.Clear());
         }

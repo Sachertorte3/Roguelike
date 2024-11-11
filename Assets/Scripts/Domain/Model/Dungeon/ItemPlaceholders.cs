@@ -55,7 +55,11 @@ namespace Domain.Model.Dungeon
             );
         }
 
-        public string GetPlaceholder(ItemData item) => GetPlaceholder(item.name, item.Category);
+        public string GetPlaceholder(ItemData item)
+        {
+            return GetPlaceholder(item.name, item.Category);
+        }
+
         public string GetPlaceholder(string baseName, ItemCategory category)
         {
             if (_playerAssignedNames.ContainsKey(baseName))
@@ -64,15 +68,21 @@ namespace Domain.Model.Dungeon
             {
                 var placeholder = category switch
                 {
-                    ItemCategory.Potions => _potionPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData.PotionPlaceholders),
-                    ItemCategory.Scrolls => _scrollPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData.ScrollPlaceholders),
-                    ItemCategory.Books => _bookPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData.BookPlaceholders),
-                    ItemCategory.Wands => _wandPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData.WandPlaceholders),
-                    ItemCategory.Artifacts => _artifactPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData.ArtifactPlaceholders),
+                    ItemCategory.Potions => _potionPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData
+                        .PotionPlaceholders),
+                    ItemCategory.Scrolls => _scrollPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData
+                        .ScrollPlaceholders),
+                    ItemCategory.Books => _bookPlaceholderIndexes.GetAtRandomAndRemove(
+                        _placeholderData.BookPlaceholders),
+                    ItemCategory.Wands => _wandPlaceholderIndexes.GetAtRandomAndRemove(
+                        _placeholderData.WandPlaceholders),
+                    ItemCategory.Artifacts => _artifactPlaceholderIndexes.GetAtRandomAndRemove(_placeholderData
+                        .ArtifactPlaceholders),
                     _ => baseName
                 };
                 _placeholders[baseName] = placeholder;
             }
+
             return _placeholders[baseName];
         }
 

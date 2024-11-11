@@ -1,4 +1,4 @@
-﻿using Domain.Model;
+﻿using System;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
@@ -50,6 +50,7 @@ namespace Domain.Service.Characters.Conditions
             {
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
             }
+
             _condition.Inflict(hasCondition, actor);
         }
 
@@ -59,6 +60,7 @@ namespace Domain.Service.Characters.Conditions
             {
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
             }
+
             _condition.Delete(hasCondition, actor);
         }
 
@@ -78,7 +80,7 @@ namespace Domain.Service.Characters.Conditions
             return _removalCondition.IsFinishedByDamage();
         }
 
-        public bool EqualsConditionType(System.Type conditionType)
+        public bool EqualsConditionType(Type conditionType)
         {
             return _condition.GetType() == conditionType;
         }

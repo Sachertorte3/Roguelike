@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Entity;
@@ -13,7 +12,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
-using Domain.Service.Events;
 using Domain.Service.Items;
 using R3;
 using Unity.Logging;
@@ -30,6 +28,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
         private (Location, Vector2Int)? _homePosition;
+
         private enum InputType
         {
             Move,
@@ -72,7 +71,7 @@ namespace Domain.Service.Characters.Behavior
                 switch (result.type)
                 {
                     case InputType.Move:
-                        var (move, started) = result.move.Value;
+                        var (move, started) = result.move!.Value;
                         if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
@@ -90,7 +89,8 @@ namespace Domain.Service.Characters.Behavior
 
                         if (move.Doable(character, map))
                             return move;
-                        else if (playerEventEntities.Any() && playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
+                        if (playerEventEntities.Any() &&
+                            playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
                         {
                             foreach (var eventEntity in playerEventEntities)
                             {
@@ -102,9 +102,10 @@ namespace Domain.Service.Characters.Behavior
                         }
                         else if (swap.Doable(character, map))
                             return swap;
+
                         break;
                     case InputType.UseItem:
-                        var focus = result.focus;
+                        var focus = result.focus!;
                         var item = focus.GetItem(character.Inventory, map);
                         IAction action;
 
@@ -116,7 +117,7 @@ namespace Domain.Service.Characters.Behavior
                         if (action.Doable(character, map)) return action;
                         break;
                     case InputType.ThrowItem:
-                        focus = result.focus;
+                        focus = result.focus!;
                         item = focus.GetItem(character.Inventory, map);
                         if (item != null)
                         {
@@ -126,15 +127,16 @@ namespace Domain.Service.Characters.Behavior
 
                         break;
                     case InputType.DropItem:
-                        focus = result.focus;
+                        focus = result.focus!;
                         if (focus.isEmpty)
                             break;
-                        else if (focus.isGroundItem)
+                        if (focus.isGroundItem)
                         {
                             if (character.TryPickUpItem(map, true))
                                 return new DoNothing();
                             break;
                         }
+
                         action = new DropItem(focus.index);
                         if (action.Doable(character, map)) return action;
                         break;
@@ -142,12 +144,13 @@ namespace Domain.Service.Characters.Behavior
                         await UniTask.Yield();
                         return new DoNothing();
                     case InputType.RenameItem:
-                        focus = result.focus;
+                        focus = result.focus!;
                         item = focus.GetItem(character.Inventory, map);
                         if (item != null)
                         {
                             map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
                         }
+
                         break;
                     default:
                         throw new IndexOutOfRangeException();
@@ -160,14 +163,16 @@ namespace Domain.Service.Characters.Behavior
         private async UniTask<(InputType type, (Move action, bool isStarted)? move, ItemFocus? focus)> InitializeTasks()
         {
             var cancellationToken = new CancellationTokenSource();
-            UniTask<(Move action, bool isStarted)> moveTask = _receiver.OnMoveInputReceived.WaitAsync(cancellationToken.Token);
+            UniTask<(Move action, bool isStarted)> moveTask =
+                _receiver.OnMoveInputReceived.WaitAsync(cancellationToken.Token);
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync(cancellationToken.Token);
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync(cancellationToken.Token);
             var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync(cancellationToken.Token);
             var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync(cancellationToken.Token);
             var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync(cancellationToken.Token);
 
-            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask, renameItemTask);
+            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask,
+                renameItemTask);
             cancellationToken.Cancel();
             return tasks.winArgumentIndex switch
             {
@@ -181,7 +186,9 @@ namespace Domain.Service.Characters.Behavior
             };
         }
 
-        public void KnowLocationOf(Vector2Int position) { }
+        public void KnowLocationOf(Vector2Int position)
+        {
+        }
 
         public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {

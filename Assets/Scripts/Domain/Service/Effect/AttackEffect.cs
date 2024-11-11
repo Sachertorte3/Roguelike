@@ -16,11 +16,10 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : EntityTargetEffect
     {
-        [RequiredListLength(1, null)]
-        [SerializeField]
+        [RequiredListLength(1, null)] [SerializeField]
         private List<ElementPower> _elementPowers;
 
-        [Range(0, 1)][SerializeField] private float _criticalRate;
+        [Range(0, 1)] [SerializeField] private float _criticalRate;
         private float _fixedCriticalRate => Mathf.Clamp(_criticalRate, 0, 1);
 
         public AttackEffect(List<ElementPower> elementPowers, float criticalRate)
@@ -76,6 +75,7 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "攻撃";
+
         public override List<UpgradeData> GetUpgrades()
         {
             var upgrades = new List<UpgradeData>();

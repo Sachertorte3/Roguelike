@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Domain.Model.Dungeon;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

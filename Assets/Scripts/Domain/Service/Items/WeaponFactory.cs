@@ -30,6 +30,7 @@ namespace Domain.Service.Items
                     spawnEffectSkillMemento.Effects.Add(effect);
                 }
             }
+
             item = item.CopyWith(
                 name: prefix.Name + item.Name,
                 maxUsages: Mathf.RoundToInt(item.MaxUsages * prefix.UsageLimitMagnification),

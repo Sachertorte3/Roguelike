@@ -28,19 +28,22 @@ namespace Domain.Service.Events
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
             var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
             Event = new CharacterEvent(
-                (character) => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
-                async (character, gameManager, map) =>
-                {
-                    await Execute(map, character);
-                }
+                character => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
+                async (character, gameManager, map) => { await Execute(map, character); }
             );
         }
 
         public ICharacterEvent Event { get; init; }
 
-        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map) => UniTask.CompletedTask;
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
 
-        public void Dispose() => Entity.Dispose();
+        public void Dispose()
+        {
+            Entity.Dispose();
+        }
 
         public TrapMemento Serialize()
         {

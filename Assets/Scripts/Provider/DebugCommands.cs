@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Item;
-using Domain.Model.Map;
+using Domain.Model.Memento;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using Game;
@@ -28,7 +28,8 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-#region Log
+            #region Log
+
             DebugLogConsole.AddCommandInstance(
                 "log",
                 "画面にログを出力します。",
@@ -39,8 +40,11 @@ namespace Provider
                 "ログレベルを設定します。",
                 "SetLogLevel",
                 this);
-#endregion
-#region Character
+
+            #endregion
+
+            #region Character
+
             DebugLogConsole.AddCommandInstance(
                 "FindCharacter",
                 "指定した位置にいるキャラクターのIDを取得します。",
@@ -56,8 +60,11 @@ namespace Provider
                 "指定した位置にいるキャラクターのJsonを取得します。",
                 "GetCharacterJson",
                 this);
-#endregion
-#region Item
+
+            #endregion
+
+            #region Item
+
             DebugLogConsole.AddCommandInstance(
                 "GiveItem",
                 "指定した対象のインベントリに指定したアイテムを追加します。",
@@ -78,8 +85,11 @@ namespace Provider
                 "プレイヤーのインベントリに指定したアイテムを追加します。",
                 "GivePrefixedItemPlayer",
                 this);
-#endregion
-#region Spawn
+
+            #endregion
+
+            #region Spawn
+
             DebugLogConsole.AddCommandInstance(
                 "SpawnItem",
                 "指定した位置に指定したアイテムをスポーンします。",
@@ -95,7 +105,9 @@ namespace Provider
                 "指定した位置に指定した敵をスポーンします。",
                 "SpawnEnemy",
                 this);
-#endregion
+
+            #endregion
+
             DebugLogConsole.AddCommandInstance(
                 "MoveLevelTo",
                 "指定したマップに移動します。",
@@ -114,10 +126,10 @@ namespace Provider
             {
                 Log.Logger = new Logger(
                     new LoggerConfig()
-                    .SyncMode.FullSync()
-                    .WriteTo.UnityDebugLog(
-                        minLevel: level,
-                        captureStackTrace: true)
+                        .SyncMode.FullSync()
+                        .WriteTo.UnityDebugLog(
+                            minLevel: level,
+                            captureStackTrace: true)
                 );
                 Log.Info($"LogLevelを{level}に設定しました。");
             }
@@ -200,9 +212,22 @@ namespace Provider
                 Log.Error(e);
             }
         }
-        private void GiveItemPlayer(string itemName) => GivePrefixedItem("player", itemName, null);
-        private void GivePrefixedItemPlayer(string itemName, string? prefixName = null) => GivePrefixedItem("player", itemName, prefixName);
-        private void GiveItem(string target, string itemName) => GivePrefixedItem(target, itemName, null);
+
+        private void GiveItemPlayer(string itemName)
+        {
+            GivePrefixedItem("player", itemName);
+        }
+
+        private void GivePrefixedItemPlayer(string itemName, string? prefixName = null)
+        {
+            GivePrefixedItem("player", itemName, prefixName);
+        }
+
+        private void GiveItem(string target, string itemName)
+        {
+            GivePrefixedItem(target, itemName);
+        }
+
         private void GivePrefixedItem(string target, string itemName, string? prefixName = null)
         {
             try
@@ -213,11 +238,13 @@ namespace Provider
                 var item = new Item(itemData);
                 if (prefixName != null)
                 {
-                    var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
+                    var prefixData = Addressables
+                        .LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
                     var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
+
                 if (character.Inventory.TryAdd(item))
                 {
                     var map = _world.ActiveMap.CurrentValue;
@@ -234,7 +261,11 @@ namespace Provider
             }
         }
 
-        private void SpawnItem(string itemName, Vector2Int position) => SpawnPrefixedItem(itemName, position, null);
+        private void SpawnItem(string itemName, Vector2Int position)
+        {
+            SpawnPrefixedItem(itemName, position);
+        }
+
         private void SpawnPrefixedItem(string itemName, Vector2Int position, string? prefixName = null)
         {
             try
@@ -244,11 +275,13 @@ namespace Provider
                 var item = new Item(itemData);
                 if (prefixName != null)
                 {
-                    var prefixData = Addressables.LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
+                    var prefixData = Addressables
+                        .LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
                         .WaitForCompletion();
                     var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
+
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
                 var map = _world.ActiveMap.CurrentValue;
                 Log.Info($"{spawnedItem.Item.GetName(map.Player, map.ItemPlaceholders)}を{position}にスポーンしました。");
@@ -265,7 +298,8 @@ namespace Provider
             {
                 var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset")
                     .WaitForCompletion();
-                var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept, isShiny: isShiny);
+                var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept,
+                    isShiny: isShiny);
                 Log.Info($"{enemy.GetName(_world.ActiveMap.CurrentValue.Player, true)}を{position}にスポーンしました。");
             }
             catch (Exception e)
@@ -273,12 +307,12 @@ namespace Provider
                 Log.Error(e);
             }
         }
-        
+
         private void MoveLevelTo(string mapName, int level)
         {
             try
             {
-                _gameManager.LoadMap(new Location(mapName, level), null);
+                _gameManager.LoadMap(new Location(mapName, level));
             }
             catch (Exception e)
             {

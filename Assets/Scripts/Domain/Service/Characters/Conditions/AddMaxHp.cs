@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -14,8 +13,8 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"最大HP(+{AddValue})";
         public ParticleType ParticleType => ParticleType.None;
         public Impact Impact => Impact.Beneficial;
-        public string InflictLog => $"は最大HPが上がった";
-        public string DeleteLog => $"の最大HPは元に戻った";
+        public string InflictLog => "は最大HPが上がった";
+        public string DeleteLog => "の最大HPは元に戻った";
         [MinValue(0)] public int AddValue;
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)

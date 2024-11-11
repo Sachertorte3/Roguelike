@@ -1,16 +1,15 @@
 #nullable enable
-using System;
+
+
+using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 using Utilities.Table;
-using Domain.Model.Character.Status;
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -21,9 +20,9 @@ namespace Domain.Model.Character
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [ReadOnly][Required] public string Name = "";
+        [ReadOnly] [Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Monster;
-        [SerializeReference] public ICharacterType CharacterType;
+        [SerializeReference] [Required] public ICharacterType CharacterType;
         public bool IsBoss;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;
@@ -62,12 +61,5 @@ namespace Domain.Model.Character
             EditorUtility.SetDirty(this);
         }
 #endif
-    }
-
-    [Serializable]
-    public class EnemySkillData
-    {
-        [Required] public SkillData Skill;
-        [MinValue(0)] public int CoolTime;
     }
 }

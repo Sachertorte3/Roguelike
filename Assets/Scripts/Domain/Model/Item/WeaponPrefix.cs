@@ -1,10 +1,9 @@
 #nullable enable
 
 using System.Collections.Generic;
+using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Domain.Model.Effect;
-
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -15,12 +14,12 @@ namespace Domain.Model.Item
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/WeaponPrefix")]
     public class WeaponPrefix : ScriptableObject, IHasRarity
     {
-        [ReadOnly][Required] public string Name;
+        [ReadOnly] [Required] public string Name;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
-        public int AdditionalUpgradeLimit = 0;
+        public int AdditionalUpgradeLimit;
         [SerializeReference] public List<IEffect> AdditionalEffects = new();
 #if UNITY_EDITOR
         private void OnValidate()

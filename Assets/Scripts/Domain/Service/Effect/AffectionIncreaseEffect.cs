@@ -13,7 +13,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AffectionIncreaseEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private float _power;
+        [MinValue(1)] [SerializeField] private float _power;
 
         public override Color Color => Colors.HotPink;
 
@@ -35,8 +35,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "好感度上昇";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

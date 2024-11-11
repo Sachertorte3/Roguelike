@@ -33,7 +33,9 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.Status.IsFlagStat(FlagStatType.Hard) ? 0 : CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
+            return target.Status.IsFlagStat(FlagStatType.Hard)
+                ? 0
+                : CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth;
         }
 
         public float EvaluatePrice()

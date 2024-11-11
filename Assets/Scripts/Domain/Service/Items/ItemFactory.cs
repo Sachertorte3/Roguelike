@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;

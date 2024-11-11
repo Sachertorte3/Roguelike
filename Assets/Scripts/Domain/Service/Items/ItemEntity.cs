@@ -1,7 +1,5 @@
 ﻿#nullable enable
 using Cysharp.Threading.Tasks;
-using Domain.Model;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
@@ -88,6 +86,7 @@ namespace Domain.Service.Items
                 Entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
+
             await map.ExecuteTrapAt(destination, actor as ICharacter);
 
             if (Item.CanActivateWhenThrown)

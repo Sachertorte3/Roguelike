@@ -3,14 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Character;
+using Domain.Model.Character.Message;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
-using Domain.Model.Message;
 using ObservableCollections;
 using R3;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Items
 {
@@ -42,7 +44,8 @@ namespace Domain.Service.Items
                             ));
                         _disposables[itemChanged.Index].Add(
                             itemChanged.NewValue.OnCursedChanged.Subscribe(
-                                isCursed => {
+                                isCursed =>
+                                {
                                     if (isCursed)
                                         foreach (var condition in itemChanged.NewValue.PassiveConditions)
                                             condition.Delete(_hasCondition, Id<IEntity>.Empty);

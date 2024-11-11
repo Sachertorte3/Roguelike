@@ -11,11 +11,17 @@ namespace Domain.Model.Condition
         public bool RemoveByElapsedTurn;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage;
-        [ShowIf("@RemoveByDamage")] [Range(0, 1)] public float Probability;
-        public bool RemoveByCharacterNearby;
-        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)] public float CharacterNearbyProbability;
 
-        public RemovalConditionData(int duration = -1, float damageProbability = -1, float characterNearbyProbability = -1)
+        [ShowIf("@RemoveByDamage")] [Range(0, 1)]
+        public float Probability;
+
+        public bool RemoveByCharacterNearby;
+
+        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)]
+        public float CharacterNearbyProbability;
+
+        public RemovalConditionData(int duration = -1, float damageProbability = -1,
+            float characterNearbyProbability = -1)
         {
             if (duration > 0)
             {

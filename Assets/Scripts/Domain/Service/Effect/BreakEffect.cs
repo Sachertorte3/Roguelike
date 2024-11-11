@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -46,12 +45,13 @@ namespace Domain.Service.Effect
             }
             else if (target is Chest chest && ApplyToChest)
             {
-                GameLog.Add($"宝箱は破壊された");
+                GameLog.Add("宝箱は破壊された");
             }
             else
             {
                 return UniTask.CompletedTask;
             }
+
             target.Entity.Destroy();
             return UniTask.CompletedTask;
         }
@@ -67,8 +67,16 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "破壊";
-        public override List<UpgradeData> GetUpgrades() => new();
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

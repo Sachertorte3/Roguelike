@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -15,6 +14,7 @@ namespace Domain.Service.Characters.Conditions
         public Impact Impact => Impact.Beneficial;
         public string InflictLog => "はよく見えるようになった";
         public string DeleteLog => "の視界は元に戻った";
+
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Status.AddFlagStat(FlagStatType.Clairvoyant);

@@ -1,6 +1,6 @@
 using R3;
 
-namespace Stats
+namespace Utilities.Stats
 {
     public class FlagStat
     {

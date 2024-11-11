@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stats
+namespace Utilities.Stats
 {
     [Serializable]
     public class ResourceData

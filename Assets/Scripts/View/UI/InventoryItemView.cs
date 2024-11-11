@@ -24,7 +24,8 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified, bool isCurseIdentified)
+        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
+            bool isCurseIdentified)
         {
             _icon.sprite = icon;
             _icon.enabled = true;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
@@ -22,7 +21,12 @@ namespace Domain.Service.Events
             CanBeCanceled = canBeCanceled;
             Events = choices;
         }
-        public bool CanExecuteEvent(IPlayer player) => Events.Where(e => e.CanExecuteEvent(player)).Any();
+
+        public bool CanExecuteEvent(IPlayer player)
+        {
+            return Events.Where(e => e.CanExecuteEvent(player)).Any();
+        }
+
         public async UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map)
         {
             var choices = new List<string>();

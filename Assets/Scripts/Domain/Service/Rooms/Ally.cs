@@ -9,7 +9,6 @@ using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Rooms
@@ -30,9 +29,9 @@ namespace Domain.Service.Rooms
                 true,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "渡す",
-                        (player) => Character.CanUseItem && Character.IsAlly(player.Character),
+                        player => Character.CanUseItem && Character.IsAlly(player.Character),
                         async (gameManager, map) =>
                         {
                             var player = map.Player;
@@ -44,7 +43,8 @@ namespace Domain.Service.Rooms
                                 {
                                     var index = player.Character.Inventory.GetItemIndex(item);
                                     player.Character.ReplaceInventory(null, index);
-                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
+                                    GameLog.Add(
+                                        $"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {
@@ -53,21 +53,22 @@ namespace Domain.Service.Rooms
                             }
                         }
                     ),
-                new PlayerChoiceEvent(
-                    "一緒に行動",
-                    (player) => Character.IsAlly(player.Character),
-                    (gameManager, map) =>
-                    {
-                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
-                        return UniTask.CompletedTask;
-                    }),
-                new PlayerChoiceEvent(
-                    "敵優先",
-                    (player) => Character.IsAlly(player.Character),
-                    (gameManager, map) => {
-                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
-                        return UniTask.CompletedTask;
-                    })
+                    new(
+                        "一緒に行動",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
+                            return UniTask.CompletedTask;
+                        }),
+                    new(
+                        "敵優先",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
+                            return UniTask.CompletedTask;
+                        })
                 }
             );
         }

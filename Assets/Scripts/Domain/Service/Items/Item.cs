@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
@@ -19,6 +18,7 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Items
 {
@@ -28,7 +28,12 @@ namespace Domain.Service.Items
         public ItemCategory Category { get; init; }
         public string BaseName { get; init; }
         public string RevealedName { get; init; }
-        public string UnknownName(ItemPlaceholders itemPlaceholders) => $"?{itemPlaceholders.GetPlaceholder(BaseName, Category)}?";
+
+        public string UnknownName(ItemPlaceholders itemPlaceholders)
+        {
+            return $"?{itemPlaceholders.GetPlaceholder(BaseName, Category)}?";
+        }
+
         public string DebugName => _fullName;
         private string _fullName => _upgradePaths.Count > 0 ? $"{RevealedName} +{AppliedUpgrades}" : RevealedName;
         private readonly List<UpgradePath> _upgradePaths;
@@ -40,6 +45,7 @@ namespace Domain.Service.Items
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
         private readonly Subject<bool> _onCursedChanged = new();
+
         public Item(ItemData data) : this(Build(data))
         {
         }
@@ -63,9 +69,8 @@ namespace Domain.Service.Items
                     {
                         return _skillOnUse.Expect("SkillOnUse is null").Match(
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                position: memento.Position,
-                                area: memento.Area,
-                                effect: null,
+                                memento.Position,
+                                memento.Area,
                                 rushDistance: memento.RushDistance,
                                 backStepDistance: memento.BackStepDistance,
                                 probabilityOfSuccess: memento.ProbabilityOfSuccess,
@@ -79,9 +84,7 @@ namespace Domain.Service.Items
                     {
                         return _skillOnUse.Expect("SkillOnUse is null").Match(
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                position: null,
-                                area: null,
-                                effect: null,
+                                null,
                                 rushDistance: null,
                                 backStepDistance: null,
                                 probabilityOfSuccess: memento.ProbabilityOfSuccess,
@@ -117,6 +120,7 @@ namespace Domain.Service.Items
                 return _fullName;
             return UnknownName(itemPlaceholders);
         }
+
         public Sprite Icon { get; init; }
         public bool IsShiny { get; init; }
         public ItemState State { get; private set; }
@@ -146,6 +150,7 @@ namespace Domain.Service.Items
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
         public Observable<bool> OnCursedChanged => _onCursedChanged;
+
         public ItemMemento Serialize()
         {
             return new ItemMemento
@@ -177,7 +182,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public static ItemMemento Build(ItemData data, bool isCursed=false, ItemState state = ItemState.None)
+        public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -188,8 +193,8 @@ namespace Domain.Service.Items
                 _ => null
             };
             var skillOnThrow = data.SpawnEffectsOnThrow
-                    ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
-                    : null;
+                ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
+                : null;
 
             var memento = new ItemMemento
             (
@@ -332,6 +337,7 @@ namespace Domain.Service.Items
             {
                 price *= 0.8f;
             }
+
             return price;
         }
 
@@ -346,6 +352,7 @@ namespace Domain.Service.Items
             {
                 price *= 0.8f;
             }
+
             return price;
         }
 
@@ -374,6 +381,7 @@ namespace Domain.Service.Items
             {
                 GameLog.Add($"{GetName(player, itemPlaceholders)}の呪いは解かれた");
             }
+
             _onCursedChanged.OnNext(isCursed);
             _onItemUpdated.OnNext(Unit.Default);
         }
@@ -383,7 +391,9 @@ namespace Domain.Service.Items
             IsCurseIdentified = isCurseIdentified;
             _onItemUpdated.OnNext(Unit.Default);
         }
+
         #region Upgrade
+
         public List<UpgradeData> GetUpgrades()
         {
             var upgrades = new List<UpgradeData>();
@@ -391,33 +401,35 @@ namespace Domain.Service.Items
             {
                 upgrades.Add(
                     new UpgradeData("使用可能回数[小]",
-                    () =>
-                    {
-                        _maxUsages += 3;
-                        _remainingUsages.Value += 3;
-                    },
-                    () =>
-                    {
-                        _maxUsages -= 3;
-                        _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 3);
-                    })
+                        () =>
+                        {
+                            _maxUsages += 3;
+                            _remainingUsages.Value += 3;
+                        },
+                        () =>
+                        {
+                            _maxUsages -= 3;
+                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 3);
+                        })
                 );
                 upgrades.Add(
                     new UpgradeData("使用可能回数[大]",
-                    () =>
-                    {
-                        _maxUsages += 5;
-                        _remainingUsages.Value += 5;
-                    },
-                    () =>
-                    {
-                        _maxUsages -= 5;
-                        _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 5);
-                    })
+                        () =>
+                        {
+                            _maxUsages += 5;
+                            _remainingUsages.Value += 5;
+                        },
+                        () =>
+                        {
+                            _maxUsages -= 5;
+                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 5);
+                        })
                 );
             }
+
             return upgrades;
         }
+
         public Dictionary<string, IHasUpgrades> GetChildren()
         {
             var children = new Dictionary<string, IHasUpgrades>();
@@ -425,10 +437,12 @@ namespace Domain.Service.Items
             {
                 children.Add("使用時", SkillOnUse.Expect("SkillOnUse is null"));
             }
+
             if (SkillOnThrow.HasValue)
             {
                 children.Add("投擲時", SkillOnThrow.Expect("SkillOnThrow is null"));
             }
+
             return children;
         }
 
@@ -464,6 +478,7 @@ namespace Domain.Service.Items
             {
                 GameLog.Add($"{GetName(player, itemPlaceholders)}は何かの効果を得た");
             }
+
             _upgradePaths.Add(path);
             Log.Debug($"Upgrade: {path}");
             this.ApplyUpgrade(path);
@@ -486,46 +501,52 @@ namespace Domain.Service.Items
             {
                 GameLog.Add($"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
             }
+
             _upgradePaths.Remove(path);
             Log.Debug($"Downgrade: {path}");
             this.ApplyDowngrade(path);
             _onItemUpdated.OnNext(Unit.Default);
         }
+
         #endregion
-        public bool IsInfoIdentified(IPlayer player) => player.Character.IsKnownItem(this);
+
+        public bool IsInfoIdentified(IPlayer player)
+        {
+            return player.Character.IsKnownItem(this);
+        }
+
         public string CursedInfo()
         {
             if (IsCurseIdentified)
             {
                 if (IsCursed)
                     return "それは呪われている\n";
-                else
-                    return "それは呪われていない\n";
+                return "それは呪われていない\n";
             }
-            else
-            {
-                return "それは呪われているかわからない\n";
-            }
+
+            return "それは呪われているかわからない\n";
         }
+
         public string Info(IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             if (IsInfoIdentified(player))
             {
                 return FullInfo();
             }
-            else
-            {
-                var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
-                info += CursedInfo();
-                if (HasActivatableSkillWhenUsed)
-                    info += $"それは使用可能である\n";
-                if (HasActivatableSkillWhenThrown)
-                    info += $"それは投擲可能である\n";
-                return info;
-            }
+
+            var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
+            info += CursedInfo();
+            if (HasActivatableSkillWhenUsed)
+                info += "それは使用可能である\n";
+            if (HasActivatableSkillWhenThrown)
+                info += "それは投擲可能である\n";
+            return info;
         }
 
-        public string DebugInfo() => FullInfo();
+        public string DebugInfo()
+        {
+            return FullInfo();
+        }
 
         public string FullInfo()
         {

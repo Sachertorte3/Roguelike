@@ -34,14 +34,18 @@ namespace Game
         {
             Globals.World = this;
             _receiver = receiver;
-            _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/Placeholders.asset").WaitForCompletion();
+            _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/Placeholders.asset")
+                .WaitForCompletion();
         }
 
         public void CreateNew()
         {
-            var mainDungeon = Addressables.LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Dungeon.asset").WaitForCompletion();
-            _dungeons = new Dictionary<string, Dungeon> {
-                { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) },
+            var mainDungeon = Addressables
+                .LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Dungeon.asset")
+                .WaitForCompletion();
+            _dungeons = new Dictionary<string, Dungeon>
+            {
+                { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) }
             };
             _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(_placeholders), _placeholders);
             _movements = new Dictionary<Location, List<MapConnection>>();
@@ -56,11 +60,13 @@ namespace Game
             {
                 _movements[reverse.Destination] = new List<MapConnection>();
             }
+
             _movements[reverse.Destination].Add(movement);
             if (!_movements.ContainsKey(movement.Destination))
             {
                 _movements[movement.Destination] = new List<MapConnection>();
             }
+
             _movements[movement.Destination].Add(reverse);
         }
 
@@ -177,11 +183,12 @@ namespace Game
                 var map = _maps[mapId];
                 var destinationEntity =
                     map.EventEntities.Stairs
-                    .First(stairs => stairs.Destination == current);
+                        .First(stairs => stairs.Destination == current);
                 var id = destinationEntity.DestinationId;
                 var destinationId = new Id<IEntity>(destinationEntity.Entity.Id);
                 return new MovementData(type, destination, id, destinationId);
             }
+
             return new MovementData(type, destination, null, null);
         }
 
@@ -201,7 +208,8 @@ namespace Game
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
                 playerData = _activeMap.CurrentValue.Player.Character.Serialize();
-                partyMembers = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
+                partyMembers = _activeMap.CurrentValue.GetFollowingCharacters()
+                    .Select(character => character.Serialize()).ToList();
 
                 _activeMap.CurrentValue.Dispose();
             }
@@ -214,5 +222,4 @@ namespace Game
             return map;
         }
     }
-    public record MovementData(MovementEntityType Type, Location Destination, Id<IEntity>? Id, Id<IEntity>? DestinationId);
 }

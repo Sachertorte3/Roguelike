@@ -1,8 +1,6 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -16,7 +14,7 @@ using Domain.Service.Rooms;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
+using Utilities.Serialize;
 
 namespace Game
 {
@@ -41,7 +39,7 @@ namespace Game
         {
             _tilemap = new TilemapBuilder(bluePrint, waterChance);
             _location = location;
-            _blankPositionsInRooms = new();
+            _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
 
             var roomIds = _tilemap.RoomIds.ToList();
 
@@ -60,6 +58,7 @@ namespace Game
                 if (_monsterHouse != null)
                     roomIds.Remove(monsterHouseRoom);
             }
+
             if (Random.value < data.RestRoomChance && roomIds.Count() > 1)
             {
                 var restRoom = roomIds.GetAtRandom();
@@ -96,6 +95,7 @@ namespace Game
                 _blankPositionsInRooms[roomId] = _tilemap.GetWalkablePositionsIn(roomId);
             return _blankPositionsInRooms[roomId];
         }
+
         private Vector2Int GetRandomBlankPositionInRoom(Id<Room> roomId)
         {
             if (!_blankPositionsInRooms.ContainsKey(roomId))
@@ -125,7 +125,9 @@ namespace Game
             var randomValue = Random.value * 1024;
             foreach (var position in _tilemap.GetWalkablePositionsIn(roomId))
             {
-                if (data.GrassChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue)) < data.GrassChance)
+                if (data.GrassChance == 1 ||
+                    Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue)) <
+                    data.GrassChance)
                 {
                     _tilemap.SetGrasses(new[] { position }, true);
                 }
@@ -182,7 +184,7 @@ namespace Game
                 homePosition: (_location, clerkPosition));
             _characters.Add(clerk);
 
-            return Shop.Build(_tilemap.GetRoom(roomId), new(clerk.Entity.Id), _items.ToList());
+            return Shop.Build(_tilemap.GetRoom(roomId), new Id<IEntity>(clerk.Entity.Id), _items.ToList());
         }
 
         private RoomMemento? CreateMonsterHouse(DungeonMapData data, Id<Room> roomId)
@@ -278,7 +280,8 @@ namespace Game
                 else if (Random.value < data.WeaponChanceInChest)
                 {
                     var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons);
-                    _chests.Add(Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem())));
+                    _chests.Add(
+                        Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem())));
                 }
                 else
                 {

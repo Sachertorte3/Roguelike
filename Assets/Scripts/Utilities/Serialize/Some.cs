@@ -1,6 +1,9 @@
-﻿public class Some<T> : Option<T>
+﻿namespace Utilities.Serialize
 {
-    public Some(T value) : base(value)
+    public class Some<T> : Option<T>
     {
+        public Some(T value) : base(value)
+        {
+        }
     }
 }

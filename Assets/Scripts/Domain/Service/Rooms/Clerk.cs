@@ -18,7 +18,8 @@ namespace Domain.Service.Rooms
         public EntityBase Entity => Character.Entity;
         public IPlayerEvent Event { get; init; }
 
-        public Clerk(ICharacter character, Func<IPlayer, bool> canExecuteEvent, Func<IGameManager, IMap, UniTask> doEvent)
+        public Clerk(ICharacter character, Func<IPlayer, bool> canExecuteEvent,
+            Func<IGameManager, IMap, UniTask> doEvent)
         {
             Character = character;
             Event = new PlayerEvent(
@@ -26,7 +27,7 @@ namespace Domain.Service.Rooms
                 true,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "代金を支払う",
                         canExecuteEvent,
                         (gameManager, map) => doEvent(gameManager, map)

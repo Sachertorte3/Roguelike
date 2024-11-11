@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace UI
+namespace View
 {
     public class StairsLock : MonoBehaviour
     {

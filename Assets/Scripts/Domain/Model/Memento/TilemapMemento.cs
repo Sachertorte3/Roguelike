@@ -5,7 +5,7 @@ using System.Linq;
 using Domain.Model.Map;
 using ObservableCollections;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

@@ -3,7 +3,7 @@ using System;
 using Domain.Model.Condition;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Character
 {

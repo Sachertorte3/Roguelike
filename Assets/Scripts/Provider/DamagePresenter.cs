@@ -22,7 +22,7 @@ namespace Provider
                             var damagePercentageFromMaxHp = damageChanged * 100 /
                                                             map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue *
-                            100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
+                                100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
                                 hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {
@@ -51,7 +51,7 @@ namespace Provider
                             if (character.Entity.Visibility.CurrentValue)
                             {
                                 var healPercentageFromMaxHp = healChanged * 100 /
-                                                          character.Status.Stats.MaxHp.CurrentValue;
+                                                              character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowHeal(character.Entity.CurrentPosition, healChanged,
                                     healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
                             }

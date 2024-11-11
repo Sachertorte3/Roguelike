@@ -3,8 +3,8 @@ using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using R3;
-using Stats;
 using UnityEngine;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters
 {
@@ -39,13 +39,7 @@ namespace Domain.Service.Characters
             _map = map;
         }
 
-        public IReadOnlyCollection<Vector2Int> VisibleArea
-        {
-            get
-            {
-                return Calc(_position.CurrentValue);
-            }
-        }
+        public IReadOnlyCollection<Vector2Int> VisibleArea => Calc(_position.CurrentValue);
         public Observable<Unit> OnVisibleAreaChanged => _onVisibleAreaChanged;
 
         public void Refresh()
@@ -74,6 +68,7 @@ namespace Domain.Service.Characters
                 return _map.GetAllPositions().Where(
                     pos => (position - pos).sqrMagnitude <= viewRadiusSq).ToHashSet();
             }
+
             if (IsClairvoyant)
                 return _map.GetFullVisibleArea();
             if (IsBlind)

@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -63,10 +64,11 @@ namespace Game
         }
 
         public MapMemento CreateMapManager(Id<IMap> id,
-        int level, IEnumerable<MovementData> movementData)
+            int level, IEnumerable<MovementData> movementData)
         {
             var dungeonData = CreateMapData(level);
-            var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData, new Location(_dungeonData.name, level));
+            var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData,
+                new Location(_dungeonData.name, level));
             foreach (var data in movementData)
                 mapBuilder.AddMovementEntity(data);
             return mapBuilder.Build(id);

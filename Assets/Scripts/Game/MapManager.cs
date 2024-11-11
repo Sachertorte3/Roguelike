@@ -5,13 +5,13 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Message;
 using Domain.Model.Character.Status;
 using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Model.Message;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
@@ -24,7 +24,7 @@ using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
-using Utilities.Algorithms;
+using Utilities.Serialize;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -53,6 +53,7 @@ namespace Game
         private int EventExecutionCount;
         public bool IsEventExecuting => EventExecutionCount > 0;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
+
         public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
             List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
@@ -137,7 +138,8 @@ namespace Game
                         .In(map.Shop.Value.Room.Room.RectRange())
                         .GetAtRandom();
                     var ally = CharacterManager.SpawnAlly(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position, homePosition: (Location, clerkPosition.Position)),
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position,
+                            homePosition: (Location, clerkPosition.Position)),
                         this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
@@ -193,8 +195,10 @@ namespace Game
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => EventEntityManager.PlayerEventEntities;
+
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
+
         public IObservableCollection<Fire> FireEntities => FireEntityManager.FireEntities;
 
         public Observable<OnEffectSpawnedMessage> OnEffectSpawned => _onEffectSpawned;
@@ -301,6 +305,7 @@ namespace Game
                 if (item != null)
                     return item;
             }
+
             return null;
         }
 
@@ -368,6 +373,7 @@ namespace Game
                 if (mapPosition.IsBlank(layers))
                     return mapPosition;
             }
+
             return null;
         }
 
@@ -474,6 +480,7 @@ namespace Game
                 {
                     await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged);
                 }
+
                 EventExecutionCount--;
             }).AddTo(_disposables);
 
@@ -494,7 +501,8 @@ namespace Game
                             if (character.TryAddToInventory(item.Item))
                             {
                                 if (character.IsPlayer)
-                                    GameLog.Add($"{Player.Character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
+                                    GameLog.Add(
+                                        $"{Player.Character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
                             }
                             else
                             {
@@ -514,6 +522,7 @@ namespace Game
                     {
                         await eventEntity.Event.DoEvent(character, Globals.GameManager, this);
                     }
+
                     if (character.IsPlayer)
                     {
                         var playerEventEntities = GetPlayerEventEntityAt(positionChanged, EntityLayer.Bottom);
@@ -522,6 +531,7 @@ namespace Game
                             await playerEventEntity.Event.DoEvent(Player, Globals.GameManager, this);
                         }
                     }
+
                     EventExecutionCount--;
                 }
             ).AddTo(_disposables);
@@ -535,6 +545,7 @@ namespace Game
                     {
                         await ExecuteTrapAt(character.Entity.CurrentPosition, character);
                     }
+
                     EventExecutionCount--;
                 }
             ).AddTo(_disposables);
@@ -567,6 +578,7 @@ namespace Game
                     {
                         _visionCache.Remove(pos);
                     }
+
                     _tilemap.SetTilesKnown(visibleArea, true);
                     Characters.In(visibleArea).ForEach(character => character.VisionRange.Refresh());
                 }
@@ -582,7 +594,8 @@ namespace Game
         {
             if (Random.value < 1 / 64f)
             {
-                var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values().Except(Player.Character.VisionRange.VisibleArea);
+                var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values()
+                    .Except(Player.Character.VisionRange.VisibleArea);
                 if (positions.Any())
                     SpawnRandomEnemy(positions.GetAtRandom(), null, false);
             }
@@ -595,6 +608,7 @@ namespace Game
                 character.LoseHp(1);
                 GameLog.Add($"{character.GetName(Player)}は火に焼かれた");
             }
+
             var items = Items.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var item in items)
             {
@@ -641,7 +655,10 @@ namespace Game
             return CharacterManager.GetAllCharacterPositions();
         }
 
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem) => ItemManager.TryPickUpAt(position, canPickUpShopItem);
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem)
+        {
+            return ItemManager.TryPickUpAt(position, canPickUpShopItem);
+        }
 
         public void DropAllItem(ICharacter character)
         {
@@ -682,7 +699,7 @@ namespace Game
                 return false;
             if (_visionCache.TryGetValue(from, out var area))
                 return area.Contains(to);
-            else if (_visionCache.TryGetValue(to, out area))
+            if (_visionCache.TryGetValue(to, out area))
                 return area.Contains(from);
             UpdateVisibleAreaCache(from);
             return _visionCache[from].Contains(to);

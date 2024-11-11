@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

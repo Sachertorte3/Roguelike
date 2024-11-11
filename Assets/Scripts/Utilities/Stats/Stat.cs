@@ -1,14 +1,8 @@
 using System;
 using R3;
 
-namespace Stats
+namespace Utilities.Stats
 {
-    public interface IStat
-    {
-        public ReadOnlyReactiveProperty<float> Value { get; }
-        public float CurrentValue { get; }
-    }
-
     public class Stat : IDisposable
     {
         private float _baseValue;

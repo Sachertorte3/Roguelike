@@ -2,7 +2,7 @@
 using System;
 using Domain.Model.Character;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {

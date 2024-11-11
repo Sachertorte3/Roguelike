@@ -1,7 +1,7 @@
 #nullable enable
 using Cysharp.Threading.Tasks;
 using Domain.Model.Entity;
-using Domain.Model.Map;
+using Domain.Model.Memento;
 using Utilities;
 
 namespace Domain.Model

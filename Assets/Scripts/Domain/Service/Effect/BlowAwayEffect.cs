@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
@@ -17,7 +16,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class BlowAwayEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _distance;
+        [MinValue(1)] [SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
@@ -38,7 +37,9 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
         {
-            var direction = DirectionMethods.NearestDirectionFromVector(target.Entity.CurrentPosition - actor.Entity.CurrentPosition);
+            var direction =
+                DirectionMethods.NearestDirectionFromVector(
+                    target.Entity.CurrentPosition - actor.Entity.CurrentPosition);
             if (direction.HasValue)
                 await target.BlowAway(actor, direction.Value, _distance, map);
         }
@@ -49,6 +50,7 @@ namespace Domain.Service.Effect
             {
                 return 0f;
             }
+
             return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 
@@ -58,11 +60,12 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "吹き飛ばし";
+
         public override List<UpgradeData> GetUpgrades()
         {
             return new List<UpgradeData>
             {
-                new UpgradeData(
+                new(
                     "吹き飛ばし距離+1",
                     () => _distance += 1,
                     () => _distance -= 1
@@ -70,7 +73,10 @@ namespace Domain.Service.Effect
             };
         }
 
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

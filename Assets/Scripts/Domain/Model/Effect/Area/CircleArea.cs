@@ -43,18 +43,23 @@ namespace Domain.Model.Effect.Area
         }
 
         public string UpgradePathName => "円";
+
         public List<UpgradeData> GetUpgrades()
         {
             return new List<UpgradeData>
             {
-                new UpgradeData(
+                new(
                     "半径+1",
                     () => Radius += 1,
                     () => Radius -= 1
                 )
             };
         }
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {

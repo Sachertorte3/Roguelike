@@ -15,12 +15,14 @@ namespace Game
         public Vector2Int Position { get; init; }
         public IMap Map { get; init; }
         public ITilemapViewer TilemapViewer { get; init; }
+
         public MapPosition(Vector2Int position, IMap map, ITilemapViewer tilemapViewer)
         {
             Position = position;
             Map = map;
             TilemapViewer = tilemapViewer;
         }
+
         public bool IsOverlapped(params EntityLayer[] layers)
         {
             return Map.Entities.On(layers).Count(entity => entity.Entity.CurrentPosition == Position) > 1;

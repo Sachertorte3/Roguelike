@@ -6,6 +6,7 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Effect.Position
 {
@@ -14,6 +15,7 @@ namespace Domain.Model.Effect.Position
         [Required] public IconSerializable Icon;
         public List<EntityLayer> CanHitLayer = new() { EntityLayer.Middle };
         public bool IsDirectional => true;
+
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IMap map)
         {
@@ -50,8 +52,16 @@ namespace Domain.Model.Effect.Position
         }
 
         public string UpgradePathName => "着弾地点";
-        public List<UpgradeData> GetUpgrades() => new();
-        public Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {

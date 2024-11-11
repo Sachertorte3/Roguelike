@@ -11,12 +11,19 @@ namespace Domain.Service.Events
     {
         private readonly Func<ICharacter, bool> _canExecuteEvent;
         private readonly Func<ICharacter, IGameManager, IMap, UniTask> _doEvent;
-        public CharacterEvent(Func<ICharacter, bool> canExecuteEvent, Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
+
+        public CharacterEvent(Func<ICharacter, bool> canExecuteEvent,
+            Func<ICharacter, IGameManager, IMap, UniTask> doEvent)
         {
             _canExecuteEvent = canExecuteEvent;
             _doEvent = doEvent;
         }
-        public bool CanExecuteEvent(ICharacter character) => _canExecuteEvent(character);
+
+        public bool CanExecuteEvent(ICharacter character)
+        {
+            return _canExecuteEvent(character);
+        }
+
         public async UniTask<bool> DoEvent(ICharacter character, IGameManager gameManager, IMap map)
         {
             if (_canExecuteEvent(character))
@@ -24,6 +31,7 @@ namespace Domain.Service.Events
                 await _doEvent(character, gameManager, map);
                 return true;
             }
+
             return false;
         }
     }

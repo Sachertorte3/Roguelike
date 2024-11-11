@@ -1,3 +1,6 @@
-﻿public class None<T> : Option<T>
+﻿namespace Utilities.Serialize
 {
+    public class None<T> : Option<T>
+    {
+    }
 }

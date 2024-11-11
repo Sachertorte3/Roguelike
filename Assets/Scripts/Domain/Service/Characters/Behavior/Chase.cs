@@ -1,38 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public class MoveCostCalculator
-    {
-        private IHasBehavior _character;
-        private IMap _map;
-        private bool _canSwap;
-        public MoveCostCalculator(IHasBehavior character, IMap map, bool canSwap)
-        {
-            _character = character;
-            _map = map;
-            _canSwap = canSwap;
-        }
-
-        public float Calculate(Vector2Int pos, Direction8 direction)
-        {
-            if (_character.CanMove(pos, direction, _map))
-                return 1;
-            if (_canSwap && _character.CanSwap(pos, direction, _map))
-                return 2;
-            return float.PositiveInfinity;
-        }
-    }
-
     internal sealed class Chase : IBehaviorWhenDiscoveringTarget
     {
         public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,

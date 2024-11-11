@@ -49,10 +49,12 @@ namespace Domain.Model.Effect
 
         public void OnValidate()
         {
-            if (ProbabilityOfSuccess == 0 || ProbabilityOfSuccess == CommonSenseParameters.SkillOnUseProbabilityOfSuccess)
+            if (ProbabilityOfSuccess == 0 ||
+                ProbabilityOfSuccess == CommonSenseParameters.SkillOnUseProbabilityOfSuccess)
             {
                 ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
             }
+
             if (ProbabilityOfSuccess == 0.8f)
             {
                 ProbabilityOfSuccess = CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
@@ -67,6 +69,7 @@ namespace Domain.Model.Effect
             {
                 info += $"効果{effect.index + 1}: {effect.item.Info()}\n";
             }
+
             info += $"範囲: {Area.Info()}\n";
             info += $"発動確率: {ProbabilityOfSuccess:P0}";
             return info;

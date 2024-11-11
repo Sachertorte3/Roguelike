@@ -2,7 +2,7 @@ using System;
 using R3;
 using UnityEngine;
 
-namespace Stats
+namespace Utilities.Stats
 {
     public class IntStat : IDisposable
     {

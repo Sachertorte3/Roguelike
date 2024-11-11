@@ -5,6 +5,7 @@ using Domain.Model.Character.Status;
 using Domain.Model.Entity;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {
@@ -20,7 +21,8 @@ namespace Domain.Model.Memento
         public List<(Id<IEntity> actor, ConditionMemento condition)> Conditions =>
             _conditions.Select((x, i) => (new Id<IEntity>(_inflicters[i]), x)).ToList();
 
-        public CharacterStatusMemento(CharacterStatsMemento stats, Dictionary<FlagStatType, int> flagStats, List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
+        public CharacterStatusMemento(CharacterStatsMemento stats, Dictionary<FlagStatType, int> flagStats,
+            List<(Id<IEntity> actor, ConditionMemento condition)> conditions)
         {
             Stats = stats;
             _flagStats = flagStats.ToSerializable();

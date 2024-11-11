@@ -8,6 +8,7 @@ using Domain.Service.Events;
 using ObservableCollections;
 using R3;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Game
 {
@@ -95,7 +96,9 @@ namespace Game
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
         public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => _playerEventEntities;
-        public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities => _standalonePlayerEventEntities;
+
+        public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities =>
+            _standalonePlayerEventEntities;
 
         public void Spawn(IEventEntity eventEntity)
         {
@@ -128,6 +131,7 @@ namespace Game
                 _traps.Remove(trap);
             }
         }
+
         public void Remove(IPlayerEventEntity eventEntity)
         {
             _playerEventEntities.Remove(eventEntity);

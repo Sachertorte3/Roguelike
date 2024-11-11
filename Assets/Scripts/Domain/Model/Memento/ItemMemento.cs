@@ -5,6 +5,7 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Domain.Model.Memento
 {
@@ -37,10 +38,12 @@ namespace Domain.Model.Memento
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
 
         public ItemMemento(
-            string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny, ItemState state,
+            string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny,
+            ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
-            bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot, bool identifyIfUsed, bool isCurseIdentified, bool autoDestroyWhenDisabled, int upgradeLimit, IConditionData[] conditions)
+            bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot, bool identifyIfUsed,
+            bool isCurseIdentified, bool autoDestroyWhenDisabled, int upgradeLimit, IConditionData[] conditions)
         {
             Id = id;
             Category = category;
@@ -69,10 +72,15 @@ namespace Domain.Model.Memento
         }
 
         public ItemMemento CopyWith(
-            string? id = null, ItemCategory? category = null, string? baseName = null, string? name = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
-            List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null, Option<ISkillMemento>? skillOnThrow = null,
-            bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null, int? remainingUsages = null,
-            bool? isCursed = null, bool? cannotUseIfCursed = null, bool? cannotDropIfCursed = null, bool? identifyIfGot = null, bool? identifyIfUsed = null, bool? isCurseIdentified = null, bool? autoDestroyWhenDisabled = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
+            string? id = null, ItemCategory? category = null, string? baseName = null, string? name = null,
+            string? iconName = null, bool? isShiny = null, ItemState? state = null,
+            List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null,
+            Option<ISkillMemento>? skillOnThrow = null,
+            bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null,
+            int? remainingUsages = null,
+            bool? isCursed = null, bool? cannotUseIfCursed = null, bool? cannotDropIfCursed = null,
+            bool? identifyIfGot = null, bool? identifyIfUsed = null, bool? isCurseIdentified = null,
+            bool? autoDestroyWhenDisabled = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
         {
             return new ItemMemento(
                 id ?? Id,

@@ -58,7 +58,6 @@ namespace Game
 
         public void AddCharacter(ICharacter character)
         {
-            Debug.Log($"AddCharacter: {character.Entity.Position}");
             _characters.Add(character);
         }
 

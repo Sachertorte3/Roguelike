@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class HealEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _power;
+        [MinValue(1)] [SerializeField] private int _power;
 
         public override Color Color => Colors.Green;
 
@@ -51,18 +51,23 @@ namespace Domain.Service.Effect
         }
 
         public override string UpgradePathName => "回復";
+
         public override List<UpgradeData> GetUpgrades()
         {
             return new List<UpgradeData>
             {
-                new UpgradeData(
+                new(
                     "回復量+3",
                     () => _power += 3,
                     () => _power -= 3
                 )
             };
         }
-        public override Dictionary<string, IHasUpgrades> GetChildren() => new();
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public override string Info()
         {

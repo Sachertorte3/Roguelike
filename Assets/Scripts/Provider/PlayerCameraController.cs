@@ -9,7 +9,8 @@ namespace Provider
     public class PlayerCameraController
     {
         [Inject]
-        public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
+        public PlayerCameraController(World world, SynchronizedCharacterView characters,
+            CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {

@@ -1,4 +1,5 @@
 using Domain.Model.Entity;
+using Domain.Model.Memento;
 
 namespace Domain.Model.Map
 {

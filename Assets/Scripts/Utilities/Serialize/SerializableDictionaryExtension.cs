@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Utilities
+namespace Utilities.Serialize
 {
     public static class SerializableDictionaryExtension
     {

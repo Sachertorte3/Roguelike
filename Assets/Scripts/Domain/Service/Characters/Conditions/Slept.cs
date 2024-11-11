@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -36,7 +35,9 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return target.Status.IsFlagStat(FlagStatType.CannotAct) ? 0 : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
+            return target.Status.IsFlagStat(FlagStatType.CannotAct)
+                ? 0
+                : CommonSenseParameters.OneTurnStunEquivalentHpReduction;
         }
 
         public float EvaluatePrice()

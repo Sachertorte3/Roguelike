@@ -24,33 +24,31 @@ namespace Provider
                 {
                     map.Player.Character.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
-                        ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player, map.ItemPlaceholders);
+                        ReplaceItemView(inventoryView, itemChanged.NewValue, itemChanged.Index, map.Player,
+                            map.ItemPlaceholders);
                     }).AddTo(_disposables);
-                    gameManager.Turn.Subscribe(position =>
-                    {
-                        UpdateGroundItemView(inventoryView, map);
-                    }).AddTo(_disposables);
+                    gameManager.Turn.Subscribe(position => { UpdateGroundItemView(inventoryView, map); })
+                        .AddTo(_disposables);
                     map.Player.Character.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
                     {
-                        UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player, map.ItemPlaceholders);
+                        UpdateItemView(inventoryView, itemUpdated.Item, itemUpdated.Index, map.Player,
+                            map.ItemPlaceholders);
                     }).AddTo(_disposables);
-                    map.Player.Character.OnKnownItemUpdated.Subscribe(_ =>
-                    {
-                        UpdateAllItemViews(inventoryView, map);
-                    }).AddTo(_disposables);
-                    map.ItemPlaceholders.OnItemRenamed.Subscribe(_ =>
-                    {
-                        UpdateAllItemViews(inventoryView, map);
-                    }).AddTo(_disposables);
+                    map.Player.Character.OnKnownItemUpdated.Subscribe(_ => { UpdateAllItemViews(inventoryView, map); })
+                        .AddTo(_disposables);
+                    map.ItemPlaceholders.OnItemRenamed.Subscribe(_ => { UpdateAllItemViews(inventoryView, map); })
+                        .AddTo(_disposables);
                     for (var i = 0; i < map.Player.Character.Inventory.MaxItemCount; i++)
                     {
-                        ReplaceItemView(inventoryView, map.Player.Character.Inventory.GetItem(i), i, map.Player, map.ItemPlaceholders);
+                        ReplaceItemView(inventoryView, map.Player.Character.Inventory.GetItem(i), i, map.Player,
+                            map.ItemPlaceholders);
                     }
                 },
                 _ => _disposables.Clear());
         }
 
-        private void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void ReplaceItemView(InventoryView inventoryView, IItem? item, int index, IPlayer player,
+            ItemPlaceholders itemPlaceholders)
         {
             if (item != null)
             {
@@ -78,6 +76,7 @@ namespace Provider
                 if (item != null)
                     UpdateItemView(inventoryView, item, i, map.Player, map.ItemPlaceholders);
             }
+
             UpdateGroundItemView(inventoryView, map);
         }
 
@@ -85,12 +84,14 @@ namespace Provider
         {
             var item = map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault();
             if (item != null)
-                ReplaceItemView(inventoryView, item.Item, map.Player.Character.Inventory.MaxItemCount, map.Player, map.ItemPlaceholders);
+                ReplaceItemView(inventoryView, item.Item, map.Player.Character.Inventory.MaxItemCount, map.Player,
+                    map.ItemPlaceholders);
             else
                 inventoryView.SetGround();
         }
 
-        private void UpdateItemView(InventoryView inventoryView, IItem item, int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void UpdateItemView(InventoryView inventoryView, IItem item, int index, IPlayer player,
+            ItemPlaceholders itemPlaceholders)
         {
             ReplaceItemView(inventoryView, item, index, player, itemPlaceholders);
         }

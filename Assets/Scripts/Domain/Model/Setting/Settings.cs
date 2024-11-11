@@ -31,8 +31,10 @@ namespace Domain.Model.Setting
         public static ReactiveProperty<int> LogShownMilliSeconds => _logShownMilliSeconds.OnValueChanged;
         public static ReactiveProperty<int> DamageTextDisplayTime => _damageTextDisplayTime.OnValueChanged;
         public static ReactiveProperty<int> FlushDuration => _flushDuration.OnValueChanged;
+
         public static ReactiveProperty<int> SignificantDamageThresholdPercentage =>
             _significantDamageThresholdPercentage.OnValueChanged;
+
         public static ReactiveProperty<int> LowHpThresholdPercentage => _lowHpThresholdPercentage.OnValueChanged;
         public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;
         public static ReactiveProperty<bool> AutoPickUpShopItem => _autoPickUpShopItem.OnValueChanged;

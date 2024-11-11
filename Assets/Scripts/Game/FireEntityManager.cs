@@ -6,7 +6,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Events;
 using ObservableCollections;
-using R3;
 using UnityEngine;
 using Utilities;
 
@@ -22,6 +21,7 @@ namespace Game
             {
                 Add(new Fire(fireMemento));
             }
+
             _fireEntities.SubscribeToAllObservables(
                 entity => entity.Entity.OnDestroyed,
                 (entity, destroyed) => Remove(entity)
@@ -35,7 +35,7 @@ namespace Game
 
         public static FireEntitiesMemento Build()
         {
-            return new FireEntitiesMemento(new());
+            return new FireEntitiesMemento(new List<EntityMemento>());
         }
 
         public IObservableCollection<Fire> FireEntities => _fireEntities;
@@ -63,6 +63,7 @@ namespace Game
                 {
                     destroyedFires.Add(fire);
                 }
+
                 var positions = DirectionMethods
                     .AllDirections
                     .Select(direction => fire.Entity.CurrentPosition + direction.Vector())
@@ -75,15 +76,18 @@ namespace Game
                     }
                 }
             }
+
             foreach (var fire in destroyedFires)
             {
                 fire.Entity.Destroy();
             }
+
             foreach (var fire in addedFires)
             {
                 Add(fire);
             }
         }
+
         public float GetProbabilityOfFireSpreading(Vector2Int position, IMap map)
         {
             var value = 1 / 64f;

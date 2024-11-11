@@ -8,6 +8,7 @@ namespace Domain.Model.Map
     {
         [field: SerializeField] public MovementEntityType Type { get; private set; }
         [field: SerializeField] public Location Destination { get; private set; }
+
         public MapConnection(MovementEntityType type, Location destination)
         {
             Type = type;

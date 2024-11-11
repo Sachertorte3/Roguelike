@@ -3,15 +3,10 @@ using System;
 using System.Collections.Generic;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
-using Domain.Model.Item;
 using UnityEngine;
 
 namespace Domain.Model.Memento
 {
-    public interface ISkillMemento
-    {
-    }
-
     [Serializable]
     public class SpawnEffectSkillMemento : ISkillMemento
     {
@@ -24,7 +19,8 @@ namespace Domain.Model.Memento
         [field: SerializeField] public float ProbabilityOfSuccess { get; private set; }
         [field: SerializeField] public string Log { get; private set; }
 
-        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, List<IEffect> effects, int repeats, int rushDistance,
+        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, List<IEffect> effects, int repeats,
+            int rushDistance,
             int backStepDistance, float probabilityOfSuccess, string log)
         {
             Position = position;
@@ -35,17 +31,6 @@ namespace Domain.Model.Memento
             BackStepDistance = backStepDistance;
             ProbabilityOfSuccess = probabilityOfSuccess;
             Log = log;
-        }
-    }
-
-    [Serializable]
-    public class ItemTargetSkillMemento : ISkillMemento
-    {
-        [field: SerializeReference] public IItemEffect ItemEffect { get; private set; }
-
-        public ItemTargetSkillMemento(IItemEffect itemEffect)
-        {
-            ItemEffect = itemEffect;
         }
     }
 }

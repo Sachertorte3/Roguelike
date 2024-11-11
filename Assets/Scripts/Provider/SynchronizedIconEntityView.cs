@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Events;
@@ -17,7 +16,9 @@ namespace Provider
 {
     public class SynchronizedIconEntityView : SynchronizedEntityView<IEntity, EntityView>, IDisposable
     {
-        private readonly SerialDisposable[] _disposable = EnumerableExtension.CreateNewInstances<SerialDisposable>(2).ToArray();
+        private readonly SerialDisposable[] _disposable =
+            EnumerableExtension.CreateNewInstances<SerialDisposable>(2).ToArray();
+
         protected override InputReceiver _inputReceiver { get; init; }
 
         protected override EntityView GetEntityView(EntityView view)
@@ -49,28 +50,34 @@ namespace Provider
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            else if (eventEntity is Money)
+
+            if (eventEntity is Money)
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Money.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            else if (eventEntity is Trap)
+
+            if (eventEntity is Trap)
             {
                 return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Trap.prefab").WaitForCompletion()
                     .GetComponent<EntityView>();
             }
-            else if (eventEntity is Stairs stairs)
+
+            if (eventEntity is Stairs stairs)
             {
                 switch (stairs.Type)
                 {
                     case MovementEntityType.UpStairs:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/UpStairs.prefab").WaitForCompletion()
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/UpStairs.prefab")
+                            .WaitForCompletion()
                             .GetComponent<EntityView>();
                     case MovementEntityType.DownStairs:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/DownStairs.prefab").WaitForCompletion()
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/DownStairs.prefab")
+                            .WaitForCompletion()
                             .GetComponent<EntityView>();
                     case MovementEntityType.MagicCircle:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/MagicCircle.prefab").WaitForCompletion()
+                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/MagicCircle.prefab")
+                            .WaitForCompletion()
                             .GetComponent<EntityView>();
                     default:
                         throw new NotImplementedException();

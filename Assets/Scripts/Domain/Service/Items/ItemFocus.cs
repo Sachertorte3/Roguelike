@@ -8,13 +8,13 @@ namespace Domain.Service.Items
 {
     public record ItemFocus(int index, bool isGroundItem, bool isEmpty)
     {
-        public IItem? GetItem(IInventory inventory, IMap map)
+        public IItem? GetItem(IStorage storage, IMap map)
         {
             if (isEmpty)
                 return null;
             if (isGroundItem)
                 return map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
-            return inventory.GetItem(index);
+            return storage.GetItem(index);
         }
     }
 }

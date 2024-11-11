@@ -23,36 +23,58 @@ namespace View.UI
 
         public (int index, bool isGroundItem, bool isEmpty) CurrentFocus => OnFocusChanged.CurrentValue;
 
-        private void Awake()
+        public void Initialize()
         {
             for (var i = 0; i < _itemViews.Length; i++)
                 if (_itemViews[i] == null)
                     _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
-            OnFocusChanged.Subscribe(index => { _infoText.text = index.isEmpty ? "" : _info[index.index]; })
+            OnFocusChanged.Subscribe(index => _infoText.text = index.isEmpty ? "" : _info[index.index])
                 .AddTo(this);
-            _itemViews[0].Select();
             _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
             _itemViews[InventorySize + 1].SetIcon(_emptyIcon, null, false, false, true, true);
 
             for (var i = 0; i < _itemViews.Length; i++)
             {
-                var nav = new Navigation
-                {
-                    mode = Navigation.Mode.Explicit,
-                    selectOnLeft = _itemViews[(i - 1 + _itemViews.Length) % _itemViews.Length]
-                        .GetComponent<Selectable>(),
-                    selectOnRight = _itemViews[(i + 1) % _itemViews.Length].GetComponent<Selectable>()
-                };
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+                SetNavigation(i);
             }
+        }
+
+        private void Start()
+        {
+            _itemViews[0].Select();
+        }
+
+        public Selectable Get(int index) => _itemViews[index].GetComponent<Selectable>();
+
+        public void SetNavigationWithSubStorage(SubStorageView subStorageView, int index)
+        {
+            var nav = new Navigation
+            {
+                mode = Navigation.Mode.Explicit,
+                selectOnLeft = _itemViews[(index - 1 + _itemViews.Length) % _itemViews.Length]
+                    .GetComponent<Selectable>(),
+                selectOnRight = _itemViews[(index + 1) % _itemViews.Length].GetComponent<Selectable>(),
+                selectOnDown = subStorageView.First
+            };
+            _itemViews[index].GetComponent<Selectable>().navigation = nav;
+        }
+
+        public void SetNavigation(int index)
+        {
+            var nav = new Navigation
+            {
+                mode = Navigation.Mode.Explicit,
+                selectOnLeft = _itemViews[(index - 1 + _itemViews.Length) % _itemViews.Length]
+                    .GetComponent<Selectable>(),
+                selectOnRight = _itemViews[(index + 1) % _itemViews.Length].GetComponent<Selectable>()
+            };
+            _itemViews[index].GetComponent<Selectable>().navigation = nav;
         }
 
         public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
             bool isCurseIdentified, string info, int index)
         {
-            if (_itemViews[index] == null)
-                _itemViews[index] = Instantiate(_itemViewPrefab, transform);
             _itemViews[index].SetIcon(icon, count, isCursed, isShiny, isCountIdentified, isCurseIdentified);
             _info[index] = info;
             UpdateInfo(info, index);
@@ -60,14 +82,11 @@ namespace View.UI
 
         public void SetGround()
         {
-            if (_itemViews[InventorySize] != null)
-                _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
+            _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
         }
 
         public void Remove(int index)
         {
-            if (_itemViews[index] == null)
-                _itemViews[index] = Instantiate(_itemViewPrefab, transform);
             _itemViews[index].Remove();
             UpdateInfo("", index);
         }

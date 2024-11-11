@@ -662,7 +662,7 @@ namespace Game
 
         public void DropAllItem(ICharacter character)
         {
-            for (var index = 0; index < character.Inventory.MaxItemCount; index++)
+            for (var index = 0; index < character.Inventory.Capacity; index++)
             {
                 var item = character.ReplaceInventory(null, index);
                 if (item != null)

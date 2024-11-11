@@ -12,8 +12,17 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.Status.IsFlagStat(FlagStatType.CannotAct) &&
-                   (!Item.IsInfoIdentified(map.Player) || Item.CanActivateWhenUsed);
+            if (actor.Status.IsFlagStat(FlagStatType.CannotAct))
+            {
+                return false;
+            }
+
+            if (!Item.IsInfoIdentified(map.Player) && Item.HasActivatableSkillWhenUsed)
+            {
+                return true;
+            }
+
+            return Item.CanActivateWhenUsed;
         }
 
         public async UniTask Do(IActor actor, IMap map, IInput input)

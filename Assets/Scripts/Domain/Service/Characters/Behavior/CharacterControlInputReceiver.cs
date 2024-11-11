@@ -13,18 +13,18 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
 
         private readonly AsyncReactiveProperty<ItemFocus>
-            _onUseItemActionReceived = new(new ItemFocus(0, false, false));
+            _onUseItemActionReceived = new(new ItemFocus(0, -1, false, false));
 
         private readonly AsyncReactiveProperty<ItemFocus> _onThrowItemActionReceived =
-            new(new ItemFocus(0, false, false));
+            new(new ItemFocus(0, -1, false, false));
 
         private readonly AsyncReactiveProperty<ItemFocus> _onDropItemActionReceived =
-            new(new ItemFocus(0, false, false));
+            new(new ItemFocus(0, -1, false, false));
 
         private readonly AsyncReactiveProperty<Unit> _onDoNothingActionReceived = new(Unit.Default);
 
         private readonly AsyncReactiveProperty<ItemFocus> _onRenameItemActionReceived =
-            new(new ItemFocus(0, false, false));
+            new(new ItemFocus(0, -1, false, false));
 
         private bool _enable = true;
 

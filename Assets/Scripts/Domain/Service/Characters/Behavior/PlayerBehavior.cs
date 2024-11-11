@@ -190,7 +190,7 @@ namespace Domain.Service.Characters.Behavior
         {
         }
 
-        public async UniTask<IItem?> SelectItem(IStorage storage, IMap map, params int[] disabledItemIds)
+        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
 
@@ -203,7 +203,7 @@ namespace Domain.Service.Characters.Behavior
             _onItemSelect.OnNext(new OnItemSelectMessage(false, new int[0]));
             if (focus.isEmpty)
                 return null;
-            return focus.GetItem(storage, map);
+            return focus.GetItem(inventory, map);
         }
     }
 }

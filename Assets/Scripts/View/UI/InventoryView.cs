@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace View.UI
 {
+    public record Focus(int index, int subIndex, bool isGroundItem, bool isEmpty);
     public class InventoryView : MonoBehaviour
     {
         private const int InventorySize = 10;
@@ -14,23 +15,35 @@ namespace View.UI
         [SerializeField] private TMP_Text _infoText;
         [SerializeField] private Sprite _groundItemIcon;
         [SerializeField] private Sprite _emptyIcon;
-        private readonly ReactiveProperty<int> _focusIndex = new();
+        private readonly ReactiveProperty<(int index, int subIndex)> _focusIndex = new((0, -1));
+        private readonly Subject<int> _onMainFocusChanged = new();
         private readonly string[] _info = new string[InventorySize + 1];
         private readonly InventoryItemView[] _itemViews = new InventoryItemView[InventorySize + 2];
 
-        public ReadOnlyReactiveProperty<(int index, bool isGroundItem, bool isEmpty)> OnFocusChanged => _focusIndex
-            .Select(index => (index, index == InventorySize, index == InventorySize + 1)).ToReadOnlyReactiveProperty();
+        public Observable<Focus> OnFocusChanged => _focusIndex.Select(index => GetFocus(index.index, index.subIndex));
+        public Observable<Focus> OnMainFocusChanged => _onMainFocusChanged.Select(index => GetFocus(index, -1));
+        public Focus CurrentFocus => GetFocus(_focusIndex.CurrentValue.index, _focusIndex.CurrentValue.subIndex);
 
-        public (int index, bool isGroundItem, bool isEmpty) CurrentFocus => OnFocusChanged.CurrentValue;
+        private SubStorageView _subStorageView;
 
-        public void Initialize()
+        public void Initialize(SubStorageView subStorageView)
         {
+            _subStorageView = subStorageView;
             for (var i = 0; i < _itemViews.Length; i++)
                 if (_itemViews[i] == null)
                     _itemViews[i] = Instantiate(_itemViewPrefab, transform);
-            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _focusIndex.Value = index));
+            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ =>
+            {
+                _onMainFocusChanged.OnNext(index);
+                _focusIndex.Value = (index, -1);
+            }).AddTo(view));
+            subStorageView.OnFocusChanged.Subscribe(subIndex =>
+            {
+                _focusIndex.Value = (_focusIndex.CurrentValue.index, subIndex);
+            }).AddTo(subStorageView);
             OnFocusChanged.Subscribe(index => _infoText.text = index.isEmpty ? "" : _info[index.index])
                 .AddTo(this);
+            OnFocusChanged.Subscribe(index => Debug.Log(index)).AddTo(this);
             _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
             _itemViews[InventorySize + 1].SetIcon(_emptyIcon, null, false, false, true, true);
 
@@ -40,10 +53,17 @@ namespace View.UI
             }
         }
 
-        private void Start()
+        public void Select(int index)
         {
-            _itemViews[0].Select();
+            _itemViews[index].Select();
         }
+
+        public void SelectSub(int subIndex)
+        {
+            _subStorageView.Select(subIndex);
+        }
+
+        private Focus GetFocus(int index, int subIndex) => new(index, subIndex, index == InventorySize, index == InventorySize + 1);
 
         public Selectable Get(int index) => _itemViews[index].GetComponent<Selectable>();
 

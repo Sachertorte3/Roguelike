@@ -1,8 +1,10 @@
 #nullable enable
 using System;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
+using R3;
 
 namespace View.UI
 {
@@ -10,9 +12,11 @@ namespace View.UI
     {
         private int _mainIndex;
         [SerializeField] private InventoryItemView _itemViewPrefab;
+        private readonly Subject<int> _onFocusChanged = new();
         private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
         private string[] _info = Array.Empty<string>();
         public Selectable? First => _itemViews.FirstOrDefault()?.GetComponent<Selectable>();
+        public Observable<int> OnFocusChanged => _onFocusChanged;
         public void SetCapacity(Selectable root, int mainIndex, int capacity)
         {
             Clear();
@@ -23,6 +27,7 @@ namespace View.UI
             {
                 _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             }
+            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _onFocusChanged.OnNext(index)).AddTo(view));
 
             for (var i = 0; i < capacity; i++)
             {
@@ -43,6 +48,11 @@ namespace View.UI
             foreach (var view in _itemViews)
                 Destroy(view.gameObject);
             _itemViews = Array.Empty<InventoryItemView>();
+        }
+
+        public void Select(int index)
+        {
+            _itemViews[index].Select();
         }
 
         public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,

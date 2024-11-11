@@ -396,7 +396,7 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public UniTask<IItem?> SelectItem(IStorage storage, IMap map, params int[] disabledItemIds)
+        public UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
         {
             return UniTask.FromResult<IItem?>(null);
         }

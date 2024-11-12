@@ -8,7 +8,6 @@ using Domain.Model.Map;
 using Game;
 using R3;
 using Unity.Logging;
-using UnityEngine;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -27,23 +26,29 @@ namespace Provider
             inventoryView.Initialize(subStorageView);
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
-                    inventoryView.Select(0);
-                    map.Player.Character.Inventory.OnItemChanged.Subscribe(itemChanged =>
+                    var inventory = map.Player.Character.Inventory;
+                    Observable.Merge<(IItem? Item, int Index)>(
+                        inventory.OnItemChanged.Select(itemChanged => (itemChanged.NewValue, itemChanged.Index)),
+                        inventory.OnItemUpdated.Select(itemUpdated => ((IItem?)itemUpdated.Item, itemUpdated.Index))
+                    ).Subscribe(data =>
                     {
-                        ReplaceItemView(inventoryView, subStorageView, itemChanged.NewValue, itemChanged.Index,
+                        ReplaceItemView(inventoryView, subStorageView, data.Item, data.Index,
                             map.Player, map.ItemPlaceholders);
                     }).AddTo(_disposables);
-                    gameManager.Turn.Subscribe(position => { UpdateGroundItemView(inventoryView, subStorageView, map); })
-                        .AddTo(_disposables);
-                    map.Player.Character.Inventory.OnItemUpdated.Subscribe(itemUpdated =>
+
+                    gameManager.Turn.Subscribe(position =>
                     {
-                        UpdateItemView(inventoryView, subStorageView, itemUpdated.Item, itemUpdated.Index,
-                            map.Player, map.ItemPlaceholders);
+                        UpdateGroundItemView(inventoryView, subStorageView, map);
                     }).AddTo(_disposables);
-                    map.Player.Character.OnKnownItemUpdated.Subscribe(_ => { UpdateAllItemViews(inventoryView, subStorageView, map); })
-                        .AddTo(_disposables);
-                    map.ItemPlaceholders.OnItemRenamed.Subscribe(_ => { UpdateAllItemViews(inventoryView, subStorageView, map); })
-                        .AddTo(_disposables);
+
+                    Observable.Merge(
+                        map.Player.Character.OnKnownItemUpdated,
+                        map.ItemPlaceholders.OnItemRenamed
+                    ).Subscribe(_ =>
+                    {
+                        UpdateAllItemViews(inventoryView, subStorageView, map);
+                    }).AddTo(_disposables);
+
                     inventoryView.OnMainFocusChanged.Subscribe(index =>
                     {
                         IItem? item = null;
@@ -57,14 +62,15 @@ namespace Provider
                         }
                         else
                         {
-                            item = map.Player.Character.Inventory.GetItem(index.index);
+                            item = inventory.GetItem(index.index);
                         }
                         UpdateSubStorageView(inventoryView, subStorageView, item, index.index, map.Player,
                             map.ItemPlaceholders);
                     }).AddTo(_disposables);
-                    for (var i = 0; i < map.Player.Character.Inventory.Capacity; i++)
+
+                    for (var i = 0; i < inventory.Capacity; i++)
                     {
-                        ReplaceItemView(inventoryView, subStorageView, map.Player.Character.Inventory.GetItem(i), i,
+                        ReplaceItemView(inventoryView, subStorageView, inventory.GetItem(i), i,
                             map.Player, map.ItemPlaceholders);
                     }
                 },

@@ -13,11 +13,13 @@ namespace View.UI
         private int _mainIndex;
         [SerializeField] private InventoryItemView _itemViewPrefab;
         private readonly Subject<int> _onFocusChanged = new();
+        private readonly Subject<int> _onLogUpdated = new();
         private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
         private string[] _info = Array.Empty<string>();
         public int Capacity => _itemViews.Length;
         public Selectable? First => _itemViews.FirstOrDefault()?.GetComponent<Selectable>();
         public Observable<int> OnFocusChanged => _onFocusChanged;
+        public Observable<int> OnLogUpdated => _onLogUpdated;
         public void SetCapacity(Selectable root, int mainIndex, int capacity)
         {
             Clear();
@@ -82,6 +84,7 @@ namespace View.UI
         public void UpdateInfo(string info, int index)
         {
             _info[index] = info;
+            _onLogUpdated.OnNext(index);
         }
 
         public void DisableItems(int[] disabledItemIndexes)

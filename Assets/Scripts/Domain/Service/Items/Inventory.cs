@@ -37,46 +37,36 @@ namespace Domain.Service.Items
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(_storage.Capacity).ToArray();
 
             _disposable = _storage.OnItemChanged.Subscribe(itemChanged =>
+            {
+                _disposables[itemChanged.Index].Clear();
+
+                if (itemChanged.NewValue != null && !itemChanged.NewValue.IsCursed)
                 {
-                    _disposables[itemChanged.Index].Clear();
-
-                    if (itemChanged.NewValue != null && !itemChanged.NewValue.IsCursed)
-                    {
-                        foreach (var condition in itemChanged.NewValue.PassiveConditions)
-                            condition.Inflict(_hasCondition, Id<IEntity>.Empty);
-                    }
-
-                    if (itemChanged.OldValue != null && !itemChanged.OldValue.IsCursed)
-                    {
-                        foreach (var condition in itemChanged.OldValue.PassiveConditions)
-                            condition.Delete(_hasCondition, Id<IEntity>.Empty);
-                    }
-
-                    if (itemChanged.NewValue != null)
-                    {
-                        _disposables[itemChanged.Index].Add(
-                            itemChanged.NewValue.OnCursedChanged.Subscribe(
-                                isCursed =>
-                                {
-                                    if (isCursed)
-                                        foreach (var condition in itemChanged.NewValue.PassiveConditions)
-                                            condition.Delete(_hasCondition, Id<IEntity>.Empty);
-                                    else
-                                        foreach (var condition in itemChanged.NewValue.PassiveConditions)
-                                            condition.Inflict(_hasCondition, Id<IEntity>.Empty);
-                                }
-                            ));
-                        _disposables[itemChanged.Index].Add(
-                            itemChanged.NewValue.RemainingUses.Subscribe(
-                                remainingUses =>
-                                {
-                                    if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
-                                        _storage.Remove(itemChanged.Index);
-                                }
-                            ));
-                    }
+                    foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                        condition.Inflict(_hasCondition, Id<IEntity>.Empty);
                 }
-            );
+
+                if (itemChanged.OldValue != null && !itemChanged.OldValue.IsCursed)
+                {
+                    foreach (var condition in itemChanged.OldValue.PassiveConditions)
+                        condition.Delete(_hasCondition, Id<IEntity>.Empty);
+                }
+
+                if (itemChanged.NewValue != null)
+                {
+                    itemChanged.NewValue.OnCursedChanged.Subscribe(
+                        isCursed =>
+                        {
+                            if (isCursed)
+                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                    condition.Delete(_hasCondition, Id<IEntity>.Empty);
+                            else
+                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                    condition.Inflict(_hasCondition, Id<IEntity>.Empty);
+                        }
+                    ).AddTo(_disposables[itemChanged.Index]);
+                }
+            });
         }
 
         public void Dispose()

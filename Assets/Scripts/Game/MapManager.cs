@@ -722,6 +722,7 @@ namespace Game
         {
             if (_fullVisibleArea == null)
                 _fullVisibleArea = ViewCalculator.ComputeFullVisibility(_tilemap.GetAllLightPassablePositions());
+            Debug.Log(_fullVisibleArea.Count);
             return _fullVisibleArea;
         }
 

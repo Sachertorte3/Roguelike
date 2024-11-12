@@ -188,8 +188,6 @@ namespace Domain.Service.Characters
                 _flagStats[type] = flagStat;
             }
 
-            Debug.Log($"{type} {flagStat.CurrentFlags}");
-
             return flagStat;
         }
 

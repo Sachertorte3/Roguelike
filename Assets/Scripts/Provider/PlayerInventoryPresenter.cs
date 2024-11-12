@@ -89,13 +89,13 @@ namespace Provider
                     item.IsCurseIdentified,
                     item.Info(player, itemPlaceholders),
                     index);
-                if (index == inventoryView.CurrentFocus.index)
-                    UpdateSubStorageView(inventoryView, subStorageView, item, index, player, itemPlaceholders);
             }
             else
             {
                 inventoryView.Remove(index);
             }
+            if (index == inventoryView.CurrentFocus.index)
+                UpdateSubStorageView(inventoryView, subStorageView, item, index, player, itemPlaceholders);
         }
 
         private void UpdateSubStorageView(InventoryView inventoryView, SubStorageView subStorageView, IItem? item,

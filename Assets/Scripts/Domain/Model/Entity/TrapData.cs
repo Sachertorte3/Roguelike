@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace Domain.Model.Entity
 {
-    [Serializable]
-    public class TrapData
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Trap")]
+    public class TrapData : ScriptableObject
     {
-        [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public ActorlessSkillData Skill { get; private set; }
 
         [field: SerializeField]
         [field: Range(0, 1)]
-        public float ProbabilityOfBreaking { get; private set; } = 0.5f;
+        public float ProbabilityOfBreaking { get; private set; } = 0.1f;
     }
 }

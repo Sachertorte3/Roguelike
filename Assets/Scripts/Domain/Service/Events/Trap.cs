@@ -52,7 +52,7 @@ namespace Domain.Service.Events
 
         public static TrapMemento Build(TrapData trap, Vector2Int position)
         {
-            return new TrapMemento(trap.Name, EntityBase.Build(position, EntityLayer.Bottom),
+            return new TrapMemento(trap.name, EntityBase.Build(position, EntityLayer.Bottom),
                 SpawnEffectSkill.Build(trap.Skill), trap.ProbabilityOfBreaking);
         }
 

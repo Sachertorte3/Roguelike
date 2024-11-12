@@ -42,7 +42,7 @@ namespace Domain.Model.Character
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
         public bool CanPickUpItem();
         public bool TryAddToInventory(IItem item);
-        public IItem? ReplaceInventory(IItem? item, int index);
+        public IItem? ReplaceInventory(IItem? item, int index, int subIndex);
         public void UpdateTurn();
         public void AddMoney(int value);
         public void ReduceMoney(int value);

@@ -16,7 +16,7 @@ namespace Domain.Model.Character
         public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
         public UniTask UseItem(IItem item, Direction8 direction, IMap map);
         public UniTask ThrowItem(IItem item, Direction8 direction, IMap map);
-        public void DropItem(int itemIndex, IMap map, bool isForced = false);
+        public void DropItem(int index, int subIndex, IMap map, bool isForced = false);
         public float EvaluateThrow(IItem item, Direction8 direction, IMap map);
     }
 }

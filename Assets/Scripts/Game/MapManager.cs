@@ -664,7 +664,7 @@ namespace Game
         {
             for (var index = 0; index < character.Inventory.Capacity; index++)
             {
-                var item = character.ReplaceInventory(null, index);
+                var item = character.ReplaceInventory(null, -1, index);
                 if (item != null)
                     SpawnItem(item,
                         FindBlankPositionFrom(character.Entity.CurrentPosition,

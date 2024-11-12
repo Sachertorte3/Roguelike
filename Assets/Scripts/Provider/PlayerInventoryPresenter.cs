@@ -18,6 +18,7 @@ namespace Provider
     public class PlayerInventoryPresenter
     {
         private readonly CompositeDisposable _disposables = new();
+        private readonly CompositeDisposable _subDisposables = new();
 
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView,
@@ -103,6 +104,7 @@ namespace Provider
         {
             Log.Info($"UpdateSubStorageView");
             var focus = inventoryView.CurrentFocus;
+            _subDisposables.Clear();
             if (item != null && item.ItemStorage.IsSome)
             {
                 subStorageView.SetCapacity(inventoryView.Get(index), index, item.ItemStorage.Value.Capacity);
@@ -123,6 +125,34 @@ namespace Provider
                     else
                         subStorageView.Remove(i);
                 }
+                item.ItemStorage.Value.OnItemChanged.Subscribe(itemChanged =>
+                {
+                    if (itemChanged.NewValue != null)
+                        subStorageView.Replace(
+                            itemChanged.NewValue.Icon,
+                            itemChanged.NewValue.RemainingUses.CurrentValue,
+                            itemChanged.NewValue.IsCursed,
+                            itemChanged.NewValue.IsShiny,
+                            player.Character.IsKnownItem(itemChanged.NewValue),
+                            itemChanged.NewValue.IsCurseIdentified,
+                            itemChanged.NewValue.Info(player, itemPlaceholders),
+                            itemChanged.Index);
+                    else
+                        subStorageView.Remove(itemChanged.Index);
+                }).AddTo(_subDisposables);
+                item.ItemStorage.Value.OnItemUpdated.Subscribe(itemUpdated =>
+                {
+                    if (itemUpdated.Item != null)
+                        subStorageView.Replace(
+                            itemUpdated.Item.Icon,
+                            itemUpdated.Item.RemainingUses.CurrentValue,
+                            itemUpdated.Item.IsCursed,
+                            itemUpdated.Item.IsShiny,
+                            player.Character.IsKnownItem(itemUpdated.Item),
+                            itemUpdated.Item.IsCurseIdentified,
+                            itemUpdated.Item.Info(player, itemPlaceholders),
+                            itemUpdated.Index);
+                }).AddTo(_subDisposables);
             }
             else
             {

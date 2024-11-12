@@ -56,6 +56,11 @@ namespace View.UI
             _itemViews[index].Select();
         }
 
+        public string GetInfo(int index)
+        {
+            return _info[index];
+        }
+
         public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
             bool isCurseIdentified, string info, int index)
         {

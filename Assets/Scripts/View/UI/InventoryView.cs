@@ -41,8 +41,13 @@ namespace View.UI
             {
                 _focusIndex.Value = (_focusIndex.CurrentValue.index, subIndex);
             }).AddTo(subStorageView);
-            OnFocusChanged.Subscribe(index => _infoText.text = index.isEmpty ? "" : _info[index.index])
-                .AddTo(this);
+            OnFocusChanged.Subscribe(index => 
+            {
+                if (index.subIndex >= 0)
+                    _infoText.text = _subStorageView.GetInfo(index.subIndex);
+                else
+                    _infoText.text = index.isEmpty ? "" : _info[index.index];
+            }).AddTo(this);
             OnFocusChanged.Subscribe(index => Debug.Log(index)).AddTo(this);
             _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
             _itemViews[InventorySize + 1].SetIcon(_emptyIcon, null, false, false, true, true);

@@ -13,7 +13,7 @@ using Domain.Service.Logs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Service.Events
 {

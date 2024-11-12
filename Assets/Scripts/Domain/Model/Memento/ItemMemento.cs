@@ -5,7 +5,7 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
@@ -25,6 +25,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool HasSameEffect { get; private set; }
         [field: SerializeField] public bool HasSameSkill { get; private set; }
         [field: SerializeField] public bool UseOnDeath { get; private set; }
+        [field: SerializeField] public Option<StorageMemento> Storage { get; private set; }
         [field: SerializeField] public int MaxUsages { get; private set; }
         [field: SerializeField] public int RemainingUsages { get; private set; }
         [field: SerializeField] public bool IsCursed { get; private set; }
@@ -41,9 +42,10 @@ namespace Domain.Model.Memento
             string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny,
             ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
-            bool hasSameEffect, bool hasSameSkill, bool useOnDeath, int maxUsages, int remainingUsages,
-            bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot, bool identifyIfUsed,
-            bool isCurseIdentified, bool autoDestroyWhenDisabled, int upgradeLimit, IConditionData[] conditions)
+            bool hasSameEffect, bool hasSameSkill, bool useOnDeath, Option<StorageMemento> storage, int maxUsages,
+            int remainingUsages, bool isCursed, bool cannotUseIfCursed, bool cannotDropIfCursed, bool identifyIfGot,
+            bool identifyIfUsed, bool isCurseIdentified, bool autoDestroyWhenDisabled, int upgradeLimit,
+            IConditionData[] conditions)
         {
             Id = id;
             Category = category;
@@ -58,6 +60,7 @@ namespace Domain.Model.Memento
             HasSameEffect = hasSameEffect;
             HasSameSkill = hasSameSkill;
             UseOnDeath = useOnDeath;
+            Storage = storage;
             MaxUsages = maxUsages;
             RemainingUsages = remainingUsages;
             IsCursed = isCursed;
@@ -76,8 +79,8 @@ namespace Domain.Model.Memento
             string? iconName = null, bool? isShiny = null, ItemState? state = null,
             List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null,
             Option<ISkillMemento>? skillOnThrow = null,
-            bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null, int? maxUsages = null,
-            int? remainingUsages = null,
+            bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null,
+            Option<StorageMemento>? storage = null, int? maxUsages = null, int? remainingUsages = null,
             bool? isCursed = null, bool? cannotUseIfCursed = null, bool? cannotDropIfCursed = null,
             bool? identifyIfGot = null, bool? identifyIfUsed = null, bool? isCurseIdentified = null,
             bool? autoDestroyWhenDisabled = null, int? upgradeLimit = null, IConditionData[]? conditions = null)
@@ -96,6 +99,7 @@ namespace Domain.Model.Memento
                 hasSameEffect ?? HasSameEffect,
                 hasSameSkill ?? HasSameSkill,
                 useOnDeath ?? UseOnDeath,
+                storage ?? Storage,
                 maxUsages ?? MaxUsages,
                 remainingUsages ?? RemainingUsages,
                 isCursed ?? IsCursed,

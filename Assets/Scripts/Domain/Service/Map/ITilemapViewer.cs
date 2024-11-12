@@ -4,7 +4,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Service.Map
 {

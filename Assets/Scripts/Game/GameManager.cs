@@ -42,6 +42,16 @@ namespace Game
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
             Globals.GameManager = this;
+
+            _world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            {
+                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
+                {
+                    await StopMap();
+                    Save();
+                    _state.Value = GameState.Title;
+                });
+            });
         }
 
         public async UniTask Title()
@@ -77,16 +87,6 @@ namespace Game
                 map = await CreateWorld();
                 StartMap(map);
             }
-
-            _world.ActiveMap.Subscribe(map =>
-            {
-                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
-                {
-                    await StopMap();
-                    Save();
-                    _state.Value = GameState.Title;
-                });
-            });
         }
 
         public async UniTask<MapManager> CreateWorld()

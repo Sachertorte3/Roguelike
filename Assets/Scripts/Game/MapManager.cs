@@ -24,7 +24,7 @@ using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -662,9 +662,9 @@ namespace Game
 
         public void DropAllItem(ICharacter character)
         {
-            for (var index = 0; index < character.Inventory.MaxItemCount; index++)
+            for (var index = 0; index < character.Inventory.Capacity; index++)
             {
-                var item = character.ReplaceInventory(null, index);
+                var item = character.RemoveInventory(index, -1);
                 if (item != null)
                     SpawnItem(item,
                         FindBlankPositionFrom(character.Entity.CurrentPosition,

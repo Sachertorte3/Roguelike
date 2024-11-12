@@ -18,9 +18,11 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AddConditionEffect : IActorlessEffect
     {
-        [Required] [SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
+        [Required][SerializeField] private ScriptableObjectSerializable<ConditionTemplate> _condition;
 
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")]
+        [SerializeField]
+        [Range(0, 1)]
         private float _probabilityOfSuccess = 1;
 
         public Color Color => Colors.Purple;

@@ -38,6 +38,7 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: 5486256507571666945
+  StorageCapacity: 0
   UsageLimit: 5
   UpgradeLimit: 3
   PassiveConditions: []

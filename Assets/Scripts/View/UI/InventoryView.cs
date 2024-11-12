@@ -53,6 +53,11 @@ namespace View.UI
             }
         }
 
+        public void Start()
+        {
+            Select(0);
+        }
+
         public void Select(int index)
         {
             _itemViews[index].Select();

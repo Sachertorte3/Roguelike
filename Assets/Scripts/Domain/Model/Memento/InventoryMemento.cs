@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
@@ -8,10 +8,12 @@ namespace Domain.Model.Memento
     public class StorageMemento
     {
         [field: SerializeField] public Option<ItemMemento>[] Items { get; private set; }
+        [field: SerializeField] public bool CanAddItemsWithStorage { get; private set; }
 
-        public StorageMemento(Option<ItemMemento>[] items)
+        public StorageMemento(Option<ItemMemento>[] items, bool canAddItemsWithStorage)
         {
             Items = items;
+            CanAddItemsWithStorage = canAddItemsWithStorage;
         }
     }
 }

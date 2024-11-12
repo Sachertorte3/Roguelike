@@ -5,7 +5,7 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {

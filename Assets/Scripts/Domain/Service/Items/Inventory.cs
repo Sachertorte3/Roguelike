@@ -12,6 +12,7 @@ using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using Utilities;
+using Utilities.Serialize.Result;
 
 namespace Domain.Service.Items
 {
@@ -21,7 +22,6 @@ namespace Domain.Service.Items
 
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable[] _disposables;
-
 
         private IHasCondition _hasCondition;
 
@@ -71,7 +71,7 @@ namespace Domain.Service.Items
                                 remainingUses =>
                                 {
                                     if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
-                                        _storage.Replace(null, itemChanged.Index);
+                                        _storage.Remove(itemChanged.Index);
                                 }
                             ));
                     }
@@ -136,14 +136,14 @@ namespace Domain.Service.Items
             return _storage.TryRemove(item);
         }
 
-        public IItem? Replace(IItem? item, int index, int subIndex)
+        public Result<IItem?> Replace(IItem? item, int index, int subIndex)
         {
             if (subIndex < 0)
                 return _storage.Replace(item, index);
             return _storage.GetItem(index).ItemStorage.Value.Replace(item, subIndex);
         }
 
-        public IItem? Replace(IItem? item, int index)
+        public Result<IItem?> Replace(IItem? item, int index)
         {
             return _storage.Replace(item, index);
         }

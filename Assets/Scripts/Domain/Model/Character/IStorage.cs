@@ -4,6 +4,7 @@ using Domain.Model.Character.Message;
 using Domain.Model.Item;
 using ObservableCollections;
 using R3;
+using Utilities.Serialize.Result;
 
 namespace Domain.Model.Character
 {
@@ -18,6 +19,6 @@ namespace Domain.Model.Character
         public int GetItemIndex(IItem item);
         public bool TryAdd(IItem item);
         public bool TryRemove(IItem item);
-        public IItem? Replace(IItem? item, int index);
+        public Result<IItem?> Replace(IItem? item, int index);
     }
 }

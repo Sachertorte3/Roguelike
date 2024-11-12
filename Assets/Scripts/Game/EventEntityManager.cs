@@ -8,7 +8,7 @@ using Domain.Service.Events;
 using ObservableCollections;
 using R3;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Game
 {

@@ -18,11 +18,11 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
-    public class Item : IItem, IHasUpgrades
+    public class Item : IItem, IHasUpgrades, IDisposable
     {
         public Id<IItem> Id { get; init; }
         public ItemCategory Category { get; init; }
@@ -42,10 +42,11 @@ namespace Domain.Service.Items
         private readonly ReactiveProperty<int> _remainingUsages;
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
-        private readonly Option<Storage> _storage;
+        private readonly Option<Storage> _itemStorage;
         private readonly List<IConditionData> _conditions;
         private readonly Subject<Unit> _onItemUpdated = new();
         private readonly Subject<bool> _onCursedChanged = new();
+        private readonly CompositeDisposable _disposables = new();
 
         public Item(ItemData data) : this(Build(data))
         {
@@ -99,9 +100,15 @@ namespace Domain.Service.Items
                 },
                 itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
             ));
-            _storage = data.Storage.Map(storage => new Storage(storage));
             _hasSameEffect = data.HasSameEffect;
             _hasSameSkill = data.HasSameSkill;
+            _itemStorage = data.Storage.Map(storage => 
+            {
+                var itemStorage = new Storage(storage);
+                itemStorage.OnItemChanged.Subscribe(_ => _onItemUpdated.OnNext(Unit.Default)).AddTo(_disposables);
+                itemStorage.OnItemUpdated.Subscribe(_ => _onItemUpdated.OnNext(Unit.Default)).AddTo(_disposables);
+                return itemStorage;
+            });
             UseOnDeath = data.UseOnDeath;
             _maxUsages = data.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
@@ -137,7 +144,7 @@ namespace Domain.Service.Items
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool UseOnDeath { get; init; }
-        public Option<IStorage> ItemStorage => _storage.Map(storage => (IStorage)storage);
+        public Option<IStorage> ItemStorage => _itemStorage.Map(storage => (IStorage)storage);
         public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public int MaxUsages => _maxUsages;
@@ -171,7 +178,7 @@ namespace Domain.Service.Items
                 hasSameEffect: _hasSameEffect,
                 hasSameSkill: _hasSameSkill,
                 useOnDeath: UseOnDeath,
-                storage: _storage.Map(storage => storage.Serialize()),
+                storage: _itemStorage.Map(storage => storage.Serialize()),
                 maxUsages: _maxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
                 isCursed: IsCursed,
@@ -215,7 +222,7 @@ namespace Domain.Service.Items
                 hasSameEffect: data.IsSameEffect,
                 hasSameSkill: data.IsSameSkill,
                 useOnDeath: data.UseOnDeath,
-                storage: data.StorageCapacity > 0 ? Storage.Build(data.StorageCapacity).ToOption() : Option<StorageMemento>.None,
+                storage: data.StorageCapacity > 0 ? Storage.Build(data.StorageCapacity, false).ToOption() : Option<StorageMemento>.None,
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
                 isCursed: isCursed,
@@ -230,6 +237,11 @@ namespace Domain.Service.Items
             );
             var json = JsonUtility.ToJson(memento);
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
 
         public void SetState(ItemState state)

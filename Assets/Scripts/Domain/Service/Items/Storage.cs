@@ -10,7 +10,9 @@ using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
+using Utilities.Serialize.Result;
+using Result = Utilities.Serialize.Result.Result;
 
 namespace Domain.Service.Items
 {
@@ -19,6 +21,7 @@ namespace Domain.Service.Items
         public int Capacity => _items.Count;
         private readonly ObservableList<IItem?> _items;
         public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
+        private readonly bool _canAddItemsWithStorage;
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
@@ -34,18 +37,18 @@ namespace Domain.Service.Items
             {
                 _items.Add(item.Map(item => new Item(item)).Value);
             }
+            _canAddItemsWithStorage = data.CanAddItemsWithStorage;
 
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
 
-            _disposable = _items.ObserveReplace().Subscribe(itemChanged =>
+            _disposable = OnItemChanged.Subscribe(itemChanged =>
             {
                 _disposables[itemChanged.Index].Clear();
                 if (itemChanged.NewValue != null)
                 {
-                    _disposables[itemChanged.Index].Add(
-                        itemChanged.NewValue.OnItemUpdated.Subscribe(
-                            _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
-                        ));
+                    itemChanged.NewValue.OnItemUpdated.Subscribe(
+                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
+                    ).AddTo(_disposables[itemChanged.Index]);
                 }
             });
         }
@@ -62,18 +65,23 @@ namespace Domain.Service.Items
         {
             return new StorageMemento
             (
-                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray()
+                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray(),
+                _canAddItemsWithStorage
             );
         }
 
-        public static StorageMemento Build(IItem?[] items)
+        public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage)
         {
-            return new StorageMemento(items.Select(item => item.ToOption().Map(item => item.Serialize())).ToArray());
+            return new StorageMemento(
+                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToArray(),
+                canAddItemsWithStorage
+            );
         }
-        public static StorageMemento Build(int capacity)
+
+        public static StorageMemento Build(int capacity, bool canAddItemsWithStorage)
         {
             var itemArray = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(capacity).ToArray();
-            return new StorageMemento(itemArray);
+            return new StorageMemento(itemArray, canAddItemsWithStorage);
         }
 
         public bool HasEmptySpace()
@@ -93,6 +101,8 @@ namespace Domain.Service.Items
 
         public bool TryAdd(IItem item)
         {
+            if (!_canAddItemsWithStorage && item.ItemStorage.IsSome)
+                return false;
             var index = _items.IndexOf(null);
             if (index >= 0)
             {
@@ -108,23 +118,25 @@ namespace Domain.Service.Items
             var index = _items.IndexOf(item);
             if (index >= 0)
             {
-                Replace(null, index);
+                Remove(index);
                 return true;
             }
             return false;
         }
 
-        public IItem? Replace(IItem? item, int index)
+        public Result<IItem?> Replace(IItem? item, int index)
         {
+            if (!_canAddItemsWithStorage && item != null && item.ItemStorage.IsSome)
+                return Result<IItem?>.Error;
             var removed = _items[index];
             _items[index] = item;
 
-            return removed;
+            return Result.Ok(removed);
         }
 
         public IItem? Remove(int index)
         {
-            return Replace(null, index);
+            return Replace(null, index).Value;
         }
 
         public bool Remove(IItem item)
@@ -132,7 +144,7 @@ namespace Domain.Service.Items
             var index = _items.IndexOf(item);
             if (index < 0)
                 return false;
-            return Replace(null, index) != null;
+            return Remove(index) != null;
         }
     }
 }

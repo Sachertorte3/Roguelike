@@ -11,6 +11,7 @@ using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Result;
 
 namespace Domain.Model.Character
 {
@@ -42,7 +43,8 @@ namespace Domain.Model.Character
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
         public bool CanPickUpItem();
         public bool TryAddToInventory(IItem item);
-        public IItem? ReplaceInventory(IItem? item, int index, int subIndex);
+        public IItem? RemoveInventory(int index, int subIndex);
+        public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex);
         public void UpdateTurn();
         public void AddMoney(int value);
         public void ReduceMoney(int value);

@@ -15,6 +15,7 @@ namespace View.UI
         private readonly Subject<int> _onFocusChanged = new();
         private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
         private string[] _info = Array.Empty<string>();
+        public int Capacity => _itemViews.Length;
         public Selectable? First => _itemViews.FirstOrDefault()?.GetComponent<Selectable>();
         public Observable<int> OnFocusChanged => _onFocusChanged;
         public void SetCapacity(Selectable root, int mainIndex, int capacity)

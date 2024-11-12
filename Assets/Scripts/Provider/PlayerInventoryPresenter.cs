@@ -26,6 +26,7 @@ namespace Provider
             inventoryView.Initialize(subStorageView);
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
+                    inventoryView.Select(0);
                     map.Player.Character.Inventory.OnItemChanged.Subscribe(itemChanged =>
                     {
                         ReplaceItemView(inventoryView, subStorageView, itemChanged.NewValue, itemChanged.Index,
@@ -101,6 +102,7 @@ namespace Provider
             int index, IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             Log.Info($"UpdateSubStorageView");
+            var focus = inventoryView.CurrentFocus;
             if (item != null && item.ItemStorage.IsSome)
             {
                 subStorageView.SetCapacity(inventoryView.Get(index), index, item.ItemStorage.Value.Capacity);
@@ -127,6 +129,10 @@ namespace Provider
                 inventoryView.SetNavigation(index);
                 subStorageView.Clear();
             }
+            if (focus.subIndex >= 0 && focus.subIndex < subStorageView.Capacity)
+                subStorageView.Select(focus.subIndex);
+            else
+                inventoryView.Select(focus.index);
         }
 
         private void UpdateAllItemViews(InventoryView inventoryView, SubStorageView subStorageView, IMap map)

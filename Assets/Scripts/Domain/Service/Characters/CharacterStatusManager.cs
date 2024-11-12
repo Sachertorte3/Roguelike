@@ -1,4 +1,5 @@
 #nullable enable
+using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Domain.Service.Characters
             ICharacter character, IMap map)
         {
             _stats = new CharacterStats(data.Stats);
-            _conditions = new CharacterConditions(character, data.Conditions, map.Player);
+            _conditions = new CharacterConditions(character, data.Conditions, map);
             _flagStats = data.FlagStats.ToDictionary(x => x.Key, x => new FlagStat(x.Value));
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, GetFlagStat(FlagStatType.Clairvoyant),
                 GetFlagStat(FlagStatType.Blind), character.CanThroughWalls, map);
@@ -186,6 +187,8 @@ namespace Domain.Service.Characters
                 flagStat = new FlagStat(0);
                 _flagStats[type] = flagStat;
             }
+
+            Debug.Log($"{type} {flagStat.CurrentFlags}");
 
             return flagStat;
         }

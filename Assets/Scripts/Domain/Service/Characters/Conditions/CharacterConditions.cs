@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
@@ -18,7 +19,7 @@ namespace Domain.Service.Characters.Conditions
         private readonly CompositeDisposable _disposables = new();
 
         public CharacterConditions(IHasCondition hasCondition,
-            List<(Id<IEntity> actor, ConditionMemento condition)> conditions, IPlayer player)
+            List<(Id<IEntity> actor, ConditionMemento condition)> conditions, IMap map)
         {
             foreach (var (actor, conditionMemento) in conditions)
             {
@@ -28,10 +29,10 @@ namespace Domain.Service.Characters.Conditions
             }
 
             _conditions.ObserveAdd()
-                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], player))
+                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], map.Player))
                 .AddTo(_disposables);
             _conditions.ObserveRemove()
-                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], player))
+                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], map.Player))
                 .AddTo(_disposables);
         }
 

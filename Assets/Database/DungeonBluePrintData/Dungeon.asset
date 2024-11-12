@@ -93,9 +93,13 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
       - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
       - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
+    Bags:
+      items: []
     Others:
       items:
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+      - {fileID: 11400000, guid: ccdd9c7ccd2d02b45a8339f9dab447e5, type: 2}
+      - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}
     ChestItems:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
@@ -186,6 +190,7 @@ MonoBehaviour:
     Wands: 10
     Weapons: 10
     Artifacts: 5
+    Bags: 0
     Others: 1
   Traps:
     items:

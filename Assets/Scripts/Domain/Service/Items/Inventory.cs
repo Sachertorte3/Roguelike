@@ -114,6 +114,13 @@ namespace Domain.Service.Items
             return _storage.GetItem(index);
         }
 
+        public IItem? GetItem(int index, int subIndex)
+        {
+            if (subIndex < 0)
+                return _storage.GetItem(index);
+            return _storage.GetItem(index).ItemStorage.Value.GetItem(subIndex);
+        }
+
         public int GetItemIndex(IItem item)
         {
             return _storage.GetItemIndex(item);
@@ -127,6 +134,13 @@ namespace Domain.Service.Items
         public bool TryRemove(IItem item)
         {
             return _storage.TryRemove(item);
+        }
+
+        public IItem? Replace(IItem? item, int index, int subIndex)
+        {
+            if (subIndex < 0)
+                return _storage.Replace(item, index);
+            return _storage.GetItem(index).ItemStorage.Value.Replace(item, subIndex);
         }
 
         public IItem? Replace(IItem? item, int index)

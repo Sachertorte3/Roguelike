@@ -437,12 +437,12 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public void DropItem(int itemIndex, IMap map, bool isForced)
+        public void DropItem(int index, int subIndex, IMap map, bool isForced)
         {
-            var item = Inventory.GetItem(itemIndex);
+            var item = Inventory.GetItem(index, subIndex);
             if (item != null && isForced)
             {
-                ReplaceInventory(null, itemIndex);
+                ReplaceInventory(null, index, subIndex);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
@@ -468,7 +468,7 @@ namespace Domain.Service.Characters
                 GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
             }
 
-            ReplaceInventory(pickedUpItem?.Item, itemIndex);
+            ReplaceInventory(pickedUpItem?.Item, index, subIndex);
             if (item != null)
             {
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
@@ -681,9 +681,9 @@ namespace Domain.Service.Characters
             return false;
         }
 
-        public IItem? ReplaceInventory(IItem? item, int index)
+        public IItem? ReplaceInventory(IItem? item, int index, int subIndex)
         {
-            return _inventory.Replace(item, index);
+            return _inventory.Replace(item, index, subIndex);
         }
 
         public void UpdateTurn()

@@ -43,8 +43,8 @@ namespace Domain.Service.Effect
                 if (Random.value < _probabilityOfSuccess)
                 {
                     var item = items.GetAtRandom();
-                    var itemIndex = target.Inventory.GetItemIndex(item);
-                    target.DropItem(itemIndex, map, true);
+                    var index = target.Inventory.GetItemIndex(item);
+                    target.DropItem(index, -1, map, true);
                 }
                 else
                 {

@@ -12,64 +12,61 @@ using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Result;
 
 namespace Domain.Service.Items
 {
-    internal class Inventory : ISerializable<InventoryMemento>, IInventory, IDisposable
+    internal class Inventory : IInventory, IDisposable, ISerializable<StorageMemento>
     {
-        private const int MaxItems = 10;
+        private readonly Storage _storage;
+
         private readonly IDisposable _disposable;
+        private readonly CompositeDisposable[] _disposables;
 
-        private readonly CompositeDisposable[] _disposables =
-            EnumerableExtension.CreateNewInstances<CompositeDisposable>(MaxItems).ToArray();
-
-        private readonly ObservableList<IItem?> _items = new(Enumerable.Repeat<Item?>(null, MaxItems));
-        public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
-        private readonly Subject<OnItemUpdated> _onItemUpdated = new();
         private IHasCondition _hasCondition;
 
-        public Inventory(InventoryMemento data, IHasCondition hasCondition)
+        public IEnumerable<IItem> AllItems => _storage.AllItems;
+        public int Capacity => _storage.Capacity;
+        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _storage.OnItemChanged;
+        public Observable<OnItemUpdated> OnItemUpdated => _storage.OnItemUpdated;
+
+        public Inventory(StorageMemento data, IHasCondition hasCondition)
         {
+            _storage = new Storage(data);
             _hasCondition = hasCondition;
+            _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(_storage.Capacity).ToArray();
 
-            _disposable = OnItemChanged.Subscribe(itemChanged =>
-                {
-                    _disposables[itemChanged.Index].Clear();
-                    if (itemChanged.NewValue != null)
-                    {
-                        _disposables[itemChanged.Index].Add(
-                            itemChanged.NewValue.OnItemUpdated.Subscribe(
-                                _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
-                            ));
-                        _disposables[itemChanged.Index].Add(
-                            itemChanged.NewValue.OnCursedChanged.Subscribe(
-                                isCursed =>
-                                {
-                                    if (isCursed)
-                                        foreach (var condition in itemChanged.NewValue.PassiveConditions)
-                                            condition.Delete(_hasCondition, Id<IEntity>.Empty);
-                                    else
-                                        foreach (var condition in itemChanged.NewValue.PassiveConditions)
-                                            condition.Inflict(_hasCondition, Id<IEntity>.Empty);
-                                }
-                            ));
-                        _disposables[itemChanged.Index].Add(
-                            itemChanged.NewValue.RemainingUses.Subscribe(
-                                remainingUses =>
-                                {
-                                    if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
-                                        Replace(null, itemChanged.Index);
-                                }
-                            ));
-                    }
-                }
-            );
-
-            for (var i = 0; i < MaxItems; i++)
+            _disposable = _storage.OnItemChanged.Subscribe(itemChanged =>
             {
-                _items[i] = data.Items[i].Map(item => new Item(item)).Value;
-            }
+                _disposables[itemChanged.Index].Clear();
+
+                if (itemChanged.NewValue != null && !itemChanged.NewValue.IsCursed)
+                {
+                    foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                        condition.Inflict(_hasCondition, Id<IEntity>.Empty);
+                }
+
+                if (itemChanged.OldValue != null && !itemChanged.OldValue.IsCursed)
+                {
+                    foreach (var condition in itemChanged.OldValue.PassiveConditions)
+                        condition.Delete(_hasCondition, Id<IEntity>.Empty);
+                }
+
+                if (itemChanged.NewValue != null)
+                {
+                    itemChanged.NewValue.OnCursedChanged.Subscribe(
+                        isCursed =>
+                        {
+                            if (isCursed)
+                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                    condition.Delete(_hasCondition, Id<IEntity>.Empty);
+                            else
+                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                    condition.Inflict(_hasCondition, Id<IEntity>.Empty);
+                        }
+                    ).AddTo(_disposables[itemChanged.Index]);
+                }
+            });
         }
 
         public void Dispose()
@@ -79,14 +76,9 @@ namespace Domain.Service.Items
                 disposable.Dispose();
         }
 
-        public int MaxItemCount => MaxItems;
-
-        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
-        public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
-
         public void UpdateTurn()
         {
-            foreach (var item in _items)
+            foreach (var item in _storage.AllItems)
             {
                 if (item == null)
                     continue;
@@ -97,71 +89,53 @@ namespace Domain.Service.Items
             }
         }
 
+        public StorageMemento Serialize()
+        {
+            return _storage.Serialize();
+        }
+
         public bool HasEmptySpace()
         {
-            return _items.IndexOf(null) >= 0;
+            return _storage.HasEmptySpace();
         }
 
         public IItem? GetItem(int index)
         {
-            return _items[index];
+            return _storage.GetItem(index);
+        }
+
+        public IItem? GetItem(int index, int subIndex)
+        {
+            if (subIndex < 0)
+                return _storage.GetItem(index);
+            return _storage.GetItem(index).ItemStorage.Value.GetItem(subIndex);
         }
 
         public int GetItemIndex(IItem item)
         {
-            return _items.IndexOf(item);
-        }
-
-        public InventoryMemento Serialize()
-        {
-            return new InventoryMemento
-            (
-                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray()
-            );
+            return _storage.GetItemIndex(item);
         }
 
         public bool TryAdd(IItem item)
         {
-            var index = _items.IndexOf(null);
-            if (index >= 0)
-            {
-                Replace(item, index);
-                return true;
-            }
-
-            return false;
+            return _storage.TryAdd(item);
         }
 
-        public IItem? Replace(IItem? item, int index)
+        public bool TryRemove(IItem item)
         {
-            var removed = _items[index];
-            _items[index] = item;
-            if (item != null && !item.IsCursed)
-            {
-                foreach (var condition in item.PassiveConditions)
-                    condition.Inflict(_hasCondition, Id<IEntity>.Empty);
-            }
-
-            if (removed != null && !removed.IsCursed)
-            {
-                foreach (var condition in removed.PassiveConditions)
-                    condition.Delete(_hasCondition, Id<IEntity>.Empty);
-            }
-
-            return removed;
+            return _storage.TryRemove(item);
         }
 
-        public IItem? Remove(int index)
+        public Result<IItem?> Replace(IItem? item, int index, int subIndex)
         {
-            return Replace(null, index);
+            if (subIndex < 0)
+                return _storage.Replace(item, index);
+            return _storage.GetItem(index).ItemStorage.Value.Replace(item, subIndex);
         }
 
-        public bool Remove(IItem item)
+        public Result<IItem?> Replace(IItem? item, int index)
         {
-            var index = _items.IndexOf(item);
-            if (index < 0)
-                return false;
-            return Replace(null, index) != null;
+            return _storage.Replace(item, index);
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnCharacterEffect : ActorlessFieldTargetEffect
     {
-        [Required] [SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
-        [MinValue(1)] [SerializeField] private int _count;
+        [Required][SerializeField] private ScriptableObjectSerializable<EnemyData> _character;
+        [MinValue(1)][SerializeField] private int _count;
         [SerializeField] private bool _inheritsShiny;
 
         public override Color Color => Colors.MediumPurple;

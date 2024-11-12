@@ -16,6 +16,6 @@ namespace Domain.Model.Effect
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
         public void ListenToAlert(Vector2Int position);
-        public void DropItem(int itemIndex, IMap map, bool isForced);
+        public void DropItem(int index, int subIndex, IMap map, bool isForced);
     }
 }

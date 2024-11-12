@@ -17,7 +17,7 @@ using Domain.Service.Effect;
 using Domain.Service.Items;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters
@@ -59,10 +59,7 @@ namespace Domain.Service.Characters
                     )
                 },
                 Option<SpawnEffectSkillMemento>.None,
-                new InventoryMemento
-                (
-                    EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
-                ),
+                Storage.Build(10, true),
                 new List<string>(),
                 CharacterAffiliationManager.Build(CharacterGroup.Human),
                 Aggression.AttackAnyone,
@@ -81,10 +78,7 @@ namespace Domain.Service.Characters
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
             IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
         {
-            var inventory = new InventoryMemento
-            (
-                EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(10).ToArray()
-            );
+            var inventory = Storage.Build(10, true);
             if (Random.value < data.DropItemRate && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();

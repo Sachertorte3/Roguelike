@@ -137,7 +137,7 @@ namespace Domain.Service.Characters.Behavior
                             break;
                         }
 
-                        action = new DropItem(focus.index);
+                        action = new DropItem(focus.index, focus.subIndex);
                         if (action.Doable(character, map)) return action;
                         break;
                     case InputType.DoNothing:

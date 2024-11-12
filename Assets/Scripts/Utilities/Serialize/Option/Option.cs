@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Utilities.Serialize
+namespace Utilities.Serialize.Option
 {
     public static class Option
     {

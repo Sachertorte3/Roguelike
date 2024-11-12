@@ -28,14 +28,15 @@ namespace Domain.Service.Characters
             _canThroughWalls = canThroughWalls;
             _clairvoyantFlags = clairvoyantFlags;
             _blindFlags = blindFlags;
-            _position.Subscribe(_ => ChangeVisibleArea());
-            _range.Subscribe(_ => ChangeVisibleArea());
-            _clairvoyantFlags
-                .Value
-                .Subscribe(_ => ChangeVisibleArea());
-            _blindFlags
-                .Value
-                .Subscribe(_ => ChangeVisibleArea());
+            Observable.Merge(
+                _position.AsUnitObservable(),
+                _range.AsUnitObservable(),
+                _clairvoyantFlags.Value.AsUnitObservable(),
+                _blindFlags.Value.AsUnitObservable()
+            ).Subscribe(_ =>
+            {
+                ChangeVisibleArea();
+            });
             _map = map;
         }
 
@@ -54,6 +55,10 @@ namespace Domain.Service.Characters
 
         public bool IsVisible(Vector2Int position)
         {
+            if (IsClairvoyant)
+                return true;
+            if (IsBlind)
+                return _map.IsVisible(_position.CurrentValue, position, 1.5f);
             return _map.IsVisible(_position.CurrentValue, position, _range.CurrentValue + 0.5f);
         }
 

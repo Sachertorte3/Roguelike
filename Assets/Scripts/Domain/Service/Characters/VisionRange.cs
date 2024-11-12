@@ -3,6 +3,7 @@ using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using Utilities.Stats;
 
@@ -23,6 +24,7 @@ namespace Domain.Service.Characters
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
             FlagStat clairvoyantFlags, FlagStat blindFlags, bool canThroughWalls, IMap map)
         {
+            Log.Info($"{clairvoyantFlags.CurrentFlags} {blindFlags.CurrentFlags}");
             _position = position;
             _range = range;
             _canThroughWalls = canThroughWalls;

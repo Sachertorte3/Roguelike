@@ -99,7 +99,7 @@ namespace Domain.Service.Items
                 },
                 itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
             ));
-            _storage = new Storage(Storage.Build(5)).ToOption();
+            _storage = data.Storage.Map(storage => new Storage(storage));
             _hasSameEffect = data.HasSameEffect;
             _hasSameSkill = data.HasSameSkill;
             UseOnDeath = data.UseOnDeath;
@@ -171,6 +171,7 @@ namespace Domain.Service.Items
                 hasSameEffect: _hasSameEffect,
                 hasSameSkill: _hasSameSkill,
                 useOnDeath: UseOnDeath,
+                storage: _storage.Map(storage => storage.Serialize()),
                 maxUsages: _maxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
                 isCursed: IsCursed,
@@ -214,6 +215,7 @@ namespace Domain.Service.Items
                 hasSameEffect: data.IsSameEffect,
                 hasSameSkill: data.IsSameSkill,
                 useOnDeath: data.UseOnDeath,
+                storage: data.StorageCapacity > 0 ? Storage.Build(data.StorageCapacity).ToOption() : Option<StorageMemento>.None,
                 maxUsages: data.UsageLimit,
                 remainingUsages: data.UsageLimit,
                 isCursed: isCursed,

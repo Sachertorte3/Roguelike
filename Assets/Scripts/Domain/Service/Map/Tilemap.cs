@@ -9,7 +9,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
 using Random = UnityEngine.Random;
 
 namespace Domain.Service.Map

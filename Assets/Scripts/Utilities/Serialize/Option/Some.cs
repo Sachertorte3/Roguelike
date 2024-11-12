@@ -1,4 +1,4 @@
-﻿namespace Utilities.Serialize
+﻿namespace Utilities.Serialize.Option
 {
     public class Some<T> : Option<T>
     {

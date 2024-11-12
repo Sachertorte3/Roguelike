@@ -3,6 +3,7 @@ using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
+using Domain.Service.Logs;
 using UnityEngine;
 
 namespace Domain.Service.ItemEffect

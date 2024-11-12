@@ -26,7 +26,8 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize;
+using Utilities.Serialize.Option;
+using Utilities.Serialize.Result;
 
 namespace Domain.Service.Characters
 {
@@ -442,7 +443,7 @@ namespace Domain.Service.Characters
             var item = Inventory.GetItem(index, subIndex);
             if (item != null && isForced)
             {
-                ReplaceInventory(null, index, subIndex);
+                RemoveInventory(index, subIndex);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
@@ -450,7 +451,6 @@ namespace Domain.Service.Characters
                 State = CharacterState.Finish;
                 return;
             }
-
             if (item != null && item.CannotDropIfCursed)
             {
                 item.SetCurseIdentified(true);
@@ -462,20 +462,31 @@ namespace Domain.Service.Characters
                 }
             }
 
-            var pickedUpItem = map.TryPickUpAt(Entity.CurrentPosition, true);
-            if (pickedUpItem != null)
-            {
-                GameLog.Add($"{GetName(map.Player)}は{pickedUpItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
-            }
+            var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
 
-            ReplaceInventory(pickedUpItem?.Item, index, subIndex);
-            if (item != null)
-            {
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
-                map.SpawnItem(item,
-                    map.FindBlankPositionFrom(Entity.CurrentPosition,
-                        position => map.At(position).IsBlank(EntityLayer.Bottom)));
-            }
+            var result = ReplaceInventory(groundItem?.Item, index, subIndex);
+            Log.Info($"ReplaceInventory result:{result}");
+            result.Match(
+                replacedItem =>
+                {
+                    if (groundItem != null)
+                    {
+                        map.TryPickUpAt(Entity.CurrentPosition, true);
+                        GameLog.Add($"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
+                    }
+                    if (replacedItem != null)
+                    {
+                        GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
+                        map.SpawnItem(item,
+                            map.FindBlankPositionFrom(Entity.CurrentPosition,
+                                position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                    }
+                },
+                () =>
+                {
+                    GameLog.Add($"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(index, -1).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+                }
+            );
 
             State = CharacterState.Finish;
         }
@@ -681,7 +692,12 @@ namespace Domain.Service.Characters
             return false;
         }
 
-        public IItem? ReplaceInventory(IItem? item, int index, int subIndex)
+        public IItem? RemoveInventory(int index, int subIndex)
+        {
+            return _inventory.Replace(null, index, subIndex).Unwrap();
+        }
+
+        public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex)
         {
             return _inventory.Replace(item, index, subIndex);
         }

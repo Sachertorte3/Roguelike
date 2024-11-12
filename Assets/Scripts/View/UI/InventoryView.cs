@@ -2,6 +2,7 @@
 using R3;
 using Sirenix.Utilities;
 using TMPro;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ namespace View.UI
         [SerializeField] private Sprite _emptyIcon;
         private readonly ReactiveProperty<(int index, int subIndex)> _focusIndex = new((0, -1));
         private readonly Subject<int> _onMainFocusChanged = new();
+        private readonly Subject<int> _onLogUpdated = new();
         private readonly string[] _info = new string[InventorySize + 1];
         private readonly InventoryItemView[] _itemViews = new InventoryItemView[InventorySize + 2];
 
@@ -29,9 +31,11 @@ namespace View.UI
         public void Initialize(SubStorageView subStorageView)
         {
             _subStorageView = subStorageView;
+
             for (var i = 0; i < _itemViews.Length; i++)
                 if (_itemViews[i] == null)
                     _itemViews[i] = Instantiate(_itemViewPrefab, transform);
+
             _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ =>
             {
                 _onMainFocusChanged.OnNext(index);
@@ -41,14 +45,15 @@ namespace View.UI
             {
                 _focusIndex.Value = (_focusIndex.CurrentValue.index, subIndex);
             }).AddTo(subStorageView);
-            OnFocusChanged.Subscribe(index => 
+            OnFocusChanged.Subscribe(index =>
             {
-                if (index.subIndex >= 0)
-                    _infoText.text = _subStorageView.GetInfo(index.subIndex);
-                else
-                    _infoText.text = index.isEmpty ? "" : _info[index.index];
+                Log.Debug($"OnFocusChanged: {index}");
+                _infoText.text = GetInfo(CurrentFocus);
             }).AddTo(this);
-            OnFocusChanged.Subscribe(index => Debug.Log(index)).AddTo(this);
+
+            _onLogUpdated.Subscribe(_ => _infoText.text = GetInfo(CurrentFocus)).AddTo(this);
+            _subStorageView.OnLogUpdated.Subscribe(_ => _infoText.text = GetInfo(CurrentFocus)).AddTo(subStorageView);
+
             _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
             _itemViews[InventorySize + 1].SetIcon(_emptyIcon, null, false, false, true, true);
 
@@ -124,7 +129,15 @@ namespace View.UI
         public void UpdateInfo(string info, int index)
         {
             _info[index] = info;
-            if (CurrentFocus.index == index) _infoText.text = info;
+            _onLogUpdated.OnNext(index);
+        }
+
+        public string GetInfo(Focus focus)
+        {
+            if (focus.subIndex >= 0)
+                return _subStorageView.GetInfo(focus.subIndex);
+            else
+                return focus.isEmpty ? "" : _info[focus.index];
         }
 
         public void DisableItems(int[] disabledItemIndexes)

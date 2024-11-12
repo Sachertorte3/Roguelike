@@ -465,7 +465,6 @@ namespace Domain.Service.Characters
             var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
 
             var result = ReplaceInventory(groundItem?.Item, index, subIndex);
-            Log.Info($"ReplaceInventory result:{result}");
             result.Match(
                 replacedItem =>
                 {

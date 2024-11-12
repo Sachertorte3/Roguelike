@@ -105,8 +105,14 @@ namespace Domain.Service.Items
             _itemStorage = data.Storage.Map(storage => 
             {
                 var itemStorage = new Storage(storage);
-                itemStorage.OnItemChanged.Subscribe(_ => _onItemUpdated.OnNext(Unit.Default)).AddTo(_disposables);
-                itemStorage.OnItemUpdated.Subscribe(_ => _onItemUpdated.OnNext(Unit.Default)).AddTo(_disposables);
+                itemStorage.OnItemChanged.Subscribe(_ =>
+                {
+                    _onItemUpdated.OnNext(Unit.Default);
+                }).AddTo(_disposables);
+                itemStorage.OnItemUpdated.Subscribe(_ => 
+                {
+                    _onItemUpdated.OnNext(Unit.Default);
+                }).AddTo(_disposables);
                 return itemStorage;
             });
             UseOnDeath = data.UseOnDeath;

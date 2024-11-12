@@ -9,6 +9,7 @@ using Domain.Model.Item;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 using Utilities.Serialize.Result;
@@ -33,15 +34,15 @@ namespace Domain.Service.Items
         public Storage(StorageMemento data)
         {
             _items = new ObservableList<IItem?>();
-            foreach (var item in data.Items)
+            for (var i = 0; i < data.Items.Length; i++)
             {
-                _items.Add(item.Map(item => new Item(item)).Value);
+                //MEMO: Since you are only subscribed to Replace, additions must also be done using Replace.
+                _items.Add(null);
             }
             _canAddItemsWithStorage = data.CanAddItemsWithStorage;
 
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
-
-            _disposable = OnItemChanged.Subscribe(itemChanged =>
+            _disposable = _items.ObserveReplace().Subscribe(itemChanged =>
             {
                 _disposables[itemChanged.Index].Clear();
                 if (itemChanged.NewValue != null)
@@ -49,8 +50,21 @@ namespace Domain.Service.Items
                     itemChanged.NewValue.OnItemUpdated.Subscribe(
                         _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
                     ).AddTo(_disposables[itemChanged.Index]);
+
+                    itemChanged.NewValue.RemainingUses.Subscribe(
+                        remainingUses =>
+                        {
+                            if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
+                                Remove(itemChanged.Index);
+                        }
+                    ).AddTo(_disposables[itemChanged.Index]);
                 }
             });
+
+            for (var i = 0; i < data.Items.Length; i++)
+            {
+                Replace(data.Items[i].Map(item => new Item(item)).Value, i);
+            }
         }
 
         public void Dispose()

@@ -32,6 +32,7 @@ MonoBehaviour:
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
+    ChaseLeader: 1
   MoveSpeed: 2
   IsHard: 1
   IsHeavy: 0

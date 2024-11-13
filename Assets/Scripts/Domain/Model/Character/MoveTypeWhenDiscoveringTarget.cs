@@ -3,8 +3,8 @@ namespace Domain.Model.Character
     public enum MoveTypeWhenDiscoveringTarget
     {
         NoMove,
-        Chase,
         Wander,
+        Chase,
         Escape
     }
 }

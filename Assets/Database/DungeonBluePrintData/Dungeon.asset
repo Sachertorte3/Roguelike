@@ -257,7 +257,7 @@ MonoBehaviour:
       GrassChance: 0.3
       ShopChance: 0.05
       MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
+      RestRoomChance: 1
       ChestChance: 1
       ItemCount: 2
       MoneyCount: 1

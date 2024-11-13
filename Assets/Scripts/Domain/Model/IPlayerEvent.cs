@@ -9,6 +9,6 @@ namespace Domain.Model
     {
         public bool CanExecuteEvent(IPlayer player);
         public UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map);
-        public UniTask<IAction?> DoAction(IPlayer player, IGameManager gameManager, IMap map, IAction swap);
+        public UniTask<IAction?> DoAction(IPlayer player, IGameManager gameManager, IMap map, IAction? swap);
     }
 }

@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public sealed class NoMove : IBehaviorWhenUndiscoveringTarget, IBehaviorWhenDiscoveringTarget
+    internal static class NoMove
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
         {
             return new List<IAction> { new DoNothing() };
         }
 
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
             return GenerateMoveActionsDoable(character, map);

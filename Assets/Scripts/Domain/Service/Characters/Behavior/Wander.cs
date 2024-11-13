@@ -8,9 +8,9 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Wander : IBehaviorWhenUndiscoveringTarget, IBehaviorWhenDiscoveringTarget
+    internal static class Wander
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, IMap map)
         {
             var directions = new Dictionary<Direction8, float>();
             var facingDirection = character.CurrentDirection;
@@ -81,12 +81,6 @@ namespace Domain.Service.Characters.Behavior
 
             return DirectionMethods.AllDirections.Where(direction => character.CanMove(direction, map))
                 .Select(direction => new Move(direction, 0.02f));
-        }
-
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
-            IMap map)
-        {
-            return GenerateMoveActionsDoable(character, map);
         }
     }
 }

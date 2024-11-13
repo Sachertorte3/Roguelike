@@ -28,5 +28,6 @@ namespace Domain.Model.Character
         [ShowIf("UseBottomBound")] public bool PrioritizeMovementWhenDistanceLessThanBottomBound;
 
         public bool PrioritizeEnemiesOverLeaders;
+        public bool ChaseLeader = true;
     }
 }

@@ -9,9 +9,9 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Chase : IBehaviorWhenDiscoveringTarget
+    internal static class Chase
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
             var calculator = new MoveCostCalculator(character, map, true);

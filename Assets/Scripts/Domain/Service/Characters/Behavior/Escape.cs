@@ -9,9 +9,9 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Escape : IBehaviorWhenDiscoveringTarget
+    internal static class Escape
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
             var relativePosition = character.Entity.CurrentPosition - targetPosition;

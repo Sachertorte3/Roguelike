@@ -608,7 +608,7 @@ namespace Domain.Service.Characters
 
         public void AddKnownItem(IItem item)
         {
-            if (!IsKnownItem(item))
+            if (!IsKnownItem(item) && IsPlayer)
             {
                 GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
                 _knownItemNames.Add(item.BaseName);

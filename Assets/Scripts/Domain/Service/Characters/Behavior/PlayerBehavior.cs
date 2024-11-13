@@ -72,24 +72,36 @@ namespace Domain.Service.Characters.Behavior
                 {
                     case InputType.Move:
                         var (move, started) = result.move!.Value;
+
+                        var destination = character.Entity.CurrentPosition + move.Direction.Vector();
+                        var playerEventEntities = map.PlayerEventEntities.At(destination).On(EntityLayer.Middle);
+
                         if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
+                            if (playerEventEntities.Any() &&
+                            playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
+                            {
+                                foreach (var eventEntity in playerEventEntities)
+                                {
+                                    var eventAction = await eventEntity.Event.DoAction(map.Player, gameManager, map, new Swap(move.Direction));
+                                    if (eventAction != null && eventAction.Doable(character, map))
+                                        return eventAction;
+                                    break;
+                                }
+                            }
                             break;
                         }
 
                         if (Settings.IntelligentDash.Value)
                             move = _intelligentDashController.Filter(move, character, started, map, input);
+                        var swap = new Swap(move.Direction);
+                        destination = character.Entity.CurrentPosition + move.Direction.Vector();
 
                         character.Turn(move.Direction);
-
-                        var swap = new Swap(move.Direction);
-                        var destination = character.Entity.CurrentPosition + move.Direction.Vector();
-                        var playerEventEntities = map.PlayerEventEntities.At(destination).On(EntityLayer.Middle);
-
                         if (move.Doable(character, map))
                             return move;
-                        if (playerEventEntities.Any() &&
+                        else if (playerEventEntities.Any() &&
                             playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
                         {
                             foreach (var eventEntity in playerEventEntities)
@@ -102,7 +114,6 @@ namespace Domain.Service.Characters.Behavior
                         }
                         else if (swap.Doable(character, map))
                             return swap;
-
                         break;
                     case InputType.UseItem:
                         var focus = result.focus!;

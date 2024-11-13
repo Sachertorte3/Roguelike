@@ -48,7 +48,7 @@ namespace Domain.Service.Rooms
                                 }
                                 else
                                 {
-                                    GameLog.Add($"{Character.GetName(player)}はこれ以上アイテムを持てない。");
+                                    GameLog.Add($"{Character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
                                 }
                             }
                         }
@@ -58,6 +58,7 @@ namespace Domain.Service.Rooms
                         player => Character.IsAlly(player.Character),
                         (gameManager, map) =>
                         {
+                            Behavior.BehaviorData.ChaseLeader = true;
                             Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
                             return UniTask.CompletedTask;
                         }),
@@ -66,9 +67,19 @@ namespace Domain.Service.Rooms
                         player => Character.IsAlly(player.Character),
                         (gameManager, map) =>
                         {
+                            Behavior.BehaviorData.ChaseLeader = true;
                             Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
                             return UniTask.CompletedTask;
-                        })
+                        }),
+                    new(
+                        "自由行動",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.ChaseLeader = false;
+                            return UniTask.CompletedTask;
+                        }
+                    )
                 }
             );
         }

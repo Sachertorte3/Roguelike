@@ -19,6 +19,8 @@ MonoBehaviour:
       rid: 3794997653850030125
     <Effects>k__BackingField:
     - rid: 3794997653850030126
+    - rid: 3794997653850030133
+    - rid: 3794997653850030132
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.85
   <ProbabilityOfBreaking>k__BackingField: 0.1
@@ -38,3 +40,14 @@ MonoBehaviour:
       type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _damageRate: 0.5
+    - rid: 3794997653850030132
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        ApplyToCharacter: 0
+        ApplyToItem: 1
+        ApplyToMoney: 1
+        ApplyToTrap: 1
+        ApplyToChest: 1
+    - rid: 3794997653850030133
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using R3;
+using UnityEngine;
 
 namespace Domain.Model.Setting
 {
@@ -40,16 +41,64 @@ namespace Domain.Model.Setting
         public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
         public static ReactiveProperty<bool> AutoSave => _autoSave.OnValueChanged;
         public static ReactiveProperty<bool> RetryOnDead => _retryOnDead.OnValueChanged;
+
+        private static readonly Subject<Unit> _onValuesSet = new();
+        public static Observable<Unit> OnValuesSet => _onValuesSet;
+
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new();
             foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
             {
                 var value = field.GetValue(typeof(Settings));
-                if (typeof(IOptionInput).IsAssignableFrom(field.FieldType)) setters.Add((IOptionInput)value);
+                if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))
+                {
+                    setters.Add((IOptionInput)value);
+                }
             }
 
             return setters;
+        }
+
+        public static void SetValues(Dictionary<string, int> values)
+        {
+            foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+            {
+                var value = field.GetValue(typeof(Settings));
+                if (values.TryGetValue(field.Name, out var intValue))
+                {
+                    
+                    switch (value)
+                    {
+                        case Slider slider:
+                            slider.SetValue(intValue);
+                            break;
+                        case CheckBox checkBox:
+                            checkBox.SetValue(intValue == 1);
+                            break;
+                    }
+                }
+            }
+            _onValuesSet.OnNext(Unit.Default);
+        }
+
+        public static Dictionary<string, int> GetValues()
+        {
+            var settings = new Dictionary<string, int>();
+            foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+            {
+                var value = field.GetValue(typeof(Settings));
+                if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))
+                {
+                    var option = (IOptionInput)value switch
+                    {
+                        Slider slider => slider.Value,
+                        CheckBox checkBox => checkBox.Value ? 1 : 0,
+                    };
+                    settings.Add(field.Name, option);
+                }
+            }
+            return settings;
         }
     }
 }

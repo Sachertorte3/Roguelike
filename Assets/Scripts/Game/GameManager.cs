@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Entity;
@@ -172,6 +171,8 @@ namespace Game
             _receiver.Enable(true);
             Log.Debug("[Game]End LoadMap");
         }
+
+        public void Save() => _saveDataManager.Save(_world);
 
         public async UniTask LoadAndStart()
         {

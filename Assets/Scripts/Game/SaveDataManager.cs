@@ -1,8 +1,10 @@
 #nullable enable
 using System.IO;
 using Domain.Model.Memento;
+using Domain.Model.Setting;
 using Unity.Logging;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Game
 {
@@ -19,6 +21,7 @@ namespace Game
                 Log.Debug($"[Save]Save map: {map.Id}");
                 WriteData($"Save/{map.Id}.json", JsonUtility.ToJson(map));
             }
+            WriteData("Save/settings.json", JsonUtility.ToJson(Settings.GetValues().ToSerializable()));
 
             Log.Debug("[Save]End Save");
         }
@@ -31,6 +34,12 @@ namespace Game
             if (saveData != null)
             {
                 world = JsonUtility.FromJson<WorldMemento>(saveData);
+            }
+            var settingsData = ReadData("Save/settings.json");
+            if (settingsData != null)
+            {
+                var settings = JsonUtility.FromJson<SerializableDictionary<string, int>>(settingsData);
+                Settings.SetValues(settings.ToDictionary());
             }
 
             Log.Debug("[Save]End Load");

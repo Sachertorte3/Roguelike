@@ -13,6 +13,13 @@ namespace Provider
         public SettingPresenter(SettingWindow settingWindow)
         {
             Log.Debug("[Menu]Set options window");
+            Settings.OnValuesSet.Subscribe(_ => SetOptions(settingWindow));
+            SetOptions(settingWindow);
+        }
+
+        public void SetOptions(SettingWindow settingWindow)
+        {
+            settingWindow.Clear();
             foreach (var option in Settings.GetOptions())
                 switch (option)
                 {

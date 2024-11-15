@@ -28,6 +28,14 @@ namespace View.UI
             return option.OnValueChanged;
         }
 
+        public void Clear()
+        {
+            foreach (Transform child in _content)
+                Destroy(child.gameObject);
+            firstOption = null;
+            lastOption = null;
+        }
+
         private void UpdateNavigation(ISettingOption newSelectable)
         {
             if (firstOption == null)

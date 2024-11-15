@@ -248,7 +248,7 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0
     Floors:
-    - Depth: 3
+    - Depth: 2
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -257,8 +257,8 @@ MonoBehaviour:
       GrassChance: 0.3
       ShopChance: 0.05
       MonsterHouseChance: 0.05
-      RestRoomChance: 1
-      ChestChance: 1
+      RestRoomChance: 0.05
+      ChestChance: 0.1
       ItemCount: 2
       MoneyCount: 1
       MoneyAverage: 100
@@ -277,25 +277,8 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0.25
     Floors:
-    - Depth: 6
+    - Depth: 3
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
@@ -327,7 +310,7 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0.25
     Floors:
-    - Depth: 3
+    - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -351,24 +334,7 @@ MonoBehaviour:
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
+      ShopChance: 1
       MonsterHouseChance: 0.05
       RestRoomChance: 0.05
       ChestChance: 0.1
@@ -389,30 +355,15 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
         Weight: 1
-  - Type: 1
+      - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+        Weight: 1
+  - Type: 2
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0.5
     Floors:
-    - Depth: 4
+    - Depth: 5
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
@@ -433,11 +384,11 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
+      - Item: {fileID: 11400000, guid: 276ed294d4867e14799ef6e322837be5, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
+      - Item: {fileID: 11400000, guid: 3eefc4cf587b776428b3c75029dc2ca0, type: 2}
         Weight: 1
   - Type: 5
     RoundRoomCorner: 0
@@ -462,13 +413,13 @@ MonoBehaviour:
       TrapCount: 0.5
       Boss: []
     - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3
-      ShopChance: 0.05
+      ShopChance: 1
       MonsterHouseChance: 0.05
       RestRoomChance: 0.05
       ChestChance: 0.1
@@ -484,19 +435,15 @@ MonoBehaviour:
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
+      - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
         Weight: 1
   - Type: 4
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0
     Floors:
-    - Depth: 4
+    - Depth: 5
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -513,35 +460,20 @@ MonoBehaviour:
       CharacterCount: 1
       TrapCount: 0.5
       Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 7b8d9caf8a0f37a4f83b24e4620e807e, type: 2}
+      - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
         Weight: 1
-  - Type: 6
+      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+        Weight: 1
+  - Type: 3
     RoundRoomCorner: 0
     CaveInOneRoom: 0
     WaterChance: 0
@@ -570,7 +502,9 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
+      - Item: {fileID: 11400000, guid: e08657120f363c443a261f9a6b69cbcf, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+      - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
         Weight: 1

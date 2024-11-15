@@ -21,7 +21,7 @@ MonoBehaviour:
   Aggression: 4
   Behavior:
     wanderAround: 1
-    Default: 3
+    Default: 2
     PrioritizeMovement: 1
     UseTopBound: 1
     greaterThanTopBound: 1

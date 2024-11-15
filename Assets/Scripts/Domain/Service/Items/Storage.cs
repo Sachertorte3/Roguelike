@@ -9,7 +9,6 @@ using Domain.Model.Item;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 using Utilities.Serialize.Result;

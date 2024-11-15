@@ -22,6 +22,7 @@ namespace Domain.Model.Dungeon
         {
             _placeholderData = placeholders;
             _placeholders = memento.Placeholders;
+            _playerAssignedNames = memento.PlayerAssignedNames;
             _potionPlaceholderIndexes = memento.PotionPlaceholders;
             _scrollPlaceholderIndexes = memento.ScrollPlaceholders;
             _bookPlaceholderIndexes = memento.BookPlaceholders;

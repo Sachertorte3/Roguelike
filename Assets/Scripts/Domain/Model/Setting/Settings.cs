@@ -21,6 +21,7 @@ namespace Domain.Model.Setting
         private static readonly CheckBox _autoPickUpShopItem = new("店のアイテムを自動で拾う", false);
         private static readonly Slider _dashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
         private static readonly CheckBox _autoSave = new("自動でセーブする", true);
+        private static readonly CheckBox _retryOnDead = new("死亡時にリトライ可能", false);
 
         public static ReactiveProperty<int> BGMVolume => _BGMVolume.OnValueChanged;
         public static ReactiveProperty<int> SEVolume => _SEVolume.OnValueChanged;
@@ -31,16 +32,14 @@ namespace Domain.Model.Setting
         public static ReactiveProperty<int> LogShownMilliSeconds => _logShownMilliSeconds.OnValueChanged;
         public static ReactiveProperty<int> DamageTextDisplayTime => _damageTextDisplayTime.OnValueChanged;
         public static ReactiveProperty<int> FlushDuration => _flushDuration.OnValueChanged;
-
         public static ReactiveProperty<int> SignificantDamageThresholdPercentage =>
             _significantDamageThresholdPercentage.OnValueChanged;
-
         public static ReactiveProperty<int> LowHpThresholdPercentage => _lowHpThresholdPercentage.OnValueChanged;
         public static ReactiveProperty<bool> IntelligentDash => _intelligentDash.OnValueChanged;
         public static ReactiveProperty<bool> AutoPickUpShopItem => _autoPickUpShopItem.OnValueChanged;
         public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
         public static ReactiveProperty<bool> AutoSave => _autoSave.OnValueChanged;
-
+        public static ReactiveProperty<bool> RetryOnDead => _retryOnDead.OnValueChanged;
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new();

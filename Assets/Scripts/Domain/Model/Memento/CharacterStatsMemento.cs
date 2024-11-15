@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using Domain.Model.Effect;
@@ -33,6 +34,15 @@ namespace Domain.Model.Memento
             _conditionResistance = conditionResistance.ToSerializable();
             ViewRange = viewRange;
             WaitTime = waitTime;
+        }
+
+        public CharacterStatsMemento CopyWith(ResourceData? hp = null, StatData? hpNaturalRecovery = null,
+            Dictionary<Element, StatData>? elementAttackMultiplier = null,
+            Dictionary<Element, StatData>? elementDamageRateMultiplier = null,
+            Dictionary<string, StatData>? conditionResistance = null, StatData? viewRange = null,
+            ResourceData? waitTime = null)
+        {
+            return new CharacterStatsMemento(hp ?? Hp, hpNaturalRecovery ?? HpNaturalRecoveryAmount, elementAttackMultiplier ?? ElementAttackMultiplier, elementDamageRateMultiplier ?? ElementDamageRateMultiplier, conditionResistance ?? ConditionResistance, viewRange ?? ViewRange, waitTime ?? WaitTime);
         }
     }
 }

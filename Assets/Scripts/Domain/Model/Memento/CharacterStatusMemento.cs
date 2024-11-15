@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character.Status;
@@ -12,7 +13,7 @@ namespace Domain.Model.Memento
     [Serializable]
     public class CharacterStatusMemento
     {
-        [field: SerializeField] public CharacterStatsMemento Stats;
+        [field: SerializeField] public CharacterStatsMemento Stats { get; private set; }
         [SerializeField] private SerializableDictionary<FlagStatType, int> _flagStats;
         public Dictionary<FlagStatType, int> FlagStats => _flagStats.ToDictionary();
         [SerializeField] private List<ConditionMemento> _conditions;
@@ -28,6 +29,13 @@ namespace Domain.Model.Memento
             _flagStats = flagStats.ToSerializable();
             _conditions = conditions.Select(x => x.condition).ToList();
             _inflicters = conditions.Select(x => x.actor.ToString()).ToList();
+        }
+
+        public CharacterStatusMemento CopyWith(CharacterStatsMemento? stats = null,
+            Dictionary<FlagStatType, int>? flagStats = null,
+            List<(Id<IEntity> actor, ConditionMemento condition)>? conditions = null)
+        {
+            return new CharacterStatusMemento(stats ?? Stats, flagStats ?? FlagStats, conditions ?? Conditions);
         }
     }
 }

@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Memento;
+using Domain.Model.Setting;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
@@ -21,6 +22,7 @@ namespace Game
     {
         private readonly World _world;
         private readonly TurnController _turnController;
+        private readonly SaveDataManager _saveDataManager;
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         private readonly ChoiceReceiver _choiceReceiver;
@@ -38,6 +40,7 @@ namespace Game
         {
             _world = world;
             _turnController = new TurnController(input);
+            _saveDataManager = new SaveDataManager();
             _choiceReceiver = choiceReceiver;
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
@@ -48,65 +51,115 @@ namespace Game
                 _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
                 {
                     await StopMap();
-                    Save();
+                    _saveDataManager.Save(_world);
                     _state.Value = GameState.Title;
                 });
             });
         }
 
+        public UniTask<int> GetChoice(string? text, params string[] choices)
+        {
+            return _choiceReceiver.GetChoice(text, choices);
+        }
+
+        public UniTask<string> GetTextInput()
+        {
+            return _textInputReceiver.GetTextInput();
+        }
+
         public async UniTask Title()
         {
             GameLog.Clear();
+            await StopMap();
             if (_world.ActiveMap.CurrentValue == null)
             {
-                await Load();
+                var world = _saveDataManager.Load();
+                if (world != null)
+                {
+                    LoadWorld(world);
+                }
+                else
+                {
+                    CreateWorld();
+                }
             }
-
             var map = _world.ActiveMap.CurrentValue;
+
             if (map.Player.Character.CurrentHp > 0)
             {
                 var choice = await GetChoice(null, "Continue", "New Game");
-                _state.Value = GameState.Dungeon;
                 switch (choice)
                 {
                     case 0:
-                        StartMap(map);
                         break;
                     case 1:
-                        ClearSave();
-                        map = await CreateWorld();
-                        StartMap(map);
+                        _saveDataManager.ClearSave();
+                        map = CreateWorld();
+                        break;
+                }
+            }
+            else if (Settings.RetryOnDead.Value)
+            {
+                var choice = await GetChoice(null, "Retry", "New Game");
+                switch (choice)
+                {
+                    case 0:
+                        await StopMap();
+                        var world = _world.Serialize().RevivePlayer();
+                        map = LoadWorld(world);
+                        var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
+                        map.Player.Character.Entity.Teleport(randomPosition);
+                        map.Player.Character.RestoreToFullHealth();
+                        map.Player.Character.Turn(Direction8.Down);
+                        break;
+                    case 1:
+                        _saveDataManager.ClearSave();
+                        map = CreateWorld();
                         break;
                 }
             }
             else
             {
                 var _ = await GetChoice(null, "New Game");
-                _state.Value = GameState.Dungeon;
-                ClearSave();
-                map = await CreateWorld();
-                StartMap(map);
+                _saveDataManager.ClearSave();
+                map = CreateWorld();
             }
+
+            _state.Value = GameState.Dungeon;
+            StartMap(map);
         }
 
-        public async UniTask<MapManager> CreateWorld()
+        private MapManager CreateWorld()
         {
             Log.Debug("[Game]Start CreateWorld");
-            await StopMap();
             _world.CreateNew();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
             Log.Debug("[Game]End CreateWorld");
             return map;
         }
 
-        public async UniTask<int> GetChoice(string? text, params string[] choices)
+        private MapManager LoadWorld(WorldMemento world)
         {
-            return await _choiceReceiver.GetChoice(text, choices);
+            var maps = new List<(string, MapMemento)>();
+            foreach (var mapId in world.MapIds)
+            {
+                var mapData = _saveDataManager.LoadMap(mapId);
+                maps.Add((mapId, mapData));
+            }
+
+            return _world.LoadWorld(world, maps);
         }
 
-        public async UniTask<string> GetTextInput()
+        private async UniTask StopMap()
         {
-            return await _textInputReceiver.GetTextInput();
+            _receiver.Enable(false);
+            await _turnController.Stop();
+        }
+
+        private void StartMap(MapManager map)
+        {
+            _turnController.Run(this, map);
+            _receiver.Enable(true);
         }
 
         public async void LoadMap(Location location, Id<IEntity>? destination = null)
@@ -114,106 +167,25 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
-            Save();
+            _saveDataManager.Save(_world);
             _turnController.Run(this, map);
             _receiver.Enable(true);
             Log.Debug("[Game]End LoadMap");
         }
 
-        public void Save()
+        public async UniTask LoadAndStart()
         {
-            Log.Debug("[Save]Start Save");
-            var saveData = _world.Serialize();
-            var maps = _world.SerializeUpdatedMaps();
-            WriteData("Save/save.json", JsonUtility.ToJson(saveData));
-            foreach (var map in maps)
-            {
-                Log.Debug($"[Save]Save map: {map.Id}");
-                WriteData($"Save/{map.Id}.json", JsonUtility.ToJson(map));
-            }
-
-            Log.Debug("[Save]End Save");
-        }
-
-        public async UniTask<MapManager> Load()
-        {
-            Log.Debug("[Save]Start Load");
             await StopMap();
-            MapManager map = null;
-            var saveData = ReadData("Save/save.json");
-            if (saveData != null)
+            var world = _saveDataManager.Load();
+            MapManager map;
+            if (world != null)
             {
-                var world = JsonUtility.FromJson<WorldMemento>(saveData);
-                var maps = new List<(string, MapMemento)>();
-                foreach (var mapId in world.MapIds)
-                {
-                    var mapData = JsonUtility.FromJson<MapMemento>(ReadData($"Save/{mapId}.json"));
-                    maps.Add((mapId, mapData));
-                }
-
-                map = _world.LoadWorld(world, maps);
+                map = LoadWorld(world);
             }
             else
             {
-                _world.CreateNew();
-                map = _world.LoadMap(new Location("Dungeon", 1), null);
+                map = CreateWorld();
             }
-
-            Log.Debug("[Save]End Load");
-            return map;
-        }
-
-        public void ClearSave()
-        {
-            var saveDirectory = "Save";
-            var jsonFiles = Directory.GetFiles(saveDirectory, "*.json");
-            foreach (var file in jsonFiles)
-            {
-                File.Delete(file);
-            }
-        }
-
-        public void WriteData(string path, string saveData)
-        {
-            /*
-            if (saveData.Contains("❰") || saveData.Contains("❱"))
-            {
-                throw new Exception("Save data is corrupted");
-            }
-            saveData = Regex.Replace(saveData, @"<(.+?)>k__BackingField", "❰$1❱");
-            */
-            File.WriteAllText(path, saveData);
-        }
-
-        public string? ReadData(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            var saveDataStr = File.ReadAllText(path);
-            /*
-            saveDataStr = Regex.Replace(saveDataStr, @"❰(.+?)❱", "<$1>k__BackingField");
-            */
-            return saveDataStr;
-        }
-
-        public void StartMap(MapManager map)
-        {
-            _turnController.Run(this, map);
-            _receiver.Enable(true);
-        }
-
-        public async UniTask StopMap()
-        {
-            _receiver.Enable(false);
-            await _turnController.Stop();
-        }
-
-        public async UniTask LoadAndStart()
-        {
-            var map = await Load();
             StartMap(map);
         }
     }

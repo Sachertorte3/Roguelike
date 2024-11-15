@@ -1,8 +1,10 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities.Serialize;
+using Utilities.Stats;
 
 namespace Domain.Model.Memento
 {
@@ -30,6 +32,19 @@ namespace Domain.Model.Memento
             MapIds = mapIds;
             CurrentLocation = currentLocation;
             ItemPlaceholders = itemPlaceholders;
+        }
+
+        public WorldMemento CopyWith(Dictionary<string, DungeonMemento>? dungeons = null,
+            Dictionary<Location, List<MapConnection>>? movements = null, CharacterMemento? player = null,
+            List<string>? mapIds = null, Location? currentLocation = null,
+            ItemPlaceholdersMemento? itemPlaceholders = null)
+        {
+            return new WorldMemento(dungeons ?? Dungeons, movements ?? Movements, player ?? Player, mapIds ?? MapIds, currentLocation ?? CurrentLocation, itemPlaceholders ?? ItemPlaceholders);
+        }
+
+        public WorldMemento RevivePlayer()
+        {
+            return CopyWith(player: Player.CopyWith(status: Player.Status.CopyWith(stats: Player.Status.Stats.CopyWith(hp: new ResourceData(Player.Status.Stats.Hp.Max, new Stat(Player.Status.Stats.Hp.Max).CurrentValue)))));
         }
     }
 }

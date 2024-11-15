@@ -572,6 +572,11 @@ namespace Domain.Service.Characters
             return _statusManager.LoseHp(value);
         }
 
+        public void RestoreToFullHealth()
+        {
+            _statusManager.RestoreToFullHealth();
+        }
+
         public float GetStatValue(StatType statType)
         {
             return _statusManager.GetStatValue(statType);

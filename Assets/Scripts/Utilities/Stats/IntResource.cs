@@ -79,6 +79,11 @@ namespace Utilities.Stats
             return Value.CurrentValue - oldValue;
         }
 
+        public void Set(float value)
+        {
+            _value.Value = Mathf.Clamp(value, 0, MaxValue.CurrentValue);
+        }
+
         public void AddMaxValue(float value)
         {
             _max.AddValue(value);

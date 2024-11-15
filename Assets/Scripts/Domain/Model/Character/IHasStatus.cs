@@ -22,6 +22,7 @@ namespace Domain.Model.Character
         /// <param name="value">The amount of HP to recover</param>
         /// <returns>The actual amount of HP recovered</returns>
         public int GainHp(int value);
+        public void RestoreToFullHealth();
         public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);

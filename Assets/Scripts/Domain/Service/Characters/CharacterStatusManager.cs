@@ -111,6 +111,12 @@ namespace Domain.Service.Characters
             return loseValue;
         }
 
+        public void RestoreToFullHealth()
+        {
+            _stats.Hp.Set(Stats.CurrentMaxHp);
+            _conditions.Clear();
+        }
+
         public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
             if (_stats.HpNaturalRecoveryAmount.CurrentValue > 0)

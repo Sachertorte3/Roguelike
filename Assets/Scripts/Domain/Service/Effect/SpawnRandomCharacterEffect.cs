@@ -25,16 +25,14 @@ namespace Domain.Service.Effect
         {
             var placeablePositions =
                 positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
-            if (placeablePositions.Any())
+            var canSpawnCount = Mathf.Min(placeablePositions.Count(), _count);
+            foreach (var position in placeablePositions.GetAtRandom(canSpawnCount))
             {
-                foreach (var position in placeablePositions.GetAtRandom(_count))
-                {
-                    map.SpawnRandomEnemy(
-                        position,
-                        false,
-                        false
-                    );
-                }
+                map.SpawnRandomEnemy(
+                    position,
+                    false,
+                    false
+                );
             }
 
             return UniTask.CompletedTask;

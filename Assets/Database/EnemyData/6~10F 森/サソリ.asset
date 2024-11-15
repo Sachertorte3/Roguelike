@@ -17,11 +17,11 @@ MonoBehaviour:
   CharacterType:
     rid: 2541219158355345422
   IsBoss: 0
-  Hp: 10
+  Hp: 6
   Aggression: 1
   Behavior:
     wanderAround: 1
-    Default: 1
+    Default: 2
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1

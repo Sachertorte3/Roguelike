@@ -123,7 +123,14 @@ namespace Domain.Service.Items
 
         public bool TryRemove(IItem item)
         {
-            return _storage.TryRemove(item);
+            if (_storage.TryRemove(item))
+                return true;
+
+            var storages = _storage.AllItems
+                .Where(x => x.ItemStorage.IsSome)
+                .Select(x => x.ItemStorage.Value);
+
+            return storages.Any(storage => storage.TryRemove(item));
         }
 
         public Result<IItem?> Replace(IItem? item, int index, int subIndex)

@@ -29,19 +29,19 @@ namespace Domain.Service.Effect
         {
             var placeablePositions = positions.Where(position => map.At(position).CanPlace(_character.Value.IsFlying,
                 _character.Value.CanThroughWalls, false, EntityLayer.Middle));
-            if (placeablePositions.Any())
+
+            var canSpawnCount = Mathf.Min(placeablePositions.Count(), _count);
+            foreach (var position in placeablePositions.GetAtRandom(canSpawnCount))
             {
-                foreach (var position in placeablePositions.GetAtRandom(_count))
-                {
-                    map.SpawnEnemy(
-                        _character.Value,
-                        position,
-                        actor.Affiliation,
-                        false,
-                        _inheritsShiny ? actor.IsShiny : null
-                    );
-                }
+                map.SpawnEnemy(
+                    _character.Value,
+                    position,
+                    actor.Affiliation,
+                    false,
+                    _inheritsShiny ? actor.IsShiny : null
+                );
             }
+
 
             return UniTask.CompletedTask;
         }

@@ -44,7 +44,6 @@ namespace Domain.Service.Characters
         private readonly List<CharacterSkill> _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
-        private int _money;
         private string _name = "Character";
         private readonly IDisposable _disposable;
         private IMap _map;
@@ -66,7 +65,6 @@ namespace Domain.Service.Characters
             CanThroughWalls = data.CanThroughWalls;
             _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player);
             _aggression = data.Aggression;
-            _money = data.Money;
             IsLeader = data.IsLeader;
             IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
@@ -114,8 +112,6 @@ namespace Domain.Service.Characters
         {
             State = CharacterState.Wait;
         }
-
-        public int Money => _money;
 
         public string GetName(IPlayer player)
         {
@@ -529,7 +525,6 @@ namespace Domain.Service.Characters
                 _knownItemNames.ToList(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                _money,
                 IsLeader,
                 IsShiny,
                 IsBoss,
@@ -712,18 +707,6 @@ namespace Domain.Service.Characters
             _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
             _inventory.UpdateTurn();
             _skills.ForEach(x => x.UpdateTurn());
-        }
-
-        public void AddMoney(int value)
-        {
-            Log.Debug($"{_name}:AddMoney {_money}+={value}");
-            _money += value;
-        }
-
-        public void ReduceMoney(int value)
-        {
-            Log.Debug($"{_name}:ReduceMoney {_money}-={value}");
-            _money -= value;
         }
 
         ~Character()

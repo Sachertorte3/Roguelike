@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Domain.Model.Dungeon;
 using UnityEngine;
 using Utilities.Serialize;
 
@@ -11,29 +10,29 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public SerializableDictionary<string, string> Placeholders { get; private set; }
         [field: SerializeField] public SerializableDictionary<string, string> PlayerAssignedNames { get; private set; }
-        [field: SerializeField] public PlaceholderIndexes PotionPlaceholders { get; private set; }
-        [field: SerializeField] public PlaceholderIndexes ScrollPlaceholders { get; private set; }
-        [field: SerializeField] public PlaceholderIndexes BookPlaceholders { get; private set; }
-        [field: SerializeField] public PlaceholderIndexes WandPlaceholders { get; private set; }
-        [field: SerializeField] public PlaceholderIndexes ArtifactPlaceholders { get; private set; }
+        [field: SerializeField] public List<int> PotionUsedPlaceholderIndexes { get; private set; }
+        [field: SerializeField] public List<int> ScrollUsedPlaceholderIndexes { get; private set; }
+        [field: SerializeField] public List<int> BookUsedPlaceholderIndexes { get; private set; }
+        [field: SerializeField] public List<int> WandUsedPlaceholderIndexes { get; private set; }
+        [field: SerializeField] public List<int> ArtifactUsedPlaceholderIndexes { get; private set; }
 
         public ItemPlaceholdersMemento(
             Dictionary<string, string> placeholders,
             Dictionary<string, string> playerAssignedNames,
-            PlaceholderIndexes potionPlaceholders,
-            PlaceholderIndexes scrollPlaceholders,
-            PlaceholderIndexes bookPlaceholders,
-            PlaceholderIndexes wandPlaceholders,
-            PlaceholderIndexes artifactPlaceholders
+            List<int> potionUsedPlaceholderIndexes,
+            List<int> scrollUsedPlaceholderIndexes,
+            List<int> bookUsedPlaceholderIndexes,
+            List<int> wandUsedPlaceholderIndexes,
+            List<int> artifactUsedPlaceholderIndexes
         )
         {
             Placeholders = placeholders.ToSerializable();
             PlayerAssignedNames = playerAssignedNames.ToSerializable();
-            PotionPlaceholders = potionPlaceholders;
-            ScrollPlaceholders = scrollPlaceholders;
-            BookPlaceholders = bookPlaceholders;
-            WandPlaceholders = wandPlaceholders;
-            ArtifactPlaceholders = artifactPlaceholders;
+            PotionUsedPlaceholderIndexes = potionUsedPlaceholderIndexes;
+            ScrollUsedPlaceholderIndexes = scrollUsedPlaceholderIndexes;
+            BookUsedPlaceholderIndexes = bookUsedPlaceholderIndexes;
+            WandUsedPlaceholderIndexes = wandUsedPlaceholderIndexes;
+            ArtifactUsedPlaceholderIndexes = artifactUsedPlaceholderIndexes;
         }
     }
 }

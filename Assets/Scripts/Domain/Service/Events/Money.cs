@@ -33,7 +33,7 @@ namespace Domain.Service.Events
                         player => true,
                         (gameManager, map) =>
                         {
-                            map.Player.Character.AddMoney(Amount);
+                            map.Player.AddMoney(Amount);
                             GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
                             map.RemoveEventEntity(this);
                             return UniTask.CompletedTask;

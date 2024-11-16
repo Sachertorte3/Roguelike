@@ -10,7 +10,6 @@ using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -41,7 +40,7 @@ namespace Domain.Service.Effect
             if (notCursedItems.Any())
             {
                 var item = notCursedItems.GetAtRandom();
-                if (Random.value < _probabilityOfSuccess)
+                if (RandUtils.IsChance(_probabilityOfSuccess))
                     item.SetCursed(map.Player, map.ItemPlaceholders, true);
                 else
                     GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われなかった");

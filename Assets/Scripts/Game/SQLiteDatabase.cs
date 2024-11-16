@@ -14,71 +14,70 @@ namespace Game
             Debug.Log("Database init");
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
-            var initQuery = "create table if not exists saves (id integer primary key, text string)";
-            sqlDB.ExecuteNonQuery(initQuery);
-            var initMapsQuery = "create table if not exists maps (id string primary key, text string)";
-            sqlDB.ExecuteNonQuery(initMapsQuery);
-            var initSettingsQuery = "create table if not exists settings (key string primary key, value string)";
-            sqlDB.ExecuteNonQuery(initSettingsQuery);
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists saves (id integer primary key, text string)");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists maps (id string primary key, text string)");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists settings (key string primary key, value string)");
             Debug.Log("Database init done");
         }
         public void Save(int id, string saveData)
         {
-            var insertQuery = "insert or replace into saves values (:id, :text)";
-            var row = new SQLiteRow
-            {
-                { "id", id },
-                { "text", saveData }
-            };
-            sqlDB.ExecuteNonQuery(insertQuery, row);
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into saves values (:id, :text)",
+                new SQLiteRow
+                {
+                    { "id", id },
+                    { "text", saveData }
+                });
         }
         public void SaveMap(string id, string mapData)
         {
-            var insertQuery = $"insert or replace into maps values(:id, :text)";
-            var row = new SQLiteRow
-            {
-                { "id", id },
-                { "text", mapData }
-            };
-            sqlDB.ExecuteNonQuery(insertQuery, row);
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into maps values(:id, :text)",
+                new SQLiteRow
+                {
+                    { "id", id },
+                    { "text", mapData }
+                });
         }
         public void SaveSettings(Dictionary<string, int> settings)
         {
             foreach (var setting in settings)
             {
-                var insertQuery = $"insert or replace into settings values(:key, :value)";
-                var row = new SQLiteRow
-                {
-                    { "key", setting.Key },
-                    { "value", setting.Value }
-                };
-                sqlDB.ExecuteNonQuery(insertQuery, row);
+                sqlDB.ExecuteNonQuery(
+                    "insert or replace into settings values(:key, :value)",
+                    new SQLiteRow
+                    {
+                        { "key", setting.Key },
+                        { "value", setting.Value }
+                    });
             }
         }
         public string? Load(int id)
         {
-            var selectQuery = $"select * from saves where id = :id";
-            var row = new SQLiteRow
-            {
-                { "id", id }
-            };
-            var dataTable = sqlDB.ExecuteQuery(selectQuery, row);
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from saves where id = :id",
+                new SQLiteRow
+                {
+                    { "id", id }
+                });
             return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
         }
         public string? LoadMap(string id)
         {
-            var selectQuery = $"select * from maps where id = :id";
-            var row = new SQLiteRow
-            {
-                { "id", id }
-            };
-            var dataTable = sqlDB.ExecuteQuery(selectQuery, row);
-            return dataTable.Rows[0]["text"] as string;
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from maps where id = :id",
+                new SQLiteRow
+                {
+                    { "id", id }
+                });
+            return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
         }
         public Dictionary<string, int> LoadSettings()
         {
-            var selectQuery = "select * from settings";
-            var dataTable = sqlDB.ExecuteQuery(selectQuery);
+            var dataTable = sqlDB.ExecuteQuery("select * from settings");
             var settings = new Dictionary<string, int>();
             foreach (var row in dataTable.Rows)
             {
@@ -91,10 +90,8 @@ namespace Game
         }
         public void ClearSave()
         {
-            var deleteQuery = "delete from saves";
-            sqlDB.ExecuteNonQuery(deleteQuery);
-            var deleteMapsQuery = "delete from maps";
-            sqlDB.ExecuteNonQuery(deleteMapsQuery);
+            sqlDB.ExecuteNonQuery("delete from saves");
+            sqlDB.ExecuteNonQuery("delete from maps");
         }
     }
 }

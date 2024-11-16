@@ -18,15 +18,14 @@ using Domain.Service.Items;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters
 {
     public sealed class CharacterFactory
     {
-        public static CharacterMemento BuildPlayer(string Name, Vector2Int spawnPosition)
+        public static PlayerMemento BuildPlayer(string Name, Vector2Int spawnPosition)
         {
-            return new CharacterMemento
+            var character = new CharacterMemento
             (
                 Name,
                 new Human("Chara_Hero1_USM"),
@@ -63,7 +62,6 @@ namespace Domain.Service.Characters
                 new List<string>(),
                 CharacterAffiliationManager.Build(CharacterGroup.Human),
                 Aggression.AttackAnyone,
-                0,
                 true,
                 false,
                 false,
@@ -72,6 +70,7 @@ namespace Domain.Service.Characters
                 true,
                 true
             );
+            return new PlayerMemento(character, 0);
         }
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
@@ -79,7 +78,7 @@ namespace Domain.Service.Characters
             IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
         {
             var inventory = Storage.Build(10, true);
-            if (Random.value < data.DropItemRate && data.DropItemTable.Count > 0)
+            if (RandUtils.IsChance(data.DropItemRate) && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
                 inventory.Items[0] = Item.Build(dropItem).ToOption();
@@ -107,7 +106,6 @@ namespace Domain.Service.Characters
                 new List<string>(),
                 CharacterAffiliationManager.Build(data.Group, affiliation),
                 data.Aggression,
-                0,
                 false,
                 isShiny,
                 data.IsBoss,
@@ -118,7 +116,7 @@ namespace Domain.Service.Characters
             );
         }
 
-        public IPlayer CreatePlayer(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public IPlayer CreatePlayer(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             return new Player(playerData, receiver, map);
         }

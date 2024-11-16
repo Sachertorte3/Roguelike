@@ -9,7 +9,6 @@ using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -34,7 +33,7 @@ namespace Domain.Service.Effect
             if (upgradedItems.Any())
             {
                 var item = upgradedItems.GetAtRandom();
-                if (Random.value < _probabilityOfSuccess)
+                if (RandUtils.IsChance(_probabilityOfSuccess))
                     item.Downgrade(map.Player, map.ItemPlaceholders);
                 else
                     GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");

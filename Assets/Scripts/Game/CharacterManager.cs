@@ -22,7 +22,7 @@ namespace Game
         private readonly CharacterFactory _factory = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
-        public CharacterManager(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
             _characters.SubscribeToAllObservables(

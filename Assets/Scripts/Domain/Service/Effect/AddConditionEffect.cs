@@ -11,7 +11,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -53,9 +52,9 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)
         {
-            if (Random.value < _probabilityOfSuccess)
+            if (RandUtils.IsChance(_probabilityOfSuccess))
             {
-                if (Random.value > target.GetConditionResistance(_condition.Value))
+                if (!RandUtils.IsChance(target.GetConditionResistance(_condition.Value)))
                 {
                     target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
                 }

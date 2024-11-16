@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Events;
@@ -59,7 +60,7 @@ namespace Game
             var addedFires = new List<Fire>();
             foreach (var fire in _fireEntities)
             {
-                if (Random.value < 1 / 4f)
+                if (RandUtils.IsChance(CommonSenseParameters.DestroyFireProbabilityPerTurn))
                 {
                     destroyedFires.Add(fire);
                 }
@@ -70,7 +71,7 @@ namespace Game
                     .Where(position => map.At(position).CanPlace(false, false, true));
                 foreach (var position in positions)
                 {
-                    if (Random.value < GetProbabilityOfFireSpreading(position, map))
+                    if (RandUtils.IsChance(GetProbabilityOfFireSpreading(position, map)))
                     {
                         addedFires.Add(new Fire(Fire.Build(position)));
                     }

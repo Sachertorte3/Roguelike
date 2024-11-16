@@ -16,6 +16,9 @@ namespace Domain.Model.Evaluation
         public const int ThrowDistance = 10;
         public const float SkillOnUseProbabilityOfSuccess = 0.95f;
         public const float SkillOnThrowProbabilityOfSuccess = 0.9f;
+        public const float SpawnEnemyProbabilityPerTurn = 1 / 64f;
+        public const float SpawnGrassProbabilityPerTurn = 1 / 256f;
+        public const float DestroyFireProbabilityPerTurn = 1 / 4f;
 
         public static float BlowAwayPrice(int distance)
         {

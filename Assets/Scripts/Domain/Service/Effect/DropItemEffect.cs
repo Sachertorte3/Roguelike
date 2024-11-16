@@ -10,7 +10,6 @@ using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -40,7 +39,7 @@ namespace Domain.Service.Effect
             var items = target.Inventory.AllItems.ToArray();
             if (items.Any())
             {
-                if (Random.value < _probabilityOfSuccess)
+                if (RandUtils.IsChance(_probabilityOfSuccess))
                 {
                     var item = items.GetAtRandom();
                     var index = target.Inventory.GetItemIndex(item);

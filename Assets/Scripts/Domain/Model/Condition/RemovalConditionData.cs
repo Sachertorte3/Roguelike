@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Sirenix.OdinInspector;
-using Random = UnityEngine.Random;
+using Utilities;
 
 namespace Domain.Model.Condition
 {
@@ -45,12 +45,12 @@ namespace Domain.Model.Condition
         public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByCharacterNearby && characterVisible && Random.value < CharacterNearbyProbability);
+                   (RemoveByCharacterNearby && characterVisible && RandUtils.IsChance(CharacterNearbyProbability));
         }
 
         public bool IsFinishedByDamage()
         {
-            return RemoveByDamage && Random.value < Probability;
+            return RemoveByDamage && RandUtils.IsChance(Probability);
         }
 
         public float EvaluateTurn()

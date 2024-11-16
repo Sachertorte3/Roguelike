@@ -23,11 +23,11 @@ namespace Domain.Model.Dungeon
             _placeholderData = placeholders;
             _placeholders = memento.Placeholders;
             _playerAssignedNames = memento.PlayerAssignedNames;
-            _potionPlaceholderIndexes = memento.PotionPlaceholders;
-            _scrollPlaceholderIndexes = memento.ScrollPlaceholders;
-            _bookPlaceholderIndexes = memento.BookPlaceholders;
-            _wandPlaceholderIndexes = memento.WandPlaceholders;
-            _artifactPlaceholderIndexes = memento.ArtifactPlaceholders;
+            _potionPlaceholderIndexes = new PlaceholderIndexes(placeholders.PotionPlaceholders, memento.PotionUsedPlaceholderIndexes);
+            _scrollPlaceholderIndexes = new PlaceholderIndexes(placeholders.ScrollPlaceholders, memento.ScrollUsedPlaceholderIndexes);
+            _bookPlaceholderIndexes = new PlaceholderIndexes(placeholders.BookPlaceholders, memento.BookUsedPlaceholderIndexes);
+            _wandPlaceholderIndexes = new PlaceholderIndexes(placeholders.WandPlaceholders, memento.WandUsedPlaceholderIndexes);
+            _artifactPlaceholderIndexes = new PlaceholderIndexes(placeholders.ArtifactPlaceholders, memento.ArtifactUsedPlaceholderIndexes);
         }
 
         public ItemPlaceholdersMemento Serialize()
@@ -35,24 +35,24 @@ namespace Domain.Model.Dungeon
             return new ItemPlaceholdersMemento(
                 _placeholders,
                 _playerAssignedNames,
-                _potionPlaceholderIndexes,
-                _scrollPlaceholderIndexes,
-                _bookPlaceholderIndexes,
-                _wandPlaceholderIndexes,
-                _artifactPlaceholderIndexes
+                _potionPlaceholderIndexes.UsedIndexes,
+                _scrollPlaceholderIndexes.UsedIndexes,
+                _bookPlaceholderIndexes.UsedIndexes,
+                _wandPlaceholderIndexes.UsedIndexes,
+                _artifactPlaceholderIndexes.UsedIndexes
             );
         }
 
-        public static ItemPlaceholdersMemento Build(Placeholders placeholders)
+        public static ItemPlaceholdersMemento Build()
         {
             return new ItemPlaceholdersMemento(
                 new Dictionary<string, string>(),
                 new Dictionary<string, string>(),
-                new PlaceholderIndexes(placeholders.PotionPlaceholders),
-                new PlaceholderIndexes(placeholders.ScrollPlaceholders),
-                new PlaceholderIndexes(placeholders.BookPlaceholders),
-                new PlaceholderIndexes(placeholders.WandPlaceholders),
-                new PlaceholderIndexes(placeholders.ArtifactPlaceholders)
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>()
             );
         }
 

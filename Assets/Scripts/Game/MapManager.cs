@@ -9,6 +9,7 @@ using Domain.Model.Character.Message;
 using Domain.Model.Character.Status;
 using Domain.Model.Dungeon;
 using Domain.Model.Entity;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -25,7 +26,6 @@ using R3;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
-using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -54,7 +54,7 @@ namespace Game
         public bool IsEventExecuting => EventExecutionCount > 0;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
 
-        public MapManager(MapMemento map, DungeonMapData data, CharacterMemento? playerData,
+        public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerData,
             List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
@@ -75,7 +75,7 @@ namespace Game
             }
             else
             {
-                playerData = playerData.ReplacePosition(playerPosition.Value);
+                playerData = playerData.CopyWith(character: playerData.Character.ReplacePosition(playerPosition.Value));
             }
 
             CharacterManager = new CharacterManager(playerData, receiver, this);
@@ -243,8 +243,8 @@ namespace Game
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => At(position).IsBlankAndStandable(EntityLayer.Middle)),
-                    isSlept: isSlept ?? Random.value < _dungeonData.SleepChance,
-                    isShiny: isShiny ?? Random.value < _dungeonData.ShinyChance,
+                    isSlept: isSlept ?? RandUtils.IsChance(_dungeonData.SleepChance),
+                    isShiny: isShiny ?? RandUtils.IsChance(_dungeonData.ShinyChance),
                     affiliation: affiliation
                 ),
                 this
@@ -592,7 +592,7 @@ namespace Game
 
         public void UpdateTurn(int turn)
         {
-            if (Random.value < 1 / 64f)
+            if (RandUtils.IsChance(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values()
                     .Except(Player.Character.VisionRange.VisibleArea);

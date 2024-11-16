@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using System.Collections.Generic;
+using Utilities;
 
 namespace Domain.Model.Dungeon
 {
-    [Serializable]
     public class PlaceholderIndexes
     {
-        [SerializeField] private List<int> _prefixIndexes = new();
-        [SerializeField] private List<int> _placeholderIndexes = new();
+        private List<int> _prefixIndexes = new();
+        private List<int> _placeholderIndexes = new();
+        public readonly List<int> UsedIndexes;
 
-        public PlaceholderIndexes(CategoryPlaceholders placeholders)
+        public PlaceholderIndexes(CategoryPlaceholders placeholders, List<int> usedIndexes)
         {
+            UsedIndexes = usedIndexes;
             if (placeholders._placeholderPrefixes.Count == 0)
             {
                 for (var i = 0; i < placeholders._placeholders.Count; i++)
@@ -36,12 +35,11 @@ namespace Domain.Model.Dungeon
 
         public string GetAtRandomAndRemove(CategoryPlaceholders placeholders)
         {
-            var index = Random.Range(0, _placeholderIndexes.Count);
+            var index = RandUtils.RangeWithoutExcludes(_placeholderIndexes.Count, UsedIndexes.ToArray());
+            UsedIndexes.Add(index);
 
             var prefixIndex = _prefixIndexes[index];
-            _prefixIndexes.RemoveAt(index);
             var placeholderIndex = _placeholderIndexes[index];
-            _placeholderIndexes.RemoveAt(index);
 
             var prefix = prefixIndex != -1 ? placeholders._placeholderPrefixes[prefixIndex] : "";
             return $"{prefix}{placeholders._placeholders[placeholderIndex]}{placeholders._placeholderSuffix}";

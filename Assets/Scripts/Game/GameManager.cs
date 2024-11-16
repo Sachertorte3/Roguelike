@@ -50,7 +50,7 @@ namespace Game
                 _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
                 {
                     await StopMap();
-                    _saveDataManager.Save(_world);
+                    _saveDataManager.Save(0, _world);
                     _state.Value = GameState.Title;
                 });
             });
@@ -73,7 +73,7 @@ namespace Game
             bool isExistWorld = false;
             if (_world.ActiveMap.CurrentValue == null)
             {
-                var world = _saveDataManager.Load();
+                var world = _saveDataManager.Load(0);
                 if (world != null)
                 {
                     LoadWorld(world);
@@ -179,18 +179,18 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
-            _saveDataManager.Save(_world);
+            _saveDataManager.Save(0, _world);
             _turnController.Run(this, map);
             _receiver.Enable(true);
             Log.Debug("[Game]End LoadMap");
         }
 
-        public void Save() => _saveDataManager.Save(_world);
+        public void Save() => _saveDataManager.Save(0, _world);
 
         public async UniTask LoadAndStart()
         {
             await StopMap();
-            var world = _saveDataManager.Load();
+            var world = _saveDataManager.Load(0);
             MapManager map;
             if (world != null)
             {

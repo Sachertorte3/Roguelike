@@ -10,16 +10,18 @@ namespace Game
     public class SaveDataManager
     {
         private SQLiteDatabase db;
+
         public SaveDataManager()
         {
             db = new SQLiteDatabase();
         }
-        public void Save(World world)
+
+        public void Save(int id, World world)
         {
             Log.Debug("[Save]Start Save");
             var saveData = world.Serialize();
             var maps = world.SerializeUpdatedMaps();
-            db.Save(JsonUtility.ToJson(saveData));
+            db.Save(id, JsonUtility.ToJson(saveData));
             foreach (var map in maps)
             {
                 Log.Debug($"[Save]Save map: {map.Id}");
@@ -30,11 +32,11 @@ namespace Game
             Log.Debug("[Save]End Save");
         }
 
-        public WorldMemento? Load()
+        public WorldMemento? Load(int id)
         {
             Log.Debug("[Save]Start Load");
             WorldMemento? world = null;
-            var saveData = db.Load();
+            var saveData = db.Load(id);
             if (saveData != null)
             {
                 world = JsonUtility.FromJson<WorldMemento>(saveData);

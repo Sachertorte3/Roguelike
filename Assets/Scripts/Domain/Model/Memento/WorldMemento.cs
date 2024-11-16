@@ -17,13 +17,13 @@ namespace Domain.Model.Memento
 
         [SerializeField] private SerializableDictionary<Location, List<MapConnection>> _movements;
         public Dictionary<Location, List<MapConnection>> Movements => _movements.ToDictionary();
-        [field: SerializeField] public CharacterMemento Player { get; private set; }
+        [field: SerializeField] public PlayerMemento Player { get; private set; }
         [field: SerializeField] public List<string> MapIds { get; private set; }
         [field: SerializeField] public Location CurrentLocation { get; private set; }
         [field: SerializeField] public ItemPlaceholdersMemento ItemPlaceholders { get; private set; }
 
         public WorldMemento(Dictionary<string, DungeonMemento> dungeons,
-            Dictionary<Location, List<MapConnection>> movements, CharacterMemento player,
+            Dictionary<Location, List<MapConnection>> movements, PlayerMemento player,
             List<string> mapIds, Location currentLocation, ItemPlaceholdersMemento itemPlaceholders)
         {
             _dungeons = dungeons.ToSerializable();
@@ -35,7 +35,7 @@ namespace Domain.Model.Memento
         }
 
         public WorldMemento CopyWith(Dictionary<string, DungeonMemento>? dungeons = null,
-            Dictionary<Location, List<MapConnection>>? movements = null, CharacterMemento? player = null,
+            Dictionary<Location, List<MapConnection>>? movements = null, PlayerMemento? player = null,
             List<string>? mapIds = null, Location? currentLocation = null,
             ItemPlaceholdersMemento? itemPlaceholders = null)
         {
@@ -44,7 +44,17 @@ namespace Domain.Model.Memento
 
         public WorldMemento RevivePlayer()
         {
-            return CopyWith(player: Player.CopyWith(status: Player.Status.CopyWith(stats: Player.Status.Stats.CopyWith(hp: new ResourceData(Player.Status.Stats.Hp.Max, new Stat(Player.Status.Stats.Hp.Max).CurrentValue)))));
+            return CopyWith(
+                player: Player.CopyWith(
+                    character: Player.Character.CopyWith(
+                        status: Player.Character.Status.CopyWith(
+                            stats: Player.Character.Status.Stats.CopyWith(
+                                hp: new ResourceData(Player.Character.Status.Stats.Hp.Max, new Stat(Player.Character.Status.Stats.Hp.Max).CurrentValue)
+                            )
+                        )
+                    )
+                )
+            );
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Game
             {
                 { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) }
             };
-            _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(_placeholders), _placeholders);
+            _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(), _placeholders);
             _movements = new Dictionary<Location, List<MapConnection>>();
             _maps = new Dictionary<Id<IMap>, MapMemento>();
             _updatedMapIds = new HashSet<Id<IMap>>();
@@ -98,7 +98,7 @@ namespace Game
 
             MapManager map = new(mapMemento,
                 GetDungeonMapData(memento.CurrentLocation), memento.Player,
-                new List<CharacterMemento>(), memento.Player.Entity.Position, _receiver, _itemPlaceholders);
+                new List<CharacterMemento>(), memento.Player.Character.Entity.Position, _receiver, _itemPlaceholders);
 
             _activeLocation = memento.CurrentLocation;
             _activeMap.Value = map;
@@ -109,7 +109,7 @@ namespace Game
         public WorldMemento Serialize()
         {
             _maps[_activeMapId] = _activeMap.CurrentValue.Serialize();
-            var playerData = _activeMap.CurrentValue.Player.Character.Serialize();
+            var playerData = _activeMap.CurrentValue.Player.Serialize();
             return new WorldMemento
             (
                 _dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
@@ -198,7 +198,7 @@ namespace Game
             var mapMemento = GetMapMemento(location);
             _updatedMapIds.Add(GetMapId(location));
 
-            CharacterMemento? playerData = null;
+            PlayerMemento? playerData = null;
             List<CharacterMemento>? partyMembers = null;
             Vector2Int? initialPosition = destination != null
                 ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
@@ -207,7 +207,7 @@ namespace Game
             if (_activeMap.CurrentValue != null)
             {
                 _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
-                playerData = _activeMap.CurrentValue.Player.Character.Serialize();
+                playerData = _activeMap.CurrentValue.Player.Serialize();
                 partyMembers = _activeMap.CurrentValue.GetFollowingCharacters()
                     .Select(character => character.Serialize()).ToList();
 

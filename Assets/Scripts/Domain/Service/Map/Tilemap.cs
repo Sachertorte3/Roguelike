@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
@@ -10,7 +11,6 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Map
 {
@@ -103,7 +103,7 @@ namespace Domain.Service.Map
             var grasses = new List<Vector2Int>();
             foreach (var (position, _) in _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.Grass))
             {
-                if (Random.value < 1 / 256f)
+                if (RandUtils.IsChance(CommonSenseParameters.SpawnGrassProbabilityPerTurn))
                 {
                     var spawnPosition = position + DirectionMethods.AllDirections.GetAtRandom().Vector();
                     grasses.Add(spawnPosition);

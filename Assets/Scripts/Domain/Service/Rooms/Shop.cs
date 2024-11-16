@@ -164,14 +164,14 @@ namespace Domain.Service.Rooms
 
         public void Purchase(IMap map)
         {
-            if (map.Player.Character.Money + GetSalePrice(map) >= GetPurchasePrice(map))
+            if (map.Player.Money + GetSalePrice(map) >= GetPurchasePrice(map))
             {
                 GameLog.Add(
                     $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
-                map.Player.Character.AddMoney(GetSalePrice(map));
+                map.Player.AddMoney(GetSalePrice(map));
                 GameLog.Add(
                     $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
-                map.Player.Character.ReduceMoney(GetPurchasePrice(map));
+                map.Player.ReduceMoney(GetPurchasePrice(map));
                 var purchaseItems = GetMissingItems(map);
                 RemoveMark(map, purchaseItems);
                 SetShopItems(GetItemsInRoom(map));

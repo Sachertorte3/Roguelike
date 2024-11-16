@@ -46,6 +46,11 @@ namespace Utilities
             return Mathf.Exp(Normal(Mathf.Log(mean), sigma));
         }
 
+        public static bool IsChance(float probability)
+        {
+            return Random.value < probability;
+        }
+
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
         {
             return GetAtRandom(ie, 1, max => Random.Range(0, max))[0];
@@ -124,6 +129,21 @@ namespace Utilities
         public static int WeightedIndex<T>(this IEnumerable<T> source, Func<T, float> weightSelector)
         {
             return WeightedIndex(source, Random.value, weightSelector);
+        }
+
+        public static int RangeWithoutExcludes(int n, params int[] excludeList)
+        {
+            Array.Sort(excludeList);
+            var valid_count = n + 1 - excludeList.Length;
+            var random_index = Random.Range(0, valid_count - 1);
+            var result = random_index;
+            foreach (var excluded_value in excludeList)
+            {
+                if (result >= excluded_value)
+                    result += 1;
+            }
+
+            return result;
         }
 
         public static RectInt? GetRandomInnerRect(this IEnumerable<Vector2Int> positions, Vector2Int size)

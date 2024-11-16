@@ -9,7 +9,6 @@ using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -41,7 +40,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (Random.value < _fixedCriticalRate)
+            if (RandUtils.IsChance(_fixedCriticalRate))
             {
                 var damage = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");

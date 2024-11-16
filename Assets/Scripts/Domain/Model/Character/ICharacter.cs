@@ -23,7 +23,6 @@ namespace Domain.Model.Character
         public bool IsBoss { get; }
         public CharacterState State { get; }
         public void SetWaitState();
-        public int Money { get; }
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<Unit> OnAttacked { get; }
@@ -46,8 +45,6 @@ namespace Domain.Model.Character
         public IItem? RemoveInventory(int index, int subIndex);
         public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex);
         public void UpdateTurn();
-        public void AddMoney(int value);
-        public void ReduceMoney(int value);
 
         public bool IsVisible(Vector2Int position)
         {

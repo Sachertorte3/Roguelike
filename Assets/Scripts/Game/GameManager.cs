@@ -70,58 +70,71 @@ namespace Game
         {
             GameLog.Clear();
             await StopMap();
+            bool isExistWorld = false;
             if (_world.ActiveMap.CurrentValue == null)
             {
                 var world = _saveDataManager.Load();
                 if (world != null)
                 {
                     LoadWorld(world);
+                    isExistWorld = true;
                 }
                 else
                 {
                     CreateWorld();
                 }
             }
+            else
+            {
+                isExistWorld = true;
+            }
             var map = _world.ActiveMap.CurrentValue;
 
-            if (map.Player.Character.CurrentHp > 0)
+            if (isExistWorld)
             {
-                var choice = await GetChoice(null, "Continue", "New Game");
-                switch (choice)
+                if (map.Player.Character.CurrentHp > 0)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        _saveDataManager.ClearSave();
-                        map = CreateWorld();
-                        break;
+                    var choice = await GetChoice(null, "Continue", "New Game");
+                    switch (choice)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            _saveDataManager.ClearSave();
+                            map = CreateWorld();
+                            break;
+                    }
                 }
-            }
-            else if (Settings.RetryOnDead.Value)
-            {
-                var choice = await GetChoice(null, "Retry", "New Game");
-                switch (choice)
+                else if (Settings.RetryOnDead.Value)
                 {
-                    case 0:
-                        await StopMap();
-                        var world = _world.Serialize().RevivePlayer();
-                        map = LoadWorld(world);
-                        var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
-                        map.Player.Character.Entity.Teleport(randomPosition);
-                        map.Player.Character.RestoreToFullHealth();
-                        map.Player.Character.Turn(Direction8.Down);
-                        break;
-                    case 1:
-                        _saveDataManager.ClearSave();
-                        map = CreateWorld();
-                        break;
+                    var choice = await GetChoice(null, "Retry", "New Game");
+                    switch (choice)
+                    {
+                        case 0:
+                            await StopMap();
+                            var world = _world.Serialize().RevivePlayer();
+                            map = LoadWorld(world);
+                            var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
+                            map.Player.Character.Entity.Teleport(randomPosition);
+                            map.Player.Character.RestoreToFullHealth();
+                            map.Player.Character.Turn(Direction8.Down);
+                            break;
+                        case 1:
+                            _saveDataManager.ClearSave();
+                            map = CreateWorld();
+                            break;
+                    }
+                }
+                else
+                {
+                    var _ = await GetChoice(null, "New Game");
+                    _saveDataManager.ClearSave();
+                    map = CreateWorld();
                 }
             }
             else
             {
                 var _ = await GetChoice(null, "New Game");
-                _saveDataManager.ClearSave();
-                map = CreateWorld();
             }
 
             _state.Value = GameState.Dungeon;

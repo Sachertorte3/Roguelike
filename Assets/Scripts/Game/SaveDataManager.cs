@@ -1,5 +1,4 @@
 #nullable enable
-using System.IO;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Unity.Logging;
@@ -10,18 +9,23 @@ namespace Game
 {
     public class SaveDataManager
     {
+        private SQLiteDatabase db;
+        public SaveDataManager()
+        {
+            db = new SQLiteDatabase();
+        }
         public void Save(World world)
         {
             Log.Debug("[Save]Start Save");
             var saveData = world.Serialize();
             var maps = world.SerializeUpdatedMaps();
-            WriteData("Save/save.json", JsonUtility.ToJson(saveData));
+            db.Save(JsonUtility.ToJson(saveData));
             foreach (var map in maps)
             {
                 Log.Debug($"[Save]Save map: {map.Id}");
-                WriteData($"Save/{map.Id}.json", JsonUtility.ToJson(map));
+                db.SaveMap(map.Id.ToString(), JsonUtility.ToJson(map));
             }
-            WriteData("Save/settings.json", JsonUtility.ToJson(Settings.GetValues().ToSerializable()));
+            db.SaveSettings(Settings.GetValues().ToSerializable());
 
             Log.Debug("[Save]End Save");
         }
@@ -30,16 +34,15 @@ namespace Game
         {
             Log.Debug("[Save]Start Load");
             WorldMemento? world = null;
-            var saveData = ReadData("Save/save.json");
+            var saveData = db.Load();
             if (saveData != null)
             {
                 world = JsonUtility.FromJson<WorldMemento>(saveData);
             }
-            var settingsData = ReadData("Save/settings.json");
-            if (settingsData != null)
+            var settings = db.LoadSettings();
+            if (settings != null)
             {
-                var settings = JsonUtility.FromJson<SerializableDictionary<string, int>>(settingsData);
-                Settings.SetValues(settings.ToDictionary());
+                Settings.SetValues(settings);
             }
 
             Log.Debug("[Save]End Load");
@@ -48,44 +51,13 @@ namespace Game
 
         public MapMemento? LoadMap(string mapId)
         {
-            var mapData = ReadData($"Save/{mapId}.json");
+            var mapData = db.LoadMap(mapId);
             return mapData != null ? JsonUtility.FromJson<MapMemento>(mapData) : null;
-        }
-
-        private void WriteData(string path, string saveData)
-        {
-            /*
-            if (saveData.Contains("❰") || saveData.Contains("❱"))
-            {
-                throw new Exception("Save data is corrupted");
-            }
-            saveData = Regex.Replace(saveData, @"<(.+?)>k__BackingField", "❰$1❱");
-            */
-            File.WriteAllText(path, saveData);
-        }
-
-        private string? ReadData(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            var saveDataStr = File.ReadAllText(path);
-            /*
-            saveDataStr = Regex.Replace(saveDataStr, @"❰(.+?)❱", "<$1>k__BackingField");
-            */
-            return saveDataStr;
         }
 
         public void ClearSave()
         {
-            var saveDirectory = "Save";
-            var jsonFiles = Directory.GetFiles(saveDirectory, "*.json");
-            foreach (var file in jsonFiles)
-            {
-                File.Delete(file);
-            }
+            db.ClearSave();
         }
     }
 }

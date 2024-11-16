@@ -14,7 +14,7 @@ namespace Game
             Debug.Log("Database init");
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
-            var initQuery = "create table if not exists saves (id integer primary key autoincrement, text string)";
+            var initQuery = "create table if not exists saves (id integer primary key, text string)";
             sqlDB.ExecuteNonQuery(initQuery);
             var initMapsQuery = "create table if not exists maps (id string primary key, text string)";
             sqlDB.ExecuteNonQuery(initMapsQuery);
@@ -22,11 +22,12 @@ namespace Game
             sqlDB.ExecuteNonQuery(initSettingsQuery);
             Debug.Log("Database init done");
         }
-        public void Save(string saveData)
+        public void Save(int id, string saveData)
         {
-            var insertQuery = "insert into saves (text) values (:text)";
+            var insertQuery = "insert or replace into saves values (:id, :text)";
             var row = new SQLiteRow
             {
+                { "id", id },
                 { "text", saveData }
             };
             sqlDB.ExecuteNonQuery(insertQuery, row);
@@ -54,10 +55,14 @@ namespace Game
                 sqlDB.ExecuteNonQuery(insertQuery, row);
             }
         }
-        public string? Load()
+        public string? Load(int id)
         {
-            var selectQuery = "select * from saves order by id desc limit 1";
-            var dataTable = sqlDB.ExecuteQuery(selectQuery);
+            var selectQuery = $"select * from saves where id = :id";
+            var row = new SQLiteRow
+            {
+                { "id", id }
+            };
+            var dataTable = sqlDB.ExecuteQuery(selectQuery, row);
             return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
         }
         public string? LoadMap(string id)

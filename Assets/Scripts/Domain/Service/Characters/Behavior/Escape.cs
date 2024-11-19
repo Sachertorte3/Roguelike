@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
@@ -10,12 +9,12 @@ using Utilities;
 
 namespace Domain.Service.Characters.Behavior
 {
-    internal sealed class Escape : IBehaviorWhenDiscoveringTarget
+    internal static class Escape
     {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
-            var relativePosition = character.CurrentPosition - targetPosition;
+            var relativePosition = character.Entity.CurrentPosition - targetPosition;
             var directions = DirectionMethods.NearDirectionsFromVector(relativePosition);
             IEnumerable<Move> moves;
             if (directions != null)

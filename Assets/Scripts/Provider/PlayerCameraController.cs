@@ -9,18 +9,20 @@ namespace Provider
     public class PlayerCameraController
     {
         [Inject]
-        public PlayerCameraController(World world, SynchronizedCharacterView characters, CameraFollowTarget camera)
+        public PlayerCameraController(World world, SynchronizedCharacterView characters,
+            CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                if (map.Player.CurrentHp <= 0)
+                if (map.Player.Character.CurrentHp <= 0)
                 {
-                    camera.SetPosition((Vector3Int)map.Player.CurrentPosition);
+                    targetCamera.SetPosition((Vector3Int)map.Player.Character.Entity.CurrentPosition);
                     return;
                 }
 
-                var playerView = characters.Get(map.Player);
-                camera.SetTarget(playerView.gameObject);
+                var playerView = characters.Get(map.Player.Character);
+                targetCamera.SetTarget(playerView.gameObject);
+                rectCamera.SetRect(map.TilemapViewer.Rect);
             });
         }
     }

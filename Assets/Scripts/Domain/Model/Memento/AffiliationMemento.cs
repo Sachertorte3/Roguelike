@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
-using Stats;
+using Domain.Model.Entity;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
+using Utilities.Stats;
 
 namespace Domain.Model.Memento
 {

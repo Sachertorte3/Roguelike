@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utilities.Algorithms
+namespace Utilities
 {
     public class AStarNode
     {

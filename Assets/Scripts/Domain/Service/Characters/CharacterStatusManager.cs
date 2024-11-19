@@ -1,10 +1,14 @@
 #nullable enable
+using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
+using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
@@ -12,9 +16,9 @@ using Domain.Service.Characters.Stats;
 using Domain.Service.Effect;
 using ObservableCollections;
 using R3;
-using Stats;
 using UnityEngine;
 using Utilities;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters
 {
@@ -25,31 +29,16 @@ namespace Domain.Service.Characters
         private readonly Subject<int> _onHealReceived = new();
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
-        private readonly FlagStat _cannotActFlags;
-        private readonly FlagStat _cannotMoveFlags;
-        private readonly FlagStat _confusedFlags;
-        private readonly FlagStat _overDriveFlags;
-        private readonly FlagStat _hardFlags;
-        private readonly FlagStat _heavyFlags;
-        private readonly FlagStat _secureHoldFlags;
-        private readonly FlagStat _curseProofFlags;
-        private readonly FlagStat _isAffectedByTrapsFlags;
+        private readonly Dictionary<FlagStatType, FlagStat> _flagStats = new();
+
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
         {
             _stats = new CharacterStats(data.Stats);
-            _conditions = new CharacterConditions(character, data.Conditions, map.Player ?? character);
-            _visionRange = new VisionRange(position, _stats.ViewRangeValue, data.ClairvoyantFlags, data.BlindFlags,
-                character.CanThroughWalls, map);
-            _cannotActFlags = new FlagStat(data.CannotActFlags);
-            _cannotMoveFlags = new FlagStat(data.CannotMoveFlags);
-            _confusedFlags = new FlagStat(data.ConfusedFlags);
-            _overDriveFlags = new FlagStat(data.OverDriveFlags);
-            _hardFlags = new FlagStat(data.HardFlags);
-            _heavyFlags = new FlagStat(data.HeavyFlags);
-            _secureHoldFlags = new FlagStat(data.SecureHoldFlags);
-            _curseProofFlags = new FlagStat(data.CurseProofFlags);
-            _isAffectedByTrapsFlags = new FlagStat(data.IsAffectedByTrapFlags);
+            _conditions = new CharacterConditions(character, data.Conditions, map);
+            _flagStats = data.FlagStats.ToDictionary(x => x.Key, x => new FlagStat(x.Value));
+            _visionRange = new VisionRange(position, _stats.ViewRangeValue, GetFlagStat(FlagStatType.Clairvoyant),
+                GetFlagStat(FlagStatType.Blind), character.CanThroughWalls, map);
         }
 
         public void Dispose()
@@ -63,17 +52,7 @@ namespace Domain.Service.Characters
             return new CharacterStatusMemento
             (
                 _stats.Serialize(),
-                _cannotActFlags.CurrentFlags,
-                _cannotMoveFlags.CurrentFlags,
-                _confusedFlags.CurrentFlags,
-                _visionRange.ClairvoyantFlags,
-                _visionRange.BlindFlags,
-                _overDriveFlags.CurrentFlags,
-                _hardFlags.CurrentFlags,
-                _heavyFlags.CurrentFlags,
-                _secureHoldFlags.CurrentFlags,
-                _curseProofFlags.CurrentFlags,
-                _isAffectedByTrapsFlags.CurrentFlags,
+                _flagStats.ToDictionary(x => x.Key, x => x.Value.CurrentFlags),
                 _conditions.ConditionsWithInflicter.Select(x => (x.actor, x.condition.Serialize())).ToList()
             );
         }
@@ -81,15 +60,17 @@ namespace Domain.Service.Characters
         public IStats Stats => _stats;
         public IVisionRange VisionRange => _visionRange;
         public IObservableCollection<ICondition> Conditions => _conditions.Conditions;
-        public bool CannotAct => _cannotActFlags.CurrentValue;
-        public bool CannotMove => _cannotMoveFlags.CurrentValue;
-        public bool IsConfused => _confusedFlags.CurrentValue;
-        public bool IsOverDrive => _overDriveFlags.CurrentValue;
-        public bool IsHard => _hardFlags.CurrentValue;
-        public bool IsHeavy => _heavyFlags.CurrentValue;
-        public bool IsSecureHold => _secureHoldFlags.CurrentValue;
-        public bool IsCurseProof => _curseProofFlags.CurrentValue;
-        public ReadOnlyReactiveProperty<bool> IsAffectedByTraps => _isAffectedByTrapsFlags.Value;
+
+        public bool IsFlagStat(FlagStatType type)
+        {
+            return GetFlagStat(type).CurrentValue;
+        }
+
+        public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type)
+        {
+            return GetFlagStat(type).Value;
+        }
+
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
@@ -128,6 +109,12 @@ namespace Domain.Service.Characters
             }
 
             return loseValue;
+        }
+
+        public void RestoreToFullHealth()
+        {
+            _stats.Hp.Set(Stats.CurrentMaxHp);
+            _conditions.Clear();
         }
 
         public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
@@ -184,83 +171,40 @@ namespace Domain.Service.Characters
             _stats.AddElementAttackMultiplier(element, value);
         }
 
+        public void AddElementDamageRateMultiplier(Element element, float value)
+        {
+            _stats.AddElementDamageRateMultiplier(element, value);
+        }
+
         public void RemoveElementAttackMultiplier(Element element, float value)
         {
             _stats.RemoveElementAttackMultiplier(element, value);
         }
 
+        public void RemoveElementDamageRateMultiplier(Element element, float value)
+        {
+            _stats.RemoveElementDamageRateMultiplier(element, value);
+        }
+
+        private FlagStat GetFlagStat(FlagStatType type)
+        {
+            if (!_flagStats.TryGetValue(type, out var flagStat))
+            {
+                flagStat = new FlagStat(0);
+                _flagStats[type] = flagStat;
+            }
+
+            return flagStat;
+        }
+
         public void AddFlagStat(FlagStatType type)
         {
-            switch (type)
-            {
-                case FlagStatType.CannotAct:
-                    _cannotActFlags.AddFlags();
-                    break;
-                case FlagStatType.CannotMove:
-                    _cannotMoveFlags.AddFlags();
-                    break;
-                case FlagStatType.Clairvoyant:
-                    _visionRange.AddClairvoyantFlags();
-                    break;
-                case FlagStatType.Blind:
-                    _visionRange.AddBlindFlags();
-                    break;
-                case FlagStatType.OverDrive:
-                    _overDriveFlags.AddFlags();
-                    break;
-                case FlagStatType.Hard:
-                    _hardFlags.AddFlags();
-                    break;
-                case FlagStatType.Heavy:
-                    _heavyFlags.AddFlags();
-                    break;
-                case FlagStatType.SecureHold:
-                    _secureHoldFlags.AddFlags();
-                    break;
-                case FlagStatType.CurseProof:
-                    _curseProofFlags.AddFlags();
-                    break;
-                case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapsFlags.AddFlags();
-                    break;
-            }
+            GetFlagStat(type).AddFlags();
         }
 
         public void RemoveFlagStat(FlagStatType type)
         {
-            switch (type)
-            {
-                case FlagStatType.CannotAct:
-                    _cannotActFlags.RemoveFlags();
-                    break;
-                case FlagStatType.CannotMove:
-                    _cannotMoveFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Clairvoyant:
-                    _visionRange.RemoveClairvoyantFlags();
-                    break;
-                case FlagStatType.Blind:
-                    _visionRange.RemoveBlindFlags();
-                    break;
-                case FlagStatType.OverDrive:
-                    _overDriveFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Hard:
-                    _hardFlags.RemoveFlags();
-                    break;
-                case FlagStatType.Heavy:
-                    _heavyFlags.RemoveFlags();
-                    break;
-                case FlagStatType.SecureHold:
-                    _secureHoldFlags.RemoveFlags();
-                    break;
-                case FlagStatType.CurseProof:
-                    _curseProofFlags.RemoveFlags();
-                    break;
-                case FlagStatType.IsAffectedByTrap:
-                    _isAffectedByTrapsFlags.RemoveFlags();
-                    break;
-            }
+            GetFlagStat(type).RemoveFlags();
         }
 
         public void AddWaitTime(float value)
@@ -280,7 +224,8 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy, bool isAffectedByTrap, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy,
+            bool isAffectedByTrap, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -296,22 +241,34 @@ namespace Domain.Service.Characters
                 );
             }
 
+            var flagStats = new Dictionary<FlagStatType, int>();
+            if (isSlept)
+            {
+                flagStats[FlagStatType.CannotAct] = 1;
+                flagStats[FlagStatType.Blind] = 1;
+            }
+
+            if (isHard)
+            {
+                flagStats[FlagStatType.Hard] = 1;
+            }
+
+            if (isHeavy)
+            {
+                flagStats[FlagStatType.Heavy] = 1;
+            }
+
+            if (isAffectedByTrap)
+            {
+                flagStats[FlagStatType.IsAffectedByTrap] = 1;
+            }
+
             return new CharacterStatusMemento
             (
-                stats: CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
+                CharacterStats.Build(maxHp, hpNaturalRecoveryAmount, elementAttackMultiplier,
                     elementDamageRateMultiplier, conditionResistance, viewRange, waitTime),
-                cannotActFlags: isSlept ? 1 : 0,
-                cannotMoveFlags: 0,
-                confusedFlags: 0,
-                clairvoyantFlags: 0,
-                blindFlags: isSlept ? 1 : 0,
-                overDriveFlags: 0,
-                hardFlags: isHard ? 1 : 0,
-                heavyFlags: isHeavy ? 1 : 0,
-                secureHoldFlags: 0,
-                curseProofFlags: 0,
-                isAffectedByTrapFlags: isAffectedByTrap ? 1 : 0,
-                conditions: conditions
+                flagStats,
+                conditions
             );
         }
 

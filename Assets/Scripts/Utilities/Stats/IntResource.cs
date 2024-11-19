@@ -2,7 +2,7 @@ using System;
 using R3;
 using UnityEngine;
 
-namespace Stats
+namespace Utilities.Stats
 {
     public class IntResource : IDisposable
     {
@@ -77,6 +77,11 @@ namespace Stats
             var oldValue = Value.CurrentValue;
             _value.Value = Mathf.Clamp(_value.CurrentValue + value, 0, MaxValue.CurrentValue);
             return Value.CurrentValue - oldValue;
+        }
+
+        public void Set(float value)
+        {
+            _value.Value = Mathf.Clamp(value, 0, MaxValue.CurrentValue);
         }
 
         public void AddMaxValue(float value)

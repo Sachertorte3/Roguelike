@@ -2,6 +2,7 @@
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Map;
 using Unity.Logging;
@@ -14,15 +15,17 @@ namespace Game
         public Vector2Int Position { get; init; }
         public IMap Map { get; init; }
         public ITilemapViewer TilemapViewer { get; init; }
+
         public MapPosition(Vector2Int position, IMap map, ITilemapViewer tilemapViewer)
         {
             Position = position;
             Map = map;
             TilemapViewer = tilemapViewer;
         }
+
         public bool IsOverlapped(params EntityLayer[] layers)
         {
-            return Map.Entities.On(layers).Count(entity => entity.CurrentPosition == Position) > 1;
+            return Map.Entities.On(layers).Count(entity => entity.Entity.CurrentPosition == Position) > 1;
         }
 
         public bool IsBlankIgnoreWall(params EntityLayer[] layers)
@@ -66,7 +69,7 @@ namespace Game
             var entity = Map.Entities.On(EntityLayer.Middle).At(Position).FirstOrDefault();
             if (entity == null)
                 return true;
-            if (entity is ICharacter character && character != Map.Player)
+            if (entity is ICharacter character && !character.IsPlayer)
                 return !character.Affiliation.IsEnemy(actor);
             return false;
         }
@@ -79,6 +82,11 @@ namespace Game
         public bool IsPassableOnMap()
         {
             return TilemapViewer.IsPassable(Position);
+        }
+
+        public bool IsLightPassable()
+        {
+            return TilemapViewer.IsTransparent(Position);
         }
     }
 }

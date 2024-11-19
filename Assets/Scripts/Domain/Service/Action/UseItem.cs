@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
+using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Utilities;
@@ -11,7 +12,17 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.StatusManager.CannotAct && Item.CanActivateWhenUsed;
+            if (actor.Status.IsFlagStat(FlagStatType.CannotAct))
+            {
+                return false;
+            }
+
+            if (!Item.IsInfoIdentified(map.Player) && Item.HasActivatableSkillWhenUsed)
+            {
+                return true;
+            }
+
+            return Item.CanActivateWhenUsed;
         }
 
         public async UniTask Do(IActor actor, IMap map, IInput input)
@@ -21,7 +32,7 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap map)
         {
-            return Item.EvaluateWhenUsed(actor, actor.CurrentPosition, Direction, map);
+            return Item.EvaluateWhenUsed(actor, actor.Entity.CurrentPosition, Direction, map);
         }
 
         public string Info()

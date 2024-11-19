@@ -16,7 +16,8 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world, MenuController menuController,
+            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world,
+            MenuController menuController,
             InventoryView inventoryView)
         {
             Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
@@ -49,17 +50,18 @@ namespace Provider
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllIgnoreNull(
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
                 map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
                 {
                     if (isNoMove)
                     {
-                        map.Player.FaceNearestCharacter(map);
+                        map.Player.Character.FaceNearestCharacter(map);
                     }
                 })
             );
 
-            inventoryView.OnFocusChanged.Subscribe(focus => actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.isGroundItem, focus.isEmpty)));
+            inventoryView.OnFocusChanged.Subscribe(focus =>
+                actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.subIndex, focus.isGroundItem, focus.isEmpty)));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {
@@ -67,7 +69,7 @@ namespace Provider
                 choiceReceiver.SetChoicedIndex(index);
             });
 
-            textInputReceiver.OnShownTextInput.Subscribe(async _ => 
+            textInputReceiver.OnShownTextInput.Subscribe(async _ =>
             {
                 var text = await menuController.GetTextInput();
                 textInputReceiver.SetTextInput(text);

@@ -3,10 +3,10 @@ using System.Linq;
 using Game;
 using ObservableCollections;
 using R3;
-using UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
+using View;
 
 namespace Provider
 {
@@ -15,7 +15,7 @@ namespace Provider
         public KeyCharacterPresenter(World world, SynchronizedCharacterView characters,
             SynchronizedIconEntityView iconEntities)
         {
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
                 var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
                 var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")

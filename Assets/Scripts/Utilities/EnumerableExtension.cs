@@ -69,21 +69,29 @@ namespace Utilities
             return ie.Select((item, index) => (item, index));
         }
 
-        public static IEnumerable<Vector2Int> RectRange(this RectInt rect) => RectRange(rect.xMin, rect.yMin, rect.width, rect.height);
-        public static IEnumerable<Vector2Int> RectRange(Vector2Int min, Vector2Int size) => RectRange(min.x, min.y, size.x, size.y);
+        public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
+        {
+            return RectRange(rect.xMin, rect.yMin, rect.width, rect.height);
+        }
+
+        public static IEnumerable<Vector2Int> RectRange(Vector2Int min, Vector2Int size)
+        {
+            return RectRange(min.x, min.y, size.x, size.y);
+        }
+
         public static IEnumerable<Vector2Int> RectRange(int xMin, int yMin, int width, int height)
         {
             for (var x = xMin; x < xMin + width; x++)
-                for (var y = yMin; y < yMin + height; y++)
-                    yield return new Vector2Int(x, y);
+            for (var y = yMin; y < yMin + height; y++)
+                yield return new Vector2Int(x, y);
         }
 
         public static IEnumerable<Vector2Int> CircleRange(Vector2Int center, float radius)
         {
             for (var x = -Mathf.FloorToInt(radius); x <= Mathf.FloorToInt(radius); x++)
-                for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
-                    if (x * x + y * y <= radius * radius)
-                        yield return new Vector2Int(x, y) + center;
+            for (var y = -Mathf.FloorToInt(radius); y <= Mathf.FloorToInt(radius); y++)
+                if (x * x + y * y <= radius * radius)
+                    yield return new Vector2Int(x, y) + center;
         }
 
         public static T MinBy<T, U>(this IEnumerable<T> xs, Func<T, U> key) where U : IComparable<U>
@@ -103,6 +111,7 @@ namespace Utilities
             {
                 return defaultValue;
             }
+
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) < 0 ? a : b);
         }
 
@@ -113,6 +122,7 @@ namespace Utilities
             {
                 return defaultValue;
             }
+
             return xs.Aggregate((a, b) => key(a).CompareTo(key(b)) > 0 ? a : b);
         }
 

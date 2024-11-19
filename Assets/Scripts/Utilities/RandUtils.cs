@@ -46,6 +46,16 @@ namespace Utilities
             return Mathf.Exp(Normal(Mathf.Log(mean), sigma));
         }
 
+        public static bool IsLessThanProbability(float probability)
+        {
+            return Random.value < probability;
+        }
+
+        public static bool IsGreaterThanProbability(float probability)
+        {
+            return Random.value > probability;
+        }
+
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
         {
             return GetAtRandom(ie, 1, max => Random.Range(0, max))[0];
@@ -126,6 +136,21 @@ namespace Utilities
             return WeightedIndex(source, Random.value, weightSelector);
         }
 
+        public static int RangeWithoutExcludes(int n, params int[] excludeList)
+        {
+            Array.Sort(excludeList);
+            var valid_count = n + 1 - excludeList.Length;
+            var random_index = Random.Range(0, valid_count - 1);
+            var result = random_index;
+            foreach (var excluded_value in excludeList)
+            {
+                if (result >= excluded_value)
+                    result += 1;
+            }
+
+            return result;
+        }
+
         public static RectInt? GetRandomInnerRect(this IEnumerable<Vector2Int> positions, Vector2Int size)
         {
             var shuffledPositions = positions.Shuffled();
@@ -137,14 +162,15 @@ namespace Utilities
                     return rect;
                 }
             }
+
             return null;
         }
 
         public static void Shuffle<T>(this IList<T> list)
         {
-            for (int i = list.Count - 1; i > 0; i--)
+            for (var i = list.Count - 1; i > 0; i--)
             {
-                int j = Random.Range(0, i + 1);
+                var j = Random.Range(0, i + 1);
                 var tmp = list[i];
                 list[i] = list[j];
                 list[j] = tmp;
@@ -154,8 +180,16 @@ namespace Utilities
         public static IEnumerable<T> Shuffled<T>(this IEnumerable<T> ie)
         {
             var list = ie.ToList();
-            list.Shuffle();
-            return list;
+            var n = list.Count;
+
+            for (var i = n - 1; i > 0; i--)
+            {
+                var k = Random.Range(0, i + 1);
+                var value = list[k];
+                list[k] = list[i];
+                list[i] = value;
+                yield return value;
+            }
         }
     }
 }

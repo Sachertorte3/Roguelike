@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Setting;
 using UnityEngine;
@@ -18,7 +20,7 @@ namespace Domain.Service.Effect
         public override async UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
             var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom().Position;
-            target.Teleport(randomPosition);
+            target.Entity.Teleport(randomPosition);
             await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
         }
 
@@ -32,9 +34,21 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
+        public override string UpgradePathName => "テレポート";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return "テレポート";
+            return "対象をテレポートさせる\n";
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -38,27 +38,30 @@ namespace Domain.Service.Effect
             );
         }
 
-        public async UniTask<ISkillResult> Use(IActor player, IItem item, IMap map)
+        public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IMap map)
         {
-            var selfIndex = player.Inventory.GetItemIndex(item);
+            var selfIndex = player.Character.Inventory.GetItemIndex(item);
             var disabledItemIndexes = new List<int>();
-            foreach (var inventoryItem in player.Inventory.AllItems)
+            foreach (var inventoryItem in player.Character.Inventory.AllItems)
             {
                 if (!_itemEffect.CanApplyTo(player, inventoryItem))
                 {
-                    var index = player.Inventory.GetItemIndex(inventoryItem);
+                    var index = player.Character.Inventory.GetItemIndex(inventoryItem);
                     disabledItemIndexes.Add(index);
                 }
             }
-            var groundItem = map.Items.At(player.CurrentPosition).FirstOrDefault()?.Item;
+
+            var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
             {
-                disabledItemIndexes.Add(map.Player.Inventory.MaxItemCount);
+                disabledItemIndexes.Add(map.Player.Character.Inventory.Capacity);
             }
+
             disabledItemIndexes.Add(selfIndex);
-            if (player.IsKnownItem(item))
+            if (player.Character.IsKnownItem(item))
             {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, disabledItemIndexes.ToArray());
+                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map,
+                    disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
                     _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
@@ -67,18 +70,20 @@ namespace Domain.Service.Effect
             }
             else
             {
-                var selectedItem = await player.ItemSelector.SelectItem(player.Inventory, map, new[] { selfIndex });
+                var selectedItem =
+                    await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, selfIndex);
                 if (selectedItem != null)
                 {
-                    var selectedItemIndex = player.Inventory.GetItemIndex(selectedItem);
+                    var selectedItemIndex = player.Character.Inventory.GetItemIndex(selectedItem);
                     if (disabledItemIndexes.Contains(selectedItemIndex))
                     {
-                        GameLog.Add($"しかし効果はなかった。");
+                        GameLog.Add("しかし効果はなかった。");
                     }
                     else
                     {
                         _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
                     }
+
                     return ItemTargetSkillResult.Success;
                 }
             }
@@ -86,7 +91,7 @@ namespace Domain.Service.Effect
             return ItemTargetSkillResult.Cancelled;
         }
 
-        public float Evaluate(IActor player, IItem item)
+        public float Evaluate(IPlayer player, IItem item)
         {
             return 0;
         }
@@ -96,12 +101,19 @@ namespace Domain.Service.Effect
             return _itemEffect.EvaluatePrice();
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {
-            var info = $"効果: {_itemEffect.Info()}";
-            return info;
+            return _itemEffect.Info();
         }
     }
 }

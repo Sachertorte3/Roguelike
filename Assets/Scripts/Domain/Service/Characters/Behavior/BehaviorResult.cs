@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using Domain.Model.Character;
-using Sirenix.Reflection.Editor;
 using UnityEngine;
 
 namespace Domain.Service.Characters.Behavior

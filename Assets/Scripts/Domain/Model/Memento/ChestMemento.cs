@@ -2,7 +2,8 @@
 using System;
 using Domain.Model.Character;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {

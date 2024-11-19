@@ -12,17 +12,18 @@ namespace Provider
         public GroupMarkerPresenter(World world, SynchronizedCharacterView synchronizedCharacterView)
         {
             var serialDisposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                serialDisposable.Disposable = map.CharacterManager.CharacterEvents.OnAffiliationChanged.Subscribe(
-                    affectionChanged =>
+                serialDisposable.Disposable = map.Characters.SubscribeToAllObservables(
+                    character => character.Affiliation.OnAffiliationChanged,
+                    (character, affectionChanged) =>
                     {
-                        if (affectionChanged.Message.Target == map.Player.Affiliation.Id)
+                        if (affectionChanged.Target == map.Player.Character.Affiliation.Id)
                         {
-                            var characterView = synchronizedCharacterView.TryGet(affectionChanged.Character);
+                            var characterView = synchronizedCharacterView.TryGet(character);
                             characterView?.UpdateGroupMarker(
-                                affectionChanged.Character.Affiliation.IsEnemy(map.Player.Affiliation),
-                                affectionChanged.Character.Affiliation.IsAlly(map.Player.Affiliation)
+                                character.Affiliation.IsEnemy(map.Player.Character.Affiliation),
+                                character.Affiliation.IsAlly(map.Player.Character.Affiliation)
                             );
                         }
                     });

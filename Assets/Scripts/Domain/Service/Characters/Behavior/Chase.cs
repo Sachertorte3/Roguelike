@@ -1,45 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Model.Action;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Service.Action;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Utilities.Algorithms;
 
 namespace Domain.Service.Characters.Behavior
 {
-    public class MoveCostCalculator
+    internal static class Chase
     {
-        private IHasBehavior _character;
-        private IMap _map;
-        private bool _canSwap;
-        public MoveCostCalculator(IHasBehavior character, IMap map, bool canSwap)
-        {
-            _character = character;
-            _map = map;
-            _canSwap = canSwap;
-        }
-
-        public float Calculate(Vector2Int pos, Direction8 direction)
-        {
-            if (_character.CanMove(pos, direction, _map))
-                return 1;
-            if (_canSwap && _character.CanSwap(pos, direction, _map))
-                return 2;
-            return float.PositiveInfinity;
-        }
-    }
-
-    internal sealed class Chase : IBehaviorWhenDiscoveringTarget
-    {
-        public IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
+        public static IEnumerable<IAction> GenerateMoveActionsDoable(IHasBehavior character, Vector2Int targetPosition,
             IMap map)
         {
             var calculator = new MoveCostCalculator(character, map, true);
-            var route = new AStar(calculator.Calculate).Calc(character.CurrentPosition, targetPosition);
+            var route = new AStar(calculator.Calculate).Calc(character.Entity.CurrentPosition, targetPosition);
             if (route.Count < 2)
             {
                 Log.Debug("[Think]Already reached the target position");

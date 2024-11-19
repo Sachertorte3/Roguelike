@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -34,7 +35,7 @@ namespace Domain.Service.Effect
             if (upgradedItems.Any())
             {
                 var item = upgradedItems.GetAtRandom();
-                if (Random.value < _probabilityOfSuccess)
+                if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                     item.Downgrade(map.Player, map.ItemPlaceholders);
                 else
                     GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");
@@ -43,6 +44,7 @@ namespace Domain.Service.Effect
             {
                 GameLog.Add($"{target.GetName(map.Player)}は強化されたアイテムを持っていない");
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -56,9 +58,21 @@ namespace Domain.Service.Effect
             return 100;
         }
 
+        public override string UpgradePathName => "強化解除";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return $"強化解除";
+            return "対象の持つアイテムの強化を解除する\n";
         }
     }
 }

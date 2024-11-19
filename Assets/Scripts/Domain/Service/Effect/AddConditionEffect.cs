@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
+using Utilities.Serialize;
 
 namespace Domain.Service.Effect
 {
@@ -39,14 +40,21 @@ namespace Domain.Service.Effect
                 _probabilityOfSuccess = 1;
         }
 #endif
-        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map) => Apply(actor.Id, target, map);
-        public UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map) => Apply(Id<IEntity>.Empty, target, map);
+        public UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
+        {
+            return Apply(actor.Entity.Id, target, map);
+        }
+
+        public UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
+        {
+            return Apply(Id<IEntity>.Empty, target, map);
+        }
 
         public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)
         {
-            if (Random.value < _probabilityOfSuccess)
+            if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
             {
-                if (Random.value > target.GetConditionResistance(_condition.Value))
+                if (RandUtils.IsGreaterThanProbability(target.GetConditionResistance(_condition.Value)))
                 {
                     target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
                 }
@@ -58,31 +66,57 @@ namespace Domain.Service.Effect
 
             return UniTask.CompletedTask;
         }
-        public UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map) => UniTask.CompletedTask;
-        public UniTask Apply(IEntity target, Vector2Int position, IMap map) => UniTask.CompletedTask;
 
-        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
-        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map) => UniTask.CompletedTask;
+        public UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public UniTask Apply(IEntity target, Vector2Int position, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public UniTask Apply(IActorOfEffect actor, IEnumerable<Vector2Int> positions, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
 
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
             return _condition.Value.Evaluate(target) * _probabilityOfSuccess;
         }
-        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions) => 0;
+
+        public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions)
+        {
+            return 0;
+        }
 
         public float EvaluatePrice()
         {
             return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "状態付与";
+
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {
-            var info = $"状態付与: {_condition.Value.name}";
-            info += $" 成功率: {_probabilityOfSuccess:P0}";
-
-            return info;
+            return $"{_probabilityOfSuccess:P0}の確率で{_condition.Value.name}状態を付与する\n";
         }
     }
 }

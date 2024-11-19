@@ -1,12 +1,12 @@
 ﻿#nullable enable
+
 using System.Collections.Generic;
 using Domain.Model.Condition;
+using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Domain.Model.Dungeon;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,7 +14,7 @@ using UnityEditor;
 namespace Domain.Model.Item
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
-    public class ItemData : ScriptableObject, IHasInfo, IHasRarity
+    public class ItemData : ScriptableObject, IHasRarity
     {
         public ItemCategory Category;
         [Required] public Sprite Icon;
@@ -23,6 +23,7 @@ namespace Domain.Model.Item
         public bool CannotDropIfCursed => Category == ItemCategory.Weapons;
         public bool IdentifyIfGot => Category == ItemCategory.Weapons;
         public bool IdentifyIfUsed => Category != ItemCategory.Wands;
+        public bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
@@ -50,50 +51,15 @@ namespace Domain.Model.Item
 
         #region item target
 
-        [ShowIf("@EffectType == ItemEffectType.ItemTarget")]
-        [SerializeReference]
-        [Required]
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget")] [SerializeReference] [Required]
         public IItemEffect? ItemEffect;
 
         #endregion
 
-        [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
+        public int StorageCapacity = 0;
+        [ShowIf("_usable")] [MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
-
-        private ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, bool useOnDeath, int usageLimit,
-            List<IConditionData> conditions)
-        {
-            name = itemName;
-            Icon = icon;
-            IsShiny = isShiny;
-            _rarity = rarity;
-            UseOnDeath = useOnDeath;
-            UsageLimit = usageLimit;
-            PassiveConditions = conditions;
-        }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity,
-            SkillDataOnUse? skillOnUse, SkillDataOnThrow? skillOnThrow, bool isSameEffect, bool isSameSkill,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
-        {
-            EffectType = ItemEffectType.SpawnEffect;
-            SpawnEffectsOnUse = skillOnUse != null;
-            SpawnEffectsOnThrow = skillOnThrow != null;
-            IsSameEffect = isSameEffect;
-            IsSameSkill = isSameSkill;
-            SkillOnUse = skillOnUse;
-            SkillOnThrow = skillOnThrow;
-        }
-
-        public ItemData(string itemName, Sprite icon, bool isShiny, Rarity rarity, IItemEffect itemEffect,
-            bool useOnDeath, int usageLimit, List<IConditionData> conditions)
-            : this(itemName, icon, isShiny, rarity, useOnDeath, usageLimit, conditions)
-        {
-            EffectType = ItemEffectType.ItemTarget;
-            ItemEffect = itemEffect;
-        }
 
         private bool _usable => EffectType switch
         {
@@ -108,6 +74,7 @@ namespace Domain.Model.Item
             {
                 SkillOnUse.Effects.AddRange(effects);
             }
+
             if (SkillOnThrow != null)
             {
                 SkillOnThrow.Effects.AddRange(effects);
@@ -153,7 +120,8 @@ namespace Domain.Model.Item
                 if (SkillOnThrow == null)
                 {
                     SkillOnThrow =
-                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects, CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
+                        new SkillDataOnThrow(SkillOnUse.Area, SkillOnUse.Effects,
+                            CommonSenseParameters.SkillOnThrowProbabilityOfSuccess);
                 }
                 else
                 {
@@ -176,45 +144,9 @@ namespace Domain.Model.Item
             {
                 UpgradeLimit = 3;
             }
+
             EditorUtility.SetDirty(this);
         }
 #endif
-        public string Info()
-        {
-            var info = $"{name}\n";
-            if (_usable)
-            {
-                if (IsSameSkill)
-                {
-                    info += $"[使用・投擲時]\n{SkillOnUse.Info()}\n";
-                }
-                else
-                {
-                    if (SpawnEffectsOnUse)
-                    {
-                        info += $"[使用時]\n{SkillOnUse.Info()}\n";
-                    }
-
-                    if (SpawnEffectsOnThrow)
-                    {
-                        info += $"[投擲時]\n{SkillOnThrow.Info()}\n";
-                    }
-                }
-
-                info += $"使用可能回数: {UsageLimit}\n";
-            }
-
-            if (UseOnDeath)
-            {
-                info += "死亡時に自動的に使用される\n";
-            }
-
-            foreach (var condition in PassiveConditions)
-            {
-                info += $"パッシブ効果: {condition.Name}\n";
-            }
-
-            return info;
-        }
     }
 }

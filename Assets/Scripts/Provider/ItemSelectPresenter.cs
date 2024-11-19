@@ -13,9 +13,9 @@ namespace Provider
         public ItemSelectPresenter(World world, ItemSelectText itemSelectText, InventoryView inventoryView)
         {
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllIgnoreNull(map =>
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                disposable.Disposable = map.Player.OnItemSelect.Subscribe(message =>
+                disposable.Disposable = map.Player.Character.OnItemSelect.Subscribe(message =>
                 {
                     if (message.IsWaiting)
                     {

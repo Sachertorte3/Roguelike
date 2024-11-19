@@ -18,6 +18,7 @@ namespace Domain.Model.Character
                 _ => throw new ArgumentOutOfRangeException(nameof(aggression), aggression, null)
             };
         }
+
         public static float GetAggression(this Aggression aggression, AffiliationType type)
         {
             return type switch

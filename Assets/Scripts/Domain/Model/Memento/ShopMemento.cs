@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Model.Entity;
 using UnityEngine;
 using Utilities;
 
@@ -10,7 +11,7 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public RoomMemento Room { get; private set; }
         [SerializeField] private string _clerkId;
-        public Id<IEntity> ClerkId => new Id<IEntity>(_clerkId);
+        public Id<IEntity> ClerkId => new(_clerkId);
         [field: SerializeField] public List<ShopItemMemento> Items { get; private set; }
         [field: SerializeField] public bool IsStolen { get; private set; }
 

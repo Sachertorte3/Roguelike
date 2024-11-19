@@ -29,9 +29,12 @@ namespace Provider
             builder.RegisterComponentInHierarchy<DungeonInfoView>();
             builder.RegisterComponentInHierarchy<TileViewController>();
             builder.RegisterComponentInHierarchy<OverlayTileViewController>();
+            builder.RegisterComponentInHierarchy<MinimapController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
+            builder.RegisterComponentInHierarchy<SubStorageView>();
             builder.RegisterComponentInHierarchy<StatLine>();
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
+            builder.RegisterComponentInHierarchy<CameraFlameRect>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Sirenix.OdinInspector;
-using Random = UnityEngine.Random;
+using Utilities;
 
 namespace Domain.Model.Condition
 {
@@ -11,11 +11,19 @@ namespace Domain.Model.Condition
         public bool RemoveByElapsedTurn;
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage;
-        [ShowIf("@RemoveByDamage")] [Range(0, 1)] public float Probability;
-        public bool RemoveByCharacterNearby;
-        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)] public float CharacterNearbyProbability;
 
-        public RemovalConditionData(int duration = -1, float damageProbability = -1, float characterNearbyProbability = -1)
+        [ShowIf("@RemoveByDamage")]
+        [Range(0, 1)]
+        public float Probability;
+
+        public bool RemoveByCharacterNearby;
+
+        [ShowIf("@RemoveByCharacterNearby")]
+        [Range(0, 1)]
+        public float CharacterNearbyProbability;
+
+        public RemovalConditionData(int duration = -1, float damageProbability = -1,
+            float characterNearbyProbability = -1)
         {
             if (duration > 0)
             {
@@ -39,12 +47,12 @@ namespace Domain.Model.Condition
         public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByCharacterNearby && characterVisible && Random.value < CharacterNearbyProbability);
+                   (RemoveByCharacterNearby && characterVisible && RandUtils.IsLessThanProbability(CharacterNearbyProbability));
         }
 
         public bool IsFinishedByDamage()
         {
-            return RemoveByDamage && Random.value < Probability;
+            return RemoveByDamage && RandUtils.IsLessThanProbability(Probability);
         }
 
         public float EvaluateTurn()

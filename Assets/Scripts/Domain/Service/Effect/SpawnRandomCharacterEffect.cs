@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -15,24 +16,23 @@ namespace Domain.Service.Effect
     [Serializable]
     public class SpawnRandomCharacterEffect : ActorlessFieldTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _count;
+        [MinValue(1)] [SerializeField] private int _count;
 
         public override Color Color => Colors.MediumPurple;
         public override Impact Impact => Impact.Neutral;
 
         public override UniTask Apply(IEnumerable<Vector2Int> positions, IMap map)
         {
-            var placeablePositions = positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
-            if (placeablePositions.Any())
+            var placeablePositions =
+                positions.Where(position => map.At(position).CanPlace(false, false, false, EntityLayer.Middle));
+            var canSpawnCount = Mathf.Min(placeablePositions.Count(), _count);
+            foreach (var position in placeablePositions.GetAtRandom(canSpawnCount))
             {
-                foreach (var position in placeablePositions.GetAtRandom(_count))
-                {
-                    map.SpawnRandomEnemy(
-                        position,
-                        false,
-                        false
-                    );
-                }
+                map.SpawnRandomEnemy(
+                    position,
+                    false,
+                    false
+                );
             }
 
             return UniTask.CompletedTask;
@@ -48,9 +48,21 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
+        public override string UpgradePathName => "ランダム召喚";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return $"召喚: ランダム {_count}体";
+            return $"ランダムに{_count}体召喚する\n";
         }
     }
 }

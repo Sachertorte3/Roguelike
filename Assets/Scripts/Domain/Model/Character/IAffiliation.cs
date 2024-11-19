@@ -1,4 +1,5 @@
-﻿using Domain.Model.Memento;
+﻿using Domain.Model.Entity;
+using Domain.Model.Memento;
 using R3;
 using Utilities;
 

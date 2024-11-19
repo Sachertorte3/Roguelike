@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AffectionIncreaseEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private float _power;
+        [MinValue(1)] [SerializeField] private float _power;
 
         public override Color Color => Colors.HotPink;
 
@@ -33,9 +34,21 @@ namespace Domain.Service.Effect
             return 100;
         }
 
+        public override string UpgradePathName => "好感度上昇";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return $"好感度上昇\n威力: {_power}";
+            return $"好感度を{_power}上昇させる\n";
         }
     }
 }

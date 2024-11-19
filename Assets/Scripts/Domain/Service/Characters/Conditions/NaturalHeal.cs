@@ -1,7 +1,8 @@
 using Cysharp.Threading.Tasks;
-using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Sirenix.OdinInspector;
 using Utilities;
 
@@ -18,7 +19,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.AddStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.Status.AddStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,7 +29,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.StatusManager.RemoveStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.Status.RemoveStatValue(StatType.HpNaturalRecovery, Power);
         }
 
         public float Evaluate(ITargetOfEffect target)

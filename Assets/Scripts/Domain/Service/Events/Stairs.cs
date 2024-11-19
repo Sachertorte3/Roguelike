@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Entities;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Stairs : IDisposable, ISerializable<StairsMemento>, IIconEventEntity, IMovementEntity
+    public class Stairs : IDisposable, ISerializable<StairsMemento>, IPlayerEventEntity, IMovementEntity
     {
         public MovementEntityType Type { get; init; }
         public Location Destination { get; init; }
-        private readonly Entity _entity;
+        public EntityBase Entity { get; init; }
         public Id<IEntity> DestinationId { get; init; }
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
 
         public Stairs(StairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
         {
             Type = data.Type;
-            _entity = new Entity(data.Entity);
+            Entity = new EntityBase(data.Entity);
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
@@ -33,9 +32,9 @@ namespace Domain.Service.Events
                 true,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "進む",
-                        (player) => CanExecuteEvent(),
+                        player => CanExecuteEvent(),
                         (gameManager, map) => DoEvent(gameManager)
                     )
                 }
@@ -44,29 +43,10 @@ namespace Domain.Service.Events
 
         public void Dispose()
         {
-            _entity.Dispose();
+            Entity.Dispose();
         }
 
-        public Id<IEntity> Id => _entity.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
-
-        public Sprite Icon => Type switch
-        {
-            MovementEntityType.UpStairs => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_342]").WaitForCompletion(),
-            MovementEntityType.DownStairs => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_334]").WaitForCompletion(),
-            MovementEntityType.MagicCircle => Addressables
-                .LoadAssetAsync<Sprite>("MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_71]").WaitForCompletion(),
-            _ => throw new NotImplementedException()
-        };
-
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         private bool CanExecuteEvent()
         {
@@ -79,24 +59,9 @@ namespace Domain.Service.Events
             return UniTask.CompletedTask;
         }
 
-        public void SetVisibility(bool visibility)
-        {
-            _entity.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            _entity.Destroy();
-        }
-
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return UniTask.CompletedTask;
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            _entity.Teleport(position);
         }
 
         public StairsMemento Serialize()
@@ -105,7 +70,7 @@ namespace Domain.Service.Events
             (
                 Type,
                 Destination,
-                entity: _entity.Serialize(),
+                entity: Entity.Serialize(),
                 destinationId: DestinationId
             );
         }
@@ -117,7 +82,7 @@ namespace Domain.Service.Events
             (
                 type,
                 destination,
-                entity: Entity.Build(id, position, EntityLayer.Bottom),
+                entity: EntityBase.Build(id, position, EntityLayer.Bottom),
                 destinationId: destinationId
             );
         }

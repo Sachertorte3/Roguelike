@@ -15,7 +15,8 @@ namespace View
             {
                 var spawnedEffect = Object.Instantiate(_effect);
                 spawnedEffect.AddComponent<LifeTimer>().LifeTimeMilliseconds = effectDisplayMilliseconds;
-                spawnedEffect.transform.position = new Vector3(position.x, position.y, spawnedEffect.transform.position.z);
+                spawnedEffect.transform.position =
+                    new Vector3(position.x, position.y, spawnedEffect.transform.position.z);
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
             }
         }
@@ -26,7 +27,8 @@ namespace View
             foreach (var position in area)
             {
                 var spawnedEffect = Object.Instantiate(_effect);
-                spawnedEffect.transform.position = new Vector3(position.x, position.y, spawnedEffect.transform.position.z);
+                spawnedEffect.transform.position =
+                    new Vector3(position.x, position.y, spawnedEffect.transform.position.z);
                 spawnedEffect.GetComponent<SpriteRenderer>().color = color;
                 spawnedEffects.Add(spawnedEffect);
             }

@@ -1,20 +1,21 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Action;
+using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Map;
 
 namespace Domain.Service.Action
 {
-    internal record DropItem(int ItemIndex) : IAction
+    internal record DropItem(int Index, int SubIndex) : IAction
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.StatusManager.CannotAct;
+            return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            actor.DropItem(ItemIndex, map);
+            actor.DropItem(Index, SubIndex, map);
             return UniTask.CompletedTask;
         }
 
@@ -25,7 +26,7 @@ namespace Domain.Service.Action
 
         public string Info()
         {
-            return $"DropItem: Item:{ItemIndex}";
+            return $"DropItem: Index:{Index}, SubIndex:{SubIndex}";
         }
     }
 }

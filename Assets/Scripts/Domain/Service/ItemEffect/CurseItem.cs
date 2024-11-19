@@ -1,3 +1,4 @@
+using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 
@@ -5,14 +6,14 @@ namespace Domain.Service.ItemEffect
 {
     public class CurseItem : IItemEffect
     {
-        public bool CanApplyTo(IHasInventory actor, IItem item)
+        public bool CanApplyTo(IPlayer player, IItem item)
         {
-            return !item.IsCursed || (!actor.IsKnownItem(item) && !item.IsCurseIdentified);
+            return !item.IsCursed || (!player.Character.IsKnownItem(item) && !item.IsCurseIdentified);
         }
 
-        public void Apply(IHasInventory actor, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            item.SetCursed(actor, itemPlaceholders, true);
+            item.SetCursed(player, itemPlaceholders, true);
         }
 
         public float EvaluatePrice()

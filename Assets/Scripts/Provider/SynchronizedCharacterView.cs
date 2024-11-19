@@ -1,8 +1,6 @@
 ﻿#nullable enable
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
-using Domain.Model.Setting;
 using Game;
 using R3;
 using UnityEngine;
@@ -16,7 +14,6 @@ namespace Provider
     public class SynchronizedCharacterView : SynchronizedEntityView<ICharacter, CharacterView>
     {
         private readonly SerialDisposable _disposable = new();
-        private readonly EffectViewSpawner _effectViewSpawner;
         protected override InputReceiver _inputReceiver { get; init; }
         private readonly World _world;
 
@@ -26,14 +23,13 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedCharacterView(EffectViewSpawner effectViewSpawner, InputReceiver receiver, World world)
+        public SynchronizedCharacterView(InputReceiver receiver, World world)
         {
-            _effectViewSpawner = effectViewSpawner;
             _inputReceiver = receiver;
             _world = world;
 
-            world.ActiveMap.SubscribeToAllIgnoreNull(
-                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAll(Add, Remove),
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAllItems(Add, Remove),
                 map => map.Characters.ForEach(character => Remove(character))
             );
         }
@@ -41,7 +37,7 @@ namespace Provider
         protected override CharacterView ViewPrefab(ICharacter _)
         {
             return Addressables
-                .LoadAssetAsync<GameObject>("Assets/Prefabs/CharacterView.prefab").WaitForCompletion()
+                .LoadAssetAsync<GameObject>("Assets/Prefabs/Character.prefab").WaitForCompletion()
                 .GetComponent<CharacterView>();
         }
 
@@ -59,31 +55,36 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var player = _world.ActiveMap.CurrentValue.Player;
-            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player),
-                character.IsAlly(player));
+            characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player.Character),
+                character.IsAlly(player.Character));
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 
-            character.StatusManager.Stats.HpValue.SubscribeToAll(hp =>
-                characterView.UpdateHpBar(character.StatusManager.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
-            character.StatusManager.Stats.MaxHp.SubscribeToAll(maxHp =>
-                    characterView.UpdateHpBar(maxHp, character.StatusManager.Stats.HpValue.CurrentValue))
+            character.Status.Stats.HpValue.SubscribeToAllItems(hp =>
+                characterView.UpdateHpBar(character.Status.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
+            character.Status.Stats.MaxHp.SubscribeToAllItems(maxHp =>
+                    characterView.UpdateHpBar(maxHp, character.Status.Stats.HpValue.CurrentValue))
                 .AddTo(characterView);
 
-            characterView.GetComponent<OverrideSprite>().SetTexture(character.CharacterType.TypeName(),
+            characterView.GetComponent<OverrideSprite>().SetTexture(
+                character.CharacterType.TypeName(),
                 character.CharacterType.SubtypeName(),
                 character.CharacterType.TypeName() == "Human");
 
             character.Direction.Subscribe(direction => characterView.Turn(direction)).AddTo(characterView);
 
-            character.OnMove.Where(move => !move.isThrown).Subscribe(move => characterView.PlayWalkAnimation().Forget())
+            character.Entity.OnMove
+                .Where(move => !move.isThrown)
+                .Subscribe(move => characterView.PlayWalkAnimation().Forget())
                 .AddTo(characterView);
-            character.OnAttacked.Subscribe(useSkill => characterView.PlayAttackAnimation()).AddTo(characterView);
+            character.OnAttacked
+                .Subscribe(useSkill => characterView.PlayAttackAnimation())
+                .AddTo(characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)
                 particleController.Add(ParticleType.ShinyStar);
-            character.StatusManager.Conditions.SubscribeToAll(
+            character.Status.Conditions.SubscribeToAllItems(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             ).AddTo(particleController);

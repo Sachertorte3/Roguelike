@@ -2,7 +2,7 @@
 using R3;
 using UnityEngine;
 
-namespace Stats
+namespace Utilities.Stats
 {
     public class Resource : IDisposable
     {

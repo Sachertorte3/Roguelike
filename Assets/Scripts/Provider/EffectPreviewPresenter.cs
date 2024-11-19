@@ -23,26 +23,26 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var previews = new List<GameObject>();
-            world.ActiveMap.SubscribeToAllIgnoreNull(
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
                 map =>
                 {
                     disposables.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
                         effectViewSpawner.Spawn(
-                            effectSpawned.Area.Intersect(map.VisibleArea),
+                            effectSpawned.Area.Intersect(map.Player.Character.VisibleArea),
                             effectSpawned.Color,
                             Settings.EffectDisplayTime.Value
                         )
                     ));
                     disposables.Add(Observable.Merge(
                         inventoryView.OnFocusChanged.AsUnitObservable(),
-                        map.Player.Inventory.OnItemChanged.AsUnitObservable(),
-                        map.Player.Direction.AsUnitObservable(),
+                        map.Player.Character.Inventory.OnItemChanged.AsUnitObservable(),
+                        map.Player.Character.Direction.AsUnitObservable(),
                         gameManager.Turn.AsUnitObservable()
                     ).Subscribe(_ =>
                     {
                         previews.ForEach(preview => Object.Destroy(preview));
                         previews.Clear();
-                        if (map.Player.CurrentHp <= 0)
+                        if (map.Player.Character.CurrentHp <= 0)
                         {
                             return;
                         }
@@ -53,18 +53,21 @@ namespace Provider
                             IItem? item = null;
                             if (focus.isGroundItem)
                             {
-                                item = map.Items.At(map.Player.CurrentPosition).FirstOrDefault()?.Item;
+                                item = map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
                             }
                             else
                             {
-                                item = map.Player.Inventory.GetItem(focus.index);
+                                item = map.Player.Character.Inventory.GetItem(focus.index);
                             }
-                            if (item != null && map.Player.IsKnownItem(item))
+
+                            if (item != null && map.Player.Character.IsKnownItem(item))
                             {
-                                if (item.SkillOnUse.HasValue && item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
+                                if (item.SkillOnUse.HasValue &&
+                                    item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                                 {
-                                    var area = spawnEffectSkill.GetArea(map.Player, map.Player.CurrentPosition,
-                                        map.Player.CurrentDirection, map, true);
+                                    var area = spawnEffectSkill.GetArea(map.Player.Character,
+                                        map.Player.Character.Entity.CurrentPosition,
+                                        map.Player.Character.CurrentDirection, map, true);
                                     var color = spawnEffectSkill.Color;
                                     color.a = 0.25f;
                                     previews = effectViewSpawner.SpawnPreview(area, color);

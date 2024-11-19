@@ -1,10 +1,10 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Domain.Model.Character;
-using Stats;
+using Domain.Model.Effect;
 using UnityEngine;
-using Utilities;
+using Utilities.Serialize;
+using Utilities.Stats;
 
 namespace Domain.Model.Memento
 {
@@ -24,7 +24,8 @@ namespace Domain.Model.Memento
 
         public CharacterStatsMemento(ResourceData hp, StatData hpNaturalRecovery,
             Dictionary<Element, StatData> elementAttackMultiplier,
-            Dictionary<Element, StatData> elementDamageRateMultiplier, Dictionary<string, StatData> conditionResistance, StatData viewRange, ResourceData waitTime)
+            Dictionary<Element, StatData> elementDamageRateMultiplier, Dictionary<string, StatData> conditionResistance,
+            StatData viewRange, ResourceData waitTime)
         {
             Hp = hp;
             HpNaturalRecoveryAmount = hpNaturalRecovery;
@@ -33,6 +34,15 @@ namespace Domain.Model.Memento
             _conditionResistance = conditionResistance.ToSerializable();
             ViewRange = viewRange;
             WaitTime = waitTime;
+        }
+
+        public CharacterStatsMemento CopyWith(ResourceData? hp = null, StatData? hpNaturalRecovery = null,
+            Dictionary<Element, StatData>? elementAttackMultiplier = null,
+            Dictionary<Element, StatData>? elementDamageRateMultiplier = null,
+            Dictionary<string, StatData>? conditionResistance = null, StatData? viewRange = null,
+            ResourceData? waitTime = null)
+        {
+            return new CharacterStatsMemento(hp ?? Hp, hpNaturalRecovery ?? HpNaturalRecoveryAmount, elementAttackMultiplier ?? ElementAttackMultiplier, elementDamageRateMultiplier ?? ElementDamageRateMultiplier, conditionResistance ?? ConditionResistance, viewRange ?? ViewRange, waitTime ?? WaitTime);
         }
     }
 }

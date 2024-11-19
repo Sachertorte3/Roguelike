@@ -4,37 +4,37 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Entities;
 using Domain.Service.Logs;
-using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Money : IDisposable, ISerializable<MoneyMemento>, IIconEventEntity
+    public class Money : IDisposable, ISerializable<MoneyMemento>, IPlayerEventEntity, IIconEntity
     {
-        private readonly Entity _entity;
+        public EntityBase Entity { get; init; }
         public readonly int Amount;
 
         public Money(MoneyMemento data)
         {
-            _entity = new Entity(data.Entity);
+            Entity = new EntityBase(data.Entity);
             Amount = data.Amount;
             Event = new PlayerEvent(
                 null,
                 false,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "拾う(選択肢としては表示されない)",
-                        (player) => true,
-                        (gameManager, map) => {
+                        player => true,
+                        (gameManager, map) =>
+                        {
                             map.Player.AddMoney(Amount);
-                            GameLog.Add($"{map.Player.GetName(map.Player)}は{Amount}Gを拾った");
+                            GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
                             map.RemoveEventEntity(this);
                             return UniTask.CompletedTask;
                         }
@@ -45,22 +45,13 @@ namespace Domain.Service.Events
 
         public void Dispose()
         {
-            _entity.Dispose();
+            Entity.Dispose();
         }
 
         ~Money()
         {
             Dispose();
         }
-
-        public Id<IEntity> Id => _entity.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => _entity.Position;
-        public Vector2Int CurrentPosition => _entity.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => _entity.VisibleByPlayer;
-        public EntityLayer Layer => _entity.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _entity.OnMove;
-        public Observable<Vector2Int> OnTeleport => _entity.OnTeleport;
-        public Observable<Unit> OnDestroyed => _entity.OnDestroyed;
 
         public Sprite Icon => Amount switch
         {
@@ -80,16 +71,16 @@ namespace Domain.Service.Events
                 .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_358]").WaitForCompletion()
         };
 
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         public void SetVisibility(bool visibility)
         {
-            _entity.SetVisibility(visibility);
+            Entity.SetVisibility(visibility);
         }
 
         public void Destroy()
         {
-            _entity.Destroy();
+            Entity.Destroy();
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
@@ -118,34 +109,35 @@ namespace Domain.Service.Events
 
         public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
-            var destination = GetThrowDestination(CurrentPosition, direction, distance, map);
-            if (_entity.VisibleByPlayer.CurrentValue && destination != CurrentPosition)
+            var destination = GetThrowDestination(Entity.CurrentPosition, direction, distance, map);
+            if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
             {
-                _entity.SetVisibility(false);
-                await map.ShowThrowAnimation(Icon, CurrentPosition, direction, distance, EntityLayer.Middle);
-                _entity.Teleport(map.FindBlankPositionFrom(destination,
+                Entity.SetVisibility(false);
+                await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, EntityLayer.Middle);
+                Entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
+
             await map.ExecuteTrapAt(destination, actor as ICharacter);
         }
 
         public void Teleport(Vector2Int position)
         {
-            _entity.Teleport(position);
+            Entity.Teleport(position);
         }
 
         public MoneyMemento Serialize()
         {
             return new MoneyMemento
             (
-                entity: _entity.Serialize(),
-                amount: Amount
+                Entity.Serialize(),
+                Amount
             );
         }
 
         public static MoneyMemento Build(Vector2Int position, int amount)
         {
-            return new MoneyMemento(Entity.Build(position, EntityLayer.Bottom), amount);
+            return new MoneyMemento(EntityBase.Build(position, EntityLayer.Bottom), amount);
         }
     }
 }

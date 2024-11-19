@@ -12,6 +12,7 @@ using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using Utilities;
 
 namespace Game
 {
@@ -19,39 +20,35 @@ namespace Game
     {
         private readonly ObservableList<ICharacter> _characters = new();
         private readonly CharacterFactory _factory = new();
-        public readonly CharacterEvents CharacterEvents = new();
-        public readonly CharacterEvents PlayerEvents = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
-        public CharacterManager(CharacterMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnPositionChanged.Subscribe(_ => SetAllCharacterPosition());
-            CharacterEvents.OnDestroyed.Subscribe(dead => _characters.Remove(dead.Character));
+            _characters.SubscribeToAllObservables(
+                character => character.Entity.Position,
+                (character, _) => SetAllCharacterPosition()
+            );
+            _characters.SubscribeToAllObservables(
+                character => character.Entity.OnDestroyed,
+                (character, _) => RemoveCharacter(character)
+            );
 
-            var player = _factory.CreatePlayer(playerData, receiver, map);
-            if (Player != null)
-            {
-                PlayerEvents.Remove(Player);
-            }
+            Player = _factory.CreatePlayer(playerData, receiver, map);
 
-            Player = player;
-            if (player.CurrentHp > 0)
+            if (Player.Character.CurrentHp > 0)
             {
-                AddCharacter(player);
-                PlayerEvents.Add(player);
+                AddCharacter(Player.Character);
             }
         }
 
-        public readonly ICharacter Player;
+        public readonly IPlayer Player;
 
         public IObservableCollection<ICharacter> Characters => _characters;
 
         public void Dispose()
         {
             _characters.ForEach(character => character.Dispose());
-            PlayerEvents.Dispose();
-            CharacterEvents.Dispose();
         }
 
         ~CharacterManager()
@@ -59,30 +56,29 @@ namespace Game
             Dispose();
         }
 
-        public ICharacter AddCharacter(ICharacter character)
+        public void AddCharacter(ICharacter character)
         {
             _characters.Add(character);
-            CharacterEvents.Add(character);
-            return character;
         }
 
         public void RemoveCharacter(ICharacter character)
         {
             _characters.Remove(character);
-            CharacterEvents.Remove(character);
         }
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            return AddCharacter(_factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map));
+            var character = _factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map);
+            AddCharacter(character);
+            return character;
         }
 
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Location);
-            return new Ally(
-                AddCharacter(_factory.CreateCharacter(data, behavior, map)),
-                behavior, map);
+            var character = _factory.CreateCharacter(data, behavior, map);
+            AddCharacter(character);
+            return new Ally(character, behavior, map);
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

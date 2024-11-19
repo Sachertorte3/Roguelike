@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Condition;
+using Domain.Model.Character.Status;
+using Domain.Model.Effect;
 using Domain.Model.Memento;
 using R3;
-using Stats;
-using Utilities;
+using UnityEngine;
+using Utilities.Stats;
 
 namespace Domain.Service.Characters.Stats
 {
@@ -34,7 +36,9 @@ namespace Domain.Service.Characters.Stats
                     ElementDamageRateMultiplier[element] = new Stat(1);
                 }
             }
-            ConditionResistance = memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
+
+            ConditionResistance =
+                memento.ConditionResistance.ToDictionary(pair => pair.Key, pair => new Stat(pair.Value));
         }
 
         public CharacterStatsMemento Serialize()
@@ -74,6 +78,7 @@ namespace Domain.Service.Characters.Stats
         public Dictionary<Element, Stat> ElementAttackMultiplier { get; init; }
         public Dictionary<Element, Stat> ElementDamageRateMultiplier { get; init; }
         public Dictionary<string, Stat> ConditionResistance { get; init; }
+
         public void Dispose()
         {
             Hp.Dispose();
@@ -114,26 +119,28 @@ namespace Domain.Service.Characters.Stats
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
+                StatType.MaxWaitTime => CurrentWaitTime,
                 _ => throw new ArgumentException($"Invalid stat type: {type}")
             };
         }
 
         public float GetElementAttackMultiplier(Element element)
         {
-            return ElementAttackMultiplier[element].CurrentValue;
+            return Mathf.Max(0, ElementAttackMultiplier[element].CurrentValue);
         }
 
         public float GetElementDamageRateMultiplier(Element element)
         {
-            return ElementDamageRateMultiplier[element].CurrentValue;
+            return Mathf.Max(0, ElementDamageRateMultiplier[element].CurrentValue);
         }
 
         public float GetConditionResistance(ConditionTemplate condition)
         {
             if (ConditionResistance.ContainsKey(condition.name))
             {
-                return ConditionResistance[condition.name].CurrentValue;
+                return Mathf.Max(0, ConditionResistance[condition.name].CurrentValue);
             }
+
             return 0f;
         }
 
@@ -150,7 +157,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddValue(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.AddMaxValue(value);
                     break;
             }
@@ -194,7 +201,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.AddMultiplier(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.AddMaxMultiplier(value);
                     break;
             }
@@ -238,7 +245,7 @@ namespace Domain.Service.Characters.Stats
                 case StatType.ViewRange:
                     ViewRange.Multiply(value);
                     break;
-                case StatType.WaitTime:
+                case StatType.MaxWaitTime:
                     WaitTime.MultiplyMaxValue(value);
                     break;
             }

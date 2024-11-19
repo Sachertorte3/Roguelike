@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,7 +16,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class BlowAwayEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _distance;
+        [MinValue(1)] [SerializeField] private int _distance;
 
         public BlowAwayEffect(int distance)
         {
@@ -27,7 +29,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (!target.StatusManager.IsHeavy)
+            if (!target.Status.IsFlagStat(FlagStatType.Heavy))
             {
                 await Apply(actor, (IEntity)target, position, map);
             }
@@ -35,17 +37,20 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, IEntity target, Vector2Int position, IMap map)
         {
-            var direction = DirectionMethods.NearestDirectionFromVector(target.CurrentPosition - actor.CurrentPosition);
+            var direction =
+                DirectionMethods.NearestDirectionFromVector(
+                    target.Entity.CurrentPosition - actor.Entity.CurrentPosition);
             if (direction.HasValue)
                 await target.BlowAway(actor, direction.Value, _distance, map);
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)
         {
-            if (target.StatusManager.IsHeavy)
+            if (target.Status.IsFlagStat(FlagStatType.Heavy))
             {
                 return 0f;
             }
+
             return CommonSenseParameters.BlowAwayEvaluate(_distance);
         }
 
@@ -54,24 +59,28 @@ namespace Domain.Service.Effect
             return CommonSenseParameters.BlowAwayPrice(_distance);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "吹き飛ばし";
+
+        public override List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("吹き飛ばし距離"),
-                    new UpgradeData(
-                        "吹き飛ばし距離+1",
-                        () => _distance += 1,
-                        () => _distance -= 1
-                    )
-                }
+                new(
+                    "吹き飛ばし距離+1",
+                    () => _distance += 1,
+                    () => _distance -= 1
+                )
             };
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
         }
 
         public override string Info()
         {
-            return $"吹き飛ばし{_distance}マス";
+            return $"{_distance}マス吹き飛ばす\n";
         }
     }
 }

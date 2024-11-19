@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
@@ -24,7 +25,8 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Vector2Int RandomBlankPosition { get; private set; }
 
         public MapMemento(Id<IMap> id, Location location, TilemapMemento tilemap, List<CharacterMemento> characters,
-            List<ItemEntityMemento> items, EventEntitiesMemento eventEntities, FireEntitiesMemento fireEntities, List<string> keyCharacters,
+            List<ItemEntityMemento> items, EventEntitiesMemento eventEntities, FireEntitiesMemento fireEntities,
+            List<string> keyCharacters,
             Option<RoomMemento> monsterHouse, Option<ShopMemento> shop, Vector2Int randomBlankPosition)
         {
             _id = id.ToString();

@@ -8,6 +8,7 @@ namespace View
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private TileBase _grass;
         [SerializeField] private TileBase _ice;
+
         public void Clear()
         {
             _tilemap.ClearAllTiles();
@@ -41,26 +42,16 @@ namespace View
             return color;
         }
 
-        public void SetTileColor(Vector2Int position, Color color)
+        public void SetTileVisibility(Vector2Int position, TileVisibility visibility)
+        {
+            SetTileColor(position, visibility.GetColor());
+        }
+
+        private void SetTileColor(Vector2Int position, Color color)
         {
             var vector3 = new Vector3Int(position.x, position.y, 0);
             _tilemap.SetTileFlags(vector3, TileFlags.None);
             _tilemap.SetColor(vector3, color);
-        }
-
-        public void SetTileTransparent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Transparent.GetColor());
-        }
-
-        public void SetTileTranslucent(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Translucent.GetColor());
-        }
-
-        public void SetTileVisible(Vector2Int position)
-        {
-            SetTileColor(position, TileVisibility.Visible.GetColor());
         }
     }
 }

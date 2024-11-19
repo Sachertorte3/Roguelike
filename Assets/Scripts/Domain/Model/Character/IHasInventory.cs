@@ -1,5 +1,7 @@
 #nullable enable
-namespace Domain.Model.Item
+using Domain.Model.Item;
+
+namespace Domain.Model.Character
 {
     public interface IHasInventory
     {

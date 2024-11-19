@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
@@ -13,7 +14,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class HealEffect : EntityTargetEffect
     {
-        [MinValue(1)][SerializeField] private int _power;
+        [MinValue(1)] [SerializeField] private int _power;
 
         public override Color Color => Colors.Green;
 
@@ -49,24 +50,28 @@ namespace Domain.Service.Effect
             return Formula.EvaluateHeal(_power);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "回復";
+
+        public override List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("回復量"),
-                    new UpgradeData(
-                        "回復量+3",
-                        () => _power += 3,
-                        () => _power -= 3
-                    )
-                }
+                new(
+                    "回復量+3",
+                    () => _power += 3,
+                    () => _power -= 3
+                )
             };
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
         }
 
         public override string Info()
         {
-            return $"回復\n威力: {_power}";
+            return $"威力{_power}の回復を行う\n";
         }
     }
 }

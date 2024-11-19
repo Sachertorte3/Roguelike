@@ -8,6 +8,7 @@ using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
@@ -28,7 +29,8 @@ namespace Domain.Service.Effect
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats, int rushDistance,
+        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats,
+            int rushDistance,
             int backStepDistance, float probabilityOfSuccess, string? log)
         {
             _position = position;
@@ -41,7 +43,8 @@ namespace Domain.Service.Effect
             _log = log;
         }
 
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effect, data.Repeats,
+        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effects,
+            data.Repeats,
             data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
         {
         }
@@ -137,10 +140,10 @@ namespace Domain.Service.Effect
 
             var area = GetArea(actor, position, direction, map);
             if (_effects.Any(effect =>
-                effect is AttackEffect ||
-                effect is AbsorbsEffect ||
-                effect is PercentageDamageEffect ||
-                effect is BreakEffect))
+                    effect is AttackEffect ||
+                    effect is AbsorbsEffect ||
+                    effect is PercentageDamageEffect ||
+                    effect is BreakEffect))
             {
                 map.SetGrasses(area, false);
             }
@@ -150,8 +153,8 @@ namespace Domain.Service.Effect
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
-                                .OrderBy(target => Vector2.Distance(target.CurrentPosition, position))
-                                .Reverse())
+                                 .OrderBy(target => Vector2.Distance(target.Entity.CurrentPosition, position))
+                                 .Reverse())
                     {
                         switch (target)
                         {
@@ -163,7 +166,7 @@ namespace Domain.Service.Effect
                                     var impactValue = effect.Evaluate(actor, character);
                                     character.WasAttackedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
                                         .Where(target => target != actor && target != actor)
                                         .ForEach(c =>
                                             c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
@@ -174,12 +177,13 @@ namespace Domain.Service.Effect
                                     var impactValue = effect.Evaluate(actor, character);
                                     character.WasHealedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.CurrentPosition)
+                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
                                         .Where(target => target != actor && target != actor)
                                         .ForEach(c =>
                                             c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
                                                 impactValue));
                                 }
+
                                 break;
                             default:
                                 await effect.Apply(actor, target, position, map);
@@ -191,7 +195,7 @@ namespace Domain.Service.Effect
                 }
             }
 
-            if (map.VisibleArea.Intersect(area).Any())
+            if (map.Player.Character.VisibleArea.Intersect(area).Any())
             {
                 map.SpawnEffect(area, Color);
                 await UniTask.Delay(Settings.EffectDisplayTime.CurrentValue);
@@ -225,7 +229,8 @@ namespace Domain.Service.Effect
                     {
                         case Impact.Harmful:
                             var affiliationType = actor.Affiliation.GetAffiliationType(target.Affiliation);
-                            totalEvaluation += actor.Aggression.GetAggression(affiliationType) * effect.Evaluate(actor, target);
+                            totalEvaluation += actor.Aggression.GetAggression(affiliationType) *
+                                               effect.Evaluate(actor, target);
                             break;
                         case Impact.Beneficial:
                             if (actor.IsAlly(target))
@@ -244,6 +249,7 @@ namespace Domain.Service.Effect
                             break;
                     }
                 }
+
                 totalEvaluation += effect.Evaluate(actor, area);
             }
 
@@ -257,52 +263,47 @@ namespace Domain.Service.Effect
             {
                 price += effect.EvaluatePrice();
             }
+
             price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
             price *= _area.EvaluateArea();
             return price * ProbabilityOfSuccess;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public List<UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            var children = new Dictionary<string, IHasUpgrades>();
             foreach (var effect in _effects)
             {
-                foreach (var path in effect.GenerateUpgradePaths())
-                {
-                    upgrades[UpgradePath.Join("効果", path)] = effect.GetUpgrades()[path];
-                }
+                children.Add(effect.UpgradePathName, effect);
             }
 
-            foreach (var path in _position.GenerateUpgradePaths())
-            {
-                upgrades[UpgradePath.Join("発動位置", path)] = _position.GetUpgrades()[path];
-            }
-
-            foreach (var path in _area.GenerateUpgradePaths())
-            {
-                upgrades[UpgradePath.Join("範囲", path)] = _area.GetUpgrades()[path];
-            }
-
-            return upgrades;
+            children.Add(_position.UpgradePathName, _position);
+            children.Add(_area.UpgradePathName, _area);
+            return children;
         }
 
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
             var info = "";
             if (Repeats > 1)
-                info += $"発動回数: {Repeats}回\n";
+                info += $"効果は{Repeats}回発動する\n";
+            if (RushDistance > 0)
+                info += $"\n{RushDistance}マス前に進み\n";
+            info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
             foreach (var (effect, index) in _effects.Index())
             {
-                info += $"効果{index + 1}: {effect.Info()}\n";
+                info += effect.Info();
             }
-            info += $"発動位置: {_position.Info()}\n";
-            info += $"範囲: {_area.Info()}";
-            if (RushDistance > 0)
-                info += $"\n突進距離: {RushDistance}";
+
             if (BackStepDistance > 0)
-                info += $"\n後退距離: {BackStepDistance}";
+                info += $"{BackStepDistance}マス後ろに下がる\n";
             if (!omitProbabilityOfSuccess)
-                info += $"\n発動確率: {ProbabilityOfSuccess:P0}";
+                info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }
 
@@ -310,21 +311,21 @@ namespace Domain.Service.Effect
         {
             var info = "";
             if (Repeats > 1)
-                info += $"発動回数: {Repeats}回\n";
+                info += $"効果は{Repeats}回発動する\n";
+            info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
             if (!omitEffects)
             {
                 foreach (var (effect, index) in _effects.Index())
                 {
-                    info += $"効果{index + 1}: {effect.Info()}\n";
+                    info += effect.Info();
                 }
             }
             else
             {
-                info += "効果: 使用時と同じ\n";
+                info += "使用時と同じ効果を発揮する\n";
             }
-            info += $"発動位置: {_position.Info()}\n";
-            info += $"範囲: {_area.Info()}\n";
-            info += $"発動確率: {ProbabilityOfSuccess:P0}";
+
+            info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }
     }

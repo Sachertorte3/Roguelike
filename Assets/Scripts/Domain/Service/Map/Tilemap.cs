@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
+using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
@@ -8,7 +10,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
+using Utilities.Serialize.Option;
 
 namespace Domain.Service.Map
 {
@@ -18,7 +20,10 @@ namespace Domain.Service.Map
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
         private readonly HashSet<Vector2Int> _allLightPassablePositionsSet;
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
-        private readonly Subject<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> _onOverlayTilesChanged = new();
+
+        private readonly Subject<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>>
+            _onOverlayTilesChanged = new();
+
         private readonly Subject<IEnumerable<(Vector2Int Position, bool IsKnown)>> _onTilesKnownChanged = new();
         private readonly ObservableDictionary<Vector2Int, TileData> _tiles;
         private readonly ObservableDictionary<Vector2Int, OverlayTileCategory> _overlayTiles;
@@ -98,7 +103,7 @@ namespace Domain.Service.Map
             var grasses = new List<Vector2Int>();
             foreach (var (position, _) in _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.Grass))
             {
-                if (Random.value < 1 / 256f)
+                if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnGrassProbabilityPerTurn))
                 {
                     var spawnPosition = position + DirectionMethods.AllDirections.GetAtRandom().Vector();
                     grasses.Add(spawnPosition);
@@ -114,7 +119,10 @@ namespace Domain.Service.Map
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
-        public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged => _onOverlayTilesChanged;
+
+        public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged =>
+            _onOverlayTilesChanged;
+
         public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged => _onTilesKnownChanged;
         public RectInt Rect => new(Vector2Int.zero, Size);
 
@@ -218,12 +226,14 @@ namespace Domain.Service.Map
             var result = new List<(Vector2Int position, OverlayTileCategory? category)>();
             foreach (var position in positions)
             {
-                OverlayTileCategory? currentCategory = _overlayTiles.ContainsKey(position) ? _overlayTiles[position] : null;
+                OverlayTileCategory? currentCategory =
+                    _overlayTiles.ContainsKey(position) ? _overlayTiles[position] : null;
                 if (category != currentCategory)
                 {
                     if (category != null)
                     {
-                        if (GetTile(position).MapOr(false, tile => tile.TileType == category.Value.GetPlaceableTileCategory()))
+                        if (GetTile(position).MapOr(false,
+                                tile => tile.TileType == category.Value.GetPlaceableTileCategory()))
                         {
                             _overlayTiles[position] = category.Value;
                             result.Add((position, category.Value));

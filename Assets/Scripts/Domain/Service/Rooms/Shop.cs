@@ -5,7 +5,9 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -28,12 +30,12 @@ namespace Domain.Service.Rooms
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMap mapManager) : base(data.Room,
-            mapManager.Player.CurrentPosition)
+        public Shop(ShopMemento data, ICharacter clerk, IMap map) : base(data.Room,
+            map.Player.Character.Entity.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
-                (player) => CanExecute && (GetSalePrice(mapManager) > 0 || GetPurchasePrice(mapManager) > 0),
+                player => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
                 (_, map) =>
                 {
                     Purchase(map);
@@ -43,7 +45,7 @@ namespace Domain.Service.Rooms
 
             if (data.IsStolen)
             {
-                Stolen(mapManager);
+                Stolen(map);
                 return;
             }
 
@@ -90,7 +92,7 @@ namespace Domain.Service.Rooms
                     hasEntered,
                     hasEverEntered
                 ),
-                Clerk.Id,
+                Clerk.Entity.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
                     item.Id.ToString(),
@@ -100,9 +102,9 @@ namespace Domain.Service.Rooms
             );
         }
 
-        private IEnumerable<IItem> GetItemsInRoom(IMap mapManager)
+        private IEnumerable<IItem> GetItemsInRoom(IMap map)
         {
-            return mapManager.Items.In(Rect.RectRange()).Select(item => item.Item);
+            return map.Items.In(Rect.RectRange()).Select(item => item.Item);
         }
 
         private void SetShopItems(IEnumerable<IItem> items)
@@ -114,84 +116,89 @@ namespace Domain.Service.Rooms
             }
         }
 
-        private void RemoveMark(IMap mapManager, IEnumerable<ShopItemCache> items)
+        private void RemoveMark(IMap map, IEnumerable<ShopItemCache> items)
         {
             foreach (var item in items)
             {
-                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.None);
+                map.GetItemByIdFromWorldOrInventory(item.Id)?.SetState(ItemState.None);
             }
         }
 
-        private void MarkItemsAsStolen(IMap mapManager)
+        private void MarkItemsAsStolen(IMap map)
         {
             foreach (var item in _shopItems)
             {
-                mapManager.GetItemFromId(item.Id)?.SetState(ItemState.Stolen);
+                map.GetItemByIdFromWorldOrInventory(item.Id)?.SetState(ItemState.Stolen);
             }
         }
 
-        private IEnumerable<ShopItemCache> GetMissingItems(IMap mapManager)
+        private IEnumerable<ShopItemCache> GetMissingItems(IMap map)
         {
-            var itemsInRoom = GetItemsInRoom(mapManager).Where(item => item.State == ItemState.ShopItem);
+            var itemsInRoom = GetItemsInRoom(map).Where(item => item.State == ItemState.ShopItem);
             var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
             return purchaseItems;
         }
 
-        public int GetPurchasePrice(IMap mapManager)
+        public int GetPurchasePrice(IMap map)
         {
-            var purchaseItems = GetMissingItems(mapManager);
+            var purchaseItems = GetMissingItems(map);
+            if (map.Player.Character.Status.IsFlagStat(FlagStatType.Haggle))
+            {
+                return Mathf.RoundToInt(purchaseItems.Sum(item => item.Price) / 2f);
+            }
+
             return purchaseItems.Sum(item => item.Price);
         }
 
-        private IEnumerable<ShopItemCache> GetAddedItems(IMap mapManager)
+        private IEnumerable<ShopItemCache> GetAddedItems(IMap map)
         {
-            var saleItems = GetItemsInRoom(mapManager).Where(item => item.State != ItemState.ShopItem);
+            var saleItems = GetItemsInRoom(map).Where(item => item.State != ItemState.ShopItem);
             return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
 
-        public int GetSalePrice(IMap mapManager)
+        public int GetSalePrice(IMap map)
         {
-            var saleItems = GetAddedItems(mapManager);
+            var saleItems = GetAddedItems(map);
             return Mathf.RoundToInt(saleItems.Sum(item => item.Price) / 2f);
         }
 
-        public void Purchase(IMap mapManager)
+        public void Purchase(IMap map)
         {
-            if (mapManager.Player.Money + GetSalePrice(mapManager) >= GetPurchasePrice(mapManager))
+            if (map.Player.Money + GetSalePrice(map) >= GetPurchasePrice(map))
             {
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=green>{GetSalePrice(mapManager)}G</color>受け取った");
-                mapManager.Player.AddMoney(GetSalePrice(mapManager));
+                    $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
+                map.Player.AddMoney(GetSalePrice(map));
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager)}G</color>支払った");
-                mapManager.Player.ReduceMoney(GetPurchasePrice(mapManager));
-                var purchaseItems = GetMissingItems(mapManager);
-                RemoveMark(mapManager, purchaseItems);
-                SetShopItems(GetItemsInRoom(mapManager));
+                    $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
+                map.Player.ReduceMoney(GetPurchasePrice(map));
+                var purchaseItems = GetMissingItems(map);
+                RemoveMark(map, purchaseItems);
+                SetShopItems(GetItemsInRoom(map));
             }
             else
             {
                 GameLog.Add(
-                    $"{mapManager.Player.GetName(mapManager.Player)}は<color=yellow>{GetPurchasePrice(mapManager) - GetSalePrice(mapManager)}G</color>持っていなかった");
+                    $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map) - GetSalePrice(map)}G</color>持っていなかった");
             }
         }
 
-        public void Stolen(IMap mapManager)
+        public void Stolen(IMap map)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
-            Clerk.OpposingThief(mapManager.Player);
+            Clerk.OpposingThief(map.Player.Character);
             Clerk.Character.AddCondition(Id<IEntity>.Empty, new Clairvoyant(), new RemovalConditionData());
-            MarkItemsAsStolen(mapManager);
+            MarkItemsAsStolen(map);
             CanExecute = false;
             _isStolen.Value = true;
         }
 
-        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap mapManager)
+        protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap map)
         {
-            var missingItems = GetMissingItems(mapManager);
+            var missingItems = GetMissingItems(map);
             if (missingItems.Any())
             {
-                Stolen(mapManager);
+                Stolen(map);
                 await UniTask.Delay(1000);
             }
         }

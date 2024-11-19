@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 
@@ -17,5 +19,7 @@ namespace Domain.Model.Effect
         public float Evaluate(IActorOfEffect actor, ITargetOfEffect target);
         public float Evaluate(IActorOfEffect actor, IEnumerable<Vector2Int> positions);
         public float EvaluatePrice();
+
+        public string UpgradePathName { get; }
     }
 }

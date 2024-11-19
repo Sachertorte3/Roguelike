@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Domain.Model.Map;
-using Domain.Model.Message;
 using R3;
 using UnityEngine;
 
@@ -10,7 +8,8 @@ namespace Domain.Model.Character
     {
         public bool IsClairvoyant { get; }
         public IReadOnlyCollection<Vector2Int> VisibleArea { get; }
-        public Observable<OnVisibleAreaChangedMessage> OnVisibleAreaChanged { get; }
-        public void Refresh(IMap map);
+        public Observable<Unit> OnVisibleAreaChanged { get; }
+        public void Refresh();
+        public bool IsVisible(Vector2Int position);
     }
 }

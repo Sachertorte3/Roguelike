@@ -21,7 +21,7 @@ MonoBehaviour:
   Aggression: 4
   Behavior:
     wanderAround: 1
-    Default: 1
+    Default: 2
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
@@ -32,6 +32,7 @@ MonoBehaviour:
     lessThanBottomBound: 3
     PrioritizeMovementWhenDistanceLessThanBottomBound: 1
     PrioritizeEnemiesOverLeaders: 0
+    ChaseLeader: 1
   MoveSpeed: 2
   IsHard: 0
   IsHeavy: 0
@@ -42,17 +43,18 @@ MonoBehaviour:
   Skills:
   - Skill:
       <Position>k__BackingField:
-        rid: -2
+        rid: 3794997675126423552
       <Area>k__BackingField:
-        rid: -2
+        rid: 3794997675126423553
       <Effects>k__BackingField:
-      - rid: -2
+      - rid: 3794997675126423554
+      - rid: 3794997675126423555
       <Repeats>k__BackingField: 1
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: 
-    CoolTime: 0
+      <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F"
+    CoolTime: 3
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -82,3 +84,27 @@ MonoBehaviour:
       type: {class: Cloud, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
+    - rid: 3794997675126423552
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        NumberOfTarget: 1
+        TargetAlly: 0
+        TargetEnemy: 1
+        TargetNeutral: 0
+        TargetSelf: 0
+    - rid: 3794997675126423553
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 3794997675126423554
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 5
+          _power: 3
+        _criticalRate: 0
+    - rid: 3794997675126423555
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u76F2\u76EE"
+        _probabilityOfSuccess: 1

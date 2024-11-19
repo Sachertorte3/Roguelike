@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -31,9 +33,21 @@ namespace Domain.Service.Effect
             return 100;
         }
 
+        public override string UpgradePathName => "忘却";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return $"忘却";
+            return "対象の知識を消去する\n";
         }
     }
 }

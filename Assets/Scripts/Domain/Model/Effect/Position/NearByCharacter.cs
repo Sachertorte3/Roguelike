@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -22,13 +23,16 @@ namespace Domain.Model.Effect.Position
         {
             var positions = new List<Vector2Int>();
             if (TargetSelf)
-                positions.Add(actor.CurrentPosition);
+                positions.Add(actor.Entity.CurrentPosition);
             if (TargetAlly)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Ally).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Ally)
+                    .Positions());
             if (TargetNeutral)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Neutral).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Neutral)
+                    .Positions());
             if (TargetEnemy)
-                positions.AddRange(map.Characters.In(actor.VisibleArea).FromAffiliation(actor, AffiliationType.Enemy).Positions());
+                positions.AddRange(map.Characters.In(actor.VisibleArea).ByAffiliation(actor, AffiliationType.Enemy)
+                    .Positions());
             return positions
                 .OrderBy(p => Vector2Int.Distance(p, position))
                 .Take(NumberOfTarget);
@@ -39,19 +43,23 @@ namespace Domain.Model.Effect.Position
             return NumberOfTarget;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "近くのキャラクター";
+
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("対象数"),
-                    new UpgradeData(
-                        "対象数+1",
-                        () => NumberOfTarget += 1,
-                        () => NumberOfTarget -= 1
-                    )
-                }
+                new(
+                    "対象数+1",
+                    () => NumberOfTarget += 1,
+                    () => NumberOfTarget -= 1
+                )
             };
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
         }
 
         public string Info()

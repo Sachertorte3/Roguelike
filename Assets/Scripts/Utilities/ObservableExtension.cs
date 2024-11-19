@@ -14,7 +14,39 @@ namespace Utilities
             return source.Subscribe(item => target.OnNext(item));
         }
 
-        public static IDisposable SubscribeToAll<T>(this IObservableCollection<T> list, Action<T> addAction,
+        public static IDisposable SubscribeToAllObservables<T, TMessage>(this IObservableCollection<T> list,
+            Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
+        {
+            var disposables = new Dictionary<T, IDisposable>();
+            var allDisposable = new CompositeDisposable();
+            foreach (var item in list)
+            {
+                disposables[item] = selector(item).Subscribe(message => action(item, message));
+                allDisposable.Add(disposables[item]);
+            }
+
+            list.ObserveAdd().Select(i => i.Value).Subscribe(item =>
+            {
+                disposables[item] = selector(item).Subscribe(message => action(item, message));
+                allDisposable.Add(disposables[item]);
+            });
+            list.ObserveRemove().Select(i => i.Value).Subscribe(item =>
+            {
+                allDisposable.Remove(disposables[item]);
+                disposables[item].Dispose();
+            });
+            list.ObserveReplace().Subscribe(value =>
+            {
+                allDisposable.Remove(disposables[value.OldValue]);
+                disposables[value.OldValue].Dispose();
+                disposables[value.NewValue] =
+                    selector(value.NewValue).Subscribe(message => action(value.NewValue, message));
+                allDisposable.Add(disposables[value.NewValue]);
+            });
+            return allDisposable;
+        }
+
+        public static IDisposable SubscribeToAllItems<T>(this IObservableCollection<T> list, Action<T> addAction,
             Action<T> removeAction = null)
         {
             foreach (var item in list)
@@ -39,7 +71,7 @@ namespace Utilities
             };
         }
 
-        public static IDisposable SubscribeToAll<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction,
+        public static IDisposable SubscribeToAllItems<T>(this ReadOnlyReactiveProperty<T> property, Action<T> addAction,
             Action<T>? removeAction = null) where T : notnull
         {
             addAction(property.CurrentValue);
@@ -52,7 +84,7 @@ namespace Utilities
                 });
         }
 
-        public static IDisposable SubscribeToAllIgnoreNull<T>(this ReadOnlyReactiveProperty<T?> property,
+        public static IDisposable SubscribeToAllItemsIgnoreNull<T>(this ReadOnlyReactiveProperty<T?> property,
             Action<T> addAction,
             Action<T>? removeAction = null)
         {
@@ -89,7 +121,22 @@ namespace Utilities
         {
             collectionA.SynchronizeWith(collectionB);
 
-            return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
+            return collectionB.SubscribeToAllItems(add => collectionA.Add(add), remove => collectionA.Remove(remove));
+        }
+
+        public static IDisposable AddWith<T, U>(this ObservableList<U> collectionA,
+            IObservableCollection<T> collectionB) where T : notnull, U
+        {
+            return AddWith(collectionA, collectionB, x => x);
+        }
+
+        public static IDisposable AddWith<T, U>(this ObservableList<U> collectionA,
+            IObservableCollection<T> collectionB, Func<T, U> selector) where T : notnull
+        {
+            return collectionB.SubscribeToAllItems(
+                add => collectionA.Add(selector(add)),
+                remove => collectionA.Remove(selector(remove))
+            );
         }
 
         public static IDisposable LiveSynchronizeWith<T>(this ICollection<T> collectionA,
@@ -97,7 +144,7 @@ namespace Utilities
         {
             collectionA.SynchronizeWith(collectionB);
 
-            return collectionB.SubscribeToAll(add => collectionA.Add(add), remove => collectionA.Remove(remove));
+            return collectionB.SubscribeToAllItems(add => collectionA.Add(add), remove => collectionA.Remove(remove));
         }
     }
 }

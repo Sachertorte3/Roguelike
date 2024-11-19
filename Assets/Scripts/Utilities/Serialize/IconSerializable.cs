@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Utilities
+namespace Utilities.Serialize
 {
     [Serializable]
     public class IconSerializable

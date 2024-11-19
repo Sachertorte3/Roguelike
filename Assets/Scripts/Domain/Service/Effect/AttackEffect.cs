@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -41,7 +41,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (Random.value < _fixedCriticalRate)
+            if (RandUtils.IsLessThanProbability(_fixedCriticalRate))
             {
                 var damage = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
@@ -74,21 +74,15 @@ namespace Domain.Service.Effect
             return result;
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public override string UpgradePathName => "攻撃";
+
+        public override List<UpgradeData> GetUpgrades()
         {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
-            foreach (var elementPower in _elementPowers)
-            {
-                foreach (var upgrade in elementPower.GetUpgrades())
-                {
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
+            var upgrades = new List<UpgradeData>();
 
             if (_criticalRate > 0 && _criticalRate < 1f)
             {
                 upgrades.Add(
-                    new UpgradePath("クリティカル率"),
                     new UpgradeData(
                         "クリティカル率+5%",
                         () => _criticalRate += 0.05f,
@@ -100,12 +94,17 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
+        }
+
         public override string Info()
         {
-            var info = $"攻撃\n威力: {string.Join(" ", _elementPowers.Select(e => e.Info()))}";
+            var info = $"{string.Join(" ", _elementPowers.Select(e => e.Info()))}の攻撃を行う\n";
             if (_fixedCriticalRate > 0)
             {
-                info += $"\nクリティカル: {_fixedCriticalRate:P0}";
+                info += $"そのとき{_fixedCriticalRate:P0}の確率でクリティカルを発生させる\n";
             }
 
             return info;

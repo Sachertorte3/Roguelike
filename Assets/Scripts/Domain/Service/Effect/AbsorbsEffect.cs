@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -13,7 +14,7 @@ namespace Domain.Service.Effect
     public class AbsorbsEffect : EntityTargetEffect
     {
         [SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1)][SerializeField] private float _rate;
+        [Range(0, 1)] [SerializeField] private float _rate;
         private float _fixedRate => Mathf.Clamp(_rate, 0, 1);
 
         public override Color Color => Colors.Yellow;
@@ -44,7 +45,7 @@ namespace Domain.Service.Effect
                 Mathf.Min(target.CurrentHp, (float)Formula.Calc(actor, target, _elementPowers)) / target.CurrentMaxHp);
 
             var lostRatio = (float)(actor.CurrentMaxHp - actor.CurrentHp) / actor.CurrentMaxHp;
-            var healRatio = (float)heal / actor.CurrentMaxHp;
+            var healRatio = heal / actor.CurrentMaxHp;
             if (lostRatio >= healRatio)
             {
                 value += healRatio;
@@ -54,6 +55,7 @@ namespace Domain.Service.Effect
             {
                 value += lostRatio;
             }
+
             return value;
         }
 
@@ -62,21 +64,14 @@ namespace Domain.Service.Effect
             return Formula.EvaluateDamage(_elementPowers) * (1 + _fixedRate);
         }
 
-        public override Dictionary<UpgradePath, UpgradeData> GetUpgrades()
-        {
-            var upgrades = new Dictionary<UpgradePath, UpgradeData>();
-            foreach (var elementPower in _elementPowers)
-            {
-                foreach (var upgrade in elementPower.GetUpgrades())
-                {
-                    upgrades.Add(upgrade.Key, upgrade.Value);
-                }
-            }
+        public override string UpgradePathName => "HP吸収";
 
+        public override List<UpgradeData> GetUpgrades()
+        {
+            var upgrades = new List<UpgradeData>();
             if (_rate < 1f)
             {
                 upgrades.Add(
-                    new UpgradePath("吸収割合"),
                     new UpgradeData(
                         "吸収割合+10%",
                         () => _rate += 0.1f,
@@ -88,11 +83,16 @@ namespace Domain.Service.Effect
             return upgrades;
         }
 
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
+        }
+
         public override string Info()
         {
-            var info = "HP吸収\n威力: ";
-            info += string.Join(" ", _elementPowers.Select(e => e.Info()));
-            info += $"\n吸収割合: {_fixedRate:P0}";
+            var info = string.Join(" ", _elementPowers.Select(e => e.Info()));
+            info += "の攻撃を行う\n";
+            info += $"与えたダメージの{_fixedRate:P0}を吸収する\n";
             return info;
         }
     }

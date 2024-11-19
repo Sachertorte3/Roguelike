@@ -39,6 +39,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
       - {fileID: 11400000, guid: a5f438da92afbff4aab8da4eb5b28ddb, type: 2}
       - {fileID: 11400000, guid: a1b351b314ba1944cada32a9266ff9c1, type: 2}
+      - {fileID: 11400000, guid: fb359a24044098748adb6a7bd3128eca, type: 2}
     Books:
       items:
       - {fileID: 11400000, guid: e4f6f32ac39072e48b9873628a8fe660, type: 2}
@@ -95,6 +96,8 @@ MonoBehaviour:
     Others:
       items:
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
+      - {fileID: 11400000, guid: ccdd9c7ccd2d02b45a8339f9dab447e5, type: 2}
+      - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}
     ChestItems:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
@@ -188,163 +191,31 @@ MonoBehaviour:
     Others: 1
   Traps:
     items:
-    - Item:
-        <Name>k__BackingField: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871962
-          <Area>k__BackingField:
-            rid: 5486256311944871960
-          <Effects>k__BackingField:
-          - rid: 5486256311944871961
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: fa4047ad1d126594c815af6b92032da4, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u6BD2\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871979
-          <Area>k__BackingField:
-            rid: 5486256311944871977
-          <Effects>k__BackingField:
-          - rid: 5486256311944871978
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 768d69c62c71d174e932c9258fa1ae7e, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u6DF7\u4E71\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871976
-          <Area>k__BackingField:
-            rid: 5486256311944871974
-          <Effects>k__BackingField:
-          - rid: 5486256311944871975
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: baa951ca09ab8204cad5221999d41e06, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u7761\u7720\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871965
-          <Area>k__BackingField:
-            rid: 5486256311944871963
-          <Effects>k__BackingField:
-          - rid: 5486256311944871966
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 1ee21beb68027f24393fa091fd51b4ee, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u920D\u8DB3\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871982
-          <Area>k__BackingField:
-            rid: 5486256311944871980
-          <Effects>k__BackingField:
-          - rid: 5486256311944871981
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 62bb2404c42efef46815d56e1d495508, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u9EBB\u75FA\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871985
-          <Area>k__BackingField:
-            rid: 5486256311944871983
-          <Effects>k__BackingField:
-          - rid: 5486256311944871984
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 3f35fa4db6060064296f0b4215a992c8, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u7652\u3057\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871969
-          <Area>k__BackingField:
-            rid: 5486256311944871967
-          <Effects>k__BackingField:
-          - rid: 5486256311944871968
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 5a691e1003cd7624bbdd74e0e35c8b2e, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u53EC\u559A\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256396100960258
-          <Area>k__BackingField:
-            rid: 5486256623760965642
-          <Effects>k__BackingField:
-          - rid: 5486256396100960257
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 82b124167083d3f4192e6200edf7d4b6, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u7206\u767A\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256311944871973
-          <Area>k__BackingField:
-            rid: 5486256396100960260
-          <Effects>k__BackingField:
-          - rid: 5486256579196485632
-          - rid: 5486256396100960271
-          - rid: 5486256406402433024
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 1
+    - Item: {fileID: 11400000, guid: 229f263a4bb03d14a8fd9561eae441be, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u8B66\u5831\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256447100289027
-          <Area>k__BackingField:
-            rid: 5486256447100289028
-          <Effects>k__BackingField:
-          - rid: 5486256447100289029
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 7f6133f5197711b48993323e4242d9df, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u546A\u3044\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256623760965644
-          <Area>k__BackingField:
-            rid: 5486256623760965645
-          <Effects>k__BackingField:
-          - rid: 5486256623760965646
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: 9ec35b4a3a692b44297af17352dd31bd, type: 2}
       Weight: 1
-    - Item:
-        <Name>k__BackingField: "\u62D8\u675F\u306E\u7F60"
-        <Skill>k__BackingField:
-          <Position>k__BackingField:
-            rid: 5486256542496849965
-          <Area>k__BackingField:
-            rid: 5486256542496849966
-          <Effects>k__BackingField:
-          - rid: 5486256623760965647
-          <Repeats>k__BackingField: 1
-          <ProbabilityOfSuccess>k__BackingField: 0.95
-        <ProbabilityOfBreaking>k__BackingField: 0.5
+    - Item: {fileID: 11400000, guid: e789684c9f4d5314eadd5d2f193f0234, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: e3bcbd29589786440a10dced37887374, type: 2}
       Weight: 1
   WeaponPrefixes:
     items:
@@ -377,7 +248,7 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0
     Floors:
-    - Depth: 3
+    - Depth: 2
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -406,25 +277,8 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0.25
     Floors:
-    - Depth: 6
+    - Depth: 3
       Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
@@ -456,7 +310,7 @@ MonoBehaviour:
     CaveInOneRoom: 0
     WaterChance: 0.25
     Floors:
-    - Depth: 3
+    - Depth: 4
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -480,24 +334,7 @@ MonoBehaviour:
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
+      ShopChance: 1
       MonsterHouseChance: 0.05
       RestRoomChance: 0.05
       ChestChance: 0.1
@@ -518,30 +355,15 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
         Weight: 1
-  - Type: 1
+      - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+        Weight: 1
+  - Type: 2
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0.5
     Floors:
-    - Depth: 4
+    - Depth: 5
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
@@ -562,11 +384,11 @@ MonoBehaviour:
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
+      - Item: {fileID: 11400000, guid: 276ed294d4867e14799ef6e322837be5, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
+      - Item: {fileID: 11400000, guid: 3eefc4cf587b776428b3c75029dc2ca0, type: 2}
         Weight: 1
   - Type: 5
     RoundRoomCorner: 0
@@ -591,13 +413,13 @@ MonoBehaviour:
       TrapCount: 0.5
       Boss: []
     - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
       SleepChance: 0.75
       MimicChance: 0.1
       GrassChance: 0.3
-      ShopChance: 0.05
+      ShopChance: 1
       MonsterHouseChance: 0.05
       RestRoomChance: 0.05
       ChestChance: 0.1
@@ -613,19 +435,15 @@ MonoBehaviour:
     Enemies:
       items:
       - Item: {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
+      - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
         Weight: 1
   - Type: 4
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0
     Floors:
-    - Depth: 4
+    - Depth: 5
       Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
       PrefixChance: 0.1
       ShinyChance: 0.01
@@ -642,35 +460,20 @@ MonoBehaviour:
       CharacterCount: 1
       TrapCount: 0.5
       Boss: []
-    - Depth: 1
-      Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
-      PrefixChance: 0.1
-      ShinyChance: 0.01
-      SleepChance: 0.75
-      MimicChance: 0.1
-      GrassChance: 0.3
-      ShopChance: 0.05
-      MonsterHouseChance: 0.05
-      RestRoomChance: 0.05
-      ChestChance: 0.1
-      ItemCount: 2
-      MoneyCount: 1
-      MoneyAverage: 100
-      CharacterCount: 1
-      TrapCount: 0.5
-      Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
     Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
     Enemies:
       items:
-      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
-        Weight: 3
-      - Item: {fileID: 11400000, guid: 7b8d9caf8a0f37a4f83b24e4620e807e, type: 2}
+      - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
         Weight: 1
-  - Type: 6
+      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+        Weight: 1
+  - Type: 3
     RoundRoomCorner: 0
     CaveInOneRoom: 0
     WaterChance: 0
@@ -699,156 +502,9 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
+      - Item: {fileID: 11400000, guid: e08657120f363c443a261f9a6b69cbcf, type: 2}
         Weight: 1
-      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+      - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
         Weight: 1
-  references:
-    version: 2
-    RefIds:
-    - rid: 5486256311944871960
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871961
-      type: {class: TeleportEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 
-    - rid: 5486256311944871962
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871963
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871965
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871966
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u7761\u7720"
-        _probabilityOfSuccess: 1
-    - rid: 5486256311944871967
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871968
-      type: {class: ClearConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 
-    - rid: 5486256311944871969
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871973
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871974
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871975
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u6DF7\u4E71"
-        _probabilityOfSuccess: 1
-    - rid: 5486256311944871976
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871977
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871978
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u6BD2"
-        _probabilityOfSuccess: 1
-    - rid: 5486256311944871979
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871980
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871981
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u920D\u8DB3"
-        _probabilityOfSuccess: 1
-    - rid: 5486256311944871982
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871983
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256311944871984
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u9EBB\u75FA"
-        _probabilityOfSuccess: 1
-    - rid: 5486256311944871985
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256396100960257
-      type: {class: SpawnRandomCharacterEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _count: 3
-    - rid: 5486256396100960258
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256396100960260
-      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 1
-        CanIgnoreWalls: 1
-        Radius: 2
-    - rid: 5486256396100960271
-      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 
-    - rid: 5486256406402433024
-      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        ApplyToCharacter: 0
-        ApplyToItem: 1
-        ApplyToMoney: 1
-        ApplyToTrap: 1
-        ApplyToChest: 1
-    - rid: 5486256447100289027
-      type: {class: AllCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256447100289028
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256447100289029
-      type: {class: AlertEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data: 
-    - rid: 5486256542496849965
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256542496849966
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256579196485632
-      type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _damageRate: 0.5
-    - rid: 5486256623760965642
-      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data:
-        ContainsSelf: 1
-        CanIgnoreWalls: 0
-        Radius: 1
-    - rid: 5486256623760965644
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256623760965645
-      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
-      data: 
-    - rid: 5486256623760965646
-      type: {class: CurseItemEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _probabilityOfSuccess: 0.5
-    - rid: 5486256623760965647
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: "\u62D8\u675F"
-        _probabilityOfSuccess: 1
+      - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
+        Weight: 1

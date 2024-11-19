@@ -1,0 +1,97 @@
+#nullable enable
+using System.Collections.Generic;
+using Tetr4lab.UnityEngine.SQLite;
+using UnityEngine;
+
+namespace Game
+{
+    public class SQLiteDatabase
+    {
+        private SQLite<SQLiteTable<SQLiteRow>, SQLiteRow> sqlDB;
+
+        public SQLiteDatabase()
+        {
+            Debug.Log("Database init");
+            var initDatabaseQuery = "create database if not exists data";
+            sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists saves (id integer primary key, text string)");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists maps (id string primary key, text string)");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists settings (key string primary key, value string)");
+            Debug.Log("Database init done");
+        }
+        public void Save(int id, string saveData)
+        {
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into saves values (:id, :text)",
+                new SQLiteRow
+                {
+                    { "id", id },
+                    { "text", saveData }
+                });
+        }
+        public void SaveMap(string id, string mapData)
+        {
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into maps values(:id, :text)",
+                new SQLiteRow
+                {
+                    { "id", id },
+                    { "text", mapData }
+                });
+        }
+        public void SaveSettings(Dictionary<string, int> settings)
+        {
+            foreach (var setting in settings)
+            {
+                sqlDB.ExecuteNonQuery(
+                    "insert or replace into settings values(:key, :value)",
+                    new SQLiteRow
+                    {
+                        { "key", setting.Key },
+                        { "value", setting.Value }
+                    });
+            }
+        }
+        public string? Load(int id)
+        {
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from saves where id = :id",
+                new SQLiteRow
+                {
+                    { "id", id }
+                });
+            return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
+        }
+        public string? LoadMap(string id)
+        {
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from maps where id = :id",
+                new SQLiteRow
+                {
+                    { "id", id }
+                });
+            return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
+        }
+        public Dictionary<string, int> LoadSettings()
+        {
+            var dataTable = sqlDB.ExecuteQuery("select * from settings");
+            var settings = new Dictionary<string, int>();
+            foreach (var row in dataTable.Rows)
+            {
+                if (row["key"] is string key && row["value"] is int value)
+                {
+                    settings[key] = value;
+                }
+            }
+            return settings;
+        }
+        public void ClearSave()
+        {
+            sqlDB.ExecuteNonQuery("delete from saves");
+            sqlDB.ExecuteNonQuery("delete from maps");
+        }
+    }
+}

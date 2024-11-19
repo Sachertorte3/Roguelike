@@ -2,12 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using R3;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
 using static RandomDungeonWithBluePrint.Constants;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Map
 {
@@ -20,7 +18,10 @@ namespace Domain.Service.Map
         private readonly float _randomValueForWater;
         private readonly Dictionary<Id<Room>, RectInt> _rooms = new();
         public List<Id<Room>> RoomIds => _rooms.Keys.ToList();
-        public Dictionary<Vector2Int, TileCategory> Tiles => _tiles.Select((tile, index) => (new Vector2Int(index % _width, index / _width), tile)).ToDictionary(x => x.Item1, x => x.Item2);
+
+        public Dictionary<Vector2Int, TileCategory> Tiles => _tiles
+            .Select((tile, index) => (new Vector2Int(index % _width, index / _width), tile))
+            .ToDictionary(x => x.Item1, x => x.Item2);
 
         public TilemapBuilder(FieldBluePrint bluePrint, float waterChance)
         {
@@ -62,10 +63,13 @@ namespace Domain.Service.Map
 
         private TileCategory GetNotWalkableCategory(int x, int y)
         {
-            if (_waterChance == 1 || Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + _randomValueForWater, y / 16f + _randomValueForWater)) < _waterChance)
+            if (_waterChance == 1 ||
+                Mathf.Clamp01(Mathf.PerlinNoise(x / 16f + _randomValueForWater, y / 16f + _randomValueForWater)) <
+                _waterChance)
             {
                 return TileCategory.Water;
             }
+
             return TileCategory.Wall;
         }
 
@@ -79,7 +83,8 @@ namespace Domain.Service.Map
                 var distanceFromEdgeY = Mathf.Min(position.y - room.yMin, room.yMax - position.y);
                 var distanceFromEdge = Mathf.Min(distanceFromEdgeX, distanceFromEdgeY);
 
-                var value = Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue, position.y / 8f + randomValue));
+                var value = Mathf.Clamp01(Mathf.PerlinNoise(position.x / 8f + randomValue,
+                    position.y / 8f + randomValue));
                 value += Mathf.Pow(0.5f, distanceFromEdge / 4f);
                 if (value > 0.5f)
                 {
@@ -105,20 +110,24 @@ namespace Domain.Service.Map
             ProcessDirection(position, corner, roomsize.y / 2, directionY, directionX);
         }
 
-        private void ProcessDirection(Vector2Int position, Direction8 corner, int maxDimension, Vector2Int primaryDirection, Vector2Int secondaryDirection)
+        private void ProcessDirection(Vector2Int position, Direction8 corner, int maxDimension,
+            Vector2Int primaryDirection, Vector2Int secondaryDirection)
         {
-            int secondaryIncrement = 0;
+            var secondaryIncrement = 0;
             while (maxDimension >= 1)
             {
                 var randDimension = Random.Range(1, maxDimension);
-                for (int primaryIncrement = 0; primaryIncrement < randDimension; primaryIncrement++)
+                for (var primaryIncrement = 0; primaryIncrement < randDimension; primaryIncrement++)
                 {
-                    var newPosition = position + primaryIncrement * primaryDirection + secondaryIncrement * secondaryDirection;
+                    var newPosition = position + primaryIncrement * primaryDirection +
+                                      secondaryIncrement * secondaryDirection;
                     if (IsSafeToPlaceWall(newPosition, corner))
-                        _tiles[newPosition.x + newPosition.y * _width] = GetNotWalkableCategory(newPosition.x, newPosition.y);
+                        _tiles[newPosition.x + newPosition.y * _width] =
+                            GetNotWalkableCategory(newPosition.x, newPosition.y);
                     else
                         break;
                 }
+
                 maxDimension /= 2;
                 secondaryIncrement += 1;
             }
@@ -127,27 +136,33 @@ namespace Domain.Service.Map
         private bool IsSafeToPlaceWall(Vector2Int position, Direction8 corner)
         {
             if (position.x + corner.Vector().x < 0
-            || position.y + corner.Vector().y < 0
-            || position.x + corner.Vector().x >= _width
-            || position.y + corner.Vector().y >= _tiles.Length / _width)
+                || position.y + corner.Vector().y < 0
+                || position.x + corner.Vector().x >= _width
+                || position.y + corner.Vector().y >= _tiles.Length / _width)
             {
                 return false;
             }
+
             if (_tiles[position.x + corner.Vector().x + position.y * _width] == TileCategory.Floor
-            || _tiles[position.x + (position.y + corner.Vector().y) * _width] == TileCategory.Floor)
+                || _tiles[position.x + (position.y + corner.Vector().y) * _width] == TileCategory.Floor)
             {
                 return false;
             }
+
             return true;
         }
 
         public HashSet<Vector2Int> GetWalkablePositionsIn(Id<Room> roomId)
         {
             var room = _rooms[roomId];
-            return room.RectRange().Where(position => _tiles[position.x + position.y * _width] == TileCategory.Floor).ToHashSet();
+            return room.RectRange().Where(position => _tiles[position.x + position.y * _width] == TileCategory.Floor)
+                .ToHashSet();
         }
 
-        public RectInt GetRoom(Id<Room> roomId) => _rooms[roomId];
+        public RectInt GetRoom(Id<Room> roomId)
+        {
+            return _rooms[roomId];
+        }
 
         public RectInt? GetCenteredInnerRect(Id<Room> roomId, Vector2Int size)
         {
@@ -156,6 +171,7 @@ namespace Domain.Service.Map
             {
                 return null;
             }
+
             return rect;
         }
 
@@ -163,7 +179,8 @@ namespace Domain.Service.Map
         {
             foreach (var position in positions)
             {
-                var isAlreadyGrass = _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.Grass;
+                var isAlreadyGrass = _overlayTiles.ContainsKey(position) &&
+                                     _overlayTiles[position] == OverlayTileCategory.Grass;
                 if (isGrass != isAlreadyGrass)
                 {
                     if (isGrass)
@@ -185,7 +202,8 @@ namespace Domain.Service.Map
         {
             foreach (var position in positions)
             {
-                var isAlreadyIce = _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.FloatingIce;
+                var isAlreadyIce = _overlayTiles.ContainsKey(position) &&
+                                   _overlayTiles[position] == OverlayTileCategory.FloatingIce;
                 if (isIce != isAlreadyIce)
                 {
                     if (isIce)

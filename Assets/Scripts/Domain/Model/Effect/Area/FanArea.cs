@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -70,7 +72,7 @@ namespace Domain.Model.Effect.Area
                 area.Remove(position);
             if (CanIgnoreWalls || Radius <= 1)
                 return area;
-            var reachable = ViewCalculator.ComputeSquare(map.GetAllBlankPositionsOn(EntityLayer.Middle).Values().ToHashSet(), position,
+            var reachable = map.ComputeCircle(position => !map.At(position).IsBlank(EntityLayer.Middle), position,
                 Radius + 0.5f);
             return area.Where(p => reachable.Contains(p));
         }
@@ -80,25 +82,29 @@ namespace Domain.Model.Effect.Area
             return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius) / 2;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades()
+        public string UpgradePathName => "扇形(90°)";
+
+        public List<UpgradeData> GetUpgrades()
         {
-            return new Dictionary<UpgradePath, UpgradeData>
+            return new List<UpgradeData>
             {
-                {
-                    new UpgradePath("半径"),
-                    new UpgradeData(
-                        "半径+1",
-                        () => Radius += 1,
-                        () => Radius -= 1
-                    )
-                }
+                new(
+                    "半径+1",
+                    () => Radius += 1,
+                    () => Radius -= 1
+                )
             };
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
         }
 
         public string Info()
         {
-            var info = $"扇形(90°) 半径{Radius}マス";
-            if (ContainsSelf) info += "(原点含む)";
+            var info = $"半径{Radius}マスの扇形内部(90°)";
+            if (ContainsSelf) info += "(中心含む)";
             if (CanIgnoreWalls) info += "(壁無視)";
             return info;
         }

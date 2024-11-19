@@ -4,21 +4,21 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
-using R3;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Ally : IEventEntity
+    public class Ally : IPlayerEventEntity
     {
         public readonly ICharacter Character;
+        public EntityBase Entity => Character.Entity;
         public readonly EnemyBehavior Behavior;
-        public IEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         public Ally(ICharacter character, EnemyBehavior behavior, IMap map)
         {
@@ -29,44 +29,57 @@ namespace Domain.Service.Rooms
                 true,
                 new List<PlayerChoiceEvent>
                 {
-                    new PlayerChoiceEvent(
+                    new(
                         "渡す",
-                        (player) => Character.CanUseItem && Character.IsAlly(player),
+                        player => Character.CanUseItem && Character.IsAlly(player.Character),
                         async (gameManager, map) =>
                         {
                             var player = map.Player;
-                            var item = await player.ItemSelector.SelectItem(player.Inventory, map);
+                            var item = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map);
                             if (item != null)
                             {
                                 var result = character.Inventory.TryAdd(item);
                                 if (result)
                                 {
-                                    var index = player.Inventory.GetItemIndex(item);
-                                    player.ReplaceInventory(null, index);
-                                    GameLog.Add($"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
+                                    var index = player.Character.Inventory.GetItemIndex(item);
+                                    player.Character.RemoveInventory(index, -1);
+                                    GameLog.Add(
+                                        $"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {
-                                    GameLog.Add($"{Character.GetName(player)}はこれ以上アイテムを持てない。");
+                                    GameLog.Add($"{Character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
                                 }
                             }
                         }
                     ),
-                new PlayerChoiceEvent(
-                    "一緒に行動",
-                    (player) => Character.IsAlly(player),
-                    (gameManager, map) =>
-                    {
-                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
-                        return UniTask.CompletedTask;
-                    }),
-                new PlayerChoiceEvent(
-                    "敵優先",
-                    (player) => Character.IsAlly(player),
-                    (gameManager, map) => {
-                        Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
-                        return UniTask.CompletedTask;
-                    })
+                    new(
+                        "一緒に行動",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.ChaseLeader = true;
+                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
+                            return UniTask.CompletedTask;
+                        }),
+                    new(
+                        "敵優先",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.ChaseLeader = true;
+                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
+                            return UniTask.CompletedTask;
+                        }),
+                    new(
+                        "自由行動",
+                        player => Character.IsAlly(player.Character),
+                        (gameManager, map) =>
+                        {
+                            Behavior.BehaviorData.ChaseLeader = false;
+                            return UniTask.CompletedTask;
+                        }
+                    )
                 }
             );
         }
@@ -81,33 +94,9 @@ namespace Domain.Service.Rooms
             Dispose();
         }
 
-        public Id<IEntity> Id => Character.Id;
-        public ReadOnlyReactiveProperty<Vector2Int> Position => Character.Position;
-        public Vector2Int CurrentPosition => Character.CurrentPosition;
-        public ReadOnlyReactiveProperty<bool> Visibility => Character.Visibility;
-        public EntityLayer Layer => Character.Layer;
-        public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => Character.OnMove;
-        public Observable<Vector2Int> OnTeleport => Character.OnTeleport;
-        public Observable<Unit> OnDestroyed => Character.OnDestroyed;
-
-        public void SetVisibility(bool visibility)
-        {
-            Character.SetVisibility(visibility);
-        }
-
-        public void Destroy()
-        {
-            Character.Destroy();
-        }
-
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return Character.BlowAway(actor, direction, distance, map);
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            Character.Teleport(position);
         }
     }
 }

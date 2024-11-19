@@ -21,7 +21,7 @@ MonoBehaviour:
   Aggression: 1
   Behavior:
     wanderAround: 1
-    Default: 1
+    Default: 2
     PrioritizeMovement: 0
     UseTopBound: 0
     greaterThanTopBound: 1
@@ -32,6 +32,7 @@ MonoBehaviour:
     lessThanBottomBound: 1
     PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
+    ChaseLeader: 1
   MoveSpeed: 2
   IsHard: 0
   IsHeavy: 0

@@ -1,4 +1,7 @@
-public interface ISerializable<TData>
+namespace Domain.Model
 {
-    TData Serialize();
+    public interface ISerializable<TData>
+    {
+        TData Serialize();
+    }
 }

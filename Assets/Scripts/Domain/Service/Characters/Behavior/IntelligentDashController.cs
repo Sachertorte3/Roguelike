@@ -12,6 +12,7 @@ namespace Domain.Service.Characters.Behavior
     internal sealed class IntelligentDashController
     {
         private Direction8? _lastMoveDirection;
+
         public async UniTask Wait(IHasBehavior character, IMap map)
         {
             if (character.CanMove(character.CurrentDirection, map) &&
@@ -66,19 +67,21 @@ namespace Domain.Service.Characters.Behavior
                 if (canMoveDirections.Count() == 1)
                     return new Move(canMoveDirections.First());
             }
+
             return move;
         }
+
         private bool InPathway(IHasBehavior character, IMap map)
         {
             var canMoveDirections = DirectionMethods.AllDirections
                 .Where(direction => character.CanMoveIgnoreEntity(direction, map))
                 .ToList();
 
-            bool isStraightPathClear = canMoveDirections
+            var isStraightPathClear = canMoveDirections
                 .Where(direction => !direction.IsDiagonal())
                 .Count() == 2;
 
-            bool noValidDiagonalPath = !canMoveDirections
+            var noValidDiagonalPath = !canMoveDirections
                 .Where(direction => direction.IsDiagonal())
                 .Any(direction => canMoveDirections.Contains(direction.Rotate45Clockwise()) &&
                                   canMoveDirections.Contains(direction.Rotate45AntiClockwise()));

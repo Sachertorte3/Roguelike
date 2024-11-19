@@ -37,7 +37,8 @@ namespace Domain.Model.Effect
 
         public string Log => "";
 
-        public ActorlessSkillData(IActorlessEffectPosition position, INotDirectionalArea area, List<IActorlessEffect> effect,
+        public ActorlessSkillData(IActorlessEffectPosition position, INotDirectionalArea area,
+            List<IActorlessEffect> effect,
             float probabilityOfSuccess)
         {
             Position = position;
@@ -63,6 +64,7 @@ namespace Domain.Model.Effect
             {
                 info += $"効果{index + 1}: {effect.Info()}\n";
             }
+
             info += $"発動位置: {Position.Info()}\n";
             info += $"範囲: {Area.Info()}\n";
             info += $"発動確率: {ProbabilityOfSuccess:P0}";

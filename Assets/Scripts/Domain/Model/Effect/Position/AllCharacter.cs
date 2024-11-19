@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities;
@@ -10,7 +11,10 @@ namespace Domain.Model.Effect.Position
         public bool IsDirectional => false;
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
-            IMap map) => Get(position, direction, map);
+            IMap map)
+        {
+            return Get(position, direction, map);
+        }
 
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IMap map)
@@ -23,11 +27,21 @@ namespace Domain.Model.Effect.Position
             return 300;
         }
 
-        public Dictionary<UpgradePath, UpgradeData> GetUpgrades() => new();
+        public string UpgradePathName => "全キャラクター";
+
+        public List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
 
         public string Info()
         {
-            return "すべてのキャラクター";
+            return "すべてのキャラクターの場所";
         }
     }
 }

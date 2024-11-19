@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Logs;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Effect
 {
@@ -30,19 +32,20 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (target.StatusManager.IsSecureHold)
+            if (target.Status.IsFlagStat(FlagStatType.SecureHold))
             {
                 GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 return UniTask.CompletedTask;
             }
+
             var items = target.Inventory.AllItems.ToArray();
             if (items.Any())
             {
-                if (Random.value < _probabilityOfSuccess)
+                if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                 {
                     var item = items.GetAtRandom();
-                    var itemIndex = target.Inventory.GetItemIndex(item);
-                    target.DropItem(itemIndex, map, true);
+                    var index = target.Inventory.GetItemIndex(item);
+                    target.DropItem(index, -1, map, true);
                 }
                 else
                 {
@@ -53,6 +56,7 @@ namespace Domain.Service.Effect
             {
                 GameLog.Add($"{target.GetName(map.Player)}はアイテムを持っていない");
             }
+
             return UniTask.CompletedTask;
         }
 
@@ -66,9 +70,21 @@ namespace Domain.Service.Effect
             return 50;
         }
 
+        public override string UpgradePathName => "アイテム弾き";
+
+        public override List<UpgradeData> GetUpgrades()
+        {
+            return new List<UpgradeData>();
+        }
+
+        public override Dictionary<string, IHasUpgrades> GetChildren()
+        {
+            return new Dictionary<string, IHasUpgrades>();
+        }
+
         public override string Info()
         {
-            return $"アイテム弾き";
+            return "対象の持つアイテムを落とさせる\n";
         }
     }
 }

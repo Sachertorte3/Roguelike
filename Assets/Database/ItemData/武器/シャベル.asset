@@ -19,7 +19,7 @@ MonoBehaviour:
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
-  SpawnEffectsOnThrow: 0
+  SpawnEffectsOnThrow: 1
   IsSameEffect: 0
   IsSameSkill: 0
   SkillOnUse:
@@ -34,12 +34,13 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
-      rid: -2
+      rid: 3794997484628475919
     <Effects>k__BackingField:
-    - rid: -2
+    - rid: 3794997484628475918
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
+  StorageCapacity: 0
   UsageLimit: 20
   UpgradeLimit: 3
   PassiveConditions: []
@@ -53,6 +54,16 @@ MonoBehaviour:
       data: 
     - rid: 2541219106150416399
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 3794997484628475918
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 3
+        _criticalRate: 0
+    - rid: 3794997484628475919
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
     - rid: 4425516923575599124
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

@@ -15,7 +15,9 @@ namespace Domain.Service.Effect
     [Serializable]
     public class RemoveUpgradeEffect : ActorlessEntityTargetEffect
     {
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")]
+        [SerializeField]
+        [Range(0, 1)]
         private float _probabilityOfSuccess = 0.1f;
 
         public override Color Color => Colors.SandyBrown;
@@ -33,7 +35,7 @@ namespace Domain.Service.Effect
             if (upgradedItems.Any())
             {
                 var item = upgradedItems.GetAtRandom();
-                if (RandUtils.IsChance(_probabilityOfSuccess))
+                if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                     item.Downgrade(map.Player, map.ItemPlaceholders);
                 else
                     GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");

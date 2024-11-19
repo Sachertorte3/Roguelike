@@ -52,9 +52,9 @@ namespace Domain.Service.Effect
 
         public UniTask Apply(Id<IEntity> actorId, ITargetOfEffect target, IMap map)
         {
-            if (RandUtils.IsChance(_probabilityOfSuccess))
+            if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
             {
-                if (!RandUtils.IsChance(target.GetConditionResistance(_condition.Value)))
+                if (RandUtils.IsGreaterThanProbability(target.GetConditionResistance(_condition.Value)))
                 {
                     target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
                 }

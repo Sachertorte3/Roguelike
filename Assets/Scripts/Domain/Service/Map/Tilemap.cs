@@ -103,7 +103,7 @@ namespace Domain.Service.Map
             var grasses = new List<Vector2Int>();
             foreach (var (position, _) in _overlayTiles.Where(pair => pair.Value == OverlayTileCategory.Grass))
             {
-                if (RandUtils.IsChance(CommonSenseParameters.SpawnGrassProbabilityPerTurn))
+                if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnGrassProbabilityPerTurn))
                 {
                     var spawnPosition = position + DirectionMethods.AllDirections.GetAtRandom().Vector();
                     grasses.Add(spawnPosition);

@@ -78,7 +78,7 @@ namespace Domain.Service.Characters
             IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
         {
             var inventory = Storage.Build(10, true);
-            if (RandUtils.IsChance(data.DropItemRate) && data.DropItemTable.Count > 0)
+            if (RandUtils.IsLessThanProbability(data.DropItemRate) && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
                 inventory.Items[0] = Item.Build(dropItem).ToOption();

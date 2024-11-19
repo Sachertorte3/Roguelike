@@ -16,7 +16,9 @@ namespace Domain.Service.Effect
     [Serializable]
     public class CurseItemEffect : ActorlessEntityTargetEffect
     {
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")]
+        [SerializeField]
+        [Range(0, 1)]
         private float _probabilityOfSuccess = 0.25f;
 
         public override Color Color => Colors.MediumPurple;
@@ -40,7 +42,7 @@ namespace Domain.Service.Effect
             if (notCursedItems.Any())
             {
                 var item = notCursedItems.GetAtRandom();
-                if (RandUtils.IsChance(_probabilityOfSuccess))
+                if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                     item.SetCursed(map.Player, map.ItemPlaceholders, true);
                 else
                     GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われなかった");

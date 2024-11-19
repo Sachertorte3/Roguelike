@@ -15,10 +15,11 @@ namespace Domain.Service.Effect
     [Serializable]
     public class AttackEffect : EntityTargetEffect
     {
-        [RequiredListLength(1, null)] [SerializeField]
+        [RequiredListLength(1, null)]
+        [SerializeField]
         private List<ElementPower> _elementPowers;
 
-        [Range(0, 1)] [SerializeField] private float _criticalRate;
+        [Range(0, 1)][SerializeField] private float _criticalRate;
         private float _fixedCriticalRate => Mathf.Clamp(_criticalRate, 0, 1);
 
         public AttackEffect(List<ElementPower> elementPowers, float criticalRate)
@@ -40,7 +41,7 @@ namespace Domain.Service.Effect
 
         public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            if (RandUtils.IsChance(_fixedCriticalRate))
+            if (RandUtils.IsLessThanProbability(_fixedCriticalRate))
             {
                 var damage = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");

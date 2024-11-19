@@ -16,7 +16,9 @@ namespace Domain.Service.Effect
     [Serializable]
     public class DropItemEffect : ActorlessEntityTargetEffect
     {
-        [OnInspectorInit("OnProbabilityOfSuccessChanged")] [SerializeField] [Range(0, 1)]
+        [OnInspectorInit("OnProbabilityOfSuccessChanged")]
+        [SerializeField]
+        [Range(0, 1)]
         private float _probabilityOfSuccess = 0.5f;
 
         public override Color Color => Colors.MediumPurple;
@@ -39,7 +41,7 @@ namespace Domain.Service.Effect
             var items = target.Inventory.AllItems.ToArray();
             if (items.Any())
             {
-                if (RandUtils.IsChance(_probabilityOfSuccess))
+                if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                 {
                     var item = items.GetAtRandom();
                     var index = target.Inventory.GetItemIndex(item);

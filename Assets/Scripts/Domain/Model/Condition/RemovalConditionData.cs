@@ -12,12 +12,14 @@ namespace Domain.Model.Condition
         [ShowIf("@RemoveByElapsedTurn")] public int Duration;
         public bool RemoveByDamage;
 
-        [ShowIf("@RemoveByDamage")] [Range(0, 1)]
+        [ShowIf("@RemoveByDamage")]
+        [Range(0, 1)]
         public float Probability;
 
         public bool RemoveByCharacterNearby;
 
-        [ShowIf("@RemoveByCharacterNearby")] [Range(0, 1)]
+        [ShowIf("@RemoveByCharacterNearby")]
+        [Range(0, 1)]
         public float CharacterNearbyProbability;
 
         public RemovalConditionData(int duration = -1, float damageProbability = -1,
@@ -45,12 +47,12 @@ namespace Domain.Model.Condition
         public bool IsFinished(int elapsedTurns, bool characterVisible)
         {
             return (RemoveByElapsedTurn && elapsedTurns >= Duration) ||
-                   (RemoveByCharacterNearby && characterVisible && RandUtils.IsChance(CharacterNearbyProbability));
+                   (RemoveByCharacterNearby && characterVisible && RandUtils.IsLessThanProbability(CharacterNearbyProbability));
         }
 
         public bool IsFinishedByDamage()
         {
-            return RemoveByDamage && RandUtils.IsChance(Probability);
+            return RemoveByDamage && RandUtils.IsLessThanProbability(Probability);
         }
 
         public float EvaluateTurn()

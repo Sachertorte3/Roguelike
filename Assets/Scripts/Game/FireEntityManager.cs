@@ -60,7 +60,7 @@ namespace Game
             var addedFires = new List<Fire>();
             foreach (var fire in _fireEntities)
             {
-                if (RandUtils.IsChance(CommonSenseParameters.DestroyFireProbabilityPerTurn))
+                if (RandUtils.IsLessThanProbability(CommonSenseParameters.DestroyFireProbabilityPerTurn))
                 {
                     destroyedFires.Add(fire);
                 }
@@ -71,7 +71,7 @@ namespace Game
                     .Where(position => map.At(position).CanPlace(false, false, true));
                 foreach (var position in positions)
                 {
-                    if (RandUtils.IsChance(GetProbabilityOfFireSpreading(position, map)))
+                    if (RandUtils.IsLessThanProbability(GetProbabilityOfFireSpreading(position, map)))
                     {
                         addedFires.Add(new Fire(Fire.Build(position)));
                     }

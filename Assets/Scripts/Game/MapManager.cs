@@ -243,8 +243,8 @@ namespace Game
                 CharacterFactory.BuildCharacter(
                     enemy,
                     FindBlankPositionFrom(position, position => At(position).IsBlankAndStandable(EntityLayer.Middle)),
-                    isSlept: isSlept ?? RandUtils.IsChance(_dungeonData.SleepChance),
-                    isShiny: isShiny ?? RandUtils.IsChance(_dungeonData.ShinyChance),
+                    isSlept: isSlept ?? RandUtils.IsLessThanProbability(_dungeonData.SleepChance),
+                    isShiny: isShiny ?? RandUtils.IsLessThanProbability(_dungeonData.ShinyChance),
                     affiliation: affiliation
                 ),
                 this
@@ -592,7 +592,7 @@ namespace Game
 
         public void UpdateTurn(int turn)
         {
-            if (RandUtils.IsChance(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))
+            if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))
             {
                 var positions = GetAllBlankPositionsOn(EntityLayer.Middle).Values()
                     .Except(Player.Character.VisionRange.VisibleArea);

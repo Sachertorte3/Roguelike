@@ -46,9 +46,14 @@ namespace Utilities
             return Mathf.Exp(Normal(Mathf.Log(mean), sigma));
         }
 
-        public static bool IsChance(float probability)
+        public static bool IsLessThanProbability(float probability)
         {
             return Random.value < probability;
+        }
+
+        public static bool IsGreaterThanProbability(float probability)
+        {
+            return Random.value > probability;
         }
 
         public static T GetAtRandom<T>(this IEnumerable<T> ie)

@@ -37,7 +37,7 @@ namespace Provider
                         inventoryView.OnFocusChanged.AsUnitObservable(),
                         map.Player.Character.Inventory.OnItemChanged.AsUnitObservable(),
                         map.Player.Character.Direction.AsUnitObservable(),
-                        gameManager.Turn.AsUnitObservable()
+                        gameManager.OnTurnChanged
                     ).Subscribe(_ =>
                     {
                         previews.ForEach(preview => Object.Destroy(preview));

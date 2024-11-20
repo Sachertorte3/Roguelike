@@ -137,7 +137,7 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnAttacked => _onAttacked;
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
-        public Observable<Unit> OnKnownItemUpdated => _knownItemNames.ObserveCountChanged().Select(_ => Unit.Default);
+        public IObservableCollection<string> KnownItemNames => _knownItemNames;
         public ICharacterType CharacterType { get; init; }
         public IItemSelector ItemSelector => _behavior;
         public IStatusManager Status => _statusManager;

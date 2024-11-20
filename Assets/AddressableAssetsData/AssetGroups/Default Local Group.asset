@@ -72,16 +72,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea3f0d2ca36c0184c95aa60b767b5a92
-    m_Address: Assets/Database/EnemyData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f9eacf138db96944a43fe95523ed093
-    m_Address: Assets/Database/EnemyData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9e3c0dc1c99c0541acfad4909ca107b
     m_Address: "Assets/Database/ItemData/\u85AC\u8349.asset"
     m_ReadOnly: 0
@@ -127,7 +117,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 96b2e3044b2e8f248b91c829e54ed6ed
+  - m_GUID: 386dd33a8a267a6458bb70c3b7388de9
     m_Address: Assets/Database/ItemData
     m_ReadOnly: 0
     m_SerializedLabels: []
@@ -137,12 +127,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96b2e3044b2e8f248b91c829e54ed6ed
+    m_Address: Assets/Database/ItemData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dffe806f6e4a2aa4ca577e71a76b2fbf
     m_Address: Assets/Database/ItemData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 386dd33a8a267a6458bb70c3b7388de9
+  - m_GUID: 601eb0af1f7338347abf0abd20ba0318
     m_Address: Assets/Database/ItemData
     m_ReadOnly: 0
     m_SerializedLabels: []

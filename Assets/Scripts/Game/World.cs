@@ -75,14 +75,14 @@ namespace Game
             return _dungeons[location.MapName].CreateMapData(location.Level);
         }
 
-        public MapManager LoadWorld(WorldMemento memento, List<(string, MapMemento)> maps)
+        public MapManager LoadWorld(WorldMemento memento, Dictionary<string, MapMemento> maps)
         {
             _dungeons = memento.Dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => new Dungeon(dungeon.Value));
             _itemPlaceholders = new ItemPlaceholders(memento.ItemPlaceholders, _placeholders);
             _movements = memento.Movements;
             _maps = memento.MapIds.ToDictionary(
                 mapId => new Id<IMap>(mapId),
-                mapId => maps.First(map => map.Item1 == mapId).Item2
+                mapId => maps[mapId]
             );
 
             var mapId = GetMapId(memento.CurrentLocation);

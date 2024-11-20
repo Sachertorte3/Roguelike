@@ -37,7 +37,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""OpenMenu"",
+                    ""name"": ""OpenSettingMenu"",
                     ""type"": ""Button"",
                     ""id"": ""7a2a2f0c-73d9-4e9e-a317-11308943ce0c"",
                     ""expectedControlType"": ""Button"",
@@ -125,6 +125,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenItemLibraryMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""428fc8bc-48a3-4b97-a5cc-40e46fd7f64b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -190,7 +199,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""OpenMenu"",
+                    ""action"": ""OpenSettingMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -290,6 +299,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DoNothing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0176beb9-0231-451a-8e9a-d807b6b570d5"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenItemLibraryMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -812,7 +832,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         // Field
         m_Field = asset.FindActionMap("Field", throwIfNotFound: true);
         m_Field_Move = m_Field.FindAction("Move", throwIfNotFound: true);
-        m_Field_OpenMenu = m_Field.FindAction("OpenMenu", throwIfNotFound: true);
+        m_Field_OpenSettingMenu = m_Field.FindAction("OpenSettingMenu", throwIfNotFound: true);
         m_Field_Attack = m_Field.FindAction("Attack", throwIfNotFound: true);
         m_Field_Dash = m_Field.FindAction("Dash", throwIfNotFound: true);
         m_Field_TurnOnly = m_Field.FindAction("TurnOnly", throwIfNotFound: true);
@@ -822,6 +842,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_QuickLoad = m_Field.FindAction("QuickLoad", throwIfNotFound: true);
         m_Field_Rename = m_Field.FindAction("Rename", throwIfNotFound: true);
         m_Field_DoNothing = m_Field.FindAction("DoNothing", throwIfNotFound: true);
+        m_Field_OpenItemLibraryMenu = m_Field.FindAction("OpenItemLibraryMenu", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Close = m_Menu.FindAction("Close", throwIfNotFound: true);
@@ -899,7 +920,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Field;
     private List<IFieldActions> m_FieldActionsCallbackInterfaces = new List<IFieldActions>();
     private readonly InputAction m_Field_Move;
-    private readonly InputAction m_Field_OpenMenu;
+    private readonly InputAction m_Field_OpenSettingMenu;
     private readonly InputAction m_Field_Attack;
     private readonly InputAction m_Field_Dash;
     private readonly InputAction m_Field_TurnOnly;
@@ -909,12 +930,13 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_QuickLoad;
     private readonly InputAction m_Field_Rename;
     private readonly InputAction m_Field_DoNothing;
+    private readonly InputAction m_Field_OpenItemLibraryMenu;
     public struct FieldActions
     {
         private @MyInputAction m_Wrapper;
         public FieldActions(@MyInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Field_Move;
-        public InputAction @OpenMenu => m_Wrapper.m_Field_OpenMenu;
+        public InputAction @OpenSettingMenu => m_Wrapper.m_Field_OpenSettingMenu;
         public InputAction @Attack => m_Wrapper.m_Field_Attack;
         public InputAction @Dash => m_Wrapper.m_Field_Dash;
         public InputAction @TurnOnly => m_Wrapper.m_Field_TurnOnly;
@@ -924,6 +946,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         public InputAction @QuickLoad => m_Wrapper.m_Field_QuickLoad;
         public InputAction @Rename => m_Wrapper.m_Field_Rename;
         public InputAction @DoNothing => m_Wrapper.m_Field_DoNothing;
+        public InputAction @OpenItemLibraryMenu => m_Wrapper.m_Field_OpenItemLibraryMenu;
         public InputActionMap Get() { return m_Wrapper.m_Field; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -936,9 +959,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @OpenMenu.started += instance.OnOpenMenu;
-            @OpenMenu.performed += instance.OnOpenMenu;
-            @OpenMenu.canceled += instance.OnOpenMenu;
+            @OpenSettingMenu.started += instance.OnOpenSettingMenu;
+            @OpenSettingMenu.performed += instance.OnOpenSettingMenu;
+            @OpenSettingMenu.canceled += instance.OnOpenSettingMenu;
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
@@ -966,6 +989,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @DoNothing.started += instance.OnDoNothing;
             @DoNothing.performed += instance.OnDoNothing;
             @DoNothing.canceled += instance.OnDoNothing;
+            @OpenItemLibraryMenu.started += instance.OnOpenItemLibraryMenu;
+            @OpenItemLibraryMenu.performed += instance.OnOpenItemLibraryMenu;
+            @OpenItemLibraryMenu.canceled += instance.OnOpenItemLibraryMenu;
         }
 
         private void UnregisterCallbacks(IFieldActions instance)
@@ -973,9 +999,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @OpenMenu.started -= instance.OnOpenMenu;
-            @OpenMenu.performed -= instance.OnOpenMenu;
-            @OpenMenu.canceled -= instance.OnOpenMenu;
+            @OpenSettingMenu.started -= instance.OnOpenSettingMenu;
+            @OpenSettingMenu.performed -= instance.OnOpenSettingMenu;
+            @OpenSettingMenu.canceled -= instance.OnOpenSettingMenu;
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
@@ -1003,6 +1029,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @DoNothing.started -= instance.OnDoNothing;
             @DoNothing.performed -= instance.OnDoNothing;
             @DoNothing.canceled -= instance.OnDoNothing;
+            @OpenItemLibraryMenu.started -= instance.OnOpenItemLibraryMenu;
+            @OpenItemLibraryMenu.performed -= instance.OnOpenItemLibraryMenu;
+            @OpenItemLibraryMenu.canceled -= instance.OnOpenItemLibraryMenu;
         }
 
         public void RemoveCallbacks(IFieldActions instance)
@@ -1187,7 +1216,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     public interface IFieldActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnOpenMenu(InputAction.CallbackContext context);
+        void OnOpenSettingMenu(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnTurnOnly(InputAction.CallbackContext context);
@@ -1197,6 +1226,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         void OnQuickLoad(InputAction.CallbackContext context);
         void OnRename(InputAction.CallbackContext context);
         void OnDoNothing(InputAction.CallbackContext context);
+        void OnOpenItemLibraryMenu(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

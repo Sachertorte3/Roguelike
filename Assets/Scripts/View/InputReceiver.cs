@@ -14,7 +14,7 @@ namespace View
         public InputReceiver()
         {
             _actions.Field.Enable();
-            OnMenuOpening.Subscribe(_ =>
+            Observable.Merge(OnSettingMenuOpening, OnItemLibraryMenuOpening).Subscribe(_ =>
             {
                 _actions.Field.Disable();
                 _actions.Menu.Enable();
@@ -49,8 +49,11 @@ namespace View
         public Observable<Unit> OnRenamePerformed =>
             _actions.Field.Rename.AsObservable().Select(context => Unit.Default);
 
-        public Observable<Unit> OnMenuOpening => _actions.Field.OpenMenu.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnSettingMenuOpening => _actions.Field.OpenSettingMenu.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnItemLibraryMenuOpening => _actions.Field.OpenItemLibraryMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
+
+
         public Observable<Unit> OnQuickSave => _actions.Field.QuickSave.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnQuickLoad => _actions.Field.QuickLoad.AsObservable().Select(context => Unit.Default);
 

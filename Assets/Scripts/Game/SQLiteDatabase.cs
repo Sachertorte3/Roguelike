@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using Tetr4lab.UnityEngine.SQLite;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Game
 {
@@ -18,6 +18,8 @@ namespace Game
                 "create table if not exists saves (id integer primary key, text string)");
             sqlDB.ExecuteNonQuery(
                 "create table if not exists maps (id string primary key, text string)");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists statistics (id integer primary key, text string)");
             sqlDB.ExecuteNonQuery(
                 "create table if not exists settings (key string primary key, value string)");
             Debug.Log("Database init done");
@@ -42,6 +44,16 @@ namespace Game
                     { "text", mapData }
                 });
         }
+        public void SaveStatistics(int id, string statisticsData)
+        {
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into statistics values(:id, :text)",
+                new SQLiteRow
+                {
+                    { "id", id },
+                    { "text", statisticsData }
+                });
+        }
         public void SaveSettings(Dictionary<string, int> settings)
         {
             foreach (var setting in settings)
@@ -55,7 +67,14 @@ namespace Game
                     });
             }
         }
-        public string? Load(int id)
+        public bool ExistSave(int id)
+        {
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from saves where id = :id",
+                new SQLiteRow { { "id", id } });
+            return dataTable.Rows.Count > 0;
+        }
+        public string Load(int id)
         {
             var dataTable = sqlDB.ExecuteQuery(
                 "select * from saves where id = :id",
@@ -63,9 +82,9 @@ namespace Game
                 {
                     { "id", id }
                 });
-            return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
+            return (string)dataTable.Rows[0]["text"];
         }
-        public string? LoadMap(string id)
+        public string LoadMap(string id)
         {
             var dataTable = sqlDB.ExecuteQuery(
                 "select * from maps where id = :id",
@@ -73,7 +92,17 @@ namespace Game
                 {
                     { "id", id }
                 });
-            return dataTable.Rows.Count > 0 ? dataTable.Rows[0]["text"] as string : null;
+            return dataTable.Rows[0]["text"] as string;
+        }
+        public string? LoadStatistics(int id)
+        {
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from statistics where id = :id",
+                new SQLiteRow
+                {
+                    { "id", id }
+                });
+            return dataTable.Rows[0]["text"] as string;
         }
         public Dictionary<string, int> LoadSettings()
         {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Logging;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace View.UI
@@ -8,7 +9,10 @@ namespace View.UI
         private void OnEnable()
         {
             if (EventSystem.current.currentSelectedGameObject == null)
+            {
+                Log.Info($"[Menu]AutoSelect: {gameObject}");
                 EventSystem.current.SetSelectedGameObject(gameObject);
+            }
         }
     }
 }

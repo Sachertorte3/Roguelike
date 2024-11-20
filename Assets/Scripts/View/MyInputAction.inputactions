@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "OpenMenu",
+                    "name": "OpenSettingMenu",
                     "type": "Button",
                     "id": "7a2a2f0c-73d9-4e9e-a317-11308943ce0c",
                     "expectedControlType": "Button",
@@ -103,6 +103,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenItemLibraryMenu",
+                    "type": "Button",
+                    "id": "428fc8bc-48a3-4b97-a5cc-40e46fd7f64b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -168,7 +177,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "OpenMenu",
+                    "action": "OpenSettingMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -268,6 +277,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "DoNothing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0176beb9-0231-451a-8e9a-d807b6b570d5",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenItemLibraryMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

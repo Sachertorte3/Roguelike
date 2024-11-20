@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
@@ -6,6 +7,7 @@ using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Game;
+using ObservableCollections;
 using R3;
 using Unity.Logging;
 using Utilities;
@@ -14,6 +16,7 @@ using View.UI;
 
 namespace Provider
 {
+
     public class PlayerInventoryPresenter
     {
         private readonly CompositeDisposable _disposables = new();
@@ -36,13 +39,13 @@ namespace Provider
                             map.Player, map.ItemPlaceholders);
                     }).AddTo(_disposables);
 
-                    gameManager.Turn.Subscribe(position =>
+                    gameManager.OnTurnChanged.Subscribe(_ =>
                     {
                         UpdateGroundItemView(inventoryView, subStorageView, map);
                     }).AddTo(_disposables);
 
                     Observable.Merge(
-                        map.Player.Character.OnKnownItemUpdated,
+                        map.Player.Character.KnownItemNames.ObserveChanged().AsUnitObservable(),
                         map.ItemPlaceholders.OnItemRenamed
                     ).Subscribe(_ =>
                     {

@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Unity.Logging;
@@ -7,6 +8,7 @@ using Utilities.Serialize;
 
 namespace Game
 {
+    public record SaveData(WorldMemento World, StatisticsMemento Statistics, Dictionary<string, MapMemento> Maps);
     public class SaveDataManager
     {
         private SQLiteDatabase db;
@@ -16,45 +18,42 @@ namespace Game
             db = new SQLiteDatabase();
         }
 
-        public void Save(int id, World world)
+        public void Save(int id, SaveData saveData)
         {
             Log.Debug("[Save]Start Save");
-            var saveData = world.Serialize();
-            var maps = world.SerializeUpdatedMaps();
-            db.Save(id, JsonUtility.ToJson(saveData));
-            foreach (var map in maps)
+            db.Save(id, JsonUtility.ToJson(saveData.World));
+            foreach (var map in saveData.Maps)
             {
-                Log.Debug($"[Save]Save map: {map.Id}");
-                db.SaveMap(map.Id.ToString(), JsonUtility.ToJson(map));
+                db.SaveMap(map.Key, JsonUtility.ToJson(map.Value));
             }
+            db.SaveStatistics(id, JsonUtility.ToJson(saveData.Statistics));
             db.SaveSettings(Settings.GetValues().ToSerializable());
 
             Log.Debug("[Save]End Save");
         }
 
-        public WorldMemento? Load(int id)
+        public SaveData? Load(int id)
         {
             Log.Debug("[Save]Start Load");
-            WorldMemento? world = null;
+            if (!db.ExistSave(id))
+            {
+                return null;
+            }
             var saveData = db.Load(id);
-            if (saveData != null)
+            var world = JsonUtility.FromJson<WorldMemento>(saveData);
+            Dictionary<string, MapMemento> maps = new();
+            foreach (var mapId in world.MapIds)
             {
-                world = JsonUtility.FromJson<WorldMemento>(saveData);
+                var mapData = db.LoadMap(mapId);
+                maps.Add(mapId, JsonUtility.FromJson<MapMemento>(mapData));
             }
+            var statisticsData = db.LoadStatistics(id);
+            var statistics = JsonUtility.FromJson<StatisticsMemento>(statisticsData);
             var settings = db.LoadSettings();
-            if (settings != null)
-            {
-                Settings.SetValues(settings);
-            }
+            Settings.SetValues(settings);
 
             Log.Debug("[Save]End Load");
-            return world;
-        }
-
-        public MapMemento? LoadMap(string mapId)
-        {
-            var mapData = db.LoadMap(mapId);
-            return mapData != null ? JsonUtility.FromJson<MapMemento>(mapData) : null;
+            return new SaveData(world, statistics, maps);
         }
 
         public void ClearSave()

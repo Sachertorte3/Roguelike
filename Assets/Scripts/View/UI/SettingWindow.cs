@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace View.UI
 {
-    public class SettingWindow : MonoBehaviour
+    public class SettingWindow : MonoBehaviour, IMenu
     {
         [SerializeField] private Transform _content;
         [SerializeField] private SliderOption _sliderItem;
@@ -60,6 +60,24 @@ namespace View.UI
 
                 lastOption = newSelectable;
             }
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void Enable()
+        {
+        }
+
+        public void Disable()
+        {
         }
     }
 }

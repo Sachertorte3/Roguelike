@@ -13,7 +13,8 @@ namespace View.UI
     {
         [SerializeField] private TitleMenu _titleMenu;
         [SerializeField] private DungeonMenu _dungeonMenu;
-        [SerializeField] private SettingMenu _settingMenu;
+        [SerializeField] private SettingWindow _settingMenu;
+        [SerializeField] private ItemLibraryView _itemLibraryMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
         private readonly Stack<IMenu> _menuStack = new();
@@ -22,7 +23,8 @@ namespace View.UI
         [Inject]
         public void Construct(InputReceiver inputReceiver)
         {
-            inputReceiver.OnMenuOpening.Subscribe(_ => { AddMenu(_settingMenu); });
+            inputReceiver.OnSettingMenuOpening.Subscribe(_ => { AddMenu(_settingMenu); });
+            inputReceiver.OnItemLibraryMenuOpening.Subscribe(_ => { AddMenu(_itemLibraryMenu); });
             inputReceiver.OnMenuClosing.Subscribe(_ => { PopMenu(); });
         }
 

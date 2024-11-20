@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Entity;
@@ -9,6 +9,7 @@ using Domain.Model.Setting;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
+using ObservableCollections;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -17,6 +18,42 @@ using VContainer;
 
 namespace Game
 {
+    public class Statistics : ISerializable<StatisticsMemento>
+    {
+        public TimeSpan LastSavePlayTime { get; private set; }
+        public DateTime SessionStartTime { get; private set; }
+        public TimeSpan CurrentSessionTime => DateTime.Now - SessionStartTime;
+        public TimeSpan PlayTime => LastSavePlayTime + CurrentSessionTime;
+        public ReactiveProperty<int> Turn { get; set; }
+        public ObservableHashSet<string> KnownItemNames { get; private set; } = new();
+        public Statistics(StatisticsMemento memento, GameManager game, World world)
+        {
+            LastSavePlayTime = TimeSpan.FromTicks(memento.PlayTime);
+            SessionStartTime = DateTime.Now;
+            Turn = new(memento.Turn);
+            KnownItemNames = new(memento.KnownItemNames);
+
+            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            {
+                map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>
+                {
+                    KnownItemNames.Add(item.NewItem);
+                });
+            });
+            game.OnTurnChanged.Skip(1).Subscribe(_ =>
+            {
+                Turn.Value++;
+            });
+        }
+        public StatisticsMemento Serialize()
+        {
+            return new StatisticsMemento(PlayTime.Ticks, Turn.Value, KnownItemNames.ToList());
+        }
+        public static StatisticsMemento Build()
+        {
+            return new StatisticsMemento(0, 0, new());
+        }
+    }
     public class GameManager : IGameManager
     {
         private readonly World _world;
@@ -27,7 +64,10 @@ namespace Game
         private readonly ChoiceReceiver _choiceReceiver;
         private readonly TextInputReceiver _textInputReceiver;
         private readonly CharacterControlInputReceiver _receiver;
-        public ReadOnlyReactiveProperty<int> Turn => _turnController.Turn;
+        public Observable<Unit> OnTurnChanged => _turnController.OnTurnChanged;
+        public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
+        private readonly ReactiveProperty<Statistics> _activeStatistics = new();
+        public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
         private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
@@ -50,7 +90,7 @@ namespace Game
                 _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
                 {
                     await StopMap();
-                    _saveDataManager.Save(0, _world);
+                    Save();
                     _state.Value = GameState.Title;
                 });
             });
@@ -71,12 +111,13 @@ namespace Game
             GameLog.Clear();
             await StopMap();
             bool isExistWorld = false;
+            SaveData? saveData = null;
             if (_world.ActiveMap.CurrentValue == null)
             {
-                var world = _saveDataManager.Load(0);
-                if (world != null)
+                saveData = _saveDataManager.Load(0);
+                if (saveData != null)
                 {
-                    LoadWorld(world);
+                    LoadWorld(saveData);
                     isExistWorld = true;
                 }
                 else
@@ -111,9 +152,8 @@ namespace Game
                     switch (choice)
                     {
                         case 0:
-                            await StopMap();
                             var world = _world.Serialize().RevivePlayer();
-                            map = LoadWorld(world);
+                            map = LoadWorld(saveData with { World = world });
                             var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
                             map.Player.Character.Entity.Teleport(randomPosition);
                             map.Player.Character.RestoreToFullHealth();
@@ -138,7 +178,7 @@ namespace Game
             }
 
             _state.Value = GameState.Dungeon;
-            StartMap(map);
+            StartMap(map, saveData?.Statistics ?? Statistics.Build());
         }
 
         private MapManager CreateWorld()
@@ -150,16 +190,9 @@ namespace Game
             return map;
         }
 
-        private MapManager LoadWorld(WorldMemento world)
+        private MapManager LoadWorld(SaveData saveData)
         {
-            var maps = new List<(string, MapMemento)>();
-            foreach (var mapId in world.MapIds)
-            {
-                var mapData = _saveDataManager.LoadMap(mapId);
-                maps.Add((mapId, mapData));
-            }
-
-            return _world.LoadWorld(world, maps);
+            return _world.LoadWorld(saveData.World, saveData.Maps);
         }
 
         private async UniTask StopMap()
@@ -168,8 +201,9 @@ namespace Game
             await _turnController.Stop();
         }
 
-        private void StartMap(MapManager map)
+        private void StartMap(MapManager map, StatisticsMemento statistics)
         {
+            _activeStatistics.Value = new Statistics(statistics, this, _world);
             _turnController.Run(this, map);
             _receiver.Enable(true);
         }
@@ -179,28 +213,35 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
-            _saveDataManager.Save(0, _world);
+            Save();
             _turnController.Run(this, map);
             _receiver.Enable(true);
             Log.Debug("[Game]End LoadMap");
         }
 
-        public void Save() => _saveDataManager.Save(0, _world);
+        public void Save()
+        {
+            var world = _world.Serialize();
+            var statistics = _activeStatistics.Value.Serialize();
+            var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
+            _saveDataManager.Save(0, new SaveData(world, statistics, maps));
+        }
 
         public async UniTask LoadAndStart()
         {
             await StopMap();
-            var world = _saveDataManager.Load(0);
+            var saveData = _saveDataManager.Load(0);
             MapManager map;
-            if (world != null)
+            if (saveData != null)
             {
-                map = LoadWorld(world);
+                map = LoadWorld(saveData);
+                StartMap(map, saveData.Statistics);
             }
             else
             {
                 map = CreateWorld();
+                StartMap(map, Statistics.Build());
             }
-            StartMap(map);
         }
     }
 }

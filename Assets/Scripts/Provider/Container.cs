@@ -44,6 +44,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<FlushController>();
             builder.RegisterComponentInHierarchy<BGMManager>();
             builder.RegisterComponentInHierarchy<SEManager>();
+            builder.RegisterComponentInHierarchy<ItemLibraryView>();
 
             builder.RegisterPlainEntryPoint<DungeonInfoPresenter>();
             builder.RegisterPlainEntryPoint<InputPresenter>();
@@ -59,6 +60,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
+            builder.RegisterPlainEntryPoint<StatisticsPresenter>();
             builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
             builder.RegisterPlainEntryPoint<Presenter>();
             builder.RegisterPlainEntryPoint<DebugCommands>();

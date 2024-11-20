@@ -20,10 +20,11 @@ namespace Game
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isRunning;
         private UniTaskCompletionSource _runCompletionSource;
-        private ReactiveProperty<int> _turn = new(1);
-        private int _turnInLevel = 1;
+        private ReactiveProperty<int> _turnInLevel = new(0);
+        private Subject<Unit> _onTurnChanged = new();
         private Resource _turnWaitTime { get; init; }
-        public ReadOnlyReactiveProperty<int> Turn => _turn;
+        public ReadOnlyReactiveProperty<int> TurnInLevel => _turnInLevel;
+        public Observable<Unit> OnTurnChanged => _onTurnChanged;
 
         public TurnController(GameInput input)
         {
@@ -33,6 +34,7 @@ namespace Game
 
         public async void Run(IGameManager gameManager, IMap map)
         {
+            _turnInLevel.Value = 0;
             if (_isRunning)
                 throw new Exception("Turn is already running");
             _isRunning = true;
@@ -55,10 +57,10 @@ namespace Game
 
                 if (_turnWaitTime.IsFull())
                 {
-                    _turn.Value++;
-                    _turnInLevel++;
-                    Log.Debug($"[Turn]Start turn {_turn}(in level:{_turnInLevel})\nCharacters:{map.Characters.Count}");
-                    map.UpdateTurn(_turn.CurrentValue);
+                    _turnInLevel.Value++;
+                    _onTurnChanged.OnNext(Unit.Default);
+                    Debug.Log($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");
+                    map.UpdateTurn(_turnInLevel.Value);
                 }
 
                 foreach (var character in characters)
@@ -141,7 +143,6 @@ namespace Game
         public async UniTask Stop()
         {
             if (!_isRunning) return;
-            _turnInLevel = 1;
             _cancellationTokenSource.Cancel();
             await _runCompletionSource.Task;
             Log.Debug("[Turn]Stop");

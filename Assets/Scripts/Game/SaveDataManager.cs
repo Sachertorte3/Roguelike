@@ -12,34 +12,46 @@ namespace Game
     public class SaveDataManager
     {
         private SQLiteDatabase db;
+        private int _saveDataSlot;
 
-        public SaveDataManager()
+        public SaveDataManager(int id)
         {
             db = new SQLiteDatabase();
+            _saveDataSlot = id;
         }
 
-        public void Save(int id, SaveData saveData)
+        public void SetSaveDataSlot(int id)
+        {
+            _saveDataSlot = id;
+        }
+
+        public bool IsExistSave()
+        {
+            return db.ExistSave(_saveDataSlot);
+        }
+
+        public void Save(SaveData saveData)
         {
             Log.Debug("[Save]Start Save");
-            db.Save(id, JsonUtility.ToJson(saveData.World));
+            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World));
             foreach (var map in saveData.Maps)
             {
                 db.SaveMap(map.Key, JsonUtility.ToJson(map.Value));
             }
-            db.SaveStatistics(id, JsonUtility.ToJson(saveData.Statistics));
+            db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
             db.SaveSettings(Settings.GetValues().ToSerializable());
 
             Log.Debug("[Save]End Save");
         }
 
-        public SaveData? Load(int id)
+        public SaveData? Load()
         {
             Log.Debug("[Save]Start Load");
-            if (!db.ExistSave(id))
+            if (!db.ExistSave(_saveDataSlot))
             {
                 return null;
             }
-            var saveData = db.Load(id);
+            var saveData = db.Load(_saveDataSlot);
             var world = JsonUtility.FromJson<WorldMemento>(saveData);
             Dictionary<string, MapMemento> maps = new();
             foreach (var mapId in world.MapIds)
@@ -47,7 +59,7 @@ namespace Game
                 var mapData = db.LoadMap(mapId);
                 maps.Add(mapId, JsonUtility.FromJson<MapMemento>(mapData));
             }
-            var statisticsData = db.LoadStatistics(id);
+            var statisticsData = db.LoadStatistics(_saveDataSlot);
             var statistics = JsonUtility.FromJson<StatisticsMemento>(statisticsData);
             var settings = db.LoadSettings();
             Settings.SetValues(settings);

@@ -51,9 +51,23 @@ MonoBehaviour:
       <Repeats>k__BackingField: 1
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u4F53\u5F53\u305F\u308A\u3057\u305F\u3002"
-    RushDistance: 3
-    BackStepDistance: 2
-    ChargeTurn: 10
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
+    CoolTime: 0
+  - Skill:
+      <Position>k__BackingField:
+        rid: 3794997872339714058
+      <Area>k__BackingField:
+        rid: 3794997872339714059
+      <Effects>k__BackingField:
+      - rid: 3794997872339714060
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: "\u30C6\u30B9\u30C8\u7834\u58CA"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -100,6 +114,20 @@ MonoBehaviour:
         ContainsSelf: 0
         CanIgnoreWalls: 0
         Length: 1
+    - rid: 3794997872339714058
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 3794997872339714059
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 3794997872339714060
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        ApplyToCharacter: 1
+        ApplyToItem: 1
+        ApplyToMoney: 1
+        ApplyToTrap: 1
+        ApplyToChest: 1
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

@@ -14,7 +14,7 @@ namespace Provider
         {
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
-                if (map.Player.Character.CurrentHp <= 0)
+                if (map.Player.Character.IsDead)
                 {
                     targetCamera.SetPosition((Vector3Int)map.Player.Character.Entity.CurrentPosition);
                     return;

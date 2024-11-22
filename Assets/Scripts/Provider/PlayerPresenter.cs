@@ -20,7 +20,7 @@ namespace Provider
             CompositeDisposable _disposable = new();
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
                 {
-                    if (map.Player.Character.CurrentHp <= 0)
+                    if (map.Player.Character.IsDead)
                     {
                         return;
                     }

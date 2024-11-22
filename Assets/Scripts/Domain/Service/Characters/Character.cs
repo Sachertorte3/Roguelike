@@ -49,6 +49,8 @@ namespace Domain.Service.Characters
         private readonly IDisposable _disposable;
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
+        private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
+        private ReactiveProperty<int> _chargeTurn = new(0);
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, IMap map, bool isPlayer)
         {
@@ -139,6 +141,16 @@ namespace Domain.Service.Characters
         public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
         public IObservableCollection<string> KnownItemNames => _knownItemNames;
+        public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
+            _chargeTurn.Select(x => new OnChargeActionUpdatedMessage(
+                x,
+                _chargeAction.Map(
+                    skill => new ChargedActionPreviewEffectData(
+                        skill.Skill.GetArea(this, Entity.CurrentPosition, skill.Direction, _map, true),
+                        skill.Skill.Color
+                    )
+                ).Value
+            ));
         public ICharacterType CharacterType { get; init; }
         public IItemSelector ItemSelector => _behavior;
         public IStatusManager Status => _statusManager;
@@ -223,19 +235,6 @@ namespace Domain.Service.Characters
         #endregion
 
         #region Action
-
-        private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
-        private ReactiveProperty<int> _chargeTurn = new(0);
-        public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
-            _chargeTurn.Select(x => new OnChargeActionUpdatedMessage(
-                x,
-                _chargeAction.Map(
-                    skill => new ChargedActionPreviewEffectData(
-                        skill.Skill.GetArea(this, Entity.CurrentPosition, skill.Direction, _map, true),
-                        skill.Skill.Color
-                    )
-                ).Value
-            ));
 
         public void CancelChargeAction()
         {
@@ -382,6 +381,12 @@ namespace Domain.Service.Characters
             {
                 if (CanMove(direction, map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
                     await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+            }
+
+            if (IsDead)
+            {
+                State = CharacterState.Finish;
+                return;
             }
 
             var result = await skill.Use(this, Entity.CurrentPosition, direction, map);

@@ -22,6 +22,7 @@ namespace Domain.Model.Entity
             Id = new Id<IEntity>(data.Id);
             _position = new ReactiveProperty<Vector2Int>(data.Position);
             _layer = data.Layer;
+            _isDestroyed.Value = data.IsDestroyed;
         }
 
         public Vector2Int CurrentPosition => Position.CurrentValue;
@@ -45,7 +46,8 @@ namespace Domain.Model.Entity
             (
                 Id.ToString(),
                 _position.CurrentValue,
-                _layer
+                _layer,
+                _isDestroyed.CurrentValue
             );
         }
 
@@ -65,7 +67,8 @@ namespace Domain.Model.Entity
             (
                 id.ToString(),
                 position,
-                layer
+                layer,
+                false
             );
         }
 

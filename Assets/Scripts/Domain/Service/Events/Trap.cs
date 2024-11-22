@@ -5,7 +5,6 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Characters;
 using Domain.Service.Effect;
 using Domain.Service.Logs;
 using UnityEngine;
@@ -26,7 +25,6 @@ namespace Domain.Service.Events
             Entity = new EntityBase(memento.Entity);
             _skill = new SpawnEffectSkill(memento.Skill);
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
-            var characterSkill = new CharacterSkill(CharacterSkill.Build(_skill.Serialize(), 0));
             Event = new CharacterEvent(
                 character => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
                 async (character, gameManager, map) => { await Execute(map, character); }

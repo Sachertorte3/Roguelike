@@ -16,19 +16,22 @@ namespace Domain.Service.Characters
     public class CharacterSkill : ICharacterSkill
     {
         public SpawnEffectSkill _skill { get; }
-        private int _coolTime { get; }
         public bool IsDirectional => _skill.IsDirectional;
         public Color Color => _skill.Color;
-        public int ChargeTurn => _skill.ChargeTurn;
-        public int RushDistance => _skill.RushDistance;
-        public int BackStepDistance => _skill.BackStepDistance;
+        public int RushDistance { get; private set; }
+        public int BackStepDistance { get; private set; }
+        public int ChargeTurn { get; private set; }
+        private readonly int _coolTime;
         private int _remainingCoolTime;
 
         public CharacterSkill(CharacterSkillMemento data)
         {
             _skill = new SpawnEffectSkill(data.Skill);
-            _coolTime = data.CoolTime;
             _remainingCoolTime = data.RemainingTurn;
+            RushDistance = data.RushDistance;
+            BackStepDistance = data.BackStepDistance;
+            ChargeTurn = data.ChargeTurn;
+            _coolTime = data.CoolTime;
         }
 
         public CharacterSkillMemento Serialize()
@@ -36,16 +39,22 @@ namespace Domain.Service.Characters
             return new CharacterSkillMemento
             (
                 _skill.Serialize(),
+                RushDistance,
+                BackStepDistance,
+                ChargeTurn,
                 _coolTime,
                 _remainingCoolTime
             );
         }
 
-        public static CharacterSkillMemento Build(SpawnEffectSkillMemento skill, int coolTime)
+        public static CharacterSkillMemento Build(SpawnEffectSkillMemento skill, int rushDistance, int backStepDistance, int chargeTurn, int coolTime)
         {
             return new CharacterSkillMemento
             (
                 skill,
+                rushDistance,
+                backStepDistance,
+                chargeTurn,
                 coolTime,
                 0
             );
@@ -76,6 +85,12 @@ namespace Domain.Service.Characters
 
         public float Evaluate(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            for (var i = 0; i < RushDistance; i++)
+            {
+                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
+                    position += direction.Vector();
+            }
+
             return _skill.Evaluate(actor, position, direction, map);
         }
 
@@ -105,6 +120,19 @@ namespace Domain.Service.Characters
         public bool IsUsable()
         {
             return _remainingCoolTime <= 0;
+        }
+
+        public string InfoOnUse(bool omitProbabilityOfSuccess = false)
+        {
+            var info = "";
+            if (RushDistance > 0)
+                info += $"最初に{RushDistance}マス前に進み\n";
+
+            info += _skill.InfoOnUse(omitProbabilityOfSuccess);
+
+            if (BackStepDistance > 0)
+                info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+            return info;
         }
     }
 }

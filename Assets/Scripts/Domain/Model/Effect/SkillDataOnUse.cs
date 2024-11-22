@@ -27,9 +27,10 @@ namespace Domain.Model.Effect
         [field: MinValue(1)]
         public int Repeats { get; private set; } = 1;
 
+        public int ChargeTurn => 0;
         public int RushDistance => 0;
-
         public int BackStepDistance => 0;
+
 
         [field: SerializeField]
         [field: Range(0, 1)]

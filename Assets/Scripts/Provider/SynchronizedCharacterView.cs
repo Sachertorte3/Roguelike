@@ -1,6 +1,8 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Service.Action;
 using Game;
 using R3;
 using UnityEngine;
@@ -15,6 +17,7 @@ namespace Provider
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
+        private readonly EffectViewSpawner _effectViewSpawner;
         private readonly World _world;
 
         protected override EntityView GetEntityView(CharacterView view)
@@ -23,9 +26,10 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedCharacterView(InputReceiver receiver, World world)
+        public SynchronizedCharacterView(InputReceiver receiver, EffectViewSpawner effectViewSpawner, World world)
         {
             _inputReceiver = receiver;
+            _effectViewSpawner = effectViewSpawner;
             _world = world;
 
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(
@@ -80,6 +84,23 @@ namespace Provider
             character.OnAttacked
                 .Subscribe(useSkill => characterView.PlayAttackAnimation())
                 .AddTo(characterView);
+
+            var previews = new List<GameObject>();
+            character.OnChargeActionUpdated.Subscribe(chargeAction =>
+            {
+                previews.ForEach(preview => GameObject.Destroy(preview));
+                if (chargeAction.Turn > 0 && chargeAction.Data != null)
+                {
+                    var area = chargeAction.Data.Area;
+                    var color = chargeAction.Data.Color;
+                    color.a = 0.25f;
+                    previews = _effectViewSpawner.SpawnPreview(area, color);
+                }
+            }).AddTo(characterView);
+            character.OnDead.Subscribe(_ =>
+            {
+                previews.ForEach(preview => GameObject.Destroy(preview));
+            }).AddTo(characterView);
 
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)

@@ -23,7 +23,7 @@ namespace Domain.Model.Effect
         public List<IEffect> Effects { get; private set; }
 
         public int Repeats => 1;
-
+        public int ChargeTurn => 0;
         public int RushDistance => 0;
         public int BackStepDistance => 0;
 

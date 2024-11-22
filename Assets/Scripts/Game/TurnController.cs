@@ -100,6 +100,7 @@ namespace Game
                         }
                         else
                         {
+                            character.CancelChargeAction();
                             Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
                         }
 

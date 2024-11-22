@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
@@ -24,51 +25,23 @@ namespace Domain.Service.Effect
         private readonly IArea _area;
         private readonly List<IEffect> _effects;
         public int Repeats { get; private set; }
+        public int ChargeTurn { get; private set; }
         public int RushDistance { get; private set; }
         public int BackStepDistance { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
-        public SpawnEffectSkill(IEffectPosition position, IArea area, List<IEffect> effect, int repeats,
-            int rushDistance,
-            int backStepDistance, float probabilityOfSuccess, string? log)
+        public SpawnEffectSkill(SpawnEffectSkillMemento data)
         {
-            _position = position;
-            _area = area;
-            _effects = effect;
-            Repeats = repeats;
-            RushDistance = rushDistance;
-            BackStepDistance = backStepDistance;
-            ProbabilityOfSuccess = probabilityOfSuccess;
-            _log = log;
-        }
-
-        public SpawnEffectSkill(SpawnEffectSkillMemento data) : this(data.Position, data.Area, data.Effects,
-            data.Repeats,
-            data.RushDistance, data.BackStepDistance, data.ProbabilityOfSuccess, data.Log)
-        {
-        }
-
-        public SpawnEffectSkill CopyWith(
-            IEffectPosition? position = null,
-            IArea? area = null,
-            List<IEffect>? effect = null,
-            int? repeats = null,
-            int? rushDistance = null,
-            int? backStepDistance = null,
-            float? probabilityOfSuccess = null,
-            string? log = null)
-        {
-            return new SpawnEffectSkill(
-                position ?? _position,
-                area ?? _area,
-                effect ?? _effects,
-                repeats ?? Repeats,
-                rushDistance ?? RushDistance,
-                backStepDistance ?? BackStepDistance,
-                probabilityOfSuccess ?? ProbabilityOfSuccess,
-                log ?? _log
-            );
+            _position = data.Position;
+            _area = data.Area;
+            _effects = data.Effects;
+            Repeats = data.Repeats;
+            ChargeTurn = data.ChargeTurn;
+            RushDistance = data.RushDistance;
+            BackStepDistance = data.BackStepDistance;
+            ProbabilityOfSuccess = data.ProbabilityOfSuccess;
+            _log = data.Log;
         }
 
         public Color Color => _effects.First().Color;
@@ -82,6 +55,7 @@ namespace Domain.Service.Effect
                 _area,
                 _effects,
                 Repeats,
+                ChargeTurn,
                 RushDistance,
                 BackStepDistance,
                 ProbabilityOfSuccess,
@@ -97,6 +71,7 @@ namespace Domain.Service.Effect
                 data.Area,
                 data.Effects,
                 data.Repeats,
+                data.ChargeTurn,
                 data.RushDistance,
                 data.BackStepDistance,
                 data.ProbabilityOfSuccess,
@@ -208,7 +183,7 @@ namespace Domain.Service.Effect
         {
             for (var i = 0; i < RushDistance; i++)
             {
-                if (actor.CanMove(position, direction, map))
+                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
                     position += direction.Vector();
             }
 

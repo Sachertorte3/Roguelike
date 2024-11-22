@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character.Message;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -19,6 +20,7 @@ namespace Domain.Model.Character
     public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IHasBehavior,
         IHasCondition
     {
+        public ICharacterType CharacterType { get; init; }
         public bool IsPlayer { get; }
         public bool IsLeader { get; }
         public bool IsBoss { get; }
@@ -31,7 +33,7 @@ namespace Domain.Model.Character
         public Observable<Unit> OnPickUpItem { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public IObservableCollection<string> KnownItemNames { get; }
-        public ICharacterType CharacterType { get; init; }
+        public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls,
             IPassableChecker map);
 
@@ -41,6 +43,7 @@ namespace Domain.Model.Character
         public void WasAttackedBy(IActorOfEffect actor, float impact);
         public void WasHealedBy(IActorOfEffect actor, float impact);
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
+        public void CancelChargeAction();
         public bool CanPickUpItem();
         public bool TryAddToInventory(IItem item);
         public IItem? RemoveInventory(int index, int subIndex);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -18,6 +19,7 @@ namespace Domain.Service.Characters
         private int _coolTime { get; }
         public bool IsDirectional => _skill.IsDirectional;
         public Color Color => _skill.Color;
+        public int ChargeTurn => _skill.ChargeTurn;
         public int RushDistance => _skill.RushDistance;
         public int BackStepDistance => _skill.BackStepDistance;
         private int _remainingCoolTime;
@@ -52,6 +54,18 @@ namespace Domain.Service.Characters
         public string Info()
         {
             return _skill.InfoOnUse();
+        }
+
+        public IEnumerable<Vector2Int> GetArea(IActor actor, Vector2Int position, Direction8 direction, IMap map, bool onlyVisible = false)
+        {
+            for (var i = 0; i < RushDistance; i++)
+            {
+                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
+                    position += direction.Vector();
+                else
+                    break;
+            }
+            return _skill.GetArea(actor, position, direction, map, onlyVisible);
         }
 
         public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)

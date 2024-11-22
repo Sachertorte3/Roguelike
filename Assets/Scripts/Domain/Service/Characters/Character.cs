@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Message;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Condition;
@@ -223,17 +224,62 @@ namespace Domain.Service.Characters
 
         #region Action
 
+        private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
+        private ReactiveProperty<int> _chargeTurn = new(0);
+        public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
+            _chargeTurn.Select(x => new OnChargeActionUpdatedMessage(
+                x,
+                _chargeAction.Map(
+                    skill => new ChargedActionPreviewEffectData(
+                        skill.Skill.GetArea(this, Entity.CurrentPosition, skill.Direction, _map, true),
+                        skill.Skill.Color
+                    )
+                ).Value
+            ));
+
+        public void CancelChargeAction()
+        {
+            _chargeAction = Option.None<UseSkill>();
+            _chargeTurn.Value = 0;
+        }
+
         public async UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input)
         {
             State = CharacterState.Think;
-            var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
-            if (Status.IsFlagStat(FlagStatType.Confused))
+            if (_chargeTurn.Value > 0)
             {
-                action = RegenerateConfuseAction(this, map, action);
+                _chargeTurn.Value--;
             }
 
-            State = CharacterState.Act;
-            await action.Do(this, map, input);
+            if (_chargeAction.HasValue && _chargeTurn.Value == 0)
+            {
+                State = CharacterState.Act;
+                await _chargeAction.Value.Do(this, map, input);
+                _chargeAction = Option.None<UseSkill>();
+            }
+            else if (_chargeTurn.Value > 0)
+            {
+                DoNothing();
+            }
+            else
+            {
+                var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
+                if (Status.IsFlagStat(FlagStatType.Confused))
+                {
+                    action = RegenerateConfuseAction(this, map, action);
+                }
+
+                if (action is UseSkill useSkill && useSkill.Skill.ChargeTurn > 0)
+                {
+                    _chargeAction = Option.Some(useSkill);
+                    _chargeTurn.Value = useSkill.Skill.ChargeTurn;
+                    DoNothing();
+                    return;
+                }
+
+                State = CharacterState.Act;
+                await action.Do(this, map, input);
+            }
         }
 
         private IAction RegenerateConfuseAction(IHasBehavior character, IMap map, IAction action)
@@ -334,7 +380,7 @@ namespace Domain.Service.Characters
             Turn(direction);
             for (var i = 0; i < skill.RushDistance; i++)
             {
-                if (CanMove(direction, map))
+                if (CanMove(direction, map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
                     await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
             }
 
@@ -346,7 +392,7 @@ namespace Domain.Service.Characters
 
             for (var i = 0; i < skill.BackStepDistance; i++)
             {
-                if (CanMove(direction.Reverse(), map))
+                if (CanMove(direction.Reverse(), map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
                     await Entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.Value, true);
             }
 

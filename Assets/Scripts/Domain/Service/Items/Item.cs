@@ -65,40 +65,37 @@ namespace Domain.Service.Items
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
             _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
-                memento =>
+                spawnEffectSkillMemento =>
                 {
                     if (data.HasSameEffect)
                     {
-                        return _skillOnUse.Expect("SkillOnUse is null").Match(
+                        return _skillOnUse.Expect("SkillOnUse is null").Serialize().Match(
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                memento.Position,
-                                memento.Area,
-                                rushDistance: memento.RushDistance,
-                                backStepDistance: memento.BackStepDistance,
-                                probabilityOfSuccess: memento.ProbabilityOfSuccess,
-                                log: memento.Log
+                                spawnEffectSkillMemento.Position,
+                                spawnEffectSkillMemento.Area,
+                                rushDistance: spawnEffectSkillMemento.RushDistance,
+                                backStepDistance: spawnEffectSkillMemento.BackStepDistance,
+                                probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess,
+                                log: spawnEffectSkillMemento.Log
                             ),
                             itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                        );
+                        ).Deserialize();
                     }
-
-                    if (data.HasSameSkill)
+                    else if (data.HasSameSkill)
                     {
-                        return _skillOnUse.Expect("SkillOnUse is null").Match(
+                        return _skillOnUse.Expect("SkillOnUse is null").Serialize().Match(
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                null,
-                                rushDistance: null,
-                                backStepDistance: null,
-                                probabilityOfSuccess: memento.ProbabilityOfSuccess,
-                                log: null
+                                probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess
                             ),
                             itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                        );
+                        ).Deserialize();
                     }
-
-                    return new SpawnEffectSkill(memento);
+                    else
+                    {
+                        return new SpawnEffectSkill(spawnEffectSkillMemento);
+                    }
                 },
-                itemTargetSkillMemento => (ISkill)new ItemTargetSkill(itemTargetSkillMemento)
+                itemTargetSkillMemento => new ItemTargetSkill(itemTargetSkillMemento)
             ));
             _hasSameEffect = data.HasSameEffect;
             _hasSameSkill = data.HasSameSkill;

@@ -49,6 +49,7 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: 5486256464210165765
       <Repeats>k__BackingField: 1
+      <ChargeTurn>k__BackingField: 0
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -63,6 +64,7 @@ MonoBehaviour:
     <Effects>k__BackingField:
     - rid: -2
     <Repeats>k__BackingField: 1
+    <ChargeTurn>k__BackingField: 0
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1

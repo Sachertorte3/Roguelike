@@ -50,10 +50,11 @@ namespace Domain.Service.Characters
                                         0
                                     )
                                 },
-                                0,
-                                0,
                                 "は殴りかかった")
                         ),
+                        0,
+                        0,
+                        0,
                         0
                     )
                 },
@@ -100,7 +101,13 @@ namespace Domain.Service.Characters
                     data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
                 EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction,
-                data.Skills.Select(x => CharacterSkill.Build(SpawnEffectSkill.Build(x.Skill), x.CoolTime)).ToList(),
+                data.Skills.Select(x => CharacterSkill.Build(
+                    SpawnEffectSkill.Build(x.Skill),
+                    x.RushDistance,
+                    x.BackStepDistance,
+                    x.ChargeTurn,
+                    x.CoolTime
+                )).ToList(),
                 (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory,
                 new List<string>(),

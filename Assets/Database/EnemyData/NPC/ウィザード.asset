@@ -49,11 +49,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: 5486256464210165779
       <Repeats>k__BackingField: 1
-      <ChargeTurn>k__BackingField: 0
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   - Skill:
       <Position>k__BackingField:
@@ -63,11 +63,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: 5486256464210165782
       <Repeats>k__BackingField: 1
-      <ChargeTurn>k__BackingField: 0
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u708E\u9B54\u6CD5\u3092\u653E\u3063\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 30
   - Skill:
       <Position>k__BackingField:
@@ -77,11 +77,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: 5486256464210165787
       <Repeats>k__BackingField: 1
-      <ChargeTurn>k__BackingField: 0
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u6C37\u9B54\u6CD5\u3092\u653E\u3063\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 30
   - Skill:
       <Position>k__BackingField:
@@ -91,11 +91,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: 5486256464210165792
       <Repeats>k__BackingField: 1
-      <ChargeTurn>k__BackingField: 0
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u96F7\u9B54\u6CD5\u3092\u653E\u3063\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 30
   HasLastSkill: 0
   LastSkill:
@@ -106,9 +106,6 @@ MonoBehaviour:
     <Effects>k__BackingField:
     - rid: -2
     <Repeats>k__BackingField: 1
-    <ChargeTurn>k__BackingField: 0
-    <RushDistance>k__BackingField: 0
-    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:

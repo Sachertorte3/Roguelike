@@ -4,7 +4,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
@@ -25,9 +24,6 @@ namespace Domain.Service.Effect
         private readonly IArea _area;
         private readonly List<IEffect> _effects;
         public int Repeats { get; private set; }
-        public int ChargeTurn { get; private set; }
-        public int RushDistance { get; private set; }
-        public int BackStepDistance { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
 
@@ -37,9 +33,6 @@ namespace Domain.Service.Effect
             _area = data.Area;
             _effects = data.Effects;
             Repeats = data.Repeats;
-            ChargeTurn = data.ChargeTurn;
-            RushDistance = data.RushDistance;
-            BackStepDistance = data.BackStepDistance;
             ProbabilityOfSuccess = data.ProbabilityOfSuccess;
             _log = data.Log;
         }
@@ -55,9 +48,6 @@ namespace Domain.Service.Effect
                 _area,
                 _effects,
                 Repeats,
-                ChargeTurn,
-                RushDistance,
-                BackStepDistance,
                 ProbabilityOfSuccess,
                 _log
             );
@@ -71,9 +61,6 @@ namespace Domain.Service.Effect
                 data.Area,
                 data.Effects,
                 data.Repeats,
-                data.ChargeTurn,
-                data.RushDistance,
-                data.BackStepDistance,
                 data.ProbabilityOfSuccess,
                 data.Log
             );
@@ -181,12 +168,6 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            for (var i = 0; i < RushDistance; i++)
-            {
-                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
-                    position += direction.Vector();
-            }
-
             var area = GetArea(actor, position, direction, map, true);
             var characters = map.Characters.In(area);
             var totalEvaluation = 0f;
@@ -239,7 +220,6 @@ namespace Domain.Service.Effect
                 price += effect.EvaluatePrice();
             }
 
-            price *= Mathf.Max(_position.EvaluateHitProbability(), RushDistance);
             price *= _area.EvaluateArea();
             return price * ProbabilityOfSuccess;
         }
@@ -267,16 +247,11 @@ namespace Domain.Service.Effect
             var info = "";
             if (Repeats > 1)
                 info += $"効果は{Repeats}回発動する\n";
-            if (RushDistance > 0)
-                info += $"\n{RushDistance}マス前に進み\n";
             info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
             foreach (var (effect, index) in _effects.Index())
             {
                 info += effect.Info();
             }
-
-            if (BackStepDistance > 0)
-                info += $"{BackStepDistance}マス後ろに下がる\n";
             if (!omitProbabilityOfSuccess)
                 info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;

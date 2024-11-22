@@ -50,11 +50,11 @@ MonoBehaviour:
       - rid: 3794997675126423554
       - rid: 3794997675126423555
       <Repeats>k__BackingField: 1
-      <ChargeTurn>k__BackingField: 0
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 3
   HasLastSkill: 0
   LastSkill:
@@ -65,9 +65,6 @@ MonoBehaviour:
     <Effects>k__BackingField:
     - rid: -2
     <Repeats>k__BackingField: 1
-    <ChargeTurn>k__BackingField: 0
-    <RushDistance>k__BackingField: 0
-    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:

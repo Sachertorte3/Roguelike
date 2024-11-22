@@ -73,8 +73,6 @@ namespace Domain.Service.Items
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
                                 spawnEffectSkillMemento.Position,
                                 spawnEffectSkillMemento.Area,
-                                rushDistance: spawnEffectSkillMemento.RushDistance,
-                                backStepDistance: spawnEffectSkillMemento.BackStepDistance,
                                 probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess,
                                 log: spawnEffectSkillMemento.Log
                             ),

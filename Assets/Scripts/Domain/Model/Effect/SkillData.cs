@@ -29,18 +29,6 @@ namespace Domain.Model.Effect
         public int Repeats { get; private set; } = 1;
 
         [field: SerializeField]
-        [field: MinValue(0)]
-        public int ChargeTurn { get; private set; }
-
-        [field: SerializeField]
-        [field: MinValue(0)]
-        public int RushDistance { get; private set; }
-
-        [field: SerializeField]
-        [field: MinValue(0)]
-        public int BackStepDistance { get; private set; }
-
-        [field: SerializeField]
         [field: Range(0, 1)]
         public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
 
@@ -48,14 +36,11 @@ namespace Domain.Model.Effect
         [field: Required]
         public string Log { get; private set; } = "は行動した";
 
-        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, int rushDistance,
-            int backStepDistance, string log)
+        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, string log)
         {
             Position = position;
             Area = area;
             Effects = effects;
-            RushDistance = rushDistance;
-            BackStepDistance = backStepDistance;
             Log = log;
         }
 
@@ -87,10 +72,6 @@ namespace Domain.Model.Effect
             info += $"発動位置: {Position.Info()}\n";
             info += $"範囲: {Area.Info()}\n";
             info += $"発動確率: {ProbabilityOfSuccess:P0}";
-            if (RushDistance > 0)
-                info += $"\n突進距離: {RushDistance}";
-            if (BackStepDistance > 0)
-                info += $"\n後退距離: {BackStepDistance}";
             return info;
         }
     }

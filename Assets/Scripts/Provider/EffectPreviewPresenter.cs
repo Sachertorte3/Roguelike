@@ -42,7 +42,7 @@ namespace Provider
                     {
                         previews.ForEach(preview => Object.Destroy(preview));
                         previews.Clear();
-                        if (map.Player.Character.CurrentHp <= 0)
+                        if (map.Player.Character.IsDead)
                         {
                             return;
                         }

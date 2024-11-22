@@ -77,7 +77,7 @@ namespace Game
             if (saveData != null)
             {
                 var map = LoadSaveData(saveData);
-                if (map.Player.Character.CurrentHp > 0)
+                if (!saveData.World.IsPlayerDead)
                 {
                     var choice = await GetChoice(null, "Continue", "New Game");
                     switch (choice)

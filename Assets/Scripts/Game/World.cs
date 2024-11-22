@@ -115,6 +115,7 @@ namespace Game
                 _dungeons.ToDictionary(dungeon => dungeon.Key, dungeon => dungeon.Value.Serialize()),
                 _movements,
                 playerData,
+                _activeMap.CurrentValue.Player.Character.IsDead,
                 _maps.Select(map => map.Key.ToString()).ToList(),
                 _activeLocation,
                 _itemPlaceholders.Serialize()

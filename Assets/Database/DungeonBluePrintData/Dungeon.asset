@@ -263,7 +263,7 @@ MonoBehaviour:
       MoneyCount: 1
       MoneyAverage: 100
       CharacterCount: 1
-      TrapCount: 10
+      TrapCount: 0.5
       Boss: []
     WeaponChanceInChest: 0.8
     Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}

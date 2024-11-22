@@ -36,7 +36,7 @@ namespace Game
 
             Player = _factory.CreatePlayer(playerData, receiver, map);
 
-            if (Player.Character.CurrentHp > 0)
+            if (!Player.Character.IsDead)
             {
                 AddCharacter(Player.Character);
             }

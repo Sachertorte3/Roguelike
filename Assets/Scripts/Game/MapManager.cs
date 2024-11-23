@@ -183,7 +183,7 @@ namespace Game
             }
         }
 
-        public IPlayer Player => CharacterManager.Player;
+        public IPlayer Player => CharacterManager?.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public ItemManager ItemManager { get; init; }

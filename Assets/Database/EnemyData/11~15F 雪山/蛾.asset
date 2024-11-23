@@ -55,6 +55,20 @@ MonoBehaviour:
     BackStepDistance: 0
     ChargeTurn: 0
     CoolTime: 0
+  - Skill:
+      <Position>k__BackingField:
+        rid: 3794997872339714061
+      <Area>k__BackingField:
+        rid: 3794997872339714062
+      <Effects>k__BackingField:
+      - rid: 3794997872339714063
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: "\u306F\u7652\u3084\u3057\u306E\u9C57\u7C89\u3092\u632F\u308A\u307E\u3044\u305F"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
+    CoolTime: 10
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -78,6 +92,21 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 3794997872339714061
+      type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        NumberOfTarget: 1
+        TargetAlly: 1
+        TargetEnemy: 0
+        TargetNeutral: 0
+        TargetSelf: 0
+    - rid: 3794997872339714062
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
+    - rid: 3794997872339714063
+      type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _power: 8
     - rid: 5486256464210165763
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
@@ -91,8 +120,8 @@ MonoBehaviour:
       type: {class: AbsorbsEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _elementPowers:
-        - _element: 5
-          _power: 6
+        - _element: 0
+          _power: 4
         _rate: 0.5
     - rid: 5486256560184492032
       type: {class: Moth, ns: Domain.Model.Character.Type, asm: Domain.Model}

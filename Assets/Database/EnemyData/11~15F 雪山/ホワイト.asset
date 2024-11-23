@@ -54,7 +54,7 @@ MonoBehaviour:
     RushDistance: 0
     BackStepDistance: 0
     ChargeTurn: 0
-    CoolTime: 0
+    CoolTime: 3
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -87,7 +87,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 4
-          _power: 5
+          _power: 2
         _criticalRate: 0
     - rid: 5486256560184492034
       type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}

@@ -68,7 +68,7 @@ namespace Utilities
 
         public static List<T> GetAtRandom<T>(this IEnumerable<T> ie, int n, Func<int, int> randomRange)
         {
-            if (!ie.Any()) throw new Exception("IEnumerable Argument is null or empty");
+            if (!ie.Any() && n > 0) throw new Exception("IEnumerable Argument is null or empty");
             if (n > ie.Count())
                 throw new Exception(
                     "The number of elements to be retrieved is greater than the number of elements in IEnumerable");

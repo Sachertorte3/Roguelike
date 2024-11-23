@@ -41,7 +41,7 @@ namespace Provider
                     {
                         SetTile(tileView, minimapController, tileData, position, tileSet, map.ShopRect);
                         if (map.TilemapViewer.GetAllGrasses().Contains(position))
-                            overlayTileView.SetGrass(position);
+                            overlayTileView.SetGrass(position, tileSet);
                         if (map.TilemapViewer.GetAllIces().Contains(position))
                             overlayTileView.SetIce(position);
                         SetVisibility(tileView, overlayTileView, minimapController, position,
@@ -78,7 +78,7 @@ namespace Provider
                             switch (category)
                             {
                                 case OverlayTileCategory.Grass:
-                                    overlayTileView.SetGrass(position, GetTileVisibility(map, position));
+                                    overlayTileView.SetGrass(position, tileSet, GetTileVisibility(map, position));
                                     break;
                                 case OverlayTileCategory.FloatingIce:
                                     overlayTileView.SetIce(position, GetTileVisibility(map, position));

@@ -59,7 +59,7 @@ namespace Game
                 {
                     _turnInLevel.Value++;
                     _onTurnChanged.OnNext(Unit.Default);
-                    Debug.Log($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");
+                    Log.Debug($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");
                     map.UpdateTurn(_turnInLevel.Value);
                 }
 

@@ -183,7 +183,7 @@ namespace Game
             }
         }
 
-        public IPlayer? Player => CharacterManager?.Player;
+        public IPlayer Player => CharacterManager.Player;
 
         public CharacterManager CharacterManager { get; init; }
         public ItemManager ItemManager { get; init; }
@@ -475,6 +475,7 @@ namespace Game
 
             Player.Character.Entity.Position.Subscribe(async positionChanged =>
             {
+                SetGrasses(new[] {Player.Character.Entity.CurrentPosition }, false);
                 EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
                 {

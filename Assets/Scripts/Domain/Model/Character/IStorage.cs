@@ -11,6 +11,7 @@ namespace Domain.Model.Character
     public interface IStorage
     {
         public IEnumerable<IItem> AllItems { get; }
+        public IEnumerable<IItem> AllItemsRecursive { get; }
         public int Capacity { get; }
         public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged { get; }
         public Observable<OnItemUpdated> OnItemUpdated { get; }

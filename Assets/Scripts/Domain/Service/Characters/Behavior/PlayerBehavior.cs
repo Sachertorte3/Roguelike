@@ -178,18 +178,18 @@ namespace Domain.Service.Characters.Behavior
                         choices.Add("やめる");
 
                         var choice = await gameManager.GetChoice(null, choices.ToArray());
-                        switch (choice)
+                        switch (choices[choice])
                         {
-                            case 0:
+                            case "このアイテムの種類に名前をつける":
                                 map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
                                 break;
-                            case 1:
+                            case "このアイテム単体に名前をつける":
                                 item.Rename(await gameManager.GetTextInput());
                                 break;
-                            case 2:
+                            case "このアイテム単体の名前をデフォルトに戻す":
                                 item.RevertToDefaultName();
                                 break;
-                            case 3:
+                            case "やめる":
                                 break;
                         }
                         break;

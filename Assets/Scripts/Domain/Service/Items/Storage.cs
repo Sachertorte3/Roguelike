@@ -21,6 +21,8 @@ namespace Domain.Service.Items
         public int Capacity => _items.Count;
         private readonly ObservableList<IItem?> _items;
         public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
+        public IEnumerable<IItem> AllItemsRecursive => AllItems
+            .SelectMany(x => x.ItemStorage.MapOr(Enumerable.Empty<IItem>(), storage => storage.AllItemsRecursive).Append(x));
         private readonly bool _canAddItemsWithStorage;
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 

@@ -26,6 +26,8 @@ namespace Domain.Service.Items
         private IHasCondition _hasCondition;
 
         public IEnumerable<IItem> AllItems => _storage.AllItems;
+        public IEnumerable<IItem> AllItemsRecursive => _storage.AllItemsRecursive;
+
         public int Capacity => _storage.Capacity;
         public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _storage.OnItemChanged;
         public Observable<OnItemUpdated> OnItemUpdated => _storage.OnItemUpdated;

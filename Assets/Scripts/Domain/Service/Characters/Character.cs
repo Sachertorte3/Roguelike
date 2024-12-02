@@ -97,6 +97,15 @@ namespace Domain.Service.Characters
                     _onDead.OnNext(Unit.Default);
                 }
             });
+
+            Settings.AutoIdentify.Subscribe(autoIdentify =>
+            {
+                foreach (var item in Inventory.AllItemsRecursive)
+                {
+                    if (!IsKnownItem(item) && (item.IdentifyIfGot || autoIdentify))
+                        AddKnownItem(item);
+                }
+            });
         }
 
         public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed.CurrentValue;
@@ -720,11 +729,10 @@ namespace Domain.Service.Characters
             if (_inventory.TryAdd(item))
             {
                 _onPickUpItem.OnNext(Unit.Default);
-                if (!IsKnownItem(item) && item.IdentifyIfGot)
+                if (!IsKnownItem(item) && (item.IdentifyIfGot || Settings.AutoIdentify.Value))
                 {
                     AddKnownItem(item);
                 }
-
                 return true;
             }
 
@@ -749,6 +757,10 @@ namespace Domain.Service.Characters
 
         public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex)
         {
+            if (item != null && !IsKnownItem(item) && (item.IdentifyIfGot || Settings.AutoIdentify.Value))
+            {
+                AddKnownItem(item);
+            }
             return _inventory.Replace(item, index, subIndex);
         }
 

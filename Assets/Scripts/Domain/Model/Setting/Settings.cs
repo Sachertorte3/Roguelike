@@ -23,6 +23,7 @@ namespace Domain.Model.Setting
         private static readonly Slider _dashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
         private static readonly CheckBox _autoSave = new("自動でセーブする", true);
         private static readonly CheckBox _retryOnDead = new("死亡時にリトライ可能", false);
+        private static readonly CheckBox _autoIdentify = new("全てのアイテムが自動で識別される", false);
 
         public static ReactiveProperty<int> BGMVolume => _BGMVolume.OnValueChanged;
         public static ReactiveProperty<int> SEVolume => _SEVolume.OnValueChanged;
@@ -41,7 +42,7 @@ namespace Domain.Model.Setting
         public static ReactiveProperty<int> DashPauseMilliseconds => _dashPauseMilliseconds.OnValueChanged;
         public static ReactiveProperty<bool> AutoSave => _autoSave.OnValueChanged;
         public static ReactiveProperty<bool> RetryOnDead => _retryOnDead.OnValueChanged;
-
+        public static ReactiveProperty<bool> AutoIdentify => _autoIdentify.OnValueChanged;
         private static readonly Subject<Unit> _onValuesSet = new();
         public static Observable<Unit> OnValuesSet => _onValuesSet;
 

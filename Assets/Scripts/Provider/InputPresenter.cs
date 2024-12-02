@@ -71,8 +71,10 @@ namespace Provider
 
             textInputReceiver.OnShownTextInput.Subscribe(async _ =>
             {
+                receiver.Disable();
                 var text = await menuController.GetTextInput();
                 textInputReceiver.SetTextInput(text);
+                receiver.Enable();
             });
 
             receiver.OnQuickSave.Subscribe(_ => gameManager.Save());

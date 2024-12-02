@@ -42,7 +42,6 @@ namespace Domain.Service.Effect
                 );
             }
 
-
             return UniTask.CompletedTask;
         }
 

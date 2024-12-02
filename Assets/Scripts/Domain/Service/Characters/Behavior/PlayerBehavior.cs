@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -157,11 +158,40 @@ namespace Domain.Service.Characters.Behavior
                     case InputType.RenameItem:
                         focus = result.focus!;
                         item = focus.GetItem(character.Inventory, map);
-                        if (item != null)
-                        {
-                            map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
-                        }
+                        if (item == null)
+                            break;
 
+                        var choices = new List<string>();
+                        if (!item.IsInfoIdentified(map.Player))
+                        {
+                            choices.Add("このアイテムの種類に名前をつける");
+                        }
+                        if (item.CustomName.IsSome)
+                        {
+                            choices.Add("このアイテム単体の名前を変える");
+                            choices.Add("このアイテム単体の名前をデフォルトに戻す");
+                        }
+                        else
+                        {
+                            choices.Add("このアイテム単体に名前をつける");
+                        }
+                        choices.Add("やめる");
+
+                        var choice = await gameManager.GetChoice(null, choices.ToArray());
+                        switch (choice)
+                        {
+                            case 0:
+                                map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
+                                break;
+                            case 1:
+                                item.Rename(await gameManager.GetTextInput());
+                                break;
+                            case 2:
+                                item.RevertToDefaultName();
+                                break;
+                            case 3:
+                                break;
+                        }
                         break;
                     default:
                         throw new IndexOutOfRangeException();

@@ -28,14 +28,15 @@ namespace Domain.Service.Items
         public ItemCategory Category { get; init; }
         public string BaseName { get; init; }
         public string RevealedName { get; init; }
+        public Option<string> CustomName { get; private set; }
 
         public string UnknownName(ItemPlaceholders itemPlaceholders)
         {
-            return $"?{itemPlaceholders.GetPlaceholder(BaseName, Category)}?";
+            return $"?{CustomName.UnwrapOr(itemPlaceholders.GetPlaceholder(BaseName, Category))}?";
         }
 
         public string DebugName => _fullName;
-        private string _fullName => _upgradePaths.Count > 0 ? $"{RevealedName} +{AppliedUpgrades}" : RevealedName;
+        private string _fullName => _upgradePaths.Count > 0 ? $"{CustomName.UnwrapOr(RevealedName)} +{AppliedUpgrades}" : RevealedName;
         private readonly List<UpgradePath> _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
@@ -57,7 +58,8 @@ namespace Domain.Service.Items
             Id = new Id<IItem>(data.Id);
             Category = data.Category;
             BaseName = data.BaseName;
-            RevealedName = data.Name;
+            RevealedName = data.RevealedName;
+            CustomName = data.CustomName;
             Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
                 .WaitForCompletion();
             IsShiny = data.IsShiny;
@@ -97,14 +99,14 @@ namespace Domain.Service.Items
             ));
             _hasSameEffect = data.HasSameEffect;
             _hasSameSkill = data.HasSameSkill;
-            _itemStorage = data.Storage.Map(storage => 
+            _itemStorage = data.Storage.Map(storage =>
             {
                 var itemStorage = new Storage(storage);
                 itemStorage.OnItemChanged.Subscribe(_ =>
                 {
                     _onItemUpdated.OnNext(Unit.Default);
                 }).AddTo(_disposables);
-                itemStorage.OnItemUpdated.Subscribe(_ => 
+                itemStorage.OnItemUpdated.Subscribe(_ =>
                 {
                     _onItemUpdated.OnNext(Unit.Default);
                 }).AddTo(_disposables);
@@ -170,6 +172,7 @@ namespace Domain.Service.Items
                 Category,
                 BaseName,
                 RevealedName,
+                CustomName,
                 Icon.name,
                 IsShiny,
                 upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
@@ -214,6 +217,7 @@ namespace Domain.Service.Items
                 data.Category,
                 data.name,
                 data.name,
+                Option<string>.None,
                 data.Icon.name,
                 data.IsShiny,
                 upgradePaths: new List<string>(),
@@ -410,6 +414,18 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
+        public void Rename(string name)
+        {
+            CustomName = Option.Some(name);
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
+        public void RevertToDefaultName()
+        {
+            CustomName = Option.None<string>();
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+
         #region Upgrade
 
         public List<UpgradeData> GetUpgrades()
@@ -527,7 +543,7 @@ namespace Domain.Service.Items
         }
 
         #endregion
-
+        #region Info
         public bool IsInfoIdentified(IPlayer player)
         {
             return player.Character.IsKnownItem(this);
@@ -632,6 +648,7 @@ namespace Domain.Service.Items
 
             return info;
         }
+        #endregion
 
         public bool Equals(IItem other)
         {

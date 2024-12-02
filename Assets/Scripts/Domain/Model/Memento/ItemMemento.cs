@@ -15,7 +15,8 @@ namespace Domain.Model.Memento
         [field: SerializeField] public string Id { get; private set; }
         [field: SerializeField] public ItemCategory Category { get; private set; }
         [field: SerializeField] public string BaseName { get; private set; }
-        [field: SerializeField] public string Name { get; private set; }
+        [field: SerializeField] public string RevealedName { get; private set; }
+        [field: SerializeField] public Option<string> CustomName { get; private set; }
         [field: SerializeField] public string IconName { get; private set; }
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public ItemState State { get; private set; }
@@ -39,7 +40,7 @@ namespace Domain.Model.Memento
         [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
 
         public ItemMemento(
-            string id, ItemCategory category, string baseName, string name, string iconName, bool isShiny,
+            string id, ItemCategory category, string baseName, string revealedName, Option<string> customName, string iconName, bool isShiny,
             ItemState state,
             List<string> upgradePaths, Option<ISkillMemento> skillOnUse, Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect, bool hasSameSkill, bool useOnDeath, Option<StorageMemento> storage, int maxUsages,
@@ -50,7 +51,8 @@ namespace Domain.Model.Memento
             Id = id;
             Category = category;
             BaseName = baseName;
-            Name = name;
+            RevealedName = revealedName;
+            CustomName = customName;
             IconName = iconName;
             IsShiny = isShiny;
             State = state;
@@ -75,8 +77,8 @@ namespace Domain.Model.Memento
         }
 
         public ItemMemento CopyWith(
-            string? id = null, ItemCategory? category = null, string? baseName = null, string? name = null,
-            string? iconName = null, bool? isShiny = null, ItemState? state = null,
+            string? id = null, ItemCategory? category = null, string? baseName = null, string? revealedName = null,
+            Option<string>? customName = null, string? iconName = null, bool? isShiny = null, ItemState? state = null,
             List<string>? upgradePaths = null, Option<ISkillMemento>? skillOnUse = null,
             Option<ISkillMemento>? skillOnThrow = null,
             bool? hasSameEffect = null, bool? hasSameSkill = null, bool? useOnDeath = null,
@@ -89,7 +91,8 @@ namespace Domain.Model.Memento
                 id ?? Id,
                 category ?? Category,
                 baseName ?? BaseName,
-                name ?? Name,
+                revealedName ?? RevealedName,
+                customName ?? CustomName,
                 iconName ?? IconName,
                 isShiny ?? IsShiny,
                 state ?? State,

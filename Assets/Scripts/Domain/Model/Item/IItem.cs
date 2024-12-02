@@ -21,6 +21,7 @@ namespace Domain.Model.Item
         public string BaseName { get; }
         public string UnknownName(ItemPlaceholders itemPlaceholders);
         public string RevealedName { get; }
+        public Option<string> CustomName { get; }
         public string DebugName { get; }
         public string GetName(IPlayer player, ItemPlaceholders itemPlaceholders);
         public Sprite Icon { get; }
@@ -62,6 +63,8 @@ namespace Domain.Model.Item
         public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders);
         public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed);
         public void SetCurseIdentified(bool isCurseIdentified);
+        public void Rename(string name);
+        public void RevertToDefaultName();
         public bool CanAnyUpgrade(string filter = "");
         public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "");
         public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path);

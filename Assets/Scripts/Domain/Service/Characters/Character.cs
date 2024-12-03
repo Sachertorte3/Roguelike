@@ -742,13 +742,18 @@ namespace Domain.Service.Characters
 
         public bool TryPickUpItem(IMap map, bool canPickUpShopItem)
         {
+            if (!CanPickUpItem())
+                return false;
             var item = map.TryPickUpAt(Entity.CurrentPosition, canPickUpShopItem);
-            if (item != null)
+            if (item == null)
             {
-                return TryAddToInventory(item.Item);
+                return false;
             }
 
-            return false;
+            if (!TryAddToInventory(item.Item))
+                throw new Exception("Can't add item to inventory");
+
+            return true;
         }
 
         public IItem? RemoveInventory(int index, int subIndex)

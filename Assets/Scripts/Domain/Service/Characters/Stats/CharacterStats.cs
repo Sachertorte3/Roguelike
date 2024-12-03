@@ -173,6 +173,16 @@ namespace Domain.Service.Characters.Stats
             ElementDamageRateMultiplier[element].AddValue(value);
         }
 
+        public void AddConditionResistance(ConditionTemplate condition, float value)
+        {
+            if (!ConditionResistance.ContainsKey(condition.name))
+            {
+                ConditionResistance[condition.name] = new Stat(0);
+            }
+
+            ConditionResistance[condition.name].AddValue(value);
+        }
+
         public void RemoveStatValue(StatType type, float value)
         {
             AddStatValue(type, -value);
@@ -186,6 +196,16 @@ namespace Domain.Service.Characters.Stats
         public void RemoveElementDamageRateMultiplier(Element element, float value)
         {
             ElementDamageRateMultiplier[element].AddValue(-value);
+        }
+
+        public void RemoveConditionResistance(ConditionTemplate condition, float value)
+        {
+            if (!ConditionResistance.ContainsKey(condition.name))
+            {
+                ConditionResistance[condition.name] = new Stat(0);
+            }
+
+            ConditionResistance[condition.name].AddValue(-value);
         }
 
         public void AddStatMultiplier(StatType type, float value)

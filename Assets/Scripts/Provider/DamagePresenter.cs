@@ -30,7 +30,7 @@ namespace Provider
                             }
                         }
                     ));
-                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
+                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservables(
                         character => character.Status.OnDamageReceived,
                         (character, damageChanged) =>
                         {
@@ -44,7 +44,7 @@ namespace Provider
                             }
                         }
                     ));
-                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
+                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservables(
                         character => character.Status.OnHealReceived,
                         (character, healChanged) =>
                         {

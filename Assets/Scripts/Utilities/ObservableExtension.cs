@@ -9,12 +9,17 @@ namespace Utilities
 {
     public static class ObservableExtension
     {
+        public static Observable<T> SkipLatestValueOnSubscribe<T>(this ReadOnlyReactiveProperty<T> source)
+        {
+            return source.Skip(1);
+        }
+
         public static IDisposable RelayTo<T>(this Observable<T> source, Observer<T> target)
         {
             return source.Subscribe(item => target.OnNext(item));
         }
 
-        public static IDisposable SubscribeIncludingCurrentObservablesIncludingCurrent<T, TMessage>(this IObservableCollection<T> list,
+        public static IDisposable SubscribeIncludingCurrentObservables<T, TMessage>(this IObservableCollection<T> list,
             Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
         {
             var disposables = new Dictionary<T, IDisposable>();
@@ -24,33 +29,6 @@ namespace Utilities
                 disposables[item] = selector(item).Subscribe(message => action(item, message));
                 allDisposable.Add(disposables[item]);
             }
-
-            list.ObserveAdd().Select(i => i.Value).Subscribe(item =>
-            {
-                disposables[item] = selector(item).Subscribe(message => action(item, message));
-                allDisposable.Add(disposables[item]);
-            });
-            list.ObserveRemove().Select(i => i.Value).Subscribe(item =>
-            {
-                allDisposable.Remove(disposables[item]);
-                disposables[item].Dispose();
-            });
-            list.ObserveReplace().Subscribe(value =>
-            {
-                allDisposable.Remove(disposables[value.OldValue]);
-                disposables[value.OldValue].Dispose();
-                disposables[value.NewValue] =
-                    selector(value.NewValue).Subscribe(message => action(value.NewValue, message));
-                allDisposable.Add(disposables[value.NewValue]);
-            });
-            return allDisposable;
-        }
-
-        public static IDisposable SubscribeIncludingCurrentObservablesOnChange<T, TMessage>(this IObservableCollection<T> list,
-            Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
-        {
-            var disposables = new Dictionary<T, IDisposable>();
-            var allDisposable = new CompositeDisposable();
 
             list.ObserveAdd().Select(i => i.Value).Subscribe(item =>
             {

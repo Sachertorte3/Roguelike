@@ -25,11 +25,11 @@ namespace Game
         public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
-            _characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
+            _characters.SubscribeIncludingCurrentObservables(
                 character => character.Entity.Position,
                 (character, _) => SetAllCharacterPosition()
             );
-            _characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
+            _characters.SubscribeIncludingCurrentObservables(
                 character => character.Entity.OnDestroyed,
                 (character, _) => RemoveCharacter(character)
             );

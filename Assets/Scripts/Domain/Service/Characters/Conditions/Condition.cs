@@ -4,6 +4,7 @@ using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
+using Unity.Logging;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -41,7 +42,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
         {
-            if (_condition.InflictLog != "")
+            if (!string.IsNullOrEmpty(_condition.InflictLog))
             {
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
             }
@@ -51,7 +52,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
         {
-            if (_condition.DeleteLog != "")
+            if (!string.IsNullOrEmpty(_condition.DeleteLog))
             {
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
             }

@@ -56,11 +56,11 @@ namespace Domain.Service.Events
 
         public async UniTask Execute(IMap map, IActorOfEffect actor)
         {
-            GameLog.Add($"{Name}が起動した");
+            GameLog.Add($"<color=red>{Name}</color>が起動した");
             await _skill.Use(actor, Entity.CurrentPosition, DirectionMethods.AllDirections.GetAtRandom(), map);
             if (Random.value < _probabilityOfBreaking)
             {
-                GameLog.Add($"{Name}は壊れた");
+                GameLog.Add($"<color=red>{Name}</color>は壊れた");
                 Entity.Destroy();
             }
         }

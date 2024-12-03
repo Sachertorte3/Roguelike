@@ -187,7 +187,10 @@ namespace Domain.Service.Rooms
         {
             GameLog.Add("<color=red>どろぼう！</color>");
             Clerk.OpposingThief(map.Player.Character);
-            Clerk.Character.AddCondition(Id<IEntity>.Empty, new Clairvoyant(), new RemovalConditionData());
+            Clerk.Character.AddCondition(
+                Id<IEntity>.Empty,
+                ScriptableObjectLoader.Load<ConditionTemplate>("店員の怒り")
+            );
             MarkItemsAsStolen(map);
             CanExecute = false;
             _isStolen.Value = true;

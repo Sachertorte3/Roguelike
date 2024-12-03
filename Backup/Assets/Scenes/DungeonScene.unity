@@ -2846,8 +2846,10 @@ MonoBehaviour:
   _defaultGrass: {fileID: 11400000, guid: 43a1f900f656e124691800ee4990ea68, type: 2}
   _grasses:
     data:
-    - Key: 0
+    - Key: 1
       Value: {fileID: 11400000, guid: c794efbe0c0616642821fad5c53e1265, type: 2}
+    - Key: 2
+      Value: {fileID: 11400000, guid: d6bf11a20becc5b4e933b7429a21ee44, type: 2}
   _ice: {fileID: 11400000, guid: 9c9ebe7140da20743b79b94b0487afb8, type: 2}
 --- !u!483693784 &878990522
 TilemapRenderer:

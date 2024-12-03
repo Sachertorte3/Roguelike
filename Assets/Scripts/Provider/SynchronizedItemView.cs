@@ -34,8 +34,7 @@ namespace Provider
 
         protected override ItemView ViewPrefab(IItemEntity _)
         {
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Item.prefab").WaitForCompletion()
-                .GetComponent<ItemView>();
+            return ScriptableObjectLoader.LoadPrefab("Item").GetComponent<ItemView>();
         }
 
         public void Dispose()

@@ -40,9 +40,7 @@ namespace Provider
 
         protected override CharacterView ViewPrefab(ICharacter _)
         {
-            return Addressables
-                .LoadAssetAsync<GameObject>("Assets/Prefabs/Character.prefab").WaitForCompletion()
-                .GetComponent<CharacterView>();
+            return ScriptableObjectLoader.LoadPrefab("Character").GetComponent<CharacterView>();
         }
 
         ~SynchronizedCharacterView()

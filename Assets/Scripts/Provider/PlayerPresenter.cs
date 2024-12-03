@@ -27,8 +27,7 @@ namespace Provider
 
                     var playerView = characters.Get(map.Player.Character);
 
-                    var arrowPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Arrow.prefab")
-                        .WaitForCompletion();
+                    var arrowPrefab = ScriptableObjectLoader.LoadPrefab("Arrow");
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 

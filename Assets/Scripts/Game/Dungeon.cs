@@ -5,7 +5,6 @@ using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Game
@@ -17,9 +16,7 @@ namespace Game
 
         public Dungeon(DungeonMemento memento)
         {
-            _dungeonData = Addressables
-                .LoadAssetAsync<DungeonBluePrintData>(
-                    $"Assets/Database/DungeonBluePrintData/{memento.DungeonDataName}.asset").WaitForCompletion();
+            _dungeonData = ScriptableObjectLoader.Load<DungeonBluePrintData>(memento.DungeonDataName);
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
         }
 

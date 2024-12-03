@@ -43,7 +43,7 @@ MonoBehaviour:
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
-  - rid: 2541219158355345442
+  - rid: 3119344245011382277
   references:
     version: 2
     RefIds:
@@ -52,9 +52,10 @@ MonoBehaviour:
     - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 2541219158355345442
-      type: {class: Clairvoyant, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
+    - rid: 3119344245011382277
+      type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        _flagStatType: 3
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

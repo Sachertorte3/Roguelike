@@ -2,7 +2,6 @@
 using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Utilities.Serialize
 {
@@ -20,8 +19,7 @@ namespace Utilities.Serialize
             {
                 if (_value == null)
                 {
-                    _value = Addressables.LoadAssetAsync<T>($"Assets/Database/{typeof(T).Name}/{_name}.asset")
-                        .WaitForCompletion();
+                    _value = ScriptableObjectLoader.Load<T>(_name);
                 }
 
                 return _value;

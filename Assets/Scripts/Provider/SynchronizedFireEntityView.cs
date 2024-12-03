@@ -35,8 +35,7 @@ namespace Provider
 
         protected override EntityView ViewPrefab(Fire _)
         {
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Fire.prefab").WaitForCompletion()
-                .GetComponent<EntityView>();
+            return ScriptableObjectLoader.LoadPrefab("Fire").GetComponent<EntityView>();
         }
 
         public void Dispose()

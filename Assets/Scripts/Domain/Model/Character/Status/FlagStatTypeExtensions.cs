@@ -1,0 +1,105 @@
+using System;
+using Domain.Model.Effect;
+using Domain.Model.Evaluation;
+using Utilities;
+
+namespace Domain.Model.Character.Status
+{
+    public static class FlagStatTypeExtensions
+    {
+        public static string GetName(this FlagStatType type) => type switch
+        {
+            FlagStatType.CannotAct => "行動不能",
+            FlagStatType.CannotMove => "移動不能",
+            FlagStatType.Confused => "混乱",
+            FlagStatType.Clairvoyant => "透視",
+            FlagStatType.Blind => "盲目",
+            FlagStatType.OverDrive => "オーバードライブ",
+            FlagStatType.Hard => "硬質",
+            FlagStatType.Heavy => "スーパーアーマー",
+            FlagStatType.SecureHold => "拘束",
+            FlagStatType.CurseProof => "呪い耐性",
+            FlagStatType.Haggle => "討価",
+            FlagStatType.IsAffectedByTrap => "罠影響",
+            FlagStatType.AutoIdentify => "自動識別",
+            _ => throw new ArgumentException($"Invalid flag stat type: {type}")
+        };
+
+        public static ParticleType GetParticleType(this FlagStatType type) => type switch
+        {
+            FlagStatType.CannotAct => ParticleType.None,
+            FlagStatType.CannotMove => ParticleType.None,
+            FlagStatType.Confused => ParticleType.None,
+            FlagStatType.Clairvoyant => ParticleType.None,
+            FlagStatType.Blind => ParticleType.None,
+            FlagStatType.OverDrive => ParticleType.None,
+            FlagStatType.Hard => ParticleType.None,
+            FlagStatType.Heavy => ParticleType.None,
+            FlagStatType.SecureHold => ParticleType.None,
+            FlagStatType.CurseProof => ParticleType.None,
+            FlagStatType.Haggle => ParticleType.None,
+            FlagStatType.IsAffectedByTrap => ParticleType.None,
+            FlagStatType.AutoIdentify => ParticleType.None,
+            _ => throw new ArgumentException($"Invalid flag stat type: {type}")
+        };
+
+        public static Impact GetImpact(this FlagStatType type) => type switch
+        {
+            FlagStatType.CannotAct => Impact.Harmful,
+            FlagStatType.CannotMove => Impact.Harmful,
+            FlagStatType.Confused => Impact.Harmful,
+            FlagStatType.Clairvoyant => Impact.Beneficial,
+            FlagStatType.Blind => Impact.Harmful,
+            FlagStatType.OverDrive => Impact.Beneficial,
+            FlagStatType.Hard => Impact.Beneficial,
+            FlagStatType.Heavy => Impact.Beneficial,
+            FlagStatType.SecureHold => Impact.Beneficial,
+            FlagStatType.CurseProof => Impact.Beneficial,
+            FlagStatType.Haggle => Impact.Beneficial,
+            FlagStatType.IsAffectedByTrap => Impact.Harmful,
+            FlagStatType.AutoIdentify => Impact.Beneficial,
+            _ => throw new ArgumentException($"Invalid flag stat type: {type}")
+        };
+
+        public static float Evaluate(this FlagStatType type, ITargetOfEffect target)
+        {
+            if (target.Status.IsFlagStat(type))
+                return 0;
+            return type switch
+            {
+                FlagStatType.CannotAct => CommonSenseParameters.OneTurnStunEquivalentHpReduction,
+                FlagStatType.CannotMove => CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2,
+                FlagStatType.Confused => CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2,
+                FlagStatType.Clairvoyant => 0.05f,
+                FlagStatType.Blind => CommonSenseParameters.OneTurnStunEquivalentHpReduction / 2,
+                FlagStatType.OverDrive => 0.1f,
+                FlagStatType.Hard => CommonSenseParameters.DamagePerAttack / CommonSenseParameters.MonsterMaxHealth,
+                FlagStatType.Heavy => 0.1f,
+                FlagStatType.SecureHold => 0.1f,
+                FlagStatType.CurseProof => 0.1f,
+                FlagStatType.Haggle => 0.1f,
+                FlagStatType.IsAffectedByTrap => 0.1f,
+                FlagStatType.AutoIdentify => 0.1f,
+                _ => throw new ArgumentException($"Invalid flag stat type: {type}")
+            };
+        }
+
+        public static float EvaluatePrice(this FlagStatType type) => type switch
+        {
+            FlagStatType.CannotAct => CommonSenseParameters.OneTurnStunEquivalentDamage,
+            FlagStatType.CannotMove => CommonSenseParameters.OneTurnStunEquivalentDamage / 2,
+            FlagStatType.Confused => 5f,
+            FlagStatType.Clairvoyant => 10f,
+            FlagStatType.Blind => CommonSenseParameters.OneTurnStunEquivalentDamage / 2,
+            FlagStatType.OverDrive => 20f,
+            FlagStatType.Hard => 20f,
+            FlagStatType.Heavy => 10f,
+            FlagStatType.SecureHold => 10f,
+            FlagStatType.CurseProof => 10f,
+            FlagStatType.Haggle => 10f,
+            FlagStatType.IsAffectedByTrap => 10f,
+            FlagStatType.AutoIdentify => 10f,
+            _ => 0f
+        };
+    }
+}

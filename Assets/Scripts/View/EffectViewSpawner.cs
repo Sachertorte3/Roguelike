@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using Utilities;
 
 namespace View
 {
     public class EffectViewSpawner
     {
-        private readonly GameObject _effect = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Effect.prefab")
-            .WaitForCompletion();
+        private readonly GameObject _effect = ScriptableObjectLoader.LoadPrefab("Effect");
 
         public void Spawn(IEnumerable<Vector2Int> area, Color color, int effectDisplayMilliseconds)
         {

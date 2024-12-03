@@ -16,8 +16,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"毒({Power})";
         public ParticleType ParticleType => ParticleType.PoisoningBubble;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は毒にかかった";
-        public string DeleteLog => "は毒が治った";
         [MinValue(0)] public float Power = 1;
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)

@@ -13,8 +13,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => $"{Element.Name()}攻撃倍率(+{AddedMultiplier:P0})";
         public ParticleType ParticleType => ParticleType.BloodRage;
         public Impact Impact => Impact.Beneficial;
-        public string InflictLog => $"は{Element.Name()}属性の攻撃力が上がった";
-        public string DeleteLog => $"の{Element.Name()}属性の攻撃力は元に戻った";
         public Element Element;
         [MinValue(0)] public float AddedMultiplier = 0f;
 

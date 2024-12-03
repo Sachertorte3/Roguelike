@@ -56,7 +56,7 @@ namespace Domain.Service.Effect
             {
                 if (RandUtils.IsGreaterThanProbability(target.GetConditionResistance(_condition.Value)))
                 {
-                    target.AddCondition(actorId, _condition.Value.Condition, _condition.Value.RemovalCondition);
+                    target.AddCondition(actorId, _condition.Value);
                 }
                 else
                 {

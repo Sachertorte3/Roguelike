@@ -46,9 +46,9 @@ namespace Domain.Service.Characters.Conditions
             _disposables.Dispose();
         }
 
-        public void Add(Id<IEntity> actor, IConditionData conditionData, RemovalConditionData removalCondition)
+        public void Add(Id<IEntity> actor, ConditionTemplate conditionData)
         {
-            var condition = new Condition(Condition.Build(conditionData, removalCondition));
+            var condition = new Condition(Condition.Build(conditionData));
             _inflicterMap.Add(condition, actor);
             _conditions.Add(condition);
         }

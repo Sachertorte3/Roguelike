@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u546A\u3044\u306E\u9B54\u6CD5\u66F8"
+  m_Name: "\u8B58\u5225\u306E\u6307\u8F2A"
   m_EditorClassIdentifier: 
-  Category: 2
-  Icon: {fileID: 1552767190, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Category: 5
+  Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 2
-  EffectType: 2
+  _rarity: 1
+  EffectType: 0
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
   SpawnEffectsOnThrow: 0
@@ -24,38 +24,44 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Position>k__BackingField:
-      rid: 861543420369829896
+      rid: 2541219106150416411
     <Area>k__BackingField:
-      rid: 5486256292201496576
-    <Effects>k__BackingField: []
+      rid: 4425516923575599143
+    <Effects>k__BackingField:
+    - rid: 4425516923575599144
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
-      rid: -2
+      rid: 4425516923575599143
     <Effects>k__BackingField:
-    - rid: -2
+    - rid: 4425516923575599144
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
-    rid: 5486256623760965643
+    rid: -2
   StorageCapacity: 0
-  UsageLimit: 5
+  UsageLimit: 1
   UpgradeLimit: 3
-  PassiveConditions: []
+  PassiveConditions:
+  - rid: 3119344245011382273
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 861543420369829896
+    - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 5486256292201496576
-      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 3119344245011382273
+      type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        ContainsSelf: 1
-        CanIgnoreWalls: 0
-        Radius: 1
-    - rid: 5486256623760965643
-      type: {class: CurseItem, ns: Domain.Service.ItemEffect, asm: Domain.Service}
+        _flagStatType: 12
+    - rid: 4425516923575599143
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
+    - rid: 4425516923575599144
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: 
+        _probabilityOfSuccess: 0

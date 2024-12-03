@@ -13,6 +13,7 @@ namespace Domain.Model.Character.Status
         SecureHold,
         CurseProof,
         Haggle,
-        IsAffectedByTrap
+        IsAffectedByTrap,
+        AutoIdentify
     }
 }

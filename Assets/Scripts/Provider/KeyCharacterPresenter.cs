@@ -18,8 +18,7 @@ namespace Provider
             world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
             {
                 var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
-                var lockPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Lock.prefab")
-                    .WaitForCompletion();
+                var lockPrefab = ScriptableObjectLoader.LoadPrefab("Lock");
                 foreach (var movementEntity in movementEntities)
                 {
                     var movementLock = Object.Instantiate(lockPrefab, movementEntity.transform)
@@ -34,8 +33,7 @@ namespace Provider
 
                 foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
                 {
-                    var keyPrefab = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Key.prefab")
-                        .WaitForCompletion();
+                    var keyPrefab = ScriptableObjectLoader.LoadPrefab("Key");
                     var key = Object.Instantiate(keyPrefab, character.transform);
                     key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
                 }

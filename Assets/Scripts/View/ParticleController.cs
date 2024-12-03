@@ -22,7 +22,7 @@ namespace View
             }
             else
             {
-                var EffectPrefab = Addressables.LoadAssetAsync<GameObject>(particleType.GetPath()).WaitForCompletion();
+                var EffectPrefab = ScriptableObjectLoader.LoadParticle(particleType.GetFileName());
                 var particle = Instantiate(EffectPrefab, transform);
                 foreach (var particleSystem in particle.GetComponentsInChildren<ParticleSystem>())
                 {

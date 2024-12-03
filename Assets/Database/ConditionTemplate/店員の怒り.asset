@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16097a5b2ad98e243a375f972355931f, type: 3}
-  m_Name: "\u30D0\u30EA\u30A2"
+  m_Name: "\u5E97\u54E1\u306E\u6012\u308A"
   m_EditorClassIdentifier: 
   Condition:
-    rid: 3119344245011382280
+    rid: 3119344251661451264
   RemovalCondition:
-    RemoveByElapsedTurn: 1
-    Duration: 30
-    RemoveByDamage: 1
-    Probability: 1
+    RemoveByElapsedTurn: 0
+    Duration: 5
+    RemoveByDamage: 0
+    Probability: 0.5
     RemoveByCharacterNearby: 0
     CharacterNearbyProbability: 0
-  InflictLog: "\u306B\u30D0\u30EA\u30A2\u304C\u51FA\u73FE\u3057\u305F"
-  DeleteLog: "\u306E\u30D0\u30EA\u30A2\u306F\u7834\u58CA\u3055\u308C\u305F"
+  InflictLog: 
+  DeleteLog: 
   references:
     version: 2
     RefIds:
-    - rid: 3119344245011382280
+    - rid: 3119344251661451264
       type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        _flagStatType: 6
+        _flagStatType: 3

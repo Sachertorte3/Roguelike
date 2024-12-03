@@ -13,8 +13,6 @@ namespace Domain.Service.Characters.Conditions
         public string Name => "睡眠";
         public ParticleType ParticleType => ParticleType.Sleep;
         public Impact Impact => Impact.Harmful;
-        public string InflictLog => "は眠りについた";
-        public string DeleteLog => "は眠りから覚めた";
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {

@@ -12,6 +12,7 @@ using Unity.Logging;
 using Unity.Logging.Sinks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Utilities;
 using VContainer;
 using Logger = Unity.Logging.Logger;
 
@@ -233,14 +234,11 @@ namespace Provider
             try
             {
                 var character = GetTarget(target);
-                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
-                    .WaitForCompletion();
+                var itemData = ScriptableObjectLoader.Load<ItemData>(itemName);
                 var item = new Item(itemData);
                 if (prefixName != null)
                 {
-                    var prefixData = Addressables
-                        .LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
-                        .WaitForCompletion();
+                    var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
                     var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
@@ -270,14 +268,11 @@ namespace Provider
         {
             try
             {
-                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{itemName}.asset")
-                    .WaitForCompletion();
+                var itemData = ScriptableObjectLoader.Load<ItemData>(itemName);
                 var item = new Item(itemData);
                 if (prefixName != null)
                 {
-                    var prefixData = Addressables
-                        .LoadAssetAsync<WeaponPrefix>($"Assets/Database/WeaponPrefix/{prefixName}.asset")
-                        .WaitForCompletion();
+                    var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
                     var itemMemento = WeaponFactory.Create(itemData, prefixData);
                     item = new Item(itemMemento);
                 }
@@ -296,8 +291,7 @@ namespace Provider
         {
             try
             {
-                var enemyData = Addressables.LoadAssetAsync<EnemyData>($"Assets/Database/EnemyData/{enemyName}.asset")
-                    .WaitForCompletion();
+                var enemyData = ScriptableObjectLoader.Load<EnemyData>(enemyName);
                 var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept,
                     isShiny: isShiny);
                 Log.Info($"{enemy.GetName(_world.ActiveMap.CurrentValue.Player, true)}を{position}にスポーンしました。");

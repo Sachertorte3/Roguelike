@@ -20,8 +20,7 @@ namespace Utilities.Serialize
             {
                 if (_value == null)
                 {
-                    _value = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{_name}]")
-                        .WaitForCompletion();
+                    _value = ScriptableObjectLoader.LoadIcon(_name);
                 }
 
                 return _value;

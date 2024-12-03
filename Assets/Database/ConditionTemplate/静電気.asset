@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u9759\u96FB\u6C17"
   m_EditorClassIdentifier: 
   Condition:
-    rid: 5486256623760965633
+    rid: 3119344245011382286
   RemovalCondition:
     RemoveByElapsedTurn: 1
     Duration: 100
@@ -21,9 +21,12 @@ MonoBehaviour:
     Probability: 0
     RemoveByCharacterNearby: 0
     CharacterNearbyProbability: 0
+  InflictLog: "\u306F\u9759\u96FB\u6C17\u3092\u307E\u3068\u3063\u305F"
+  DeleteLog: "\u306E\u9759\u96FB\u6C17\u306F\u6D88\u3048\u305F"
   references:
     version: 2
     RefIds:
-    - rid: 5486256623760965633
-      type: {class: StaticElectricity, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
-      data: 
+    - rid: 3119344245011382286
+      type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+      data:
+        _flagStatType: 11

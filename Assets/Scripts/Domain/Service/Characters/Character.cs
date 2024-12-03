@@ -98,11 +98,11 @@ namespace Domain.Service.Characters
                 }
             });
 
-            Settings.AutoIdentify.Subscribe(autoIdentify =>
+            AutoIdentify.Where(autoIdentify => autoIdentify).Subscribe(_ =>
             {
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
-                    if (!IsKnownItem(item) && (item.IdentifyIfGot || autoIdentify))
+                    if (!IsKnownItem(item))
                         AddKnownItem(item);
                 }
             });
@@ -118,6 +118,7 @@ namespace Domain.Service.Characters
         public bool CanThroughWalls { get; init; }
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
+        public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);
         public CharacterState State { get; set; } = CharacterState.Wait;
 
         public void SetWaitState()
@@ -652,9 +653,9 @@ namespace Domain.Service.Characters
             return _statusManager.Stats.GetConditionResistance(condition);
         }
 
-        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)
+        public void AddCondition(Id<IEntity> actor, ConditionTemplate condition)
         {
-            _statusManager.AddCondition(actor, condition, removalCondition);
+            _statusManager.AddCondition(actor, condition);
         }
 
         public void ClearCondition()
@@ -729,7 +730,7 @@ namespace Domain.Service.Characters
             if (_inventory.TryAdd(item))
             {
                 _onPickUpItem.OnNext(Unit.Default);
-                if (!IsKnownItem(item) && (item.IdentifyIfGot || Settings.AutoIdentify.Value))
+                if (!IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
                 {
                     AddKnownItem(item);
                 }
@@ -757,7 +758,7 @@ namespace Domain.Service.Characters
 
         public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex)
         {
-            if (item != null && !IsKnownItem(item) && (item.IdentifyIfGot || Settings.AutoIdentify.Value))
+            if (item != null && !IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
             {
                 AddKnownItem(item);
             }

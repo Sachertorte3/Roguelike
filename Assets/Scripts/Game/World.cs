@@ -40,9 +40,7 @@ namespace Game
 
         public void CreateNew()
         {
-            var mainDungeon = Addressables
-                .LoadAssetAsync<DungeonBluePrintData>("Assets/Database/DungeonBluePrintData/Dungeon.asset")
-                .WaitForCompletion();
+            var mainDungeon = ScriptableObjectLoader.Load<DungeonBluePrintData>("Dungeon");
             _dungeons = new Dictionary<string, Dungeon>
             {
                 { "Dungeon", new Dungeon(Dungeon.Build(mainDungeon)) }

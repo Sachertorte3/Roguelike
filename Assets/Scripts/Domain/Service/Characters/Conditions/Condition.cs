@@ -10,36 +10,31 @@ namespace Domain.Service.Characters.Conditions
 {
     internal class Condition : ICondition
     {
-        private readonly IConditionData _condition;
-        private readonly RemovalConditionData _removalCondition;
+        private readonly ConditionTemplate _condition;
         private int _elapsedTurn;
 
         public Condition(ConditionMemento memento)
         {
             _elapsedTurn = memento.ElapsedTurns;
             _condition = memento.Condition;
-            _removalCondition = memento.RemovalCondition;
         }
 
-        public ParticleType ParticleType => _condition.ParticleType;
+        public ParticleType ParticleType => _condition.Condition.ParticleType;
 
         public ConditionMemento Serialize()
         {
             return new ConditionMemento
             (
                 _condition,
-                _removalCondition,
                 _elapsedTurn
             );
         }
 
-        public ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition,
-            int elapsedTurn = 0)
+        public ConditionMemento Build(ConditionTemplate condition, int elapsedTurn = 0)
         {
             return new ConditionMemento
             (
                 condition,
-                removalCondition,
                 elapsedTurn
             );
         }
@@ -51,7 +46,7 @@ namespace Domain.Service.Characters.Conditions
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.InflictLog}");
             }
 
-            _condition.Inflict(hasCondition, actor);
+            _condition.Condition.Inflict(hasCondition, actor);
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
@@ -61,23 +56,23 @@ namespace Domain.Service.Characters.Conditions
                 GameLog.Add($"{hasCondition.GetName(player)}{_condition.DeleteLog}");
             }
 
-            _condition.Delete(hasCondition, actor);
+            _condition.Condition.Delete(hasCondition, actor);
         }
 
         public void UpdateTurn(IHasCondition hasCondition)
         {
             _elapsedTurn += 1;
-            _condition.Persist(hasCondition);
+            _condition.Condition.Persist(hasCondition);
         }
 
         public bool ShouldDelete(bool characterVisible)
         {
-            return _removalCondition.IsFinished(_elapsedTurn, characterVisible);
+            return _condition.RemovalCondition.IsFinished(_elapsedTurn, characterVisible);
         }
 
         public bool ShouldDeleteByDamage()
         {
-            return _removalCondition.IsFinishedByDamage();
+            return _condition.RemovalCondition.IsFinishedByDamage();
         }
 
         public bool EqualsConditionType(Type conditionType)
@@ -85,12 +80,11 @@ namespace Domain.Service.Characters.Conditions
             return _condition.GetType() == conditionType;
         }
 
-        public static ConditionMemento Build(IConditionData condition, RemovalConditionData removalCondition)
+        public static ConditionMemento Build(ConditionTemplate condition)
         {
             return new ConditionMemento
             (
                 condition,
-                removalCondition,
                 0
             );
         }

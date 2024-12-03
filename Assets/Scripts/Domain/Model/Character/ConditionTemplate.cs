@@ -13,12 +13,8 @@ namespace Domain.Model.Character
     {
         [Required] [SerializeReference] public IConditionData Condition;
         [Required] public RemovalConditionData RemovalCondition;
-
-        public ConditionTemplate(IConditionData condition, RemovalConditionData removalCondition)
-        {
-            Condition = condition;
-            RemovalCondition = removalCondition;
-        }
+        public string InflictLog;
+        public string DeleteLog;
 
         public float Evaluate(ITargetOfEffect target)
         {

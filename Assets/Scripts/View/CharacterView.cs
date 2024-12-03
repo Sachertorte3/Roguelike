@@ -24,9 +24,7 @@ namespace View
 
         public void Construct(string characterTypeName, bool isEnemy, bool isAlly)
         {
-            var animation = Addressables
-                .LoadAssetAsync<RuntimeAnimatorController>($"Assets/Animations/{characterTypeName}.controller")
-                .WaitForCompletion();
+            var animation = ScriptableObjectLoader.LoadAnimation(characterTypeName);
 
             _animator = GetComponent<Animator>();
             _animator.runtimeAnimatorController = Instantiate(animation);

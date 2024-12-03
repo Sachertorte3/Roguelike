@@ -55,20 +55,13 @@ namespace Domain.Service.Events
 
         public Sprite Icon => Amount switch
         {
-            <= 100 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_362]").WaitForCompletion(),
-            <= 300 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_363]").WaitForCompletion(),
-            <= 1000 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_360]").WaitForCompletion(),
-            <= 3000 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_361]").WaitForCompletion(),
-            <= 10000 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_365]").WaitForCompletion(),
-            <= 30000 => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_366]").WaitForCompletion(),
-            _ => Addressables
-                .LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_358]").WaitForCompletion()
+            <= 100 => ScriptableObjectLoader.LoadIcon("icons_full_16_362"),
+            <= 300 => ScriptableObjectLoader.LoadIcon("icons_full_16_363"),
+            <= 1000 => ScriptableObjectLoader.LoadIcon("icons_full_16_360"),
+            <= 3000 => ScriptableObjectLoader.LoadIcon("icons_full_16_361"),
+            <= 10000 => ScriptableObjectLoader.LoadIcon("icons_full_16_365"),
+            <= 30000 => ScriptableObjectLoader.LoadIcon("icons_full_16_366"),
+            _ => ScriptableObjectLoader.LoadIcon("icons_full_16_358")
         };
 
         public IPlayerEvent Event { get; init; }

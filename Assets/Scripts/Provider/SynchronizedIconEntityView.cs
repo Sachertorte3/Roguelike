@@ -47,20 +47,17 @@ namespace Provider
         {
             if (eventEntity is Bonfire)
             {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Bonfire.prefab").WaitForCompletion()
-                    .GetComponent<EntityView>();
+                return ScriptableObjectLoader.LoadPrefab("Bonfire").GetComponent<EntityView>();
             }
 
             if (eventEntity is Money)
             {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Money.prefab").WaitForCompletion()
-                    .GetComponent<EntityView>();
+                return ScriptableObjectLoader.LoadPrefab("Money").GetComponent<EntityView>();
             }
 
             if (eventEntity is Trap)
             {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Trap.prefab").WaitForCompletion()
-                    .GetComponent<EntityView>();
+                return ScriptableObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
             }
 
             if (eventEntity is Stairs stairs)
@@ -68,17 +65,11 @@ namespace Provider
                 switch (stairs.Type)
                 {
                     case MovementEntityType.UpStairs:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/UpStairs.prefab")
-                            .WaitForCompletion()
-                            .GetComponent<EntityView>();
+                        return ScriptableObjectLoader.LoadPrefab("UpStairs").GetComponent<EntityView>();
                     case MovementEntityType.DownStairs:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/DownStairs.prefab")
-                            .WaitForCompletion()
-                            .GetComponent<EntityView>();
+                        return ScriptableObjectLoader.LoadPrefab("DownStairs").GetComponent<EntityView>();
                     case MovementEntityType.MagicCircle:
-                        return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/MagicCircle.prefab")
-                            .WaitForCompletion()
-                            .GetComponent<EntityView>();
+                        return ScriptableObjectLoader.LoadPrefab("MagicCircle").GetComponent<EntityView>();
                     default:
                         throw new NotImplementedException();
                 }
@@ -86,12 +77,10 @@ namespace Provider
 
             if (eventEntity.Entity.Layer == EntityLayer.Middle)
             {
-                return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Entity.prefab").WaitForCompletion()
-                    .GetComponent<EntityView>();
+                return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
             }
 
-            return Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/EntityBottom.prefab").WaitForCompletion()
-                .GetComponent<EntityView>();
+            return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
         }
 
         public void Dispose()

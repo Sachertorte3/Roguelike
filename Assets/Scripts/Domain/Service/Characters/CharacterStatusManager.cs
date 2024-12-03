@@ -233,10 +233,7 @@ namespace Domain.Service.Characters
                 conditions.Add(
                     (
                         Id<IEntity>.Empty,
-                        Condition.Build(
-                            new Slept(),
-                            new RemovalConditionData(damageProbability: 0.75f, characterNearbyProbability: 0.5f)
-                        )
+                        Condition.Build(ScriptableObjectLoader.Load<ConditionTemplate>("まどろみ"))
                     )
                 );
             }
@@ -272,9 +269,9 @@ namespace Domain.Service.Characters
             );
         }
 
-        public void AddCondition(Id<IEntity> actor, IConditionData condition, RemovalConditionData removalCondition)
+        public void AddCondition(Id<IEntity> actor, ConditionTemplate condition)
         {
-            _conditions.Add(actor, condition, removalCondition);
+            _conditions.Add(actor, condition);
         }
 
         public void RemoveConditionType(Type conditionType)

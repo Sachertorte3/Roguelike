@@ -4,7 +4,6 @@ using Domain.Service.Items;
 using Game;
 using ObservableCollections;
 using R3;
-using UnityEngine.AddressableAssets;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -21,7 +20,7 @@ namespace Provider
 
             knownItemNames.ObserveChanged().Subscribe(collectionChanged =>
             {
-                var itemData = Addressables.LoadAssetAsync<ItemData>($"Assets/Database/ItemData/{collectionChanged.NewItem}.asset").WaitForCompletion();
+                var itemData = ScriptableObjectLoader.Load<ItemData>(collectionChanged.NewItem);
                 var itemViewData = new ItemViewData(collectionChanged.NewItem, itemData.Icon, itemData.IsShiny, new Item(itemData).FullInfo());
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });

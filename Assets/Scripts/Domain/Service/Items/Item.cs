@@ -60,8 +60,7 @@ namespace Domain.Service.Items
             BaseName = data.BaseName;
             RevealedName = data.RevealedName;
             CustomName = data.CustomName;
-            Icon = Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{data.IconName}]")
-                .WaitForCompletion();
+            Icon = ScriptableObjectLoader.LoadIcon(data.IconName);
             IsShiny = data.IsShiny;
             State = data.State;
             _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();

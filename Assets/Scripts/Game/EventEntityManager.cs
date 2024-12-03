@@ -58,11 +58,11 @@ namespace Game
             if (_bonfire.HasValue)
                 Spawn(_bonfire.Value!);
 
-            _eventEntities.SubscribeToAllObservables(
+            _eventEntities.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
             );
-            _playerEventEntities.SubscribeToAllObservables(
+            _playerEventEntities.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
             );

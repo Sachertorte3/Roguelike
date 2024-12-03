@@ -11,7 +11,7 @@ namespace Game
 
         public ThrowAnimationEntityManager()
         {
-            _throwAnimationEntities.SubscribeToAllObservables(
+            _throwAnimationEntities.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 entity => entity.Entity.OnDestroyed,
                 (entity, destroyed) => Remove(entity)
             );

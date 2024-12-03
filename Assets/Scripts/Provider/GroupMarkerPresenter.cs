@@ -12,9 +12,9 @@ namespace Provider
         public GroupMarkerPresenter(World world, SynchronizedCharacterView synchronizedCharacterView)
         {
             var serialDisposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
-                serialDisposable.Disposable = map.Characters.SubscribeToAllObservables(
+                serialDisposable.Disposable = map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
                     character => character.Affiliation.OnAffiliationChanged,
                     (character, affectionChanged) =>
                     {

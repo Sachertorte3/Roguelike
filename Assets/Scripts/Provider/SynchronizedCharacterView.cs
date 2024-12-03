@@ -32,8 +32,8 @@ namespace Provider
             _effectViewSpawner = effectViewSpawner;
             _world = world;
 
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
-                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeToAllItems(Add, Remove),
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
+                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.Characters.ForEach(character => Remove(character))
             );
         }
@@ -62,9 +62,9 @@ namespace Provider
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 
-            character.Status.Stats.HpValue.SubscribeToAllItems(hp =>
+            character.Status.Stats.HpValue.SubscribeIncludingCurrentValue(hp =>
                 characterView.UpdateHpBar(character.Status.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
-            character.Status.Stats.MaxHp.SubscribeToAllItems(maxHp =>
+            character.Status.Stats.MaxHp.SubscribeIncludingCurrentValue(maxHp =>
                     characterView.UpdateHpBar(maxHp, character.Status.Stats.HpValue.CurrentValue))
                 .AddTo(characterView);
 
@@ -103,7 +103,7 @@ namespace Provider
             var particleController = characterView.GetComponent<ParticleController>();
             if (character.IsShiny)
                 particleController.Add(ParticleType.ShinyStar);
-            character.Status.Conditions.SubscribeToAllItems(
+            character.Status.Conditions.SubscribeIncludingCurrentItems(
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             ).AddTo(particleController);

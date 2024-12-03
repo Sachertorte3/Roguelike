@@ -31,14 +31,14 @@ namespace Provider
         {
             _inputReceiver = inputReceiver;
 
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[0].Disposable =
-                    map.EventEntityManager.StandaloneEventEntities.SubscribeToAllItems(Add, Remove),
+                    map.EventEntityManager.StandaloneEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[1].Disposable =
-                    map.EventEntityManager.StandalonePlayerEventEntities.SubscribeToAllItems(Add, Remove),
+                    map.EventEntityManager.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.EventEntityManager.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
             );
         }

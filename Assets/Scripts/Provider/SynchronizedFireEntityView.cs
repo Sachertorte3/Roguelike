@@ -27,8 +27,8 @@ namespace Provider
         {
             _inputReceiver = inputReceiver;
 
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
-                map => _disposable.Disposable = map.FireEntities.SubscribeToAllItems(Add, Remove),
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
+                map => _disposable.Disposable = map.FireEntities.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.FireEntities.ForEach(entity => Remove(entity))
             );
         }

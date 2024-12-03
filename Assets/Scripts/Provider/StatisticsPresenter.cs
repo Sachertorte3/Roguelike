@@ -25,7 +25,7 @@ namespace Provider
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });
 
-            gameManager.ActiveStatistics.SubscribeToAllItemsIgnoreNull(statistics =>
+            gameManager.ActiveStatistics.SubscribeIncludingCurrentValueIgnoreNull(statistics =>
             {
                 foreach (var itemName in statistics.KnownItemNames)
                 {

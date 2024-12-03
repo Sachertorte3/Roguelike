@@ -20,7 +20,7 @@ namespace Provider
         public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView,
             MinimapController minimapController, World world)
         {
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     tileView.Clear();
                     overlayTileView.Clear();

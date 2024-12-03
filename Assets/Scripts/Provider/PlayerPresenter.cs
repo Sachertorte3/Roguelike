@@ -18,7 +18,7 @@ namespace Provider
             StatLine statLine)
         {
             CompositeDisposable _disposable = new();
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     if (map.Player.Character.IsDead)
                     {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30C8\u30F3\u30CD\u30EB\u306E\u6756"
+  m_Name: "\u30C8\u30E9\u30C3\u30D7\u7834\u58CA\u306E\u6756"
   m_EditorClassIdentifier: 
   Category: 3
   Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
@@ -24,11 +24,11 @@ MonoBehaviour:
   IsSameSkill: 0
   SkillOnUse:
     <Position>k__BackingField:
-      rid: 5486256676450863751
+      rid: 5486256292201496578
     <Area>k__BackingField:
-      rid: 5486256676450863752
+      rid: 5486256292201496579
     <Effects>k__BackingField:
-    - rid: 5486256676450863753
+    - rid: 3119344251661451265
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
@@ -40,7 +40,7 @@ MonoBehaviour:
   ItemEffect:
     rid: -2
   StorageCapacity: 0
-  UsageLimit: 3
+  UsageLimit: 10
   UpgradeLimit: 3
   PassiveConditions: []
   references:
@@ -48,15 +48,20 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5486256676450863751
-      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
-      data: 
-    - rid: 5486256676450863752
-      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+    - rid: 3119344251661451265
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        ContainsSelf: 0
-        CanIgnoreWalls: 0
-        Length: 5
-    - rid: 5486256676450863753
-      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+        ApplyToCharacter: 0
+        ApplyToItem: 0
+        ApplyToMoney: 0
+        ApplyToTrap: 1
+        ApplyToChest: 0
+    - rid: 5486256292201496578
+      type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data:
+        Icon:
+          _name: icons_full_16_138
+        CanHitLayer: 00000000
+    - rid: 5486256292201496579
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

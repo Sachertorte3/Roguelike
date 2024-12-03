@@ -13,11 +13,11 @@ namespace Provider
         public ShopInfoPresenter(World world, ShopInfoView shopInfoView)
         {
             var disposable = new CompositeDisposable();
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     if (map.Shop != null)
                     {
-                        disposable.Add(map.Shop.IsInside.SubscribeToAllItems(isInside =>
+                        disposable.Add(map.Shop.IsInside.SubscribeIncludingCurrentValue(isInside =>
                         {
                             shopInfoView.SetVisibility(isInside);
                         }));

@@ -23,7 +23,7 @@ namespace Game
                 Add(new Fire(fireMemento));
             }
 
-            _fireEntities.SubscribeToAllObservables(
+            _fireEntities.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 entity => entity.Entity.OnDestroyed,
                 (entity, destroyed) => Remove(entity)
             );

@@ -48,7 +48,7 @@ namespace Game
             _receiver = receiver;
             Globals.GameManager = this;
 
-            _world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            _world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
                 _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
                 {

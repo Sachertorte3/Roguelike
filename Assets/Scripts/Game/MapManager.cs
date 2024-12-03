@@ -462,7 +462,7 @@ namespace Game
 
         private void SetRules()
         {
-            Characters.SubscribeToAllObservables(
+            Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 character => character.OnDead,
                 (character, _) => { DropAllItem(character); }
             ).AddTo(_disposables);
@@ -475,7 +475,7 @@ namespace Game
 
             Player.Character.Entity.Position.Subscribe(async positionChanged =>
             {
-                SetGrasses(new[] {Player.Character.Entity.CurrentPosition }, false);
+                SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
                 EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
                 {
@@ -485,7 +485,7 @@ namespace Game
                 EventExecutionCount--;
             }).AddTo(_disposables);
 
-            Characters.SubscribeToAllObservables(
+            Characters.SubscribeIncludingCurrentObservablesOnChange(
                 character => character.Entity.Position,
                 async (character, positionChanged) =>
                 {
@@ -537,7 +537,7 @@ namespace Game
                 }
             ).AddTo(_disposables);
 
-            Characters.SubscribeToAllObservables(
+            Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 character => character.Status.GetFlagProperty(FlagStatType.IsAffectedByTrap),
                 async (character, affectedByTrap) =>
                 {
@@ -551,7 +551,7 @@ namespace Game
                 }
             ).AddTo(_disposables);
 
-            _entities.SubscribeToAllObservables(
+            _entities.SubscribeIncludingCurrentObservablesIncludingCurrent(
                 entity => entity.Entity.Position,
                 (entity, _) => UpdateVisibility(entity)
             ).AddTo(_disposables);

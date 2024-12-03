@@ -24,7 +24,7 @@ namespace Game
             Turn = new(memento.Turn);
             KnownItemNames = new(memento.KnownItemNames);
 
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
                 map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>
                 {

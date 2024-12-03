@@ -23,7 +23,7 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var previews = new List<GameObject>();
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map =>
                 {
                     disposables.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>

@@ -25,14 +25,14 @@ namespace Game
         public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            _items.SubscribeToAllObservables(item => item.Entity.Position, (item, position) => SetAllItemPosition())
+            _items.SubscribeIncludingCurrentObservablesIncludingCurrent(item => item.Entity.Position, (item, position) => SetAllItemPosition())
                 .AddTo(_disposables);
-            _items.SubscribeToAllObservables(item => item.OnDisabled, (item, dead) =>
+            _items.SubscribeIncludingCurrentObservablesIncludingCurrent(item => item.OnDisabled, (item, dead) =>
             {
                 if (item.Item.AutoDestroyWhenDisabled)
                     _items.Remove(item);
             }).AddTo(_disposables);
-            _items.SubscribeToAllObservables(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item))
+            _items.SubscribeIncludingCurrentObservablesIncludingCurrent(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item))
                 .AddTo(_disposables);
         }
 

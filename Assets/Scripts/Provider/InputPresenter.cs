@@ -50,7 +50,7 @@ namespace Provider
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
 
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
                 {
                     if (isNoMove)

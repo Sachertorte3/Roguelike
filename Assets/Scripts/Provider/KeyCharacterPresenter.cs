@@ -15,7 +15,7 @@ namespace Provider
         public KeyCharacterPresenter(World world, SynchronizedCharacterView characters,
             SynchronizedIconEntityView iconEntities)
         {
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
                 var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
                 var lockPrefab = ScriptableObjectLoader.LoadPrefab("Lock");

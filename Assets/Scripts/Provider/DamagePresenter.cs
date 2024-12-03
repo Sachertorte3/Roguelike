@@ -14,7 +14,7 @@ namespace Provider
         [Inject]
         public DamagePresenter(World world, DamageTextSpawner damageTextSpawner, FlushController flushController)
         {
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     damageTextSpawner.DeleteAllText();
                     _disposable.Add(map.Player.Character.Status.OnDamageReceived.Subscribe(damageChanged =>
@@ -30,7 +30,7 @@ namespace Provider
                             }
                         }
                     ));
-                    _disposable.Add(map.Characters.SubscribeToAllObservables(
+                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
                         character => character.Status.OnDamageReceived,
                         (character, damageChanged) =>
                         {
@@ -44,7 +44,7 @@ namespace Provider
                             }
                         }
                     ));
-                    _disposable.Add(map.Characters.SubscribeToAllObservables(
+                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
                         character => character.Status.OnHealReceived,
                         (character, healChanged) =>
                         {

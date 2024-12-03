@@ -12,7 +12,7 @@ namespace Provider
         public PlayerCameraController(World world, SynchronizedCharacterView characters,
             CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
                 if (map.Player.Character.IsDead)
                 {

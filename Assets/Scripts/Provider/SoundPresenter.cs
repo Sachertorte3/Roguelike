@@ -14,9 +14,9 @@ namespace Provider
         [Inject]
         public SoundPresenter(World world, BGMManager bgmManager, SEManager seManager)
         {
-            Settings.BGMVolume.SubscribeToAllItems(volume => bgmManager.SetVolume(volume / 100f));
-            Settings.SEVolume.SubscribeToAllItems(volume => seManager.SetVolume(volume / 100f));
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            Settings.BGMVolume.SubscribeIncludingCurrentValue(volume => bgmManager.SetVolume(volume / 100f));
+            Settings.SEVolume.SubscribeIncludingCurrentValue(volume => seManager.SetVolume(volume / 100f));
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     bgmManager.NormalBGM();
                     if (map.IsStolen != null)
@@ -30,7 +30,7 @@ namespace Provider
                         }));
                     }
 
-                    _disposable.Add(map.Characters.SubscribeToAllObservables(character => character.OnPickUpItem,
+                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(character => character.OnPickUpItem,
                         (character, itemChanged) => { seManager.PickupSE(); }
                     ));
                     _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned => { seManager.AttackSE(); }));

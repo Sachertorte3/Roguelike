@@ -27,7 +27,7 @@ namespace Provider
             SubStorageView subStorageView)
         {
             inventoryView.Initialize(subStorageView);
-            world.ActiveMap.SubscribeToAllItemsIgnoreNull(map =>
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(

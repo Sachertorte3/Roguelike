@@ -462,7 +462,7 @@ namespace Game
 
         private void SetRules()
         {
-            Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
+            Characters.SubscribeIncludingCurrentObservables(
                 character => character.OnDead,
                 (character, _) => { DropAllItem(character); }
             ).AddTo(_disposables);
@@ -485,8 +485,8 @@ namespace Game
                 EventExecutionCount--;
             }).AddTo(_disposables);
 
-            Characters.SubscribeIncludingCurrentObservablesOnChange(
-                character => character.Entity.Position,
+            Characters.SubscribeIncludingCurrentObservables(
+                character => character.Entity.Position.SkipLatestValueOnSubscribe(),
                 async (character, positionChanged) =>
                 {
                     var item = ItemManager.GetItemAt(positionChanged);
@@ -513,7 +513,7 @@ namespace Game
                         else
                         {
                             GameLog.Add(
-                                $"{character.GetName(Player)}は{item.Item.GetName(Player, ItemPlaceholders)}の上に乗った");
+                                $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>の上に乗った");
                         }
                     }
 
@@ -537,8 +537,8 @@ namespace Game
                 }
             ).AddTo(_disposables);
 
-            Characters.SubscribeIncludingCurrentObservablesIncludingCurrent(
-                character => character.Status.GetFlagProperty(FlagStatType.IsAffectedByTrap),
+            Characters.SubscribeIncludingCurrentObservables(
+                character => character.Status.GetFlagProperty(FlagStatType.IsAffectedByTrap).SkipLatestValueOnSubscribe(),
                 async (character, affectedByTrap) =>
                 {
                     EventExecutionCount++;
@@ -551,7 +551,7 @@ namespace Game
                 }
             ).AddTo(_disposables);
 
-            _entities.SubscribeIncludingCurrentObservablesIncludingCurrent(
+            _entities.SubscribeIncludingCurrentObservables(
                 entity => entity.Entity.Position,
                 (entity, _) => UpdateVisibility(entity)
             ).AddTo(_disposables);

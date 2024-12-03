@@ -53,6 +53,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: db0d41baa2fe33744a037ac045a4ae02, type: 2}
       - {fileID: 11400000, guid: 5403f5394d48afa45b46c07ed1e7ecb0, type: 2}
       - {fileID: 11400000, guid: 126a7455f357c4c4caf977d668299681, type: 2}
+      - {fileID: 11400000, guid: 65105b2d34b2bd746a2a366095c2fd7c, type: 2}
     Wands:
       items:
       - {fileID: 11400000, guid: bb329aa9552d9d04d801baa8c35a9b2b, type: 2}
@@ -66,6 +67,9 @@ MonoBehaviour:
       - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
       - {fileID: 11400000, guid: 8e61822138f1edc49946e7205d25ac7e, type: 2}
       - {fileID: 11400000, guid: fe2f17a31e873dc45b8c5d3ab92b353d, type: 2}
+      - {fileID: 11400000, guid: 58b5a647b4970804d89fb9e6bbe90642, type: 2}
+      - {fileID: 11400000, guid: c6c6c83729860b24bbde54874dc2b8f4, type: 2}
+      - {fileID: 11400000, guid: 2d327c82725ef014f96eeac6c385b8d4, type: 2}
     Weapons:
       items:
       - {fileID: 11400000, guid: 5aca68febc4c42147a691066dc7cffdf, type: 2}
@@ -93,6 +97,15 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
       - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
       - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
+      - {fileID: 11400000, guid: faf68274a43d09847b8dd92f1ba45895, type: 2}
+      - {fileID: 11400000, guid: d224005afeba2de4f802dcca35941fd4, type: 2}
+      - {fileID: 11400000, guid: 238aed1d273b76843b7f228374df01e7, type: 2}
+      - {fileID: 11400000, guid: 5f1734552b338ae408012ce414c8de50, type: 2}
+      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: e97798b510285744987367dde0f722db, type: 2}
+      - {fileID: 11400000, guid: d943d6945159400489b26d553e2fc5f1, type: 2}
+      - {fileID: 11400000, guid: 9a2bb90f631700f4191149a29e985959, type: 2}
+      - {fileID: 11400000, guid: 23fea5d7d79f7ea41a3fa6e03982059a, type: 2}
     Others:
       items:
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}

@@ -23,6 +23,8 @@ namespace Domain.Model.Character.Status
         public void RemoveElementAttackMultiplier(Element element, float value);
         public void AddElementDamageRateMultiplier(Element element, float value);
         public void RemoveElementDamageRateMultiplier(Element element, float value);
+        public void AddConditionResistance(ConditionTemplate condition, float value);
+        public void RemoveConditionResistance(ConditionTemplate condition, float value);
 
         public bool IsFlagStat(FlagStatType type);
         public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type);

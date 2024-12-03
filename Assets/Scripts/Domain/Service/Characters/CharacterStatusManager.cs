@@ -176,6 +176,11 @@ namespace Domain.Service.Characters
             _stats.AddElementDamageRateMultiplier(element, value);
         }
 
+        public void AddConditionResistance(ConditionTemplate condition, float value)
+        {
+            _stats.AddConditionResistance(condition, value);
+        }
+
         public void RemoveElementAttackMultiplier(Element element, float value)
         {
             _stats.RemoveElementAttackMultiplier(element, value);
@@ -184,6 +189,11 @@ namespace Domain.Service.Characters
         public void RemoveElementDamageRateMultiplier(Element element, float value)
         {
             _stats.RemoveElementDamageRateMultiplier(element, value);
+        }
+
+        public void RemoveConditionResistance(ConditionTemplate condition, float value)
+        {
+            _stats.RemoveConditionResistance(condition, value);
         }
 
         private FlagStat GetFlagStat(FlagStatType type)

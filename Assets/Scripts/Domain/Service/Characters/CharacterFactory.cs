@@ -108,7 +108,7 @@ namespace Domain.Service.Characters
                 new List<string>(),
                 CharacterAffiliationManager.Build(data.Group, affiliation),
                 data.Aggression,
-                EvaluateExp(data),
+                EvaluateExp(data, isShiny),
                 false,
                 isShiny,
                 data.IsBoss,
@@ -129,11 +129,14 @@ namespace Domain.Service.Characters
             return new Character(data, behavior, map, false);
         }
 
-        public static int EvaluateExp(EnemyData enemyData)
+        public static int EvaluateExp(EnemyData enemyData, bool isShiny)
         {
             var value = 1.0f;
-            value *= enemyData.Hp;
-            value *= EvaluateSkills(enemyData.Skills);
+            value *= isShiny ? enemyData.Hp * 10 : enemyData.Hp;
+            value /= EvaluateDamageRate(enemyData);
+
+            value *= isShiny ? EvaluateSkills(enemyData.Skills) * 2 : EvaluateSkills(enemyData.Skills);
+
             value *= enemyData.MoveSpeed switch
             {
                 MoveSpeed.Quarter => 0.25f,
@@ -171,6 +174,10 @@ namespace Domain.Service.Characters
             {
                 value *= 1.5f;
             }
+            return Mathf.RoundToInt(value);
+        }
+        public static float EvaluateDamageRate(EnemyData enemyData)
+        {
             var sum = 0f;
             foreach (var element in Enum.GetValues(typeof(Element)))
             {
@@ -183,9 +190,7 @@ namespace Domain.Service.Characters
                     sum += 1;
                 }
             }
-            var average = sum / Enum.GetValues(typeof(Element)).Length;
-            value /= average;
-            return Mathf.RoundToInt(value);
+            return sum / Enum.GetValues(typeof(Element)).Length;
         }
         public static float EvaluateSkills(IEnumerable<EnemySkillData> skills)
         {

@@ -135,7 +135,7 @@ namespace Domain.Service.Effect
                                             impactValue);
                                     }
 
-                                    if (character.IsDead)
+                                    if (character.IsDead && effect is not BreakEffect)
                                     {
                                         actor.OnEnemyDefeated(character);
                                     }

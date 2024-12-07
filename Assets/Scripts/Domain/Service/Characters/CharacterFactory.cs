@@ -63,6 +63,7 @@ namespace Domain.Service.Characters
                 new List<string>(),
                 CharacterAffiliationManager.Build(CharacterGroup.Human),
                 Aggression.AttackAnyone,
+                0,
                 true,
                 false,
                 false,
@@ -101,18 +102,13 @@ namespace Domain.Service.Characters
                     data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
                 EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction,
-                data.Skills.Select(x => CharacterSkill.Build(
-                    SpawnEffectSkill.Build(x.Skill),
-                    x.RushDistance,
-                    x.BackStepDistance,
-                    x.ChargeTurn,
-                    x.CoolTime
-                )).ToList(),
+                data.Skills.Select(x => CharacterSkill.Build(x)).ToList(),
                 (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory,
                 new List<string>(),
                 CharacterAffiliationManager.Build(data.Group, affiliation),
                 data.Aggression,
+                EvaluateExp(data),
                 false,
                 isShiny,
                 data.IsBoss,
@@ -123,14 +119,132 @@ namespace Domain.Service.Characters
             );
         }
 
-        public IPlayer CreatePlayer(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public static IPlayer CreatePlayer(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
         {
             return new Player(playerData, receiver, map);
         }
 
-        public ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IMap map)
+        public static ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IMap map)
         {
             return new Character(data, behavior, map, false);
+        }
+
+        public static int EvaluateExp(EnemyData enemyData)
+        {
+            var value = 1.0f;
+            value *= enemyData.Hp;
+            value *= EvaluateSkills(enemyData.Skills);
+            value *= enemyData.MoveSpeed switch
+            {
+                MoveSpeed.Quarter => 0.25f,
+                MoveSpeed.Half => 0.5f,
+                MoveSpeed.Normal => 1.0f,
+                MoveSpeed.Double => 2.0f,
+                MoveSpeed.Quadruple => 4.0f,
+                _ => throw new ArgumentException($"Invalid MoveSpeed: {enemyData.MoveSpeed}"),
+            };
+            if (enemyData.Behavior.Default == MoveTypeWhenDiscoveringTarget.NoMove)
+            {
+                value *= 0.5f;
+            }
+            if (enemyData.IsHard)
+            {
+                value *= 5.0f;
+            }
+            if (enemyData.IsHeavy)
+            {
+                value *= 1.2f;
+            }
+            if (enemyData.IsFlying)
+            {
+                value *= 1.2f;
+            }
+            if (enemyData.CanThroughWalls)
+            {
+                value *= 2f;
+            }
+            if (enemyData.CanPickUp)
+            {
+                value *= 1.1f;
+            }
+            if (enemyData.CanUseItem)
+            {
+                value *= 1.5f;
+            }
+            var sum = 0f;
+            foreach (var element in Enum.GetValues(typeof(Element)))
+            {
+                if (enemyData.ElementDamageRateMultiplier.TryGetValue((Element)element, out var multiplier))
+                {
+                    sum += multiplier;
+                }
+                else
+                {
+                    sum += 1;
+                }
+            }
+            var average = sum / Enum.GetValues(typeof(Element)).Length;
+            value /= average;
+            return Mathf.RoundToInt(value);
+        }
+        public static float EvaluateSkills(IEnumerable<EnemySkillData> skills)
+        {
+            var virtualSkills = skills.Select(x => new VirtualSkill(x)).ToList();
+            var sum = 0f;
+            var turn = 0;
+            while (turn < 100)
+            {
+                foreach (var skill in virtualSkills)
+                {
+                    skill.Update(1);
+                }
+                var selectedSkill = virtualSkills.Where(x => x.IsReady()).MaxByOrDefault(x => x.Value, null);
+                if (selectedSkill == null)
+                {
+                    turn++;
+                    continue;
+                }
+                if (selectedSkill.ChargeTurn > 0)
+                {
+                    foreach (var skill in virtualSkills)
+                    {
+                        skill.Update(selectedSkill.ChargeTurn);
+                    }
+
+                    sum += selectedSkill.Value * selectedSkill.ChargeTurn;
+                    turn += selectedSkill.ChargeTurn;
+                }
+                selectedSkill.Use();
+                sum += selectedSkill.Value;
+                turn++;
+            }
+            return sum / turn;
+        }
+        private class VirtualSkill
+        {
+            public float Value;
+            public int ChargeTurn;
+            public int CoolTime;
+            private int _remainingCoolTime;
+            public VirtualSkill(EnemySkillData skill)
+            {
+                Value = new CharacterSkill(CharacterSkill.Build(skill)).EvaluatePrice();
+                ChargeTurn = skill.ChargeTurn;
+                CoolTime = skill.CoolTime;
+                _remainingCoolTime = 0;
+            }
+            public void Update(int turnCount)
+            {
+                _remainingCoolTime = Mathf.Max(0, _remainingCoolTime - turnCount);
+            }
+            public void Use()
+            {
+                _remainingCoolTime = 1 + CoolTime;
+            }
+            public bool IsReady()
+            {
+                return _remainingCoolTime == 0;
+            }
         }
     }
 }

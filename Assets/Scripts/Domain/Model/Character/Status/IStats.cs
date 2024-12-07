@@ -5,6 +5,9 @@ namespace Domain.Model.Character.Status
 {
     public interface IStats
     {
+        public ReadOnlyReactiveProperty<int> ExpValue { get; }
+        public int CurrentExp { get; }
+        public int CurrentLevel { get; }
         public ReadOnlyReactiveProperty<int> HpValue { get; }
         public int CurrentHp { get; }
         public ReadOnlyReactiveProperty<int> MaxHp { get; }

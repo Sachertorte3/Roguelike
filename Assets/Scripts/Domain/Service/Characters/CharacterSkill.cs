@@ -47,6 +47,17 @@ namespace Domain.Service.Characters
             );
         }
 
+        public static CharacterSkillMemento Build(EnemySkillData skill)
+        {
+            return Build(
+                SpawnEffectSkill.Build(skill.Skill),
+                skill.RushDistance,
+                skill.BackStepDistance,
+                skill.ChargeTurn,
+                skill.CoolTime
+            );
+        }
+
         public static CharacterSkillMemento Build(SpawnEffectSkillMemento skill, int rushDistance, int backStepDistance, int chargeTurn, int coolTime)
         {
             return new CharacterSkillMemento
@@ -91,12 +102,12 @@ namespace Domain.Service.Characters
                     position += direction.Vector();
             }
 
-            return _skill.Evaluate(actor, position, direction, map);
+            return _skill.Evaluate(actor, position, direction, map) / (1 + ChargeTurn);
         }
 
         public float EvaluatePrice()
         {
-            return _skill.EvaluatePrice();
+            return _skill.EvaluatePrice() / (1 + ChargeTurn);
         }
 
         public List<UpgradeData> GetUpgrades()

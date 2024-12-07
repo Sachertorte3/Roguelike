@@ -8,6 +8,7 @@ namespace Domain.Model.Effect
 {
     public interface ITargetOfEffect : IHasName, IHasStatus, IHasInventory, IEntity
     {
+        public int DropExp { get; }
         public IVisionRange VisionRange { get; }
         public void AddCondition(Id<IEntity> actor, ConditionTemplate condition);
         public void ClearCondition();

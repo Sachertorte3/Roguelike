@@ -1,6 +1,4 @@
 #nullable enable
-
-
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Effect;

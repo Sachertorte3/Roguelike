@@ -126,24 +126,31 @@ namespace Domain.Service.Effect
                                 if (effect.Impact == Impact.Harmful)
                                 {
                                     var impactValue = effect.Evaluate(actor, character);
-                                    character.WasAttackedBy(actor, impactValue);
+                                    character.OnAttackedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
-                                        .Where(target => target != actor && target != actor)
-                                        .ForEach(c =>
-                                            c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
-                                                impactValue));
+                                    foreach (var c in map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
+                                                            .Where(target => target != actor && target != actor))
+                                    {
+                                        c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
+                                            impactValue);
+                                    }
+
+                                    if (character.IsDead)
+                                    {
+                                        actor.OnEnemyDefeated(character);
+                                    }
                                 }
                                 else if (effect.Impact == Impact.Beneficial)
                                 {
                                     var impactValue = effect.Evaluate(actor, character);
-                                    character.WasHealedBy(actor, impactValue);
+                                    character.OnHealedBy(actor, impactValue);
 
-                                    map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
-                                        .Where(target => target != actor && target != actor)
-                                        .ForEach(c =>
-                                            c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
-                                                impactValue));
+                                    foreach (var c in map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
+                                                            .Where(target => target != actor && target != actor))
+                                    {
+                                        c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
+                                            impactValue);
+                                    }
                                 }
 
                                 break;
@@ -209,7 +216,7 @@ namespace Domain.Service.Effect
                 totalEvaluation += effect.Evaluate(actor, area);
             }
 
-            return totalEvaluation * ProbabilityOfSuccess;
+            return totalEvaluation * Repeats * ProbabilityOfSuccess;
         }
 
         public float EvaluatePrice()

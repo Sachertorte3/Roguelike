@@ -1,5 +1,4 @@
 #nullable enable
-using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +73,16 @@ namespace Domain.Service.Characters
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
         public Observable<int> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
+
+        public void GainExp(int value)
+        {
+            _stats.Exp.AddValue(value);
+        }
+
+        public void LevelUp(int value)
+        {
+            _stats.Hp.AddMaxValue(5 * value);
+        }
 
         public int GainHp(float value, bool notifyOnlyActualGain = false)
         {

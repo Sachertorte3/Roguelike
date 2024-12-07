@@ -16,7 +16,7 @@ MonoBehaviour:
     rid: 2541219281251860498
   RemovalCondition:
     RemoveByElapsedTurn: 1
-    Duration: 20
+    Duration: 10
     RemoveByDamage: 0
     Probability: 0
     RemoveByCharacterNearby: 0
@@ -29,4 +29,4 @@ MonoBehaviour:
     - rid: 2541219281251860498
       type: {class: Poisoned, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Power: 2
+        Power: 1

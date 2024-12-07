@@ -20,12 +20,12 @@ namespace Provider
                     if (message.IsWaiting)
                     {
                         itemSelectText.Show();
-                        inventoryView.DisableItems(message.DisabledItemIds);
+                        inventoryView.LockItems(message.DisabledItemIds);
                     }
                     else
                     {
                         itemSelectText.Hide();
-                        inventoryView.EnableAllItems();
+                        inventoryView.UnlockAllItems();
                     }
                 });
             });

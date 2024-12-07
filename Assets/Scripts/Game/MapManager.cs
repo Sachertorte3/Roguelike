@@ -501,16 +501,18 @@ namespace Game
                                 character.IsPlayer && Settings.AutoPickUpShopItem.Value);
                             if (character.TryAddToInventory(item.Item))
                             {
-                                if (character.IsPlayer)
+                                if (Player.Character.IsVisible(positionChanged))
+                                {
                                     GameLog.Add(
-                                        $"{Player.Character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
+                                        $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
+                                }
                             }
                             else
                             {
                                 throw new Exception("Unexpected error. Unable to pick up item.");
                             }
                         }
-                        else
+                        else if (Player.Character.IsVisible(positionChanged))
                         {
                             GameLog.Add(
                                 $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>の上に乗った");

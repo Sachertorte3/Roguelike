@@ -8,7 +8,6 @@ using Domain.Model.Character;
 using Domain.Model.Character.Message;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
-using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
@@ -103,7 +102,7 @@ namespace Domain.Service.Characters
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
                     if (!IsKnownItem(item))
-                        AddKnownItem(item);
+                        AddKnownItem(item, false);
                 }
             });
         }
@@ -439,7 +438,7 @@ namespace Domain.Service.Characters
                 {
                     if (!IsKnownItem(item) && item.IdentifyIfUsed)
                     {
-                        AddKnownItem(item);
+                        AddKnownItem(item, true);
                     }
                 }
             }
@@ -667,11 +666,14 @@ namespace Domain.Service.Characters
 
         #region ItemKnowledge
 
-        public void AddKnownItem(IItem item)
+        public void AddKnownItem(IItem item, bool log)
         {
             if (!IsKnownItem(item) && IsPlayer)
             {
-                GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
+                if (log)
+                {
+                    GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
+                }
                 _knownItemNames.Add(item.BaseName);
             }
         }
@@ -732,7 +734,7 @@ namespace Domain.Service.Characters
                 _onPickUpItem.OnNext(Unit.Default);
                 if (!IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
                 {
-                    AddKnownItem(item);
+                    AddKnownItem(item, false);
                 }
                 return true;
             }
@@ -765,7 +767,7 @@ namespace Domain.Service.Characters
         {
             if (item != null && !IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
             {
-                AddKnownItem(item);
+                AddKnownItem(item, false);
             }
             return _inventory.Replace(item, index, subIndex);
         }

@@ -135,10 +135,16 @@ namespace View.UI
                 return focus.isEmpty ? "" : _info[focus.index];
         }
 
-        public void DisableItems(int[] disabledItemIndexes)
+        public void LockItems(int[] lockedItemIndexes)
         {
-            foreach (var index in disabledItemIndexes)
-                _itemViews[index].Disable();
+            foreach (var index in lockedItemIndexes)
+                _itemViews[index].Lock();
+        }
+
+        public void UnlockAllItems()
+        {
+            foreach (var view in _itemViews)
+                view.Unlock();
         }
 
         public void EnableAllItems()

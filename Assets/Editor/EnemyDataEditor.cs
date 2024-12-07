@@ -12,7 +12,7 @@ namespace Editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            _evaluatedExp = CharacterFactory.EvaluateExp((EnemyData)target);
+            _evaluatedExp = CharacterFactory.EvaluateExp((EnemyData)target, false);
         }
         public override void OnInspectorGUI()
         {
@@ -21,7 +21,7 @@ namespace Editor
             EditorGUILayout.Space();
             if (EditorGUI.EndChangeCheck())
             {
-                _evaluatedExp = CharacterFactory.EvaluateExp((EnemyData)target);
+                _evaluatedExp = CharacterFactory.EvaluateExp((EnemyData)target, false);
             }
             EditorGUILayout.LabelField($"Evaluated Exp: {_evaluatedExp}Exp");
         }

@@ -40,8 +40,8 @@ namespace Domain.Model.Character
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map);
         public void FaceNearestCharacter(IMap map);
         public UniTask ForceMove(Direction8 direction, IInput input);
-        public void WasAttackedBy(IActorOfEffect actor, float impact);
-        public void WasHealedBy(IActorOfEffect actor, float impact);
+        public void OnAttackedBy(IActorOfEffect actor, float impact);
+        public void OnHealedBy(IActorOfEffect actor, float impact);
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
         public void CancelChargeAction();
         public bool CanPickUpItem();

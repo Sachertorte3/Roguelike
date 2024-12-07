@@ -33,6 +33,7 @@ namespace Domain.Service.Characters
 {
     internal sealed class Character : ICharacter
     {
+        private readonly string _name;
         private readonly CharacterAffiliationManager _affiliationManager;
         private readonly Aggression _aggression;
         private readonly ReactiveProperty<Direction8> _direction;
@@ -44,7 +45,7 @@ namespace Domain.Service.Characters
         private readonly List<CharacterSkill> _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
-        private string _name = "Character";
+        public int DropExp { get; init; }
         private readonly IDisposable _disposable;
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
@@ -67,6 +68,7 @@ namespace Domain.Service.Characters
             CanThroughWalls = data.CanThroughWalls;
             _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player);
             _aggression = data.Aggression;
+            DropExp = data.DropExp;
             IsLeader = data.IsLeader;
             IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
@@ -274,7 +276,7 @@ namespace Domain.Service.Characters
                 var action = await _behavior.GenerateNextAction(this, gameManager, map, input);
                 if (Status.IsFlagStat(FlagStatType.Confused))
                 {
-                    action = RegenerateConfuseAction(this, map, action);
+                    action = RegenerateConfuseAction(map, action);
                 }
 
                 if (action is UseSkill useSkill && useSkill.Skill.ChargeTurn > 0)
@@ -290,7 +292,7 @@ namespace Domain.Service.Characters
             }
         }
 
-        private IAction RegenerateConfuseAction(IHasBehavior character, IMap map, IAction action)
+        private IAction RegenerateConfuseAction(IMap map, IAction action)
         {
             switch (action)
             {
@@ -301,9 +303,9 @@ namespace Domain.Service.Characters
                     {
                         var move = new Move(direction);
                         var swap = new Swap(direction);
-                        if (move.Doable(character, map))
+                        if (move.Doable(this, map))
                             moves.Add(move);
-                        else if (swap.Doable(character, map))
+                        else if (swap.Doable(this, map))
                             moves.Add(swap);
                     }
 
@@ -585,6 +587,7 @@ namespace Domain.Service.Characters
                 _knownItemNames.ToList(),
                 _affiliationManager.Serialize(),
                 Aggression,
+                DropExp,
                 IsLeader,
                 IsShiny,
                 IsBoss,
@@ -698,7 +701,7 @@ namespace Domain.Service.Characters
             _behavior.KnowLocationOf(position);
         }
 
-        public void WasAttackedBy(IActorOfEffect actor, float impact)
+        public void OnAttackedBy(IActorOfEffect actor, float impact)
         {
             var direction =
                 DirectionMethods.NearestDirectionFromVector(actor.Entity.CurrentPosition - Entity.CurrentPosition);
@@ -711,9 +714,26 @@ namespace Domain.Service.Characters
             _statusManager.WasAttacked();
         }
 
-        public void WasHealedBy(IActorOfEffect actor, float impact)
+        public void OnHealedBy(IActorOfEffect actor, float impact)
         {
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
+        }
+
+        public void OnEnemyDefeated(ITargetOfEffect target)
+        {
+            GainExp(target.DropExp);
+        }
+
+        public void GainExp(int value)
+        {
+            var level = _statusManager.Stats.CurrentLevel;
+            GameLog.Add($"{GetName(_map.Player)}は{value}の経験値を得た");
+            _statusManager.GainExp(value);
+            if (level < _statusManager.Stats.CurrentLevel)
+            {
+                GameLog.Add($"{GetName(_map.Player)}はレベルアップした");
+                _statusManager.LevelUp(_statusManager.Stats.CurrentLevel - level);
+            }
         }
 
         public void ClearAffiliation(IMap map)

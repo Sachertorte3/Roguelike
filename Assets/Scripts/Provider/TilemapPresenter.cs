@@ -24,6 +24,7 @@ namespace Provider
                 {
                     tileView.Clear();
                     overlayTileView.Clear();
+                    minimapController.Clear();
 
                     var tileSet = map.Type switch
                     {

@@ -24,6 +24,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public List<string> KnownItemNames { get; private set; }
         [field: SerializeField] public AffiliationMemento Affiliation { get; private set; }
         [field: SerializeField] public Aggression Aggression { get; private set; }
+        [field: SerializeField] public int DropExp { get; private set; }
         [field: SerializeField] public bool IsLeader { get; private set; }
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public bool IsBoss { get; private set; }
@@ -45,6 +46,7 @@ namespace Domain.Model.Memento
             List<string> knownItemNames,
             AffiliationMemento affiliation,
             Aggression aggression,
+            int dropExp,
             bool isLeader,
             bool isShiny,
             bool isBoss,
@@ -66,6 +68,7 @@ namespace Domain.Model.Memento
             KnownItemNames = knownItemNames;
             Affiliation = affiliation;
             Aggression = aggression;
+            DropExp = dropExp;
             IsLeader = isLeader;
             IsShiny = isShiny;
             IsBoss = isBoss;
@@ -88,6 +91,7 @@ namespace Domain.Model.Memento
             List<string>? knownItemNames = null,
             AffiliationMemento? affiliation = null,
             Aggression? aggression = null,
+            int? dropExp = null,
             bool? isLeader = null,
             bool? isShiny = null,
             bool? isBoss = null,
@@ -110,6 +114,7 @@ namespace Domain.Model.Memento
                 knownItemNames ?? KnownItemNames,
                 affiliation ?? Affiliation,
                 aggression ?? Aggression,
+                dropExp ?? DropExp,
                 isLeader ?? IsLeader,
                 isShiny ?? IsShiny,
                 isBoss ?? IsBoss,

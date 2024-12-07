@@ -19,7 +19,6 @@ namespace Game
     public sealed class CharacterManager : IDisposable
     {
         private readonly ObservableList<ICharacter> _characters = new();
-        private readonly CharacterFactory _factory = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
         public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
@@ -34,7 +33,7 @@ namespace Game
                 (character, _) => RemoveCharacter(character)
             );
 
-            Player = _factory.CreatePlayer(playerData, receiver, map);
+            Player = CharacterFactory.CreatePlayer(playerData, receiver, map);
 
             if (!Player.Character.IsDead)
             {
@@ -68,7 +67,7 @@ namespace Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            var character = _factory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map);
+            var character = CharacterFactory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map);
             AddCharacter(character);
             return character;
         }
@@ -76,7 +75,7 @@ namespace Game
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Location);
-            var character = _factory.CreateCharacter(data, behavior, map);
+            var character = CharacterFactory.CreateCharacter(data, behavior, map);
             AddCharacter(character);
             return new Ally(character, behavior, map);
         }

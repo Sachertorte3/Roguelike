@@ -16,6 +16,7 @@ namespace Domain.Service.Characters.Stats
     {
         public CharacterStats(CharacterStatsMemento memento)
         {
+            Exp = new IntStat(memento.Exp);
             Hp = new IntResource(memento.Hp);
             HpNaturalRecoveryAmount = new Stat(memento.HpNaturalRecoveryAmount);
             ElementAttackMultiplier =
@@ -45,6 +46,7 @@ namespace Domain.Service.Characters.Stats
         {
             return new CharacterStatsMemento
             (
+                Exp.GetData(),
                 Hp.GetData(),
                 HpNaturalRecoveryAmount.GetData(),
                 ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
@@ -61,6 +63,7 @@ namespace Domain.Service.Characters.Stats
         {
             return new CharacterStatsMemento
             (
+                new StatData(1),
                 new ResourceData(new StatData(maxHp), maxHp),
                 new StatData(hpNaturalRecoveryAmount),
                 elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
@@ -71,6 +74,7 @@ namespace Domain.Service.Characters.Stats
             );
         }
 
+        public IntStat Exp { get; init; }
         public IntResource Hp { get; init; }
         public Stat HpNaturalRecoveryAmount { get; init; }
         public Stat ViewRange { get; init; }
@@ -81,6 +85,7 @@ namespace Domain.Service.Characters.Stats
 
         public void Dispose()
         {
+            Exp.Dispose();
             Hp.Dispose();
             HpNaturalRecoveryAmount.Dispose();
             ViewRange.Dispose();
@@ -101,6 +106,9 @@ namespace Domain.Service.Characters.Stats
             }
         }
 
+        public ReadOnlyReactiveProperty<int> ExpValue => Exp.Value;
+        public int CurrentExp => Exp.CurrentValue;
+        public int CurrentLevel => Mathf.FloorToInt(CurrentExp / 100);
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public int CurrentHp => Hp.Value.CurrentValue;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.MaxValue;
@@ -116,6 +124,7 @@ namespace Domain.Service.Characters.Stats
         {
             return type switch
             {
+                StatType.Exp => CurrentLevel,
                 StatType.MaxHp => CurrentMaxHp,
                 StatType.HpNaturalRecovery => CurrentHpNaturalRecoveryAmount,
                 StatType.ViewRange => CurrentViewRange,
@@ -148,6 +157,9 @@ namespace Domain.Service.Characters.Stats
         {
             switch (type)
             {
+                case StatType.Exp:
+                    Exp.AddValue(value);
+                    break;
                 case StatType.MaxHp:
                     Hp.AddMaxValue(value);
                     break;
@@ -212,6 +224,8 @@ namespace Domain.Service.Characters.Stats
         {
             switch (type)
             {
+                case StatType.Exp:
+                    throw new ArgumentException("Level cannot be multiplied");
                 case StatType.MaxHp:
                     Hp.AddMaxMultiplier(value);
                     break;
@@ -256,6 +270,8 @@ namespace Domain.Service.Characters.Stats
         {
             switch (type)
             {
+                case StatType.Exp:
+                    throw new ArgumentException("Level cannot be multiplied");
                 case StatType.MaxHp:
                     Hp.MultiplyMaxValue(value);
                     break;

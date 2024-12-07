@@ -7,6 +7,7 @@ namespace Domain.Model.Character.Status
     {
         public ReadOnlyReactiveProperty<int> ExpValue { get; }
         public int CurrentExp { get; }
+        public ReadOnlyReactiveProperty<int> Level { get; }
         public int CurrentLevel { get; }
         public ReadOnlyReactiveProperty<int> HpValue { get; }
         public int CurrentHp { get; }

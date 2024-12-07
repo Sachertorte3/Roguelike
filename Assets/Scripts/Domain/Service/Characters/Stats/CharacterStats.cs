@@ -108,7 +108,8 @@ namespace Domain.Service.Characters.Stats
 
         public ReadOnlyReactiveProperty<int> ExpValue => Exp.Value;
         public int CurrentExp => Exp.CurrentValue;
-        public int CurrentLevel => Mathf.FloorToInt(Mathf.Sqrt(CurrentExp / 10));
+        public ReadOnlyReactiveProperty<int> Level => Exp.Value.Select(exp => Mathf.FloorToInt(Mathf.Sqrt(exp / 10))).DistinctUntilChanged().ToReadOnlyReactiveProperty();
+        public int CurrentLevel => Level.CurrentValue;
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public int CurrentHp => Hp.Value.CurrentValue;
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.MaxValue;

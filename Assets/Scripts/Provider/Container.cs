@@ -32,7 +32,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<MinimapController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
             builder.RegisterComponentInHierarchy<SubStorageView>();
-            builder.RegisterComponentInHierarchy<StatLine>();
+            builder.RegisterComponentInHierarchy<StatView>();
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<CameraFlameRect>();
             builder.RegisterComponentInHierarchy<SettingWindow>();

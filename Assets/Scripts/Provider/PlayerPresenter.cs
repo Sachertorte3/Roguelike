@@ -3,7 +3,6 @@ using Domain.Model.Setting;
 using Game;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 using VContainer;
 using View;
@@ -15,9 +14,9 @@ namespace Provider
     {
         [Inject]
         public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
-            StatLine statLine)
+            StatView statView)
         {
-            CompositeDisposable _disposable = new();
+            CompositeDisposable _disposables = new();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     if (map.Player.Character.IsDead)
@@ -31,25 +30,30 @@ namespace Provider
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                    _disposable.Add(Observable
+                    _disposables.Add(map.Player.Character.Status.Stats.Level.Subscribe(level =>
+                    {
+                        statView.SetLevel(level);
+                    }));
+
+                    _disposables.Add(Observable
                         .Merge(map.Player.Character.Status.Stats.HpValue, map.Player.Character.Status.Stats.MaxHp)
                         .Subscribe(_ =>
                         {
                             var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue * 100 /
                                                         map.Player.Character.Status.Stats.MaxHp.CurrentValue;
-                            statLine.SetValue(map.Player.Character.Status.Stats.MaxHp.CurrentValue,
+                            statView.SetHp(map.Player.Character.Status.Stats.MaxHp.CurrentValue,
                                 map.Player.Character.Status.Stats.HpValue.CurrentValue);
                             if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
                             {
-                                statLine.SetTextColor(Color.red);
+                                statView.SetTextColor(Color.red);
                             }
                             else
                             {
-                                statLine.SetTextColor(Color.white);
+                                statView.SetTextColor(Color.white);
                             }
                         }));
                 },
-                map => { _disposable.Clear(); });
+                map => { _disposables.Clear(); });
         }
     }
 }

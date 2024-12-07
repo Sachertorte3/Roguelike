@@ -7,7 +7,7 @@ namespace Domain.Model.Character
     {
         public IInventory Inventory { get; }
         public IItemSelector ItemSelector { get; }
-        public void AddKnownItem(IItem item);
+        public void AddKnownItem(IItem item, bool log);
         public bool IsKnownItem(IItem item);
     }
 }

@@ -13,7 +13,7 @@ namespace Domain.Service.ItemEffect
 
         public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
         {
-            player.Character.AddKnownItem(item);
+            player.Character.AddKnownItem(item, true);
             item.SetCurseIdentified(true);
         }
 

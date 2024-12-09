@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using R3;
 using Sirenix.Utilities;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,6 +38,11 @@ namespace View.UI
                 };
                 _itemViews[i].GetComponent<Selectable>().navigation = nav;
             }
+        }
+        public void SetDefaultIcon(int index, Sprite icon)
+        {
+            Log.Info($"[StorageView]SetDefaultIcon Index: {index}");
+            _itemViews[index].SetDefaultIcon(icon);
         }
         public void ResetNavigation()
         {
@@ -76,12 +82,11 @@ namespace View.UI
         public void Select(int index)
         {
             _itemViews[index].Select();
-            Debug.Log($"Select: {index}");
         }
 
         public void Replace(ItemViewData itemViewData, int index, bool interactable)
         {
-            _itemViews[index].SetIcon(itemViewData.icon, itemViewData.count, itemViewData.isCursed, itemViewData.isShiny, itemViewData.isCountIdentified, itemViewData.isCurseIdentified);
+            _itemViews[index].Set(itemViewData.icon, itemViewData.count, itemViewData.isCursed, itemViewData.isShiny, itemViewData.isCountIdentified, itemViewData.isCurseIdentified);
             _itemViews[index].UpdateInteractable(interactable);
         }
 

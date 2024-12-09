@@ -156,8 +156,11 @@ namespace Domain.Service.Items
             if (!_canAddItemsWithStorage && item != null && item.ItemStorage.IsSome)
                 return Result<IItem?>.Error;
             var removed = _items[index];
-            _items[index] = item;
 
+            if (item != null || removed != null)
+            {
+                _items[index] = item;
+            }
             return Result.Ok(removed);
         }
 

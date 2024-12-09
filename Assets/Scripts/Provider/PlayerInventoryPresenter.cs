@@ -8,7 +8,6 @@ using Domain.Model.Map;
 using Game;
 using ObservableCollections;
 using R3;
-using Unity.Logging;
 using Utilities;
 using VContainer;
 using View.UI;

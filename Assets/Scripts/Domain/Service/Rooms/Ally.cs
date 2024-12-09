@@ -41,8 +41,8 @@ namespace Domain.Service.Rooms
                                 var result = character.Inventory.TryAdd(item);
                                 if (result)
                                 {
-                                    var index = player.Character.Inventory.GetItemIndex(item);
-                                    player.Character.RemoveInventory(index, -1);
+                                    var index = player.Character.Inventory.GetItemIndexRecursive(item);
+                                    player.Character.RemoveInventory(index);
                                     GameLog.Add(
                                         $"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }

@@ -665,13 +665,11 @@ namespace Game
 
         public void DropAllItem(ICharacter character)
         {
-            for (var index = 0; index < character.Inventory.Capacity; index++)
+            foreach (var item in character.ClearInventory())
             {
-                var item = character.RemoveInventory(index, -1);
-                if (item != null)
-                    SpawnItem(item,
-                        FindBlankPositionFrom(character.Entity.CurrentPosition,
-                            position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
+                SpawnItem(item,
+                    FindBlankPositionFrom(character.Entity.CurrentPosition,
+                        position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
         }
 

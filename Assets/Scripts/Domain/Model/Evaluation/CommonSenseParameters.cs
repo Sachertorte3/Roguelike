@@ -2,7 +2,8 @@ namespace Domain.Model.Evaluation
 {
     public static class CommonSenseParameters
     {
-        public const int PlayerMaxHealth = 30;
+        public const int PlayerMaxHealth = 20;
+        public const float AdditionalHpPerLevel = 4;
         public const float PlayerNaturalRecoveryRate = 0.2f;
         public const int MonsterMaxHealth = 15;
         public const int AttacksToDefeatMonster = 2;

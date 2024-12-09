@@ -60,8 +60,8 @@ namespace Provider
                 })
             );
 
-            inventoryView.OnFocusChanged.Subscribe(focus =>
-                actionReceiver.SetItemFocus(new ItemFocus(focus.index, focus.subIndex, focus.isGroundItem, focus.isEmpty)));
+            inventoryView.Focus.Subscribe(focus =>
+                actionReceiver.SetItemFocus(focus.ToItemFocus()));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {

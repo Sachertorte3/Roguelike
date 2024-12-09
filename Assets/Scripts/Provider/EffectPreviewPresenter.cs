@@ -34,7 +34,7 @@ namespace Provider
                         )
                     ));
                     disposables.Add(Observable.Merge(
-                        inventoryView.OnFocusChanged.AsUnitObservable(),
+                        inventoryView.Focus.AsUnitObservable(),
                         map.Player.Character.Inventory.OnItemChanged.AsUnitObservable(),
                         map.Player.Character.Direction.AsUnitObservable(),
                         gameManager.OnTurnChanged
@@ -47,17 +47,17 @@ namespace Provider
                             return;
                         }
 
-                        var focus = inventoryView.CurrentFocus;
-                        if (!focus.isEmpty)
+                        var focus = inventoryView.Focus.CurrentValue;
+                        if (!focus.IsEmpty)
                         {
                             IItem? item = null;
-                            if (focus.isGroundItem)
+                            if (focus.IsGroundItem)
                             {
                                 item = map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
                             }
                             else
                             {
-                                item = map.Player.Character.Inventory.GetItem(focus.index);
+                                item = map.Player.Character.Inventory.GetItem(focus.Index);
                             }
 
                             if (item != null && map.Player.Character.IsKnownItem(item))

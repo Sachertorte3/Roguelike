@@ -11,9 +11,10 @@ namespace Domain.Model.Character
     public interface IStorage
     {
         public IEnumerable<IItem> AllItems { get; }
+        public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex { get; }
         public IEnumerable<IItem> AllItemsRecursive { get; }
         public int Capacity { get; }
-        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged { get; }
+        public Observable<OnItemChanged> OnItemChanged { get; }
         public Observable<OnItemUpdated> OnItemUpdated { get; }
         public bool HasEmptySpace();
         public IItem? GetItem(int index);

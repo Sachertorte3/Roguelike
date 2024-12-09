@@ -8,6 +8,7 @@ using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
+using Domain.Model.Evaluation;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Conditions;
@@ -81,7 +82,7 @@ namespace Domain.Service.Characters
 
         public void LevelUp(int value)
         {
-            _stats.Hp.AddMaxValue(5 * value);
+            _stats.Hp.AddMaxValue(CommonSenseParameters.AdditionalHpPerLevel * value);
         }
 
         public int GainHp(float value, bool notifyOnlyActualGain = false)

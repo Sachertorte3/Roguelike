@@ -21,7 +21,7 @@ namespace Provider
             knownItemNames.ObserveChanged().Subscribe(collectionChanged =>
             {
                 var itemData = ScriptableObjectLoader.Load<ItemData>(collectionChanged.NewItem);
-                var itemViewData = new ItemViewData(collectionChanged.NewItem, itemData.Icon, itemData.IsShiny, new Item(itemData).FullInfo());
+                var itemViewData = new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, itemData.IsShiny, new Item(itemData).FullInfo());
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
@@ -26,10 +27,28 @@ namespace Domain.Service.Items
         private IHasCondition _hasCondition;
 
         public IEnumerable<IItem> AllItems => _storage.AllItems;
+        public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex => _storage.AllItemsWithIndex;
         public IEnumerable<IItem> AllItemsRecursive => _storage.AllItemsRecursive;
+        public IEnumerable<(IItem Item, ItemFocus Index)> AllItemsWithIndexRecursive => AllItemsWithIndex
+            .SelectMany(main =>
+                main.Item.ItemStorage
+                    .MapOr(Enumerable.Empty<(IItem, ItemFocus)>(), storage => storage.AllItemsWithIndex
+                        .Select(sub => (sub.Item, new ItemFocus(main.Index, sub.Index)))
+                    )
+                    .Append((main.Item, new ItemFocus(main.Index)))
+            );
+        public IEnumerable<ItemFocus> AllIndexesRecursive => Enumerable.Range(0, _storage.Capacity)
+            .SelectMany(main => {
+                var item = GetItem(main);
+                if (item == null || item.ItemStorage.IsNone)
+                    return new[] { new ItemFocus(main) };
+                return Enumerable.Range(0, item.ItemStorage.Value.Capacity)
+                    .Select(sub => new ItemFocus(main, sub))
+                    .Append(new ItemFocus(main));
+            });
 
         public int Capacity => _storage.Capacity;
-        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _storage.OnItemChanged;
+        public Observable<OnItemChanged> OnItemChanged => _storage.OnItemChanged;
         public Observable<OnItemUpdated> OnItemUpdated => _storage.OnItemUpdated;
 
         public Inventory(StorageMemento data, IHasCondition hasCondition)
@@ -42,28 +61,28 @@ namespace Domain.Service.Items
             {
                 _disposables[itemChanged.Index].Clear();
 
-                if (itemChanged.NewValue != null && !itemChanged.NewValue.IsCursed)
+                if (itemChanged.NewItem != null && !itemChanged.NewItem.IsCursed)
                 {
-                    foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                    foreach (var condition in itemChanged.NewItem.PassiveConditions)
                         condition.Inflict(_hasCondition, Id<IEntity>.Empty);
                 }
 
-                if (itemChanged.OldValue != null && !itemChanged.OldValue.IsCursed)
+                if (itemChanged.OldItem != null && !itemChanged.OldItem.IsCursed)
                 {
-                    foreach (var condition in itemChanged.OldValue.PassiveConditions)
+                    foreach (var condition in itemChanged.OldItem.PassiveConditions)
                         condition.Delete(_hasCondition, Id<IEntity>.Empty);
                 }
 
-                if (itemChanged.NewValue != null)
+                if (itemChanged.NewItem != null)
                 {
-                    itemChanged.NewValue.OnCursedChanged.Subscribe(
+                    itemChanged.NewItem.OnCursedChanged.Subscribe(
                         isCursed =>
                         {
                             if (isCursed)
-                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
                                     condition.Delete(_hasCondition, Id<IEntity>.Empty);
                             else
-                                foreach (var condition in itemChanged.NewValue.PassiveConditions)
+                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
                                     condition.Inflict(_hasCondition, Id<IEntity>.Empty);
                         }
                     ).AddTo(_disposables[itemChanged.Index]);
@@ -106,16 +125,22 @@ namespace Domain.Service.Items
             return _storage.GetItem(index);
         }
 
-        public IItem? GetItem(int index, int subIndex)
+        public IItem? GetItem(ItemFocus index)
         {
-            if (subIndex < 0)
-                return _storage.GetItem(index);
-            return _storage.GetItem(index).ItemStorage.Value.GetItem(subIndex);
+            UnityEngine.Debug.Log($"GetItem: {index.Index}, {index.SubIndex}");
+            if (index.SubIndex < 0)
+                return _storage.GetItem(index.Index);
+            return _storage.GetItem(index.Index).ItemStorage.Value.GetItem(index.SubIndex);
         }
 
         public int GetItemIndex(IItem item)
         {
             return _storage.GetItemIndex(item);
+        }
+
+        public ItemFocus GetItemIndexRecursive(IItem item)
+        {
+            return AllItemsWithIndexRecursive.First(x => x.Item == item).Index;
         }
 
         public bool TryAdd(IItem item)
@@ -135,16 +160,21 @@ namespace Domain.Service.Items
             return storages.Any(storage => storage.TryRemove(item));
         }
 
-        public Result<IItem?> Replace(IItem? item, int index, int subIndex)
+        public Result<IItem?> Replace(IItem? item, ItemFocus index)
         {
-            if (subIndex < 0)
-                return _storage.Replace(item, index);
-            return _storage.GetItem(index).ItemStorage.Value.Replace(item, subIndex);
+            if (index.SubIndex < 0)
+                return _storage.Replace(item, index.Index);
+            return _storage.GetItem(index.Index).ItemStorage.Value.Replace(item, index.SubIndex);
         }
 
         public Result<IItem?> Replace(IItem? item, int index)
         {
             return _storage.Replace(item, index);
+        }
+
+        public IEnumerable<IItem> Clear()
+        {
+            return _storage.Clear();
         }
     }
 }

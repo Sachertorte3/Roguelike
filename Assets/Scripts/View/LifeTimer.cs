@@ -1,5 +1,7 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Unity.Logging;
 
 namespace View
 {
@@ -9,8 +11,15 @@ namespace View
 
         private async void Start()
         {
-            await UniTask.Delay(LifeTimeMilliseconds, cancellationToken: destroyCancellationToken);
-            Destroy(gameObject);
+            try
+            {
+                await UniTask.Delay(LifeTimeMilliseconds, cancellationToken: destroyCancellationToken);
+                Destroy(gameObject);
+            }
+            catch (OperationCanceledException e)
+            {
+                Log.Debug($"OperationCanceledException: {e}");
+            }
         }
     }
 }

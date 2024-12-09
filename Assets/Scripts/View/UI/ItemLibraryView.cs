@@ -8,16 +8,16 @@ using Sirenix.Utilities;
 
 namespace View.UI
 {
-    public record ItemViewData(string Name, Sprite Icon, bool IsShiny, string Info);
+    public record ItemLibraryViewData(string Name, Sprite Icon, bool IsShiny, string Info);
     public class ItemLibraryView : MonoBehaviour, IMenu
     {
         [SerializeField] private GameObject _content;
         [SerializeField] private InventoryItemView _itemViewPrefab;
         [SerializeField] private TMP_Text _infoText;
-        private readonly List<ItemViewData> _items = new();
+        private readonly List<ItemLibraryViewData> _items = new();
         private readonly List<InventoryItemView> _itemViews = new();
 
-        public void AddItem(string name, ItemViewData itemViewData)
+        public void AddItem(string name, ItemLibraryViewData itemViewData)
         {
             var index = _items.FindIndex(item => item.Name == name);
             if (index != -1)

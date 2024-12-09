@@ -1,162 +1,167 @@
 ﻿#nullable enable
+using System.Collections.Generic;
+using System.Linq;
 using R3;
-using Sirenix.Utilities;
 using TMPro;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace View.UI
 {
-    public record Focus(int index, int subIndex, bool isGroundItem, bool isEmpty);
     public class InventoryView : MonoBehaviour
     {
-        private const int InventorySize = 10;
+        const int MainStorageSize = 10;
+        const int MainStorageItemSize = MainStorageSize + 1;
+        const int MainStorageIncludeGroundAndEmpty = MainStorageSize + 2;
+        const int GroundItemIndex = MainStorageSize;
+        const int EmptyIndex = MainStorageSize + 1;
+        public int SubStorageSizes(int index)
+        {
+            return _items.TryGetValue(index, out var value) ? value.main.storageSize : 0;
+        }
+        [SerializeField] private StorageView _parent;
+        [SerializeField] private StorageView _children;
         [SerializeField] private InventoryItemView _itemViewPrefab;
         [SerializeField] private TMP_Text _infoText;
         [SerializeField] private Sprite _groundItemIcon;
         [SerializeField] private Sprite _emptyIcon;
         private readonly ReactiveProperty<(int index, int subIndex)> _focusIndex = new((0, -1));
-        private readonly Subject<int> _onMainFocusChanged = new();
-        private readonly Subject<int> _onLogUpdated = new();
-        private readonly string[] _info = new string[InventorySize + 1];
-        private readonly InventoryItemView[] _itemViews = new InventoryItemView[InventorySize + 2];
-
-        public Observable<Focus> OnFocusChanged => _focusIndex.Select(index => GetFocus(index.index, index.subIndex));
-        public Observable<Focus> OnMainFocusChanged => _onMainFocusChanged.Select(index => GetFocus(index, -1));
-        public Focus CurrentFocus => GetFocus(_focusIndex.CurrentValue.index, _focusIndex.CurrentValue.subIndex);
-
-        private SubStorageView _subStorageView;
-
-        public void Initialize(SubStorageView subStorageView)
+        private Dictionary<int, (ItemViewData main, Dictionary<int, ItemViewData> sub)> _items = new();
+        private HashSet<InventoryViewIndex> _locked = new();
+        private bool _enabled = true;
+        private readonly Subject<InventoryViewIndex> _onLogUpdated = new();
+        public ReadOnlyReactiveProperty<InventoryViewIndex> Focus => _focusIndex.Select(index => GetFocus(index.index, index.subIndex)).ToReadOnlyReactiveProperty();
+        public void Initialize()
         {
-            _subStorageView = subStorageView;
-
-            for (var i = 0; i < _itemViews.Length; i++)
-                if (_itemViews[i] == null)
-                    _itemViews[i] = Instantiate(_itemViewPrefab, transform);
-
-            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ =>
+            _parent.OnFocusChanged
+                .Subscribe(index =>
+                {
+                    _focusIndex.Value = (index, -1);
+                    UpdateChildren();
+                });
+            _children.OnFocusChanged
+                .Subscribe(index => _focusIndex.Value = (_focusIndex.Value.index, index));
+        }
+        private ItemViewData? GetItem(InventoryViewIndex index)
+        {
+            if (_items.TryGetValue(index.Index, out var value))
             {
-                _onMainFocusChanged.OnNext(index);
-                _focusIndex.Value = (index, -1);
-            }).AddTo(view));
-            subStorageView.OnFocusChanged.Subscribe(subIndex =>
+                if (index.SubIndex == -1)
+                    return value.main;
+                else
+                {
+                    if (value.sub.TryGetValue(index.SubIndex, out var subValue))
+                        return subValue;
+                    else
+                        return null;
+                }
+            }
+            else
+                return null;
+        }
+        public void Clear()
+        {
+            _items.Clear();
+            UpdateItems();
+        }
+        public void Replace(InventoryViewIndex index, ItemViewData itemData)
+        {
+            if (index.SubIndex == -1)
             {
-                _focusIndex.Value = (_focusIndex.CurrentValue.index, subIndex);
-            }).AddTo(subStorageView);
-            OnFocusChanged.Subscribe(index =>
+                if (!_items.ContainsKey(index.Index))
+                    _items[index.Index] = (itemData, new Dictionary<int, ItemViewData>());
+                else
+                    _items[index.Index] = (itemData, _items[index.Index].sub);
+                UpdateItems();
+            }
+            else
             {
-                Log.Debug($"OnFocusChanged: {index}");
-                _infoText.text = GetInfo(CurrentFocus);
-            }).AddTo(this);
-
-            _onLogUpdated.Subscribe(_ => _infoText.text = GetInfo(CurrentFocus)).AddTo(this);
-            _subStorageView.OnLogUpdated.Subscribe(_ => _infoText.text = GetInfo(CurrentFocus)).AddTo(subStorageView);
-
-            _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
-            _itemViews[InventorySize + 1].SetIcon(_emptyIcon, null, false, false, true, true);
-
-            for (var i = 0; i < _itemViews.Length; i++)
-            {
-                SetNavigation(i);
+                _items[index.Index].sub[index.SubIndex] = itemData;
+                UpdateItems();
             }
         }
-
-        public void Select(int index)
+        public void Remove(InventoryViewIndex focus)
         {
-            _itemViews[index].Select();
-        }
-
-        public void SelectSub(int subIndex)
-        {
-            _subStorageView.Select(subIndex);
-        }
-
-        private Focus GetFocus(int index, int subIndex) => new(index, subIndex, index == InventorySize, index == InventorySize + 1);
-
-        public Selectable Get(int index) => _itemViews[index].GetComponent<Selectable>();
-
-        public void SetNavigationWithSubStorage(SubStorageView subStorageView, int index)
-        {
-            var nav = new Navigation
-            {
-                mode = Navigation.Mode.Explicit,
-                selectOnLeft = _itemViews[(index - 1 + _itemViews.Length) % _itemViews.Length]
-                    .GetComponent<Selectable>(),
-                selectOnRight = _itemViews[(index + 1) % _itemViews.Length].GetComponent<Selectable>(),
-                selectOnDown = subStorageView.First
-            };
-            _itemViews[index].GetComponent<Selectable>().navigation = nav;
-        }
-
-        public void SetNavigation(int index)
-        {
-            var nav = new Navigation
-            {
-                mode = Navigation.Mode.Explicit,
-                selectOnLeft = _itemViews[(index - 1 + _itemViews.Length) % _itemViews.Length]
-                    .GetComponent<Selectable>(),
-                selectOnRight = _itemViews[(index + 1) % _itemViews.Length].GetComponent<Selectable>()
-            };
-            _itemViews[index].GetComponent<Selectable>().navigation = nav;
-        }
-
-        public void Replace(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
-            bool isCurseIdentified, string info, int index)
-        {
-            _itemViews[index].SetIcon(icon, count, isCursed, isShiny, isCountIdentified, isCurseIdentified);
-            _info[index] = info;
-            UpdateInfo(info, index);
-        }
-
-        public void SetGround()
-        {
-            _itemViews[InventorySize].SetIcon(_groundItemIcon, null, false, false, true, true);
-        }
-
-        public void Remove(int index)
-        {
-            _itemViews[index].Remove();
-            UpdateInfo("", index);
-        }
-
-        public void UpdateInfo(string info, int index)
-        {
-            _info[index] = info;
-            _onLogUpdated.OnNext(index);
-        }
-
-        public string GetInfo(Focus focus)
-        {
-            if (focus.subIndex >= 0)
-                return _subStorageView.GetInfo(focus.subIndex);
+            if (focus.SubIndex == -1)
+                _items.Remove(focus.Index);
             else
-                return focus.isEmpty ? "" : _info[focus.index];
+                _items[focus.Index].sub.Remove(focus.SubIndex);
+            UpdateItems();
+        }
+        private InventoryViewIndex GetFocus(int index, int subIndex) => new(index, subIndex, index == GroundItemIndex, index == EmptyIndex);
+
+        public void UpdateItems()
+        {
+            Debug.Log("UpdateItems");
+            Debug.Log($"Focus: {Focus.CurrentValue}");
+            _parent.SetCapacity(MainStorageIncludeGroundAndEmpty);
+            foreach (var (index, data) in _items)
+            {
+                var interactable = !_locked.Contains(new InventoryViewIndex(index, -1));
+                _parent.Replace(data.main, index, interactable);
+            }
+            if (!_enabled)
+            {
+                _parent.DisableAll();
+            }
+            UpdateChildren();
         }
 
-        public void LockItems(int[] lockedItemIndexes)
+        public void UpdateChildren()
         {
-            foreach (var index in lockedItemIndexes)
-                _itemViews[index].Lock();
+            var currentFocus = Focus.CurrentValue;
+            _children.SetCapacity(SubStorageSizes(currentFocus.Index));
+            if (_items.TryGetValue(currentFocus.Index, out var mainData))
+            {
+                foreach (var (index, data) in mainData.sub)
+                {
+                    var interactable = !_locked.Contains(new InventoryViewIndex(index, -1));
+                    _children.Replace(data, index, interactable);
+                }
+            }
+            if (!_enabled)
+            {
+                _children.DisableAll();
+            }
+            if (SubStorageSizes(currentFocus.Index) > 0)
+            {
+                _parent.SetChildrenNavigation(_children);
+                _children.SetParentNavigation(_parent, currentFocus.Index);
+            }
+            else
+            {
+                _parent.ResetNavigation();
+            }
+            Debug.Log($"Selected: {Focus.CurrentValue}");
+            if (currentFocus.SubIndex >= 0 && currentFocus.SubIndex < _children.Capacity)
+                _children.Select(currentFocus.SubIndex);
+            else
+                _parent.Select(currentFocus.Index);
+        }
+
+        public void LockItems(InventoryViewIndex[] lockedItemIndexes)
+        {
+            foreach (var focus in lockedItemIndexes)
+                _locked.Add(focus);
+            UpdateItems();
         }
 
         public void UnlockAllItems()
         {
-            foreach (var view in _itemViews)
-                view.Unlock();
+            _locked.Clear();
+            UpdateItems();
         }
 
         public void EnableAllItems()
         {
-            foreach (var view in _itemViews)
-                view.Enable();
+            _enabled = true;
+            UpdateItems();
         }
 
         public void DisableAllItems()
         {
-            foreach (var view in _itemViews)
-                view.Disable();
+            _enabled = false;
+            UpdateItems();
         }
     }
 }

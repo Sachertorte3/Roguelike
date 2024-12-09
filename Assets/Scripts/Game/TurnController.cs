@@ -95,7 +95,7 @@ namespace Game
                             }
                             catch (OperationCanceledException e)
                             {
-                                Log.Error(e);
+                                Log.Debug($"OperationCanceledException: {e}");
                             }
                         }
                         else

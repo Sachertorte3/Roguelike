@@ -19,6 +19,7 @@ namespace Domain.Model.Dungeon
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
         public Table<EnemyData> Npcs;
         [RequiredListLength(1, null)] public List<SectionData> Sections;
+        public int MaxLevel => Sections.Sum(section => section.Depth);
 
         public bool ExistLevel(int level)
         {
@@ -65,6 +66,7 @@ namespace Domain.Model.Dungeon
             var floorData = GetFloorData(level);
             return new DungeonMapData(
                 name,
+                (float)level / MaxLevel,
                 sectionData.Type,
                 floorData.Field,
                 new ItemDatabase(MasterItemDataBase, SpawnItem),
@@ -77,7 +79,6 @@ namespace Domain.Model.Dungeon
                 floorData.PrefixChance,
                 floorData.ShinyChance,
                 floorData.SleepChance,
-                floorData.ChestChance,
                 floorData.MimicChance,
                 sectionData.WeaponChanceInChest,
                 sectionData.RoundRoomCorner,

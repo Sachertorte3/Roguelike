@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -38,9 +39,27 @@ namespace Domain.Service.Effect
             );
         }
 
-        public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IMap map)
+        private ItemFocus GetItemIndex(IPlayer player, IItem item, IMap map)
         {
             var selfIndex = player.Character.Inventory.GetItemIndexRecursive(item);
+            if (selfIndex != null)
+            {
+                return selfIndex;
+            }
+
+            var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
+            if (item == groundItem)
+            {
+                return ItemFocus.GroundItem;
+            }
+
+            throw new Exception("ItemTargetSkill: Item not found in inventory or ground.");
+        }
+
+        public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IMap map)
+        {
+            var selfIndex = GetItemIndex(player, item, map);
+
             var disabledItemIndexes = new List<ItemFocus>();
             foreach (var (inventoryItem, index) in player.Character.Inventory.AllItemsWithIndexRecursive)
             {

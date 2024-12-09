@@ -88,17 +88,17 @@ namespace Domain.Model.Character.Status
         {
             FlagStatType.CannotAct => CommonSenseParameters.OneTurnStunEquivalentDamage,
             FlagStatType.CannotMove => CommonSenseParameters.OneTurnStunEquivalentDamage / 2,
-            FlagStatType.Confused => 5f,
-            FlagStatType.Clairvoyant => 10f,
+            FlagStatType.Confused => CommonSenseParameters.OneTurnStunEquivalentDamage / 2,
+            FlagStatType.Clairvoyant => 2f,
             FlagStatType.Blind => CommonSenseParameters.OneTurnStunEquivalentDamage / 2,
-            FlagStatType.OverDrive => 20f,
-            FlagStatType.Hard => 20f,
-            FlagStatType.Heavy => 10f,
-            FlagStatType.SecureHold => 10f,
-            FlagStatType.CurseProof => 10f,
-            FlagStatType.Haggle => 10f,
-            FlagStatType.IsAffectedByTrap => 10f,
-            FlagStatType.AutoIdentify => 10f,
+            FlagStatType.OverDrive => 5f,
+            FlagStatType.Hard => 2f,
+            FlagStatType.Heavy => 1f,
+            FlagStatType.SecureHold => 1f,
+            FlagStatType.CurseProof => 1f,
+            FlagStatType.Haggle => 0.2f,
+            FlagStatType.IsAffectedByTrap => 0.5f,
+            FlagStatType.AutoIdentify => 3f,
             _ => 0f
         };
     }

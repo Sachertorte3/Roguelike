@@ -160,11 +160,14 @@ namespace Domain.Service.Characters
             }
             if (enemyData.IsFlying)
             {
-                value *= 1.2f;
-            }
-            if (enemyData.CanThroughWalls)
-            {
-                value *= 2f;
+                if (enemyData.CanThroughWalls)
+                {
+                    value *= 1.5f;
+                }
+                else
+                {
+                    value *= 1.2f;
+                }
             }
             if (enemyData.CanPickUp)
             {

@@ -106,4 +106,4 @@ MonoBehaviour:
       data:
         _condition:
           _name: "\u6BD2"
-        _probabilityOfSuccess: 0.5
+        _probabilityOfSuccess: 0.25

@@ -148,13 +148,11 @@ namespace Game
 
             var itemCount = data.ItemCount();
             var moneyCount = data.MoneyCount();
-            var chestCount = Random.value < data.ChestChance ? 1 : 0;
             var characterCount = data.CharacterCount();
             var trapCount = data.TrapCount();
 
             AddItemsToRoom(data, roomId, itemCount);
             AddMoneyToRoom(data, roomId, moneyCount);
-            AddChestsToRoom(data, roomId, chestCount);
             AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
         }
@@ -174,7 +172,7 @@ namespace Game
 
             foreach (var position in rect.Value.RectRange())
             {
-                var item = shopItems.GetRandomItem();
+                var item = shopItems.GetRandomItem(data.Progress);
                 _items.Add(ItemFactory.Build(position, Item.Build(item, state: ItemState.ShopItem)));
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
@@ -231,12 +229,10 @@ namespace Game
 
             var itemCount = data.ItemCount();
             var moneyCount = data.MoneyCount();
-            var chestCount = Random.value < data.ChestChance ? 1 : 0;
             var trapCount = data.TrapCount();
 
             AddItemsToRoom(data, roomId, itemCount);
             AddMoneyToRoom(data, roomId, moneyCount);
-            AddChestsToRoom(data, roomId, chestCount);
             AddTrapsToRoom(data, roomId, trapCount);
 
             return true;
@@ -256,7 +252,7 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
-                var item = data.ItemDatabase.GetRandomItem();
+                var item = data.ItemDatabase.GetRandomItem(data.Progress);
                 _items.Add(ItemFactory.Build(position, Item.Build(item)));
             }
         }
@@ -279,13 +275,13 @@ namespace Game
                 }
                 else if (Random.value < data.WeaponChanceInChest)
                 {
-                    var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons);
+                    var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
                     _chests.Add(
-                        Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem())));
+                        Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem(data.Progress))));
                 }
                 else
                 {
-                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem()));
+                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem(data.Progress)));
                 }
             }
         }

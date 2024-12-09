@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16097a5b2ad98e243a375f972355931f, type: 3}
-  m_Name: "\u9759\u96FB\u6C17"
+  m_Name: "\u5E2F\u96FB"
   m_EditorClassIdentifier: 
   Condition:
     rid: 3119344245011382286
@@ -21,8 +21,8 @@ MonoBehaviour:
     Probability: 0
     RemoveByCharacterNearby: 0
     CharacterNearbyProbability: 0
-  InflictLog: "\u306F\u9759\u96FB\u6C17\u3092\u307E\u3068\u3063\u305F"
-  DeleteLog: "\u306E\u9759\u96FB\u6C17\u306F\u6D88\u3048\u305F"
+  InflictLog: "\u306F\u5E2F\u96FB\u3057\u305F"
+  DeleteLog: "\u306E\u96FB\u6C17\u306F\u6D88\u3048\u305F"
   references:
     version: 2
     RefIds:

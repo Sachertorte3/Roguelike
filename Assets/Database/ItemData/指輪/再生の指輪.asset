@@ -55,7 +55,7 @@ MonoBehaviour:
     - rid: 2541219158355345436
       type: {class: NaturalHeal, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Power: 0.8
+        Power: 0.3
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

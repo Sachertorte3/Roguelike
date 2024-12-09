@@ -55,7 +55,7 @@ MonoBehaviour:
     RushDistance: 0
     BackStepDistance: 0
     ChargeTurn: 0
-    CoolTime: 0
+    CoolTime: 2
   - Skill:
       <Position>k__BackingField:
         rid: 5486256507571666954
@@ -106,7 +106,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 4
+          _power: 3
         _criticalRate: 0
     - rid: 2541219281251860495
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

@@ -267,7 +267,7 @@ MonoBehaviour:
       ShinyChance: 0.01
       SleepChance: 0.75
       MimicChance: 0.1
-      GrassChance: 0.3
+      GrassChance: 0
       ShopChance: 0.05
       MonsterHouseChance: 0.05
       RestRoomChance: 0.05
@@ -298,7 +298,7 @@ MonoBehaviour:
       MimicChance: 0.1
       GrassChance: 0.3
       ShopChance: 0.05
-      MonsterHouseChance: 0.05
+      MonsterHouseChance: 1
       RestRoomChance: 0.05
       ChestChance: 0.1
       ItemCount: 2

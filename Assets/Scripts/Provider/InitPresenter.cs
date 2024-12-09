@@ -1,6 +1,8 @@
 #nullable enable
+using System;
 using Unity.Logging;
 using Unity.Logging.Sinks;
+using UnityEngine;
 using VContainer;
 using Logger = Unity.Logging.Logger;
 
@@ -16,18 +18,27 @@ namespace Provider
 
         private void LoggerInit()
         {
-            Log.Logger = new Logger(Configuration());
+            Log.Logger = new Logger(
+#if UNITY_EDITOR
+                EditorConfiguration()
+#elif DEBUG
+                DevelopmentConfiguration()
+#else
+                ReleaseConfiguration()
+#endif
+            );
             Log.Debug("[Game]Init Logger");
         }
-        private static LoggerConfig Configuration()
+        private static LoggerConfig EditorConfiguration()
         {
-#if UNITY_EDITOR
             return new LoggerConfig()
                 .SyncMode.FullSync()
                 .WriteTo.UnityDebugLog(
                     minLevel: LogLevel.Info,
                     captureStackTrace: true);
-#elif DEBUG
+        }
+        private static LoggerConfig DevelopmentConfiguration()
+        {
             return new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
@@ -36,7 +47,9 @@ namespace Provider
                     minLevel: LogLevel.Debug,
                     captureStackTrace: true,
                     outputTemplate: "{Timestamp} [{Level}] {Message}{NewLine}{Stacktrace}");
-#else
+        }
+        private static LoggerConfig ReleaseConfiguration()
+        {
             return new LoggerConfig()
                 .SyncMode.FatalIsSync()
                 //.RedirectUnityLogs(log:true)
@@ -45,7 +58,6 @@ namespace Provider
                     minLevel: LogLevel.Info,
                     captureStackTrace: false,
                     outputTemplate: "{Timestamp} [{Level}] {Message}");
-#endif
         }
     }
 }

@@ -54,7 +54,7 @@ MonoBehaviour:
     RushDistance: 0
     BackStepDistance: 0
     ChargeTurn: 0
-    CoolTime: 2
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:

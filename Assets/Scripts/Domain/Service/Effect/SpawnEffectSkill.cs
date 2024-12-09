@@ -226,8 +226,10 @@ namespace Domain.Service.Effect
             {
                 price += effect.EvaluatePrice();
             }
+            price *= Repeats;
 
             price *= _area.EvaluateArea();
+            price *= _position.EvaluateHitProbability();
             return price * ProbabilityOfSuccess;
         }
 

@@ -40,7 +40,7 @@ namespace Domain.Model.Effect.Position
 
         public float EvaluateHitProbability()
         {
-            return NumberOfTarget;
+            return 4 + 2 * NumberOfTarget;
         }
 
         public string UpgradePathName => "近くのキャラクター";

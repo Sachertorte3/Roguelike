@@ -28,7 +28,23 @@ namespace View.UI
             IsGroundItem = index == 10;
             IsEmpty = index == 11;
         }
-        public static readonly InventoryViewIndex GroundItem = new(10, -1, true, false);
-        public static readonly InventoryViewIndex Empty = new(11, -1, false, true);
+        public static readonly InventoryViewIndex GroundItem = new(InventoryView.GroundItemIndex, -1, true, false);
+        public static readonly InventoryViewIndex Empty = new(InventoryView.EmptyIndex, -1, false, true);
+        public override string ToString()
+        {
+            if (this == GroundItem)
+                return $"GroundItem";
+            else if (this == Empty)
+                return $"Empty";
+            else if (!IsGroundItem && !IsEmpty)
+            {
+                if (SubIndex == -1)
+                    return $"MainIndex: {Index}";
+                else
+                    return $"MainIndex: {Index}, SubIndex: {SubIndex}";
+            }
+            else
+                return $"Error";
+        }
     }
 }

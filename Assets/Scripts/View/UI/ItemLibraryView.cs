@@ -35,7 +35,7 @@ namespace View.UI
             foreach (var itemData in _items)
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
-                view.SetIcon(itemData.Icon, null, false, itemData.IsShiny, true, true);
+                view.Set(itemData.Icon, null, false, itemData.IsShiny, true, true);
                 _itemViews.Add(view);
             }
 

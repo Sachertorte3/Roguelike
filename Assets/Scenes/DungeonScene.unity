@@ -611,8 +611,8 @@ MonoBehaviour:
   _children: {fileID: 843050681}
   _itemViewPrefab: {fileID: -7847131293135838076, guid: c4f92b6139c253d47ab6f0f99be0afd4, type: 3}
   _infoText: {fileID: 1170533259}
-  _groundItemIcon: {fileID: 0}
-  _emptyIcon: {fileID: 0}
+  _groundItemIcon: {fileID: 286837363, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  _emptyIcon: {fileID: 571617074, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
 --- !u!1 &116903493
 GameObject:
   m_ObjectHideFlags: 0
@@ -4327,7 +4327,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 10.3671875
+  orthographic size: 11.21875
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -4868,7 +4868,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10.3671875
+  orthographic size: 11.21875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

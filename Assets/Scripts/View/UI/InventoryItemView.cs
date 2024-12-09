@@ -12,11 +12,19 @@ namespace View.UI
     internal class InventoryItemView : Selectable, ISelectHandler
     {
         [SerializeField] private Image _icon;
+        private Sprite? _defaultIcon;
         [SerializeField] private TMP_Text _count;
         [SerializeField] private Image _cursedIcon;
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
+
+        public void SetDefaultIcon(Sprite icon)
+        {
+            _defaultIcon = icon;
+            if (_icon.sprite == null)
+                SetIcon(_defaultIcon);
+        }
 
         public override void OnSelect(BaseEventData eventData)
         {
@@ -24,11 +32,10 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void SetIcon(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
+        public void Set(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
             bool isCurseIdentified)
         {
-            _icon.sprite = icon;
-            _icon.enabled = true;
+            SetIcon(icon);
             SetCount(count, isCountIdentified);
             SetCursed(isCursed, isCurseIdentified);
             SetShiny(isShiny);
@@ -36,14 +43,19 @@ namespace View.UI
 
         public void Remove()
         {
-            _icon.sprite = null;
-            _icon.enabled = false;
+            SetIcon(_defaultIcon);
             RemoveCount();
             SetCursed(false, true);
             SetShiny(false);
         }
 
-        public void SetCursed(bool isCursed, bool isIdentified)
+        private void SetIcon(Sprite? icon)
+        {
+            _icon.sprite = icon;
+            _icon.enabled = icon != null;
+        }
+
+        private void SetCursed(bool isCursed, bool isIdentified)
         {
             if (!isIdentified)
             {
@@ -55,7 +67,7 @@ namespace View.UI
             }
         }
 
-        public void SetShiny(bool isShiny)
+        private void SetShiny(bool isShiny)
         {
             if (isShiny)
                 _particles.Add(ParticleType.ShinyStar);
@@ -63,7 +75,7 @@ namespace View.UI
                 _particles.Clear();
         }
 
-        public void SetCount(int? count, bool isIdentified)
+        private void SetCount(int? count, bool isIdentified)
         {
             if (!isIdentified)
                 _count.text = "?";
@@ -73,7 +85,7 @@ namespace View.UI
                 _count.text = "";
         }
 
-        public void RemoveCount()
+        private void RemoveCount()
         {
             _count.text = "";
         }

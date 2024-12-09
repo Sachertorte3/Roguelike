@@ -33,11 +33,12 @@ namespace View.UI
         public ReadOnlyReactiveProperty<InventoryViewIndex> Focus => _focusIndex.Select(index => GetFocus(index.index, index.subIndex)).ToReadOnlyReactiveProperty();
         public void Initialize()
         {
+            UpdateAllItemView();
             _parent.OnFocusChanged
                 .Subscribe(index =>
                 {
                     _focusIndex.Value = (index, -1);
-                    UpdateChildren();
+                    UpdateChildrenView();
                 });
             _children.OnFocusChanged
                 .Subscribe(index => _focusIndex.Value = (_focusIndex.Value.index, index));
@@ -47,7 +48,8 @@ namespace View.UI
             if (_items.TryGetValue(index.Index, out var value))
             {
                 if (index.SubIndex == -1)
-                    return value.main;
+                    return value
+                    .main;
                 else
                 {
                     if (value.sub.TryGetValue(index.SubIndex, out var subValue))
@@ -62,35 +64,86 @@ namespace View.UI
         public void Clear()
         {
             _items.Clear();
-            UpdateItems();
+            UpdateAllItemView();
         }
         public void Replace(InventoryViewIndex index, ItemViewData itemData)
         {
-            if (index.SubIndex == -1)
+            if (index.SubIndex < 0)
             {
                 if (!_items.ContainsKey(index.Index))
                     _items[index.Index] = (itemData, new Dictionary<int, ItemViewData>());
                 else
                     _items[index.Index] = (itemData, _items[index.Index].sub);
-                UpdateItems();
+                UpdateMainItemView(index.Index);
             }
             else
             {
                 _items[index.Index].sub[index.SubIndex] = itemData;
-                UpdateItems();
+                if (index.Index == Focus.CurrentValue.Index)
+                    UpdateSubItemView(index);
             }
         }
-        public void Remove(InventoryViewIndex focus)
+        public void Remove(InventoryViewIndex index)
         {
-            if (focus.SubIndex == -1)
-                _items.Remove(focus.Index);
+            if (index.SubIndex == -1)
+            {
+                _items.Remove(index.Index);
+                UpdateMainItemView(index.Index);
+            }
             else
-                _items[focus.Index].sub.Remove(focus.SubIndex);
-            UpdateItems();
+            {
+                _items[index.Index].sub.Remove(index.SubIndex);
+                if (index.Index == Focus.CurrentValue.Index)
+                    UpdateSubItemView(index);
+            }
         }
         private InventoryViewIndex GetFocus(int index, int subIndex) => new(index, subIndex, index == GroundItemIndex, index == EmptyIndex);
 
-        public void UpdateItems()
+        public void UpdateMainItemView(int mainIndex)
+        {
+            Debug.Log($"UpdateMainItem Index: {mainIndex}");
+            var index = new InventoryViewIndex(mainIndex, -1);
+            var interactable = !_locked.Contains(index);
+            if (_items.TryGetValue(mainIndex, out var data))
+            {
+                _parent.Replace(data.main, index.Index, interactable);
+            }
+            else
+            {
+                _parent.Remove(index.Index);
+            }
+
+            if (!_enabled)
+            {
+                _parent.DisableAll();
+            }
+            if (mainIndex == Focus.CurrentValue.Index)
+            {
+                UpdateChildrenView();
+            }
+        }
+
+        public void UpdateSubItemView(InventoryViewIndex index)
+        {
+            Debug.Log($"UpdateSubItem Index: {index}");
+            var interactable = !_locked.Contains(index);
+            var item = GetItem(index);
+            if (item != null)
+            {
+                _children.Replace(item, index.SubIndex, interactable);
+            }
+            else
+            {
+                _children.Remove(index.SubIndex);
+            }
+
+            if (!_enabled)
+            {
+                _children.DisableAll();
+            }
+        }
+
+        public void UpdateAllItemView()
         {
             Debug.Log("UpdateItems");
             Debug.Log($"Focus: {Focus.CurrentValue}");
@@ -104,10 +157,10 @@ namespace View.UI
             {
                 _parent.DisableAll();
             }
-            UpdateChildren();
+            UpdateChildrenView();
         }
 
-        public void UpdateChildren()
+        public void UpdateChildrenView()
         {
             var currentFocus = Focus.CurrentValue;
             _children.SetCapacity(SubStorageSizes(currentFocus.Index));
@@ -143,25 +196,25 @@ namespace View.UI
         {
             foreach (var focus in lockedItemIndexes)
                 _locked.Add(focus);
-            UpdateItems();
+            UpdateAllItemView();
         }
 
         public void UnlockAllItems()
         {
             _locked.Clear();
-            UpdateItems();
+            UpdateAllItemView();
         }
 
         public void EnableAllItems()
         {
             _enabled = true;
-            UpdateItems();
+            UpdateAllItemView();
         }
 
         public void DisableAllItems()
         {
             _enabled = false;
-            UpdateItems();
+            UpdateAllItemView();
         }
     }
 }

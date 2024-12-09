@@ -17,17 +17,17 @@ namespace Domain.Model.Dungeon
         public RarityWeightTable<ItemData> ChestItems;
         public Table<ShopItemData> ShopItems;
 
-        public ItemData GetRandomItem(ItemCategory category)
+        public ItemData GetRandomItem(ItemCategory category, float progress)
         {
             return category switch
             {
-                ItemCategory.Potions => Potions.GetRandomItem(),
-                ItemCategory.Scrolls => Scrolls.GetRandomItem(),
-                ItemCategory.Books => Books.GetRandomItem(),
-                ItemCategory.Wands => Wands.GetRandomItem(),
-                ItemCategory.Weapons => Weapons.GetRandomItem(),
-                ItemCategory.Artifacts => Artifacts.GetRandomItem(),
-                ItemCategory.Others => Others.GetRandomItem(),
+                ItemCategory.Potions => Potions.GetRandomItem(progress),
+                ItemCategory.Scrolls => Scrolls.GetRandomItem(progress),
+                ItemCategory.Books => Books.GetRandomItem(progress),
+                ItemCategory.Wands => Wands.GetRandomItem(progress),
+                ItemCategory.Weapons => Weapons.GetRandomItem(progress),
+                ItemCategory.Artifacts => Artifacts.GetRandomItem(progress),
+                ItemCategory.Others => Others.GetRandomItem(progress),
                 _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
             };
         }

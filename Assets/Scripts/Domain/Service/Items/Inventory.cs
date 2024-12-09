@@ -138,9 +138,11 @@ namespace Domain.Service.Items
             return _storage.GetItemIndex(item);
         }
 
-        public ItemFocus GetItemIndexRecursive(IItem item)
+        public ItemFocus? GetItemIndexRecursive(IItem item)
         {
-            return AllItemsWithIndexRecursive.First(x => x.Item == item).Index;
+            if (AllItemsWithIndexRecursive.Any(x => x.Item == item))
+                return AllItemsWithIndexRecursive.First(x => x.Item == item).Index;
+            return null;
         }
 
         public bool TryAdd(IItem item)

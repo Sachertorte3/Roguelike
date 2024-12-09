@@ -11,15 +11,34 @@ namespace Domain.Model.Item
 {
     public static class RarityExtensions
     {
-        public static float GetWeight(this Rarity rarity)
+        /// <summary>
+        /// Get weight of rarity
+        /// </summary>
+        /// <param name="rarity"></param>
+        /// <param name="progress">0~1 </param>
+        /// <returns></returns>
+        public static float GetWeight(this Rarity rarity, float progress)
         {
-            return rarity switch
+            return Mathf.Max(rarity switch
             {
-                Rarity.Common => 50,
+                Rarity.Common => 60,
                 Rarity.Uncommon => 30,
-                Rarity.Rare => 15,
-                Rarity.Epic => 4,
-                Rarity.Legendary => 1,
+                Rarity.Rare => 7,
+                Rarity.Epic => 2.5f,
+                Rarity.Legendary => 0.5f,
+                _ => 0
+            } + GetCorrection(rarity, progress), 0);
+        }
+
+        private static float GetCorrection(Rarity rarity, float progress)
+        {
+            return progress * rarity switch
+            {
+                Rarity.Common => -30,
+                Rarity.Uncommon => 0,
+                Rarity.Rare => 21,
+                Rarity.Epic => 6.5f,
+                Rarity.Legendary => 2.5f,
                 _ => 0
             };
         }

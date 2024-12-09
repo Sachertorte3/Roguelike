@@ -36,6 +36,10 @@ namespace View.UI
             Log.Debug($"[InventoryView]Initialize");
             CreateMainView();
             CreateChildrenView(Focus.CurrentValue.Index);
+            _items.Clear();
+            _locked.Clear();
+            UpdateInfoText();
+
             _parent.OnSelected
                 .Subscribe(index => _focusIndex.Value = (index, -1));
             _children.OnSelected

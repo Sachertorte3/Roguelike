@@ -5,9 +5,11 @@ using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using Domain.Model.Setting;
 using Game;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -22,9 +24,9 @@ namespace Provider
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
-            inventoryView.Initialize();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
+                    inventoryView.Initialize();
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(
                         inventory.OnItemChanged.Select(itemChanged => ((IItem?)itemChanged.NewItem, itemChanged.Index)),
@@ -42,7 +44,8 @@ namespace Provider
 
                     Observable.Merge(
                         map.Player.Character.KnownItemNames.ObserveChanged().AsUnitObservable(),
-                        map.ItemPlaceholders.OnItemRenamed
+                        map.ItemPlaceholders.OnItemRenamed,
+                        Settings.AutoIdentify.AsUnitObservable()
                     ).Subscribe(_ =>
                     {
                         UpdateAllItemViews(inventoryView, map);
@@ -96,6 +99,7 @@ namespace Provider
 
         private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
         {
+            Debug.Log("UpdateAllItemViews");
             inventoryView.Clear();
             foreach (var (item, index) in map.Player.Character.Inventory.AllItemsWithIndex)
             {

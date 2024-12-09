@@ -231,15 +231,15 @@ namespace Domain.Service.Characters.Behavior
         {
         }
 
-        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params ItemFocus[] disabledItemIds)
+        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params ItemFocus[] disabledItemIndexes)
         {
-            _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
+            _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIndexes));
 
             ItemFocus? focus;
             do
             {
                 focus = await _receiver.OnUseItemActionReceived.WaitAsync();
-            } while (!focus.IsEmpty && disabledItemIds.Contains(focus));
+            } while (!focus.IsEmpty && disabledItemIndexes.Contains(focus));
 
             _onItemSelect.OnNext(new OnItemSelectMessage(false, new ItemFocus[0]));
             if (focus.IsEmpty)

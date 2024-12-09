@@ -9,16 +9,16 @@ using Utilities.Table;
 namespace Domain.Model.Item
 {
     [Serializable]
-    public class RarityWeightTable<T> : ITable<T> where T : IHasRarity
+    public class RarityWeightTable<T> : ICorrectionTable<T> where T : IHasRarity
     {
         [RequiredListLength(1, null)] [SerializeField]
         private List<T> items = new();
 
         public List<T> Items => items;
 
-        public T GetRandomItem()
+        public T GetRandomItem(float progress)
         {
-            return items[items.Select(items => items.Rarity.GetWeight()).WeightedIndex()];
+            return items[items.Select(items => items.Rarity.GetWeight(progress)).WeightedIndex()];
         }
     }
 }

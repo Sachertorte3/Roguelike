@@ -101,6 +101,7 @@ namespace Domain.Service.Characters
 
             AutoIdentify.Where(autoIdentify => autoIdentify).Subscribe(_ =>
             {
+                Debug.Log("AutoIdentify");
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
                     KnowItem(item, false);

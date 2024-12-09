@@ -49,10 +49,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: -2
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   - Skill:
       <Position>k__BackingField:
@@ -62,10 +63,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: -2
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   - Skill:
       <Position>k__BackingField:
@@ -75,10 +77,11 @@ MonoBehaviour:
       <Effects>k__BackingField:
       - rid: -2
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -89,8 +92,6 @@ MonoBehaviour:
     <Effects>k__BackingField:
     - rid: -2
     <Repeats>k__BackingField: 1
-    <RushDistance>k__BackingField: 0
-    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:

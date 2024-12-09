@@ -11,11 +11,12 @@ namespace Domain.Model.Dungeon
 {
     public record DungeonMapData(
         string Name,
+        float Progress,
         SectionType Type,
         FieldBluePrint Field,
         ItemDatabase ItemDatabase,
-        ITable<WeaponPrefix> WeaponPrefixes,
-        ITable<ItemData> ChestItems,
+        ICorrectionTable<WeaponPrefix> WeaponPrefixes,
+        ICorrectionTable<ItemData> ChestItems,
         ITable<TrapData> Traps,
         ITable<ShopItemData> ShopItems,
         Table<EnemyData> Enemies,
@@ -23,7 +24,6 @@ namespace Domain.Model.Dungeon
         float PrefixChance,
         float ShinyChance,
         float SleepChance,
-        float ChestChance,
         float MimicChance,
         float WeaponChanceInChest,
         bool RoundRoomCorner,

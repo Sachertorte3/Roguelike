@@ -10,7 +10,7 @@ namespace Domain.Model.Character
         public IEnumerable<ItemFocus> AllIndexesRecursive { get; }
         public IEnumerable<(IItem Item, ItemFocus Index)> AllItemsWithIndexRecursive { get; }
         public IItem? GetItem(ItemFocus index);
-        public ItemFocus GetItemIndexRecursive(IItem item);
+        public ItemFocus? GetItemIndexRecursive(IItem item);
         public Result<IItem?> Replace(IItem? item, ItemFocus index);
     }
 }

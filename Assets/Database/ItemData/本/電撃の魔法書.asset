@@ -71,5 +71,5 @@ MonoBehaviour:
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
         _condition:
-          _name: "\u9759\u96FB\u6C17"
+          _name: "\u5E2F\u96FB"
         _probabilityOfSuccess: 1

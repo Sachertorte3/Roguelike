@@ -16,7 +16,6 @@ using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -36,7 +35,7 @@ namespace Domain.Service.Items
         }
 
         public string DebugName => _fullName;
-        private string _fullName => _upgradePaths.Count > 0 ? $"{CustomName.UnwrapOr(RevealedName)} +{AppliedUpgrades}" : RevealedName;
+        private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
         private readonly List<UpgradePath> _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         private int _maxUsages;
@@ -566,7 +565,14 @@ namespace Domain.Service.Items
             {
                 return FullInfo();
             }
+            else
+            {
+                return UnknownInfo(itemPlaceholders);
+            }
+        }
 
+        public string UnknownInfo(ItemPlaceholders itemPlaceholders)
+        {
             var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
             info += CursedInfo();
             if (HasActivatableSkillWhenUsed)

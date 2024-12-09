@@ -88,7 +88,7 @@ namespace View.UI
         public void Remove(int index)
         {
             _itemViews[index].Remove();
-            _itemViews[index].UpdateInteractable(false);
+            _itemViews[index].UpdateInteractable(true);
         }
         public void EnableAll()
         {

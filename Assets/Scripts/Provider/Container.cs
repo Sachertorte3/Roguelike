@@ -45,6 +45,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<SEManager>();
             builder.RegisterComponentInHierarchy<ItemLibraryView>();
 
+            builder.RegisterPlainEntryPoint<InitPresenter>();
             builder.RegisterPlainEntryPoint<DungeonInfoPresenter>();
             builder.RegisterPlainEntryPoint<InputPresenter>();
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
@@ -61,8 +62,8 @@ namespace Provider
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
             builder.RegisterPlainEntryPoint<StatisticsPresenter>();
             builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
-            builder.RegisterPlainEntryPoint<Presenter>();
             builder.RegisterPlainEntryPoint<DebugCommands>();
+            builder.RegisterPlainEntryPoint<Presenter>();
         }
     }
 }

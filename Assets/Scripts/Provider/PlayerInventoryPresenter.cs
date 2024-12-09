@@ -18,7 +18,6 @@ namespace Provider
     public class PlayerInventoryPresenter
     {
         private readonly CompositeDisposable _disposables = new();
-        private readonly CompositeDisposable _subDisposables = new();
 
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
@@ -28,7 +27,7 @@ namespace Provider
                 {
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(
-                        inventory.OnItemChanged.Select(itemChanged => (itemChanged.NewItem, itemChanged.Index)),
+                        inventory.OnItemChanged.Select(itemChanged => ((IItem?)itemChanged.NewItem, itemChanged.Index)),
                         inventory.OnItemUpdated.Select(itemUpdated => ((IItem?)itemUpdated.Item, itemUpdated.Index))
                     ).Subscribe(data =>
                     {
@@ -49,9 +48,9 @@ namespace Provider
                         UpdateAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
 
-                    for (var i = 0; i < inventory.Capacity; i++)
+                    foreach (var (item, index) in inventory.AllItemsWithIndex)
                     {
-                        ReplaceItemView(inventoryView, inventory.GetItem(i), new InventoryViewIndex(i),
+                        ReplaceItemView(inventoryView, item, new InventoryViewIndex(index),
                             map.Player, map.ItemPlaceholders);
                     }
                 },
@@ -83,9 +82,9 @@ namespace Provider
                 );
                 if (index.SubIndex == -1 && item.ItemStorage.IsSome)
                 {
-                    for (var i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                    foreach (var (subItem, subIndex) in item.ItemStorage.Value.AllItemsWithIndex)
                     {
-                        ReplaceItemView(inventoryView, item.ItemStorage.Value.GetItem(i), new InventoryViewIndex(index.Index, i), player, itemPlaceholders);
+                        ReplaceItemView(inventoryView, subItem, new InventoryViewIndex(index.Index, subIndex), player, itemPlaceholders);
                     }
                 }
             }

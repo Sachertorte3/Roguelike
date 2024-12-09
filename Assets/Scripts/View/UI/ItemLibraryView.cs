@@ -39,7 +39,7 @@ namespace View.UI
                 _itemViews.Add(view);
             }
 
-            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ =>
+            _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ =>
             {
                 _infoText.text = _items[index].Info;
             }).AddTo(view));

@@ -1,7 +1,8 @@
-﻿using Domain.Model.Item;
+﻿#nullable enable
+using Domain.Model.Item;
 
 namespace Domain.Model.Character.Message
 {
-    public record OnItemChanged(IItem OldItem, IItem NewItem, int Index);
+    public record OnItemChanged(IItem? OldItem, IItem? NewItem, int Index);
     public record OnItemUpdated(IItem Item, int Index);
 }

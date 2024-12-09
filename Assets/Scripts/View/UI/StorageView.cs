@@ -12,11 +12,11 @@ namespace View.UI
     public class StorageView : MonoBehaviour
     {
         [SerializeField] private InventoryItemView _itemViewPrefab;
-        private readonly Subject<int> _onFocusChanged = new();
+        private readonly Subject<int> _onSelected = new();
         private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
         public int Capacity => _itemViews.Length;
         public Selectable? First => _itemViews.FirstOrDefault()?.GetComponent<Selectable>();
-        public Observable<int> OnFocusChanged => _onFocusChanged;
+        public Observable<int> OnSelected => _onSelected;
         public void SetCapacity(int capacity)
         {
             Clear();
@@ -25,7 +25,7 @@ namespace View.UI
             {
                 _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             }
-            _itemViews.ForEach((view, index) => view.OnFocus.Subscribe(_ => _onFocusChanged.OnNext(index)).AddTo(view));
+            _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ => _onSelected.OnNext(index)).AddTo(view));
 
             for (var i = 0; i < capacity; i++)
             {
@@ -41,7 +41,6 @@ namespace View.UI
         }
         public void SetDefaultIcon(int index, Sprite icon)
         {
-            Log.Info($"[StorageView]SetDefaultIcon Index: {index}");
             _itemViews[index].SetDefaultIcon(icon);
         }
         public void ResetNavigation()

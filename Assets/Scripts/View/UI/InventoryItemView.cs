@@ -17,7 +17,7 @@ namespace View.UI
         [SerializeField] private Image _cursedIcon;
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
-        public Observable<Unit> OnFocus => _onFocus;
+        public Observable<Unit> OnSelected => _onFocus;
 
         public void SetDefaultIcon(Sprite icon)
         {

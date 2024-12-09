@@ -1,5 +1,7 @@
 #nullable enable
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Message;
 using Domain.Model.Character.Type;
@@ -46,8 +48,9 @@ namespace Domain.Model.Character
         public void CancelChargeAction();
         public bool CanPickUpItem();
         public bool TryAddToInventory(IItem item);
-        public IItem? RemoveInventory(int index, int subIndex);
-        public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex);
+        public IItem? RemoveInventory(ItemFocus index);
+        public IEnumerable<IItem> ClearInventory();
+        public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index);
         public void UpdateTurn();
 
         public bool IsVisible(Vector2Int position)

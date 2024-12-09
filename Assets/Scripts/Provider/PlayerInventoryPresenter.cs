@@ -1,5 +1,4 @@
 #nullable enable
-using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
@@ -23,25 +22,24 @@ namespace Provider
         private readonly CompositeDisposable _subDisposables = new();
 
         [Inject]
-        public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView,
-            SubStorageView subStorageView)
+        public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
-            inventoryView.Initialize(subStorageView);
+            inventoryView.Initialize();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(
-                        inventory.OnItemChanged.Select(itemChanged => (itemChanged.NewValue, itemChanged.Index)),
+                        inventory.OnItemChanged.Select(itemChanged => (itemChanged.NewItem, itemChanged.Index)),
                         inventory.OnItemUpdated.Select(itemUpdated => ((IItem?)itemUpdated.Item, itemUpdated.Index))
                     ).Subscribe(data =>
                     {
-                        ReplaceItemView(inventoryView, subStorageView, data.Item, data.Index,
+                        ReplaceItemView(inventoryView, data.Item, new InventoryViewIndex(data.Index),
                             map.Player, map.ItemPlaceholders);
                     }).AddTo(_disposables);
 
                     gameManager.OnTurnChanged.Subscribe(_ =>
                     {
-                        UpdateGroundItemView(inventoryView, subStorageView, map);
+                        UpdateGroundItemView(inventoryView, map);
                     }).AddTo(_disposables);
 
                     Observable.Merge(
@@ -49,31 +47,12 @@ namespace Provider
                         map.ItemPlaceholders.OnItemRenamed
                     ).Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, subStorageView, map);
-                    }).AddTo(_disposables);
-
-                    inventoryView.OnMainFocusChanged.Subscribe(index =>
-                    {
-                        IItem? item = null;
-                        if (index.isEmpty)
-                        {
-                            item = null;
-                        }
-                        else if (index.isGroundItem)
-                        {
-                            item = GetGroundItem(map);
-                        }
-                        else
-                        {
-                            item = inventory.GetItem(index.index);
-                        }
-                        UpdateSubStorageView(inventoryView, subStorageView, item, index.index, map.Player,
-                            map.ItemPlaceholders);
+                        UpdateAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
 
                     for (var i = 0; i < inventory.Capacity; i++)
                     {
-                        ReplaceItemView(inventoryView, subStorageView, inventory.GetItem(i), i,
+                        ReplaceItemView(inventoryView, inventory.GetItem(i), new InventoryViewIndex(i),
                             map.Player, map.ItemPlaceholders);
                     }
                 },
@@ -85,121 +64,57 @@ namespace Provider
             return map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
         }
 
-        private void ReplaceItemView(InventoryView inventoryView, SubStorageView subStorageView, IItem? item,
-            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void ReplaceItemView(InventoryView inventoryView, IItem? item,
+            InventoryViewIndex index, IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             if (item != null)
             {
                 inventoryView.Replace(
-                    item.Icon,
-                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                    item.IsCursed,
-                    item.IsShiny,
-                    player.Character.IsKnownItem(item),
-                    item.IsCurseIdentified,
-                    item.Info(player, itemPlaceholders),
-                    index);
+                    index,
+                    new ItemViewData(
+                        item.Icon,
+                        item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                        item.IsCursed,
+                        item.IsShiny,
+                        player.Character.IsKnownItem(item),
+                        item.IsCurseIdentified,
+                        item.ItemStorage.MapOr(0, storage => storage.Capacity),
+                        item.Info(player, itemPlaceholders)
+                    )
+                );
+                if (index.SubIndex == -1 && item.ItemStorage.IsSome)
+                {
+                    for (var i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                    {
+                        ReplaceItemView(inventoryView, item.ItemStorage.Value.GetItem(i), new InventoryViewIndex(index.Index, i), player, itemPlaceholders);
+                    }
+                }
             }
             else
             {
                 inventoryView.Remove(index);
             }
-            if (index == inventoryView.CurrentFocus.index)
-                UpdateSubStorageView(inventoryView, subStorageView, item, index, player, itemPlaceholders);
         }
 
-        private void UpdateSubStorageView(InventoryView inventoryView, SubStorageView subStorageView, IItem? item,
-            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
         {
-            Log.Info($"UpdateSubStorageView");
-            var focus = inventoryView.CurrentFocus;
-            _subDisposables.Clear();
-            if (item != null && item.ItemStorage.IsSome)
+            inventoryView.Clear();
+            foreach (var (item, index) in map.Player.Character.Inventory.AllItemsWithIndex)
             {
-                subStorageView.SetCapacity(inventoryView.Get(index), index, item.ItemStorage.Value.Capacity);
-                inventoryView.SetNavigationWithSubStorage(subStorageView, index);
-                for (var i = 0; i < item.ItemStorage.Value.Capacity; i++)
-                {
-                    var subStorageItem = item.ItemStorage.Value.GetItem(i);
-                    if (subStorageItem != null)
-                        subStorageView.Replace(
-                            subStorageItem.Icon,
-                            subStorageItem.RemainingUses.CurrentValue,
-                            subStorageItem.IsCursed,
-                            subStorageItem.IsShiny,
-                            player.Character.IsKnownItem(subStorageItem),
-                            subStorageItem.IsCurseIdentified,
-                            subStorageItem.Info(player, itemPlaceholders),
-                            i);
-                    else
-                        subStorageView.Remove(i);
-                }
-                item.ItemStorage.Value.OnItemChanged.Subscribe(itemChanged =>
-                {
-                    if (itemChanged.NewValue != null)
-                        subStorageView.Replace(
-                            itemChanged.NewValue.Icon,
-                            itemChanged.NewValue.RemainingUses.CurrentValue,
-                            itemChanged.NewValue.IsCursed,
-                            itemChanged.NewValue.IsShiny,
-                            player.Character.IsKnownItem(itemChanged.NewValue),
-                            itemChanged.NewValue.IsCurseIdentified,
-                            itemChanged.NewValue.Info(player, itemPlaceholders),
-                            itemChanged.Index);
-                    else
-                        subStorageView.Remove(itemChanged.Index);
-                }).AddTo(_subDisposables);
-                item.ItemStorage.Value.OnItemUpdated.Subscribe(itemUpdated =>
-                {
-                    if (itemUpdated.Item != null)
-                        subStorageView.Replace(
-                            itemUpdated.Item.Icon,
-                            itemUpdated.Item.RemainingUses.CurrentValue,
-                            itemUpdated.Item.IsCursed,
-                            itemUpdated.Item.IsShiny,
-                            player.Character.IsKnownItem(itemUpdated.Item),
-                            itemUpdated.Item.IsCurseIdentified,
-                            itemUpdated.Item.Info(player, itemPlaceholders),
-                            itemUpdated.Index);
-                }).AddTo(_subDisposables);
+                ReplaceItemView(inventoryView, item, new InventoryViewIndex(index), map.Player, map.ItemPlaceholders);
             }
-            else
-            {
-                inventoryView.SetNavigation(index);
-                subStorageView.Clear();
-            }
-            if (focus.subIndex >= 0 && focus.subIndex < subStorageView.Capacity)
-                subStorageView.Select(focus.subIndex);
-            else
-                inventoryView.Select(focus.index);
+
+            UpdateGroundItemView(inventoryView, map);
         }
 
-        private void UpdateAllItemViews(InventoryView inventoryView, SubStorageView subStorageView, IMap map)
-        {
-            for (var i = 0; i < map.Player.Character.Inventory.Capacity; i++)
-            {
-                var item = map.Player.Character.Inventory.GetItem(i);
-                if (item != null)
-                    UpdateItemView(inventoryView, subStorageView, item, i, map.Player, map.ItemPlaceholders);
-            }
-
-            UpdateGroundItemView(inventoryView, subStorageView, map);
-        }
-
-        private void UpdateGroundItemView(InventoryView inventoryView, SubStorageView subStorageView, IMap map)
+        private void UpdateGroundItemView(InventoryView inventoryView, IMap map)
         {
             var item = GetGroundItem(map);
             if (item != null)
-                ReplaceItemView(inventoryView, subStorageView, item, map.Player.Character.Inventory.Capacity,
+                ReplaceItemView(inventoryView, item, InventoryViewIndex.GroundItem,
                     map.Player, map.ItemPlaceholders);
             else
-                inventoryView.SetGround();
-        }
-
-        private void UpdateItemView(InventoryView inventoryView, SubStorageView subStorageView, IItem item, int index,
-            IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            ReplaceItemView(inventoryView, subStorageView, item, index, player, itemPlaceholders);
+                inventoryView.Remove(InventoryViewIndex.GroundItem);
         }
     }
 }

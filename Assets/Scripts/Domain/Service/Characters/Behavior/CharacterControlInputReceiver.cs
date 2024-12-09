@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using Domain.Model.Item;
 using Domain.Service.Action;
-using Domain.Service.Items;
 using R3;
 using Utilities;
 
@@ -8,23 +8,23 @@ namespace Domain.Service.Characters.Behavior
 {
     public class CharacterControlInputReceiver
     {
-        private readonly InventoryIndexReceiver _inventoryIndexReceiver = new();
+        private ItemFocus _focus = ItemFocus.Empty;
         private readonly Subject<Unit> _onActionRead = new();
         private readonly AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
 
         private readonly AsyncReactiveProperty<ItemFocus>
-            _onUseItemActionReceived = new(new ItemFocus(0, -1, false, false));
+            _onUseItemActionReceived = new(ItemFocus.Empty);
 
         private readonly AsyncReactiveProperty<ItemFocus> _onThrowItemActionReceived =
-            new(new ItemFocus(0, -1, false, false));
+            new(ItemFocus.Empty);
 
         private readonly AsyncReactiveProperty<ItemFocus> _onDropItemActionReceived =
-            new(new ItemFocus(0, -1, false, false));
+            new(ItemFocus.Empty);
 
         private readonly AsyncReactiveProperty<Unit> _onDoNothingActionReceived = new(Unit.Default);
 
         private readonly AsyncReactiveProperty<ItemFocus> _onRenameItemActionReceived =
-            new(new ItemFocus(0, -1, false, false));
+            new(ItemFocus.Empty);
 
         private bool _enable = true;
 
@@ -47,19 +47,19 @@ namespace Domain.Service.Characters.Behavior
         public void SetAttackInput()
         {
             if (_enable)
-                _onUseItemActionReceived.Value = _inventoryIndexReceiver.Focus;
+                _onUseItemActionReceived.Value = _focus;
         }
 
         public void SetThrowInput()
         {
             if (_enable)
-                _onThrowItemActionReceived.Value = _inventoryIndexReceiver.Focus;
+                _onThrowItemActionReceived.Value = _focus;
         }
 
         public void SetDropInput()
         {
             if (_enable)
-                _onDropItemActionReceived.Value = _inventoryIndexReceiver.Focus;
+                _onDropItemActionReceived.Value = _focus;
         }
 
         public void SetDoNothingInput()
@@ -71,13 +71,13 @@ namespace Domain.Service.Characters.Behavior
         public void SetRenameInput()
         {
             if (_enable)
-                _onRenameItemActionReceived.Value = _inventoryIndexReceiver.Focus;
+                _onRenameItemActionReceived.Value = _focus;
         }
 
         public void SetItemFocus(ItemFocus focus)
         {
             if (_enable)
-                _inventoryIndexReceiver.SetFocus(focus);
+                _focus = focus;
         }
 
         internal void ReadInput()

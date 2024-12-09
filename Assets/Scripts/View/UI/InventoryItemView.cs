@@ -17,8 +17,6 @@ namespace View.UI
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnFocus => _onFocus;
-        private bool _isLocked;
-        private bool _enabled;
 
         public override void OnSelect(BaseEventData eventData)
         {
@@ -80,33 +78,9 @@ namespace View.UI
             _count.text = "";
         }
 
-        public void Lock()
+        public void UpdateInteractable(bool interactable)
         {
-            _isLocked = true;
-            UpdateInteractable();
-        }
-
-        public void Unlock()
-        {
-            _isLocked = false;
-            UpdateInteractable();
-        }
-
-        public void Disable()
-        {
-            _enabled = false;
-            UpdateInteractable();
-        }
-
-        public void Enable()
-        {
-            _enabled = true;
-            UpdateInteractable();
-        }
-
-        public void UpdateInteractable()
-        {
-            interactable = !_isLocked && _enabled;
+            this.interactable = interactable;
         }
     }
 }

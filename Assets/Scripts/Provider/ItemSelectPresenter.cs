@@ -1,4 +1,5 @@
 #nullable enable
+using System.Linq;
 using Game;
 using R3;
 using Utilities;
@@ -20,7 +21,7 @@ namespace Provider
                     if (message.IsWaiting)
                     {
                         itemSelectText.Show();
-                        inventoryView.LockItems(message.DisabledItemIds);
+                        inventoryView.LockItems(message.DisabledItemIndexes.Select(index => index.ToInventoryViewIndex()).ToArray());
                     }
                     else
                     {

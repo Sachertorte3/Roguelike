@@ -31,7 +31,6 @@ namespace Provider
             builder.RegisterComponentInHierarchy<OverlayTileViewController>();
             builder.RegisterComponentInHierarchy<MinimapController>();
             builder.RegisterComponentInHierarchy<InventoryView>();
-            builder.RegisterComponentInHierarchy<SubStorageView>();
             builder.RegisterComponentInHierarchy<StatView>();
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<CameraFlameRect>();

@@ -140,16 +140,16 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case InputType.DropItem:
                         focus = result.focus!;
-                        if (focus.isEmpty)
+                        if (focus.IsEmpty)
                             break;
-                        if (focus.isGroundItem)
+                        if (focus.IsGroundItem)
                         {
                             if (character.TryPickUpItem(map, true))
                                 return new DoNothing();
                             break;
                         }
 
-                        action = new DropItem(focus.index, focus.subIndex);
+                        action = new DropItem(focus);
                         if (action.Doable(character, map)) return action;
                         break;
                     case InputType.DoNothing:
@@ -231,7 +231,7 @@ namespace Domain.Service.Characters.Behavior
         {
         }
 
-        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params int[] disabledItemIds)
+        public async UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params ItemFocus[] disabledItemIds)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(true, disabledItemIds));
 
@@ -239,10 +239,10 @@ namespace Domain.Service.Characters.Behavior
             do
             {
                 focus = await _receiver.OnUseItemActionReceived.WaitAsync();
-            } while (!focus.isEmpty && disabledItemIds.Contains(focus.index));
+            } while (!focus.IsEmpty && disabledItemIds.Contains(focus));
 
-            _onItemSelect.OnNext(new OnItemSelectMessage(false, new int[0]));
-            if (focus.isEmpty)
+            _onItemSelect.OnNext(new OnItemSelectMessage(false, new ItemFocus[0]));
+            if (focus.IsEmpty)
                 return null;
             return focus.GetItem(inventory, map);
         }

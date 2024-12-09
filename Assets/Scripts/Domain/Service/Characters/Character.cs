@@ -103,8 +103,7 @@ namespace Domain.Service.Characters
             {
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
-                    if (!IsKnownItem(item))
-                        AddKnownItem(item, false);
+                    KnowItem(item, false);
                 }
             });
         }
@@ -440,7 +439,7 @@ namespace Domain.Service.Characters
                 {
                     if (!IsKnownItem(item) && item.IdentifyIfUsed)
                     {
-                        AddKnownItem(item, true);
+                        KnowItem(item, true);
                     }
                 }
             }
@@ -496,12 +495,12 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public void DropItem(int index, int subIndex, IMap map, bool isForced)
+        public void DropItem(ItemFocus index, IMap map, bool isForced)
         {
-            var item = Inventory.GetItem(index, subIndex);
+            var item = Inventory.GetItem(index);
             if (item != null && isForced)
             {
-                RemoveInventory(index, subIndex);
+                RemoveInventory(index);
                 GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
@@ -522,7 +521,7 @@ namespace Domain.Service.Characters
 
             var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
 
-            var result = ReplaceInventory(groundItem?.Item, index, subIndex);
+            var result = ReplaceInventory(groundItem?.Item, index);
             result.Match(
                 replacedItem =>
                 {
@@ -541,7 +540,7 @@ namespace Domain.Service.Characters
                 },
                 () =>
                 {
-                    GameLog.Add($"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(index, -1).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+                    GameLog.Add($"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(new ItemFocus(index.Index, -1)).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
                 }
             );
 
@@ -669,11 +668,11 @@ namespace Domain.Service.Characters
 
         #region ItemKnowledge
 
-        public void AddKnownItem(IItem item, bool log)
+        public void KnowItem(IItem item, bool log)
         {
-            if (!IsKnownItem(item) && IsPlayer)
+            if (IsPlayer)
             {
-                if (log)
+                if (!IsKnownItem(item) && log)
                 {
                     GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
                 }
@@ -683,7 +682,7 @@ namespace Domain.Service.Characters
 
         public bool IsKnownItem(IItem item)
         {
-            return _knownItemNames.Contains(item.BaseName);
+            return _knownItemNames.Contains(item.BaseName) || Settings.AutoIdentify.CurrentValue;
         }
 
         public void ClearKnownItems(IMap map)
@@ -752,9 +751,9 @@ namespace Domain.Service.Characters
             if (_inventory.TryAdd(item))
             {
                 _onPickUpItem.OnNext(Unit.Default);
-                if (!IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
+                if (item.IdentifyIfGot || AutoIdentify.CurrentValue)
                 {
-                    AddKnownItem(item, false);
+                    KnowItem(item, false);
                 }
                 return true;
             }
@@ -778,18 +777,23 @@ namespace Domain.Service.Characters
             return true;
         }
 
-        public IItem? RemoveInventory(int index, int subIndex)
+        public IItem? RemoveInventory(ItemFocus index)
         {
-            return _inventory.Replace(null, index, subIndex).Unwrap();
+            return _inventory.Replace(null, index).Unwrap();
         }
 
-        public Result<IItem?> ReplaceInventory(IItem? item, int index, int subIndex)
+        public IEnumerable<IItem> ClearInventory()
         {
-            if (item != null && !IsKnownItem(item) && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
+            return _inventory.Clear();
+        }
+
+        public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index)
+        {
+            if (item != null && item.IdentifyIfGot || AutoIdentify.CurrentValue)
             {
-                AddKnownItem(item, false);
+                KnowItem(item, false);
             }
-            return _inventory.Replace(item, index, subIndex);
+            return _inventory.Replace(item, index);
         }
 
         public void UpdateTurn()

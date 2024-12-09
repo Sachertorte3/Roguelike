@@ -20,13 +20,25 @@ namespace Domain.Service.Items
     {
         public int Capacity => _items.Count;
         private readonly ObservableList<IItem?> _items;
-        public IEnumerable<IItem> AllItems => _items.Where(item => item != null).Cast<IItem>();
+        public IEnumerable<IItem> AllItems => _items
+            .Where(item => item != null)
+            .Cast<IItem>();
+        public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex => _items
+            .Select((item, index) => (item, index))
+            .Where(x => x.item != null)
+            .Cast<(IItem, int)>();
         public IEnumerable<IItem> AllItemsRecursive => AllItems
-            .SelectMany(x => x.ItemStorage.MapOr(Enumerable.Empty<IItem>(), storage => storage.AllItemsRecursive).Append(x));
+            .SelectMany(x =>
+                x.ItemStorage
+                    .MapOr(Enumerable.Empty<IItem>(), storage => storage.AllItemsRecursive)
+                    .Append(x)
+            );
         private readonly bool _canAddItemsWithStorage;
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
-        public Observable<CollectionReplaceEvent<IItem?>> OnItemChanged => _items.ObserveReplace();
+        public Observable<OnItemChanged> OnItemChanged => _items.ObserveReplace().Select(itemChanged =>
+            new OnItemChanged(itemChanged.OldValue, itemChanged.NewValue, itemChanged.Index)
+        );
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
 
         private readonly IDisposable _disposable;
@@ -160,6 +172,16 @@ namespace Domain.Service.Items
             if (index < 0)
                 return false;
             return Remove(index) != null;
+        }
+
+        public IEnumerable<IItem> Clear()
+        {
+            for (int i = 0; i < _items.Count; i++)
+            {
+                var item = Replace(null, i).Value;
+                if (item != null)
+                    yield return item;
+            }
         }
     }
 }

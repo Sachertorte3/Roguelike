@@ -40,13 +40,12 @@ namespace Domain.Service.Effect
 
         public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IMap map)
         {
-            var selfIndex = player.Character.Inventory.GetItemIndex(item);
-            var disabledItemIndexes = new List<int>();
-            foreach (var inventoryItem in player.Character.Inventory.AllItems)
+            var selfIndex = player.Character.Inventory.GetItemIndexRecursive(item);
+            var disabledItemIndexes = new List<ItemFocus>();
+            foreach (var (inventoryItem, index) in player.Character.Inventory.AllItemsWithIndexRecursive)
             {
                 if (!_itemEffect.CanApplyTo(player, inventoryItem))
                 {
-                    var index = player.Character.Inventory.GetItemIndex(inventoryItem);
                     disabledItemIndexes.Add(index);
                 }
             }
@@ -54,7 +53,7 @@ namespace Domain.Service.Effect
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
             {
-                disabledItemIndexes.Add(map.Player.Character.Inventory.Capacity);
+                disabledItemIndexes.Add(ItemFocus.GroundItem);
             }
 
             disabledItemIndexes.Add(selfIndex);
@@ -74,7 +73,7 @@ namespace Domain.Service.Effect
                     await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, selfIndex);
                 if (selectedItem != null)
                 {
-                    var selectedItemIndex = player.Character.Inventory.GetItemIndex(selectedItem);
+                    var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);
                     if (disabledItemIndexes.Contains(selectedItemIndex))
                     {
                         GameLog.Add("しかし効果はなかった。");

@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using Tetr4lab.UnityEngine.SQLite;
-using Debug = UnityEngine.Debug;
+using Unity.Logging;
 
 namespace Game
 {
@@ -11,7 +11,7 @@ namespace Game
 
         public SQLiteDatabase()
         {
-            Debug.Log("Database init");
+            Log.Debug("Database init");
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
             sqlDB.ExecuteNonQuery(
@@ -22,7 +22,7 @@ namespace Game
                 "create table if not exists statistics (id integer primary key, text string)");
             sqlDB.ExecuteNonQuery(
                 "create table if not exists settings (key string primary key, value string)");
-            Debug.Log("Database init done");
+            Log.Debug("Database init done");
         }
         public void Save(int id, string saveData)
         {

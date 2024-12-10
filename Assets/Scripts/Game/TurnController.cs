@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
@@ -32,8 +34,9 @@ namespace Game
             _turnWaitTime = new Resource(1);
         }
 
-        public async void Run(IGameManager gameManager, IMap map)
+        public async void Run(IGameManager gameManager, IMap map, float firstWaitTime)
         {
+            _turnWaitTime.Set(firstWaitTime);
             _turnInLevel.Value = 0;
             if (_isRunning)
                 throw new Exception("Turn is already running");
@@ -43,8 +46,11 @@ namespace Game
 
             while (!_cancellationTokenSource.Token.IsCancellationRequested && map.Characters.Any())
             {
-                var characters = map.Characters.ToList();
-                if (characters.Any(character => character.Status.IsFlagStat(FlagStatType.OverDrive)))
+                var characters = map.Characters
+                    .OrderByDescending(character => character.IsPlayer)
+                    .ToList();
+                var timeStopped = characters.Any(character => character.Status.IsFlagStat(FlagStatType.OverDrive));
+                if (timeStopped)
                 {
                     characters.RemoveAll(character => !character.Status.IsFlagStat(FlagStatType.OverDrive));
                 }
@@ -53,60 +59,27 @@ namespace Game
                     character.Status.Stats.CurrentMaxWaitTime - character.Status.Stats.CurrentWaitTime);
                 minWaitTime = Mathf.Min(minWaitTime,
                     _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
-                _turnWaitTime.Gain(minWaitTime);
-
-                if (_turnWaitTime.IsFull())
-                {
-                    _turnInLevel.Value++;
-                    _onTurnChanged.OnNext(Unit.Default);
-                    Log.Debug($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");
-                    map.UpdateTurn(_turnInLevel.Value);
-                }
 
                 foreach (var character in characters)
                 {
-                    if (characters.Any(character => character.Status.IsFlagStat(FlagStatType.OverDrive)) &&
-                        !character.Status.IsFlagStat(FlagStatType.OverDrive))
+                    if (timeStopped && !character.Status.IsFlagStat(FlagStatType.OverDrive))
                         continue;
-
-                    if (_turnWaitTime.IsFull())
-                    {
-                        character.UpdateTurn();
-                    }
 
                     character.Status.AddWaitTime(minWaitTime);
                     if (character.Status.IsWaitTimeFull())
                     {
-                        if (character.State != CharacterState.Wait)
-                            continue;
-
-                        if (!character.Status.IsFlagStat(FlagStatType.CannotAct) && !character.IsDead)
+                        switch (character.State)
                         {
-                            if (character.IsPlayer && Settings.AutoSave.CurrentValue)
-                            {
-                                Globals.GameManager.Save();
-                            }
-
-                            Log.Debug($"[Turn]{character.GetName(map.Player)} think...");
-                            try
-                            {
-                                await character.DoNextAction(gameManager, map, _input)
-                                    .AttachExternalCancellation(_cancellationTokenSource.Token);
-                            }
-                            catch (OperationCanceledException e)
-                            {
-                                Log.Debug($"OperationCanceledException: {e}");
-                            }
-                        }
-                        else
-                        {
-                            character.CancelChargeAction();
-                            Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
-                        }
-
-                        if (map.IsEventExecuting)
-                        {
-                            await UniTask.WaitWhile(() => map.IsEventExecuting);
+                            case CharacterState.Wait:
+                                await DoCharacterAction(gameManager, map, character);
+                                break;
+                            case CharacterState.Act:
+                            case CharacterState.Finish:
+                                Log.Debug($"[Turn]{character.GetName(map.Player)} already did action.");
+                                break;
+                            case CharacterState.Think:
+                                throw new InvalidOperationException(
+                                    $"[Turn] {character.GetName(map.Player)} is unexpectedly in thinking state before their turn to action decision");
                         }
                     }
 
@@ -119,6 +92,8 @@ namespace Game
                     }
                 }
 
+                Update(map, characters, timeStopped, minWaitTime);
+
                 foreach (var character in characters.Where(character => character.Status.IsWaitTimeFull()))
                 {
                     if (character.State != CharacterState.Wait && character.State != CharacterState.Finish)
@@ -130,15 +105,64 @@ namespace Game
                     character.Status.ResetWaitTime();
                     character.SetWaitState();
                 }
-
-                if (_turnWaitTime.IsFull())
-                {
-                    _turnWaitTime.Set(0);
-                }
             }
 
             _isRunning = false;
             _runCompletionSource.TrySetResult();
+        }
+
+        private void Update(IMap map, List<ICharacter> characters, bool timeStopped, float minWaitTime)
+        {
+            _turnWaitTime.Gain(minWaitTime);
+            if (!_turnWaitTime.IsFull())
+                return;
+
+            foreach (var character in characters)
+            {
+                if (timeStopped && !character.Status.IsFlagStat(FlagStatType.OverDrive))
+                    continue;
+
+                character.UpdateTurn();
+            }
+
+            _turnInLevel.Value++;
+            _onTurnChanged.OnNext(Unit.Default);
+            Log.Debug($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");
+            map.UpdateTurn(_turnInLevel.Value);
+
+            _turnWaitTime.Set(0);
+        }
+
+        private async UniTask DoCharacterAction(IGameManager gameManager, IMap map, ICharacter character)
+        {
+            if (character.Status.IsFlagStat(FlagStatType.CannotAct) || character.IsDead)
+            {
+                character.CancelChargeAction();
+                Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
+            }
+            else
+            {
+                if (character.IsPlayer && Settings.AutoSave.CurrentValue)
+                {
+                    Globals.GameManager.Save();
+                }
+
+                Log.Debug($"[Turn]{character.GetName(map.Player)} think...");
+                try
+                {
+                    await character.DoNextAction(gameManager, map, _input)
+                        .AttachExternalCancellation(_cancellationTokenSource.Token);
+                }
+                catch (OperationCanceledException e)
+                {
+                    Log.Debug($"OperationCanceledException: {e}");
+                }
+            }
+
+            if (map.IsEventExecuting)
+            {
+                await UniTask.WaitWhile(() => map.IsEventExecuting);
+            }
         }
 
         public async UniTask Stop()
@@ -147,6 +171,11 @@ namespace Game
             _cancellationTokenSource.Cancel();
             await _runCompletionSource.Task;
             Log.Debug("[Turn]Stop");
+        }
+
+        public float GetWaitTime()
+        {
+            return _turnWaitTime.Value.CurrentValue;
         }
     }
 }

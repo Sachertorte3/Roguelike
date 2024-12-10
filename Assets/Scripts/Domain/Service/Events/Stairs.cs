@@ -55,7 +55,7 @@ namespace Domain.Service.Events
 
         private UniTask DoEvent(IGameManager gameManager)
         {
-            gameManager.LoadMap(Destination, DestinationId);
+            gameManager.MoveMap(Destination, DestinationId);
             return UniTask.CompletedTask;
         }
 

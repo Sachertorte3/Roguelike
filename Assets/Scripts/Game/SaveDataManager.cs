@@ -5,10 +5,15 @@ using Domain.Model.Setting;
 using Unity.Logging;
 using UnityEngine;
 using Utilities.Serialize;
+using Utilities.Stats;
 
 namespace Game
 {
-    public record SaveData(WorldMemento World, StatisticsMemento Statistics, Dictionary<string, MapMemento> Maps);
+    public record SaveData(
+        WorldMemento World,
+        StatisticsMemento Statistics,
+        Dictionary<string, MapMemento> Maps,
+        float TurnWaitTime);
     public class SaveDataManager
     {
         private SQLiteDatabase db;
@@ -33,7 +38,7 @@ namespace Game
         public void Save(SaveData saveData)
         {
             Log.Debug("[Save]Start Save");
-            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World));
+            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime);
             foreach (var map in saveData.Maps)
             {
                 db.SaveMap(map.Key, JsonUtility.ToJson(map.Value));
@@ -51,8 +56,8 @@ namespace Game
             {
                 return null;
             }
-            var saveData = db.Load(_saveDataSlot);
-            var world = JsonUtility.FromJson<WorldMemento>(saveData);
+            var (worldData, turnWaitTime) = db.Load(_saveDataSlot);
+            var world = JsonUtility.FromJson<WorldMemento>(worldData);
             Dictionary<string, MapMemento> maps = new();
             foreach (var mapId in world.MapIds)
             {
@@ -65,7 +70,7 @@ namespace Game
             Settings.SetValues(settings);
 
             Log.Debug("[Save]End Load");
-            return new SaveData(world, statistics, maps);
+            return new SaveData(world, statistics, maps, turnWaitTime);
         }
 
         public void ClearSave()

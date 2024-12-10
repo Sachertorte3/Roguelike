@@ -77,6 +77,7 @@ namespace Game
             if (saveData != null)
             {
                 var map = LoadSaveData(saveData);
+                var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
                 {
                     var choice = await GetChoice(null, "Continue", "New Game");
@@ -86,6 +87,7 @@ namespace Game
                             break;
                         case 1:
                             map = CreateSaveData();
+                            firstWaitTime = 0;
                             break;
                     }
                 }
@@ -99,6 +101,7 @@ namespace Game
                             break;
                         case 1:
                             map = CreateSaveData();
+                            firstWaitTime = 0;
                             break;
                     }
                 }
@@ -106,14 +109,15 @@ namespace Game
                 {
                     var _ = await GetChoice(null, "New Game");
                     map = CreateSaveData();
+                    firstWaitTime = 0;
                 }
-                StartGame(map, saveData.Statistics);
+                StartGame(map, saveData.Statistics, firstWaitTime);
             }
             else
             {
                 var map = CreateSaveData();
                 var _ = await GetChoice(null, "New Game");
-                StartGame(map, Statistics.Build());
+                StartGame(map, Statistics.Build(), 0);
             }
 
             _state.Value = GameState.Dungeon;
@@ -144,10 +148,10 @@ namespace Game
             return map;
         }
 
-        private void StartMap(MapManager map)
+        private void StartMap(MapManager map, float firstWaitTime)
         {
             _receiver.Enable(true);
-            _turnController.Run(this, map);
+            _turnController.Run(this, map, firstWaitTime);
         }
 
         private async UniTask StopMap()
@@ -156,10 +160,10 @@ namespace Game
             await _turnController.Stop();
         }
 
-        private void StartGame(MapManager map, StatisticsMemento statistics)
+        private void StartGame(MapManager map, StatisticsMemento statistics, float firstWaitTime)
         {
             _activeStatistics.Value = new Statistics(statistics, this, _world);
-            StartMap(map);
+            StartMap(map, firstWaitTime);
         }
 
         private async UniTask StopGame()
@@ -167,13 +171,13 @@ namespace Game
             await StopMap();
         }
 
-        public async void LoadMap(Location location, Id<IEntity>? destination = null)
+        public async void MoveMap(Location location, Id<IEntity>? destination = null)
         {
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             var map = _world.LoadMap(location, destination);
             Save();
-            StartMap(map);
+            StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");
         }
 
@@ -182,7 +186,7 @@ namespace Game
             var world = _world.Serialize();
             var statistics = _activeStatistics.Value.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
-            _saveDataManager.Save(new SaveData(world, statistics, maps));
+            _saveDataManager.Save(new SaveData(world, statistics, maps, _turnController.GetWaitTime()));
         }
 
         public async UniTask LoadAndStart()
@@ -193,12 +197,12 @@ namespace Game
             if (saveData != null)
             {
                 map = LoadSaveData(saveData);
-                StartGame(map, saveData.Statistics);
+                StartGame(map, saveData.Statistics, saveData.TurnWaitTime);
             }
             else
             {
                 map = CreateSaveData();
-                StartGame(map, Statistics.Build());
+                StartGame(map, Statistics.Build(), 0);
             }
         }
     }

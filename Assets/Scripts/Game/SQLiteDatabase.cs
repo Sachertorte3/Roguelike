@@ -15,7 +15,7 @@ namespace Game
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists saves (id integer primary key, text string)");
+                "create table if not exists saves (id integer primary key, text string, turnWaitTime real)");
             sqlDB.ExecuteNonQuery(
                 "create table if not exists maps (id string primary key, text string)");
             sqlDB.ExecuteNonQuery(
@@ -24,14 +24,15 @@ namespace Game
                 "create table if not exists settings (key string primary key, value string)");
             Log.Debug("Database init done");
         }
-        public void Save(int id, string saveData)
+        public void Save(int id, string saveData, float turnWaitTime)
         {
             sqlDB.ExecuteNonQuery(
-                "insert or replace into saves values (:id, :text)",
+                "insert or replace into saves values (:id, :text, :turnWaitTime)",
                 new SQLiteRow
                 {
                     { "id", id },
-                    { "text", saveData }
+                    { "text", saveData },
+                    { "turnWaitTime", turnWaitTime }
                 });
         }
         public void SaveMap(string id, string mapData)
@@ -74,7 +75,7 @@ namespace Game
                 new SQLiteRow { { "id", id } });
             return dataTable.Rows.Count > 0;
         }
-        public string Load(int id)
+        public (string world, float turnWaitTime) Load(int id)
         {
             var dataTable = sqlDB.ExecuteQuery(
                 "select * from saves where id = :id",
@@ -82,7 +83,9 @@ namespace Game
                 {
                     { "id", id }
                 });
-            return (string)dataTable.Rows[0]["text"];
+            string world = (string)dataTable.Rows[0]["text"];
+            float turnWaitTime = (float)(double)dataTable.Rows[0]["turnWaitTime"];
+            return (world, turnWaitTime);
         }
         public string LoadMap(string id)
         {

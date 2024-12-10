@@ -306,7 +306,7 @@ namespace Provider
         {
             try
             {
-                _gameManager.LoadMap(new Location(mapName, level));
+                _gameManager.MoveMap(new Location(mapName, level));
             }
             catch (Exception e)
             {

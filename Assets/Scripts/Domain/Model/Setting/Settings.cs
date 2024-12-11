@@ -30,7 +30,7 @@ namespace Domain.Model.Setting
         public static List<IOptionInput> GetOptions()
         {
             List<IOptionInput> setters = new();
-            foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+            foreach (var field in typeof(Settings).GetFields(BindingFlags.Public | BindingFlags.Static))
             {
                 var value = field.GetValue(typeof(Settings));
                 if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))
@@ -44,7 +44,7 @@ namespace Domain.Model.Setting
 
         public static void SetValues(Dictionary<string, int> values)
         {
-            foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+            foreach (var field in typeof(Settings).GetFields(BindingFlags.Public | BindingFlags.Static))
             {
                 var value = field.GetValue(typeof(Settings));
                 if (values.TryGetValue(field.Name, out var intValue))
@@ -67,7 +67,7 @@ namespace Domain.Model.Setting
         public static Dictionary<string, int> GetValues()
         {
             var settings = new Dictionary<string, int>();
-            foreach (var field in typeof(Settings).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+            foreach (var field in typeof(Settings).GetFields(BindingFlags.Public | BindingFlags.Static))
             {
                 var value = field.GetValue(typeof(Settings));
                 if (typeof(IOptionInput).IsAssignableFrom(field.FieldType))

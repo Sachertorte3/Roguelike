@@ -43,7 +43,7 @@ namespace Provider
                                                         map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             statView.SetHp(map.Player.Character.Status.Stats.MaxHp.CurrentValue,
                                 map.Player.Character.Status.Stats.HpValue.CurrentValue);
-                            if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                            if (hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.CurrentValue)
                             {
                                 statView.SetTextColor(Color.red);
                             }

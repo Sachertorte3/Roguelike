@@ -55,7 +55,7 @@ MonoBehaviour:
     - rid: 3119344251661451267
       type: {class: AddConditionResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Condition: {fileID: 11400000, guid: 16e91a4ac492c324ab98cbe5560964fe, type: 2}
+        Condition: {fileID: 0}
         ResistanceRate: 0.8
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

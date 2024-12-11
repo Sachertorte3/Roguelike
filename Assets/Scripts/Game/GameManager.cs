@@ -91,7 +91,7 @@ namespace Game
                             break;
                     }
                 }
-                else if (Settings.RetryOnDead.Value)
+                else if (Settings.RetryOnDead.CurrentValue)
                 {
                     var choice = await GetChoice(null, "Retry", "New Game");
                     switch (choice)

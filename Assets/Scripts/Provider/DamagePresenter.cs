@@ -23,10 +23,10 @@ namespace Provider
                                                             map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue *
                                 100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
-                            if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.Value ||
-                                hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.Value)
+                            if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.CurrentValue ||
+                                hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.CurrentValue)
                             {
-                                flushController.Flush(Settings.FlushDuration.Value);
+                                flushController.Flush(Settings.FlushDuration.CurrentValue);
                             }
                         }
                     ));
@@ -40,7 +40,7 @@ namespace Provider
                                                                 character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowDamage(character.Entity.CurrentPosition,
                                     damageChanged, damagePercentageFromMaxHp,
-                                    Settings.DamageTextDisplayTime.Value);
+                                    Settings.DamageTextDisplayTime.CurrentValue);
                             }
                         }
                     ));
@@ -53,7 +53,7 @@ namespace Provider
                                 var healPercentageFromMaxHp = healChanged * 100 /
                                                               character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowHeal(character.Entity.CurrentPosition, healChanged,
-                                    healPercentageFromMaxHp, Settings.DamageTextDisplayTime.Value);
+                                    healPercentageFromMaxHp, Settings.DamageTextDisplayTime.CurrentValue);
                             }
                         }
                     ));

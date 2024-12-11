@@ -24,11 +24,11 @@ namespace Provider
                 switch (option)
                 {
                     case Slider slider:
-                        settingWindow.AddIntOption(slider.Name, slider.Min, slider.Max, slider.Value)
+                        settingWindow.AddIntOption(slider.Name, slider.Min, slider.Max, slider.CurrentValue)
                             .Subscribe(value => slider.SetValue(value));
                         break;
                     case CheckBox checkbox:
-                        settingWindow.AddBoolOption(checkbox.Name, checkbox.Value)
+                        settingWindow.AddBoolOption(checkbox.Name, checkbox.CurrentValue)
                             .Subscribe(value => checkbox.SetValue(value));
                         break;
                     default:

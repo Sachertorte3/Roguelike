@@ -362,7 +362,7 @@ namespace Domain.Service.Characters
                 $"[Action]{_name}:Move direction:{direction} destination:{Entity.CurrentPosition + direction.Vector()}");
             Turn(direction);
             await Entity.Move(direction,
-                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                input.IsDash() ? Settings.DashMilliseconds.CurrentValue : Settings.MoveMilliseconds.CurrentValue);
 
             State = CharacterState.Finish;
         }
@@ -372,7 +372,7 @@ namespace Domain.Service.Characters
             State = CharacterState.Act;
             Turn(direction);
             await Entity.Move(direction,
-                input.IsDash() ? Settings.DashMilliseconds.Value : Settings.MoveMilliseconds.Value);
+                input.IsDash() ? Settings.DashMilliseconds.CurrentValue : Settings.MoveMilliseconds.CurrentValue);
 
             State = CharacterState.Finish;
         }
@@ -391,7 +391,7 @@ namespace Domain.Service.Characters
             for (var i = 0; i < skill.RushDistance; i++)
             {
                 if (CanMove(direction, map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
-                    await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction, Settings.ThrowMilliseconds.CurrentValue, true);
             }
 
             if (IsDead)
@@ -409,7 +409,7 @@ namespace Domain.Service.Characters
             for (var i = 0; i < skill.BackStepDistance; i++)
             {
                 if (CanMove(direction.Reverse(), map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
-                    await Entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.Value, true);
+                    await Entity.Move(direction.Reverse(), Settings.ThrowMilliseconds.CurrentValue, true);
             }
 
             State = CharacterState.Finish;
@@ -604,7 +604,7 @@ namespace Domain.Service.Characters
             {
                 if (!CanMove(direction, true, CanThroughWalls, map))
                     break;
-                await Entity.Move(direction, Settings.ThrowMilliseconds.Value, true);
+                await Entity.Move(direction, Settings.ThrowMilliseconds.CurrentValue, true);
             }
 
             if (!map.At(Entity.CurrentPosition).CanPlace(IsFlying, CanThroughWalls, true, EntityLayer.Middle))

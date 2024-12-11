@@ -94,7 +94,7 @@ namespace Domain.Service.Characters.Behavior
                             break;
                         }
 
-                        if (Settings.IntelligentDash.Value)
+                        if (Settings.IntelligentDash.CurrentValue)
                             move = _intelligentDashController.Filter(move, character, started, map, input);
                         var swap = new Swap(move.Direction);
                         destination = character.Entity.CurrentPosition + move.Direction.Vector();

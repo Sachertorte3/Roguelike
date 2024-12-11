@@ -14,15 +14,16 @@ namespace Domain.Model.Setting
             Name = name;
             Min = min;
             Max = max;
-            OnValueChanged = new ReactiveProperty<int>(defaultValue);
+            _value = new ReactiveProperty<int>(defaultValue);
         }
 
-        public int Value => OnValueChanged.Value;
-        public ReactiveProperty<int> OnValueChanged { get; }
+        private readonly ReactiveProperty<int> _value;
+        public ReadOnlyReactiveProperty<int> Value => _value;
+        public int CurrentValue => Value.CurrentValue;
 
         public void SetValue(int value)
         {
-            OnValueChanged.Value = Mathf.Clamp(value, Min, Max);
+            _value.Value = Mathf.Clamp(value, Min, Max);
         }
     }
 }

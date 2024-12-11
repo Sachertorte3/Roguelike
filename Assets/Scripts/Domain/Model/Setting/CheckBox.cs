@@ -9,15 +9,16 @@ namespace Domain.Model.Setting
         public CheckBox(string name, bool defaultValue)
         {
             Name = name;
-            OnValueChanged = new ReactiveProperty<bool>(defaultValue);
+            _value = new ReactiveProperty<bool>(defaultValue);
         }
 
-        public bool Value => OnValueChanged.Value;
-        public ReactiveProperty<bool> OnValueChanged { get; }
+        private readonly ReactiveProperty<bool> _value;
+        public ReadOnlyReactiveProperty<bool> Value => _value;
+        public bool CurrentValue => Value.CurrentValue;
 
         public void SetValue(bool value)
         {
-            OnValueChanged.Value = value;
+            _value.Value = value;
         }
     }
 }

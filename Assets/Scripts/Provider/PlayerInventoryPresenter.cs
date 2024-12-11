@@ -45,7 +45,7 @@ namespace Provider
                     Observable.Merge(
                         map.Player.Character.KnownItemNames.ObserveChanged().AsUnitObservable(),
                         map.ItemPlaceholders.OnItemRenamed,
-                        Settings.AutoIdentify.AsUnitObservable()
+                        Settings.AutoIdentify.Value.AsUnitObservable()
                     ).Subscribe(_ =>
                     {
                         UpdateAllItemViews(inventoryView, map);

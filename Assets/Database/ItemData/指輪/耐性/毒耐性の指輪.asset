@@ -56,12 +56,12 @@ MonoBehaviour:
     - rid: 3119344251661451267
       type: {class: AddConditionResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Condition: {fileID: 11400000, guid: 96584de854caadf40a738a0adbc649aa, type: 2}
+        Condition: {fileID: 0}
         ResistanceRate: 0.8
     - rid: 3119344251661451268
       type: {class: AddConditionResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Condition: {fileID: 11400000, guid: 3beff304c57ae794096ed14eed9f08c1, type: 2}
+        Condition: {fileID: 0}
         ResistanceRate: 0.8
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

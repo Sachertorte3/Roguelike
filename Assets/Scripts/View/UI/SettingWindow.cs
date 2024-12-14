@@ -5,6 +5,7 @@ namespace View.UI
 {
     public class SettingWindow : MonoBehaviour, IMenu
     {
+        public bool CanClose => true;
         [SerializeField] private Transform _content;
         [SerializeField] private SliderOption _sliderItem;
         [SerializeField] private CheckBoxOption _checkBoxItem;
@@ -12,20 +13,18 @@ namespace View.UI
         private ISettingOption firstOption;
         private ISettingOption lastOption;
 
-        public Observable<int> AddIntOption(string itemName, int min, int max, int value)
+        public void AddIntOption(string itemName, int min, int max, ReactiveProperty<int> value, ReadOnlyReactiveProperty<bool> isEnabled)
         {
-            _sliderItem.SetData(itemName, min, max, value);
             var option = Instantiate(_sliderItem, _content);
+            option.SetData(itemName, min, max, value, isEnabled);
             UpdateNavigation(option);
-            return option.OnValueChanged;
         }
 
-        public Observable<bool> AddBoolOption(string itemName, bool value)
+        public void AddBoolOption(string itemName, ReactiveProperty<bool> value, ReadOnlyReactiveProperty<bool> isEnabled)
         {
-            _checkBoxItem.SetData(itemName, value);
             var option = Instantiate(_checkBoxItem, _content);
+            option.SetData(itemName, value, isEnabled);
             UpdateNavigation(option);
-            return option.OnValueChanged;
         }
 
         public void Clear()

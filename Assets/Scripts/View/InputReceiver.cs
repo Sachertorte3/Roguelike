@@ -1,5 +1,6 @@
 using System;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
@@ -9,24 +10,6 @@ namespace View
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
-        private bool _isMenuOpen;
-
-        public InputReceiver()
-        {
-            _actions.Field.Enable();
-            Observable.Merge(OnSettingMenuOpening, OnItemLibraryMenuOpening).Subscribe(_ =>
-            {
-                _actions.Field.Disable();
-                _actions.Menu.Enable();
-                _isMenuOpen = true;
-            }).AddTo(_disposables);
-            OnMenuClosing.Subscribe(_ =>
-            {
-                _actions.Field.Enable();
-                _actions.Menu.Disable();
-                _isMenuOpen = false;
-            }).AddTo(_disposables);
-        }
 
         public Observable<Vector2> OnMovePerformed =>
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
@@ -49,13 +32,8 @@ namespace View
         public Observable<Unit> OnRenamePerformed =>
             _actions.Field.Rename.AsObservable().Select(context => Unit.Default);
 
-        public Observable<Unit> OnSettingMenuOpening => _actions.Field.OpenSettingMenu.AsObservable().Select(context => Unit.Default);
-        public Observable<Unit> OnItemLibraryMenuOpening => _actions.Field.OpenItemLibraryMenu.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnMainMenuOpening => _actions.Field.OpenMainMenu.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
-
-
-        public Observable<Unit> OnQuickSave => _actions.Field.QuickSave.AsObservable().Select(context => Unit.Default);
-        public Observable<Unit> OnQuickLoad => _actions.Field.QuickLoad.AsObservable().Select(context => Unit.Default);
 
         public void Dispose()
         {
@@ -69,18 +47,13 @@ namespace View
 
         public void Enable()
         {
-            if (!_isMenuOpen)
-            {
-                _actions.Field.Enable();
-            }
-            else
-            {
-                _actions.Menu.Enable();
-            }
+            Debug.Log("Enable");
+            _actions.Enable();
         }
 
         public void Disable()
         {
+            Debug.Log("Disable");
             _actions.Disable();
         }
     }

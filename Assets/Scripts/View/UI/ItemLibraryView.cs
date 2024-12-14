@@ -5,12 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using R3;
 using Sirenix.Utilities;
+using System.Linq;
 
 namespace View.UI
 {
-    public record ItemLibraryViewData(string Name, Sprite Icon, bool IsShiny, string Info);
+    public record ItemLibraryViewData(string Name, Sprite Icon, int Category, bool IsShiny, string Info);
     public class ItemLibraryView : MonoBehaviour, IMenu
     {
+        public bool CanClose => true;
         [SerializeField] private GameObject _content;
         [SerializeField] private InventoryItemView _itemViewPrefab;
         [SerializeField] private TMP_Text _infoText;
@@ -32,7 +34,7 @@ namespace View.UI
             foreach (var view in _itemViews)
                 Destroy(view.gameObject);
             _itemViews.Clear();
-            foreach (var itemData in _items)
+            foreach (var itemData in _items.OrderBy(item => item.Category).ThenBy(item => item.Name))
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
                 view.Set(itemData.Icon, null, false, itemData.IsShiny, true, true);

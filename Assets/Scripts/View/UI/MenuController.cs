@@ -17,15 +17,23 @@ namespace View.UI
         [SerializeField] private ItemLibraryView _itemLibraryMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
+        [SerializeField] private MainMenu _mainMenu;
         private readonly Stack<IMenu> _menuStack = new();
         private readonly Dictionary<IMenu, GameObject> _selectedObject = new();
 
         [Inject]
         public void Construct(InputReceiver inputReceiver)
         {
-            inputReceiver.OnSettingMenuOpening.Subscribe(_ => { AddMenu(_settingMenu); });
-            inputReceiver.OnItemLibraryMenuOpening.Subscribe(_ => { AddMenu(_itemLibraryMenu); });
-            inputReceiver.OnMenuClosing.Subscribe(_ => { PopMenu(); });
+            inputReceiver.OnMainMenuOpening.Subscribe(_ =>
+            {
+                if (!_menuStack.Contains(_mainMenu))
+                    AddMenu(_mainMenu);
+            });
+            inputReceiver.OnMenuClosing.Subscribe(_ =>
+            {
+                if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
+                    PopMenu();
+            });
         }
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)
@@ -123,6 +131,16 @@ namespace View.UI
         public void DungeonMenu()
         {
             SwitchMenu(_dungeonMenu);
+        }
+
+        public void PushSettingMenu()
+        {
+            PushMenu(_settingMenu);
+        }
+
+        public void PushItemLibraryMenu()
+        {
+            PushMenu(_itemLibraryMenu);
         }
     }
 }

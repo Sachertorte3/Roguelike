@@ -10,6 +10,7 @@ namespace View.UI
 {
     public class ChoiceMenu : MonoBehaviour, IMenu
     {
+        public bool CanClose => false;
         private readonly AsyncReactiveProperty<int> _selectedIndex = new(-1);
         public IReadOnlyAsyncReactiveProperty<int> SelectedIndex => _selectedIndex;
         [SerializeField] private TextMeshProUGUI _text;

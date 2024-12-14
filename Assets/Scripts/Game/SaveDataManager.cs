@@ -5,7 +5,6 @@ using Domain.Model.Setting;
 using Unity.Logging;
 using UnityEngine;
 using Utilities.Serialize;
-using Utilities.Stats;
 
 namespace Game
 {

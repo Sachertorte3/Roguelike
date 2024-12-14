@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using Game;
 using IngameDebugConsole;
 using R3;
@@ -14,20 +13,24 @@ namespace Provider
 {
     public class InputPresenter
     {
+        private readonly ReactiveProperty<bool> _enable = new(false);
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
             ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world,
             MenuController menuController,
             InventoryView inventoryView)
         {
-            Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible)
+            var logWindowVisible = Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible).ToReadOnlyReactiveProperty();
+            var textInputShown = new ReactiveProperty<bool>(false);
+            Observable.CombineLatest(logWindowVisible, actionReceiver.IsEnabled, textInputShown)
                 .Subscribe(x =>
                 {
-                    if (x)
+                    if (x[0] || !x[1] || x[2])
                         receiver.Disable();
                     else
                         receiver.Enable();
                 });
+
             receiver.OnMovePerformed
                 .Select(vector => DirectionMethods.FromVector(vector))
                 .Where(direction => direction != null)
@@ -71,14 +74,11 @@ namespace Provider
 
             textInputReceiver.OnShownTextInput.Subscribe(async _ =>
             {
-                receiver.Disable();
+                textInputShown.Value = true;
                 var text = await menuController.GetTextInput();
                 textInputReceiver.SetTextInput(text);
-                receiver.Enable();
+                textInputShown.Value = false;
             });
-
-            receiver.OnQuickSave.Subscribe(_ => gameManager.Save());
-            receiver.OnQuickLoad.Subscribe(_ => gameManager.LoadAndStart());
         }
     }
 }

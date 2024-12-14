@@ -205,5 +205,15 @@ namespace Game
                 StartGame(map, Statistics.Build(), 0);
             }
         }
+
+        public void ReturnTitle()
+        {
+            _state.Value = GameState.Title;
+        }
+
+        public void Exit()
+        {
+            Application.Quit();
+        }
     }
 }

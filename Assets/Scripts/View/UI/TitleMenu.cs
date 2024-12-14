@@ -4,6 +4,7 @@ namespace View.UI
 {
     public class TitleMenu : MonoBehaviour, IMenu
     {
+        public bool CanClose => false;
         public void Show()
         {
             gameObject.SetActive(true);

@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "OpenSettingMenu",
+                    "name": "OpenMainMenu",
                     "type": "Button",
                     "id": "7a2a2f0c-73d9-4e9e-a317-11308943ce0c",
                     "expectedControlType": "Button",
@@ -69,24 +69,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "QuickSave",
-                    "type": "Button",
-                    "id": "6528f799-56a3-48fc-82af-33f1d4b252f4",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "QuickLoad",
-                    "type": "Button",
-                    "id": "3f2fb42b-0075-4a69-b887-6b3924aeec11",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Rename",
                     "type": "Button",
                     "id": "5f453a2e-3ff0-400a-830f-c8fe57840833",
@@ -99,15 +81,6 @@
                     "name": "DoNothing",
                     "type": "Button",
                     "id": "5b26a424-1423-465a-8f9e-c92d987764df",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "OpenItemLibraryMenu",
-                    "type": "Button",
-                    "id": "428fc8bc-48a3-4b97-a5cc-40e46fd7f64b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -173,11 +146,11 @@
                 {
                     "name": "",
                     "id": "75d80421-a30b-459b-9ee0-feacd659f2da",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "OpenSettingMenu",
+                    "action": "OpenMainMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -238,28 +211,6 @@
                 },
                 {
                     "name": "",
-                    "id": "1e0184f5-4ff7-42f6-9d0f-f7fa5a74ceb0",
-                    "path": "<Keyboard>/f5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "QuickSave",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c44a4750-3f34-41a3-95ad-f7591d981576",
-                    "path": "<Keyboard>/f9",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "QuickLoad",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ab912cbe-4ec3-4540-9239-59430019e60f",
                     "path": "<Keyboard>/r",
                     "interactions": "",
@@ -277,17 +228,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "DoNothing",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0176beb9-0231-451a-8e9a-d807b6b570d5",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "OpenItemLibraryMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

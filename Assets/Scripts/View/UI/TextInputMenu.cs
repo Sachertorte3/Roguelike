@@ -7,6 +7,7 @@ namespace View.UI
 {
     public class TextInputMenu : MonoBehaviour, IMenu
     {
+        public bool CanClose => false;
         [SerializeField] private TMP_InputField _inputField;
         private readonly AsyncReactiveProperty<string> _text = new("");
         public IReadOnlyAsyncReactiveProperty<string> Text => _text;

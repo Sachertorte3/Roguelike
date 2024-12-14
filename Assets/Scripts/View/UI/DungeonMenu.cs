@@ -5,6 +5,7 @@ namespace View.UI
     public class DungeonMenu : MonoBehaviour, IMenu
     {
         [SerializeField] private InventoryView _inventory;
+        public bool CanClose => false;
 
         public void Show()
         {

@@ -1,5 +1,5 @@
-﻿using R3;
-using UnityEngine;
+﻿#nullable enable
+using R3;
 
 namespace Domain.Model.Setting
 {
@@ -8,22 +8,18 @@ namespace Domain.Model.Setting
         public readonly int Max;
         public readonly int Min;
         public readonly string Name;
+        public readonly ReactiveProperty<bool> IsEnabled;
 
-        public Slider(string name, int min, int max, int defaultValue)
+        public Slider(string name, int min, int max, int defaultValue, ReactiveProperty<bool>? isEnabled = null)
         {
             Name = name;
             Min = min;
             Max = max;
-            _value = new ReactiveProperty<int>(defaultValue);
+            Value = new ReactiveProperty<int>(defaultValue);
+            IsEnabled = isEnabled ?? new ReactiveProperty<bool>(true);
         }
 
-        private readonly ReactiveProperty<int> _value;
-        public ReadOnlyReactiveProperty<int> Value => _value;
+        public ReactiveProperty<int> Value { get; init; }
         public int CurrentValue => Value.CurrentValue;
-
-        public void SetValue(int value)
-        {
-            _value.Value = Mathf.Clamp(value, Min, Max);
-        }
     }
 }

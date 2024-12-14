@@ -34,6 +34,7 @@ namespace Provider
             builder.RegisterComponentInHierarchy<StatView>();
             builder.RegisterComponentInHierarchy<CameraFollowTarget>();
             builder.RegisterComponentInHierarchy<CameraFlameRect>();
+            builder.RegisterComponentInHierarchy<MainMenu>();
             builder.RegisterComponentInHierarchy<SettingWindow>();
             builder.RegisterComponentInHierarchy<MenuController>();
             builder.RegisterComponentInHierarchy<LogView>();
@@ -57,6 +58,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<SoundPresenter>();
             builder.RegisterPlainEntryPoint<GroupMarkerPresenter>();
             builder.RegisterPlainEntryPoint<KeyCharacterPresenter>();
+            builder.RegisterPlainEntryPoint<MainMenuPresenter>();
             builder.RegisterPlainEntryPoint<SettingPresenter>();
             builder.RegisterPlainEntryPoint<LogPresenter>();
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();

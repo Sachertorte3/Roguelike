@@ -26,7 +26,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<ItemFocus> _onRenameItemActionReceived =
             new(ItemFocus.Empty);
 
-        private bool _enable = true;
+        private readonly ReactiveProperty<bool> _enable = new(false);
 
         internal IReadOnlyAsyncReactiveProperty<(Move action, bool isStarted)> OnMoveInputReceived =>
             _onMoveInputReceived;
@@ -37,58 +37,59 @@ namespace Domain.Service.Characters.Behavior
         internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnRenameItemActionReceived => _onRenameItemActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;
+        public ReadOnlyReactiveProperty<bool> IsEnabled => _enable;
 
         public void SetMoveInput(Direction8 direction, bool isStarted)
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onMoveInputReceived.Value = (new Move(direction), isStarted);
         }
 
         public void SetAttackInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onUseItemActionReceived.Value = _focus;
         }
 
         public void SetThrowInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onThrowItemActionReceived.Value = _focus;
         }
 
         public void SetDropInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onDropItemActionReceived.Value = _focus;
         }
 
         public void SetDoNothingInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onDoNothingActionReceived.Value = Unit.Default;
         }
 
         public void SetRenameInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onRenameItemActionReceived.Value = _focus;
         }
 
         public void SetItemFocus(ItemFocus focus)
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _focus = focus;
         }
 
         internal void ReadInput()
         {
-            if (_enable)
+            if (_enable.CurrentValue)
                 _onActionRead.OnNext(Unit.Default);
         }
 
         public void Enable(bool enable)
         {
-            _enable = enable;
+            _enable.Value = enable;
         }
     }
 }

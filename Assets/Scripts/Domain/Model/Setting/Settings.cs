@@ -22,8 +22,9 @@ namespace Domain.Model.Setting
         public static readonly CheckBox AutoPickUpShopItem = new("店のアイテムを自動で拾う", false);
         public static readonly Slider DashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
         public static readonly CheckBox AutoSave = new("自動でセーブする", true);
-        public static readonly CheckBox RetryOnDead = new("死亡時にリトライ可能", false);
-        public static readonly CheckBox AutoIdentify = new("全てのアイテムが自動で識別される", false);
+        public static readonly CheckBox EnableCheat = new("チートを有効にする", false);
+        public static readonly CheckBox RetryOnDead = new("死亡時にリトライ可能", false, EnableCheat.Value);
+        public static readonly CheckBox AutoIdentify = new("全てのアイテムが自動で識別される", false, EnableCheat.Value);
         private static readonly Subject<Unit> _onValuesSet = new();
         public static Observable<Unit> OnValuesSet => _onValuesSet;
 
@@ -53,10 +54,10 @@ namespace Domain.Model.Setting
                     switch (value)
                     {
                         case Slider slider:
-                            slider.SetValue(intValue);
+                            slider.Value.Value = intValue;
                             break;
                         case CheckBox checkBox:
-                            checkBox.SetValue(intValue == 1);
+                            checkBox.Value.Value = intValue == 1;
                             break;
                     }
                 }

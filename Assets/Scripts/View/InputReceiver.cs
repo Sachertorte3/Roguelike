@@ -1,6 +1,5 @@
 using System;
 using R3;
-using Unity.Logging;
 using UnityEngine;
 using Utilities;
 
@@ -47,13 +46,11 @@ namespace View
 
         public void Enable()
         {
-            Debug.Log("Enable");
             _actions.Enable();
         }
 
         public void Disable()
         {
-            Debug.Log("Disable");
             _actions.Disable();
         }
     }

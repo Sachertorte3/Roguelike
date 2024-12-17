@@ -33,6 +33,7 @@ namespace Game
         public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
         private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
+        private bool _isCheating = false;
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
@@ -57,6 +58,14 @@ namespace Game
                     _state.Value = GameState.Title;
                 });
             });
+
+            Settings.EnableCheat.Value.Subscribe(value =>
+            {
+                if (value)
+                {
+                    _isCheating = true;
+                }
+            });
         }
 
         public UniTask<int> GetChoice(string? text, params string[] choices)
@@ -74,6 +83,14 @@ namespace Game
             GameLog.Clear();
             await StopGame();
             var saveData = _saveDataManager.Load();
+            _isCheating = saveData?.IsCheating ?? false;
+            var latestTurn = _saveDataManager.LoadLatestTurn();
+            var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
+            if (isRollbacked)
+            {
+                Log.Info($"[Game]rollback detected");
+                _isCheating = true;
+            }
             if (saveData != null)
             {
                 var map = LoadSaveData(saveData);
@@ -128,6 +145,7 @@ namespace Game
             Log.Debug("[Game]Start CreateWorld");
             _world.CreateNew();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
+            _isCheating = false;
             Log.Debug("[Game]End CreateWorld");
             return map;
         }
@@ -181,12 +199,17 @@ namespace Game
             Log.Debug("[Game]End LoadMap");
         }
 
+        public void SaveLight()
+        {
+            _saveDataManager.SaveLight(Turn.CurrentValue);
+        }
+
         public void Save()
         {
             var world = _world.Serialize();
             var statistics = _activeStatistics.Value.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
-            _saveDataManager.Save(new SaveData(world, statistics, maps, _turnController.GetWaitTime()));
+            _saveDataManager.SaveFull(new SaveData(world, statistics, maps, _turnController.GetWaitTime(), _isCheating));
         }
 
         public async UniTask LoadAndStart()

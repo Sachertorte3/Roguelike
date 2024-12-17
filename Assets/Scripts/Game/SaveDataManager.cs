@@ -12,7 +12,8 @@ namespace Game
         WorldMemento World,
         StatisticsMemento Statistics,
         Dictionary<string, MapMemento> Maps,
-        float TurnWaitTime);
+        float TurnWaitTime,
+        bool IsCheating);
     public class SaveDataManager
     {
         private SQLiteDatabase db;
@@ -34,16 +35,24 @@ namespace Game
             return db.ExistSave(_saveDataSlot);
         }
 
-        public void Save(SaveData saveData)
+        public void SaveLight(int turn)
+        {
+            Log.Debug("[Save]Start Save Light");
+            db.SaveTurn(_saveDataSlot, turn);
+            Log.Debug("[Save]End Save Light");
+        }
+
+        public void SaveFull(SaveData saveData)
         {
             Log.Debug("[Save]Start Save");
-            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime);
+            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime, saveData.IsCheating);
+            db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
             foreach (var map in saveData.Maps)
             {
-                db.SaveMap(map.Key, JsonUtility.ToJson(map.Value));
+                db.SaveMap(_saveDataSlot, map.Key, JsonUtility.ToJson(map.Value));
             }
             db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
-            db.SaveSettings(Settings.GetValues().ToSerializable());
+            db.SaveSettings(_saveDataSlot, Settings.GetValues().ToSerializable());
 
             Log.Debug("[Save]End Save");
         }
@@ -55,12 +64,12 @@ namespace Game
             {
                 return null;
             }
-            var (worldData, turnWaitTime) = db.Load(_saveDataSlot);
+            var (worldData, turnWaitTime, isCheating) = db.Load(_saveDataSlot);
             var world = JsonUtility.FromJson<WorldMemento>(worldData);
             Dictionary<string, MapMemento> maps = new();
             foreach (var mapId in world.MapIds)
             {
-                var mapData = db.LoadMap(mapId);
+                var mapData = db.LoadMap(_saveDataSlot, mapId);
                 maps.Add(mapId, JsonUtility.FromJson<MapMemento>(mapData));
             }
             var statisticsData = db.LoadStatistics(_saveDataSlot);
@@ -69,7 +78,16 @@ namespace Game
             Settings.SetValues(settings);
 
             Log.Debug("[Save]End Load");
-            return new SaveData(world, statistics, maps, turnWaitTime);
+            return new SaveData(world, statistics, maps, turnWaitTime, isCheating);
+        }
+
+        public int LoadLatestTurn()
+        {
+            if (!db.ExistSave(_saveDataSlot))
+            {
+                return 0;
+            }
+            return db.LoadLatestTurn(_saveDataSlot);
         }
 
         public void ClearSave()

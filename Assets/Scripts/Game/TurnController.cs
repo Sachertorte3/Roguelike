@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
@@ -142,9 +141,16 @@ namespace Game
             }
             else
             {
-                if (character.IsPlayer && Settings.AutoSave.CurrentValue)
+                if (character.IsPlayer)
                 {
-                    Globals.GameManager.Save();
+                    if (Settings.AutoSave.CurrentValue)
+                    {
+                        Globals.GameManager.Save();
+                    }
+                    else
+                    {
+                        Globals.GameManager.SaveLight();
+                    }
                 }
 
                 Log.Debug($"[Turn]{character.GetName(map.Player)} think...");

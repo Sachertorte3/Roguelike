@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using Tetr4lab.UnityEngine.SQLite;
+using UnityEngine;
 using Unity.Logging;
 
 namespace Game
@@ -15,95 +16,121 @@ namespace Game
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists saves (id integer primary key, text string, turnWaitTime real)");
+                "create table if not exists saves (save_id integer, text string, turnWaitTime real, isCheating integer, primary key(save_id))");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists maps (id string primary key, text string)");
+                "create table if not exists latest_tracker(save_id integer, turn integer, primary key(save_id))");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists statistics (id integer primary key, text string)");
+                "create table if not exists maps (save_id integer, map_id string, text string, primary key(save_id, map_id))");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists settings (key string primary key, value string)");
+                "create table if not exists statistics (save_id integer, text string, primary key(save_id))");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists global_settings (name string, value integer, primary key(name))");
+            sqlDB.ExecuteNonQuery(
+                "create table if not exists settings (save_id integer, name string, value integer, primary key(save_id, name))");
             Log.Debug("Database init done");
         }
-        public void Save(int id, string saveData, float turnWaitTime)
+        public void Save(int save_id, string saveData, float turnWaitTime, bool isCheating)
         {
             sqlDB.ExecuteNonQuery(
-                "insert or replace into saves values (:id, :text, :turnWaitTime)",
+                "insert or replace into saves values (:save_id, :text, :turnWaitTime, :isCheating)",
                 new SQLiteRow
                 {
-                    { "id", id },
+                    { "save_id", save_id },
                     { "text", saveData },
-                    { "turnWaitTime", turnWaitTime }
+                    { "turnWaitTime", turnWaitTime },
+                    { "isCheating", isCheating ? 1 : 0 }
                 });
         }
-        public void SaveMap(string id, string mapData)
+        public void SaveTurn(int save_id, int turn)
         {
             sqlDB.ExecuteNonQuery(
-                "insert or replace into maps values(:id, :text)",
+                "insert or replace into latest_tracker values(:save_id, :turn)",
                 new SQLiteRow
                 {
-                    { "id", id },
+                    { "save_id", save_id },
+                    { "turn", turn }
+                });
+        }
+        public void SaveMap(int save_id, string map_id, string mapData)
+        {
+            sqlDB.ExecuteNonQuery(
+                "insert or replace into maps values(:save_id, :map_id, :text)",
+                new SQLiteRow
+                {
+                    { "save_id", save_id },
+                    { "map_id", map_id },
                     { "text", mapData }
                 });
         }
-        public void SaveStatistics(int id, string statisticsData)
+        public void SaveStatistics(int save_id, string statisticsData)
         {
             sqlDB.ExecuteNonQuery(
-                "insert or replace into statistics values(:id, :text)",
+                "insert or replace into statistics values(:save_id, :text)",
                 new SQLiteRow
                 {
-                    { "id", id },
+                    { "save_id", save_id },
                     { "text", statisticsData }
                 });
         }
-        public void SaveSettings(Dictionary<string, int> settings)
+        public void SaveSettings(int save_id, Dictionary<string, int> settings)
         {
             foreach (var setting in settings)
             {
                 sqlDB.ExecuteNonQuery(
-                    "insert or replace into settings values(:key, :value)",
+                    "insert or replace into settings values(:save_id, :name, :value)",
                     new SQLiteRow
                     {
-                        { "key", setting.Key },
+                        { "save_id", save_id },
+                        { "name", setting.Key },
                         { "value", setting.Value }
                     });
             }
         }
-        public bool ExistSave(int id)
+        public bool ExistSave(int save_id)
         {
             var dataTable = sqlDB.ExecuteQuery(
-                "select * from saves where id = :id",
-                new SQLiteRow { { "id", id } });
+                "select * from saves where save_id = :save_id",
+                new SQLiteRow { { "save_id", save_id } });
             return dataTable.Rows.Count > 0;
         }
-        public (string world, float turnWaitTime) Load(int id)
+        public (string world, float turnWaitTime, bool isCheating) Load(int save_id)
         {
             var dataTable = sqlDB.ExecuteQuery(
-                "select * from saves where id = :id",
+                "select * from saves where save_id = :save_id",
                 new SQLiteRow
                 {
-                    { "id", id }
+                    { "save_id", save_id }
                 });
             string world = (string)dataTable.Rows[0]["text"];
             float turnWaitTime = (float)(double)dataTable.Rows[0]["turnWaitTime"];
-            return (world, turnWaitTime);
+            bool isCheating = (int)dataTable.Rows[0]["isCheating"] == 1;
+            return (world, turnWaitTime, isCheating);
         }
-        public string LoadMap(string id)
+        public int LoadLatestTurn(int save_id)
         {
             var dataTable = sqlDB.ExecuteQuery(
-                "select * from maps where id = :id",
+                "select * from latest_tracker where save_id = :save_id",
+                new SQLiteRow { { "save_id", save_id } });
+            return (int)dataTable.Rows[0]["turn"];
+        }
+        public string LoadMap(int save_id, string map_id)
+        {
+            var dataTable = sqlDB.ExecuteQuery(
+                "select * from maps where save_id = :save_id and map_id = :map_id",
                 new SQLiteRow
                 {
-                    { "id", id }
+                    { "save_id", save_id },
+                    { "map_id", map_id }
                 });
             return dataTable.Rows[0]["text"] as string;
         }
-        public string? LoadStatistics(int id)
+        public string? LoadStatistics(int save_id)
         {
             var dataTable = sqlDB.ExecuteQuery(
-                "select * from statistics where id = :id",
+                "select * from statistics where save_id = :save_id",
                 new SQLiteRow
                 {
-                    { "id", id }
+                    { "save_id", save_id }
                 });
             return dataTable.Rows[0]["text"] as string;
         }
@@ -113,9 +140,9 @@ namespace Game
             var settings = new Dictionary<string, int>();
             foreach (var row in dataTable.Rows)
             {
-                if (row["key"] is string key && row["value"] is int value)
+                if (row["name"] is string name && row["value"] is int value)
                 {
-                    settings[key] = value;
+                    settings[name] = value;
                 }
             }
             return settings;

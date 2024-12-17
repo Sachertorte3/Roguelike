@@ -33,7 +33,6 @@ namespace Game
         public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
         private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
         public ReadOnlyReactiveProperty<GameState> State => _state;
-        private bool _isCheating = false;
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
@@ -63,7 +62,7 @@ namespace Game
             {
                 if (value)
                 {
-                    _isCheating = true;
+                    _activeStatistics.Value.IsCheating = true;
                 }
             });
         }
@@ -83,17 +82,12 @@ namespace Game
             GameLog.Clear();
             await StopGame();
             var saveData = _saveDataManager.Load();
-            _isCheating = saveData?.IsCheating ?? false;
-            var latestTurn = _saveDataManager.LoadLatestTurn();
-            var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
-            if (isRollbacked)
-            {
-                Log.Info($"[Game]rollback detected");
-                _isCheating = true;
-            }
             if (saveData != null)
             {
+                var latestTurn = _saveDataManager.LoadLatestTurn();
+                var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
                 var map = LoadSaveData(saveData);
+                var statistics = saveData.Statistics;
                 var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
                 {
@@ -104,7 +98,9 @@ namespace Game
                             break;
                         case 1:
                             map = CreateSaveData();
+                            statistics = Statistics.Build();
                             firstWaitTime = 0;
+                            isRollbacked = false;
                             break;
                     }
                 }
@@ -118,7 +114,9 @@ namespace Game
                             break;
                         case 1:
                             map = CreateSaveData();
+                            statistics = Statistics.Build();
                             firstWaitTime = 0;
+                            isRollbacked = false;
                             break;
                     }
                 }
@@ -126,15 +124,17 @@ namespace Game
                 {
                     var _ = await GetChoice(null, "New Game");
                     map = CreateSaveData();
+                    statistics = Statistics.Build();
                     firstWaitTime = 0;
+                    isRollbacked = false;
                 }
-                StartGame(map, saveData.Statistics, firstWaitTime);
+                StartGame(map, statistics, firstWaitTime, isRollbacked);
             }
             else
             {
                 var map = CreateSaveData();
                 var _ = await GetChoice(null, "New Game");
-                StartGame(map, Statistics.Build(), 0);
+                StartGame(map, Statistics.Build(), 0, false);
             }
 
             _state.Value = GameState.Dungeon;
@@ -145,7 +145,6 @@ namespace Game
             Log.Debug("[Game]Start CreateWorld");
             _world.CreateNew();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
-            _isCheating = false;
             Log.Debug("[Game]End CreateWorld");
             return map;
         }
@@ -178,9 +177,14 @@ namespace Game
             await _turnController.Stop();
         }
 
-        private void StartGame(MapManager map, StatisticsMemento statistics, float firstWaitTime)
+        private void StartGame(MapManager map, StatisticsMemento statistics, float firstWaitTime, bool isRollbacked)
         {
             _activeStatistics.Value = new Statistics(statistics, this, _world);
+            if (isRollbacked)
+            {
+                Log.Info($"[Game]rollback detected");
+                _activeStatistics.Value.IsCheating = true;
+            }
             StartMap(map, firstWaitTime);
         }
 
@@ -209,24 +213,7 @@ namespace Game
             var world = _world.Serialize();
             var statistics = _activeStatistics.Value.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
-            _saveDataManager.SaveFull(new SaveData(world, statistics, maps, _turnController.GetWaitTime(), _isCheating));
-        }
-
-        public async UniTask LoadAndStart()
-        {
-            await StopMap();
-            var saveData = _saveDataManager.Load();
-            MapManager map;
-            if (saveData != null)
-            {
-                map = LoadSaveData(saveData);
-                StartGame(map, saveData.Statistics, saveData.TurnWaitTime);
-            }
-            else
-            {
-                map = CreateSaveData();
-                StartGame(map, Statistics.Build(), 0);
-            }
+            _saveDataManager.SaveFull(new SaveData(world, statistics, maps, _turnController.GetWaitTime()));
         }
 
         public void ReturnTitle()

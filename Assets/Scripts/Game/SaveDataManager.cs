@@ -12,8 +12,7 @@ namespace Game
         WorldMemento World,
         StatisticsMemento Statistics,
         Dictionary<string, MapMemento> Maps,
-        float TurnWaitTime,
-        bool IsCheating);
+        float TurnWaitTime);
     public class SaveDataManager
     {
         private SQLiteDatabase db;
@@ -45,7 +44,7 @@ namespace Game
         public void SaveFull(SaveData saveData)
         {
             Log.Debug("[Save]Start Save");
-            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime, saveData.IsCheating);
+            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime);
             db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
             foreach (var map in saveData.Maps)
             {
@@ -64,7 +63,7 @@ namespace Game
             {
                 return null;
             }
-            var (worldData, turnWaitTime, isCheating) = db.Load(_saveDataSlot);
+            var (worldData, turnWaitTime) = db.Load(_saveDataSlot);
             var world = JsonUtility.FromJson<WorldMemento>(worldData);
             Dictionary<string, MapMemento> maps = new();
             foreach (var mapId in world.MapIds)
@@ -78,7 +77,7 @@ namespace Game
             Settings.SetValues(settings);
 
             Log.Debug("[Save]End Load");
-            return new SaveData(world, statistics, maps, turnWaitTime, isCheating);
+            return new SaveData(world, statistics, maps, turnWaitTime);
         }
 
         public int LoadLatestTurn()

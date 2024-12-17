@@ -17,12 +17,14 @@ namespace Game
         public TimeSpan PlayTime => LastSavePlayTime + CurrentSessionTime;
         public ReactiveProperty<int> Turn { get; set; }
         public ObservableHashSet<string> KnownItemNames { get; private set; } = new();
+        public bool IsCheating { get; set; }
         public Statistics(StatisticsMemento memento, GameManager game, World world)
         {
             LastSavePlayTime = TimeSpan.FromTicks(memento.PlayTime);
             SessionStartTime = DateTime.Now;
             Turn = new(memento.Turn);
             KnownItemNames = new(memento.KnownItemNames);
+            IsCheating = memento.IsCheating;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
@@ -38,11 +40,11 @@ namespace Game
         }
         public StatisticsMemento Serialize()
         {
-            return new StatisticsMemento(PlayTime.Ticks, Turn.Value, KnownItemNames.ToList());
+            return new StatisticsMemento(PlayTime.Ticks, Turn.Value, KnownItemNames.ToList(), IsCheating);
         }
         public static StatisticsMemento Build()
         {
-            return new StatisticsMemento(0, 0, new());
+            return new StatisticsMemento(0, 0, new(), false);
         }
     }
 }

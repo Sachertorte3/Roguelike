@@ -16,7 +16,7 @@ namespace Game
             var initDatabaseQuery = "create database if not exists data";
             sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
             sqlDB.ExecuteNonQuery(
-                "create table if not exists saves (save_id integer, text string, turnWaitTime real, isCheating integer, primary key(save_id))");
+                "create table if not exists saves (save_id integer, text string, turnWaitTime real, primary key(save_id))");
             sqlDB.ExecuteNonQuery(
                 "create table if not exists latest_tracker(save_id integer, turn integer, primary key(save_id))");
             sqlDB.ExecuteNonQuery(
@@ -29,16 +29,15 @@ namespace Game
                 "create table if not exists settings (save_id integer, name string, value integer, primary key(save_id, name))");
             Log.Debug("Database init done");
         }
-        public void Save(int save_id, string saveData, float turnWaitTime, bool isCheating)
+        public void Save(int save_id, string saveData, float turnWaitTime)
         {
             sqlDB.ExecuteNonQuery(
-                "insert or replace into saves values (:save_id, :text, :turnWaitTime, :isCheating)",
+                "insert or replace into saves values (:save_id, :text, :turnWaitTime)",
                 new SQLiteRow
                 {
                     { "save_id", save_id },
                     { "text", saveData },
-                    { "turnWaitTime", turnWaitTime },
-                    { "isCheating", isCheating ? 1 : 0 }
+                    { "turnWaitTime", turnWaitTime }
                 });
         }
         public void SaveTurn(int save_id, int turn)
@@ -93,7 +92,7 @@ namespace Game
                 new SQLiteRow { { "save_id", save_id } });
             return dataTable.Rows.Count > 0;
         }
-        public (string world, float turnWaitTime, bool isCheating) Load(int save_id)
+        public (string world, float turnWaitTime) Load(int save_id)
         {
             var dataTable = sqlDB.ExecuteQuery(
                 "select * from saves where save_id = :save_id",
@@ -103,8 +102,7 @@ namespace Game
                 });
             string world = (string)dataTable.Rows[0]["text"];
             float turnWaitTime = (float)(double)dataTable.Rows[0]["turnWaitTime"];
-            bool isCheating = (int)dataTable.Rows[0]["isCheating"] == 1;
-            return (world, turnWaitTime, isCheating);
+            return (world, turnWaitTime);
         }
         public int LoadLatestTurn(int save_id)
         {

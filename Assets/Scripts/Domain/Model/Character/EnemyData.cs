@@ -8,6 +8,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Table;
 using Utilities.Serialize;
+using Sirenix.OdinInspector.Editor;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -22,6 +24,7 @@ namespace Domain.Model.Character
         [ReadOnly][Required] public string Name = "";
         public CharacterGroup Group = CharacterGroup.Monster;
         [SerializeReference][Required] public ICharacterType CharacterType;
+        [PreviewField(Alignment = ObjectFieldAlignment.Left), ReadOnly] public Sprite _sprite;
         public bool IsBoss;
         [MinValue(1)] public int Hp;
         public Aggression Aggression = Aggression.AvoidAllies;

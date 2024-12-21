@@ -6,9 +6,9 @@ namespace View.UI
     {
         [SerializeField] private GameOverWindow _gameOverPanel;
         public bool CanClose => false;
-        public void SetCauseOfDeath(string causeOfDeath)
+        public void SetData(int level, string causeOfDeath)
         {
-            _gameOverPanel.SetCauseOfDeath(causeOfDeath);
+            _gameOverPanel.SetData(level, causeOfDeath);
             _gameOverPanel.Show();
         }
         public void Show()

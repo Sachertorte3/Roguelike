@@ -19,7 +19,7 @@ namespace Provider
                     damageTextSpawner.DeleteAllText();
                     _disposable.Add(map.Player.Character.Status.OnDamageReceived.Subscribe(damageChanged =>
                         {
-                            var damagePercentageFromMaxHp = damageChanged * 100 /
+                            var damagePercentageFromMaxHp = damageChanged.Damage * 100 /
                                                             map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue *
                                 100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
@@ -36,10 +36,10 @@ namespace Provider
                         {
                             if (character.Entity.Visibility.CurrentValue)
                             {
-                                var damagePercentageFromMaxHp = damageChanged * 100 /
+                                var damagePercentageFromMaxHp = damageChanged.Damage * 100 /
                                                                 character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowDamage(character.Entity.CurrentPosition,
-                                    damageChanged, damagePercentageFromMaxHp,
+                                    damageChanged.Damage, damagePercentageFromMaxHp,
                                     Settings.DamageTextDisplayTime.CurrentValue);
                             }
                         }

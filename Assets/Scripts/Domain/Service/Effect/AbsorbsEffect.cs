@@ -32,7 +32,7 @@ namespace Domain.Service.Effect
         public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var value = Formula.Calc(actor, target, _elementPowers);
-            var loseValue = target.LoseHp(value);
+            var loseValue = target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
             actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate));
             return UniTask.CompletedTask;
         }

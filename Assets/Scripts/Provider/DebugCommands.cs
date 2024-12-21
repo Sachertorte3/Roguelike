@@ -165,7 +165,7 @@ namespace Provider
 
         private void ShowCharacter(ICharacter character)
         {
-            var info = $"{character.GetName(_world.ActiveMap.CurrentValue.Player, true)}\n"
+            var info = $"{character.GetNameIgnoreVisibility(_world.ActiveMap.CurrentValue.Player)}\n"
                        + $"Id: {character.Entity.Id}\n"
                        + $"Position: {character.Entity.CurrentPosition}\n"
                        + $"CharacterType: {character.CharacterType.SubtypeName()}";
@@ -294,7 +294,7 @@ namespace Provider
                 var enemyData = ScriptableObjectLoader.Load<EnemyData>(enemyName);
                 var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept,
                     isShiny: isShiny);
-                Log.Info($"{enemy.GetName(_world.ActiveMap.CurrentValue.Player, true)}を{position}にスポーンしました。");
+                Log.Info($"{enemy.GetNameIgnoreVisibility(_world.ActiveMap.CurrentValue.Player)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

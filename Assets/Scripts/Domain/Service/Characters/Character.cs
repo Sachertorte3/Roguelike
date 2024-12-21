@@ -48,7 +48,7 @@ namespace Domain.Service.Characters
         public int DropExp { get; init; }
         private readonly IDisposable _disposable;
         private IMap _map;
-        private readonly Subject<Unit> _onDead = new();
+        private readonly Subject<string> _onDead = new();
         private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
         private ReactiveProperty<int> _chargeTurn = new(0);
 
@@ -76,10 +76,10 @@ namespace Domain.Service.Characters
             CanPickUp = data.CanPickUp;
             CanUseItem = data.CanUseItem;
 
-            _disposable = OnDead.Subscribe(_ => Entity.Destroy());
+            _disposable = OnDead.Subscribe(lastDamageLog => Entity.Destroy(lastDamageLog));
             _map = map;
 
-            _statusManager.Stats.HpValue.Where(x => x <= 0).Subscribe(async _ =>
+            _statusManager.OnDamageReceived.Subscribe(async damageChanged =>
             {
                 if (IsDead)
                 {
@@ -95,13 +95,12 @@ namespace Domain.Service.Characters
                 {
                     if (_lastSkill != null)
                         await _lastSkill.Use(this, Entity.CurrentPosition, CurrentDirection, _map);
-                    _onDead.OnNext(Unit.Default);
+                    _onDead.OnNext(damageChanged.CauseOfDamageLog);
                 }
             });
 
             AutoIdentify.Where(autoIdentify => autoIdentify).Subscribe(_ =>
             {
-                Debug.Log("AutoIdentify");
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
                     KnowItem(item, false);
@@ -109,7 +108,7 @@ namespace Domain.Service.Characters
             });
         }
 
-        public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed.CurrentValue;
+        public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed;
         private ICharacterBehavior _behavior { get; }
         public bool IsPlayer { get; init; }
         public bool IsLeader { get; init; }
@@ -130,6 +129,11 @@ namespace Domain.Service.Characters
         public string GetName(IPlayer player)
         {
             return GetName(player, false);
+        }
+
+        public string GetNameIgnoreVisibility(IPlayer player)
+        {
+            return GetName(player, true);
         }
 
         public string GetName(IPlayer player, bool ignoreVisibility)
@@ -564,7 +568,7 @@ namespace Domain.Service.Characters
             _direction.Dispose();
         }
 
-        public Observable<Unit> OnDead => _onDead;
+        public Observable<string> OnDead => _onDead;
 
         public IReadOnlyList<ICharacterSkill> Skills => _skills;
 
@@ -625,9 +629,9 @@ namespace Domain.Service.Characters
             return _statusManager.GainHp(value);
         }
 
-        public int LoseHp(int value)
+        public int LoseHp(int value, string causeOfDamageLog)
         {
-            return _statusManager.LoseHp(value);
+            return _statusManager.LoseHp(value, causeOfDamageLog);
         }
 
         public void RestoreToFullHealth()

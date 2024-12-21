@@ -28,7 +28,7 @@ namespace Domain.Service.Effect
         {
             var damage = Formula.CalcExplosionDamage(_damageRate, target);
             GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
-            target.LoseHp(damage);
+            target.LoseHp(damage, $"は爆発に巻き込まれた");
             return UniTask.CompletedTask;
         }
 

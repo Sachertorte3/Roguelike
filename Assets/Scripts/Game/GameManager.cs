@@ -33,8 +33,6 @@ namespace Game
         public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
         private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
-        public string? CauseOfDeath { get; private set; }
-        private SaveData _saveDataCache;
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
@@ -56,7 +54,7 @@ namespace Game
                 {
                     await StopMap();
                     Save();
-                    GameOver("コウモリ");
+                    GameOver();
                 });
             });
 
@@ -93,9 +91,7 @@ namespace Game
             if (saveData != null)
             {
                 var latestTurn = _saveDataManager.LoadLatestTurn();
-                var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
-                var map = LoadSaveData(saveData);
-                var statistics = saveData.Statistics;
+                var map = LoadSaveData(saveData, latestTurn);
                 var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
             {
@@ -106,9 +102,7 @@ namespace Game
                         break;
                     case 1:
                         map = CreateSaveData();
-                        statistics = Statistics.Build();
                         firstWaitTime = 0;
-                            isRollbacked = false;
                         break;
                 }
             }
@@ -118,13 +112,11 @@ namespace Game
                 switch (choice)
                 {
                     case 0:
-                            map = LoadSaveDataAndRevivePlayer(saveData);
+                        map = LoadSaveDataAndRevivePlayer(saveData, latestTurn);
                         break;
                     case 1:
                         map = CreateSaveData();
-                        statistics = Statistics.Build();
                         firstWaitTime = 0;
-                            isRollbacked = false;
                         break;
                 }
             }
@@ -132,17 +124,15 @@ namespace Game
             {
                 var _ = await GetChoice(null, "New Game");
                 map = CreateSaveData();
-                statistics = Statistics.Build();
                 firstWaitTime = 0;
-                    isRollbacked = false;
             }
-                StartGame(map, statistics, firstWaitTime, isRollbacked);
+                StartGame(map, firstWaitTime);
             }
             else
             {
                 var map = CreateSaveData();
                 var _ = await GetChoice(null, "New Game");
-                StartGame(map, Statistics.Build(), 0, false);
+                StartGame(map, 0);
             }
 
             _state.Value = GameState.Dungeon;
@@ -152,20 +142,28 @@ namespace Game
         {
             Log.Debug("[Game]Start CreateWorld");
             _world.CreateNew();
+            _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
             Log.Debug("[Game]End CreateWorld");
             return map;
         }
 
-        private MapManager LoadSaveData(SaveData saveData)
+        private MapManager LoadSaveData(SaveData saveData, int latestTurn)
         {
+            _activeStatistics.Value = new Statistics(saveData.Statistics, this, _world);
+            var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
+            if (isRollbacked)
+            {
+                Log.Info($"[Game]rollback detected");
+                _activeStatistics.Value.IsCheating = true;
+            }
             return _world.LoadWorld(saveData.World, saveData.Maps);
         }
 
-        private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData)
+        private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData, int latestTurn)
         {
             var world = saveData.World.RevivePlayer();
-            var map = LoadSaveData(saveData with { World = world });
+            var map = LoadSaveData(saveData with { World = world }, latestTurn);
             var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
             map.Player.Character.Entity.Teleport(randomPosition);
             map.Player.Character.RestoreToFullHealth();
@@ -185,14 +183,8 @@ namespace Game
             await _turnController.Stop();
         }
 
-        private void StartGame(MapManager map, StatisticsMemento statistics, float firstWaitTime, bool isRollbacked)
+        private void StartGame(MapManager map, float firstWaitTime)
         {
-            _activeStatistics.Value = new Statistics(statistics, this, _world);
-            if (isRollbacked)
-            {
-                Log.Info($"[Game]rollback detected");
-                _activeStatistics.Value.IsCheating = true;
-            }
             StartMap(map, firstWaitTime);
         }
 
@@ -226,13 +218,11 @@ namespace Game
 
         public void ReturnTitle()
         {
-            CauseOfDeath = null;
             _state.Value = GameState.Title;
         }
 
-        public void GameOver(string causeOfDeath)
+        public void GameOver()
         {
-            CauseOfDeath = causeOfDeath;
             _state.Value = GameState.Title;
         }
 

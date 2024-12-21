@@ -61,7 +61,7 @@ namespace Domain.Service.Events
             if (Random.value < _probabilityOfBreaking)
             {
                 GameLog.Add($"<color=red>{Name}</color>は壊れた");
-                Entity.Destroy();
+                Entity.Destroy("は壊れた");
             }
         }
     }

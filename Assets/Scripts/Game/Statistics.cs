@@ -15,36 +15,42 @@ namespace Game
         public DateTime SessionStartTime { get; private set; }
         public TimeSpan CurrentSessionTime => DateTime.Now - SessionStartTime;
         public TimeSpan PlayTime => LastSavePlayTime + CurrentSessionTime;
-        public ReactiveProperty<int> Turn { get; set; }
-        public ObservableHashSet<string> KnownItemNames { get; private set; } = new();
+        private readonly ReactiveProperty<int> _turn;
+        public ReadOnlyReactiveProperty<int> Turn => _turn;
+        public int MaxMapLevel { get; private set; }
+        private readonly ObservableHashSet<string> _knownItemNames;
+        public IObservableCollection<string> KnownItemNames => _knownItemNames;
         public bool IsCheating { get; set; }
         public Statistics(StatisticsMemento memento, GameManager game, World world)
         {
             LastSavePlayTime = TimeSpan.FromTicks(memento.PlayTime);
             SessionStartTime = DateTime.Now;
-            Turn = new(memento.Turn);
-            KnownItemNames = new(memento.KnownItemNames);
+            _turn = new(memento.Turn);
+            MaxMapLevel = memento.MaxMapLevel;
+            _knownItemNames = new(memento.KnownItemNames);
             IsCheating = memento.IsCheating;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
+                if (map.Level > MaxMapLevel)
+                    MaxMapLevel = map.Level;
                 map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>
                 {
-                    KnownItemNames.Add(item.NewItem);
+                    _knownItemNames.Add(item.NewItem);
                 });
             });
             game.OnTurnChanged.Skip(1).Subscribe(_ =>
             {
-                Turn.Value++;
+                _turn.Value++;
             });
         }
         public StatisticsMemento Serialize()
         {
-            return new StatisticsMemento(PlayTime.Ticks, Turn.Value, KnownItemNames.ToList(), IsCheating);
+            return new StatisticsMemento(PlayTime.Ticks, _turn.Value, MaxMapLevel, _knownItemNames.ToList(), IsCheating);
         }
         public static StatisticsMemento Build()
         {
-            return new StatisticsMemento(0, 0, new(), false);
+            return new StatisticsMemento(0, 0, 1, new(), false);
         }
     }
 }

@@ -2,8 +2,7 @@
 
 namespace Domain.Model.Condition
 {
-    public interface IHasCondition : IHasStatus, IHasAffiliation
+    public interface IHasCondition : IHasStatus, IHasAffiliation, IHasName
     {
-        public string GetName(IPlayer player);
     }
 }

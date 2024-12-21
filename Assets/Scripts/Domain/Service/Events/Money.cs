@@ -71,9 +71,9 @@ namespace Domain.Service.Events
             Entity.SetVisibility(visibility);
         }
 
-        public void Destroy()
+        public void Destroy(string destroyLog)
         {
-            Entity.Destroy();
+            Entity.Destroy(destroyLog);
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)

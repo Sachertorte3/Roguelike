@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Game;
 using R3;
 using Unity.Logging;
+using Utilities;
 using VContainer;
 using View.UI;
 
@@ -22,7 +23,7 @@ namespace Provider
                     case GameState.Title:
                         Log.Debug("[Game]Change to title scene.");
                         gameManager.Title().Forget();
-                        menuController.TitleMenu();
+                        menuController.TitleMenu(gameManager.CauseOfDeath);
                         break;
                     case GameState.Dungeon:
                         Log.Debug("[Game]Change to dungeon scene.");

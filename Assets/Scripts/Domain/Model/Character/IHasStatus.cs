@@ -14,7 +14,7 @@ namespace Domain.Model.Character
         /// </summary>
         /// <param name="value">The amount of damage to take</param>
         /// <returns>The actual amount of HP reduced</returns>
-        public int LoseHp(int value);
+        public int LoseHp(int value, string causeOfDamageLog);
 
         /// <summary>
         /// Recovers HP

@@ -155,8 +155,7 @@ namespace Game
 
             KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
                 .Select(character => CharacterManager.Characters.ById(new Id<IEntity>(character)))
-                .Where(character => character != null)
-                .Cast<ICharacter>()
+                .WhereNotNull()
             );
             if (KeyCharacters.Any())
             {
@@ -264,7 +263,7 @@ namespace Game
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
             var destination = await throwAnimationEntity.Throw(direction, this, distance, canHitLayer);
-            throwAnimationEntity.Entity.Destroy();
+            throwAnimationEntity.Entity.Destroy("は演出が終わったので消えた（エラー）");
             return destination;
         }
 
@@ -608,14 +607,14 @@ namespace Game
             var characters = Characters.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var character in characters)
             {
-                character.LoseHp(1);
+                character.LoseHp(1, "は火に焼かれた");
                 GameLog.Add($"{character.GetName(Player)}は火に焼かれた");
             }
 
             var items = Items.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var item in items)
             {
-                item.Entity.Destroy();
+                item.Entity.Destroy($"は灰になった");
                 GameLog.Add($"{item.Item.GetName(Player, ItemPlaceholders)}は灰になった");
             }
 

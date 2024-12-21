@@ -25,7 +25,7 @@ namespace Domain.Service.Characters
     public class CharacterStatusManager : IDisposable, ISerializable<CharacterStatusMemento>, IStatusManager, ITarget
     {
         private readonly CharacterConditions _conditions;
-        private readonly Subject<int> _onDamageReceived = new();
+        private readonly Subject<OnDamageReceivedMessage> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
@@ -72,7 +72,7 @@ namespace Domain.Service.Characters
         }
 
         public bool IsDead => Stats.HpValue.CurrentValue <= 0;
-        public Observable<int> OnDamageReceived => _onDamageReceived;
+        public Observable<OnDamageReceivedMessage> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
         public void GainExp(int value)
@@ -103,19 +103,19 @@ namespace Domain.Service.Characters
             return gainValue;
         }
 
-        public int LoseHp(float value, bool notifyOnlyActualLoss = false)
+        public int LoseHp(float value, string causeOfDeathLog, bool notifyOnlyActualLoss = false)
         {
             var loseValue = _stats.Hp.Lose(value);
             if (notifyOnlyActualLoss)
             {
                 if (loseValue > 0)
                 {
-                    _onDamageReceived.OnNext(loseValue);
+                    _onDamageReceived.OnNext(new OnDamageReceivedMessage(loseValue, causeOfDeathLog));
                 }
             }
             else
             {
-                _onDamageReceived.OnNext(Mathf.RoundToInt(value));
+                _onDamageReceived.OnNext(new OnDamageReceivedMessage(Mathf.RoundToInt(value), causeOfDeathLog));
             }
 
             return loseValue;
@@ -132,7 +132,7 @@ namespace Domain.Service.Characters
             if (_stats.HpNaturalRecoveryAmount.CurrentValue > 0)
                 GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             else
-                LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, true);
+                LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", true);
             _conditions.UpdateTurn(hasCondition, characterVisible);
         }
 

@@ -31,7 +31,7 @@ namespace Domain.Model.Character
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public Observable<Unit> OnAttacked { get; }
-        public Observable<Unit> OnDead { get; }
+        public Observable<string> OnDead { get; }
         public Observable<Unit> OnPickUpItem { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public IObservableCollection<string> KnownItemNames { get; }

@@ -4,6 +4,7 @@ using System.Linq;
 using Domain.Model.Map;
 using UnityEngine;
 using Utilities.Serialize;
+using Utilities.Serialize.Option;
 using Utilities.Stats;
 
 namespace Domain.Model.Memento
@@ -55,7 +56,7 @@ namespace Domain.Model.Memento
                             )
                         ),
                         entity: Player.Character.Entity.CopyWith(
-                            isDestroyed: false
+                            destroyLog: Option<string>.None
                         )
                     )
                 )

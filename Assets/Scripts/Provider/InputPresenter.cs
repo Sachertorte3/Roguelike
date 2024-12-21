@@ -33,13 +33,13 @@ namespace Provider
 
             receiver.OnMovePerformed
                 .Select(vector => DirectionMethods.FromVector(vector))
-                .Where(direction => direction != null)
-                .Subscribe(direction => actionReceiver.SetMoveInput(direction!.Value, true));
+                .WhereNotNull()
+                .Subscribe(direction => actionReceiver.SetMoveInput(direction, true));
             actionReceiver.OnActionRead
                 .Select(_ => receiver.MoveVector)
                 .Select(vector => DirectionMethods.FromVector(vector))
-                .Where(direction => direction != null)
-                .Subscribe(direction => actionReceiver.SetMoveInput(direction!.Value, false));
+                .WhereNotNull()
+                .Subscribe(direction => actionReceiver.SetMoveInput(direction, false));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());

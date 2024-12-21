@@ -8,12 +8,14 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public long PlayTime { get; private set; }
         [field: SerializeField] public int Turn { get; private set; }
+        [field: SerializeField] public int MaxMapLevel { get; private set; }
         [field: SerializeField] public List<string> KnownItemNames { get; private set; }
         [field: SerializeField] public bool IsCheating { get; private set; }
-        public StatisticsMemento(long playTime, int turn, List<string> knownItemNames, bool isCheating)
+        public StatisticsMemento(long playTime, int turn, int maxMapLevel, List<string> knownItemNames, bool isCheating)
         {
             PlayTime = playTime;
             Turn = turn;
+            MaxMapLevel = maxMapLevel;
             KnownItemNames = knownItemNames;
             IsCheating = isCheating;
         }

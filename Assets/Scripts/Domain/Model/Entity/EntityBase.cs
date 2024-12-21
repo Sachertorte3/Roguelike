@@ -1,9 +1,11 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Option;
 
 namespace Domain.Model.Entity
 {
@@ -15,14 +17,14 @@ namespace Domain.Model.Entity
         private readonly Subject<Vector2Int> _onTeleport = new();
         private readonly ReactiveProperty<Vector2Int> _position;
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
-        private readonly ReactiveProperty<bool> _isDestroyed = new(false);
+        private readonly ReactiveProperty<string?> _destroyLog;
 
         public EntityBase(EntityMemento data)
         {
             Id = new Id<IEntity>(data.Id);
-            _position = new ReactiveProperty<Vector2Int>(data.Position);
+            _position = new(data.Position);
             _layer = data.Layer;
-            _isDestroyed.Value = data.IsDestroyed;
+            _destroyLog = new(data.DestroyLog.Value);
         }
 
         public Vector2Int CurrentPosition => Position.CurrentValue;
@@ -31,8 +33,9 @@ namespace Domain.Model.Entity
         public Observable<Vector2Int> OnTeleport => _onTeleport;
         public ReadOnlyReactiveProperty<bool> Visibility => _visibleByPlayer;
         public EntityLayer Layer => _layer;
-        public ReadOnlyReactiveProperty<bool> IsDestroyed => _isDestroyed;
-        public Observable<Unit> OnDestroyed => IsDestroyed.Where(isDestroyed => isDestroyed).AsUnitObservable();
+        public bool IsDestroyed => _destroyLog.CurrentValue != null;
+        public Observable<string> OnDestroyed => _destroyLog.WhereNotNull();
+        public string? DestroyLog => _destroyLog.CurrentValue;
 
         public void Dispose()
         {
@@ -47,7 +50,7 @@ namespace Domain.Model.Entity
                 Id.ToString(),
                 _position.CurrentValue,
                 _layer,
-                _isDestroyed.CurrentValue
+                _destroyLog.CurrentValue.ToOption()
             );
         }
 
@@ -68,7 +71,7 @@ namespace Domain.Model.Entity
                 id.ToString(),
                 position,
                 layer,
-                false
+                Option<string>.None
             );
         }
 
@@ -90,9 +93,9 @@ namespace Domain.Model.Entity
             if (Visibility.CurrentValue) await UniTask.Delay(moveMilliseconds);
         }
 
-        public void Destroy()
+        public void Destroy(string destroyLog)
         {
-            _isDestroyed.Value = true;
+            _destroyLog.Value = destroyLog;
         }
     }
 }

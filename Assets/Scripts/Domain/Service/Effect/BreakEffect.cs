@@ -52,7 +52,7 @@ namespace Domain.Service.Effect
                 return UniTask.CompletedTask;
             }
 
-            target.Entity.Destroy();
+            target.Entity.Destroy("は破壊された");
             return UniTask.CompletedTask;
         }
 

@@ -45,13 +45,13 @@ namespace Domain.Service.Effect
             {
                 var damage = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
-                target.LoseHp(damage);
+                target.LoseHp(damage, $"は{actor.GetName(map.Player)}の攻撃で殺された");
             }
             else
             {
                 var damage = Formula.Calc(actor, target, _elementPowers);
                 GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
-                target.LoseHp(damage);
+                target.LoseHp(damage, $"は{actor.GetName(map.Player)}の攻撃で殺された");
             }
         }
 

@@ -21,8 +21,7 @@ namespace Domain.Service.Items
         public int Capacity => _items.Count;
         private readonly ObservableList<IItem?> _items;
         public IEnumerable<IItem> AllItems => _items
-            .Where(item => item != null)
-            .Cast<IItem>();
+            .WhereNotNull();
         public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex => _items
             .Select((item, index) => (item, index))
             .Where(x => x.item != null)

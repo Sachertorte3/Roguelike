@@ -123,11 +123,15 @@ namespace View.UI
             poppedMenu.Disable();
         }
 
-        public void TitleMenu(string? causeOfDeath = null)
+        public void TitleMenu()
         {
             SwitchMenu(_titleMenu);
-            if (causeOfDeath != null)
-                _titleMenu.SetCauseOfDeath(causeOfDeath);
+        }
+
+        public void TitleMenuWhenGameOver(int level, string causeOfDeath)
+        {
+            SwitchMenu(_titleMenu);
+            _titleMenu.SetData(level, causeOfDeath);
         }
 
         public void DungeonMenu()

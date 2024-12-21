@@ -6,10 +6,11 @@ using R3;
 
 namespace Domain.Model.Character.Status
 {
+    public record OnDamageReceivedMessage(int Damage, string CauseOfDamageLog);
     public interface IStatusManager
     {
         public IStats Stats { get; }
-        public Observable<int> OnDamageReceived { get; }
+        public Observable<OnDamageReceivedMessage> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }
         public void UpdateTurn(IHasCondition hasCondition, bool enemyVisible);

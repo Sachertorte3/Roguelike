@@ -69,6 +69,11 @@ namespace Utilities
             return ie.Select((item, index) => (item, index));
         }
 
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source)
+        {
+            return source.Where(item => item != null).Cast<T>();
+        }
+
         public static IEnumerable<Vector2Int> RectRange(this RectInt rect)
         {
             return RectRange(rect.xMin, rect.yMin, rect.width, rect.height);

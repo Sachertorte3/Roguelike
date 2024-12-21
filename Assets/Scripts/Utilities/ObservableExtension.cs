@@ -19,6 +19,11 @@ namespace Utilities
             return source.Subscribe(item => target.OnNext(item));
         }
 
+        public static Observable<T> WhereNotNull<T>(this Observable<T?> source) where T : struct
+        {
+            return source.Where(item => item != null).Select(item => item.Value);
+        }
+
         public static IDisposable SubscribeIncludingCurrentObservables<T, TMessage>(this IObservableCollection<T> list,
             Func<T, Observable<TMessage>> selector, Action<T, TMessage> action)
         {

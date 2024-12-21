@@ -21,7 +21,7 @@ namespace Domain.Model.Setting
         public static readonly CheckBox IntelligentDash = new("スマートダッシュ", true);
         public static readonly CheckBox AutoPickUpShopItem = new("店のアイテムを自動で拾う", false);
         public static readonly Slider DashPauseMilliseconds = new("分岐一時停止時間[ms]", 100, 1000, 250);
-        public static readonly CheckBox AutoSave = new("自動でセーブする", true);
+        public static readonly CheckBox AutoSave = new("自動でセーブする", false);
         public static readonly CheckBox EnableCheat = new("チートを有効にする", false);
         public static readonly CheckBox RetryOnDead = new("死亡時にリトライ可能", false, EnableCheat.Value);
         public static readonly CheckBox AutoIdentify = new("全てのアイテムが自動で識別される", false, EnableCheat.Value);

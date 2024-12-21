@@ -80,7 +80,7 @@ namespace Game
 
             foreach (var fire in destroyedFires)
             {
-                fire.Entity.Destroy();
+                fire.Entity.Destroy("は消えた");
             }
 
             foreach (var fire in addedFires)

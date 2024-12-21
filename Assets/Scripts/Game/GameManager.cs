@@ -31,8 +31,10 @@ namespace Game
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
         private readonly ReactiveProperty<Statistics> _activeStatistics = new();
         public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
-        private readonly ReactiveProperty<GameState> _state = new(GameState.Title);
+        private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
+        public string? CauseOfDeath { get; private set; }
+        private SaveData _saveDataCache;
         private readonly SerialDisposable _disposable = new();
 
         [Inject]
@@ -54,7 +56,7 @@ namespace Game
                 {
                     await StopMap();
                     Save();
-                    _state.Value = GameState.Title;
+                    GameOver("コウモリ");
                 });
             });
 
@@ -65,6 +67,8 @@ namespace Game
                     _activeStatistics.Value.IsCheating = true;
                 }
             });
+
+            Initialize().Forget();
         }
 
         public UniTask<int> GetChoice(string? text, params string[] choices)
@@ -75,6 +79,10 @@ namespace Game
         public UniTask<string> GetTextInput()
         {
             return _textInputReceiver.GetTextInput();
+        }
+
+        public async UniTask Initialize()
+        {
         }
 
         public async UniTask Title()
@@ -90,44 +98,44 @@ namespace Game
                 var statistics = saveData.Statistics;
                 var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
+            {
+                var choice = await GetChoice(null, "Continue", "New Game");
+                switch (choice)
                 {
-                    var choice = await GetChoice(null, "Continue", "New Game");
-                    switch (choice)
-                    {
-                        case 0:
-                            break;
-                        case 1:
-                            map = CreateSaveData();
-                            statistics = Statistics.Build();
-                            firstWaitTime = 0;
+                    case 0:
+                        break;
+                    case 1:
+                        map = CreateSaveData();
+                        statistics = Statistics.Build();
+                        firstWaitTime = 0;
                             isRollbacked = false;
-                            break;
-                    }
+                        break;
                 }
-                else if (Settings.RetryOnDead.CurrentValue)
+            }
+            else if (Settings.RetryOnDead.CurrentValue)
+            {
+                var choice = await GetChoice(null, "Retry", "New Game");
+                switch (choice)
                 {
-                    var choice = await GetChoice(null, "Retry", "New Game");
-                    switch (choice)
-                    {
-                        case 0:
+                    case 0:
                             map = LoadSaveDataAndRevivePlayer(saveData);
-                            break;
-                        case 1:
-                            map = CreateSaveData();
-                            statistics = Statistics.Build();
-                            firstWaitTime = 0;
+                        break;
+                    case 1:
+                        map = CreateSaveData();
+                        statistics = Statistics.Build();
+                        firstWaitTime = 0;
                             isRollbacked = false;
-                            break;
-                    }
+                        break;
                 }
-                else
-                {
-                    var _ = await GetChoice(null, "New Game");
-                    map = CreateSaveData();
-                    statistics = Statistics.Build();
-                    firstWaitTime = 0;
+            }
+            else
+            {
+                var _ = await GetChoice(null, "New Game");
+                map = CreateSaveData();
+                statistics = Statistics.Build();
+                firstWaitTime = 0;
                     isRollbacked = false;
-                }
+            }
                 StartGame(map, statistics, firstWaitTime, isRollbacked);
             }
             else
@@ -218,6 +226,13 @@ namespace Game
 
         public void ReturnTitle()
         {
+            CauseOfDeath = null;
+            _state.Value = GameState.Title;
+        }
+
+        public void GameOver(string causeOfDeath)
+        {
+            CauseOfDeath = causeOfDeath;
             _state.Value = GameState.Title;
         }
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 5486256464210165766
-  Sprite: {fileID: 0}
+  _sprite: {fileID: 859739219, guid: 52f09c2b0104b2c44a4f8a67db8e5d7a, type: 3}
   IsBoss: 1
   Hp: 400
   Aggression: 1

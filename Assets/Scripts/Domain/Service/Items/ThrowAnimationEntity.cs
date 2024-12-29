@@ -27,11 +27,11 @@ namespace Domain.Service.Items
             {
                 if (map.At(Entity.CurrentPosition + direction.Vector()).IsBlank(canHitLayer))
                 {
-                    await Entity.Move(direction, Settings.ThrowMilliseconds.CurrentValue, true);
+                    await Entity.Move(direction, Settings.GlobalSettings.ThrowMilliseconds.CurrentValue, true);
                 }
                 else if (map.At(Entity.CurrentPosition + direction.Vector()).IsPassableOnMap())
                 {
-                    await Entity.Move(direction, Settings.ThrowMilliseconds.CurrentValue, true);
+                    await Entity.Move(direction, Settings.GlobalSettings.ThrowMilliseconds.CurrentValue, true);
                     break;
                 }
                 else

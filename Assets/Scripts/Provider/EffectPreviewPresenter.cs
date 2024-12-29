@@ -30,7 +30,7 @@ namespace Provider
                         effectViewSpawner.Spawn(
                             effectSpawned.Area.Intersect(map.Player.Character.VisibleArea),
                             effectSpawned.Color,
-                            Settings.EffectDisplayTime.CurrentValue
+                            Settings.GlobalSettings.EffectDisplayTime.CurrentValue
                         )
                     ));
                     disposables.Add(Observable.Merge(

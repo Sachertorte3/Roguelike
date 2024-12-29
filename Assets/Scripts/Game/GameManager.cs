@@ -58,7 +58,7 @@ namespace Game
                 });
             });
 
-            Settings.EnableCheat.Value.Subscribe(value =>
+            Settings.WorldSettings.EnableCheat.Value.Subscribe(value =>
             {
                 if (value)
                 {
@@ -106,7 +106,7 @@ namespace Game
                         break;
                 }
             }
-            else if (Settings.RetryOnDead.CurrentValue)
+            else if (Settings.WorldSettings.RetryOnDead.CurrentValue)
             {
                 var choice = await GetChoice(null, "Retry", "New Game");
                 switch (choice)
@@ -143,6 +143,7 @@ namespace Game
             Log.Debug("[Game]Start CreateWorld");
             _world.CreateNew();
             _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
+            Settings.WorldSettings.Reset();
             var map = _world.LoadMap(new Location("Dungeon", 1), null);
             Log.Debug("[Game]End CreateWorld");
             return map;
@@ -151,6 +152,7 @@ namespace Game
         private MapManager LoadSaveData(SaveData saveData, int latestTurn)
         {
             _activeStatistics.Value = new Statistics(saveData.Statistics, this, _world);
+            Settings.SetValues(saveData.Settings);
             var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
             if (isRollbacked)
             {
@@ -211,9 +213,10 @@ namespace Game
         public void Save()
         {
             var world = _world.Serialize();
-            var statistics = _activeStatistics.Value.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
-            _saveDataManager.SaveFull(new SaveData(world, statistics, maps, _turnController.GetWaitTime()));
+            var statistics = _activeStatistics.Value.Serialize();
+            var settings = Settings.GetValues();
+            _saveDataManager.SaveFull(new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime()));
         }
 
         public void ReturnTitle()

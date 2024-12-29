@@ -9,6 +9,7 @@ namespace Domain.Model.Setting
         public readonly int Min;
         public readonly string Name;
         public readonly ReactiveProperty<bool> IsEnabled;
+        private int _defaultValue;
 
         public Slider(string name, int min, int max, int defaultValue, ReactiveProperty<bool>? isEnabled = null)
         {
@@ -17,6 +18,12 @@ namespace Domain.Model.Setting
             Max = max;
             Value = new ReactiveProperty<int>(defaultValue);
             IsEnabled = isEnabled ?? new ReactiveProperty<bool>(true);
+            _defaultValue = defaultValue;
+        }
+
+        public void Reset()
+        {
+            Value.Value = _defaultValue;
         }
 
         public ReactiveProperty<int> Value { get; init; }

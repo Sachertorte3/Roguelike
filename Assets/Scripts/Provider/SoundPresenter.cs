@@ -14,8 +14,8 @@ namespace Provider
         [Inject]
         public SoundPresenter(World world, BGMManager bgmManager, SEManager seManager)
         {
-            Settings.BGMVolume.Value.SubscribeIncludingCurrentValue(volume => bgmManager.SetVolume(volume / 100f));
-            Settings.SEVolume.Value.SubscribeIncludingCurrentValue(volume => seManager.SetVolume(volume / 100f));
+            Settings.GlobalSettings.BGMVolume.Value.SubscribeIncludingCurrentValue(volume => bgmManager.SetVolume(volume / 100f));
+            Settings.GlobalSettings.SEVolume.Value.SubscribeIncludingCurrentValue(volume => seManager.SetVolume(volume / 100f));
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
                     bgmManager.NormalBGM();

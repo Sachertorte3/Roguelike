@@ -21,7 +21,7 @@ namespace Domain.Service.Effect
         {
             var randomPosition = map.GetAllBlankAndStandablePositionsOn(EntityLayer.Middle).GetAtRandom().Position;
             target.Entity.Teleport(randomPosition);
-            await UniTask.Delay(Settings.MoveMilliseconds.CurrentValue);
+            await UniTask.Delay(Settings.GlobalSettings.MoveMilliseconds.CurrentValue);
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

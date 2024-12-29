@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Domain.Model.Setting;
 using Unity.Logging;
 using VContainer;
@@ -14,11 +15,14 @@ namespace Provider
             Log.Debug("[Menu]Set options window");
             SetOptions(settingWindow);
         }
-
         public void SetOptions(SettingWindow settingWindow)
         {
             settingWindow.Clear();
-            foreach (var option in Settings.GetOptions())
+            SetOptions(settingWindow, Settings.GetOptions());
+        }
+        public void SetOptions(SettingWindow settingWindow, List<IOptionInput> options)
+        {
+            foreach (var option in options)
                 switch (option)
                 {
                     case Slider slider:

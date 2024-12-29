@@ -23,10 +23,10 @@ namespace Provider
                                                             map.Player.Character.Status.Stats.MaxHp.CurrentValue;
                             var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue *
                                 100 / map.Player.Character.Status.Stats.MaxHp.CurrentValue;
-                            if (damagePercentageFromMaxHp > Settings.SignificantDamageThresholdPercentage.CurrentValue ||
-                                hpPercentageFromMaxHp < Settings.LowHpThresholdPercentage.CurrentValue)
+                            if (damagePercentageFromMaxHp > Settings.GlobalSettings.SignificantDamageThresholdPercentage.CurrentValue ||
+                                hpPercentageFromMaxHp < Settings.GlobalSettings.LowHpThresholdPercentage.CurrentValue)
                             {
-                                flushController.Flush(Settings.FlushDuration.CurrentValue);
+                                flushController.Flush(Settings.GlobalSettings.FlushDuration.CurrentValue);
                             }
                         }
                     ));
@@ -40,7 +40,7 @@ namespace Provider
                                                                 character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowDamage(character.Entity.CurrentPosition,
                                     damageChanged.Damage, damagePercentageFromMaxHp,
-                                    Settings.DamageTextDisplayTime.CurrentValue);
+                                    Settings.GlobalSettings.DamageTextDisplayTime.CurrentValue);
                             }
                         }
                     ));
@@ -53,7 +53,7 @@ namespace Provider
                                 var healPercentageFromMaxHp = healChanged * 100 /
                                                               character.Status.Stats.MaxHp.CurrentValue;
                                 damageTextSpawner.ShowHeal(character.Entity.CurrentPosition, healChanged,
-                                    healPercentageFromMaxHp, Settings.DamageTextDisplayTime.CurrentValue);
+                                    healPercentageFromMaxHp, Settings.GlobalSettings.DamageTextDisplayTime.CurrentValue);
                             }
                         }
                     ));

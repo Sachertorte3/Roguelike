@@ -143,7 +143,7 @@ namespace Game
             {
                 if (character.IsPlayer)
                 {
-                    if (Settings.AutoSave.CurrentValue)
+                    if (Settings.GlobalSettings.AutoSave.CurrentValue)
                     {
                         Globals.GameManager.Save();
                     }

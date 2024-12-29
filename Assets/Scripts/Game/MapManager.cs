@@ -494,10 +494,10 @@ namespace Game
                         if (character.CanPickUp
                             && character.CanPickUpItem()
                             && ItemManager.CanPickUpAt(positionChanged,
-                                character.IsPlayer && Settings.AutoPickUpShopItem.CurrentValue))
+                                character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue))
                         {
                             ItemManager.PickUpAt(positionChanged,
-                                character.IsPlayer && Settings.AutoPickUpShopItem.CurrentValue);
+                                character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue);
                             if (character.TryAddToInventory(item.Item))
                             {
                                 if (Player.Character.IsVisible(positionChanged))

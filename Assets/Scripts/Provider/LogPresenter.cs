@@ -14,7 +14,7 @@ namespace Provider
         [Inject]
         public LogPresenter(LogView logView)
         {
-            Settings.LogShownMilliSeconds.Value.Subscribe(logView.SetLogShownMilliSeconds).AddTo(_disposables);
+            Settings.GlobalSettings.LogShownMilliSeconds.Value.Subscribe(logView.SetLogShownMilliSeconds).AddTo(_disposables);
             GameLog.OnLogOutput.Subscribe(logView.AddLog).AddTo(_disposables);
             GameLog.OnClear.Subscribe(_ => logView.Clear()).AddTo(_disposables);
         }

@@ -10,8 +10,9 @@ namespace Game
 {
     public record SaveData(
         WorldMemento World,
-        StatisticsMemento Statistics,
         Dictionary<string, MapMemento> Maps,
+        StatisticsMemento Statistics,
+        Dictionary<string, int> Settings,
         float TurnWaitTime);
     public class SaveDataManager
     {
@@ -73,11 +74,11 @@ namespace Game
             }
             var statisticsData = db.LoadStatistics(_saveDataSlot);
             var statistics = JsonUtility.FromJson<StatisticsMemento>(statisticsData);
+
             var settings = db.LoadSettings();
-            Settings.SetValues(settings);
 
             Log.Debug("[Save]End Load");
-            return new SaveData(world, statistics, maps, turnWaitTime);
+            return new SaveData(world, maps, statistics, settings, turnWaitTime);
         }
 
         public int LoadLatestTurn()

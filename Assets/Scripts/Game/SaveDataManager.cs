@@ -13,7 +13,7 @@ namespace Game
         Dictionary<string, MapMemento> Maps,
         StatisticsMemento Statistics,
         Dictionary<string, int> Settings,
-        float TurnWaitTime);
+        float TurnWaitTime, bool IsRollbacked);
     public class SaveDataManager
     {
         private SQLiteDatabase db;
@@ -77,11 +77,14 @@ namespace Game
 
             var settings = db.LoadSettings();
 
+            var latestTurn = LoadLatestTurn();
+            var isRollbacked = latestTurn != statistics.Turn;
+
             Log.Debug("[Save]End Load");
-            return new SaveData(world, maps, statistics, settings, turnWaitTime);
+            return new SaveData(world, maps, statistics, settings, turnWaitTime, isRollbacked);
         }
 
-        public int LoadLatestTurn()
+        private int LoadLatestTurn()
         {
             if (!db.ExistSave(_saveDataSlot))
             {

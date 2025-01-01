@@ -65,8 +65,6 @@ namespace Game
                     _activeStatistics.Value.IsCheating = true;
                 }
             });
-
-            Initialize().Forget();
         }
 
         public UniTask<int> GetChoice(string? text, params string[] choices)
@@ -79,10 +77,6 @@ namespace Game
             return _textInputReceiver.GetTextInput();
         }
 
-        public async UniTask Initialize()
-        {
-        }
-
         public async UniTask Title()
         {
             GameLog.Clear();
@@ -90,42 +84,57 @@ namespace Game
             var saveData = _saveDataManager.Load();
             if (saveData != null)
             {
-                var latestTurn = _saveDataManager.LoadLatestTurn();
-                var map = LoadSaveData(saveData, latestTurn);
+                var revivePlayer = false;
+                LoadPreview(saveData);
                 var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
-            {
-                var choice = await GetChoice(null, "Continue", "New Game");
-                switch (choice)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        map = CreateSaveData();
-                        firstWaitTime = 0;
-                        break;
+                    var choice = await GetChoice(null, "Continue", "New Game");
+                    switch (choice)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            saveData = null;
+                            firstWaitTime = 0;
+                            break;
+                    }
                 }
-            }
-            else if (Settings.WorldSettings.RetryOnDead.CurrentValue)
-            {
-                var choice = await GetChoice(null, "Retry", "New Game");
-                switch (choice)
+                else if (Settings.WorldSettings.RetryOnDead.CurrentValue)
                 {
-                    case 0:
-                        map = LoadSaveDataAndRevivePlayer(saveData, latestTurn);
-                        break;
-                    case 1:
-                        map = CreateSaveData();
-                        firstWaitTime = 0;
-                        break;
+                    var choice = await GetChoice(null, "Retry", "New Game");
+                    switch (choice)
+                    {
+                        case 0:
+                            revivePlayer = true;
+                            break;
+                        case 1:
+                            saveData = null;
+                            firstWaitTime = 0;
+                            break;
+                    }
                 }
-            }
-            else
-            {
-                var _ = await GetChoice(null, "New Game");
-                map = CreateSaveData();
-                firstWaitTime = 0;
-            }
+                else
+                {
+                    var _ = await GetChoice(null, "New Game");
+                    saveData = null;
+                    firstWaitTime = 0;
+                }
+
+                MapManager map;
+                if (saveData == null)
+                {
+                    map = CreateSaveData();
+                }
+                else if (revivePlayer)
+                {
+                    map = LoadSaveDataAndRevivePlayer(saveData);
+                }
+                else
+                {
+                    map = LoadSaveData(saveData);
+                }
+
                 StartGame(map, firstWaitTime);
             }
             else
@@ -138,39 +147,47 @@ namespace Game
             _state.Value = GameState.Dungeon;
         }
 
-        private MapManager CreateSaveData()
+        private MapManager LoadPreview(SaveData saveData)
         {
-            Log.Debug("[Game]Start CreateWorld");
-            _world.CreateNew();
-            _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
-            Settings.WorldSettings.Reset();
-            var map = _world.LoadMap(new Location("Dungeon", 1), null);
-            Log.Debug("[Game]End CreateWorld");
-            return map;
+            return _world.LoadWorld(saveData.World, saveData.Maps);
         }
 
-        private MapManager LoadSaveData(SaveData saveData, int latestTurn)
+        private MapManager CreateSaveData()
+        {
+            _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
+            Settings.WorldSettings.Reset();
+
+            _world.CreateNew();
+            return _world.LoadMap(new Location("Dungeon", 1), null);
+        }
+
+        private MapManager LoadSaveData(SaveData saveData)
         {
             _activeStatistics.Value = new Statistics(saveData.Statistics, this, _world);
             Settings.SetValues(saveData.Settings);
-            var isRollbacked = latestTurn != (saveData?.Statistics.Turn ?? 0);
-            if (isRollbacked)
+            if (saveData.IsRollbacked)
             {
                 Log.Info($"[Game]rollback detected");
                 _activeStatistics.Value.IsCheating = true;
             }
+
             return _world.LoadWorld(saveData.World, saveData.Maps);
         }
 
-        private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData, int latestTurn)
+        private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData)
         {
             var world = saveData.World.RevivePlayer();
-            var map = LoadSaveData(saveData with { World = world }, latestTurn);
+            var map = LoadSaveData(saveData with { World = world });
             var randomPosition = map.GetAllBlankAndStandablePositionsOn().GetAtRandom().Position;
             map.Player.Character.Entity.Teleport(randomPosition);
             map.Player.Character.RestoreToFullHealth();
             map.Player.Character.Turn(Direction8.Down);
             return map;
+        }
+
+        private void StartGame(MapManager map, float firstWaitTime)
+        {
+            StartMap(map, firstWaitTime);
         }
 
         private void StartMap(MapManager map, float firstWaitTime)
@@ -179,20 +196,15 @@ namespace Game
             _turnController.Run(this, map, firstWaitTime);
         }
 
+        private async UniTask StopGame()
+        {
+            await StopMap();
+        }
+
         private async UniTask StopMap()
         {
             _receiver.Enable(false);
             await _turnController.Stop();
-        }
-
-        private void StartGame(MapManager map, float firstWaitTime)
-        {
-            StartMap(map, firstWaitTime);
-        }
-
-        private async UniTask StopGame()
-        {
-            await StopMap();
         }
 
         public async void MoveMap(Location location, Id<IEntity>? destination = null)
@@ -216,7 +228,7 @@ namespace Game
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
             var statistics = _activeStatistics.Value.Serialize();
             var settings = Settings.GetValues();
-            _saveDataManager.SaveFull(new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime()));
+            _saveDataManager.SaveFull(new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false));
         }
 
         public void ReturnTitle()

@@ -14,7 +14,7 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Service.Map
 {
-    public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemapViewer
+    public class Tilemap : IDisposable, ISerializable<TilemapMemento>, ITilemap
     {
         private readonly HashSet<Vector2Int> _allWalkablePositionsSet;
         private readonly HashSet<Vector2Int> _allPassablePositionsSet;
@@ -31,12 +31,17 @@ namespace Domain.Service.Map
         public readonly int Height;
         public readonly int Width;
 
+        public void UpdateChunk(Vector2Int position)
+        {
+            return;
+        }
+
         public Tilemap(TilemapMemento memento)
         {
-            Width = memento.Width;
-            Height = memento.Height;
             _tiles = memento.Tiles;
-            _overlayTiles = new ObservableDictionary<Vector2Int, OverlayTileCategory>(memento.OverlayTiles);
+            Width = _tiles.Max(pair => pair.Key.x) - _tiles.Min(pair => pair.Key.x) + 1;
+            Height = _tiles.Max(pair => pair.Key.y) - _tiles.Min(pair => pair.Key.y) + 1;
+            _overlayTiles = memento.OverlayTiles;
 
             _allWalkablePositionsSet = FindAllWalkablePositions().ToHashSet();
             _allPassablePositionsSet = FindAllPassablePositions().ToHashSet();
@@ -75,7 +80,7 @@ namespace Domain.Service.Map
         {
             Width = width;
             Height = height;
-            _tiles = new ObservableDictionary<Vector2Int, TileData>(Rect.RectRange()
+            _tiles = new(new RectInt(Vector2Int.zero, new Vector2Int(width, height)).RectRange()
                 .ToDictionary(x => x, _ => new TileData(TileData.Build(TileCategory.Blank, false))));
         }
 
@@ -91,8 +96,6 @@ namespace Domain.Service.Map
         {
             _mementoCache = new TilemapMemento
             (
-                Width,
-                Height,
                 _tiles,
                 _overlayTiles
             );
@@ -119,12 +122,13 @@ namespace Domain.Service.Map
         }
 
         public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesChanged => _onTilesChanged;
+        public Observable<IEnumerable<(Vector2Int Position, TileData Tile)>> OnTilesLoaded => Observable.Never<IEnumerable<(Vector2Int Position, TileData Tile)>>();
 
         public Observable<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> OnOverlayTilesChanged =>
             _onOverlayTilesChanged;
 
         public Observable<IEnumerable<(Vector2Int Position, bool IsKnown)>> OnTilesKnownChanged => _onTilesKnownChanged;
-        public RectInt Rect => new(Vector2Int.zero, Size);
+        public ReadOnlyReactiveProperty<RectInt> Rect => new ReactiveProperty<RectInt>(new RectInt(Vector2Int.zero, Size));
 
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
         {

@@ -39,7 +39,7 @@ namespace Game
         public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
         public ItemPlaceholders ItemPlaceholders { get; init; }
         private readonly CompositeDisposable _disposables = new();
-        private readonly Tilemap _tilemap;
+        private readonly ITilemap _tilemap;
         private DungeonMapData _dungeonData;
         private List<IEventArea> _eventAreas = new();
         private MonsterHouse? _monsterHouse;
@@ -171,6 +171,7 @@ namespace Game
             }
 
             var visibleArea = CharacterManager.Player.Character.VisionRange.VisibleArea;
+            _tilemap.UpdateChunk(CharacterManager.Player.Character.Entity.CurrentPosition);
             _tilemap.SetTilesKnown(visibleArea, true);
 
             UpdateVisibility(Entities);
@@ -474,6 +475,7 @@ namespace Game
 
             Player.Character.Entity.Position.Subscribe(async positionChanged =>
             {
+                _tilemap.UpdateChunk(positionChanged);
                 SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
                 EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
@@ -727,14 +729,14 @@ namespace Game
 
         private void UpdateVisibleAreaCache(Vector2Int from)
         {
-            _visionCache[from] = ViewCalculator.FieldOfView(from, _tilemap.Size, pos => !At(pos).IsLightPassable());
+            _visionCache[from] = ViewCalculator.FieldOfView(from, 20, pos => !At(pos).IsLightPassable());
         }
 
         public HashSet<Vector2Int> ComputeCircle(Func<Vector2Int, bool> isTileBlocked, Vector2Int position,
             float radius)
         {
             var viewRadiusSq = radius * radius;
-            var viewArea = ViewCalculator.FieldOfView(position, _tilemap.Size, isTileBlocked);
+            var viewArea = ViewCalculator.FieldOfView(position, 20, isTileBlocked);
             return viewArea.Where(x => (x - position).sqrMagnitude <= viewRadiusSq).ToHashSet();
         }
     }

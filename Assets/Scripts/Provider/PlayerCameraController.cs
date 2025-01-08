@@ -3,6 +3,7 @@ using Game;
 using UnityEngine;
 using Utilities;
 using VContainer;
+using R3;
 
 namespace Provider
 {
@@ -12,6 +13,7 @@ namespace Provider
         public PlayerCameraController(World world, SynchronizedCharacterView characters,
             CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
+            var disposable = new SerialDisposable();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
                 if (map.Player.Character.IsDead)
@@ -22,7 +24,7 @@ namespace Provider
 
                 var playerView = characters.Get(map.Player.Character);
                 targetCamera.SetTarget(playerView.gameObject);
-                rectCamera.SetRect(map.TilemapViewer.Rect);
+                disposable.Disposable = map.TilemapViewer.Rect.Subscribe(rect => rectCamera.SetRect(rect));
             });
         }
     }

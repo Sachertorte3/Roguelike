@@ -49,26 +49,21 @@ namespace Provider
                             GetTileVisibility(map, position));
                     }
 
-                    var mapSize = map.TilemapViewer.Rect;
-                    for (var x = mapSize.x - 1; x <= mapSize.x + mapSize.width; x++)
-                    {
-                        tileView.SetUnbreakableWall(new Vector2Int(x, -1), tileSet, TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(x, mapSize.y + mapSize.height), tileSet,
-                            TileVisibility.Transparent);
-                    }
-
-                    for (var y = mapSize.y - 1; y <= mapSize.y + mapSize.height; y++)
-                    {
-                        tileView.SetUnbreakableWall(new Vector2Int(-1, y), tileSet, TileVisibility.Transparent);
-                        tileView.SetUnbreakableWall(new Vector2Int(mapSize.x + mapSize.width, y), tileSet,
-                            TileVisibility.Transparent);
-                    }
-
                     map.TilemapViewer.OnTilesChanged.Subscribe(context =>
                     {
                         foreach (var (position, tile) in context)
                         {
                             SetTile(tileView, minimapController, tile, position, tileSet, map.ShopRect);
+                        }
+                    }).AddTo(_disposables);
+
+                    map.TilemapViewer.OnTilesLoaded.Subscribe(context =>
+                    {
+                        foreach (var (position, tile) in context)
+                        {
+                            SetTile(tileView, minimapController, tile, position, tileSet, map.ShopRect);
+                            SetVisibility(tileView, overlayTileView, minimapController, position,
+                                GetTileVisibility(map, position));
                         }
                     }).AddTo(_disposables);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Map;
@@ -14,14 +15,14 @@ namespace Domain.Service.Characters
         private ReadOnlyReactiveProperty<float> _range;
         private readonly FlagStat _clairvoyantFlags;
         private readonly FlagStat _blindFlags;
-        private bool _canThroughWalls;
+        private readonly Func<bool> _canThroughWalls;
         public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
         public bool IsBlind => _blindFlags.CurrentValue;
         private Subject<Unit> _onVisibleAreaChanged = new();
         private readonly IMap _map;
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
-            FlagStat clairvoyantFlags, FlagStat blindFlags, bool canThroughWalls, IMap map)
+            FlagStat clairvoyantFlags, FlagStat blindFlags, Func<bool> canThroughWalls, IMap map)
         {
             _position = position;
             _range = range;
@@ -55,17 +56,26 @@ namespace Domain.Service.Characters
 
         public bool IsVisible(Vector2Int position)
         {
+            var range = _range.CurrentValue + 0.5f;
+            if (_canThroughWalls())
+            {
+                if (IsClairvoyant)
+                    return true;
+                var viewRadiusSq = IsBlind ? 1.5f * 1.5f : range * range;
+                return (position - _position.CurrentValue).sqrMagnitude <= viewRadiusSq;
+            }
+
             if (IsClairvoyant)
                 return true;
             if (IsBlind)
                 return _map.IsVisible(_position.CurrentValue, position, 1.5f);
-            return _map.IsVisible(_position.CurrentValue, position, _range.CurrentValue + 0.5f);
+            return _map.IsVisible(_position.CurrentValue, position, range);
         }
 
         private HashSet<Vector2Int> Calc(Vector2Int position)
         {
             var range = _range.CurrentValue + 0.5f;
-            if (_canThroughWalls)
+            if (_canThroughWalls())
             {
                 if (IsClairvoyant)
                     return _map.GetAllPositions();

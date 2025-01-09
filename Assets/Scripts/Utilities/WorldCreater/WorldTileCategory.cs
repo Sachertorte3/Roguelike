@@ -1,6 +1,6 @@
 namespace Utilities.WorldCreater
 {
-    public enum WorldTileCategory
+    public enum WorldTileType
     {
         Blank,
         Grass,

@@ -37,7 +37,7 @@ namespace Game
 
         public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Location location)
         {
-            _tilemap = new TilemapBuilder(bluePrint, waterChance);
+            _tilemap = new TilemapBuilder(data.Type, bluePrint, waterChance);
             _location = location;
             _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
 

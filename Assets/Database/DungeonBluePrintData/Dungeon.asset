@@ -256,7 +256,7 @@ MonoBehaviour:
     - Item: {fileID: 11400000, guid: fb975fa25b2723141ae866c824617494, type: 2}
       Weight: 1
   Sections:
-  - Type: 0
+  - Type: 1
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0
@@ -285,7 +285,7 @@ MonoBehaviour:
       items:
       - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
         Weight: 1
-  - Type: 0
+  - Type: 1
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0.25
@@ -318,7 +318,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
         Weight: 1
-  - Type: 1
+  - Type: 2
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0.25
@@ -370,7 +370,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
         Weight: 1
-  - Type: 2
+  - Type: 3
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0.5
@@ -403,7 +403,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: 3eefc4cf587b776428b3c75029dc2ca0, type: 2}
         Weight: 1
-  - Type: 5
+  - Type: 6
     RoundRoomCorner: 0
     CaveInOneRoom: 0
     WaterChance: 1
@@ -451,7 +451,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
         Weight: 1
-  - Type: 4
+  - Type: 5
     RoundRoomCorner: 1
     CaveInOneRoom: 0
     WaterChance: 0
@@ -486,7 +486,7 @@ MonoBehaviour:
         Weight: 1
       - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
         Weight: 1
-  - Type: 3
+  - Type: 4
     RoundRoomCorner: 0
     CaveInOneRoom: 0
     WaterChance: 0

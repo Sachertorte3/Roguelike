@@ -12,6 +12,7 @@ namespace Domain.Service.Map
     public class TilemapBuilder
     {
         private readonly int _width;
+        private readonly MapType _mapType;
         private readonly TileCategory[] _tiles;
         private readonly Dictionary<Vector2Int, OverlayTileCategory> _overlayTiles = new();
         private readonly float _waterChance;
@@ -19,14 +20,11 @@ namespace Domain.Service.Map
         private readonly Dictionary<Id<Room>, RectInt> _rooms = new();
         public List<Id<Room>> RoomIds => _rooms.Keys.ToList();
 
-        public Dictionary<Vector2Int, TileCategory> Tiles => _tiles
-            .Select((tile, index) => (new Vector2Int(index % _width, index / _width), tile))
-            .ToDictionary(x => x.Item1, x => x.Item2);
-
-        public TilemapBuilder(FieldBluePrint bluePrint, float waterChance)
+        public TilemapBuilder(MapType mapType, FieldBluePrint bluePrint, float waterChance)
         {
             var field = FieldBuilder.Build(bluePrint);
             _width = field.Grid.Size.x + 2;
+            _mapType = mapType;
             _tiles = new TileCategory[_width * (field.Grid.Size.y + 2)];
             _waterChance = waterChance;
             _randomValueForWater = Random.value * 1024;
@@ -233,7 +231,7 @@ namespace Domain.Service.Map
         {
             return new TilemapMemento(
                 _width,
-                _tiles.Select(tile => TileData.Build(tile, false)).ToArray(),
+                _tiles.Select(tile => TileData.Build(_mapType, tile, false)).ToArray(),
                 _overlayTiles
             );
         }

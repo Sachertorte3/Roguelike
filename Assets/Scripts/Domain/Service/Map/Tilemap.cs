@@ -81,7 +81,7 @@ namespace Domain.Service.Map
             Width = width;
             Height = height;
             _tiles = new(new RectInt(Vector2Int.zero, new Vector2Int(width, height)).RectRange()
-                .ToDictionary(x => x, _ => new TileData(TileData.Build(TileCategory.Blank, false))));
+                .ToDictionary(x => x, _ => new TileData(TileData.Build(MapType.Cave, TileCategory.Blank, false))));
         }
 
         public Vector2Int Size => new(Width, Height);
@@ -237,7 +237,7 @@ namespace Domain.Service.Map
                     if (category != null)
                     {
                         if (GetTile(position).MapOr(false,
-                                tile => tile.TileType == category.Value.GetPlaceableTileCategory()))
+                                tile => tile.Category() == category.Value.GetPlaceableTileCategory()))
                         {
                             _overlayTiles[position] = category.Value;
                             result.Add((position, category.Value));
@@ -274,12 +274,12 @@ namespace Domain.Service.Map
         {
             var changedPositions = positions
                 .Select(position => (position, GetTile(position)))
-                .Where(pair => pair.Item2.MapOr(false, tile => tile.TileType == TileCategory.Wall))
+                .Where(pair => pair.Item2.MapOr(false, tile => tile.Category() == TileCategory.Wall))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
             var result = new List<(Vector2Int position, TileData tileData)>();
             foreach (var (position, tile) in changedPositions)
             {
-                _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));
+                _tiles[position] = new TileData(TileData.Build(tile.MapType, TileCategory.Floor, false));
                 result.Add((position, _tiles[position]));
             }
 

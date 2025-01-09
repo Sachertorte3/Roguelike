@@ -19,7 +19,7 @@ namespace Domain.Service.Map
     {
         public const int CHUNK_SIZE = 16;
         public const int ACTIVE_CHUNK_SIZE = 4;
-        private readonly WorldGenerator _worldCreater;
+        private readonly WorldCreater _worldCreater;
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesChanged = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, TileData Tile)>> _onTilesLoaded = new();
         private readonly Subject<IEnumerable<(Vector2Int Position, OverlayTileCategory? Category)>> _onOverlayTilesChanged = new();
@@ -35,7 +35,7 @@ namespace Domain.Service.Map
         public ReadOnlyReactiveProperty<RectInt> Rect => _existingChunk.Select(chunk => ToMapRect(chunk)).ToReadOnlyReactiveProperty();
         public InfiniteTilemap(TilemapMemento memento)
         {
-            _worldCreater = new WorldGenerator(0);
+            _worldCreater = new WorldCreater(0);
             _tiles = memento.Tiles;
             _overlayTiles = memento.OverlayTiles;
         }
@@ -160,17 +160,9 @@ namespace Domain.Service.Map
                 if (_tiles.ContainsKey(position))
                     continue;
                 var tile = _worldCreater.GetTile(position);
-                var tileType = tile switch
-                {
-                    WorldTileCategory.Blank => TileCategory.Blank,
-                    WorldTileCategory.Ocean => TileCategory.Water,
-                    WorldTileCategory.Mountain => TileCategory.Wall,
-                    WorldTileCategory.Grass => TileCategory.Floor,
-                    WorldTileCategory.Forest => TileCategory.Floor,
-                    WorldTileCategory.Desert => TileCategory.Floor,
-                    _ => throw new InvalidEnumArgumentException()
-                };
-                _tiles[position] = new TileData(TileData.Build(tileType, false));
+                var revTile = _worldCreater.GetTile(-position);
+                Debug.Log(tile == revTile);
+                _tiles[position] = new TileData(TileData.Build(tile, false));
                 result.Add((position, _tiles[position]));
             }
             _onTilesLoaded.OnNext(result);
@@ -206,12 +198,12 @@ namespace Domain.Service.Map
         {
             var changedPositions = positions
                 .Select(position => (position, GetTile(position)))
-                .Where(pair => pair.Item2.MapOr(false, tile => tile.TileType == TileCategory.Wall))
+                .Where(pair => pair.Item2.MapOr(false, tile => tile.Category() == TileCategory.Wall))
                 .Select(pair => (pair.position, pair.Item2.Expect("tile is null")));
             var result = new List<(Vector2Int position, TileData tileData)>();
             foreach (var (position, tile) in changedPositions)
             {
-                _tiles[position] = new TileData(TileData.Build(TileCategory.Floor, false));
+                _tiles[position] = new TileData(TileData.Build(tile.MapType, TileCategory.Floor, false));
                 result.Add((position, _tiles[position]));
             }
 
@@ -230,7 +222,7 @@ namespace Domain.Service.Map
                     if (category != null)
                     {
                         if (GetTile(position).MapOr(false,
-                                tile => tile.TileType == category.Value.GetPlaceableTileCategory()))
+                                tile => tile.Category() == category.Value.GetPlaceableTileCategory()))
                         {
                             _overlayTiles[position] = category.Value;
                             result.Add((position, category.Value));

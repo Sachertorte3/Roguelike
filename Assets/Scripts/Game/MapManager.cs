@@ -35,7 +35,7 @@ namespace Game
         public Location Location { get; init; }
         public string Name => Location.MapName;
         public int Level => Location.Level;
-        public SectionType Type => _dungeonData.Type;
+        public MapType Type => _dungeonData.Type;
         public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
         public ItemPlaceholders ItemPlaceholders { get; init; }
         private readonly CompositeDisposable _disposables = new();
@@ -62,7 +62,7 @@ namespace Game
             Location = map.Location;
             ItemPlaceholders = itemPlaceholders;
 
-            _tilemap = new Tilemap(map.Tilemap);
+            _tilemap = new InfiniteTilemap(map.Tilemap);
 
             if (playerPosition == null)
             {

@@ -1,21 +1,39 @@
+using System;
 using UnityEngine;
 
 namespace Utilities.WorldCreater
 {
     public class WorldCreater
     {
-        private readonly float _seed;
-        private float _heightSeed => _seed * 1.5f;
-        private float _precipitationSeed => _seed * 2.5f;
-        private readonly float[] AMP_PARAM = { 60, 30, 10 };
+        public readonly string Seed;
+        private readonly float _heightSeed;
+        private readonly float _precipitationSeed;
+        private readonly float[] AMP_PARAM = { 60, 36, 4 };
         private readonly float[] FREQ_PARAM = { 0.02f, 0.1f, 1 };
         private const float OCEAN_HEIGHT = 40;
         private const float MOUNTAIN_HEIGHT = 60;
         private const float DESERT_PRECIPITATION = 40;
         private const float FOREST_PRECIPITATION = 60;
-        public WorldCreater(float seed)
+        public WorldCreater(string seed)
         {
-            _seed = seed / Mathf.PI;
+            Seed = seed;
+            _heightSeed = GenerateFloatsFromString(seed, 3)[0];
+            _precipitationSeed = GenerateFloatsFromString(seed, 3)[1];
+        }
+
+        public float[] GenerateFloatsFromString(string input, int count)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] hash = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+                float[] floats = new float[count];
+                for (int i = 0; i < count; i++)
+                {
+                    uint num = BitConverter.ToUInt32(hash, i * 4 % hash.Length);
+                    floats[i] = num / (float)uint.MaxValue;
+                }
+                return floats;
+            }
         }
 
         private WorldTileType ChooseTile(float height, float precipitation)

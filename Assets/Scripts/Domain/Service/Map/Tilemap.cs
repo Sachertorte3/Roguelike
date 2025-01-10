@@ -96,6 +96,7 @@ namespace Domain.Service.Map
         {
             _mementoCache = new TilemapMemento
             (
+                "",
                 _tiles,
                 _overlayTiles
             );

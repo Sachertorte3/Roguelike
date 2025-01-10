@@ -604,6 +604,14 @@ namespace Game
                     SpawnRandomEnemy(positions.GetAtRandom(), null, false);
             }
 
+            var unloadedCharacters = Characters
+                .Where(character => !_tilemap.IsPositionInsideActiveChunk(character.Entity.CurrentPosition))
+                .ToList();
+            foreach (var character in unloadedCharacters)
+            {
+                CharacterManager.RemoveCharacter(character);
+            }
+
             FireEntityManager.UpdateTurn(this);
 
             var characters = Characters.In(FireEntityManager.FireEntities.Positions()).ToList();

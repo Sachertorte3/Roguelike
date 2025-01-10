@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Map;
@@ -60,22 +59,22 @@ namespace Domain.Service.Map
 
         public HashSet<Vector2Int> GetAllLightPassablePositions()
         {
-            return _tiles.Where(pair => pair.Value.IsTransparent()).Select(pair => pair.Key).ToHashSet();
+            return GetActiveTiles().Where(pair => pair.tileData.IsTransparent()).Select(pair => pair.position).ToHashSet();
         }
 
         public HashSet<Vector2Int> GetAllPassablePositions()
         {
-            return _tiles.Where(pair => pair.Value.IsPassable()).Select(pair => pair.Key).ToHashSet();
+            return GetActiveTiles().Where(pair => pair.tileData.IsPassable()).Select(pair => pair.position).ToHashSet();
         }
 
         public IEnumerable<(Vector2Int position, TileData tileData)> GetAllTiles()
         {
-            return _tiles.Select(pair => (pair.Key, pair.Value));
+            return GetActiveTiles().Select(pair => (pair.position, pair.tileData));
         }
 
         public HashSet<Vector2Int> GetAllWalkablePositions()
         {
-            return _tiles.Where(pair => pair.Value.IsWalkable()).Select(pair => pair.Key).ToHashSet();
+            return GetActiveTiles().Where(pair => pair.tileData.IsWalkable()).Select(pair => pair.position).ToHashSet();
         }
 
         public Option<TileData> GetTile(Vector2Int position)
@@ -135,6 +134,18 @@ namespace Domain.Service.Map
             return new RectInt((chunk - Vector2Int.one * 2) * CHUNK_SIZE, Vector2Int.one * CHUNK_SIZE * 5);
         }
 
+        public IEnumerable<Vector2Int> GetActiveChunks()
+        {
+            return EnumerableExtension.CircleRange(_existingChunk.Value, ACTIVE_CHUNK_SIZE);
+        }
+
+        public IEnumerable<(Vector2Int position, TileData tileData)> GetActiveTiles()
+        {
+            return EnumerableExtension.CircleRange(_existingChunk.Value, ACTIVE_CHUNK_SIZE)
+                .SelectMany(chunk => ToChunkRect(chunk).RectRange())
+                .Select(position => (position, GetTile(position).Expect("tile is null")));
+        }
+
         public void UpdateChunk(Vector2Int position)
         {
             var newChunk = ToChunk(position);
@@ -186,6 +197,11 @@ namespace Domain.Service.Map
         public bool IsPositionInsideMap(Vector2Int position)
         {
             return true;
+        }
+
+        public bool IsPositionInsideActiveChunk(Vector2Int position)
+        {
+            return Vector2Int.Distance(ToChunk(position), _existingChunk.Value) <= ACTIVE_CHUNK_SIZE;
         }
 
         public void UpdateTurn()

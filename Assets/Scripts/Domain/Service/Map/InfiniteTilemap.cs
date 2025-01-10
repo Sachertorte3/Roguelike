@@ -33,11 +33,12 @@ namespace Domain.Service.Map
         private readonly ObservableDictionary<Vector2Int, OverlayTileCategory> _overlayTiles;
         private readonly ReactiveProperty<Vector2Int> _existingChunk = new();
         public ReadOnlyReactiveProperty<RectInt> Rect => _existingChunk.Select(chunk => ToMapRect(chunk)).ToReadOnlyReactiveProperty();
-        public InfiniteTilemap(TilemapMemento memento)
+        public InfiniteTilemap(TilemapMemento memento, Vector2Int position)
         {
-            _worldCreater = new WorldCreater(0);
+            _worldCreater = new WorldCreater(memento.Seed);
             _tiles = memento.Tiles;
             _overlayTiles = memento.OverlayTiles;
+            UpdateChunk(ToChunk(position));
         }
 
         public void Dispose()
@@ -113,7 +114,7 @@ namespace Domain.Service.Map
 
         public TilemapMemento Serialize()
         {
-            return new TilemapMemento(_tiles, _overlayTiles);
+            return new TilemapMemento(_worldCreater.Seed, _tiles, _overlayTiles);
         }
 
         private Vector2Int ToChunk(Vector2Int position)
@@ -160,8 +161,6 @@ namespace Domain.Service.Map
                 if (_tiles.ContainsKey(position))
                     continue;
                 var tile = _worldCreater.GetTile(position);
-                var revTile = _worldCreater.GetTile(-position);
-                Debug.Log(tile == revTile);
                 _tiles[position] = new TileData(TileData.Build(tile, false));
                 result.Add((position, _tiles[position]));
             }

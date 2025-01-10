@@ -62,12 +62,12 @@ namespace Game
             Location = map.Location;
             ItemPlaceholders = itemPlaceholders;
 
-            _tilemap = new InfiniteTilemap(map.Tilemap);
-
             if (playerPosition == null)
             {
                 playerPosition = map.RandomBlankPosition;
             }
+
+            _tilemap = new InfiniteTilemap(map.Tilemap, playerPosition.Value);
 
             if (playerData == null)
             {

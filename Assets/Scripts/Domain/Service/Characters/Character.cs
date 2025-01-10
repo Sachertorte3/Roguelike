@@ -116,7 +116,7 @@ namespace Domain.Service.Characters
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
         public bool _canThroughWalls { get; init; }
-        public bool CanThroughWalls => _canThroughWalls ? true : Settings.WorldSettings.IgnoreWall.CurrentValue;
+        public bool CanThroughWalls => _canThroughWalls ? true : IsPlayer && Settings.WorldSettings.IgnoreWall.CurrentValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);

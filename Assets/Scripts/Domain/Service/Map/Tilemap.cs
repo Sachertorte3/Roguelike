@@ -200,6 +200,11 @@ namespace Domain.Service.Map
             return _tiles.ContainsKey(position);
         }
 
+        public bool IsPositionInsideActiveChunk(Vector2Int position)
+        {
+            return IsPositionInsideMap(position);
+        }
+
         public Option<TileData> GetTile(Vector2Int position)
         {
             if (!IsPositionInsideMap(position))

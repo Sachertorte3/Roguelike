@@ -69,7 +69,7 @@ namespace View
             _animator.SetBool("Walk", true);
             _animator.speed = 2;
             var entityView = GetComponent<EntityView>();
-            await UniTask.WaitUntil(() => !entityView.IsMoving);
+            await UniTask.WaitUntil(() => !entityView.IsMoving, cancellationToken: destroyCancellationToken);
             _animator.SetBool("Walk", false);
             _animator.speed = 1;
         }

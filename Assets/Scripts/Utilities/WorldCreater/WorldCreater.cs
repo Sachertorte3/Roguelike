@@ -8,9 +8,11 @@ namespace Utilities.WorldCreater
         public readonly string Seed;
         private readonly float _heightSeed;
         private readonly float _precipitationSeed;
-        private readonly float[] AMP_PARAM = { 60, 36, 4 };
-        private readonly float[] FREQ_PARAM = { 0.02f, 0.1f, 1 };
-        private const float OCEAN_HEIGHT = 40;
+        private readonly float[] HEIGHT_AMP_PARAM = { 60, 36, 4 };
+        private readonly float[] HEIGHT_FREQ_PARAM = { 0.01f, 0.02f, 0.1f};
+        private readonly float[] PRECIPITATION_AMP_PARAM = { 60, 36, 4 };
+        private readonly float[] PRECIPITATION_FREQ_PARAM = { 0.02f, 0.1f, 1f};
+        private const float OCEAN_HEIGHT = 50;
         private const float MOUNTAIN_HEIGHT = 60;
         private const float DESERT_PRECIPITATION = 40;
         private const float FOREST_PRECIPITATION = 60;
@@ -50,22 +52,22 @@ namespace Utilities.WorldCreater
                 return WorldTileType.Forest;
         }
 
-        public float GetNoiseAtPosition(Vector2 position, float seed)
+        public float GetNoiseAtPosition(Vector2 position, float seed, float[] ampParam, float[] freqParam)
         {
             float nx = position.x;
             float ny = position.y;
             float noise = 0;
-            for (int i = 0; i < AMP_PARAM.Length; i++)
+            for (int i = 0; i < ampParam.Length; i++)
             {
-                noise += Mathf.PerlinNoise(nx * FREQ_PARAM[i] + seed, ny * FREQ_PARAM[i] + seed) * AMP_PARAM[i];
+                noise += Mathf.PerlinNoise(nx * freqParam[i] + seed, ny * freqParam[i] + seed) * ampParam[i];
             }
             return noise;
         }
 
         public WorldTileType GetTile(Vector2 position)
         {
-            float height = GetNoiseAtPosition(position, _heightSeed);
-            float precipitation = GetNoiseAtPosition(position, _precipitationSeed);
+            float height = GetNoiseAtPosition(position, _heightSeed, HEIGHT_AMP_PARAM, HEIGHT_FREQ_PARAM);
+            float precipitation = GetNoiseAtPosition(position, _precipitationSeed, PRECIPITATION_AMP_PARAM, PRECIPITATION_FREQ_PARAM);
             return ChooseTile(height, precipitation);
         }
     }

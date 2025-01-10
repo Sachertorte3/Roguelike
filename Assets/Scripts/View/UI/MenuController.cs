@@ -27,12 +27,19 @@ namespace View.UI
             inputReceiver.OnMainMenuOpening.Subscribe(_ =>
             {
                 if (!_menuStack.Contains(_mainMenu))
+                {
+                    inputReceiver.SwitchMenu();
                     AddMenu(_mainMenu);
+                }
             });
             inputReceiver.OnMenuClosing.Subscribe(_ =>
             {
                 if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
+                {
                     PopMenu();
+                    if (_menuStack.Peek() == _dungeonMenu)
+                        inputReceiver.SwitchField();
+                }
             });
         }
 

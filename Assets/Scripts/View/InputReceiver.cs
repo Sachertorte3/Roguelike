@@ -53,5 +53,17 @@ namespace View
         {
             _actions.Disable();
         }
+
+        public void SwitchMenu()
+        {
+            _actions.Menu.Enable();
+            _actions.Field.Disable();
+        }
+
+        public void SwitchField()
+        {
+            _actions.Field.Enable();
+            _actions.Menu.Disable();
+        }
     }
 }

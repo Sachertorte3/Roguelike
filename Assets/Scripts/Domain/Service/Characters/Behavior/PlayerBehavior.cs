@@ -13,7 +13,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
-using Domain.Service.Items;
 using R3;
 using Unity.Logging;
 using UnityEngine;

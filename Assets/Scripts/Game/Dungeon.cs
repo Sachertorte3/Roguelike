@@ -64,11 +64,21 @@ namespace Game
             int level, IEnumerable<MovementData> movementData)
         {
             var dungeonData = CreateMapData(level);
-            var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData,
-                new Location(_dungeonData.name, level));
-            foreach (var data in movementData)
-                mapBuilder.AddMovementEntity(data);
-            return mapBuilder.Build(id);
+            if (dungeonData.Field == null)
+            {
+                var mapBuilder = new WorldMapBuilder(id, new Location(_dungeonData.name, level), "seed");
+                foreach (var data in movementData)
+                    mapBuilder.AddMovementEntity(data);
+                return mapBuilder.Build();
+            }
+            else
+            {
+                var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData,
+                    new Location(_dungeonData.name, level));
+                foreach (var data in movementData)
+                    mapBuilder.AddMovementEntity(data);
+                return mapBuilder.Build(id);
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Domain.Service.Characters
             _conditions = new CharacterConditions(character, data.Conditions, map);
             _flagStats = data.FlagStats.ToDictionary(x => x.Key, x => new FlagStat(x.Value));
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, GetFlagStat(FlagStatType.Clairvoyant),
-                GetFlagStat(FlagStatType.Blind), character.CanThroughWalls, map);
+                GetFlagStat(FlagStatType.Blind), () => character.CanThroughWalls, map);
         }
 
         public void Dispose()

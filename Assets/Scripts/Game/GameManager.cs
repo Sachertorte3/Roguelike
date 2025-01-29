@@ -29,8 +29,8 @@ namespace Game
         private readonly CharacterControlInputReceiver _receiver;
         public Observable<Unit> OnTurnChanged => _turnController.OnTurnChanged;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
-        private readonly ReactiveProperty<Statistics> _activeStatistics = new();
-        public ReadOnlyReactiveProperty<Statistics> ActiveStatistics => _activeStatistics;
+        private readonly ReactiveProperty<Statistics?> _activeStatistics = new();
+        public ReadOnlyReactiveProperty<Statistics?> ActiveStatistics => _activeStatistics;
         private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
@@ -58,13 +58,16 @@ namespace Game
                 });
             });
 
-            Settings.WorldSettings.EnableCheat.Value.Subscribe(value =>
-            {
-                if (value)
+            var disposable = new SerialDisposable();
+            _activeStatistics.SubscribeIncludingCurrentValueIgnoreNull(statistics =>
+                disposable.Disposable = Settings.WorldSettings.EnableCheat.Value.Subscribe(value =>
                 {
-                    _activeStatistics.Value.IsCheating = true;
-                }
-            });
+                    if (value)
+                    {
+                        statistics.IsCheating = true;
+                    }
+                })
+            );
         }
 
         public UniTask<int> GetChoice(string? text, params string[] choices)
@@ -192,6 +195,7 @@ namespace Game
 
         private void StartMap(MapManager map, float firstWaitTime)
         {
+            Save();
             _receiver.Enable(true);
             _turnController.Run(this, map, firstWaitTime);
         }
@@ -224,11 +228,13 @@ namespace Game
 
         public void Save()
         {
+            Log.Info("[Game]Save");
             var world = _world.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
             var statistics = _activeStatistics.Value.Serialize();
             var settings = Settings.GetValues();
             _saveDataManager.SaveFull(new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false));
+            Log.Info("[Game]End Save");
         }
 
         public void ReturnTitle()

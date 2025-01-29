@@ -1,7 +1,8 @@
-namespace Domain.Model.Dungeon
+namespace Domain.Model.Map
 {
-    public enum SectionType
+    public enum MapType
     {
+        WorldMap,
         Cave,
         Forest,
         Snow,

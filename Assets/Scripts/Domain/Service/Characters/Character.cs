@@ -65,7 +65,7 @@ namespace Domain.Service.Characters
             _inventory = new Inventory(data.Inventory, this);
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
             _behavior = behavior;
-            CanThroughWalls = data.CanThroughWalls;
+            _canThroughWalls = data.CanThroughWalls;
             _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player);
             _aggression = data.Aggression;
             DropExp = data.DropExp;
@@ -115,7 +115,8 @@ namespace Domain.Service.Characters
         public bool IsShiny { get; init; }
         public bool IsBoss { get; init; }
         public bool IsFlying { get; init; }
-        public bool CanThroughWalls { get; init; }
+        public bool _canThroughWalls { get; init; }
+        public bool CanThroughWalls => _canThroughWalls ? true : IsPlayer && Settings.WorldSettings.IgnoreWall.CurrentValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
         public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);
@@ -596,7 +597,7 @@ namespace Domain.Service.Characters
                 IsShiny,
                 IsBoss,
                 IsFlying,
-                CanThroughWalls,
+                _canThroughWalls,
                 CanPickUp,
                 CanUseItem
             );

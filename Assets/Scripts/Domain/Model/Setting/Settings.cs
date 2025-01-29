@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using R3;
 
 namespace Domain.Model.Setting
 {
@@ -10,10 +9,12 @@ namespace Domain.Model.Setting
         public readonly CheckBox EnableCheat = new("チートを有効にする", false);
         public readonly CheckBox RetryOnDead;
         public readonly CheckBox AutoIdentify;
+        public readonly CheckBox IgnoreWall;
         public WorldSettings()
         {
             RetryOnDead = new("死亡時にリトライ可能", false, EnableCheat.Value);
             AutoIdentify = new("全てのアイテムが自動で識別される", false, EnableCheat.Value);
+            IgnoreWall = new("壁を無視する", false, EnableCheat.Value);
         }
 
         public List<IOptionInput> GetOptions()

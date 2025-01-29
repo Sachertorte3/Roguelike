@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using RandomDungeonWithBluePrint;
 using UnityEngine;
 using Utilities;
@@ -12,7 +13,7 @@ namespace Domain.Model.Dungeon
     public record DungeonMapData(
         string Name,
         float Progress,
-        SectionType Type,
+        MapType Type,
         FieldBluePrint Field,
         ItemDatabase ItemDatabase,
         ICorrectionTable<WeaponPrefix> WeaponPrefixes,

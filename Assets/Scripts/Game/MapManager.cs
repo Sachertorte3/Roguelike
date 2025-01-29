@@ -67,7 +67,7 @@ namespace Game
                 playerPosition = map.RandomBlankPosition;
             }
 
-            _tilemap = new InfiniteTilemap(map.Tilemap, playerPosition.Value);
+            _tilemap = new Tilemap(map.Tilemap);
 
             if (playerData == null)
             {

@@ -2709,6 +2709,91 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 648682584}
   m_CullTransparentMesh: 1
+--- !u!1 &671979011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 671979013}
+  - component: {fileID: 671979012}
+  m_Layer: 0
+  m_Name: TilePalette
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &671979012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671979011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44ccc2ba03c3d0e459c2e75305e8d233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _worldMapTiles:
+    Grass: {fileID: 11400000, guid: 5ff724a28035f564fa9a28afbde2c6f7, type: 2}
+    Ocean: {fileID: 11400000, guid: 9791aa24085658544b5cb6890b752ed0, type: 2}
+    Mountain: {fileID: 11400000, guid: 6196e72b182fb7f499a4bd6b23edc6d1, type: 2}
+    Desert: {fileID: 11400000, guid: 4fa4afd16ff65754ca8a69c7379eb6d8, type: 2}
+    Forest: {fileID: 11400000, guid: f6d2a7c7b7f2a7b4595859678be2e00c, type: 2}
+  _caveTiles:
+    Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 71422f7a1a06179458a471816c4398c4, type: 2}
+    Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
+  _forestTiles:
+    Floor: {fileID: 11400000, guid: 82828df576217354e8f3ad3eb5954e4c, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 8d2039b0dcfa29d4f92692e438968315, type: 2}
+    Wall: {fileID: 11400000, guid: 9fa9bcd095aa66b4d889eb774d6027fd, type: 2}
+  _snowTiles:
+    Floor: {fileID: 11400000, guid: 3642314a04cd4d74ca40452f4a845ce2, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 8eb40e3e1c2f1f54683248b153810d85, type: 2}
+    Wall: {fileID: 11400000, guid: e814d6a7dfeaae64c886772cfad8da06, type: 2}
+  _volcanoTiles:
+    Floor: {fileID: 11400000, guid: 25b25074febf59c4091fedfc57e6a8ef, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: c38b20ba5398da646b2abe1994480eec, type: 2}
+    Wall: {fileID: 11400000, guid: 6dad3272c81d33e4fa33139684949491, type: 2}
+  _desertTiles:
+    Floor: {fileID: 11400000, guid: 4fa4afd16ff65754ca8a69c7379eb6d8, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 9daff306bb6bf4b4594a583d24a4fab5, type: 2}
+    Wall: {fileID: 11400000, guid: d4ec35f2c2cbd9147bcb743884ea4c29, type: 2}
+  _dungeonTiles:
+    Floor: {fileID: 11400000, guid: d115660662eaafc43ba3241953b3faf3, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: fec8e3a22d85e65449d3ef1a18e8e4a7, type: 2}
+    Wall: {fileID: 11400000, guid: a2cc768f9d19d8f4c9403de88ee45280, type: 2}
+  _voidTiles:
+    Floor: {fileID: 11400000, guid: 9502ad11fa630da47abd9a7e61b78342, type: 2}
+    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
+    Water: {fileID: 11400000, guid: 2b94313fe065f184db978e715046b254, type: 2}
+    Wall: {fileID: 11400000, guid: 63cbc726f0363c04d82c99a2e4a5692a, type: 2}
+--- !u!4 &671979013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671979011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &685885055
 GameObject:
   m_ObjectHideFlags: 0
@@ -4258,41 +4343,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 986205760}
-  _caveTiles:
-    Floor: {fileID: 11400000, guid: 182c47a00ff1c5047afe9d0e30c19a3c, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 71422f7a1a06179458a471816c4398c4, type: 2}
-    Wall: {fileID: 11400000, guid: 31263386b40b4cd45a0ab691c07f32e8, type: 2}
-  _forestTiles:
-    Floor: {fileID: 11400000, guid: 82828df576217354e8f3ad3eb5954e4c, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 8d2039b0dcfa29d4f92692e438968315, type: 2}
-    Wall: {fileID: 11400000, guid: 9fa9bcd095aa66b4d889eb774d6027fd, type: 2}
-  _snowTiles:
-    Floor: {fileID: 11400000, guid: 3642314a04cd4d74ca40452f4a845ce2, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 8eb40e3e1c2f1f54683248b153810d85, type: 2}
-    Wall: {fileID: 11400000, guid: e814d6a7dfeaae64c886772cfad8da06, type: 2}
-  _volcanoTiles:
-    Floor: {fileID: 11400000, guid: 25b25074febf59c4091fedfc57e6a8ef, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: c38b20ba5398da646b2abe1994480eec, type: 2}
-    Wall: {fileID: 11400000, guid: 6dad3272c81d33e4fa33139684949491, type: 2}
-  _desertTiles:
-    Floor: {fileID: 11400000, guid: 4fa4afd16ff65754ca8a69c7379eb6d8, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 9daff306bb6bf4b4594a583d24a4fab5, type: 2}
-    Wall: {fileID: 11400000, guid: d4ec35f2c2cbd9147bcb743884ea4c29, type: 2}
-  _dungeonTiles:
-    Floor: {fileID: 11400000, guid: d115660662eaafc43ba3241953b3faf3, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: fec8e3a22d85e65449d3ef1a18e8e4a7, type: 2}
-    Wall: {fileID: 11400000, guid: a2cc768f9d19d8f4c9403de88ee45280, type: 2}
-  _voidTiles:
-    Floor: {fileID: 11400000, guid: 9502ad11fa630da47abd9a7e61b78342, type: 2}
-    ShopFloor: {fileID: 11400000, guid: 1abe48c2a1c39f54cab9bcd7ce8f6242, type: 2}
-    Water: {fileID: 11400000, guid: 2b94313fe065f184db978e715046b254, type: 2}
-    Wall: {fileID: 11400000, guid: 63cbc726f0363c04d82c99a2e4a5692a, type: 2}
 --- !u!483693784 &986205759
 TilemapRenderer:
   m_ObjectHideFlags: 0

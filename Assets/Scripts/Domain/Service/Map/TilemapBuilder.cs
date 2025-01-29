@@ -235,5 +235,14 @@ namespace Domain.Service.Map
                 _overlayTiles
             );
         }
+
+        public static TilemapMemento Build(string seed)
+        {
+            return new TilemapMemento(
+                seed,
+                new Dictionary<Vector2Int, TileData>(),
+                new Dictionary<Vector2Int, OverlayTileCategory>()
+            );
+        }
     }
 }

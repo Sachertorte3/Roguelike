@@ -322,4 +322,51 @@ namespace Game
             );
         }
     }
+    public class WorldMapBuilder
+    {
+        private readonly Id<IMap> _id;
+        private readonly Location _location;
+        private readonly string _seed;
+        private readonly List<StairsMemento> _stairs = new();
+
+        public WorldMapBuilder(Id<IMap> id, Location location, string seed)
+        {
+            _id = id;
+            _location = location;
+            _seed = seed;
+        }
+        private Vector2Int GetRandomBlankPositionInRoom()
+        {
+            return Vector2Int.zero;
+        }
+        public Vector2Int GetRandomStairPosition()
+        {
+            return GetRandomBlankPositionInRoom();
+        }
+        public void AddMovementEntity(MovementData data)
+        {
+            if (data.Id != null && data.DestinationId != null)
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
+                    data.Destination, data.DestinationId));
+            else
+                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
+                    data.Destination));
+        }
+        public MapMemento Build()
+        {
+            return new MapMemento(
+                _id,
+                _location,
+                TilemapBuilder.Build(_seed),
+                new List<CharacterMemento>(),
+                new List<ItemEntityMemento>(),
+                EventEntityManager.Build(_stairs, new List<ChestMemento>(), new List<TrapMemento>(), new List<MoneyMemento>(), Option<EntityMemento>.None),
+                FireEntityManager.Build(),
+                new List<string>(),
+                Option<RoomMemento>.None,
+                Option<ShopMemento>.None,
+                Vector2Int.zero
+            );
+        }
+    }
 }

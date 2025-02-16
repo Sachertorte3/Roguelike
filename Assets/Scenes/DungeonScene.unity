@@ -3904,9 +3904,9 @@ MonoBehaviour:
   _defaultGrass: {fileID: 11400000, guid: 43a1f900f656e124691800ee4990ea68, type: 2}
   _grasses:
     data:
-    - Key: 1
-      Value: {fileID: 11400000, guid: c794efbe0c0616642821fad5c53e1265, type: 2}
     - Key: 2
+      Value: {fileID: 11400000, guid: c794efbe0c0616642821fad5c53e1265, type: 2}
+    - Key: 3
       Value: {fileID: 11400000, guid: d6bf11a20becc5b4e933b7429a21ee44, type: 2}
   _ice: {fileID: 11400000, guid: 9c9ebe7140da20743b79b94b0487afb8, type: 2}
 --- !u!483693784 &878990522
@@ -5475,7 +5475,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 11.28125
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -6155,7 +6155,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.21875
+  orthographic size: 11.28125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

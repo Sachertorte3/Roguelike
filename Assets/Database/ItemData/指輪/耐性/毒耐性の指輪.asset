@@ -56,12 +56,14 @@ MonoBehaviour:
     - rid: 3119344251661451267
       type: {class: AddConditionResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Condition: {fileID: 0}
+        Condition:
+          _name: "\u6BD2"
         ResistanceRate: 0.8
     - rid: 3119344251661451268
       type: {class: AddConditionResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        Condition: {fileID: 0}
+        Condition:
+          _name: "\u731B\u6BD2"
         ResistanceRate: 0.8
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}

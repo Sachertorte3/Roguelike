@@ -10,9 +10,16 @@ using Utilities.Table;
 
 namespace Domain.Model.Dungeon
 {
-    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
-    public class DungeonBluePrintData : ScriptableObject
+    public interface IDungeonData
     {
+        public string Name { get; }
+        public bool ExistLevel(int level);
+        public DungeonMapData CreateMapData(int level);
+    }
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
+    public class DungeonBluePrintData : ScriptableObject, IDungeonData
+    {
+        public string Name => name;
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;

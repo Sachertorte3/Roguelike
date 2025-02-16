@@ -15,9 +15,9 @@ namespace View.UI
         public void SetData(string itemName, ReactiveProperty<bool> value, ReadOnlyReactiveProperty<bool> isEnabled)
         {
             _text.SetText(itemName);
-            value.Subscribe(value => _toggle.isOn = value);
-            _toggle.onValueChanged.AsObservable().Subscribe(v => value.Value = v);
-            isEnabled.Subscribe(value => _toggle.interactable = value);
+            value.Subscribe(value => _toggle.isOn = value).AddTo(this);
+            _toggle.onValueChanged.AsObservable().Subscribe(v => value.Value = v).AddTo(this);
+            isEnabled.Subscribe(value => _toggle.interactable = value).AddTo(this);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace View.UI
             _text.SetText(itemName);
             _slider.minValue = min;
             _slider.maxValue = max;
-            value.Subscribe(value => _slider.value = value);
-            _slider.onValueChanged.AsObservable().Subscribe(v => value.Value = (int)v);
-            isEnabled.Subscribe(value => _slider.interactable = value);
+            value.Subscribe(value => _slider.value = value).AddTo(this);
+            _slider.onValueChanged.AsObservable().Subscribe(v => value.Value = (int)v).AddTo(this);
+            isEnabled.Subscribe(value => _slider.interactable = value).AddTo(this);
         }
     }
 }

@@ -5,20 +5,22 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Sirenix.OdinInspector;
 using Utilities;
+using Utilities.Serialize;
 
 namespace Domain.Service.Characters.Conditions
 {
     internal class AddConditionResistanceMultiplier : IConditionData
     {
-        public string Name => $"{Condition.name}被付与確率(-{ResistanceRate:P0})";
+        public string Name => $"{Condition.Value.name}被付与確率(-{ResistanceRate:P0})";
         public ParticleType ParticleType => ParticleType.BloodRage;
         public Impact Impact => Impact.Beneficial;
-        public ConditionTemplate Condition;
+        public ScriptableObjectSerializable<ConditionTemplate> Condition;
         [MinValue(0)] public float ResistanceRate = 0f;
+
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddConditionResistance(Condition, ResistanceRate);
+            hasCondition.Status.AddConditionResistance(Condition.Value, ResistanceRate);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,17 +30,17 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveConditionResistance(Condition, ResistanceRate);
+            hasCondition.Status.RemoveConditionResistance(Condition.Value, ResistanceRate);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return Condition.Evaluate(target) * ResistanceRate;
+            return Condition.Value.Evaluate(target) * ResistanceRate;
         }
 
         public float EvaluatePrice()
         {
-            return Condition.EvaluateDamage() * ResistanceRate;
+            return Condition.Value.EvaluateDamage() * ResistanceRate;
         }
     }
 }

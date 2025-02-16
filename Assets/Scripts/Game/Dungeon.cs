@@ -11,8 +11,9 @@ namespace Game
 {
     public class Dungeon : ISerializable<DungeonMemento>
     {
-        private readonly DungeonBluePrintData _dungeonData;
+        private readonly IDungeonData _dungeonData;
         private readonly Dictionary<int, Id<IMap>> _mapIds;
+
 
         public Dungeon(DungeonMemento memento)
         {
@@ -24,7 +25,7 @@ namespace Game
         {
             return new DungeonMemento
             (
-                _dungeonData.name,
+                _dungeonData.Name,
                 new Dictionary<int, string>(_mapIds.ToDictionary(mapIds => mapIds.Key,
                     mapIds => mapIds.Value.ToString()))
             );
@@ -66,7 +67,7 @@ namespace Game
             var dungeonData = CreateMapData(level);
             if (dungeonData.Field == null)
             {
-                var mapBuilder = new WorldMapBuilder(id, new Location(_dungeonData.name, level), "seed");
+                var mapBuilder = new WorldMapBuilder(id, new Location(_dungeonData.Name, level), "seed");
                 foreach (var data in movementData)
                     mapBuilder.AddMovementEntity(data);
                 return mapBuilder.Build();
@@ -74,7 +75,7 @@ namespace Game
             else
             {
                 var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData,
-                    new Location(_dungeonData.name, level));
+                    new Location(_dungeonData.Name, level));
                 foreach (var data in movementData)
                     mapBuilder.AddMovementEntity(data);
                 return mapBuilder.Build(id);

@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -56,7 +57,6 @@ namespace View
             if (_isVisible)
             {
                 var position = destination - direction.Vector();
-                var elapsedTime = 0f;
 
                 var totalDuration = 1f;
                 if (isThrown)
@@ -68,18 +68,9 @@ namespace View
 
                 IsMoving = true;
 
-                _disposable.Disposable = Observable.EveryUpdate()
-                    .TakeWhile(_ => elapsedTime < totalDuration)
-                    .Subscribe(_ =>
-                        {
-                            if (IsMoving)
-                            {
-                                elapsedTime += Time.deltaTime;
-                                var t = Mathf.Clamp01(elapsedTime / totalDuration);
-                                SetPosition(Vector2.Lerp(position, destination, t));
-                            }
-                        },
-                        _ => { IsMoving = false; }).AddTo(this);
+                transform.DOMove(new Vector3(destination.x, destination.y, transform.position.z), totalDuration)
+                    .SetEase(Ease.Linear)
+                    .OnComplete(() => { IsMoving = false; });
             }
             else
             {

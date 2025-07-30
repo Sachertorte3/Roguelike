@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace View
@@ -8,9 +9,9 @@ namespace View
 
         public void SetValue(float maxValue, float value)
         {
-            _statBar.localPosition = new Vector3(-0.5f + value / maxValue / 2, _statBar.localPosition.y,
-                _statBar.localPosition.z);
-            _statBar.localScale = new Vector3(value / maxValue, _statBar.localScale.y, _statBar.localScale.z);
+            _statBar.DOLocalMove(new Vector3(-0.5f + value / maxValue / 2, _statBar.localPosition.y,
+                _statBar.localPosition.z), 0.2f);
+            _statBar.DOScale(new Vector3(value / maxValue, _statBar.localScale.y, _statBar.localScale.z), 0.2f);
         }
     }
 }

@@ -32,12 +32,12 @@ namespace Provider
                 });
 
             receiver.OnMovePerformed
-                .Select(vector => DirectionMethods.FromVector(vector))
+                .Select(vector => DirectionMethods.NearestDirectionFromVector(vector))
                 .WhereNotNull()
                 .Subscribe(direction => actionReceiver.SetMoveInput(direction, true));
             actionReceiver.OnActionRead
                 .Select(_ => receiver.MoveVector)
-                .Select(vector => DirectionMethods.FromVector(vector))
+                .Select(vector => DirectionMethods.NearestDirectionFromVector(vector))
                 .WhereNotNull()
                 .Subscribe(direction => actionReceiver.SetMoveInput(direction, false));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());

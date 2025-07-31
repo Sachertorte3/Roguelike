@@ -1,6 +1,9 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using ObservableCollections;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -18,8 +21,15 @@ namespace View.UI
         [SerializeField] private ChoiceMenu _choiceMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
         [SerializeField] private MainMenu _mainMenu;
-        private readonly Stack<IMenu> _menuStack = new();
+        private readonly ObservableStack<IMenu> _menuStack = new();
         private readonly Dictionary<IMenu, GameObject> _selectedObject = new();
+        private MenuType _currentMenuType = MenuType.Field;
+
+        private enum MenuType
+        {
+            Field,
+            Menu,
+        }
 
         [Inject]
         public void Construct(InputReceiver inputReceiver)
@@ -28,7 +38,6 @@ namespace View.UI
             {
                 if (!_menuStack.Contains(_mainMenu))
                 {
-                    inputReceiver.SwitchMenu();
                     AddMenu(_mainMenu);
                 }
             });
@@ -37,10 +46,33 @@ namespace View.UI
                 if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
                 {
                     PopMenu();
-                    if (_menuStack.Peek() == _dungeonMenu)
-                        inputReceiver.SwitchField();
                 }
             });
+            _menuStack.ObserveChanged().Subscribe(_ =>
+            {
+                var menuType = GetCurrentMenuType();
+                if (!menuType.HasValue)
+                    return;
+                if (menuType == _currentMenuType)
+                    return;
+                _currentMenuType = menuType.Value;
+                switch (_currentMenuType)
+                {
+                    case MenuType.Field:
+                        inputReceiver.SwitchField();
+                        break;
+                    case MenuType.Menu:
+                        inputReceiver.SwitchMenu();
+                        break;
+                }
+            });
+        }
+
+        private MenuType? GetCurrentMenuType()
+        {
+            if (_menuStack.Count == 0)
+                return null;
+            return _menuStack.Peek() == _dungeonMenu ? MenuType.Field : MenuType.Menu;
         }
 
         public async UniTask<int> GetChoice(string? text, params string[] choices)

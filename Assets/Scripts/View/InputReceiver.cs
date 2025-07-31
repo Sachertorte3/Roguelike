@@ -1,7 +1,11 @@
 using System;
 using R3;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using Utilities;
+using Unity.Logging;
 
 namespace View
 {
@@ -56,13 +60,20 @@ namespace View
 
         public void SwitchMenu()
         {
+            Log.Info("Switch input to Menu");
             _actions.Menu.Enable();
+            if (EventSystem.current != null)
+                EventSystem.current.GetComponent<InputSystemUIInputModule>().move = InputActionReference.Create(_actions.UI.Navigate);
+            
             _actions.Field.Disable();
         }
 
         public void SwitchField()
         {
+            Log.Info("Switch input to Field");
             _actions.Field.Enable();
+            if (EventSystem.current != null)
+                EventSystem.current.GetComponent<InputSystemUIInputModule>().move = InputActionReference.Create(_actions.Field.Navigate);
             _actions.Menu.Disable();
         }
     }

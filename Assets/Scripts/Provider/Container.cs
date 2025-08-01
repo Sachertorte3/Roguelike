@@ -53,7 +53,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<TilemapPresenter>();
             builder.RegisterPlainEntryPoint<PlayerPresenter>();
             builder.RegisterPlainEntryPoint<PlayerInventoryPresenter>();
-            builder.RegisterPlainEntryPoint<PlayerCameraController>();
+            builder.RegisterPlainEntryPoint<PlayerCameraPresenter>();
             builder.RegisterPlainEntryPoint<EffectPreviewPresenter>();
             builder.RegisterPlainEntryPoint<DamagePresenter>();
             builder.RegisterPlainEntryPoint<SoundPresenter>();

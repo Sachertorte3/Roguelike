@@ -1,16 +1,16 @@
 #nullable enable
 using Game;
+using R3;
 using UnityEngine;
 using Utilities;
 using VContainer;
-using R3;
 
 namespace Provider
 {
-    public class PlayerCameraController
+    public class PlayerCameraPresenter
     {
         [Inject]
-        public PlayerCameraController(World world, SynchronizedCharacterView characters,
+        public PlayerCameraPresenter(World world, SynchronizedCharacterView characters,
             CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
             var disposable = new SerialDisposable();

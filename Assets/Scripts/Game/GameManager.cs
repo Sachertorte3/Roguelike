@@ -233,7 +233,8 @@ namespace Game
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
             var statistics = _activeStatistics.Value.Serialize();
             var settings = Settings.GetValues();
-            _saveDataManager.SaveFull(new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false));
+            var saveData = new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false);
+            _saveDataManager.SaveFull(saveData);
             Log.Info("[Game]End Save");
         }
 

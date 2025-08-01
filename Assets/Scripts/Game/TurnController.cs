@@ -104,6 +104,15 @@ namespace Game
                     character.Status.ResetWaitTime();
                     character.SetWaitState();
                 }
+
+                if (Settings.GlobalSettings.AutoSave.CurrentValue)
+                {
+                    Globals.GameManager.Save();
+                }
+                else
+                {
+                    Globals.GameManager.SaveLight();
+                }
             }
 
             _isRunning = false;
@@ -141,18 +150,6 @@ namespace Game
             }
             else
             {
-                if (character.IsPlayer)
-                {
-                    if (Settings.GlobalSettings.AutoSave.CurrentValue)
-                    {
-                        Globals.GameManager.Save();
-                    }
-                    else
-                    {
-                        Globals.GameManager.SaveLight();
-                    }
-                }
-
                 Log.Debug($"[Turn]{character.GetName(map.Player)} think...");
                 try
                 {

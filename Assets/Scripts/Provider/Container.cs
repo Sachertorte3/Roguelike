@@ -65,8 +65,14 @@ namespace Provider
             builder.RegisterPlainEntryPoint<ShopInfoPresenter>();
             builder.RegisterPlainEntryPoint<StatisticsPresenter>();
             builder.RegisterPlainEntryPoint<ItemSelectPresenter>();
-            builder.RegisterPlainEntryPoint<DebugCommands>();
             builder.RegisterPlainEntryPoint<Presenter>();
+
+            builder.RegisterPlainEntryPoint<DebugCommands>();
+            builder.RegisterPlainEntryPoint<LogCommands>();
+            builder.RegisterPlainEntryPoint<CharacterCommands>();
+            builder.RegisterPlainEntryPoint<ItemCommands>();
+            builder.RegisterPlainEntryPoint<SpawnCommands>();
+            builder.RegisterPlainEntryPoint<MapCommands>();
         }
     }
 }

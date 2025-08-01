@@ -24,9 +24,14 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Location CurrentLocation { get; private set; }
         [field: SerializeField] public ItemPlaceholdersMemento ItemPlaceholders { get; private set; }
 
-        public WorldMemento(Dictionary<string, DungeonMemento> dungeons,
-            Dictionary<Location, List<MapConnection>> movements, PlayerMemento player, bool isPlayerDead,
-            List<string> mapIds, Location currentLocation, ItemPlaceholdersMemento itemPlaceholders)
+        public WorldMemento(
+            Dictionary<string, DungeonMemento> dungeons,
+            Dictionary<Location, List<MapConnection>> movements,
+            PlayerMemento player,
+            bool isPlayerDead,
+            List<string> mapIds,
+            Location currentLocation,
+            ItemPlaceholdersMemento itemPlaceholders)
         {
             _dungeons = dungeons.ToSerializable();
             _movements = movements.ToSerializable();
@@ -37,9 +42,13 @@ namespace Domain.Model.Memento
             ItemPlaceholders = itemPlaceholders;
         }
 
-        public WorldMemento CopyWith(Dictionary<string, DungeonMemento>? dungeons = null,
-            Dictionary<Location, List<MapConnection>>? movements = null, PlayerMemento? player = null,
-            bool? isPlayerDead = null, List<string>? mapIds = null, Location? currentLocation = null,
+        public WorldMemento CopyWith(
+            Dictionary<string, DungeonMemento>? dungeons = null,
+            Dictionary<Location, List<MapConnection>>? movements = null,
+            PlayerMemento? player = null,
+            bool? isPlayerDead = null,
+            List<string>? mapIds = null,
+            Location? currentLocation = null,
             ItemPlaceholdersMemento? itemPlaceholders = null)
         {
             return new WorldMemento(dungeons ?? Dungeons, movements ?? Movements, player ?? Player, isPlayerDead ?? IsPlayerDead, mapIds ?? MapIds, currentLocation ?? CurrentLocation, itemPlaceholders ?? ItemPlaceholders);

@@ -15,7 +15,10 @@ namespace Domain.Model.Memento
         public Id<IEntity> DestinationId => new(_destinationId);
         [field: SerializeField] public EntityMemento Entity { get; private set; }
 
-        public StairsMemento(MovementEntityType type, Location destination, Id<IEntity> destinationId,
+        public StairsMemento(
+            MovementEntityType type,
+            Location destination,
+            Id<IEntity> destinationId,
             EntityMemento entity)
         {
             Type = type;

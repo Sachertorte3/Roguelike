@@ -17,7 +17,13 @@ namespace Domain.Model.Memento
         [field: SerializeField] public float ProbabilityOfSuccess { get; private set; }
         [field: SerializeField] public string Log { get; private set; }
 
-        public SpawnEffectSkillMemento(IEffectPosition position, IArea area, List<IEffect> effects, int repeats, float probabilityOfSuccess, string log)
+        public SpawnEffectSkillMemento(
+            IEffectPosition position,
+            IArea area,
+            List<IEffect> effects,
+            int repeats,
+            float probabilityOfSuccess,
+            string log)
         {
             Position = position;
             Area = area;

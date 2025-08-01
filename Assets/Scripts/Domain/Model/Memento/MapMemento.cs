@@ -24,10 +24,18 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Option<ShopMemento> Shop { get; private set; }
         [field: SerializeField] public Vector2Int RandomBlankPosition { get; private set; }
 
-        public MapMemento(Id<IMap> id, Location location, TilemapMemento tilemap, List<CharacterMemento> characters,
-            List<ItemEntityMemento> items, EventEntitiesMemento eventEntities, FireEntitiesMemento fireEntities,
+        public MapMemento(
+            Id<IMap> id,
+            Location location,
+            TilemapMemento tilemap,
+            List<CharacterMemento> characters,
+            List<ItemEntityMemento> items,
+            EventEntitiesMemento eventEntities,
+            FireEntitiesMemento fireEntities,
             List<string> keyCharacters,
-            Option<RoomMemento> monsterHouse, Option<ShopMemento> shop, Vector2Int randomBlankPosition)
+            Option<RoomMemento> monsterHouse,
+            Option<ShopMemento> shop,
+            Vector2Int randomBlankPosition)
         {
             _id = id.ToString();
             Location = location;

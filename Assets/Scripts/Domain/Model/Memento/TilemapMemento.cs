@@ -19,7 +19,9 @@ namespace Domain.Model.Memento
         [SerializeField] private SerializableDictionary<Vector2Int, OverlayTileCategory> _overlayTiles;
         public ObservableDictionary<Vector2Int, OverlayTileCategory> OverlayTiles => new(_overlayTiles);
 
-        public TilemapMemento(string seed, IDictionary<Vector2Int, TileData> tiles,
+        public TilemapMemento(
+            string seed,
+            IDictionary<Vector2Int, TileData> tiles,
             IDictionary<Vector2Int, OverlayTileCategory> overlayTiles)
         {
             Seed = seed;
@@ -27,7 +29,10 @@ namespace Domain.Model.Memento
             _overlayTiles = overlayTiles.ToSerializable();
         }
 
-        public TilemapMemento(int width, TileMemento[] tiles, IDictionary<Vector2Int, OverlayTileCategory> overlayTiles)
+        public TilemapMemento(
+            int width,
+            TileMemento[] tiles,
+            IDictionary<Vector2Int, OverlayTileCategory> overlayTiles)
         {
             Seed = "";
             _tiles = tiles

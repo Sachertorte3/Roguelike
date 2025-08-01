@@ -12,7 +12,10 @@ namespace Domain.Model.Memento
         [field: SerializeReference] public SpawnEffectSkillMemento Skill { get; private set; }
         [field: SerializeField] public float ProbabilityOfBreaking { get; private set; }
 
-        public TrapMemento(string name, EntityMemento entity, SpawnEffectSkillMemento skill,
+        public TrapMemento(
+            string name,
+            EntityMemento entity,
+            SpawnEffectSkillMemento skill,
             float probabilityOfBreaking)
         {
             Name = name;

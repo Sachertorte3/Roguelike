@@ -15,20 +15,27 @@ namespace Domain.Model.Memento
         public Option<EnemyData> Mimic => _mimic.Map(m => m.Value);
         [field: SerializeField] public EntityMemento Entity { get; private set; }
 
-        public ChestMemento(Option<ItemMemento> item, Option<EnemyData> mimic, EntityMemento entity)
+        public ChestMemento(
+            Option<ItemMemento> item,
+            Option<EnemyData> mimic,
+            EntityMemento entity)
         {
             Item = item;
             _mimic = mimic.Map(m => m.ToSerializable());
             Entity = entity;
         }
 
-        public ChestMemento(ItemMemento item, EntityMemento entity) : this(Option.Some(item), Option.None<EnemyData>(),
+        public ChestMemento(ItemMemento item, EntityMemento entity) : this(
+            Option.Some(item),
+            Option.None<EnemyData>(),
             entity)
         {
         }
 
-        public ChestMemento(EnemyData mimic, EntityMemento entity) : this(Option.None<ItemMemento>(),
-            Option.Some(mimic), entity)
+        public ChestMemento(EnemyData mimic, EntityMemento entity) : this(
+            Option.None<ItemMemento>(),
+            Option.Some(mimic),
+            entity)
         {
         }
     }

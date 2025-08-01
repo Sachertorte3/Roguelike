@@ -14,7 +14,13 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int CoolTime { get; private set; }
         [field: SerializeField] public int RemainingTurn { get; private set; }
 
-        public CharacterSkillMemento(SpawnEffectSkillMemento skill, int rushDistance, int backStepDistance, int chargeTurn, int coolTime, int remainingTurn)
+        public CharacterSkillMemento(
+            SpawnEffectSkillMemento skill,
+            int rushDistance,
+            int backStepDistance, 
+            int chargeTurn,
+            int coolTime,
+            int remainingTurn)
         {
             Skill = skill;
             RushDistance = rushDistance;

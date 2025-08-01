@@ -14,7 +14,11 @@ namespace Domain.Model.Memento
         [field: SerializeField] public EntityLayer Layer { get; private set; }
         [field: SerializeField] public Option<string> DestroyLog { get; private set; }
 
-        public EntityMemento(string id, Vector2Int position, EntityLayer layer, Option<string> destroyLog)
+        public EntityMemento(
+            string id,
+            Vector2Int position,
+            EntityLayer layer,
+            Option<string> destroyLog)
         {
             Id = id;
             Position = position;
@@ -22,7 +26,11 @@ namespace Domain.Model.Memento
             DestroyLog = destroyLog;
         }
 
-        public EntityMemento CopyWith(string? id = null, Vector2Int? position = null, EntityLayer? layer = null, Option<string>? destroyLog = null)
+        public EntityMemento CopyWith(
+            string? id = null,
+            Vector2Int? position = null,
+            EntityLayer? layer = null,
+            Option<string>? destroyLog = null)
         {
             return new EntityMemento(
                 id ?? Id,

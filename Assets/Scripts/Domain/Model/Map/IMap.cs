@@ -7,7 +7,6 @@ using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
-using Domain.Model.Memento;
 using ObservableCollections;
 using UnityEngine;
 using Utilities;
@@ -16,7 +15,7 @@ namespace Domain.Model.Map
 {
     public interface IMap : IPassableChecker
     {
-        public Location Location { get; }
+        public Id<IMap> Id { get; }
         public ItemDatabase ItemDatabase { get; }
         public ItemPlaceholders ItemPlaceholders { get; }
         public IPlayer Player { get; }

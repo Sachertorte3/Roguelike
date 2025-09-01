@@ -12,6 +12,7 @@ namespace Domain.Model.Dungeon
 {
     public record DungeonMapData(
         string Name,
+        int Depth,
         float Progress,
         MapType Type,
         FieldBluePrint Field,

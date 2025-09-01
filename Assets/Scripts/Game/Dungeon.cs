@@ -5,6 +5,7 @@ using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using UnityEngine;
 using Utilities;
 
 namespace Game
@@ -12,12 +13,13 @@ namespace Game
     public class Dungeon : ISerializable<DungeonMemento>
     {
         private readonly IDungeonData _dungeonData;
+        public Id<IMap> StartMapId => _dungeonData.GetStartMapId();
         private readonly Dictionary<int, Id<IMap>> _mapIds;
 
 
         public Dungeon(DungeonMemento memento)
         {
-            _dungeonData = ScriptableObjectLoader.Load<DungeonBluePrintData>(memento.DungeonDataName);
+            _dungeonData = ScriptableObjectLoader.Load<DungeonBluePrintData>("Dungeon");
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
         }
 
@@ -25,60 +27,45 @@ namespace Game
         {
             return new DungeonMemento
             (
-                _dungeonData.Name,
                 new Dictionary<int, string>(_mapIds.ToDictionary(mapIds => mapIds.Key,
                     mapIds => mapIds.Value.ToString()))
             );
         }
 
-        public static DungeonMemento Build(DungeonBluePrintData _dungeonData)
+        public static DungeonMemento Build()
         {
             return new DungeonMemento
             (
-                _dungeonData.name,
                 new Dictionary<int, string>()
             );
         }
 
-        public bool ExistLevel(int level)
+        public List<MapConnection> GetDestinations(Id<IMap> mapId)
         {
-            return _dungeonData.ExistLevel(level);
+            return _dungeonData.GetDestinations(mapId);
         }
 
-        public Id<IMap> GetMapId(int level)
+        public DungeonMapData CreateMapData(Id<IMap> mapId)
         {
-            if (!_mapIds.ContainsKey(level))
-            {
-                var mapId = Id<IMap>.Generate();
-                _mapIds[level] = mapId;
-            }
-
-            return _mapIds[level];
+            return _dungeonData.CreateMapData(mapId);
         }
 
-        public DungeonMapData CreateMapData(int level)
+        public MapMemento CreateMapManager(Id<IMap> id, IEnumerable<MovementData> movementData)
         {
-            return _dungeonData.CreateMapData(level);
-        }
-
-        public MapMemento CreateMapManager(Id<IMap> id,
-            int level, IEnumerable<MovementData> movementData)
-        {
-            var dungeonData = CreateMapData(level);
+            var dungeonData = CreateMapData(id);
             if (dungeonData.Field == null)
             {
-                var mapBuilder = new WorldMapBuilder(id, new Location(_dungeonData.Name, level), "seed");
+                var mapBuilder = new WorldMapBuilder(id, "seed");
                 foreach (var data in movementData)
                     mapBuilder.AddMovementEntity(data);
                 return mapBuilder.Build();
             }
             else
             {
-                var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData,
-                    new Location(_dungeonData.Name, level));
+                var mapBuilder = new MapBuilder(dungeonData.Field, dungeonData.WaterChance, dungeonData, id);
                 foreach (var data in movementData)
                     mapBuilder.AddMovementEntity(data);
-                return mapBuilder.Build(id);
+                return mapBuilder.Build();
             }
         }
     }

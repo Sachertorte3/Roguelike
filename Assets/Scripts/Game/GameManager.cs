@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Entity;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters.Behavior;
@@ -50,7 +51,9 @@ namespace Game
 
             _world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
-                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed.Subscribe(async _ =>
+                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed
+                    .Where(_ => State.CurrentValue == GameState.Dungeon)
+                    .Subscribe(async _ =>
                 {
                     await StopMap();
                     Save();
@@ -161,7 +164,7 @@ namespace Game
             Settings.WorldSettings.Reset();
 
             _world.CreateNew();
-            return _world.LoadMap(new Location("Dungeon", 1), null);
+            return _world.LoadStartMap();
         }
 
         private MapManager LoadSaveData(SaveData saveData)
@@ -211,11 +214,11 @@ namespace Game
             await _turnController.Stop();
         }
 
-        public async void MoveMap(Location location, Id<IEntity>? destination = null)
+        public async void MoveMap(Id<IMap> mapId, Id<IEntity>? destination = null)
         {
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
-            var map = _world.LoadMap(location, destination);
+            var map = _world.LoadMap(mapId, destination);
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");
@@ -230,7 +233,7 @@ namespace Game
         {
             Log.Info("[Game]Save");
             var world = _world.Serialize();
-            var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id.ToString(), map => map);
+            var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id, map => map);
             var statistics = _activeStatistics.Value.Serialize();
             var settings = Settings.GetValues();
             var saveData = new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false);

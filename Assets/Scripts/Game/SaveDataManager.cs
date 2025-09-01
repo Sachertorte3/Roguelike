@@ -1,16 +1,18 @@
 #nullable enable
 using System.Collections.Generic;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Unity.Logging;
 using UnityEngine;
+using Utilities;
 using Utilities.Serialize;
 
 namespace Game
 {
     public record SaveData(
         WorldMemento World,
-        Dictionary<string, MapMemento> Maps,
+        Dictionary<Id<IMap>, MapMemento> Maps,
         StatisticsMemento Statistics,
         Dictionary<string, int> Settings,
         float TurnWaitTime, bool IsRollbacked);
@@ -49,7 +51,7 @@ namespace Game
             db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
             foreach (var map in saveData.Maps)
             {
-                db.SaveMap(_saveDataSlot, map.Key, JsonUtility.ToJson(map.Value));
+                db.SaveMap(_saveDataSlot, map.Key.ToString(), JsonUtility.ToJson(map.Value));
             }
             db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
             db.SaveSettings(_saveDataSlot, Settings.GetValues().ToSerializable());
@@ -66,10 +68,10 @@ namespace Game
             }
             var (worldData, turnWaitTime) = db.Load(_saveDataSlot);
             var world = JsonUtility.FromJson<WorldMemento>(worldData);
-            Dictionary<string, MapMemento> maps = new();
+            Dictionary<Id<IMap>, MapMemento> maps = new();
             foreach (var mapId in world.MapIds)
             {
-                var mapData = db.LoadMap(_saveDataSlot, mapId);
+                var mapData = db.LoadMap(_saveDataSlot, mapId.ToString());
                 maps.Add(mapId, JsonUtility.FromJson<MapMemento>(mapData));
             }
             var statisticsData = db.LoadStatistics(_saveDataSlot);

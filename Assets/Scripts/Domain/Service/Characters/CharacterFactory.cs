@@ -5,6 +5,7 @@ using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
+using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
@@ -77,7 +78,7 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
-            IAffiliation? affiliation = null, (Location, Vector2Int)? homePosition = null)
+            IAffiliation? affiliation = null, Location? homeLocation = null)
         {
             var inventory = Storage.Build(10, true);
             if (RandUtils.IsLessThanProbability(data.DropItemRate) && data.DropItemTable.Count > 0)
@@ -92,7 +93,7 @@ namespace Domain.Service.Characters
                 data.CharacterType,
                 EnemyBehavior.Build(
                     data.Behavior,
-                    homePosition
+                    homeLocation.ToOption()
                 ),
                 CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
                     isShiny

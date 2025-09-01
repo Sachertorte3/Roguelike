@@ -67,14 +67,14 @@ namespace Game
 
         public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
         {
-            var character = CharacterFactory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Location), map);
+            var character = CharacterFactory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Id), map);
             AddCharacter(character);
             return character;
         }
 
         public Ally SpawnAlly(CharacterMemento data, IMap map)
         {
-            var behavior = new EnemyBehavior(data.Behavior, map.Location);
+            var behavior = new EnemyBehavior(data.Behavior, map.Id);
             var character = CharacterFactory.CreateCharacter(data, behavior, map);
             AddCharacter(character);
             return new Ally(character, behavior, map);

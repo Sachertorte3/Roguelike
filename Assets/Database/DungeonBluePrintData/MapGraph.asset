@@ -1,0 +1,2535 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8704829509910598880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Cave2
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 88}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -8704829509910598880}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 5670028076644485680}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 1
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.25
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 471e3b95a5fbf354780047c377f69258, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: a161c346f3914d24bb7aeca7ae4b5b89, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &-8415772247081253821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 1176}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 5720250255583208601}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 3940670470475666938}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -816534717499783915}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 761465357129200511}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-8280694011459171652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 248, y: 360}
+  ports:
+    keys:
+    - _prevMap
+    - _sectionData
+    - _floorData
+    - _nextMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _prevMap
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 9031898349937062684}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -3161589598696151335}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 1690421537033976324}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _nextMap
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 8353191741393840923}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -8280694011459171652}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-7782572915970204524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 248, y: 632}
+  ports:
+    keys:
+    - _prevMap
+    - _sectionData
+    - _floorData
+    - _nextMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _prevMap
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 8353191741393840923}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 5437942102726374776}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -6788424184188872890}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _nextMap
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 761465357129200511}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -7782572915970204524}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-7403749162726336941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: Floor2
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 88}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -7403749162726336941}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 5670028076644485680}
+        reroutePoints: []
+      - fieldName: _floorData
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &-6873996726247624841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: DungeonFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 904}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -6873996726247624841}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 761465357129200511}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &-6788424184188872890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: SnowFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 632}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -6788424184188872890}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 8353191741393840923}
+        reroutePoints: []
+      - fieldName: _floorData
+        node: {fileID: -7782572915970204524}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &-5935572277212226768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Volcano
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 1448}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -5935572277212226768}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 5720250255583208601}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 4
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: ef8e43e4f4f3c9f479b2ece22a300dd0, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: e08657120f363c443a261f9a6b69cbcf, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 3c61678395244794aaa00392f7fa8473, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 372bda9724d39bc4a823ed7793b389de, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &-5128896849670103603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 248, y: 104}
+  ports:
+    keys:
+    - _prevMap
+    - _sectionData
+    - _floorData
+    - _nextMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _prevMap
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 5670028076644485680}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -8704829509910598880}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -7403749162726336941}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _nextMap
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 9031898349937062684}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _teleportIn
+        node: {fileID: -3908742665158575060}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-3908742665158575060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 968, y: 8}
+  ports:
+    keys:
+    - _prevMap
+    - _teleportIn
+    - _sectionData
+    - _floorData
+    - _nextMap
+    - _teleportOut
+    values:
+    - _fieldName: _prevMap
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _teleportOut
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 3664893730446323036}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8325014953087687760}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _nextMap
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-3797997761962492589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 248, y: -184}
+  ports:
+    keys:
+    - _prevMap
+    - _sectionData
+    - _floorData
+    - _nextMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _prevMap
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 132433583354238991}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 3664893730446323036}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8847253103253929321}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _nextMap
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 1255173468955364467}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: -3797997761962492589}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &-3161589598696151335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Forest
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 360}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -3161589598696151335}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 9031898349937062684}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: -8280694011459171652}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 2
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.25
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: e9c4afc157185444ca463a93304707ad, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 9a8d4fcb820b16b49a9fd6f06102a63d, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1943eb38ef7e8374f9efa8c0a88298f2, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 370a911dfe8b2484db63c6e8f34f5c99, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &-2828687477100872438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: VolcanoFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 1448}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -2828687477100872438}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 5720250255583208601}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: a7563f1f16a4a4cac9010cd6933a7d3e, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &-816534717499783915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Desert
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 1176}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -816534717499783915}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: -8415772247081253821}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 5
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 49636f57d2c813c4aaf27ffb5f12a170, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: c8de623b779810f44b355e462d3c723c, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 1fb769ab5eaa40b42b49cdcc3dc9b863, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: f9c1c6dab8d4383489f2ffc917b9e043, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e303f1724fa10147b1c791107864c9c, type: 3}
+  m_Name: MapGraph
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapGraph
+  nodes:
+  - {fileID: 132433583354238991}
+  - {fileID: 3664893730446323036}
+  - {fileID: 8847253103253929321}
+  - {fileID: 5670028076644485680}
+  - {fileID: -8704829509910598880}
+  - {fileID: -7403749162726336941}
+  - {fileID: 9031898349937062684}
+  - {fileID: -3161589598696151335}
+  - {fileID: 1690421537033976324}
+  - {fileID: 5437942102726374776}
+  - {fileID: -6788424184188872890}
+  - {fileID: 8353191741393840923}
+  - {fileID: 9206932752471496282}
+  - {fileID: -6873996726247624841}
+  - {fileID: 761465357129200511}
+  - {fileID: -5935572277212226768}
+  - {fileID: -2828687477100872438}
+  - {fileID: 5720250255583208601}
+  - {fileID: -816534717499783915}
+  - {fileID: 3940670470475666938}
+  - {fileID: -8415772247081253821}
+  - {fileID: -5128896849670103603}
+  - {fileID: -8280694011459171652}
+  - {fileID: -7782572915970204524}
+  - {fileID: -3797997761962492589}
+  - {fileID: 1255173468955364467}
+  - {fileID: -3908742665158575060}
+  - {fileID: 8325014953087687760}
+--- !u!114 &132433583354238991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: -184}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: -3797997761962492589}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8847253103253929321}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 3664893730446323036}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &761465357129200511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 904}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: -8415772247081253821}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -6873996726247624841}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 9206932752471496282}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: -7782572915970204524}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &1255173468955364467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 472, y: -184}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: 5670028076644485680}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8847253103253929321}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 3664893730446323036}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: -3797997761962492589}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 1255173468955364467}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &1690421537033976324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: ForestFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 360}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 1690421537033976324}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 9031898349937062684}
+        reroutePoints: []
+      - fieldName: _floorData
+        node: {fileID: -8280694011459171652}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &3664893730446323036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Cave1
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: -184}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 3664893730446323036}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 132433583354238991}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: -3797997761962492589}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: 1255173468955364467}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: -3908742665158575060}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 1
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 121481700a3ebe542bfcf96979f3e16f, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &3940670470475666938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: Desert
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: 1176}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 3940670470475666938}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: -8415772247081253821}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &5437942102726374776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Snow
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 632}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 5437942102726374776}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 8353191741393840923}
+        reroutePoints: []
+      - fieldName: _sectionData
+        node: {fileID: -7782572915970204524}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 3
+    RoundRoomCorner: 1
+    CaveInOneRoom: 0
+    WaterChance: 0.5
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 276ed294d4867e14799ef6e322837be5, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: 3eefc4cf587b776428b3c75029dc2ca0, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+--- !u!114 &5670028076644485680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 104}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -7403749162726336941}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -8704829509910598880}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: 1255173468955364467}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &5720250255583208601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 1448}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -2828687477100872438}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -5935572277212226768}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: -8415772247081253821}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &8325014953087687760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: BossFloor
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: 696, y: -440}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 8325014953087687760}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: -3908742665158575060}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+    PrefixChance: 0
+    ShinyChance: 0
+    SleepChance: 0
+    MimicChance: 0
+    GrassChance: 0
+    ShopChance: 0
+    MonsterHouseChance: 0
+    RestRoomChance: 0
+    ChestChance: 1
+    ItemCount: 0
+    MoneyCount: 0
+    MoneyAverage: 100
+    CharacterCount: 0
+    TrapCount: 0
+    Boss:
+    - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &8353191741393840923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 632}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: -7782572915970204524}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -6788424184188872890}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 5437942102726374776}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: -8280694011459171652}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &8847253103253929321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: Floor1
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -584, y: -184}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 8847253103253929321}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _floorData
+        node: {fileID: 132433583354238991}
+        reroutePoints: []
+      - fieldName: _floorData
+        node: {fileID: -3797997761962492589}
+        reroutePoints: []
+      - fieldName: _floorData
+        node: {fileID: 1255173468955364467}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0
+    ShopChance: 0.05
+    MonsterHouseChance: 0
+    RestRoomChance: 1
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  Output:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+--- !u!114 &9031898349937062684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa5fd60aa0d2c24bba053555fad3ebb, type: 3}
+  m_Name: Map
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.MapNode
+  graph: {fileID: 11400000}
+  position: {x: 24, y: 360}
+  ports:
+    keys:
+    - _nextMap
+    - _floorData
+    - _sectionData
+    - _prevMap
+    - _teleportIn
+    - _teleportOut
+    values:
+    - _fieldName: _nextMap
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _prevMap
+        node: {fileID: -8280694011459171652}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _floorData
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 1690421537033976324}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _sectionData
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -3161589598696151335}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _prevMap
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: _nextMap
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportIn
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: _teleportOut
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  _prevMap: 0
+  _teleportIn: 0
+  _sectionData:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []
+  _floorData:
+    Field: {fileID: 0}
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    GrassChance: 0.3
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    ChestChance: 0.1
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    Boss: []
+  _nextMap: 0
+  _teleportOut: 0
+--- !u!114 &9206932752471496282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb1675fd4dd7fc4ab6e3a9869ae3f5c, type: 3}
+  m_Name: Dungeon
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 904}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 9206932752471496282}
+      _typeQualifiedName: Domain.Model.Dungeon.SectionData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _sectionData
+        node: {fileID: 761465357129200511}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    Type: 6
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 1
+    WeaponChanceInChest: 0.8
+    Mimic: {fileID: 11400000, guid: c0d6a049d8da17c4398c94fd35fba649, type: 2}
+    Clerk: {fileID: 11400000, guid: 830dfab999e43bf4ba24080e9fbf69e7, type: 2}
+    Enemies:
+      items:
+      - Item: {fileID: 11400000, guid: 4cfaab94f7ea2fc4ba44cebebc00eeeb, type: 2}
+        Weight: 1
+      - Item: {fileID: 11400000, guid: ab82fa010f8c60149be4a61bc4245395, type: 2}
+        Weight: 1
+  Output:
+    Type: 0
+    RoundRoomCorner: 0
+    CaveInOneRoom: 0
+    WaterChance: 0
+    WeaponChanceInChest: 0
+    Mimic: {fileID: 0}
+    Clerk: {fileID: 0}
+    Enemies:
+      items: []

@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -17,6 +18,6 @@ namespace Domain.Service.Characters.Behavior
         public UniTask<IAction> GenerateNextAction(IHasBehavior character, IGameManager gameManager, IMap map,
             IInput input);
 
-        public void KnowLocationOf(Vector2Int position);
+        public void KnowLocationOf(Location location);
     }
 }

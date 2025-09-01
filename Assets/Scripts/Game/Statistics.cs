@@ -32,8 +32,8 @@ namespace Game
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
-                if (map.Level > MaxMapLevel)
-                    MaxMapLevel = map.Level;
+                if (map.Depth > MaxMapLevel)
+                    MaxMapLevel = map.Depth;
                 map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>
                 {
                     _knownItemNames.Add(item.NewItem);

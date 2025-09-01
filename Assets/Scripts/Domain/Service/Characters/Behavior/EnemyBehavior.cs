@@ -48,10 +48,6 @@ namespace Domain.Service.Characters.Behavior
         public EnemyBehavior(BehaviorMemento data, Id<IMap> mapId)
         {
             BehaviorData = data.Behavior;
-            if (data.HomeLocation.HasValue)
-            {
-                Debug.Log(data.HomeLocation.Value.ToString() + mapId.ToString());
-            }
             if (data.HomeLocation.HasValue && data.HomeLocation.Value!.MapId == mapId)
             {
                 _homeLocation = data.HomeLocation;

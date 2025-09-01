@@ -47,9 +47,8 @@ namespace Domain.Service.Characters
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         public int DropExp { get; init; }
-        private readonly IDisposable _disposable;
         private IMap _map;
-        private readonly Subject<string> _onDead = new();
+        private readonly Subject<Unit> _onDead = new();
         private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
         private ReactiveProperty<int> _chargeTurn = new(0);
 
@@ -77,7 +76,6 @@ namespace Domain.Service.Characters
             CanPickUp = data.CanPickUp;
             CanUseItem = data.CanUseItem;
 
-            _disposable = OnDead.Subscribe(lastDamageLog => Entity.Destroy(lastDamageLog));
             _map = map;
 
             _statusManager.OnDamageReceived.Subscribe(async damageChanged =>
@@ -96,7 +94,8 @@ namespace Domain.Service.Characters
                 {
                     if (_lastSkill != null)
                         await _lastSkill.Use(this, Entity.CurrentPosition, CurrentDirection, _map);
-                    _onDead.OnNext(damageChanged.CauseOfDamageLog);
+                    _onDead.OnNext(Unit.Default);
+                    Entity.Destroy(damageChanged.CauseOfDamageLog);
                 }
             });
 
@@ -565,13 +564,12 @@ namespace Domain.Service.Characters
 
         public void Dispose()
         {
-            _disposable.Dispose();
             Entity.Dispose();
             _inventory.Dispose();
             _direction.Dispose();
         }
 
-        public Observable<string> OnDead => _onDead;
+        public Observable<Unit> OnDead => _onDead;
 
         public IReadOnlyList<ICharacterSkill> Skills => _skills;
 

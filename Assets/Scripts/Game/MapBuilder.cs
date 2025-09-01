@@ -242,6 +242,8 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
+                if (data.Enemies.Count == 0)
+                    break;
                 var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
                     isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
                 _characters.Add(character);

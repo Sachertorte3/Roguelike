@@ -127,7 +127,6 @@ namespace Domain.Service.Items
 
         public IItem? GetItem(ItemFocus index)
         {
-            UnityEngine.Debug.Log($"GetItem: {index.Index}, {index.SubIndex}");
             if (index.SubIndex < 0)
                 return _storage.GetItem(index.Index);
             return _storage.GetItem(index.Index).ItemStorage.Value.GetItem(index.SubIndex);

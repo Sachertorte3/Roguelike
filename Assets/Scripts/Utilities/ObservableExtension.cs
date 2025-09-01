@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Utilities
 {
@@ -57,7 +58,7 @@ namespace Utilities
         }
 
         public static IDisposable SubscribeIncludingCurrentItems<T>(this IObservableCollection<T> list, Action<T> addAction,
-            Action<T> removeAction = null)
+            Action<T>? removeAction = null)
         {
             foreach (var item in list)
             {
@@ -111,14 +112,12 @@ namespace Utilities
         public static void SynchronizeWith<T>(this ObservableHashSet<T> collectionA, IEnumerable<T> collectionB)
             where T : notnull
         {
-            // コレクションAの要素のうち、コレクションBに存在しないものを削除する
             var itemsToRemove = collectionA.Except(collectionB).ToList();
             foreach (var item in itemsToRemove)
             {
                 collectionA.Remove(item);
             }
 
-            // コレクションBの要素のうち、コレクションAに存在しないものを追加する
             var itemsToAdd = collectionB.Except(collectionA).ToList();
             foreach (var item in itemsToAdd)
             {

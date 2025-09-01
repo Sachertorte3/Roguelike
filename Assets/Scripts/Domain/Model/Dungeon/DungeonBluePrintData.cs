@@ -36,7 +36,7 @@ namespace Domain.Model.Dungeon
             return MapGraph.nodes
                 .OfType<MapNode>()
                 .Where(node => node.Map == mapId)
-                .FirstOrDefault();
+                .First();
         }
 
         public Id<IMap> GetStartMapId()
@@ -48,7 +48,6 @@ namespace Domain.Model.Dungeon
 
         public List<MapConnection> GetDestinations(Id<IMap> mapId)
         {
-            Debug.Log(mapId);
             var connections = new List<MapConnection>();
             var mapNode = GetMapNode(mapId);
             foreach (var prevMap in mapNode.PrevNodes)
@@ -79,6 +78,8 @@ namespace Domain.Model.Dungeon
             var mapNode = GetMapNode(mapId);
             var sectionData = mapNode.SectionData;
             var floorData = mapNode.FloorData;
+            var enemies = mapNode.Enemies;
+            var boss = mapNode.Boss;
             return new DungeonMapData(
                 name,
                 mapNode.Depth,
@@ -90,7 +91,7 @@ namespace Domain.Model.Dungeon
                 MasterItemDataBase.ChestItems,
                 Traps,
                 MasterItemDataBase.ShopItems,
-                sectionData.Enemies,
+                enemies,
                 Npcs,
                 floorData.PrefixChance,
                 floorData.ShinyChance,
@@ -100,7 +101,7 @@ namespace Domain.Model.Dungeon
                 sectionData.RoundRoomCorner,
                 sectionData.CaveInOneRoom,
                 sectionData.WaterChance,
-                floorData.GrassChance,
+                sectionData.GrassChance,
                 floorData.ShopChance,
                 floorData.MonsterHouseChance,
                 floorData.RestRoomChance,
@@ -109,8 +110,7 @@ namespace Domain.Model.Dungeon
                 floorData.MoneyAverage,
                 floorData.CharacterCount,
                 floorData.TrapCount,
-                floorData.ExistBoss,
-                floorData.Boss,
+                boss,
                 sectionData.Clerk,
                 sectionData.Mimic
             );

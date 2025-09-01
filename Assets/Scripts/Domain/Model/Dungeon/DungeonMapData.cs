@@ -40,12 +40,12 @@ namespace Domain.Model.Dungeon
         float MoneyAverage,
         float CharacterAttempt,
         float TrapAttempt,
-        bool ExistBoss,
         List<EnemyData> Boss,
         EnemyData Clerk,
         EnemyData Mimic
     )
     {
+        public bool ExistBoss => Boss.Count > 0;
         private int GetCount(float trials)
         {
             return RandUtils.Binomial(trials * 2, 0.5f);

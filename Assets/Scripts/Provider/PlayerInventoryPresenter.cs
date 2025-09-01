@@ -99,7 +99,6 @@ namespace Provider
 
         private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
         {
-            Debug.Log("UpdateAllItemViews");
             inventoryView.Clear();
             foreach (var (item, index) in map.Player.Character.Inventory.AllItemsWithIndex)
             {

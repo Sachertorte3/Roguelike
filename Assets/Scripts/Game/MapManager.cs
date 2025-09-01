@@ -16,6 +16,7 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
+using Domain.Service.Effect;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
@@ -159,7 +160,6 @@ namespace Game
             {
                 KeyCharacters.ForEach(character =>
                     character.Entity.OnDestroyed.Subscribe(_ => KeyCharacters.Remove(character)).AddTo(_disposables));
-                KeyCharacters.ObserveCountChanged().Subscribe(count => Debug.Log(count)).AddTo(_disposables);
                 KeyCharacters.ObserveCountChanged().Where(count => count == 0)
                     .Subscribe(_ => _stairsLocked.Value = false).AddTo(_disposables);
             }
@@ -251,8 +251,10 @@ namespace Game
             return ally.Character;
         }
 
-        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null)
+        public ICharacter? SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null)
         {
+            if (_dungeonData.Enemies.Count == 0)
+                return null;
             return SpawnEnemy(_dungeonData.Enemies.GetRandomItem(), position, isSlept: isSlept, isShiny: isShiny);
         }
 

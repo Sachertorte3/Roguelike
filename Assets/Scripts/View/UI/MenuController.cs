@@ -23,49 +23,37 @@ namespace View.UI
         [SerializeField] private MainMenu _mainMenu;
         private readonly ObservableStack<IMenu> _menuStack = new();
         private readonly Dictionary<IMenu, GameObject> _selectedObject = new();
-        private MenuType _currentMenuType = MenuType.Field;
-
-        private enum MenuType
-        {
-            Field,
-            Menu,
-        }
+        private ReactiveProperty<MenuType> _menuState = new(MenuType.Field);
+        public ReadOnlyReactiveProperty<MenuType> MenuState => _menuState;
 
         [Inject]
-        public void Construct(InputReceiver inputReceiver)
+        public void Construct()
         {
-            inputReceiver.OnMainMenuOpening.Subscribe(_ =>
-            {
-                if (!_menuStack.Contains(_mainMenu))
-                {
-                    AddMenu(_mainMenu);
-                }
-            });
-            inputReceiver.OnMenuClosing.Subscribe(_ =>
-            {
-                if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
-                {
-                    PopMenu();
-                }
-            });
             _menuStack.ObserveChanged().Subscribe(_ =>
             {
                 var menuType = GetCurrentMenuType();
                 if (!menuType.HasValue)
                     return;
-                if (menuType == _currentMenuType)
+                if (menuType == _menuState.CurrentValue)
                     return;
-                _currentMenuType = menuType.Value;
-                switch (_currentMenuType)
-                {
-                    case MenuType.Field:
-                        inputReceiver.SwitchField();
-                        break;
-                    case MenuType.Menu:
-                        inputReceiver.SwitchMenu();
-                        break;
-                }
+                _menuState.Value = menuType.Value;
             });
+        }
+
+        public void OpenMeinMenu()
+        {
+            if (!_menuStack.Contains(_mainMenu))
+            {
+                AddMenu(_mainMenu);
+            }
+        }
+
+        public void CloseMenu()
+        {
+            if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
+            {
+                PopMenu();
+            }
         }
 
         private MenuType? GetCurrentMenuType()

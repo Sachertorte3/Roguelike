@@ -1,4 +1,5 @@
 ﻿using Domain.Model.Character;
+using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -15,7 +16,7 @@ namespace Domain.Model.Effect
         public void ClearCondition();
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
-        public void ListenToAlert(Vector2Int position);
+        public void ListenToAlert(Location location);
         public void DropItem(ItemFocus index, IMap map, bool isForced = false);
     }
 }

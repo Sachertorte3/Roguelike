@@ -97,7 +97,7 @@ MonoBehaviour:
     RushDistance: 0
     BackStepDistance: 0
     ChargeTurn: 0
-    CoolTime: 10
+    CoolTime: 30
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -134,7 +134,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 25
+          _power: 10
         _criticalRate: 1
     - rid: 2541219281251860526
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
@@ -150,7 +150,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 1
-          _power: 20
+          _power: 10
         _criticalRate: 0
     - rid: 2541219281251860530
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
@@ -166,7 +166,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 0
-          _power: 15
+          _power: 7
         _criticalRate: 0
     - rid: 2541219281251860533
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}

@@ -11,7 +11,7 @@ namespace Provider
     public class MapCommands
     {
         private readonly GameManager _gameManager;
-
+/*
         [Inject]
         public MapCommands(GameManager gameManager)
         {
@@ -35,5 +35,6 @@ namespace Provider
                 Log.Error(e);
             }
         }
+*/
     }
 }

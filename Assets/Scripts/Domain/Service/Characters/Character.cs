@@ -8,6 +8,7 @@ using Domain.Model.Character;
 using Domain.Model.Character.Message;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
+using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
@@ -108,6 +109,7 @@ namespace Domain.Service.Characters
             });
         }
 
+        public Location CurrentLocation => new(_map.Id, Entity.CurrentPosition);
         public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed;
         private ICharacterBehavior _behavior { get; }
         public bool IsPlayer { get; init; }
@@ -700,10 +702,10 @@ namespace Domain.Service.Characters
 
         #endregion
 
-        public void ListenToAlert(Vector2Int position)
+        public void ListenToAlert(Location location)
         {
             _statusManager.RemoveConditionType(typeof(Slept));
-            _behavior.KnowLocationOf(position);
+            _behavior.KnowLocationOf(location);
         }
 
         public void OnAttackedBy(IActorOfEffect actor, float impact)

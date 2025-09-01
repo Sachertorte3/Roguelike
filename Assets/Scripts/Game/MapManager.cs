@@ -32,9 +32,8 @@ namespace Game
     public class MapManager : IDisposable, ISerializable<MapMemento>, IMap
     {
         public Id<IMap> Id { get; init; }
-        public Location Location { get; init; }
-        public string Name => Location.MapName;
-        public int Level => Location.Level;
+        public string Name => "Dungeon";
+        public int Depth => _dungeonData.Depth;
         public MapType Type => _dungeonData.Type;
         public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
         public ItemPlaceholders ItemPlaceholders { get; init; }
@@ -59,7 +58,6 @@ namespace Game
             Vector2Int? playerPosition, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
             Id = map.Id;
-            Location = map.Location;
             ItemPlaceholders = itemPlaceholders;
 
             if (playerPosition == null)
@@ -139,7 +137,7 @@ namespace Game
                         .GetAtRandom();
                     var ally = CharacterManager.SpawnAlly(
                         CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position,
-                            homePosition: (Location, clerkPosition.Position)),
+                            homeLocation: new Location(Id, clerkPosition.Position)),
                         this);
                     EventEntityManager.Add(ally);
                     clerk = ally.Character;
@@ -426,7 +424,6 @@ namespace Game
             return new MapMemento
             (
                 Id,
-                Location,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),
@@ -447,7 +444,6 @@ namespace Game
             return new MapMemento
             (
                 Id,
-                Location,
                 _tilemap.Serialize(),
                 characters.Select(character => character.Serialize()).ToList(),
                 ItemManager.Items.Select(item => item.Serialize()).ToList(),

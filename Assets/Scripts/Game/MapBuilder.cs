@@ -20,8 +20,8 @@ namespace Game
 {
     public class MapBuilder
     {
+        private readonly Id<IMap> _mapId;
         private readonly TilemapBuilder _tilemap;
-        private readonly Location _location;
         private readonly List<CharacterMemento> _characters = new();
         private readonly List<ItemEntityMemento> _items = new();
         private readonly List<StairsMemento> _stairs = new();
@@ -35,10 +35,10 @@ namespace Game
         private readonly List<Id<Room>> _canPlaceStairRooms = new();
         private readonly Dictionary<Id<Room>, HashSet<Vector2Int>> _blankPositionsInRooms;
 
-        public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Location location)
+        public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Id<IMap> mapId)
         {
             _tilemap = new TilemapBuilder(data.Type, bluePrint, waterChance);
-            _location = location;
+            _mapId = mapId;
             _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
 
             var roomIds = _tilemap.RoomIds.ToList();
@@ -179,7 +179,7 @@ namespace Game
 
             var clerkPosition = GetRandomBlankPositionInRoom(roomId);
             var clerk = CharacterFactory.BuildCharacter(data.Clerk, clerkPosition, isSlept: false, isShiny: false,
-                homePosition: (_location, clerkPosition));
+                homeLocation: new Location(_mapId, clerkPosition));
             _characters.Add(clerk);
 
             return Shop.Build(_tilemap.GetRoom(roomId), new Id<IEntity>(clerk.Entity.Id), _items.ToList());
@@ -223,7 +223,7 @@ namespace Game
                 var position = center + direction.Vector();
                 var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
                     direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
-                    homePosition: (_location, center));
+                    homeLocation: new Location(_mapId, center));
                 _characters.Add(character);
             }
 
@@ -304,12 +304,11 @@ namespace Game
                     data.Destination));
         }
 
-        public MapMemento Build(Id<IMap> id)
+        public MapMemento Build()
         {
             return new MapMemento
             (
-                id,
-                _location,
+                _mapId,
                 _tilemap.Build(),
                 _characters,
                 _items,
@@ -325,14 +324,12 @@ namespace Game
     public class WorldMapBuilder
     {
         private readonly Id<IMap> _id;
-        private readonly Location _location;
         private readonly string _seed;
         private readonly List<StairsMemento> _stairs = new();
 
-        public WorldMapBuilder(Id<IMap> id, Location location, string seed)
+        public WorldMapBuilder(Id<IMap> id, string seed)
         {
             _id = id;
-            _location = location;
             _seed = seed;
         }
         private Vector2Int GetRandomBlankPositionInRoom()
@@ -356,7 +353,6 @@ namespace Game
         {
             return new MapMemento(
                 _id,
-                _location,
                 TilemapBuilder.Build(_seed),
                 new List<CharacterMemento>(),
                 new List<ItemEntityMemento>(),

@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
+using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -17,6 +18,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Option;
 
 namespace Domain.Service.Characters.Behavior
 {
@@ -27,7 +29,7 @@ namespace Domain.Service.Characters.Behavior
         public BehaviorData BehaviorData => new();
         private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
         public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
-        private (Location, Vector2Int)? _homePosition;
+        private Option<Location> _homeLocation;
 
         private enum InputType
         {
@@ -46,12 +48,12 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorMemento Serialize()
         {
-            return new BehaviorMemento(BehaviorData, _homePosition, null, null);
+            return new BehaviorMemento(BehaviorData, _homeLocation, Option<BehaviorState>.None, Option<Location>.None);
         }
 
         public static BehaviorMemento Build()
         {
-            return new BehaviorMemento(new BehaviorData(), null, null, null);
+            return new BehaviorMemento(new BehaviorData(), Option<Location>.None, Option<BehaviorState>.None, Option<Location>.None);
         }
 
         public bool WanderAround => true;
@@ -226,7 +228,7 @@ namespace Domain.Service.Characters.Behavior
             };
         }
 
-        public void KnowLocationOf(Vector2Int position)
+        public void KnowLocationOf(Location location)
         {
         }
 

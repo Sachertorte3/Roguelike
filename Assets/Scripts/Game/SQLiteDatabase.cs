@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using Tetr4lab.UnityEngine.SQLite;
-using UnityEngine;
 using Unity.Logging;
 
 namespace Game
@@ -13,20 +12,15 @@ namespace Game
         public SQLiteDatabase()
         {
             Log.Debug("Database init");
-            var initDatabaseQuery = "create database if not exists data";
-            sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initDatabaseQuery, path: "");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists saves (save_id integer, text string, turnWaitTime real, primary key(save_id))");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists latest_tracker(save_id integer, turn integer, primary key(save_id))");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists maps (save_id integer, map_id string, text string, primary key(save_id, map_id))");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists statistics (save_id integer, text string, primary key(save_id))");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists global_settings (name string, value integer, primary key(name))");
-            sqlDB.ExecuteNonQuery(
-                "create table if not exists settings (save_id integer, name string, value integer, primary key(save_id, name))");
+            var initQuery = @"
+                create table if not exists saves (save_id integer, text string, turnWaitTime real, primary key(save_id));
+                create table if not exists latest_tracker(save_id integer, turn integer, primary key(save_id));
+                create table if not exists maps (save_id integer, map_id string, text string, primary key(save_id, map_id));
+                create table if not exists statistics (save_id integer, text string, primary key(save_id));
+                create table if not exists global_settings (name string, value integer, primary key(name));
+                create table if not exists settings (save_id integer, name string, value integer, primary key(save_id, name));";
+
+            sqlDB = new SQLite<SQLiteTable<SQLiteRow>, SQLiteRow>("save.db", initQuery, path: "");
             Log.Debug("Database init done");
         }
         public void Save(int save_id, string saveData, float turnWaitTime)

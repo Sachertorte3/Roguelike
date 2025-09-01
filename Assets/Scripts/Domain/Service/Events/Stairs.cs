@@ -15,7 +15,7 @@ namespace Domain.Service.Events
     public class Stairs : IDisposable, ISerializable<StairsMemento>, IPlayerEventEntity, IMovementEntity
     {
         public MovementEntityType Type { get; init; }
-        public Location Destination { get; init; }
+        public Id<IMap> Destination { get; init; }
         public EntityBase Entity { get; init; }
         public Id<IEntity> DestinationId { get; init; }
         public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
@@ -76,7 +76,7 @@ namespace Domain.Service.Events
         }
 
         public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IEntity> id,
-            Location destination, Id<IEntity> destinationId)
+            Id<IMap> destination, Id<IEntity> destinationId)
         {
             return new StairsMemento
             (
@@ -87,7 +87,7 @@ namespace Domain.Service.Events
             );
         }
 
-        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Location destination)
+        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IMap> destination)
         {
             return Build(type, position, Id<IEntity>.Generate(), destination, Id<IEntity>.Generate());
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -13,6 +14,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Option;
 using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters.Behavior
@@ -22,7 +24,7 @@ namespace Domain.Service.Characters.Behavior
         public Observable<OnItemSelectMessage> OnItemSelect { get; init; } = new Subject<OnItemSelectMessage>();
 
         private BehaviorResult _previousResult;
-        private readonly (Location Location, Vector2Int Position)? _homePosition;
+        private readonly Option<Location> _homeLocation = Option.None<Location>();
 
         private readonly float behavioralRandomness = 0.01f;
 
@@ -43,17 +45,21 @@ namespace Domain.Service.Characters.Behavior
 
         public BehaviorData BehaviorData { get; init; }
 
-        public EnemyBehavior(BehaviorMemento data, Location mapLocation)
+        public EnemyBehavior(BehaviorMemento data, Id<IMap> mapId)
         {
             BehaviorData = data.Behavior;
-            if (data.HomePosition.HasValue && data.HomePosition.Value.Item1 == mapLocation)
+            if (data.HomeLocation.HasValue)
             {
-                _homePosition = data.HomePosition;
+                Debug.Log(data.HomeLocation.Value.ToString() + mapId.ToString());
+            }
+            if (data.HomeLocation.HasValue && data.HomeLocation.Value!.MapId == mapId)
+            {
+                _homeLocation = data.HomeLocation;
             }
 
             _previousResult = new BehaviorResult(
                 data.PreviousState.Value,
-                data.PreviousTargetPosition.Value
+                data.PreviousTargetLocation
             );
 
             if (BehaviorData.wanderAround)
@@ -88,19 +94,19 @@ namespace Domain.Service.Characters.Behavior
         {
             return new BehaviorMemento(
                 BehaviorData,
-                _homePosition,
-                _previousResult.State,
-                _previousResult.TargetPosition
+                _homeLocation,
+                Option.Some(_previousResult.State),
+                _previousResult.TargetLocation
             );
         }
 
-        public static BehaviorMemento Build(BehaviorData behavior, (Location, Vector2Int)? homePosition)
+        public static BehaviorMemento Build(BehaviorData behavior, Option<Location> homeLocation)
         {
             var memento = new BehaviorMemento(
                 behavior,
-                homePosition,
-                null,
-                null
+                homeLocation,
+                Option<BehaviorState>.None,
+                Option<Location>.None
             );
             var json = JsonUtility.ToJson(memento);
             return JsonUtility.FromJson<BehaviorMemento>(json);
@@ -110,11 +116,11 @@ namespace Domain.Service.Characters.Behavior
             IInput input)
         {
             var result = GenerateNextBehaviorResult(character, map);
-            Log.Debug($"[Think]Result: {result.State} {result.TargetPosition}");
+            Log.Debug($"[Think]Result: {result.State} {result.TargetLocation}");
 
-            if (result.TargetPosition != null)
+            if (result.TargetLocation.HasValue && result.TargetLocation.Value!.MapId == map.Id)
             {
-                var relativeVector = result.TargetPosition.Value - character.Entity.CurrentPosition;
+                var relativeVector = result.TargetLocation.Value.Position - character.Entity.CurrentPosition;
                 if (VectorExtension.ChebyshevDistance(relativeVector) <= 1)
                 {
                     var direction = DirectionMethods.NearestDirectionFromVector(relativeVector);
@@ -128,7 +134,7 @@ namespace Domain.Service.Characters.Behavior
             {
                 actions.AddRange(GenerateDoableMoves(character, result, map));
             }
-            else if (PrioritizeMovement(character, result.TargetPosition))
+            else if (PrioritizeMovement(character, result.TargetLocation, map.Id))
             {
                 Log.Debug("[Think]Prioritize Movement.");
                 actions.AddRange(GenerateDoableMoves(character, result, map));
@@ -182,77 +188,74 @@ namespace Domain.Service.Characters.Behavior
             var targetedLeader =
                 visibleLeaders.MaxByOrDefault(leader => character.Affiliation.GetAffection(leader.Affiliation), null);
 
-            if (BehaviorData.PrioritizeEnemiesOverLeaders)
-            {
-                if (targetedEnemy != null)
-                {
-                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.Entity.CurrentPosition);
-                }
+            // 優先順位に基づいてターゲットを選択
+            var primaryTarget = BehaviorData.PrioritizeEnemiesOverLeaders ? targetedEnemy : targetedLeader;
+            var secondaryTarget = BehaviorData.PrioritizeEnemiesOverLeaders ? targetedLeader : targetedEnemy;
+            var primaryState = BehaviorData.PrioritizeEnemiesOverLeaders ?
+                BehaviorState.DiscoveringEnemy : BehaviorState.DiscoveringLeader;
+            var secondaryState = BehaviorData.PrioritizeEnemiesOverLeaders ?
+                BehaviorState.DiscoveringLeader : BehaviorState.DiscoveringEnemy;
 
-                if (targetedLeader != null)
-                {
-                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.Entity.CurrentPosition);
-                }
+            if (primaryTarget != null)
+            {
+                return new BehaviorResult(primaryState, Option.Some(new Location(map.Id, primaryTarget.Entity.CurrentPosition)));
             }
-            else
-            {
-                if (targetedLeader != null)
-                {
-                    return new BehaviorResult(BehaviorState.DiscoveringLeader, targetedLeader.Entity.CurrentPosition);
-                }
 
-                if (targetedEnemy != null)
-                {
-                    return new BehaviorResult(BehaviorState.DiscoveringEnemy, targetedEnemy.Entity.CurrentPosition);
-                }
+            if (secondaryTarget != null)
+            {
+                return new BehaviorResult(secondaryState, Option.Some(new Location(map.Id, secondaryTarget.Entity.CurrentPosition)));
             }
 
             if (_previousResult.State == BehaviorState.ApproachingToObserve)
             {
-                if (CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map)
-                    && !character.VisionRange.IsVisible(_previousResult.TargetPosition.Value))
+                if (CanReachButNotAtTarget(character, _previousResult.TargetLocation.Value, map)
+                    && !character.VisionRange.IsVisible(_previousResult.TargetLocation.Value.Position))
                 {
                     return _previousResult;
                 }
             }
-            else if (_homePosition.HasValue)
+            else if (_homeLocation.HasValue)
             {
-                return new BehaviorResult(BehaviorState.ReturningHome, _homePosition.Value.Position);
+                return new BehaviorResult(BehaviorState.ReturningHome, _homeLocation);
             }
 
             if (_previousResult.State == BehaviorState.MovingToLastKnownEnemyPosition
-                && CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map))
+                && CanReachButNotAtTarget(character, _previousResult.TargetLocation.Value, map))
             {
                 return _previousResult;
             }
 
             if (_previousResult.State == BehaviorState.DiscoveringEnemy
                 && IsChasingEnemy()
-                && CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map))
+                && CanReachButNotAtTarget(character, _previousResult.TargetLocation.Value, map))
             {
-                return new BehaviorResult(BehaviorState.MovingToLastKnownEnemyPosition, _previousResult.TargetPosition);
+                return new BehaviorResult(BehaviorState.MovingToLastKnownEnemyPosition, _previousResult.TargetLocation);
             }
 
             if (_previousResult.State == BehaviorState.MovingToLastKnownLeaderPosition
-                && CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map))
+                && CanReachButNotAtTarget(character, _previousResult.TargetLocation.Value, map))
             {
                 return _previousResult;
             }
 
             if (_previousResult.State == BehaviorState.DiscoveringLeader
-                && CanReachButNotAtTarget(character, _previousResult.TargetPosition.Value, map))
+                && CanReachButNotAtTarget(character, _previousResult.TargetLocation.Value, map))
             {
                 return new BehaviorResult(BehaviorState.MovingToLastKnownLeaderPosition,
-                    _previousResult.TargetPosition);
+                    _previousResult.TargetLocation);
             }
 
-            return new BehaviorResult(BehaviorState.Wandering, null);
+            return new BehaviorResult(BehaviorState.Wandering, Option.None<Location>());
         }
 
-        public bool CanReachButNotAtTarget(IHasBehavior character, Vector2Int targetPosition, IMap map)
+        public bool CanReachButNotAtTarget(IHasBehavior character, Location targetLocation, IMap map)
         {
-            return character.Entity.CurrentPosition != targetPosition
-                   && map.IsReachable(character.Entity.CurrentPosition, targetPosition, character);
+            if (targetLocation.MapId != map.Id)
+            {
+                return false;
+            }
+            return character.Entity.CurrentPosition != targetLocation.Position
+                   && map.IsReachable(character.Entity.CurrentPosition, targetLocation.Position, character);
         }
 
         public bool IsChasingEnemy()
@@ -304,11 +307,11 @@ namespace Domain.Service.Characters.Behavior
             }
         }
 
-        public bool PrioritizeMovement(IHasBehavior character, Vector2Int? targetPosition)
+        public bool PrioritizeMovement(IHasBehavior character, Option<Location> targetLocation, Id<IMap> mapId)
         {
-            if (targetPosition == null)
+            if (!targetLocation.HasValue || targetLocation.Value!.MapId != mapId)
                 return _prioritizeMovement;
-            var distance = GetDistance(character, targetPosition.Value);
+            var distance = GetDistance(character, targetLocation.Value.Position);
             if (distance > _distanceTopBound)
                 return _prioritizeMovementWhenDistanceGreaterThanTopBound;
             if (distance < _distanceBottomBound)
@@ -319,10 +322,10 @@ namespace Domain.Service.Characters.Behavior
         private IEnumerable<IAction> GenerateDoableMoves(IHasBehavior character, BehaviorResult result,
             IMap map)
         {
-            if (result.TargetPosition != null)
+            if (result.TargetLocation.HasValue && result.TargetLocation.Value!.MapId == map.Id)
             {
-                var moveType = GetMoveTypeWhenDiscoveringTarget(character, result.TargetPosition.Value, result.State);
-                return MoveGenerater.GenerateDoableMovesWhenDiscoveringTarget(moveType, character, result.TargetPosition.Value, map);
+                var moveType = GetMoveTypeWhenDiscoveringTarget(character, result.TargetLocation.Value.Position, result.State);
+                return MoveGenerater.GenerateDoableMovesWhenDiscoveringTarget(moveType, character, result.TargetLocation.Value.Position, map);
             }
 
             return MoveGenerater.GenerateDoableMovesWhenUndiscoveringTarget(_wander, character, map);
@@ -388,11 +391,11 @@ namespace Domain.Service.Characters.Behavior
                 .Where(action => action.Doable(character, map));
         }
 
-        public void KnowLocationOf(Vector2Int position)
+        public void KnowLocationOf(Location location)
         {
             _previousResult = new BehaviorResult(
                 BehaviorState.ApproachingToObserve,
-                position
+                Option.Some(location)
             );
         }
 

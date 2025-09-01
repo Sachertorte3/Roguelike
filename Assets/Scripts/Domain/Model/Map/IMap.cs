@@ -45,7 +45,7 @@ namespace Domain.Model.Map
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
-        public ICharacter SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
+        public ICharacter? SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
 
         public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
             bool? isSlept = null, bool? isShiny = null);

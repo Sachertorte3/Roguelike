@@ -8,7 +8,6 @@ namespace Domain.Model.Item
     {
         public static void ApplyUpgrade(this IHasUpgrades hasUpgrades, UpgradePath path)
         {
-            Debug.Log($"ApplyUpgrade: {path}");
             var name = path.Peek();
             var upgrade = hasUpgrades.GetUpgrades().FirstOrDefault(upgrade => upgrade.UpgradeName == name);
             if (upgrade != null)
@@ -17,12 +16,6 @@ namespace Domain.Model.Item
             }
             else
             {
-                Debug.Log($"ApplyUpgrade: {name}");
-                foreach (var childa in hasUpgrades.GetChildren())
-                {
-                    Debug.Log(childa.Key);
-                }
-
                 var child = hasUpgrades.GetChildren()[name];
                 child.ApplyUpgrade(path.Pop());
             }
@@ -30,7 +23,6 @@ namespace Domain.Model.Item
 
         public static void ApplyDowngrade(this IHasUpgrades hasUpgrades, UpgradePath path)
         {
-            Debug.Log($"ApplyDowngrade: {path}");
             var name = path.Peek();
             var downgrade = hasUpgrades.GetUpgrades().FirstOrDefault(upgrade => upgrade.UpgradeName == name);
             if (downgrade != null)
@@ -39,12 +31,6 @@ namespace Domain.Model.Item
             }
             else
             {
-                Debug.Log($"ApplyDowngrade: {name}");
-                foreach (var childa in hasUpgrades.GetChildren())
-                {
-                    Debug.Log(childa.Key);
-                }
-
                 var child = hasUpgrades.GetChildren()[name];
                 child.ApplyDowngrade(path.Pop());
             }

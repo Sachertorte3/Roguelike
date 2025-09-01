@@ -16,6 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 2541219158355345429
+  _sprite: {fileID: 0}
   IsBoss: 0
   Hp: 2
   Aggression: 1
@@ -48,10 +49,11 @@ MonoBehaviour:
         rid: -2
       <Effects>k__BackingField: []
       <Repeats>k__BackingField: 1
-      <RushDistance>k__BackingField: 0
-      <BackStepDistance>k__BackingField: 0
       <ProbabilityOfSuccess>k__BackingField: 0.95
       <Log>k__BackingField: 
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 0
     CoolTime: 0
   HasLastSkill: 0
   LastSkill:
@@ -62,8 +64,6 @@ MonoBehaviour:
     <Effects>k__BackingField:
     - rid: 2541219158355345426
     <Repeats>k__BackingField: 1
-    <RushDistance>k__BackingField: 0
-    <BackStepDistance>k__BackingField: 0
     <ProbabilityOfSuccess>k__BackingField: 1
     <Log>k__BackingField: "\u306E\u4E00\u90E8\u304C\u98DB\u3073\u6563\u3063\u305F\u3002"
   ElementDamageRateMultiplier:

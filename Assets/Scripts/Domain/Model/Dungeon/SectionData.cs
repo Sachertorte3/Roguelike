@@ -14,9 +14,9 @@ namespace Domain.Model.Dungeon
         public bool RoundRoomCorner;
         public bool CaveInOneRoom;
         [Range(0, 1)] public float WaterChance;
+        [Range(0, 1)] public float GrassChance = 0.3f;
         [Range(0, 1), Required] public float WeaponChanceInChest;
         [Required] public EnemyData Mimic;
         [Required] public EnemyData Clerk;
-        public Table<EnemyData> Enemies;
     }
 }

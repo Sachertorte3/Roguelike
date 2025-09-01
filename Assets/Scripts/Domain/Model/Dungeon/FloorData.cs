@@ -15,18 +15,14 @@ namespace Domain.Model.Dungeon
         [Range(0, 1)] public float ShinyChance = 0.01f;
         [Range(0, 1)] public float SleepChance = 0.75f;
         [Range(0, 1)] public float MimicChance = 0.1f;
-        [Range(0, 1)] public float GrassChance = 0.3f;
         [Range(0, 1)] public float ShopChance = 0.05f;
         [Range(0, 1)] public float MonsterHouseChance = 0.05f;
         [Range(0, 1)] public float RestRoomChance = 0.05f;
-        [Range(0, 1)] public float ChestChance = 0.1f;
         [MinValue(0)] public float ItemCount = 2;
         [MinValue(0)] public float MoneyCount = 1;
         [MinValue(0)] public float MoneyAverage = 100;
         [MinValue(0)] public float CharacterCount = 1;
         [MinValue(0)] public float TrapCount = 0.5f;
-        public bool ExistBoss => Boss.Count > 0;
-        public List<EnemyData> Boss;
 #if UNITY_EDITOR
         [Button]
         public void SetDefault()
@@ -35,17 +31,14 @@ namespace Domain.Model.Dungeon
             ShinyChance = 0.01f;
             SleepChance = 0.75f;
             MimicChance = 0.1f;
-            GrassChance = 0.3f;
             ShopChance = 0.05f;
             MonsterHouseChance = 0.05f;
             RestRoomChance = 0.05f;
-            ChestChance = 0.1f;
             ItemCount = 2;
             MoneyCount = 1;
             MoneyAverage = 100;
             CharacterCount = 1;
             TrapCount = 0.5f;
-            Boss = new List<EnemyData>();
         }
 #endif
     }

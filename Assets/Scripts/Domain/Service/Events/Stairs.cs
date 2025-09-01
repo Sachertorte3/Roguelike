@@ -27,8 +27,15 @@ namespace Domain.Service.Events
             Destination = data.Destination;
             DestinationId = data.DestinationId;
             IsLocked = isLocked;
+            var entityName = Type switch
+            {
+                MovementEntityType.UpStairs => "階段",
+                MovementEntityType.DownStairs => "階段", 
+                MovementEntityType.MagicCircle => "魔法陣",
+                _ => throw new NotImplementedException(),
+            };
             Event = new PlayerEvent(
-                "階段を見つけた",
+                $"{entityName}を見つけた",
                 true,
                 new List<PlayerChoiceEvent>
                 {

@@ -13,12 +13,10 @@ namespace Provider
 {
     public class InputPresenter
     {
-        private readonly ReactiveProperty<bool> _enable = new(false);
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, GameManager gameManager, World world,
-            MenuController menuController,
-            InventoryView inventoryView)
+            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
+            MenuController menuController, InventoryView inventoryView)
         {
             var logWindowVisible = Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible).ToReadOnlyReactiveProperty();
             var textInputShown = new ReactiveProperty<bool>(false);
@@ -51,6 +49,21 @@ namespace Provider
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
+
+            receiver.OnMainMenuOpening.Subscribe(_ => menuController.OpenMeinMenu());
+            receiver.OnMenuClosing.Subscribe(_ => menuController.CloseMenu());
+            menuController.MenuState.Subscribe(menuState =>
+            {
+                switch (menuState)
+                {
+                    case MenuType.Field:
+                        receiver.SwitchField();
+                        break;
+                    case MenuType.Menu:
+                        receiver.SwitchMenu();
+                        break;
+                }
+            });
 
             var disposable = new SerialDisposable();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(

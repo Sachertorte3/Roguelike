@@ -56,7 +56,7 @@ namespace Provider
 
         public void ConstructEntity(IEntity entity, EntityView entityView)
         {
-            entityView.Construct(_inputReceiver);
+            entityView.Construct(_inputReceiver.IsDash);
             entity.Entity.OnMove.Subscribe(move => entityView.Move(move.destination, move.direction, move.isThrown))
                 .AddTo(entityView);
             entity.Entity.OnTeleport.Subscribe(teleport => entityView.Teleport(teleport)).AddTo(entityView);

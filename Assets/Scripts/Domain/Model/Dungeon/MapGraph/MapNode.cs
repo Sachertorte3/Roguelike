@@ -14,7 +14,7 @@ namespace Domain.Model.Dungeon
     [CreateNodeMenu("Map")]
     public class MapNode : Node
     {
-        private string _map;
+        [SerializeField, HideInInspector] private string _map;
         public Id<IMap> Map => new(_map);
 
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]

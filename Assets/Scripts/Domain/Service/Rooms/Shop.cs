@@ -49,7 +49,7 @@ namespace Domain.Service.Rooms
                 return;
             }
 
-            _shopItems = data.Items.Select(item => new ShopItemCache(new Id<IItem>(item.Id), item.Price)).ToHashSet();
+            _shopItems = data.Items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
         }
 
         public void Dispose()
@@ -73,11 +73,14 @@ namespace Domain.Service.Rooms
                     false
                 ),
                 clerkId,
-                items.Select(item => new ShopItemMemento
-                (
-                    item.Item.Id,
-                    new Item(item.Item).Price
-                )).ToList(),
+                items.Select(itemMemento => {
+                    var item = itemMemento.Item.Deserialize();
+                    return new ShopItemMemento
+                    (
+                        item.Id,
+                        item.Price
+                    );
+                }).ToList(),
                 false
             );
         }
@@ -95,7 +98,7 @@ namespace Domain.Service.Rooms
                 Clerk.Entity.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
-                    item.Id.ToString(),
+                    item.Id,
                     item.Price
                 )).ToList(),
                 _isStolen.Value

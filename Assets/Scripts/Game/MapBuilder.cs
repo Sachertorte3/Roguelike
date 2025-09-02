@@ -255,7 +255,7 @@ namespace Game
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 var item = data.ItemDatabase.GetRandomItem(data.Progress);
-                _items.Add(ItemFactory.Build(position, Item.Build(item)));
+                _items.Add(ItemFactory.Build(position, item.Build()));
             }
         }
 
@@ -278,8 +278,15 @@ namespace Game
                 else if (Random.value < data.WeaponChanceInChest)
                 {
                     var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
-                    _chests.Add(
-                        Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem(data.Progress))));
+                    if (weapon is DirectWeaponData directWeapon)
+                    {
+                        _chests.Add(
+                            Chest.Build(position, DirectWeapon.Build(directWeapon, data.WeaponPrefixes.GetRandomItem(data.Progress), isCursed: false)));
+                    }
+                    else
+                    {
+                        _chests.Add(Chest.Build(position, weapon));
+                    }
                 }
                 else
                 {

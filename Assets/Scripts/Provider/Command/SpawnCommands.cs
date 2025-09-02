@@ -47,13 +47,23 @@ namespace Provider
         {
             try
             {
-                var itemData = ScriptableObjectLoader.Load<ItemData>(itemName);
-                var item = new Item(itemData);
+                var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
+                var item = baseItemData switch
+                {
+                    ItemData itemData => new Item(itemData),
+                    DirectWeaponData directWeaponData => (IItem)new DirectWeapon(directWeaponData),
+                    _ => throw new Exception($"Invalid item data: {itemName}")
+                };
                 if (prefixName != null)
                 {
                     var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
-                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
-                    item = new Item(itemMemento);
+                    if (baseItemData is DirectWeaponData weaponData)
+                    {
+                        var itemMemento = DirectWeapon.Build(weaponData, prefixData);
+                        item = new DirectWeapon(itemMemento);
+                    }
+                    else
+                        throw new Exception($"Cannot add prefix {prefixName} to {itemName}");
                 }
 
                 var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);

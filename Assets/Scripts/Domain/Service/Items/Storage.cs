@@ -46,7 +46,7 @@ namespace Domain.Service.Items
         public Storage(StorageMemento data)
         {
             _items = new ObservableList<IItem?>();
-            for (var i = 0; i < data.Items.Length; i++)
+            for (var i = 0; i < data.Items.Count; i++)
             {
                 //MEMO: Since you are only subscribed to Replace, additions must also be done using Replace.
                 _items.Add(null);
@@ -73,9 +73,9 @@ namespace Domain.Service.Items
                 }
             });
 
-            for (var i = 0; i < data.Items.Length; i++)
+            foreach (var (item, i) in data.Items.Index())
             {
-                Replace(data.Items[i].Map(item => new Item(item)).Value, i);
+                Replace(data.Items[i].Map(item => item.Deserialize()).Value, i);
             }
         }
 
@@ -91,7 +91,7 @@ namespace Domain.Service.Items
         {
             return new StorageMemento
             (
-                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray(),
+                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToList(),
                 _canAddItemsWithStorage
             );
         }
@@ -99,15 +99,15 @@ namespace Domain.Service.Items
         public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage)
         {
             return new StorageMemento(
-                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToArray(),
+                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToList(),
                 canAddItemsWithStorage
             );
         }
 
         public static StorageMemento Build(int capacity, bool canAddItemsWithStorage)
         {
-            var itemArray = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(capacity).ToArray();
-            return new StorageMemento(itemArray, canAddItemsWithStorage);
+            var items = EnumerableExtension.CreateNewInstances<Option<IItemMemento>>(capacity).ToList();
+            return new StorageMemento(items, canAddItemsWithStorage);
         }
 
         public bool HasEmptySpace()

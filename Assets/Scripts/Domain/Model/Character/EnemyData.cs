@@ -8,8 +8,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Table;
 using Utilities.Serialize;
-using Sirenix.OdinInspector.Editor;
-
 
 #if UNITY_EDITOR
 using UnityEditor;

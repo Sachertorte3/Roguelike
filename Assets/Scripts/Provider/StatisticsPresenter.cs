@@ -1,4 +1,7 @@
 #nullable enable
+using System;
+using Cysharp.Threading.Tasks;
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Game;
@@ -20,8 +23,13 @@ namespace Provider
 
             knownItemNames.ObserveChanged().Subscribe(collectionChanged =>
             {
-                var itemData = ScriptableObjectLoader.Load<ItemData>(collectionChanged.NewItem);
-                var itemViewData = new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo());
+                var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(collectionChanged.NewItem);
+                var itemViewData = baseItemData switch
+                {
+                    ItemData itemData => new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo()),
+                    DirectWeaponData directWeaponData => new ItemLibraryViewData(collectionChanged.NewItem, directWeaponData.Icon, (int)ItemCategory.Weapons, directWeaponData.IsShiny, new DirectWeapon(directWeaponData).FullInfo()),
+                    _ => throw new Exception($"Invalid item data: {collectionChanged.NewItem}")
+                };
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });
 

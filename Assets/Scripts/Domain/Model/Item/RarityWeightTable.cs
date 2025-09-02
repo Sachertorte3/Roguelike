@@ -11,10 +11,16 @@ namespace Domain.Model.Item
     [Serializable]
     public class RarityWeightTable<T> : ICorrectionTable<T> where T : IHasRarity
     {
-        [RequiredListLength(1, null)] [SerializeField]
+        [RequiredListLength(1, null)]
+        [SerializeField]
         private List<T> items = new();
 
         public List<T> Items => items;
+
+        public RarityWeightTable(List<T> items)
+        {
+            this.items = items;
+        }
 
         public T GetRandomItem(float progress)
         {

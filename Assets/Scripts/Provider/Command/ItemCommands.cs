@@ -40,6 +40,11 @@ namespace Provider
                 "プレイヤーのインベントリに指定したアイテムを追加します。",
                 "GivePrefixedItemPlayer",
                 this);
+            DebugLogConsole.AddCommandInstance(
+                "mergeItem",
+                "プレイヤーインベントリ内の指定したアイテムを指定したアイテムと統合します。",
+                "MergeItem",
+                this);
         }
 
         private void GiveItemPlayer(string itemName)
@@ -62,13 +67,22 @@ namespace Provider
             try
             {
                 var character = CommandUtilities.GetTarget(target, _world.ActiveMap.CurrentValue);
-                var itemData = ScriptableObjectLoader.Load<ItemData>(itemName);
-                var item = new Item(itemData);
+                var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
+                var item = baseItemData switch
+                {
+                    ItemData itemData => new Item(itemData),
+                    DirectWeaponData directWeaponData => (IItem)new DirectWeapon(directWeaponData),
+                    _ => throw new Exception($"Invalid item data: {itemName}")
+                };
                 if (prefixName != null)
                 {
                     var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
-                    var itemMemento = WeaponFactory.Create(itemData, prefixData);
-                    item = new Item(itemMemento);
+                    item = baseItemData switch
+                    {
+                        ItemData itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
+                        DirectWeaponData directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData)),
+                        _ => throw new Exception($"Invalid item data: {itemName}")
+                    };
                 }
 
                 if (character.Inventory.TryAdd(item))
@@ -80,6 +94,34 @@ namespace Provider
                 {
                     Log.Info($"{target}のインベントリは一杯です。");
                 }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void MergeItem(int index, int index2)
+        {
+            try
+            {
+                var inventory = _world.ActiveMap.CurrentValue.Player.Character.Inventory;
+                var item = inventory.GetItem(index);
+                var item2 = inventory.GetItem(index2);
+                if (item == null || item2 == null)
+                {
+                    Log.Info($"インベントリ内の指定したアイテムが見つかりません。");
+                    return;
+                }
+                if (item is not DirectWeapon || item2 is not DirectWeapon)
+                {
+                    Log.Info($"指定したアイテムは合成できません。");
+                    return;
+                }
+                var mergedItem = (item as DirectWeapon).Merge(item2 as DirectWeapon);
+                inventory.Replace(mergedItem, index);
+                inventory.Replace(null, index2);
+                Log.Info($"{mergedItem.GetName(_world.ActiveMap.CurrentValue.Player, _world.ActiveMap.CurrentValue.ItemPlaceholders)}をプレイヤーのインベントリに追加しました。");
             }
             catch (Exception e)
             {

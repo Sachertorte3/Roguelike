@@ -5,19 +5,21 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using UnityEngine;
+using Utilities;
 using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
     [Serializable]
-    public class ItemMemento
+    public class ItemMemento : IItemMemento
     {
-        [field: SerializeField] public string Id { get; private set; }
+        [SerializeField] private string _id;
+        public Id<IItem> Id => new Id<IItem>(_id);
         [field: SerializeField] public ItemCategory Category { get; private set; }
         [field: SerializeField] public string BaseName { get; private set; }
-        [field: SerializeField] public string RevealedName { get; private set; }
         [field: SerializeField] public Option<string> CustomName { get; private set; }
-        [field: SerializeField] public string IconName { get; private set; }
+        [SerializeField] private string _iconName;
+        public Sprite Icon => ScriptableObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public ItemState State { get; private set; }
         [field: SerializeField] public List<string> UpgradePaths { get; private set; }
@@ -37,15 +39,14 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool IsCurseIdentified { get; private set; }
         [field: SerializeField] public bool AutoDestroyWhenDisabled { get; private set; }
         [field: SerializeField] public int UpgradeLimit { get; private set; }
-        [field: SerializeReference] public IConditionData[] Conditions { get; private set; }
+        [field: SerializeReference] public List<IConditionData> Conditions { get; private set; }
 
         public ItemMemento(
-            string id,
+            Id<IItem> id,
             ItemCategory category,
             string baseName,
-            string revealedName,
             Option<string> customName,
-            string iconName,
+            Sprite icon,
             bool isShiny,
             ItemState state,
             List<string> upgradePaths,
@@ -65,14 +66,13 @@ namespace Domain.Model.Memento
             bool isCurseIdentified,
             bool autoDestroyWhenDisabled,
             int upgradeLimit,
-            IConditionData[] conditions)
+            List<IConditionData> conditions)
         {
-            Id = id;
+            _id = id.ToString();
             Category = category;
             BaseName = baseName;
-            RevealedName = revealedName;
             CustomName = customName;
-            IconName = iconName;
+            _iconName = icon.name;
             IsShiny = isShiny;
             State = state;
             UpgradePaths = upgradePaths;
@@ -96,12 +96,11 @@ namespace Domain.Model.Memento
         }
 
         public ItemMemento CopyWith(
-            string? id = null,
+            Id<IItem>? id = null,
             ItemCategory? category = null,
             string? baseName = null,
-            string? revealedName = null,
             Option<string>? customName = null,
-            string? iconName = null,
+            Sprite? icon = null,
             bool? isShiny = null,
             ItemState? state = null,
             List<string>? upgradePaths = null,
@@ -121,15 +120,14 @@ namespace Domain.Model.Memento
             bool? isCurseIdentified = null,
             bool? autoDestroyWhenDisabled = null,
             int? upgradeLimit = null,
-            IConditionData[]? conditions = null)
+            List<IConditionData>? conditions = null)
         {
             return new ItemMemento(
                 id ?? Id,
                 category ?? Category,
                 baseName ?? BaseName,
-                revealedName ?? RevealedName,
                 customName ?? CustomName,
-                iconName ?? IconName,
+                icon ?? Icon,
                 isShiny ?? IsShiny,
                 state ?? State,
                 upgradePaths ?? UpgradePaths,

@@ -3,7 +3,7 @@ using Utilities.Table;
 
 namespace Domain.Model.Dungeon
 {
-    public class ItemDatabase : ICorrectionTable<ItemData>
+    public class ItemDatabase : ICorrectionTable<IItemData>
     {
         private MasterItemDataBase _masterItemDataBase;
         private ItemCategoryWeight _itemCategoryWeight;
@@ -14,12 +14,12 @@ namespace Domain.Model.Dungeon
             _itemCategoryWeight = itemCategoryWeight;
         }
 
-        public ItemData GetRandomItem(float progress)
+        public IItemData GetRandomItem(float progress)
         {
             return _masterItemDataBase.GetRandomItem(_itemCategoryWeight.GetRandomCategory(), progress);
         }
 
-        public ItemData GetRandomItem(ItemCategory category, float progress)
+        public IItemData GetRandomItem(ItemCategory category, float progress)
         {
             return _masterItemDataBase.GetRandomItem(category, progress);
         }

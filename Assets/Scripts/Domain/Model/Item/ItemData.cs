@@ -13,10 +13,13 @@ using UnityEditor;
 
 namespace Domain.Model.Item
 {
-    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
-    public class ItemData : ScriptableObject, IHasRarity
+    public interface IItemData : IHasRarity
     {
-        public ItemCategory Category;
+    }
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
+    public class ItemData : ScriptableObject, IItemData
+    {
+        [SerializeField] public ItemCategory Category;
         [Required] public Sprite Icon;
         public bool IsShiny;
         public bool CannotUseIfCursed => Category != ItemCategory.Weapons;
@@ -51,13 +54,15 @@ namespace Domain.Model.Item
 
         #region item target
 
-        [ShowIf("@EffectType == ItemEffectType.ItemTarget")] [SerializeReference] [Required]
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget")]
+        [SerializeReference]
+        [Required]
         public IItemEffect? ItemEffect;
 
         #endregion
 
         public int StorageCapacity = 0;
-        [ShowIf("_usable")] [MinValue(1)] public int UsageLimit;
+        [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
 

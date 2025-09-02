@@ -18,7 +18,7 @@ namespace Domain.Model.Dungeon
         FieldBluePrint Field,
         ItemDatabase ItemDatabase,
         ICorrectionTable<WeaponPrefix> WeaponPrefixes,
-        ICorrectionTable<ItemData> ChestItems,
+        ICorrectionTable<IItemData> ChestItems,
         ITable<TrapData> Traps,
         ITable<ShopItemData> ShopItems,
         Table<EnemyData> Enemies,

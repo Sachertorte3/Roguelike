@@ -36,11 +36,13 @@ namespace Domain.Model.Effect
         [field: Required]
         public string Log { get; private set; } = "は行動した";
 
-        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, string log)
+        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, int repeats, float probabilityOfSuccess, string log)
         {
             Position = position;
             Area = area;
             Effects = effects;
+            Repeats = repeats;
+            ProbabilityOfSuccess = probabilityOfSuccess;
             Log = log;
         }
 

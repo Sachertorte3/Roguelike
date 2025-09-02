@@ -10,13 +10,13 @@ namespace Domain.Model.Memento
     [Serializable]
     public class ChestMemento
     {
-        [field: SerializeField] public Option<ItemMemento> Item { get; private set; }
+        [field: SerializeField] public Option<IItemMemento> Item { get; private set; }
         [SerializeField] private Option<ScriptableObjectSerializable<EnemyData>> _mimic;
         public Option<EnemyData> Mimic => _mimic.Map(m => m.Value);
         [field: SerializeField] public EntityMemento Entity { get; private set; }
 
         public ChestMemento(
-            Option<ItemMemento> item,
+            Option<IItemMemento> item,
             Option<EnemyData> mimic,
             EntityMemento entity)
         {
@@ -25,7 +25,7 @@ namespace Domain.Model.Memento
             Entity = entity;
         }
 
-        public ChestMemento(ItemMemento item, EntityMemento entity) : this(
+        public ChestMemento(IItemMemento item, EntityMemento entity) : this(
             Option.Some(item),
             Option.None<EnemyData>(),
             entity)
@@ -33,7 +33,7 @@ namespace Domain.Model.Memento
         }
 
         public ChestMemento(EnemyData mimic, EntityMemento entity) : this(
-            Option.None<ItemMemento>(),
+            Option.None<IItemMemento>(),
             Option.Some(mimic),
             entity)
         {

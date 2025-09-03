@@ -125,6 +125,12 @@ namespace Domain.Service.Items
             return _items.IndexOf(item);
         }
 
+        public void Add(IItem item)
+        {
+            if (!TryAdd(item))
+                throw new Exception("Can't add item to storage");
+        }
+
         public bool TryAdd(IItem item)
         {
             if (!_canAddItemsWithStorage && item.ItemStorage.IsSome)
@@ -137,6 +143,12 @@ namespace Domain.Service.Items
             }
 
             return false;
+        }
+
+        public void Remove(IItem item)
+        {
+            if (!TryRemove(item))
+                throw new Exception("Can't remove item from storage");
         }
 
         public bool TryRemove(IItem item)
@@ -166,14 +178,6 @@ namespace Domain.Service.Items
         public IItem? Remove(int index)
         {
             return Replace(null, index).Value;
-        }
-
-        public bool Remove(IItem item)
-        {
-            var index = _items.IndexOf(item);
-            if (index < 0)
-                return false;
-            return Remove(index) != null;
         }
 
         public IEnumerable<IItem> Clear()

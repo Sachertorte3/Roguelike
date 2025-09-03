@@ -3062,7 +3062,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0
     MonsterHouseChance: 0
-    RestRoomChance: 0
+    RestRoomChance: 1
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100

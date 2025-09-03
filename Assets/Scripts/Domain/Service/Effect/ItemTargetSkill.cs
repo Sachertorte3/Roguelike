@@ -78,7 +78,7 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map,
+                var selectedItem = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
                     disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
@@ -89,7 +89,7 @@ namespace Domain.Service.Effect
             else
             {
                 var selectedItem =
-                    await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, selfIndex);
+                    await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map, selfIndex);
                 if (selectedItem != null)
                 {
                     var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);

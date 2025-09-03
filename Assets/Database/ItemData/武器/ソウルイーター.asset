@@ -66,5 +66,5 @@ MonoBehaviour:
         _elementPowers:
         - _element: 0
           _power: 5
-        _criticalRate: 0
         _rate: 1
+        _criticalRate: 0

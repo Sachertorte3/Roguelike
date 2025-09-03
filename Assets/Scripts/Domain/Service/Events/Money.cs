@@ -9,7 +9,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
@@ -112,11 +111,6 @@ namespace Domain.Service.Events
             }
 
             await map.ExecuteTrapAt(destination, actor as ICharacter);
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            Entity.Teleport(position);
         }
 
         public MoneyMemento Serialize()

@@ -86,8 +86,8 @@ MonoBehaviour:
         _elementPowers:
         - _element: 0
           _power: 5
-        _criticalRate: 0
         _rate: 1
+        _criticalRate: 0
     - rid: 5486256542496849941
       type: {class: BlowAwayEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

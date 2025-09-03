@@ -13,19 +13,22 @@ namespace Domain.Model.Memento
         [field: SerializeField] public List<TrapMemento> Traps { get; private set; }
         [field: SerializeField] public List<MoneyMemento> Money { get; private set; }
         [field: SerializeField] public Option<EntityMemento> Bonfire { get; private set; }
+        [field: SerializeField] public Option<EntityMemento> MagicPot { get; private set; }
 
         public EventEntitiesMemento(
             List<StairsMemento> stairs,
             List<ChestMemento> chests,
             List<TrapMemento> traps,
             List<MoneyMemento> money,
-            Option<EntityMemento> bonfire)
+            Option<EntityMemento> bonfire,
+            Option<EntityMemento> magicPot)
         {
             Stairs = stairs;
             Chests = chests;
             Traps = traps;
             Money = money;
             Bonfire = bonfire;
+            MagicPot = magicPot;
         }
     }
 }

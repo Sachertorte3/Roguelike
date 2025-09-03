@@ -2,5 +2,5 @@ using Domain.Model.Item;
 
 namespace Domain.Model.Character
 {
-    public record OnItemSelectMessage(bool IsWaiting, ItemFocus[] DisabledItemIndexes);
+    public record OnItemSelectMessage(string Text, bool IsWaiting, ItemFocus[] DisabledItemIndexes);
 }

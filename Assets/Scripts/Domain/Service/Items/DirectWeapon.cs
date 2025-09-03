@@ -13,7 +13,6 @@ using Domain.Model.Memento;
 using Domain.Service.Effect;
 using R3;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -138,17 +137,20 @@ namespace Domain.Service.Items
             {
                 elementPowers = elementPowers.Select(power => power.MultiplyPower(prefix.PowerMagnification)).ToList();
             }
-            var criticalRate = features.Contains(DirectWeaponFeature.Critical) ? 0.25f : 0f;
+            var criticalRate = features.Count(f => f == DirectWeaponFeature.Critical) * 0.25f;
             var throwEnhance = features.Contains(DirectWeaponFeature.ThrowEnhance) ? 1.5f : 1f;
             if (features.Contains(DirectWeaponFeature.Absorbing))
             {
+                var absorbRate = features.Count(f => f == DirectWeaponFeature.Absorbing) * 0.25f;
                 effectsOnUse.Add(new AbsorbsEffect(
                     elementPowers,
-                    0.25f
+                    absorbRate,
+                    criticalRate
                 ));
                 effectsOnThrow.Add(new AbsorbsEffect(
                     elementPowers.Select(power => power.MultiplyPower(throwEnhance)).ToList(),
-                    0.25f
+                    absorbRate,
+                    criticalRate
                 ));
             }
             else
@@ -245,7 +247,7 @@ namespace Domain.Service.Items
         {
             //MEMO: There is also a way to reload the data and regenerate it from scratch.
             var memento = SerializeIgnoreUpgrades();
-            var features = memento.Features.Concat(item._features).ToList();
+            var features = memento.Features.Merge(item._features).ToList();
             var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var mergedItem = new DirectWeapon(memento.CopyWith(
                 features: features,

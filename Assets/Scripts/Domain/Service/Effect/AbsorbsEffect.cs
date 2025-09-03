@@ -15,19 +15,20 @@ namespace Domain.Service.Effect
     public class AbsorbsEffect : EntityTargetEffect
     {
         [SerializeField] private List<ElementPower> _elementPowers;
-        [Range(0, 1)][SerializeField] private float _criticalRate;
-        private float _fixedCriticalRate => Mathf.Clamp(_criticalRate, 0, 1);
         [Range(0, 1)][SerializeField] private float _rate;
         private float _fixedRate => Mathf.Clamp(_rate, 0, 1);
+        [Range(0, 1)][SerializeField] private float _criticalRate;
+        private float _fixedCriticalRate => Mathf.Clamp(_criticalRate, 0, 1);
 
         public override Color Color => Colors.Yellow;
 
         public override Impact Impact => Impact.Harmful;
 
-        public AbsorbsEffect(List<ElementPower> elementPowers, float rate)
+        public AbsorbsEffect(List<ElementPower> elementPowers, float rate, float criticalRate)
         {
             _elementPowers = elementPowers;
             _rate = rate;
+            _criticalRate = criticalRate;
         }
 
         public void MultiplyPower(float multiplier)
@@ -89,7 +90,8 @@ namespace Domain.Service.Effect
 
         public override float EvaluatePrice()
         {
-            return Formula.EvaluateDamage(_elementPowers) * (1 + _fixedRate);
+            return (Formula.EvaluateDamage(_elementPowers) * (1 - _fixedCriticalRate) +
+                         Formula.EvaluateDamage(_elementPowers, true) * _fixedCriticalRate) * (1 + _fixedRate);
         }
 
         public override string UpgradePathName => "HP吸収";
@@ -108,6 +110,17 @@ namespace Domain.Service.Effect
                 );
             }
 
+            if (_criticalRate > 0 && _criticalRate < 1f)
+            {
+                upgrades.Add(
+                    new UpgradeData(
+                        "クリティカル率+5%",
+                        () => _criticalRate += 0.05f,
+                        () => _criticalRate -= 0.05f
+                    )
+                );
+            }
+
             return upgrades;
         }
 
@@ -120,6 +133,10 @@ namespace Domain.Service.Effect
         {
             var info = string.Join(" ", _elementPowers.Select(e => e.Info()));
             info += "の攻撃を行う\n";
+            if (_fixedCriticalRate > 0)
+            {
+                info += $"そのとき{_fixedCriticalRate:P0}の確率でクリティカルを発生させる\n";
+            }
             info += $"与えたダメージの{_fixedRate:P0}を吸収する\n";
             return info;
         }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
@@ -9,14 +8,15 @@ using Utilities;
 using Utilities.Table;
 using XNode;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Domain.Model.Dungeon
 {
     [CreateNodeMenu("Map")]
     public class MapNode : Node
     {
-        [SerializeField, HideInInspector] private string _map;
-        public Id<IMap> Map => new(_map);
-
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]
         [InfoBox("Connection to SectionData is required.", InfoMessageType.Error, VisibleIf = nameof(_isSectionUnconnected))]
         private SectionData _sectionData = null;
@@ -67,14 +67,21 @@ namespace Domain.Model.Dungeon
         public SectionData SectionData => GetInputValue<SectionData>(nameof(_sectionData));
         public FloorData FloorData => GetInputValue<FloorData>(nameof(_floorData));
         public Table<EnemyData> Enemies => GetInputValue<Table<EnemyData>>(nameof(_enemies), new());
+
+        [SerializeField, HideInInspector] private string _mapId;
+        public Id<IMap> Map => new(_mapId);
         [ReadOnly, ShowInInspector] public bool IsStartMap => PrevNodes.Count() == 0 && TeleportInNodes.Count() == 0;
         [ReadOnly, ShowInInspector] public int Depth => PrevNodes.Select(node => node.Depth).DefaultIfEmpty(0).Max() + 1;
+#if UNITY_EDITOR
         protected override void Init()
         {
-            if (string.IsNullOrEmpty(_map))
+            if (string.IsNullOrEmpty(_mapId))
             {
-                _map = Id<IMap>.Generate().ToString();
+                var newId = Id<IMap>.Generate().ToString();
+                _mapId = newId;
+                EditorUtility.SetDirty(this);
             }
         }
+#endif
     }
 }

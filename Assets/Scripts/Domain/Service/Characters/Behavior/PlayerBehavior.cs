@@ -16,7 +16,6 @@ using Domain.Model.Setting;
 using Domain.Service.Action;
 using R3;
 using Unity.Logging;
-using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 

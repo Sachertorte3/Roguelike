@@ -38,6 +38,9 @@ namespace Provider
                 .Select(vector => DirectionMethods.NearestDirectionFromVector(vector))
                 .WhereNotNull()
                 .Subscribe(direction => actionReceiver.SetMoveInput(direction, false));
+
+            inventoryView.Focus.Subscribe(focus =>
+                actionReceiver.SetItemFocus(focus.ToItemFocus()));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());
@@ -75,9 +78,6 @@ namespace Provider
                     }
                 })
             );
-
-            inventoryView.Focus.Subscribe(focus =>
-                actionReceiver.SetItemFocus(focus.ToItemFocus()));
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {

@@ -16,16 +16,17 @@ namespace Domain.Service.Events
         {
             var inventory = player.Character.Inventory;
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var (inventoryItem, index) in inventory.AllItemsWithIndexRecursive)
+            foreach (var index in inventory.AllIndexesRecursive)
             {
-                if (!canSelect(inventoryItem))
+                var inventoryItem = inventory.GetItem(index);
+                if (inventoryItem == null || !canSelect(inventoryItem))
                 {
                     disabledItemIndexes.Add(index);
                 }
             }
 
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
-            if (groundItem != null && !canSelect(groundItem))
+            if (groundItem == null || !canSelect(groundItem))
             {
                 disabledItemIndexes.Add(ItemFocus.GroundItem);
             }

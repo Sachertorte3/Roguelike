@@ -465,6 +465,7 @@ MonoBehaviour:
   _icon: {fileID: 5185865846578477905}
   _count: {fileID: 353072437012903357}
   _cursedIcon: {fileID: 1298362870781767366}
+  disabledSelectedColor: {r: 1, g: 0, b: 0, a: 0.2509804}
 --- !u!114 &3194023691681705772
 MonoBehaviour:
   m_ObjectHideFlags: 0

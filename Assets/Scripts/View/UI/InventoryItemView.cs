@@ -18,6 +18,7 @@ namespace View.UI
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnSelected => _onFocus;
+        public bool CanSkip { get; private set; } = false;
 
         public void SetDefaultIcon(Sprite icon)
         {
@@ -93,6 +94,11 @@ namespace View.UI
         public void UpdateInteractable(bool interactable)
         {
             this.interactable = interactable;
+        }
+
+        public void UpdateSkip(bool canSkip)
+        {
+            CanSkip = canSkip;
         }
     }
 }

@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Domain.Model.Item
 {
     public enum DirectWeaponFeature
@@ -13,5 +17,37 @@ namespace Domain.Model.Item
         Absorbing,            // 吸収
         GuaranteedHit,        // 必中
         ThrowEnhance,         // 投擲強化
+    }
+    public static class DirectWeaponFeatureExtensions
+    {
+        public static int CanOverlap(this DirectWeaponFeature feature)
+        {
+            const int CANNOT_OVERLAP = 1;
+            return feature switch
+            {
+                DirectWeaponFeature.TwoRangeAttack => CANNOT_OVERLAP,
+                DirectWeaponFeature.FanAttack => CANNOT_OVERLAP,
+                DirectWeaponFeature.SpinAttack => CANNOT_OVERLAP,
+                DirectWeaponFeature.DoubleAttack => CANNOT_OVERLAP,
+                DirectWeaponFeature.Knockback => CANNOT_OVERLAP,
+                DirectWeaponFeature.Critical => 4,
+                DirectWeaponFeature.Dig => CANNOT_OVERLAP,
+                DirectWeaponFeature.Absorbing => 4,
+                DirectWeaponFeature.GuaranteedHit => CANNOT_OVERLAP,
+                DirectWeaponFeature.ThrowEnhance => CANNOT_OVERLAP,
+                _ => throw new Exception("Invalid DirectWeaponFeature"),
+            };
+        }
+        public static IEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures)
+        {
+            var allFeatures = features.Concat(otherFeatures);
+
+            var groupedFeatures = allFeatures
+                .GroupBy(f => f)
+                .SelectMany(g => Enumerable.Repeat(g.Key, Math.Min(g.Count(), g.Key.CanOverlap())))
+                .OrderBy(f => f);
+
+            return groupedFeatures;
+        }
     }
 }

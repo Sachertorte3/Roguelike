@@ -6,6 +6,7 @@ using Utilities;
 
 namespace View
 {
+
     [RequireComponent(typeof(EntityView), typeof(Animator), typeof(ParticleController))]
     public class CharacterView : MonoBehaviour, IDirectional
     {

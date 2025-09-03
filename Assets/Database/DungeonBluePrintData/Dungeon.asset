@@ -74,13 +74,15 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 2d327c82725ef014f96eeac6c385b8d4, type: 2}
     Weapons:
       items:
-      - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
       - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
     DirectWeapons:
       items:
+      - {fileID: 11400000, guid: 5484172c81b51a94b8ca56cfaa81b79b, type: 2}
       - {fileID: 11400000, guid: 28cf6e1605d85664c84a4cd73f379a7d, type: 2}
       - {fileID: 11400000, guid: cc237994c27fb664f94657701968b99e, type: 2}
       - {fileID: 11400000, guid: c6474f440a9c2764fb729eafb2cae103, type: 2}
+      - {fileID: 11400000, guid: 196ccd508d2e94945a757c0ea62925fa, type: 2}
+      - {fileID: 11400000, guid: ab1c309cd976e9a4d800c58fdec2b202, type: 2}
       - {fileID: 11400000, guid: 87ac9e1351b358d4db5a3f86064704f5, type: 2}
       - {fileID: 11400000, guid: bd5946047e937b248aaec116efba3538, type: 2}
       - {fileID: 11400000, guid: c487a5b656261bd4bbf619e0f81bb92c, type: 2}
@@ -189,7 +191,7 @@ MonoBehaviour:
             - {fileID: 0}
             - {fileID: 0}
             - {fileID: 0}
-            - {fileID: 11400000, guid: ab896f166b55d994eabf88b66b1bbf29, type: 2}
+            - {fileID: 0}
             - {fileID: 0}
             - {fileID: 0}
             - {fileID: 0}

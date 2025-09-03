@@ -28,7 +28,7 @@ namespace Game
         private readonly List<ChestMemento> _chests = new();
         private readonly List<TrapMemento> _traps = new();
         private readonly List<MoneyMemento> _money = new();
-        private EntityMemento? _bonfire;
+        private BonfireMemento? _bonfire;
         private EntityMemento? _magicPot;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;

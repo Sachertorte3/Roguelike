@@ -99,6 +99,11 @@ namespace Provider
         protected override void InitializeView(IEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();
+            if (eventEntity is Bonfire bonfire)
+            {
+                var bonfireView = entityView.GetComponent<BonfireView>();
+                bonfire.IsFire.Subscribe(isFire => bonfireView.ShowFire(isFire));
+            }
             if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
         }

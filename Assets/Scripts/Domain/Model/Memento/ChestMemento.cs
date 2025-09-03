@@ -7,6 +7,7 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
+
     [Serializable]
     public class ChestMemento
     {

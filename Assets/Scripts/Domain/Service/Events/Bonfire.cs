@@ -1,28 +1,46 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Bonfire : ISerializable<EntityMemento>, IEventEntity
+    public class Bonfire : ISerializable<BonfireMemento>, IPlayerEventEntity
     {
         public EntityBase Entity { get; init; }
+        private readonly ReactiveProperty<bool> _isFire;
+        public ReadOnlyReactiveProperty<bool> IsFire => _isFire;
 
-        public Bonfire(EntityMemento memento)
+        public Bonfire(BonfireMemento memento)
         {
-            Entity = new EntityBase(memento);
-            Event = new CharacterEvent(
-                character => false,
-                (character, gameManager, map) => UniTask.FromResult(false)
+            Entity = new EntityBase(memento.Entity);
+            _isFire = new(memento.IsFire);
+            Event = new PlayerEvent(
+                "焚き火を見つけた",
+                true,
+                new List<PlayerChoiceEvent>
+                {
+                    new(
+                        "休憩する",
+                        player => _isFire.CurrentValue,
+                        (gameManager, map) =>
+                        {
+                            map.Player.Character.RestoreToFullHealth();
+                            _isFire.Value = false;
+                            return UniTask.CompletedTask;
+                        }
+                    )
+                }
             );
         }
 
-        public ICharacterEvent Event { get; init; }
+        public IPlayerEvent Event { get; init; }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
@@ -34,14 +52,14 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        public EntityMemento Serialize()
+        public BonfireMemento Serialize()
         {
-            return Entity.Serialize();
+            return new BonfireMemento(IsFire.CurrentValue, Entity.Serialize());
         }
 
-        public static EntityMemento Build(Vector2Int position)
+        public static BonfireMemento Build(Vector2Int position)
         {
-            return EntityBase.Build(position, EntityLayer.Middle);
+            return new BonfireMemento(true, EntityBase.Build(position, EntityLayer.Middle));
         }
     }
 }

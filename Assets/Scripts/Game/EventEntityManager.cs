@@ -87,7 +87,7 @@ namespace Game
         }
 
         public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
-            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<EntityMemento> bonfire, Option<EntityMemento> magicPot)
+            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<BonfireMemento> bonfire, Option<EntityMemento> magicPot)
         {
             return new EventEntitiesMemento
             (

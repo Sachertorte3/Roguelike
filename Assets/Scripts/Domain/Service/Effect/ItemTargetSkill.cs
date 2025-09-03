@@ -61,16 +61,17 @@ namespace Domain.Service.Effect
             var selfIndex = GetItemIndex(player, item, map);
 
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var (inventoryItem, index) in player.Character.Inventory.AllItemsWithIndexRecursive)
+            foreach (var index in player.Character.Inventory.AllIndexesRecursive)
             {
-                if (!_itemEffect.CanApplyTo(player, inventoryItem))
+                var inventoryItem = player.Character.Inventory.GetItem(index);
+                if (inventoryItem == null || !_itemEffect.CanApplyTo(player, inventoryItem))
                 {
                     disabledItemIndexes.Add(index);
                 }
             }
 
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
-            if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
+            if (groundItem == null || !_itemEffect.CanApplyTo(player, groundItem))
             {
                 disabledItemIndexes.Add(ItemFocus.GroundItem);
             }

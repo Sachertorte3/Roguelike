@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Domain.Model.Character.Message;
 using Domain.Model.Item;
-using ObservableCollections;
 using R3;
 using Utilities.Serialize.Result;
 

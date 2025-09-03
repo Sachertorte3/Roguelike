@@ -58,8 +58,7 @@ namespace View.UI
             if (_items.TryGetValue(index.Index, out var value))
             {
                 if (index.SubIndex == -1)
-                    return value
-                    .main;
+                    return value.main;
                 else
                 {
                     if (value.sub.TryGetValue(index.SubIndex, out var subValue))
@@ -116,15 +115,13 @@ namespace View.UI
         {
             Log.Debug($"[View]InventoryView UpdateMainItem Index: {mainIndex}");
             var index = new InventoryViewIndex(mainIndex, -1);
+            var item = GetItem(index);
             var interactable = !_locked.Contains(index);
-            if (_items.TryGetValue(mainIndex, out var data))
-            {
-                _parent.Replace(data.main, index.Index, interactable);
-            }
+            var canSkip = !interactable && (item == null || item.storageSize == 0);
+            if (item != null)
+                _parent.Replace(item, index.Index, interactable, canSkip);
             else
-            {
-                _parent.Remove(index.Index);
-            }
+                _parent.Remove(index.Index, interactable, canSkip);
 
             if (!_enabled)
             {
@@ -141,16 +138,13 @@ namespace View.UI
         public void UpdateSubItemView(InventoryViewIndex index)
         {
             Log.Debug($"[View]InventoryView UpdateSubItem Index: {index}");
-            var interactable = !_locked.Contains(index);
             var item = GetItem(index);
+            var interactable = !_locked.Contains(index);
+            var canSkip = !interactable && (item == null || item.storageSize == 0);
             if (item != null)
-            {
-                _children.Replace(item, index.SubIndex, interactable);
-            }
+                _children.Replace(item, index.SubIndex, interactable, canSkip);
             else
-            {
-                _children.Remove(index.SubIndex);
-            }
+                _children.Remove(index.SubIndex, interactable, canSkip);
 
             if (!_enabled)
             {
@@ -170,10 +164,16 @@ namespace View.UI
         {
             Log.Debug($"[View]InventoryView UpdateAllItemView");
             CreateMainView();
-            foreach (var (index, data) in _items)
+            for (var i = 0; i < MainStorageIncludeGroundAndEmpty; i++)
             {
-                var interactable = !_locked.Contains(new InventoryViewIndex(index, -1));
-                _parent.Replace(data.main, index, interactable);
+                var index = new InventoryViewIndex(i, -1);
+                var item = GetItem(index);
+                var interactable = !_locked.Contains(index);
+                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                if (item != null)
+                    _parent.Replace(item, index.Index, interactable, canSkip);
+                else
+                    _parent.Remove(index.Index, interactable, canSkip);
             }
             if (!_enabled)
             {
@@ -194,13 +194,16 @@ namespace View.UI
             Log.Debug($"[View]InventoryView UpdateChildrenView");
             var currentFocus = Focus.CurrentValue;
             CreateChildrenView(currentFocus.Index);
-            if (_items.TryGetValue(currentFocus.Index, out var mainData))
+            for (var i = 0; i < SubStorageSizes(currentFocus.Index); i++)
             {
-                foreach (var (index, data) in mainData.sub)
-                {
-                    var interactable = !_locked.Contains(new InventoryViewIndex(currentFocus.Index, index));
-                    _children.Replace(data, index, interactable);
-                }
+                var index = new InventoryViewIndex(currentFocus.Index, i);
+                var item = GetItem(index);
+                var interactable = !_locked.Contains(index);
+                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                if (item != null)
+                    _children.Replace(item, index.SubIndex, interactable, canSkip);
+                else
+                    _children.Remove(index.SubIndex, interactable, canSkip);
             }
             if (!_enabled)
             {
@@ -213,7 +216,7 @@ namespace View.UI
             }
             else
             {
-                _parent.ResetNavigation();
+                _parent.ResetVerticalNavigation();
             }
             if (currentFocus.SubIndex >= 0 && currentFocus.SubIndex < _children.Capacity)
                 _children.Select(currentFocus.SubIndex);

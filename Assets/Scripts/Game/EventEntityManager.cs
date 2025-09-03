@@ -19,6 +19,7 @@ namespace Game
         private readonly List<Trap> _traps = new();
         private readonly List<Money> _money = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
+        private Option<MagicPot> _magicPot = Option<MagicPot>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
         private ObservableList<IPlayerEventEntity> _playerEventEntities = new();
@@ -58,6 +59,10 @@ namespace Game
             if (_bonfire.HasValue)
                 Spawn(_bonfire.Value!);
 
+            _magicPot = eventEntities.MagicPot.Map(magicPot => new MagicPot(magicPot));
+            if (_magicPot.HasValue)
+                Spawn(_magicPot.Value!);
+
             _eventEntities.SubscribeIncludingCurrentObservables(
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
@@ -76,12 +81,13 @@ namespace Game
                 _chests.Select(chest => chest.Serialize()).ToList(),
                 _traps.Select(trap => trap.Serialize()).ToList(),
                 _money.Select(money => money.Serialize()).ToList(),
-                _bonfire.Map(bonfire => bonfire.Serialize())
+                _bonfire.Map(bonfire => bonfire.Serialize()),
+                _magicPot.Map(magicPot => magicPot.Serialize())
             );
         }
 
         public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
-            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<EntityMemento> bonfire)
+            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<EntityMemento> bonfire, Option<EntityMemento> magicPot)
         {
             return new EventEntitiesMemento
             (
@@ -89,7 +95,8 @@ namespace Game
                 chests.ToList(),
                 traps.ToList(),
                 money.ToList(),
-                bonfire
+                bonfire,
+                magicPot
             );
         }
 
@@ -151,6 +158,10 @@ namespace Game
             else if (eventEntity is Bonfire)
             {
                 _bonfire = Option<Bonfire>.None;
+            }
+            else if (eventEntity is MagicPot)
+            {
+                _magicPot = Option<MagicPot>.None;
             }
         }
     }

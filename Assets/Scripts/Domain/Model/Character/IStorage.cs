@@ -19,7 +19,9 @@ namespace Domain.Model.Character
         public bool HasEmptySpace();
         public IItem? GetItem(int index);
         public int GetItemIndex(IItem item);
+        public void Add(IItem item);
         public bool TryAdd(IItem item);
+        public void Remove(IItem item);
         public bool TryRemove(IItem item);
         public Result<IItem?> Replace(IItem? item, int index);
     }

@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Effect;
+using Domain.Model.Entity;
+using Domain.Model.Map;
+using Domain.Model.Memento;
+using Domain.Service.Items;
+using Domain.Service.Logs;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Utilities;
+
+namespace Domain.Service.Events
+{
+    public class MagicPot : IDisposable, ISerializable<EntityMemento>, IPlayerEventEntity, IIconEntity
+    {
+        public EntityBase Entity { get; init; }
+
+        public MagicPot(EntityMemento data)
+        {
+            Entity = new EntityBase(data);
+            Event = new PlayerEvent(
+                "魔法の壺を見つけた",
+                true,
+                new List<PlayerChoiceEvent>
+                {
+                    new(
+                        "使う",
+                        player => true,
+                        async (gameManager, map) => await DoEvent(map)
+                    )
+                }
+            );
+        }
+
+        public void Dispose()
+        {
+            Entity.Dispose();
+        }
+
+        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_270]")
+            .WaitForCompletion();
+
+        public IPlayerEvent Event { get; init; }
+
+        private async UniTask DoEvent(IMap map)
+        {
+            var player = map.Player;
+            var baseItem = await player.Character.ItemSelector.SelectItemWithCanSelect("ベースのアイテムを選択してください", player, map, item => item is DirectWeapon) as DirectWeapon;
+            if (baseItem == null)
+                return;
+            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect("合成するアイテムを選択してください", player, map, item => item is DirectWeapon && item != baseItem) as DirectWeapon;
+            if (mergedItem == null)
+                return;
+
+            player.Character.Inventory.Remove(baseItem);
+            player.Character.Inventory.Remove(mergedItem);
+            player.Character.Inventory.Add(baseItem.Merge(mergedItem));
+            GameLog.Add($"{player.Character.GetName(player)}は{baseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
+        }
+
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public EntityMemento Serialize()
+        {
+            return Entity.Serialize();
+        }
+
+        public static EntityMemento Build(Vector2Int position)
+        {
+            return EntityBase.Build(position, EntityLayer.Middle);
+        }
+
+        ~MagicPot()
+        {
+            Dispose();
+        }
+    }
+}

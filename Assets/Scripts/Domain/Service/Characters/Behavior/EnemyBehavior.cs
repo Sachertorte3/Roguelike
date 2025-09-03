@@ -395,7 +395,7 @@ namespace Domain.Service.Characters.Behavior
             );
         }
 
-        public UniTask<IItem?> SelectItem(IInventory inventory, IMap map, params ItemFocus[] disabledItems)
+        public UniTask<IItem?> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItems)
         {
             return UniTask.FromResult<IItem?>(null);
         }

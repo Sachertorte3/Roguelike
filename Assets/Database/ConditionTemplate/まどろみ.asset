@@ -15,12 +15,12 @@ MonoBehaviour:
   Condition:
     rid: 2541219281251860499
   RemovalCondition:
-    RemoveByElapsedTurn: 1
-    Duration: 5
+    RemoveByElapsedTurn: 0
+    Duration: -1
     RemoveByDamage: 1
-    Probability: 0.5
-    RemoveByCharacterNearby: 0
-    CharacterNearbyProbability: 0
+    Probability: 1
+    RemoveByCharacterNearby: 1
+    CharacterNearbyProbability: 0.25
   InflictLog: 
   DeleteLog: "\u306F\u76EE\u304C\u899A\u3081\u305F"
   references:

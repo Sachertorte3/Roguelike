@@ -8,6 +8,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -75,6 +76,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
+            Debug.Log($"UpdateTurn: {characterVisible}");
             _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(characterVisible)).ToList());
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
         }

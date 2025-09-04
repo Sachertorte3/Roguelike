@@ -795,7 +795,7 @@ namespace Domain.Service.Characters
 
         public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index)
         {
-            if (item != null && item.IdentifyIfGot || AutoIdentify.CurrentValue)
+            if (item != null && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
             {
                 KnowItem(item, false);
             }

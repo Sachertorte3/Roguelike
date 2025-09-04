@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
@@ -22,7 +23,8 @@ namespace Domain.Model.Memento
         public Sprite Icon => ScriptableObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public ItemState State { get; private set; }
-        [field: SerializeField] public List<string> UpgradePaths { get; private set; }
+        [SerializeField] private List<string> _upgradePaths;
+        public List<UpgradePath> UpgradePaths => _upgradePaths.Select(path => new UpgradePath(path)).ToList();
         [field: SerializeField] public Option<ISkillMemento> SkillOnUse { get; private set; }
         [field: SerializeField] public Option<ISkillMemento> SkillOnThrow { get; private set; }
         [field: SerializeField] public bool HasSameEffect { get; private set; }
@@ -40,6 +42,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool AutoDestroyWhenDisabled { get; private set; }
         [field: SerializeField] public int UpgradeLimit { get; private set; }
         [field: SerializeReference] public List<IConditionData> Conditions { get; private set; }
+        [field: SerializeField] public List<DirectWeaponFeature> FeaturesToMergeWeapon { get; private set; }
 
         public ItemMemento(
             Id<IItem> id,
@@ -49,7 +52,7 @@ namespace Domain.Model.Memento
             Sprite icon,
             bool isShiny,
             ItemState state,
-            List<string> upgradePaths,
+            List<UpgradePath> upgradePaths,
             Option<ISkillMemento> skillOnUse,
             Option<ISkillMemento> skillOnThrow,
             bool hasSameEffect,
@@ -66,7 +69,8 @@ namespace Domain.Model.Memento
             bool isCurseIdentified,
             bool autoDestroyWhenDisabled,
             int upgradeLimit,
-            List<IConditionData> conditions)
+            List<IConditionData> conditions,
+            List<DirectWeaponFeature> featuresToMergeWeapon)
         {
             _id = id.ToString();
             Category = category;
@@ -75,7 +79,7 @@ namespace Domain.Model.Memento
             _iconName = icon.name;
             IsShiny = isShiny;
             State = state;
-            UpgradePaths = upgradePaths;
+            _upgradePaths = upgradePaths.Select(path => path.ToString()).ToList();
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
             HasSameEffect = hasSameEffect;
@@ -93,6 +97,7 @@ namespace Domain.Model.Memento
             AutoDestroyWhenDisabled = autoDestroyWhenDisabled;
             UpgradeLimit = upgradeLimit;
             Conditions = conditions;
+            FeaturesToMergeWeapon = featuresToMergeWeapon;
         }
 
         public ItemMemento CopyWith(
@@ -103,7 +108,7 @@ namespace Domain.Model.Memento
             Sprite? icon = null,
             bool? isShiny = null,
             ItemState? state = null,
-            List<string>? upgradePaths = null,
+            List<UpgradePath>? upgradePaths = null,
             Option<ISkillMemento>? skillOnUse = null,
             Option<ISkillMemento>? skillOnThrow = null,
             bool? hasSameEffect = null,
@@ -120,7 +125,8 @@ namespace Domain.Model.Memento
             bool? isCurseIdentified = null,
             bool? autoDestroyWhenDisabled = null,
             int? upgradeLimit = null,
-            List<IConditionData>? conditions = null)
+            List<IConditionData>? conditions = null,
+            List<DirectWeaponFeature>? featuresToMergeWeapon = null)
         {
             return new ItemMemento(
                 id ?? Id,
@@ -147,7 +153,8 @@ namespace Domain.Model.Memento
                 isCurseIdentified ?? IsCurseIdentified,
                 autoDestroyWhenDisabled ?? AutoDestroyWhenDisabled,
                 upgradeLimit ?? UpgradeLimit,
-                conditions ?? Conditions
+                conditions ?? Conditions,
+                featuresToMergeWeapon ?? FeaturesToMergeWeapon
             );
         }
     }

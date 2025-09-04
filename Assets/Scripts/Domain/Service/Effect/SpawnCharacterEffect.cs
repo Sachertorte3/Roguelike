@@ -73,7 +73,7 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public override string UpgradePathName => "召喚";
+        public override string UpgradePathName => $"{_character.Value.Name}召喚";
 
         public override List<UpgradeData> GetUpgrades()
         {

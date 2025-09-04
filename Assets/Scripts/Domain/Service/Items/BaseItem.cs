@@ -28,7 +28,7 @@ namespace Domain.Service.Items
         public string BaseName { get; private set; }
         public abstract string RevealedName { get; }
         public Option<string> CustomName { get; private set; }
-        private protected List<UpgradePath> _upgradePaths;
+        private readonly List<UpgradePath> _upgradePaths;
         public int MaxUsages { get; private set; }
         private protected ReactiveProperty<int> _remainingUsages;
         private protected Option<Storage> _itemStorage;
@@ -54,6 +54,7 @@ namespace Domain.Service.Items
 
         public string DebugName => _fullName;
         private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
+        public IReadOnlyList<UpgradePath> UpgradePaths => _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
@@ -90,7 +91,7 @@ namespace Domain.Service.Items
             Sprite icon,
             bool isShiny,
             ItemState state,
-            List<string> upgradePaths,
+            List<UpgradePath> upgradePaths,
             bool hasSameEffect,
             bool hasSameSkill,
             bool useOnDeath,
@@ -114,7 +115,7 @@ namespace Domain.Service.Items
             Icon = icon;
             IsShiny = isShiny;
             State = state;
-            _upgradePaths = upgradePaths.Select(path => new UpgradePath(path)).ToList();
+            _upgradePaths = upgradePaths;
             _hasSameEffect = hasSameEffect;
             _hasSameSkill = hasSameSkill;
             _itemStorage = storage.Map(storage =>

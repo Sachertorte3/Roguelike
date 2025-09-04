@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Items;
@@ -45,20 +47,46 @@ namespace Domain.Service.Events
 
         public IPlayerEvent Event { get; init; }
 
+        private bool canSelectForBaseItem(IItem baseItem) => baseItem is DirectWeapon;
+        private bool canSelectForMergedItem(BaseItem baseItem, DirectWeapon mergeBaseItem)
+        {
+            if (baseItem == mergeBaseItem)
+                return false;
+            var featuresToMergeWeapon = baseItem switch
+            {
+                DirectWeapon weapon => weapon.Features,
+                Item item => item.FeaturesToMergeWeapon,
+                _ => throw new Exception("Invalid item")
+            };
+            var mergeBaseItemFeatures = mergeBaseItem.Features;
+            if (!mergeBaseItemFeatures.Merge(featuresToMergeWeapon).SequenceEqual(mergeBaseItemFeatures))
+            {
+                return true;
+            }
+            foreach (var upgradePath in baseItem.UpgradePaths)
+            {
+                if (mergeBaseItem.CanUpgrade(upgradePath.ToString()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private async UniTask DoEvent(IMap map)
         {
             var player = map.Player;
-            var baseItem = await player.Character.ItemSelector.SelectItemWithCanSelect("ベースのアイテムを選択してください", player, map, item => item is DirectWeapon) as DirectWeapon;
-            if (baseItem == null)
+            var mergeBaseItem = await player.Character.ItemSelector.SelectItemWithCanSelect("ベースのアイテムを選択してください", player, map, canSelectForBaseItem) as DirectWeapon;
+            if (mergeBaseItem == null)
                 return;
-            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect("合成するアイテムを選択してください", player, map, item => item is DirectWeapon && item != baseItem) as DirectWeapon;
+            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect("合成するアイテムを選択してください", player, map, item => canSelectForMergedItem(item as BaseItem, mergeBaseItem));
             if (mergedItem == null)
                 return;
 
-            player.Character.Inventory.Remove(baseItem);
+            player.Character.Inventory.Remove(mergeBaseItem);
             player.Character.Inventory.Remove(mergedItem);
-            player.Character.Inventory.Add(baseItem.Merge(mergedItem));
-            GameLog.Add($"{player.Character.GetName(player)}は{baseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
+            player.Character.Inventory.Add(mergeBaseItem.Merge(mergedItem));
+            GameLog.Add($"{player.Character.GetName(player)}は{mergeBaseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
         }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)

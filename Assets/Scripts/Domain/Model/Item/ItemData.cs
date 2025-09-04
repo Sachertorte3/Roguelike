@@ -65,6 +65,7 @@ namespace Domain.Model.Item
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
+        public List<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         private bool _usable => EffectType switch
         {

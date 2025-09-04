@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -22,7 +23,8 @@ namespace Domain.Model.Memento
         public Sprite Icon => ScriptableObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public ItemState State { get; private set; }
-        [field: SerializeField] public List<string> UpgradePaths { get; private set; }
+        [SerializeField] private List<string> _upgradePaths;
+        public List<UpgradePath> UpgradePaths => _upgradePaths.Select(path => new UpgradePath(path)).ToList();
         [field: SerializeField] public Option<WeaponPrefix> Prefix { get; private set; }
         [field: SerializeField] public List<ElementPower> ElementPowers { get; private set; }
         [field: SerializeField] public List<DirectWeaponFeature> Features { get; private set; }
@@ -43,7 +45,7 @@ namespace Domain.Model.Memento
             Sprite icon,
             bool isShiny,
             ItemState state,
-            List<string> upgradePaths,
+            List<UpgradePath> upgradePaths,
             Option<WeaponPrefix> prefix,
             List<ElementPower> elementPowers,
             List<DirectWeaponFeature> features,
@@ -63,7 +65,7 @@ namespace Domain.Model.Memento
             _iconName = icon.name;
             IsShiny = isShiny;
             State = state;
-            UpgradePaths = upgradePaths;
+            _upgradePaths = upgradePaths.Select(path => path.ToString()).ToList();
             Prefix = prefix;
             ElementPowers = elementPowers;
             Features = features;
@@ -85,7 +87,7 @@ namespace Domain.Model.Memento
             Sprite? icon = null,
             bool? isShiny = null,
             ItemState? state = null,
-            List<string>? upgradePaths = null,
+            List<UpgradePath>? upgradePaths = null,
             Option<WeaponPrefix>? prefix = null,
             List<ElementPower>? elementPowers = null,
             List<DirectWeaponFeature>? features = null,

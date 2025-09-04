@@ -45,6 +45,7 @@ MonoBehaviour:
   PassiveConditions:
   - rid: 3119344251661451267
   - rid: 3119344251661451269
+  FeaturesToMergeWeapon: 
   references:
     version: 2
     RefIds:

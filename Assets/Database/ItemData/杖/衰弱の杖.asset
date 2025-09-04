@@ -15,7 +15,7 @@ MonoBehaviour:
   Category: 3
   Icon: {fileID: -913573336, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 1
+  _rarity: 3
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -43,6 +43,7 @@ MonoBehaviour:
   UsageLimit: 5
   UpgradeLimit: 3
   PassiveConditions: []
+  FeaturesToMergeWeapon: 
   references:
     version: 2
     RefIds:
@@ -60,4 +61,4 @@ MonoBehaviour:
     - rid: 5486256561133191169
       type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _damageRate: 0.5
+        _damageRate: 0.25

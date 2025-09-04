@@ -22,6 +22,7 @@ namespace Domain.Service.Items
         public override Option<ISkill> SkillOnUse => _skillOnUse;
         public override Option<ISkill> SkillOnThrow => _skillOnThrow;
         public override string RevealedName => BaseName;
+        public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         public Item(ItemData data) : this(Build(data))
         {
@@ -65,7 +66,8 @@ namespace Domain.Service.Items
                     }
                 },
                 itemTargetSkillMemento => new ItemTargetSkill(itemTargetSkillMemento)
-            )); 
+            ));
+            FeaturesToMergeWeapon = data.FeaturesToMergeWeapon;
         }
 
         private readonly bool _hasSameEffect;
@@ -82,7 +84,7 @@ namespace Domain.Service.Items
                 Icon,
                 IsShiny,
                 state: State,
-                upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
+                upgradePaths: UpgradePaths.ToList(),
                 skillOnUse: _skillOnUse.Map(skill => skill.Serialize()),
                 skillOnThrow: _skillOnThrow.Map(skill => skill.Serialize()),
                 hasSameEffect: _hasSameEffect,
@@ -99,7 +101,8 @@ namespace Domain.Service.Items
                 isCurseIdentified: IsCurseIdentified,
                 autoDestroyWhenDisabled: AutoDestroyWhenDisabled,
                 upgradeLimit: UpgradeLimit,
-                conditions: _conditions
+                conditions: _conditions,
+                featuresToMergeWeapon: FeaturesToMergeWeapon.ToList()
             ));
             return JsonUtility.FromJson<ItemMemento>(json);
         }
@@ -127,7 +130,7 @@ namespace Domain.Service.Items
                 icon: data.Icon,
                 isShiny: data.IsShiny,
                 state: state,
-                upgradePaths: new List<string>(),
+                upgradePaths: new List<UpgradePath>(),
                 skillOnUse: skillOnUse.ToOption(),
                 skillOnThrow: skillOnThrow.ToOption(),
                 hasSameEffect: data.IsSameEffect,
@@ -144,7 +147,8 @@ namespace Domain.Service.Items
                 isCurseIdentified: false,
                 autoDestroyWhenDisabled: data.AutoDestroyWhenDisabled,
                 upgradeLimit: data.UpgradeLimit,
-                conditions: data.PassiveConditions
+                conditions: data.PassiveConditions,
+                featuresToMergeWeapon: data.FeaturesToMergeWeapon
             ));
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
         }

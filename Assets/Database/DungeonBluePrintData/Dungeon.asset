@@ -243,14 +243,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 09d567260d3482f469285f4b1da91479, type: 2}
     - {fileID: 11400000, guid: 526c339ba4a7d7447bc8bc9c74ea0c80, type: 2}
     - {fileID: 11400000, guid: b893a210f15e56c4dacad01a4e30b4cf, type: 2}
-    - {fileID: 11400000, guid: 7ff5f55f4da0a3b40b62a33f150f131c, type: 2}
-    - {fileID: 11400000, guid: 54addad9f94abb94880a68fadb99d922, type: 2}
-    - {fileID: 11400000, guid: 9d075453b86dd7640a2177341dd5db58, type: 2}
-    - {fileID: 11400000, guid: 99ba06601f6355b43911e3bba3b7d0af, type: 2}
-    - {fileID: 11400000, guid: 3b4f31dabf5cd1242beb71ef0a112de4, type: 2}
-    - {fileID: 11400000, guid: 321f7f5d414d0054d9efa3ee4688df9d, type: 2}
-    - {fileID: 11400000, guid: 6b31827b922d46f45927b1cf8fed8a6b, type: 2}
-    - {fileID: 11400000, guid: 78e07b459ad88ea42ab66d35f52f8014, type: 2}
     - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
   Npcs:
     items:

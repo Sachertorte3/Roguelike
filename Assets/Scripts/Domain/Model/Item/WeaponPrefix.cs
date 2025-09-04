@@ -20,7 +20,6 @@ namespace Domain.Model.Item
         [MinValue(0)] public float PowerMagnification = 1;
         [MinValue(0)] public float UsageLimitMagnification = 1;
         public int AdditionalUpgradeLimit;
-        [SerializeReference] public List<IEffect> AdditionalEffects = new();
 #if UNITY_EDITOR
         private void OnValidate()
         {

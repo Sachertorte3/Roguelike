@@ -76,7 +76,6 @@ namespace Domain.Service.Characters.Conditions
 
         public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
-            Debug.Log($"UpdateTurn: {characterVisible}");
             _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(characterVisible)).ToList());
             _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
         }

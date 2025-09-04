@@ -17,6 +17,13 @@ namespace Domain.Model.Item
         Absorbing,            // 吸収
         GuaranteedHit,        // 必中
         ThrowEnhance,         // 投擲強化
+        Paralysis,             // 麻痺
+        Blind,                 // 盲目
+        Confusion,             // 混乱
+        Sleep,                 // 眠り
+        Poison,                // 毒
+        Slowness,              // 鈍足
+        Restraint,             // 拘束
     }
     public static class DirectWeaponFeatureExtensions
     {
@@ -35,10 +42,17 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Absorbing => 4,
                 DirectWeaponFeature.GuaranteedHit => CANNOT_OVERLAP,
                 DirectWeaponFeature.ThrowEnhance => CANNOT_OVERLAP,
-                _ => throw new Exception("Invalid DirectWeaponFeature"),
+                DirectWeaponFeature.Paralysis => CANNOT_OVERLAP,
+                DirectWeaponFeature.Blind => CANNOT_OVERLAP,
+                DirectWeaponFeature.Confusion => CANNOT_OVERLAP,
+                DirectWeaponFeature.Sleep => CANNOT_OVERLAP,
+                DirectWeaponFeature.Poison => CANNOT_OVERLAP,
+                DirectWeaponFeature.Slowness => CANNOT_OVERLAP,
+                DirectWeaponFeature.Restraint => CANNOT_OVERLAP,
+                _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }
-        public static IEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures)
+        public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures)
         {
             var allFeatures = features.Concat(otherFeatures);
 

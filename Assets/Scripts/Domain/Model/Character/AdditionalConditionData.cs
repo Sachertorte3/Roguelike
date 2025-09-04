@@ -12,6 +12,12 @@ namespace Domain.Model.Character
         [Required] public ScriptableObjectSerializable<ConditionTemplate> Condition;
         [Range(0, 1)] public float Probability;
 
+        public AdditionalConditionData(ConditionTemplate condition, float probability)
+        {
+            Condition = new ScriptableObjectSerializable<ConditionTemplate>(condition);
+            Probability = probability;
+        }
+
         public string Info()
         {
             return $"{Condition.Value.Condition.Name} {Probability:P0}";

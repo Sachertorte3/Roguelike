@@ -24,9 +24,9 @@ namespace Provider
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
+            inventoryView.Initialize();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
-                    inventoryView.Initialize();
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(
                         inventory.OnItemChanged.Select(itemChanged => ((IItem?)itemChanged.NewItem, itemChanged.Index)),
@@ -44,8 +44,7 @@ namespace Provider
 
                     Observable.Merge(
                         map.Player.Character.KnownItemNames.ObserveChanged().AsUnitObservable(),
-                        map.ItemPlaceholders.OnItemRenamed,
-                        Settings.WorldSettings.AutoIdentify.Value.AsUnitObservable()
+                        map.ItemPlaceholders.OnItemRenamed
                     ).Subscribe(_ =>
                     {
                         UpdateAllItemViews(inventoryView, map);
@@ -100,12 +99,11 @@ namespace Provider
 
         private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
         {
-            inventoryView.Clear();
-            foreach (var (item, index) in map.Player.Character.Inventory.AllItemsWithIndex)
+            for (var i = 0; i < InventoryView.MainStorageSize; i++)
             {
-                ReplaceItemView(inventoryView, item, new InventoryViewIndex(index), map.Player, map.ItemPlaceholders);
+                var item = map.Player.Character.Inventory.GetItem(i);
+                ReplaceItemView(inventoryView, item, new InventoryViewIndex(i), map.Player, map.ItemPlaceholders);
             }
-
             UpdateGroundItemView(inventoryView, map);
         }
 

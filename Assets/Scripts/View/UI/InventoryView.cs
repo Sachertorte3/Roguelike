@@ -5,14 +5,14 @@ using R3;
 using TMPro;
 using Unity.Logging;
 using UnityEngine;
-using Utilities;
+using UnityEngine.EventSystems;
 
 namespace View.UI
 {
     public class InventoryView : MonoBehaviour
     {
-        const int MainStorageSize = 10;
-        const int MainStorageIncludeGroundAndEmpty = MainStorageSize + 2;
+        public const int MainStorageSize = 10;
+        public const int MainStorageIncludeGroundAndEmpty = MainStorageSize + 2;
         public const int GroundItemIndex = MainStorageSize;
         public const int EmptyIndex = MainStorageSize + 1;
         public int SubStorageSizes(int index)
@@ -69,12 +69,6 @@ namespace View.UI
             }
             else
                 return null;
-        }
-        public void Clear()
-        {
-            Log.Debug($"[View]InventoryView Clear");
-            _items.Clear();
-            UpdateAllItemView();
         }
         public void Replace(InventoryViewIndex index, ItemViewData itemData)
         {
@@ -163,7 +157,6 @@ namespace View.UI
         public void UpdateAllItemView()
         {
             Log.Debug($"[View]InventoryView UpdateAllItemView");
-            CreateMainView();
             for (var i = 0; i < MainStorageIncludeGroundAndEmpty; i++)
             {
                 var index = new InventoryViewIndex(i, -1);

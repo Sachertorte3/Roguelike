@@ -99,7 +99,10 @@ namespace Domain.Service.Characters
                 }
             });
 
-            AutoIdentify.Where(autoIdentify => autoIdentify).Subscribe(_ =>
+            Observable.Merge(
+                AutoIdentify.Where(autoIdentify => autoIdentify).AsUnitObservable(),
+                Settings.WorldSettings.AutoIdentify.Value.Where(autoIdentify => autoIdentify).AsUnitObservable()
+            ).Subscribe(_ =>
             {
                 foreach (var item in Inventory.AllItemsRecursive)
                 {

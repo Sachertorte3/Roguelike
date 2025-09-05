@@ -152,5 +152,7 @@ namespace Domain.Service.Items
             ));
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
         }
+
+        protected override string FullInfoImpl() => "";
     }
 }

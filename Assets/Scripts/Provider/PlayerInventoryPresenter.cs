@@ -5,7 +5,6 @@ using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
-using Domain.Model.Setting;
 using Game;
 using ObservableCollections;
 using R3;
@@ -24,9 +23,9 @@ namespace Provider
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
-            inventoryView.Initialize();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
+                    inventoryView.Initialize();
                     var inventory = map.Player.Character.Inventory;
                     Observable.Merge<(IItem? Item, int Index)>(
                         inventory.OnItemChanged.Select(itemChanged => ((IItem?)itemChanged.NewItem, itemChanged.Index)),

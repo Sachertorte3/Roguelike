@@ -498,6 +498,8 @@ namespace Domain.Service.Items
             return FullInfo();
         }
 
+        protected abstract string FullInfoImpl();
+
         public string FullInfo()
         {
             var info = $"{State.GetDescription()}{_fullName} ({_remainingUsages.CurrentValue}/{MaxUsages})\n";
@@ -551,6 +553,8 @@ namespace Domain.Service.Items
             {
                 info += $"それは{condition.Name}の効果を授ける\n";
             }
+
+            info += FullInfoImpl();
 
             if (_upgradePaths.Any() || CanUpgrade())
             {

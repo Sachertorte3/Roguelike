@@ -19,6 +19,7 @@ namespace Domain.Model.Item
         public Rarity Rarity => _rarity;
         public List<ElementPower> ElementPowers;
         public List<DirectWeaponFeature> Features;
+        [MinValue(1)] public int FeatureLimit = 3;
         [MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;

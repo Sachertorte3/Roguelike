@@ -27,6 +27,30 @@ namespace Domain.Model.Item
     }
     public static class DirectWeaponFeatureExtensions
     {
+        public static string GetName(this DirectWeaponFeature feature)
+        {
+            return feature switch
+            {
+                DirectWeaponFeature.TwoRangeAttack => "2マス攻撃",
+                DirectWeaponFeature.FanAttack => "扇型攻撃",
+                DirectWeaponFeature.SpinAttack => "回転攻撃",
+                DirectWeaponFeature.DoubleAttack => "2回攻撃",
+                DirectWeaponFeature.Knockback => "吹き飛ばし",
+                DirectWeaponFeature.Critical => "クリティカル",
+                DirectWeaponFeature.Dig => "掘る",
+                DirectWeaponFeature.Absorbing => "吸収",
+                DirectWeaponFeature.GuaranteedHit => "必中",
+                DirectWeaponFeature.ThrowEnhance => "投擲強化",
+                DirectWeaponFeature.Paralysis => "麻痺",
+                DirectWeaponFeature.Blind => "盲目",
+                DirectWeaponFeature.Confusion => "混乱",
+                DirectWeaponFeature.Sleep => "眠り",
+                DirectWeaponFeature.Poison => "毒",
+                DirectWeaponFeature.Slowness => "鈍足",
+                DirectWeaponFeature.Restraint => "拘束",
+                _ => throw new Exception("Invalid DirectWeaponFeature")
+            };
+        }
         public static int CanOverlap(this DirectWeaponFeature feature)
         {
             const int CANNOT_OVERLAP = 1;
@@ -51,6 +75,19 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Restraint => CANNOT_OVERLAP,
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
+        }
+        public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, DirectWeaponFeature otherFeatures)
+        {
+            var allFeatures = features.ToList();
+            
+            allFeatures.Add(otherFeatures);
+
+            var groupedFeatures = allFeatures
+                .GroupBy(f => f)
+                .SelectMany(g => Enumerable.Repeat(g.Key, Math.Min(g.Count(), g.Key.CanOverlap())))
+                .OrderBy(f => f);
+
+            return groupedFeatures;
         }
         public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures)
         {

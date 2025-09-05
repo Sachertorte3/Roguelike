@@ -36,6 +36,7 @@ namespace Domain.Service.Items
         private List<ElementPower> _elementPowers { get; init; }
         private List<DirectWeaponFeature> _features { get; init; }
         public IReadOnlyList<DirectWeaponFeature> Features => _features;
+        private readonly int _featureLimit;
         private SpawnEffectSkill _skillOnUse { get; init; }
         private SpawnEffectSkill _skillOnThrow { get; init; }
         public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
@@ -55,6 +56,7 @@ namespace Domain.Service.Items
             _prefix = data.Prefix;
             _elementPowers = data.ElementPowers;
             _features = data.Features;
+            _featureLimit = data.FeatureLimit;
             _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
             _skillOnThrow = new SpawnEffectSkill(data.SkillOnThrow);
         }
@@ -74,6 +76,7 @@ namespace Domain.Service.Items
                 prefix: _prefix,
                 elementPowers: _elementPowers,
                 features: _features,
+                featureLimit: _featureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
                 skillOnThrow: _skillOnThrow.Serialize(),
                 maxUsages: MaxUsages,
@@ -105,6 +108,7 @@ namespace Domain.Service.Items
                 prefix: _prefix,
                 elementPowers: _elementPowers,
                 features: _features,
+                featureLimit: _featureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
                 skillOnThrow: _skillOnThrow.Serialize(),
                 maxUsages: MaxUsages,
@@ -273,6 +277,7 @@ namespace Domain.Service.Items
                 prefix: prefix.ToOption(),
                 elementPowers: data.ElementPowers,
                 features: data.Features,
+                featureLimit: data.FeatureLimit,
                 skillOnUse: skillOnUse.Serialize(),
                 skillOnThrow: skillOnThrow.Serialize(),
                 maxUsages: maxUsages,
@@ -290,7 +295,15 @@ namespace Domain.Service.Items
         {
             //MEMO: There is also a way to reload the data and regenerate it from scratch.
             var memento = SerializeIgnoreUpgrades();
-            var features = memento.Features.Merge(featuresToMergeWeapon).ToList();
+            var features = memento.Features;
+            foreach (var feature in featuresToMergeWeapon)
+            {
+                if (features.Count >= memento.FeatureLimit)
+                {
+                    break;
+                }
+                features = features.Merge(feature).ToList();
+            }
             var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var mergedItem = new DirectWeapon(memento.CopyWith(
                 features: features,
@@ -319,5 +332,21 @@ namespace Domain.Service.Items
             Item item => Merge(item),
             _ => throw new Exception("Invalid item")
         };
+
+        protected override string FullInfoImpl()
+        {
+            var info = "";
+
+            info += $"能力 ({_features.Count}/{_featureLimit})\n";
+
+            foreach (var feature in _features)
+            {
+                info += $"{feature.GetName()}\n";
+            }
+
+            info += "\n";
+
+            return info;
+        }
     }
 }

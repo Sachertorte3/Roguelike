@@ -28,6 +28,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public Option<WeaponPrefix> Prefix { get; private set; }
         [field: SerializeField] public List<ElementPower> ElementPowers { get; private set; }
         [field: SerializeField] public List<DirectWeaponFeature> Features { get; private set; }
+        [field: SerializeField] public int FeatureLimit { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnThrow { get; private set; }
         [field: SerializeField] public int MaxUsages { get; private set; }
@@ -49,6 +50,7 @@ namespace Domain.Model.Memento
             Option<WeaponPrefix> prefix,
             List<ElementPower> elementPowers,
             List<DirectWeaponFeature> features,
+            int featureLimit,
             SpawnEffectSkillMemento skillOnUse,
             SpawnEffectSkillMemento skillOnThrow,
             int maxUsages,
@@ -69,6 +71,7 @@ namespace Domain.Model.Memento
             Prefix = prefix;
             ElementPowers = elementPowers;
             Features = features;
+            FeatureLimit = featureLimit;
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
             MaxUsages = maxUsages;
@@ -91,6 +94,7 @@ namespace Domain.Model.Memento
             Option<WeaponPrefix>? prefix = null,
             List<ElementPower>? elementPowers = null,
             List<DirectWeaponFeature>? features = null,
+            int? featureLimit = null,
             SpawnEffectSkillMemento? skillOnUse = null,
             SpawnEffectSkillMemento? skillOnThrow = null,
             int? maxUsages = null,
@@ -112,6 +116,7 @@ namespace Domain.Model.Memento
                 prefix ?? Prefix,
                 elementPowers ?? ElementPowers,
                 features ?? Features,
+                featureLimit ?? FeatureLimit,
                 skillOnUse ?? SkillOnUse,
                 skillOnThrow ?? SkillOnThrow,
                 maxUsages ?? MaxUsages,

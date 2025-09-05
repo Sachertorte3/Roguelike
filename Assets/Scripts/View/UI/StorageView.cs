@@ -6,6 +6,7 @@ using Sirenix.Utilities;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 namespace View.UI
 {
@@ -19,6 +20,7 @@ namespace View.UI
         public Observable<int> OnSelected => _onSelected;
         public void SetCapacity(int capacity)
         {
+            Log.Debug($"[View]StorageView SetCapacity: {capacity}");
             Clear();
             _itemViews = new InventoryItemView[capacity];
             for (var i = 0; i < capacity; i++)
@@ -103,8 +105,8 @@ namespace View.UI
         }
         public void Clear()
         {
-            Log.Debug($"[View]StorageView Clear");
-            foreach (var view in _itemViews)
+            Log.Debug($"[View]StorageView Clear (Capacity: {_itemViews.Length})");
+            foreach (var view in _itemViews.WhereNotNull())
                 Destroy(view.gameObject);
             _itemViews = Array.Empty<InventoryItemView>();
         }
@@ -112,7 +114,8 @@ namespace View.UI
         public void Select(int index)
         {
             Log.Verbose($"[View]StorageView Select: {index}");
-            _itemViews[index].Select();
+            if (_itemViews[index].interactable)
+                _itemViews[index].Select();
         }
 
         public void Replace(ItemViewData itemViewData, int index, bool interactable, bool canSkip)

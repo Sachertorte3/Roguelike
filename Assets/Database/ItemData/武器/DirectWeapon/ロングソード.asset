@@ -18,9 +18,10 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 5
-  Features: 01000000
-  UsageLimit: 25
-  UpgradeLimit: 3
+  Features: 
+  FeatureLimit: 5
+  UsageLimit: 30
+  UpgradeLimit: 5
   PassiveConditions: []
   references:
     version: 2

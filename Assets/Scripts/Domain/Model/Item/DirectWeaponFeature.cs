@@ -24,6 +24,7 @@ namespace Domain.Model.Item
         Poison,                // 毒
         Slowness,              // 鈍足
         Restraint,             // 拘束
+        AbnormalConditionEnhance,    // 状態異常付与率強化
     }
     public static class DirectWeaponFeatureExtensions
     {
@@ -48,6 +49,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Poison => "毒",
                 DirectWeaponFeature.Slowness => "鈍足",
                 DirectWeaponFeature.Restraint => "拘束",
+                DirectWeaponFeature.AbnormalConditionEnhance => "状態異常付与率強化",
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }
@@ -73,6 +75,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Poison => CANNOT_OVERLAP,
                 DirectWeaponFeature.Slowness => CANNOT_OVERLAP,
                 DirectWeaponFeature.Restraint => CANNOT_OVERLAP,
+                DirectWeaponFeature.AbnormalConditionEnhance => CANNOT_OVERLAP,
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }

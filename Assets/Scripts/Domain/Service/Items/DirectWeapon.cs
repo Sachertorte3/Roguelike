@@ -181,52 +181,60 @@ namespace Domain.Service.Items
                 effectsOnUse.Add(new DigEffect());
                 effectsOnThrow.Add(new DigEffect());
             }
+            var abnormalConditionMultiplier = features.Count(f => f == DirectWeaponFeature.AbnormalConditionEnhance) + 1;
             if (features.Contains(DirectWeaponFeature.Paralysis))
             {
+                var probability = 0.05f * abnormalConditionMultiplier;
                 var paralysis = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("麻痺"), 0.05f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
                 effectsOnUse.Add(new AddConditionEffect(paralysis));
                 effectsOnThrow.Add(new AddConditionEffect(paralysis));
             }
             if (features.Contains(DirectWeaponFeature.Blind))
             {
+                var probability = 0.1f * abnormalConditionMultiplier;
                 var blind = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("盲目"), 0.1f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("盲目"), probability);
                 effectsOnUse.Add(new AddConditionEffect(blind));
                 effectsOnThrow.Add(new AddConditionEffect(blind));
             }
             if (features.Contains(DirectWeaponFeature.Confusion))
             {
+                var probability = 0.1f * abnormalConditionMultiplier;
                 var confusion = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("混乱"), 0.1f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("混乱"), probability);
                 effectsOnUse.Add(new AddConditionEffect(confusion));
                 effectsOnThrow.Add(new AddConditionEffect(confusion));
             }
             if (features.Contains(DirectWeaponFeature.Sleep))
             {
+                var probability = 0.05f * abnormalConditionMultiplier;
                 var sleep = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("睡眠"), 0.05f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
                 effectsOnUse.Add(new AddConditionEffect(sleep));
                 effectsOnThrow.Add(new AddConditionEffect(sleep));
             }
             if (features.Contains(DirectWeaponFeature.Poison))
             {
+                var probability = 0.2f * abnormalConditionMultiplier;
                 var poison = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("毒"), 0.25f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("毒"), probability);
                 effectsOnUse.Add(new AddConditionEffect(poison));
                 effectsOnThrow.Add(new AddConditionEffect(poison));
             }
             if (features.Contains(DirectWeaponFeature.Slowness))
             {
+                var probability = 0.1f * abnormalConditionMultiplier;
                 var slowness = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("鈍足"), 0.1f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
                 effectsOnUse.Add(new AddConditionEffect(slowness));
                 effectsOnThrow.Add(new AddConditionEffect(slowness));
             }
             if (features.Contains(DirectWeaponFeature.Restraint))
             {
+                var probability = 0.1f * abnormalConditionMultiplier;
                 var restraint = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("拘束"), 0.1f);
+                    ScriptableObjectLoader.Load<ConditionTemplate>("拘束"), probability);
                 effectsOnUse.Add(new AddConditionEffect(restraint));
                 effectsOnThrow.Add(new AddConditionEffect(restraint));
             }

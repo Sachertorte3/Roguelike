@@ -78,15 +78,17 @@ MonoBehaviour:
     DirectWeapons:
       items:
       - {fileID: 11400000, guid: 5484172c81b51a94b8ca56cfaa81b79b, type: 2}
-      - {fileID: 11400000, guid: 28cf6e1605d85664c84a4cd73f379a7d, type: 2}
       - {fileID: 11400000, guid: cc237994c27fb664f94657701968b99e, type: 2}
       - {fileID: 11400000, guid: c6474f440a9c2764fb729eafb2cae103, type: 2}
       - {fileID: 11400000, guid: 196ccd508d2e94945a757c0ea62925fa, type: 2}
       - {fileID: 11400000, guid: ab1c309cd976e9a4d800c58fdec2b202, type: 2}
+      - {fileID: 11400000, guid: c155e31990bc3c340a1c8749a7e009d7, type: 2}
+      - {fileID: 11400000, guid: 28cf6e1605d85664c84a4cd73f379a7d, type: 2}
       - {fileID: 11400000, guid: 87ac9e1351b358d4db5a3f86064704f5, type: 2}
       - {fileID: 11400000, guid: bd5946047e937b248aaec116efba3538, type: 2}
       - {fileID: 11400000, guid: c487a5b656261bd4bbf619e0f81bb92c, type: 2}
       - {fileID: 11400000, guid: e554e921d09e12641b64a9d7d94e8da5, type: 2}
+      - {fileID: 11400000, guid: a521a7f0b6e112e43aa5abd15f33e2ce, type: 2}
       - {fileID: 11400000, guid: b9f904d06d12b5341b2c06dd70f44911, type: 2}
     Artifacts:
       items:

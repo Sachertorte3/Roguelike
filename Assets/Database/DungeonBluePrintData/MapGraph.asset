@@ -775,7 +775,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
+    RestRoomChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -845,7 +845,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
+    RestRoomChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 300
@@ -3062,7 +3062,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0
     MonsterHouseChance: 0
-    RestRoomChance: 1
+    RestRoomChance: 0
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100

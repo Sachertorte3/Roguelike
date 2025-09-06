@@ -44,6 +44,7 @@ MonoBehaviour:
   UpgradeLimit: 5
   PassiveConditions:
   - rid: 3794997484628475905
+  FeaturesToMergeWeapon: 
   references:
     version: 2
     RefIds:
@@ -68,6 +69,7 @@ MonoBehaviour:
         - _element: 5
           _power: 4
         _rate: 0.5
+        _criticalRate: 0
     - rid: 5486256409939279872
       type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

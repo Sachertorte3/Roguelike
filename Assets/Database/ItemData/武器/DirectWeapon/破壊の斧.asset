@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 840a56d02e5d5f6418762374474908e9, type: 3}
-  m_Name: "\u30A2\u30A4\u30A2\u30F3\u30A2\u30C3\u30AF\u30B9"
+  m_Name: "\u7834\u58CA\u306E\u65A7"
   m_EditorClassIdentifier: Domain.Model::Domain.Model.Item.DirectWeaponData
-  Icon: {fileID: -1095276346, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1495637827, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 0
+  _rarity: 2
   ElementPowers:
   - _element: 0
-    _power: 5
-  Features: 05000000
-  UsageLimit: 32
-  UpgradeLimit: 3
+    _power: 7
+  Features: 
+  FeatureLimit: 1
+  UsageLimit: 20
+  UpgradeLimit: 0
   PassiveConditions: []
   references:
     version: 2

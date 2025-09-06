@@ -62,6 +62,13 @@ namespace Domain.Service.Events
 
         private UniTask DoEvent(IGameManager gameManager)
         {
+            var se = Type switch {
+                MovementEntityType.UpStairs => SE.Stairs,
+                MovementEntityType.DownStairs => SE.Stairs,
+                MovementEntityType.MagicCircle => SE.Teleport,
+                _ => SE.Stairs,
+            };
+            gameManager.PlaySE(se);
             gameManager.MoveMap(Destination, DestinationId);
             return UniTask.CompletedTask;
         }

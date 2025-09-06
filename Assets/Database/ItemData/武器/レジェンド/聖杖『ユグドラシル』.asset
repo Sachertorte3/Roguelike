@@ -44,6 +44,7 @@ MonoBehaviour:
   UpgradeLimit: 5
   PassiveConditions:
   - rid: 3794997484628475914
+  FeaturesToMergeWeapon: 
   references:
     version: 2
     RefIds:
@@ -65,6 +66,7 @@ MonoBehaviour:
         - _element: 4
           _power: 4
         _rate: 0.5
+        _criticalRate: 0
     - rid: 3794997484628475908
       type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:

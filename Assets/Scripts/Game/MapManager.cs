@@ -474,7 +474,11 @@ namespace Game
             Player.Character.Entity.Position.Subscribe(async positionChanged =>
             {
                 _tilemap.UpdateChunk(positionChanged);
-                SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
+                if (IsGrass(positionChanged))
+                {
+                    SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
+                    Globals.GameManager.PlaySE(SE.GrassWalk);
+                }
                 EventExecutionCount++;
                 foreach (var eventArea in _eventAreas)
                 {

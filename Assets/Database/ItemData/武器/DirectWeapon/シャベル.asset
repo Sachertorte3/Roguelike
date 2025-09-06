@@ -19,8 +19,9 @@ MonoBehaviour:
   - _element: 0
     _power: 3
   Features: 06000000
+  FeatureLimit: 2
   UsageLimit: 20
-  UpgradeLimit: 3
+  UpgradeLimit: 2
   PassiveConditions: []
   references:
     version: 2

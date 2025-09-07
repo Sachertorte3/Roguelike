@@ -222,7 +222,7 @@ namespace Game
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
 
-            foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
+            foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 3)))
             {
                 var position = center + direction.Vector();
                 var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,

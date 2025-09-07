@@ -23,7 +23,6 @@ namespace Domain.Service.Events
             _isFire = new(memento.IsFire);
             Event = new PlayerEvent(
                 "焚き火を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(

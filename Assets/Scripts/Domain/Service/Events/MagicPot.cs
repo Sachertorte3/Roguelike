@@ -25,7 +25,6 @@ namespace Domain.Service.Events
             Entity = new EntityBase(data);
             Event = new PlayerEvent(
                 "魔法の壺を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(
@@ -47,39 +46,21 @@ namespace Domain.Service.Events
 
         public IPlayerEvent Event { get; init; }
 
-        private bool canSelectForBaseItem(IItem baseItem) => baseItem is DirectWeapon;
-        private bool canSelectForMergedItem(BaseItem baseItem, DirectWeapon mergeBaseItem)
-        {
-            if (baseItem == mergeBaseItem)
-                return false;
-            var featuresToMergeWeapon = baseItem switch
-            {
-                DirectWeapon weapon => weapon.Features,
-                Item item => item.FeaturesToMergeWeapon,
-                _ => throw new Exception("Invalid item")
-            };
-            var mergeBaseItemFeatures = mergeBaseItem.Features;
-            if (!mergeBaseItemFeatures.Merge(featuresToMergeWeapon).SequenceEqual(mergeBaseItemFeatures))
-            {
-                return true;
-            }
-            foreach (var upgradePath in baseItem.UpgradePaths)
-            {
-                if (mergeBaseItem.CanUpgrade(upgradePath.ToString()))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private async UniTask DoEvent(IMap map)
         {
             var player = map.Player;
-            var mergeBaseItem = await player.Character.ItemSelector.SelectItemWithCanSelect("ベースのアイテムを選択してください", player, map, canSelectForBaseItem) as DirectWeapon;
+            var mergeBaseItem = await player.Character.ItemSelector.SelectItemWithCanSelect(
+                "ベースのアイテムを選択してください",
+                player,
+                map,
+                ItemMergeExtension.CanSelectForBaseItem) as DirectWeapon;
             if (mergeBaseItem == null)
                 return;
-            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect("合成するアイテムを選択してください", player, map, item => canSelectForMergedItem(item as BaseItem, mergeBaseItem));
+            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect(
+                "合成するアイテムを選択してください",
+                player,
+                map,
+                item => ItemMergeExtension.CanSelectForMergedItem(item as BaseItem, mergeBaseItem));
             if (mergedItem == null)
                 return;
 

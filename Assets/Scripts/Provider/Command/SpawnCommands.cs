@@ -48,12 +48,11 @@ namespace Provider
             try
             {
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
-                var item = baseItemData switch
-                {
-                    ItemData itemData => new Item(itemData),
-                    DirectWeaponData directWeaponData => (IItem)new DirectWeapon(directWeaponData),
-                    _ => throw new Exception($"Invalid item data: {itemName}")
-                };
+                var item = baseItemData.Match<IItem>(
+                    itemData => new Item(itemData),
+                    directWeaponData => new DirectWeapon(directWeaponData),
+                    storageItemData => new StorageItem(storageItemData)
+                );
                 if (prefixName != null)
                 {
                     var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);

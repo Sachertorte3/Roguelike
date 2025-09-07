@@ -14,8 +14,10 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
+using Domain.Service.Events;
 using R3;
 using Unity.Logging;
+using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -76,45 +78,29 @@ namespace Domain.Service.Characters.Behavior
 
                         var destination = character.Entity.CurrentPosition + move.Direction.Vector();
                         var playerEventEntities = map.PlayerEventEntities.At(destination).On(EntityLayer.Middle);
-
                         if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
-                            if (playerEventEntities.Any() &&
-                            playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
-                            {
-                                foreach (var eventEntity in playerEventEntities)
-                                {
-                                    var eventAction = await eventEntity.Event.DoAction(map.Player, gameManager, map, new Swap(move.Direction));
-                                    if (eventAction != null && eventAction.Doable(character, map))
-                                        return eventAction;
-                                    break;
-                                }
-                            }
-                            break;
+                            var (eventAction, _) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntities, new Swap(move.Direction));
+                            if (eventAction != null)
+                                return eventAction;
                         }
-
-                        if (Settings.GlobalSettings.IntelligentDash.CurrentValue)
-                            move = _intelligentDashController.Filter(move, character, started, map, input);
-                        var swap = new Swap(move.Direction);
-                        destination = character.Entity.CurrentPosition + move.Direction.Vector();
-
-                        character.Turn(move.Direction);
-                        if (move.Doable(character, map))
-                            return move;
-                        else if (playerEventEntities.Any() &&
-                            playerEventEntities.All(e => e.Event.CanExecuteEvent(map.Player)))
+                        else
                         {
-                            foreach (var eventEntity in playerEventEntities)
-                            {
-                                var eventAction = await eventEntity.Event.DoAction(map.Player, gameManager, map, swap);
-                                if (eventAction != null && eventAction.Doable(character, map))
-                                    return eventAction;
-                                break;
-                            }
+                            if (Settings.GlobalSettings.IntelligentDash.CurrentValue)
+                                move = _intelligentDashController.Filter(move, character, started, map, input);
+                            var swap = new Swap(move.Direction);
+
+                            character.Turn(move.Direction);
+                            if (move.Doable(character, map))
+                                return move;
+                            var (eventAction, anyEventCanExecute) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntities, swap);
+                            Debug.Log($"eventAction: {eventAction}, anyEventCanExecute: {anyEventCanExecute}");
+                            if (eventAction != null)
+                                return eventAction;
+                            if (!anyEventCanExecute && swap.Doable(character, map))
+                                return swap;
                         }
-                        else if (swap.Doable(character, map))
-                            return swap;
                         break;
                     case InputType.UseItem:
                         var focus = result.focus!;
@@ -199,6 +185,16 @@ namespace Domain.Service.Characters.Behavior
 
                 result = await InitializeTasks();
             }
+        }
+
+        private static async UniTask<(IAction? action, bool anyEventCanExecute)> TryGetPlayerEventAction(IHasBehavior character, IGameManager gameManager, IMap map, IEnumerable<IPlayerEventEntity> playerEventEntities, Swap swap)
+        {
+            if (!playerEventEntities.Where(e => e.Event.CanExecuteEvent(map.Player)).Any())
+                return (null, false);
+            var eventAction = await playerEventEntities.Select(e => e.Event).ToList().DoAction(map.Player, gameManager, map, swap);
+            if (eventAction != null && eventAction.Doable(character, map))
+                return (eventAction, true);
+            return (null, true);
         }
 
         private async UniTask<(InputType type, (Move action, bool isStarted)? move, ItemFocus? focus)> InitializeTasks()

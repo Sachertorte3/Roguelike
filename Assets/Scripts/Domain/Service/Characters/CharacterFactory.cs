@@ -47,7 +47,7 @@ namespace Domain.Service.Characters
                                 new List<IEffect>
                                 {
                                     new AttackEffect(
-                                        new List<ElementPower> { new(Element.Physical, 3) },
+                                        new List<ElementPower> { new(Element.Physical, CommonSenseParameters.PlayerAttackPowerWhenUnarmed) },
                                         0
                                     )
                                 },

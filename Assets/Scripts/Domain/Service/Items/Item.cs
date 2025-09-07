@@ -2,26 +2,42 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
-using R3;
 using UnityEngine;
-using Utilities;
 using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
     public class Item : BaseItem, ISerializable<ItemMemento>
     {
+        private readonly ItemCategory _category;
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
+        private readonly bool _useOnDeath;
+        private readonly bool _cannotUseIfCursed;
+        private readonly bool _cannotDropIfCursed;
+        private readonly bool _identifyIfGot;
+        private readonly bool _identifyIfUsed;
+        private readonly bool _autoDestroyWhenDisabled;
+
+        public override string RevealedName => BaseName;
+        public override ItemCategory Category => _category;
         public override Option<ISkill> SkillOnUse => _skillOnUse;
         public override Option<ISkill> SkillOnThrow => _skillOnThrow;
-        public override string RevealedName => BaseName;
+        protected override bool HasSameEffect => _hasSameEffect;
+        protected override bool HasSameSkill => _hasSameSkill;
+        public override bool UseOnDeath => _useOnDeath;
+        public override Option<IStorage> ItemStorage => Option<IStorage>.None;
+        public override bool CannotUseIfCursed => _cannotUseIfCursed;
+        public override bool CannotDropIfCursed => _cannotDropIfCursed;
+        public override bool IdentifyIfGot => _identifyIfGot;
+        public override bool IdentifyIfUsed => _identifyIfUsed;
+        public override bool AutoDestroyWhenDisabled => _autoDestroyWhenDisabled;
         public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         public Item(ItemData data) : this(Build(data))
@@ -29,12 +45,9 @@ namespace Domain.Service.Items
         }
 
         public Item(ItemMemento data) : base(
-            data.Id, data.Category, data.BaseName, data.CustomName, data.Icon,
-            data.IsShiny, data.State, data.UpgradePaths, data.HasSameEffect, data.HasSameSkill,
-            data.UseOnDeath, data.Storage, data.MaxUsages, data.RemainingUsages, data.IsCursed,
-            data.CannotUseIfCursed, data.CannotDropIfCursed, data.IdentifyIfGot, data.IdentifyIfUsed,
-            data.IsCurseIdentified, data.AutoDestroyWhenDisabled, data.UpgradeLimit, data.Conditions.ToList())
+            data.BaseItem)
         {
+            _category = data.Category;
             _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
                 spawnEffectSkillMemento =>
@@ -48,7 +61,8 @@ namespace Domain.Service.Items
                                 probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess,
                                 log: spawnEffectSkillMemento.Log
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         ).Deserialize();
                     }
                     else if (data.HasSameSkill)
@@ -57,7 +71,8 @@ namespace Domain.Service.Items
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
                                 probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         ).Deserialize();
                     }
                     else
@@ -65,7 +80,8 @@ namespace Domain.Service.Items
                         return new SpawnEffectSkill(spawnEffectSkillMemento);
                     }
                 },
-                itemTargetSkillMemento => new ItemTargetSkill(itemTargetSkillMemento)
+                itemTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
+                inventoryTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
             ));
             FeaturesToMergeWeapon = data.FeaturesToMergeWeapon;
         }
@@ -77,31 +93,18 @@ namespace Domain.Service.Items
         {
             var json = JsonUtility.ToJson(new ItemMemento
             (
-                Id,
-                Category,
-                BaseName,
-                CustomName,
-                Icon,
-                IsShiny,
-                state: State,
-                upgradePaths: UpgradePaths.ToList(),
+                baseItem: SerializeBase(),
+                category: _category,
                 skillOnUse: _skillOnUse.Map(skill => skill.Serialize()),
                 skillOnThrow: _skillOnThrow.Map(skill => skill.Serialize()),
                 hasSameEffect: _hasSameEffect,
                 hasSameSkill: _hasSameSkill,
-                useOnDeath: UseOnDeath,
-                storage: _itemStorage.Map(storage => storage.Serialize()),
-                maxUsages: MaxUsages,
-                remainingUsages: _remainingUsages.CurrentValue,
-                isCursed: IsCursed,
+                useOnDeath: _useOnDeath,
                 cannotUseIfCursed: CannotUseIfCursed,
                 cannotDropIfCursed: CannotDropIfCursed,
-                identifyIfGot: IdentifyIfGot,
-                identifyIfUsed: IdentifyIfUsed,
-                isCurseIdentified: IsCurseIdentified,
-                autoDestroyWhenDisabled: AutoDestroyWhenDisabled,
-                upgradeLimit: UpgradeLimit,
-                conditions: _conditions,
+                identifyIfGot: _identifyIfGot,
+                identifyIfUsed: _identifyIfUsed,
+                autoDestroyWhenDisabled: _autoDestroyWhenDisabled,
                 featuresToMergeWeapon: FeaturesToMergeWeapon.ToList()
             ));
             return JsonUtility.FromJson<ItemMemento>(json);
@@ -115,7 +118,9 @@ namespace Domain.Service.Items
                     ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse)
                     : null,
                 ItemEffectType.ItemTarget => new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
-                _ => null
+                ItemEffectType.InventoryTarget => new InventoryTargetSkill(InventoryTargetSkill.Build(data.InventoryEffect)).Serialize(),
+                ItemEffectType.None => null,
+                _ => throw new Exception("Invalid item effect type")
             };
             var skillOnThrow = data.SpawnEffectsOnThrow
                 ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
@@ -123,31 +128,29 @@ namespace Domain.Service.Items
 
             var json = JsonUtility.ToJson(new ItemMemento
             (
-                id: Id<IItem>.Generate(),
+                baseItem: BuildBase(
+                    baseName: data.name,
+                    icon: data.Icon,
+                    isShiny: data.IsShiny,
+                    additionalPrice: data.AdditionalPrice,
+                    multiplyPrice: data.MultiplyPrice,
+                    state: state,
+                    maxUsages: data.UsageLimit,
+                    isCursed: isCursed,
+                    upgradeLimit: data.UpgradeLimit,
+                    conditions: data.PassiveConditions
+                ),
                 category: data.Category,
-                baseName: data.name,
-                customName: Option<string>.None,
-                icon: data.Icon,
-                isShiny: data.IsShiny,
-                state: state,
-                upgradePaths: new List<UpgradePath>(),
                 skillOnUse: skillOnUse.ToOption(),
                 skillOnThrow: skillOnThrow.ToOption(),
                 hasSameEffect: data.IsSameEffect,
                 hasSameSkill: data.IsSameSkill,
                 useOnDeath: data.UseOnDeath,
-                storage: data.StorageCapacity > 0 ? Storage.Build(data.StorageCapacity, false).ToOption() : Option<StorageMemento>.None,
-                maxUsages: data.UsageLimit,
-                remainingUsages: data.UsageLimit,
-                isCursed: isCursed,
                 cannotUseIfCursed: data.CannotUseIfCursed,
                 cannotDropIfCursed: data.CannotDropIfCursed,
                 identifyIfGot: data.IdentifyIfGot,
                 identifyIfUsed: data.IdentifyIfUsed,
-                isCurseIdentified: false,
                 autoDestroyWhenDisabled: data.AutoDestroyWhenDisabled,
-                upgradeLimit: data.UpgradeLimit,
-                conditions: data.PassiveConditions,
                 featuresToMergeWeapon: data.FeaturesToMergeWeapon
             ));
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references

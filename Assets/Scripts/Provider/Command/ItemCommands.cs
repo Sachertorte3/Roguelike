@@ -68,21 +68,19 @@ namespace Provider
             {
                 var character = CommandUtilities.GetTarget(target, _world.ActiveMap.CurrentValue);
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
-                var item = baseItemData switch
-                {
-                    ItemData itemData => new Item(itemData),
-                    DirectWeaponData directWeaponData => (IItem)new DirectWeapon(directWeaponData),
-                    _ => throw new Exception($"Invalid item data: {itemName}")
-                };
+                var item = baseItemData.Match<IItem>(
+                    itemData => new Item(itemData),
+                    directWeaponData => new DirectWeapon(directWeaponData),
+                    storageItemData => new StorageItem(storageItemData)
+                );
                 if (prefixName != null)
                 {
                     var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
-                    item = baseItemData switch
-                    {
-                        ItemData itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
-                        DirectWeaponData directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData)),
-                        _ => throw new Exception($"Invalid item data: {itemName}")
-                    };
+                    item = baseItemData.Match<IItem>(
+                        itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
+                        directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData)),
+                        storageItemData => new StorageItem(StorageItem.Build(storageItemData, prefixData))
+                    );
                 }
 
                 if (character.Inventory.TryAdd(item))
@@ -113,7 +111,7 @@ namespace Provider
                     Log.Info($"インベントリ内の指定したアイテムが見つかりません。");
                     return;
                 }
-                if (item is not DirectWeapon || item2 is not DirectWeapon)
+                if (!ItemMergeExtension.CanSelectForBaseItem(item) || !ItemMergeExtension.CanSelectForMergedItem(item2 as BaseItem, item as DirectWeapon))
                 {
                     Log.Info($"指定したアイテムは合成できません。");
                     return;

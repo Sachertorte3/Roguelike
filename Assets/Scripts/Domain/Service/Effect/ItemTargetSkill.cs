@@ -110,10 +110,7 @@ namespace Domain.Service.Effect
             return ItemTargetSkillResult.Cancelled;
         }
 
-        public float Evaluate(IPlayer player, IItem item)
-        {
-            return 0;
-        }
+        public float Evaluate() => 0;
 
         public float EvaluatePrice()
         {

@@ -25,6 +25,7 @@ namespace Domain.Model.Item
         Slowness,              // 鈍足
         Restraint,             // 拘束
         AbnormalConditionEnhance,    // 状態異常付与率強化
+        Artistic,                  // 芸術
     }
     public static class DirectWeaponFeatureExtensions
     {
@@ -50,6 +51,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Slowness => "鈍足",
                 DirectWeaponFeature.Restraint => "拘束",
                 DirectWeaponFeature.AbnormalConditionEnhance => "状態異常付与率強化",
+                DirectWeaponFeature.Artistic => "美術品",
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }
@@ -76,6 +78,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Slowness => CANNOT_OVERLAP,
                 DirectWeaponFeature.Restraint => CANNOT_OVERLAP,
                 DirectWeaponFeature.AbnormalConditionEnhance => CANNOT_OVERLAP,
+                DirectWeaponFeature.Artistic => CANNOT_OVERLAP,
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }

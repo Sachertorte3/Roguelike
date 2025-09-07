@@ -112,11 +112,15 @@ MonoBehaviour:
       - {fileID: 11400000, guid: d943d6945159400489b26d553e2fc5f1, type: 2}
       - {fileID: 11400000, guid: 9a2bb90f631700f4191149a29e985959, type: 2}
       - {fileID: 11400000, guid: 23fea5d7d79f7ea41a3fa6e03982059a, type: 2}
+    StorageItems:
+      items:
+      - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}
+      - {fileID: 11400000, guid: 34fbb3f82baaa804fad8cfa1a0cea626, type: 2}
+      - {fileID: 11400000, guid: cf161bf489fb7ea439d377c5ba206f0d, type: 2}
+      - {fileID: 11400000, guid: f40cdc90ff4728e48b6fab582fe5e757, type: 2}
     Others:
       items:
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
-      - {fileID: 11400000, guid: ccdd9c7ccd2d02b45a8339f9dab447e5, type: 2}
-      - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}
     ChestItems:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
@@ -189,18 +193,7 @@ MonoBehaviour:
             - {fileID: 11400000, guid: 7f680a6827b4b2c4598ed707c0db0b91, type: 2}
             - {fileID: 11400000, guid: 82cd42b9fc0e70e4dbaf5977771fb17d, type: 2}
             - {fileID: 11400000, guid: cca7583c9dd4596448db668c2a4d958b, type: 2}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
-            - {fileID: 0}
             - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
-            - {fileID: 0}
-            - {fileID: 0}
             - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
         Weight: 1
   SpawnItem:
@@ -210,6 +203,7 @@ MonoBehaviour:
     Wands: 10
     Weapons: 10
     Artifacts: 5
+    Storage: 5
     Others: 1
   Traps:
     items:

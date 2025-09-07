@@ -1,11 +1,11 @@
 #nullable enable
 using System.Collections.Generic;
+using System.Linq;
+using R3;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using R3;
-using Sirenix.Utilities;
-using System.Linq;
 using Utilities;
 
 namespace View.UI

@@ -1,11 +1,10 @@
 #nullable enable
 using System;
 using Cysharp.Threading.Tasks;
-using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
 
-namespace Domain.Service.Events
+namespace Domain.Model
 {
     public class PlayerChoiceEvent
     {

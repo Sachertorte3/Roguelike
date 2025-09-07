@@ -26,7 +26,6 @@ namespace Domain.Service.Rooms
             Behavior = behavior;
             Event = new PlayerEvent(
                 null,
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(

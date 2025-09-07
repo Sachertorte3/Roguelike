@@ -5483,7 +5483,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 11.0625
+  orthographic size: 11.015625
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -6162,7 +6162,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.0625
+  orthographic size: 11.015625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7680,6 +7680,7 @@ MonoBehaviour:
   _attackSE: {fileID: 8300000, guid: aa46d30d0f0172e438b3641dafed83ef, type: 3}
   _pickupSE: {fileID: 8300000, guid: 3a9509c4cfbeade4c890073ffa7c4e0f, type: 3}
   _stairsSE: {fileID: 8300000, guid: 0384098f7e84c6e4d9004bf33db81af6, type: 3}
+  _teleportSE: {fileID: 8300000, guid: d3e4e81088110144c84bb0b9223ddd3d, type: 3}
 --- !u!82 &1953968010
 AudioSource:
   m_ObjectHideFlags: 0

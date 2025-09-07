@@ -30,7 +30,6 @@ namespace Domain.Service.Events
             Entity = new EntityBase(memento.Entity);
             Event = new PlayerEvent(
                 "宝箱を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(

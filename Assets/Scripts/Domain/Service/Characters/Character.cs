@@ -443,7 +443,8 @@ namespace Domain.Service.Characters
 
                         return result;
                     },
-                    async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
+                    async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map),
+                    async inventoryTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
                 );
                 if (result.Result == SkillResult.Success)
                 {

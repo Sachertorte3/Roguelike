@@ -24,48 +24,49 @@ namespace Domain.Service.Items
     public abstract class BaseItem : IItem, IHasUpgrades, IDisposable
     {
         public Id<IItem> Id { get; private set; }
-        public ItemCategory Category { get; private set; }
         public string BaseName { get; private set; }
-        public abstract string RevealedName { get; }
         public Option<string> CustomName { get; private set; }
+        public Sprite Icon { get; private set; }
+        public bool IsShiny { get; private set; }
+        public int _additionalPrice { get; private set; }
+        public float _multiplyPrice { get; private set; }
+        public ItemState State { get; private set; }
         private readonly List<UpgradePath> _upgradePaths;
         public int MaxUsages { get; private set; }
         private protected ReactiveProperty<int> _remainingUsages;
-        private protected Option<Storage> _itemStorage;
-        private protected List<IConditionData> _conditions;
-        private Subject<Unit> _onItemUpdated = new();
-        private Subject<bool> _onCursedChanged = new();
-        private CompositeDisposable _disposables = new();
-
-        public Sprite Icon { get; private set; }
-        public bool IsShiny { get; private set; }
-        public ItemState State { get; private set; }
-        private bool _hasSameEffect;
-        private bool _hasSameSkill;
-        public bool UseOnDeath { get; private set; }
         public bool IsCursed { get; private set; }
-        public bool CannotUseIfCursed { get; private set; }
-        public bool CannotDropIfCursed { get; private set; }
-        public bool IdentifyIfGot { get; private set; }
-        public bool IdentifyIfUsed { get; private set; }
         public bool IsCurseIdentified { get; private set; }
-        public bool AutoDestroyWhenDisabled { get; private set; }
         public int UpgradeLimit { get; private set; }
+        private protected List<IConditionData> _conditions;
+        private protected Subject<Unit> _onItemUpdated = new();
+        private protected Subject<bool> _onCursedChanged = new();
+        private CompositeDisposable _disposables = new();
+        
+        public abstract ItemCategory Category { get; }
+        public abstract string RevealedName { get; }
+        protected abstract bool HasSameEffect { get; }
+        protected abstract bool HasSameSkill { get; }
+        public abstract bool UseOnDeath { get; }
+        public abstract bool CannotUseIfCursed { get; }
+        public abstract bool CannotDropIfCursed { get; }
+        public abstract bool IdentifyIfGot { get; }
+        public abstract bool IdentifyIfUsed { get; }
+        public abstract bool AutoDestroyWhenDisabled { get; }
+        public abstract Option<ISkill> SkillOnUse { get; }
+        public abstract Option<ISkill> SkillOnThrow { get; }
+        public abstract Option<IStorage> ItemStorage { get; }
 
         public string DebugName => _fullName;
         private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
+        public int Price => Mathf.RoundToInt(EvaluatePrice());
         public IReadOnlyList<UpgradePath> UpgradePaths => _upgradePaths;
         public int AppliedUpgrades => _upgradePaths.Count;
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
         public bool CanActivateWhenUsed => SkillOnUse.HasValue && !IsDisabled;
         public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
-        public abstract Option<ISkill> SkillOnUse { get; }
-        public abstract Option<ISkill> SkillOnThrow { get; }
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
-        public Option<IStorage> ItemStorage => _itemStorage.Map(storage => (IStorage)storage);
-        public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
@@ -83,66 +84,74 @@ namespace Domain.Service.Items
             return UnknownName(itemPlaceholders);
         }
 
-        public BaseItem(
-            Id<IItem> id,
-            ItemCategory category,
+        public BaseItem(BaseItemMemento baseItem)
+        {
+            Id = baseItem.Id;
+            BaseName = baseItem.BaseName;
+            CustomName = baseItem.CustomName;
+            Icon = baseItem.Icon;
+            IsShiny = baseItem.IsShiny;
+            _additionalPrice = baseItem.AdditionalPrice;
+            _multiplyPrice = baseItem.MultiplyPrice;
+            State = baseItem.State;
+            _upgradePaths = baseItem.UpgradePaths;
+            MaxUsages = baseItem.MaxUsages;
+            _remainingUsages = new ReactiveProperty<int>(baseItem.RemainingUsages);
+            IsCursed = baseItem.IsCursed;
+            IsCurseIdentified = baseItem.IsCurseIdentified;
+            UpgradeLimit = baseItem.UpgradeLimit;
+            _conditions = baseItem.Conditions;
+        }
+
+        public BaseItemMemento SerializeBase()
+        {
+            return new BaseItemMemento(
+                id: Id,
+                baseName: BaseName,
+                customName: CustomName,
+                icon: Icon,
+                isShiny: IsShiny,
+                additionalPrice: _additionalPrice,
+                multiplyPrice: _multiplyPrice,
+                state: State,
+                upgradePaths: _upgradePaths,
+                maxUsages: MaxUsages,
+                remainingUsages: _remainingUsages.CurrentValue,
+                isCursed: IsCursed,
+                isCurseIdentified: IsCurseIdentified,
+                upgradeLimit: UpgradeLimit,
+                conditions: _conditions);
+        }
+
+        public static BaseItemMemento BuildBase(
             string baseName,
-            Option<string> customName,
             Sprite icon,
             bool isShiny,
+            int additionalPrice,
+            float multiplyPrice,
             ItemState state,
-            List<UpgradePath> upgradePaths,
-            bool hasSameEffect,
-            bool hasSameSkill,
-            bool useOnDeath,
-            Option<StorageMemento> storage,
             int maxUsages,
-            int remainingUsages,
             bool isCursed,
-            bool cannotUseIfCursed,
-            bool cannotDropIfCursed,
-            bool identifyIfGot,
-            bool identifyIfUsed,
-            bool isCurseIdentified,
-            bool autoDestroyWhenDisabled,
             int upgradeLimit,
-            List<IConditionData> conditions)
+            List<IConditionData> conditions
+        )
         {
-            Id = id;
-            Category = category;
-            BaseName = baseName;
-            CustomName = customName;
-            Icon = icon;
-            IsShiny = isShiny;
-            State = state;
-            _upgradePaths = upgradePaths;
-            _hasSameEffect = hasSameEffect;
-            _hasSameSkill = hasSameSkill;
-            _itemStorage = storage.Map(storage =>
-            {
-                var itemStorage = new Storage(storage);
-                itemStorage.OnItemChanged.Subscribe(_ =>
-                {
-                    _onItemUpdated.OnNext(Unit.Default);
-                }).AddTo(_disposables);
-                itemStorage.OnItemUpdated.Subscribe(_ =>
-                {
-                    _onItemUpdated.OnNext(Unit.Default);
-                }).AddTo(_disposables);
-                return itemStorage;
-            });
-            UseOnDeath = useOnDeath;
-            MaxUsages = maxUsages;
-            _remainingUsages = new ReactiveProperty<int>(remainingUsages);
-            IsCursed = isCursed;
-            CannotUseIfCursed = cannotUseIfCursed;
-            CannotDropIfCursed = cannotDropIfCursed;
-            IdentifyIfGot = identifyIfGot;
-            IdentifyIfUsed = identifyIfUsed;
-            IsCurseIdentified = isCurseIdentified;
-            AutoDestroyWhenDisabled = autoDestroyWhenDisabled;
-            UpgradeLimit = upgradeLimit;
-            _conditions = conditions.ToList();
+            return new BaseItemMemento(
+                id: Id<IItem>.Generate(),
+                baseName: baseName,
+                customName: Option<string>.None,
+                icon: icon,
+                isShiny: isShiny,
+                additionalPrice: additionalPrice,
+                multiplyPrice: multiplyPrice,
+                state: state,
+                upgradePaths: new List<UpgradePath>(),
+                maxUsages: maxUsages,
+                remainingUsages: maxUsages,
+                isCursed: isCursed,
+                isCurseIdentified: false,
+                upgradeLimit: upgradeLimit,
+                conditions: conditions);
         }
 
         public void Dispose()
@@ -167,7 +176,18 @@ namespace Domain.Service.Items
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(map.Player, this, map)
+                itemTargetSkill => itemTargetSkill.Use(map.Player, this, map),
+                inventoryTargetSkill =>
+                {
+                    if (ItemStorage.HasValue)
+                    {
+                        return inventoryTargetSkill.Use(map.Player, ItemStorage.Expect("ItemStorage is null"), map);
+                    }
+                    else
+                    {
+                        return inventoryTargetSkill.Use(map.Player, actor.Inventory, map);
+                    }
+                }
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -193,10 +213,8 @@ namespace Domain.Service.Items
 
             var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill =>
-                {
-                    throw new Exception("The item is not configured to activate this type of skill when thrown.");
-                }
+                itemTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown."),
+                inventoryTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown.")
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -228,7 +246,8 @@ namespace Domain.Service.Items
                 0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
+                    itemTargetSkill => itemTargetSkill.Evaluate(),
+                    inventoryTargetSkill => inventoryTargetSkill.Evaluate()
                 )
             );
         }
@@ -244,7 +263,8 @@ namespace Domain.Service.Items
                 0,
                 skill => skill.Match(
                     spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
+                    itemTargetSkill => itemTargetSkill.Evaluate(),
+                    inventoryTargetSkill => inventoryTargetSkill.Evaluate()
                 )
             );
         }
@@ -255,11 +275,14 @@ namespace Domain.Service.Items
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * MaxUsages;
+            price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
             {
                 price *= 0.8f;
             }
+
+            price *= _multiplyPrice;
 
             return price;
         }
@@ -270,11 +293,14 @@ namespace Domain.Service.Items
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
             var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
+            price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
             {
                 price *= 0.8f;
             }
+
+            price *= _multiplyPrice;
 
             return price;
         }
@@ -507,19 +533,22 @@ namespace Domain.Service.Items
             info += CursedInfo();
             if (HasActivatableSkill)
             {
-                if (_hasSameSkill)
+                if (HasSameSkill)
                 {
                     info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                     );
                     var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                     );
                     var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
                     );
                     info += $"使用時の発動は{skillOnUseSuccessProbability:P0}の確率で成功する\n";
                     info += $"投擲時の発動は{skillOnThrowSuccessProbability:P0}の確率で成功する\n";
@@ -530,14 +559,16 @@ namespace Domain.Service.Items
                         "",
                         skill => "\n使用したときの効果...\n" + skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
-                            itemTargetSkill => itemTargetSkill.Info()
+                            itemTargetSkill => itemTargetSkill.Info(),
+                            inventoryTargetSkill => inventoryTargetSkill.Info()
                         ));
 
                     info += SkillOnThrow.MapOr(
                         "",
                         skill => "\n投擲したときの効果...\n" + skill.Match(
-                            spawnEffectSkill => spawnEffectSkill.InfoOnThrow(_hasSameEffect),
-                            itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                            spawnEffectSkill => spawnEffectSkill.InfoOnThrow(HasSameEffect),
+                            itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
                         ));
                 }
             }

@@ -22,36 +22,31 @@ namespace Domain.Service.Items
 {
     public class DirectWeapon : BaseItem, ISerializable<DirectWeaponMemento>
     {
-        private const ItemCategory _category = ItemCategory.Weapons;
-        private const bool _hasSameEffect = true;
-        private const bool _hasSameSkill = false;
-        private const bool _useOnDeath = false;
-        private const StorageMemento? _storage = null;
-        private const bool _cannotUseIfCursed = false;
-        private const bool _cannotDropIfCursed = true;
-        private const bool _identifyIfGot = true;
-        private const bool _identifyIfUsed = true;
-        private const bool _autoDestroyWhenDisabled = false;
-        private Option<WeaponPrefix> _prefix { get; init; }
-        private List<ElementPower> _elementPowers { get; init; }
-        private List<DirectWeaponFeature> _features { get; init; }
+        public override string RevealedName => _prefix.MapOr("", prefix => prefix.Name) + BaseName;
+        public override ItemCategory Category => ItemCategory.Weapons;
+        protected override bool HasSameEffect => true;
+        protected override bool HasSameSkill => false;
+        public override bool UseOnDeath => false;
+        public override Option<IStorage> ItemStorage => Option.None<IStorage>();
+        public override bool CannotUseIfCursed => false;
+        public override bool CannotDropIfCursed => true;
+        public override bool IdentifyIfGot => true;
+        public override bool IdentifyIfUsed => true;
+        public override bool AutoDestroyWhenDisabled => false;
+        private readonly Option<WeaponPrefix> _prefix;
+        private readonly List<ElementPower> _elementPowers;
+        private readonly List<DirectWeaponFeature> _features;
         public IReadOnlyList<DirectWeaponFeature> Features => _features;
         private readonly int _featureLimit;
-        private SpawnEffectSkill _skillOnUse { get; init; }
-        private SpawnEffectSkill _skillOnThrow { get; init; }
+        private readonly SpawnEffectSkill _skillOnUse;
+        private readonly SpawnEffectSkill _skillOnThrow;
         public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
         public override Option<ISkill> SkillOnThrow => ((ISkill)_skillOnThrow).ToOption();
-        public override string RevealedName => _prefix.MapOr("", prefix => prefix.Name) + BaseName;
         public DirectWeapon(DirectWeaponData data) : this(Build(data))
         {
         }
 
-        public DirectWeapon(DirectWeaponMemento data) : base(
-            data.Id, _category, data.BaseName, data.CustomName, data.Icon,
-            data.IsShiny, data.State, data.UpgradePaths, _hasSameEffect, _hasSameSkill,
-            _useOnDeath, _storage.ToOption(), data.MaxUsages, data.RemainingUsages, data.IsCursed,
-            _cannotUseIfCursed, _cannotDropIfCursed, _identifyIfGot, _identifyIfUsed,
-            data.IsCurseIdentified, _autoDestroyWhenDisabled, data.UpgradeLimit, data.Conditions.ToList())
+        public DirectWeapon(DirectWeaponMemento data) : base(data.BaseItem)
         {
             _prefix = data.Prefix;
             _elementPowers = data.ElementPowers;
@@ -65,26 +60,13 @@ namespace Domain.Service.Items
         {
             var json = JsonUtility.ToJson(new DirectWeaponMemento
             (
-                id: Id,
-                baseName: BaseName,
-                revealedName: RevealedName,
-                customName: CustomName,
-                icon: Icon,
-                isShiny: IsShiny,
-                state: State,
-                upgradePaths: UpgradePaths.ToList(),
+                baseItem: SerializeBase(),
                 prefix: _prefix,
                 elementPowers: _elementPowers,
                 features: _features,
                 featureLimit: _featureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
-                skillOnThrow: _skillOnThrow.Serialize(),
-                maxUsages: MaxUsages,
-                remainingUsages: RemainingUses.CurrentValue,
-                isCursed: IsCursed,
-                isCurseIdentified: IsCurseIdentified,
-                upgradeLimit: UpgradeLimit,
-                conditions: _conditions
+                skillOnThrow: _skillOnThrow.Serialize()
             ));
             return JsonUtility.FromJson<DirectWeaponMemento>(json);
         }
@@ -97,26 +79,13 @@ namespace Domain.Service.Items
             }
             var json = JsonUtility.ToJson(new DirectWeaponMemento
             (
-                id: Id,
-                baseName: BaseName,
-                revealedName: RevealedName,
-                customName: CustomName,
-                icon: Icon,
-                isShiny: IsShiny,
-                state: State,
-                upgradePaths: UpgradePaths.ToList(),
+                baseItem: SerializeBase(),
                 prefix: _prefix,
                 elementPowers: _elementPowers,
                 features: _features,
                 featureLimit: _featureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
-                skillOnThrow: _skillOnThrow.Serialize(),
-                maxUsages: MaxUsages,
-                remainingUsages: RemainingUses.CurrentValue,
-                isCursed: IsCursed,
-                isCurseIdentified: IsCurseIdentified,
-                upgradeLimit: UpgradeLimit,
-                conditions: _conditions
+                skillOnThrow: _skillOnThrow.Serialize()
             ));
             foreach (var upgradePath in UpgradePaths)
             {
@@ -269,31 +238,29 @@ namespace Domain.Service.Items
         public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None)
         {
             var (skillOnUse, skillOnThrow) = BuildSkills(data.ElementPowers, data.Features, prefix);
-
+            var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var maxUsages = Mathf.RoundToInt(data.UsageLimit * prefix.ToOption().MapOr(1, prefix => prefix.UsageLimitMagnification));
 
             var json = JsonUtility.ToJson(new DirectWeaponMemento
             (
-                id: Id<IItem>.Generate(),
-                baseName: data.name,
-                revealedName: data.name,
-                customName: Option<string>.None,
-                icon: data.Icon,
-                isShiny: data.IsShiny,
-                state: state,
-                upgradePaths: new List<UpgradePath>(),
+                baseItem: BuildBase(
+                    baseName: data.name,
+                    icon: data.Icon,
+                    isShiny: data.IsShiny,
+                    additionalPrice: 0,
+                    multiplyPrice: multiplyPrice,
+                    state: state,
+                    maxUsages: maxUsages,
+                    isCursed: isCursed,
+                    upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
+                    conditions: data.PassiveConditions
+                ),
                 prefix: prefix.ToOption(),
                 elementPowers: data.ElementPowers,
                 features: data.Features,
                 featureLimit: data.FeatureLimit,
                 skillOnUse: skillOnUse.Serialize(),
-                skillOnThrow: skillOnThrow.Serialize(),
-                maxUsages: maxUsages,
-                remainingUsages: maxUsages,
-                isCursed: isCursed,
-                isCurseIdentified: false,
-                upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
-                conditions: data.PassiveConditions
+                skillOnThrow: skillOnThrow.Serialize()
             ));
             var item = JsonUtility.FromJson<DirectWeaponMemento>(json); //MEMO: To break the sharing references
             return item;
@@ -312,8 +279,13 @@ namespace Domain.Service.Items
                 }
                 features = features.Merge(feature).ToList();
             }
+
             var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
+            var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var mergedItem = new DirectWeapon(memento.CopyWith(
+                baseItem: memento.BaseItem.CopyWith(
+                    multiplyPrice: multiplyPrice
+                ),
                 features: features,
                 skillOnUse: skillOnUse.Serialize(),
                 skillOnThrow: skillOnThrow.Serialize()

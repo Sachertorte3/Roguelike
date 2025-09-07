@@ -1,6 +1,4 @@
 #nullable enable
-using System;
-using Cysharp.Threading.Tasks;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
@@ -24,12 +22,11 @@ namespace Provider
             knownItemNames.ObserveChanged().Subscribe(collectionChanged =>
             {
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(collectionChanged.NewItem);
-                var itemViewData = baseItemData switch
-                {
-                    ItemData itemData => new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo()),
-                    DirectWeaponData directWeaponData => new ItemLibraryViewData(collectionChanged.NewItem, directWeaponData.Icon, (int)ItemCategory.Weapons, directWeaponData.IsShiny, new DirectWeapon(directWeaponData).FullInfo()),
-                    _ => throw new Exception($"Invalid item data: {collectionChanged.NewItem}")
-                };
+                var itemViewData = baseItemData.Match(
+                    itemData => new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo()),
+                    directWeaponData => new ItemLibraryViewData(collectionChanged.NewItem, directWeaponData.Icon, (int)ItemCategory.Weapons, directWeaponData.IsShiny, new DirectWeapon(directWeaponData).FullInfo()),
+                    storageItemData => new ItemLibraryViewData(collectionChanged.NewItem, storageItemData.Icon, (int)ItemCategory.Storage, storageItemData.IsShiny, new StorageItem(storageItemData).FullInfo())
+                );
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });
 

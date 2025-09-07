@@ -59,6 +59,8 @@ namespace Domain.Model.Map
 
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem);
 
+        public void DropAllItemInStorage(IItem item);
+
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
 
         public void RemoveEventEntity(IEventEntity entity);

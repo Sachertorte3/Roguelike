@@ -36,7 +36,6 @@ namespace Domain.Service.Events
             };
             Event = new PlayerEvent(
                 $"{entityName}を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(

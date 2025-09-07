@@ -16,6 +16,8 @@ MonoBehaviour:
   Icon: {fileID: 1522504690, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2
+  AdditionalPrice: 0
+  MultiplyPrice: 1
   EffectType: 2
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
@@ -39,6 +41,8 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: 5486256311944871958
+  InventoryEffect:
+    rid: -2
   StorageCapacity: 0
   UsageLimit: 1
   UpgradeLimit: 3

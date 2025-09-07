@@ -16,7 +16,6 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
-using Domain.Service.Effect;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
@@ -309,6 +308,21 @@ namespace Game
             return null;
         }
 
+        private Vector2Int? GetItemPositionByIdFromWorldOrInventory(Id<IItem> id)
+        {
+            var itemEntity = ItemManager.Items.ById(id);
+            if (itemEntity != null)
+                return itemEntity.Entity.CurrentPosition;
+            foreach (var character in Characters)
+            {
+                var item = character.Inventory.AllItems.ById(id);
+                if (item != null)
+                    return character.Entity.CurrentPosition;
+            }
+
+            return null;
+        }
+
         public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer)
         {
             return EventEntities
@@ -532,10 +546,7 @@ namespace Game
                     if (character.IsPlayer)
                     {
                         var playerEventEntities = GetPlayerEventEntityAt(positionChanged, EntityLayer.Bottom);
-                        foreach (var playerEventEntity in playerEventEntities)
-                        {
-                            await playerEventEntity.Event.DoEvent(Player, Globals.GameManager, this);
-                        }
+                        await playerEventEntities.Select(entity => entity.Event).ToList().DoEvent(Player, Globals.GameManager, this);
                     }
 
                     EventExecutionCount--;
@@ -681,6 +692,19 @@ namespace Game
                 SpawnItem(item,
                     FindBlankPositionFrom(character.Entity.CurrentPosition,
                         position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
+            }
+        }
+
+        public void DropAllItemInStorage(IItem storageItem)
+        {
+            if (storageItem.ItemStorage.IsNone)
+                return;
+            var position = GetItemPositionByIdFromWorldOrInventory(storageItem.Id);
+            if (!position.HasValue)
+                throw new Exception("Item not found in world or inventory");
+            foreach (var item in storageItem.ItemStorage.Expect("ItemStorage is null").Clear())
+            {
+                SpawnItem(item, FindBlankPositionFrom(position.Value, position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
         }
 

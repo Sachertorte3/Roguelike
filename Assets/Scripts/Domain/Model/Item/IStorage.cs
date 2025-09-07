@@ -1,11 +1,10 @@
 #nullable enable
 using System.Collections.Generic;
 using Domain.Model.Character.Message;
-using Domain.Model.Item;
 using R3;
 using Utilities.Serialize.Result;
 
-namespace Domain.Model.Character
+namespace Domain.Model.Item
 {
     public interface IStorage
     {
@@ -23,5 +22,6 @@ namespace Domain.Model.Character
         public void Remove(IItem item);
         public bool TryRemove(IItem item);
         public Result<IItem?> Replace(IItem? item, int index);
+        public IEnumerable<IItem> Clear();
     }
 }

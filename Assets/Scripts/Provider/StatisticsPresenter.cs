@@ -1,4 +1,5 @@
 #nullable enable
+using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Game;
@@ -20,8 +21,12 @@ namespace Provider
 
             knownItemNames.ObserveChanged().Subscribe(collectionChanged =>
             {
-                var itemData = ScriptableObjectLoader.Load<ItemData>(collectionChanged.NewItem);
-                var itemViewData = new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo());
+                var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(collectionChanged.NewItem);
+                var itemViewData = baseItemData.Match(
+                    itemData => new ItemLibraryViewData(collectionChanged.NewItem, itemData.Icon, (int)itemData.Category, itemData.IsShiny, new Item(itemData).FullInfo()),
+                    directWeaponData => new ItemLibraryViewData(collectionChanged.NewItem, directWeaponData.Icon, (int)ItemCategory.Weapons, directWeaponData.IsShiny, new DirectWeapon(directWeaponData).FullInfo()),
+                    storageItemData => new ItemLibraryViewData(collectionChanged.NewItem, storageItemData.Icon, (int)ItemCategory.Storage, storageItemData.IsShiny, new StorageItem(storageItemData).FullInfo())
+                );
                 itemLibraryView.AddItem(collectionChanged.NewItem, itemViewData);
             });
 

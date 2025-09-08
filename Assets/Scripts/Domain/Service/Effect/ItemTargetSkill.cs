@@ -61,16 +61,17 @@ namespace Domain.Service.Effect
             var selfIndex = GetItemIndex(player, item, map);
 
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var (inventoryItem, index) in player.Character.Inventory.AllItemsWithIndexRecursive)
+            foreach (var index in player.Character.Inventory.AllIndexesRecursive)
             {
-                if (!_itemEffect.CanApplyTo(player, inventoryItem))
+                var inventoryItem = player.Character.Inventory.GetItem(index);
+                if (inventoryItem == null || !_itemEffect.CanApplyTo(player, inventoryItem))
                 {
                     disabledItemIndexes.Add(index);
                 }
             }
 
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
-            if (groundItem != null && !_itemEffect.CanApplyTo(player, groundItem))
+            if (groundItem == null || !_itemEffect.CanApplyTo(player, groundItem))
             {
                 disabledItemIndexes.Add(ItemFocus.GroundItem);
             }
@@ -78,7 +79,7 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var selectedItem = await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map,
+                var selectedItem = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
                     disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
@@ -89,7 +90,7 @@ namespace Domain.Service.Effect
             else
             {
                 var selectedItem =
-                    await player.Character.ItemSelector.SelectItem(player.Character.Inventory, map, selfIndex);
+                    await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map, selfIndex);
                 if (selectedItem != null)
                 {
                     var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);
@@ -109,10 +110,7 @@ namespace Domain.Service.Effect
             return ItemTargetSkillResult.Cancelled;
         }
 
-        public float Evaluate(IPlayer player, IItem item)
-        {
-            return 0;
-        }
+        public float Evaluate() => 0;
 
         public float EvaluatePrice()
         {

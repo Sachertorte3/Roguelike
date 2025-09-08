@@ -24,7 +24,6 @@ namespace Domain.Service.Rooms
             Character = character;
             Event = new PlayerEvent(
                 null,
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(

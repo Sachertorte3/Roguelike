@@ -6,12 +6,10 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
-using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Service.Characters.Conditions;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using R3;
@@ -35,7 +33,11 @@ namespace Domain.Service.Rooms
         {
             Clerk = new Clerk(
                 clerk,
-                player => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
+                player => 
+                {
+                    Debug.Log($"CanExecute: {CanExecute}, GetSalePrice: {GetSalePrice(map)}, GetPurchasePrice: {GetPurchasePrice(map)}");
+                    return CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0);
+                },
                 (_, map) =>
                 {
                     Purchase(map);
@@ -49,7 +51,7 @@ namespace Domain.Service.Rooms
                 return;
             }
 
-            _shopItems = data.Items.Select(item => new ShopItemCache(new Id<IItem>(item.Id), item.Price)).ToHashSet();
+            _shopItems = data.Items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
         }
 
         public void Dispose()
@@ -73,11 +75,14 @@ namespace Domain.Service.Rooms
                     false
                 ),
                 clerkId,
-                items.Select(item => new ShopItemMemento
-                (
-                    item.Item.Id,
-                    new Item(item.Item).Price
-                )).ToList(),
+                items.Select(itemMemento => {
+                    var item = itemMemento.Item.Deserialize();
+                    return new ShopItemMemento
+                    (
+                        item.Id,
+                        item.Price
+                    );
+                }).ToList(),
                 false
             );
         }
@@ -95,7 +100,7 @@ namespace Domain.Service.Rooms
                 Clerk.Entity.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
-                    item.Id.ToString(),
+                    item.Id,
                     item.Price
                 )).ToList(),
                 _isStolen.Value

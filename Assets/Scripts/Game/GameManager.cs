@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Map;
-using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
@@ -32,6 +31,8 @@ namespace Game
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
         private readonly ReactiveProperty<Statistics?> _activeStatistics = new();
         public ReadOnlyReactiveProperty<Statistics?> ActiveStatistics => _activeStatistics;
+        private readonly Subject<SE> _onPlaySE = new();
+        public Observable<SE> OnPlaySE => _onPlaySE;
         private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
@@ -222,6 +223,11 @@ namespace Game
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");
+        }
+
+        public void PlaySE(SE se)
+        {
+            _onPlaySE.OnNext(se);
         }
 
         public void SaveLight()

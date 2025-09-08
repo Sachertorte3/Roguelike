@@ -47,10 +47,12 @@ namespace Domain.Service.Characters
                                 new List<IEffect>
                                 {
                                     new AttackEffect(
-                                        new List<ElementPower> { new(Element.Physical, 3) },
+                                        new List<ElementPower> { new(Element.Physical, CommonSenseParameters.PlayerAttackPowerWhenUnarmed) },
                                         0
                                     )
                                 },
+                                1,
+                                CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
                                 "は殴りかかった")
                         ),
                         0,
@@ -84,7 +86,7 @@ namespace Domain.Service.Characters
             if (RandUtils.IsLessThanProbability(data.DropItemRate) && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
-                inventory.Items[0] = Item.Build(dropItem).ToOption();
+                inventory.Items[0] = ((IItemMemento)Item.Build(dropItem)).ToOption();
             }
 
             return new CharacterMemento

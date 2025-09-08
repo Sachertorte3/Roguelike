@@ -102,7 +102,7 @@ namespace Domain.Service.Effect
             return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
-        public string UpgradePathName => "状態付与";
+        public string UpgradePathName => $"{_condition.Value.name}付与";
 
         public List<UpgradeData> GetUpgrades()
         {

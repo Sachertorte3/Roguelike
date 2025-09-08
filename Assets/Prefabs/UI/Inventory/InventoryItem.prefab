@@ -446,7 +446,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.2509804}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -465,6 +465,7 @@ MonoBehaviour:
   _icon: {fileID: 5185865846578477905}
   _count: {fileID: 353072437012903357}
   _cursedIcon: {fileID: 1298362870781767366}
+  disabledSelectedColor: {r: 1, g: 0, b: 0, a: 0.2509804}
 --- !u!114 &3194023691681705772
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ namespace Domain.Service.Items
 {
     public sealed class ItemFactory
     {
-        public static ItemEntityMemento Build(Vector2Int spawnPosition, ItemMemento item)
+        public static ItemEntityMemento Build(Vector2Int spawnPosition, IItemMemento item)
         {
             return new ItemEntityMemento
             (

@@ -144,9 +144,21 @@ namespace Domain.Service.Items
             return null;
         }
 
+        public void Add(IItem item)
+        {
+            if (!TryAdd(item))
+                throw new Exception("Can't add item to inventory");
+        }
+
         public bool TryAdd(IItem item)
         {
             return _storage.TryAdd(item);
+        }
+
+        public void Remove(IItem item)
+        {
+            if (!TryRemove(item))
+                throw new Exception("Can't remove item from inventory");
         }
 
         public bool TryRemove(IItem item)

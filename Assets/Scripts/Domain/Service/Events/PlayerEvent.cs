@@ -11,14 +11,12 @@ namespace Domain.Service.Events
 {
     internal class PlayerEvent : IPlayerEvent
     {
-        public readonly string? ChoiceMessage;
-        public readonly bool CanBeCanceled;
-        public readonly IReadOnlyList<PlayerChoiceEvent> Events;
+        public string? ChoiceMessage { get; init; }
+        public IReadOnlyList<PlayerChoiceEvent> Events { get; init; }
 
-        public PlayerEvent(string? choiceMessage, bool canBeCanceled, List<PlayerChoiceEvent> choices)
+        public PlayerEvent(string? choiceMessage, List<PlayerChoiceEvent> choices)
         {
             ChoiceMessage = choiceMessage;
-            CanBeCanceled = canBeCanceled;
             Events = choices;
         }
 
@@ -37,10 +35,7 @@ namespace Domain.Service.Events
                 choices.Add(eventData.ChoiceText);
             }
 
-            if (CanBeCanceled)
-            {
-                choices.Add("やめる");
-            }
+            choices.Add("やめる");
 
             var choiceIndex = 0;
             if (choices.Count > 1)
@@ -79,10 +74,7 @@ namespace Domain.Service.Events
                 choices.Add(eventData.ChoiceText);
             }
 
-            if (CanBeCanceled)
-            {
-                choices.Add("やめる");
-            }
+            choices.Add("やめる");
 
             var choiceIndex = 0;
             if (choices.Count > 1)

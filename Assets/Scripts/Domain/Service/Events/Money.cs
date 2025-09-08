@@ -9,12 +9,11 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Money : IDisposable, ISerializable<MoneyMemento>, IPlayerEventEntity, IIconEntity
+    public class Money : IDisposable, ISerializable<MoneyMemento>, IEventEntity, IIconEntity
     {
         public EntityBase Entity { get; init; }
         public readonly int Amount;
@@ -23,22 +22,14 @@ namespace Domain.Service.Events
         {
             Entity = new EntityBase(data.Entity);
             Amount = data.Amount;
-            Event = new PlayerEvent(
-                null,
-                false,
-                new List<PlayerChoiceEvent>
+            Event = new CharacterEvent(
+                character => character.IsPlayer,
+                (character, gameManager, map) =>
                 {
-                    new(
-                        "拾う(選択肢としては表示されない)",
-                        player => true,
-                        (gameManager, map) =>
-                        {
-                            map.Player.AddMoney(Amount);
-                            GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
-                            map.RemoveEventEntity(this);
-                            return UniTask.CompletedTask;
-                        }
-                    )
+                    map.Player.AddMoney(Amount);
+                    GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
+                    map.RemoveEventEntity(this);
+                    return UniTask.CompletedTask;
                 }
             );
         }
@@ -64,7 +55,7 @@ namespace Domain.Service.Events
             _ => ScriptableObjectLoader.LoadIcon("icons_full_16_358")
         };
 
-        public IPlayerEvent Event { get; init; }
+        public ICharacterEvent Event { get; init; }
 
         public void SetVisibility(bool visibility)
         {
@@ -112,11 +103,6 @@ namespace Domain.Service.Events
             }
 
             await map.ExecuteTrapAt(destination, actor as ICharacter);
-        }
-
-        public void Teleport(Vector2Int position)
-        {
-            Entity.Teleport(position);
         }
 
         public MoneyMemento Serialize()

@@ -28,7 +28,8 @@ namespace Game
         private readonly List<ChestMemento> _chests = new();
         private readonly List<TrapMemento> _traps = new();
         private readonly List<MoneyMemento> _money = new();
-        private EntityMemento? _bonfire;
+        private BonfireMemento? _bonfire;
+        private EntityMemento? _magicPot;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
@@ -211,14 +212,17 @@ namespace Game
 
             var center = innerRect.Value.min + new Vector2Int(2, 2);
 
-            _bonfire = Bonfire.Build(center);
+            if (Random.value < 0.5)
+                _bonfire = Bonfire.Build(center);
+            else
+                _magicPot = MagicPot.Build(center);
 
             foreach (var position in innerRect.Value.RectRange())
             {
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
 
-            foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 4)))
+            foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 3)))
             {
                 var position = center + direction.Vector();
                 var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
@@ -255,7 +259,7 @@ namespace Game
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 var item = data.ItemDatabase.GetRandomItem(data.Progress);
-                _items.Add(ItemFactory.Build(position, Item.Build(item)));
+                _items.Add(ItemFactory.Build(position, item.Build()));
             }
         }
 
@@ -278,8 +282,15 @@ namespace Game
                 else if (Random.value < data.WeaponChanceInChest)
                 {
                     var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
-                    _chests.Add(
-                        Chest.Build(position, WeaponFactory.Create(weapon, data.WeaponPrefixes.GetRandomItem(data.Progress))));
+                    if (weapon is DirectWeaponData directWeapon)
+                    {
+                        _chests.Add(
+                            Chest.Build(position, DirectWeapon.Build(directWeapon, data.WeaponPrefixes.GetRandomItem(data.Progress), isCursed: false)));
+                    }
+                    else
+                    {
+                        _chests.Add(Chest.Build(position, weapon));
+                    }
                 }
                 else
                 {
@@ -314,56 +325,12 @@ namespace Game
                 _tilemap.Build(),
                 _characters,
                 _items,
-                EventEntityManager.Build(_stairs, _chests, _traps, _money, _bonfire.ToOption()),
+                EventEntityManager.Build(_stairs, _chests, _traps, _money, _bonfire.ToOption(), _magicPot.ToOption()),
                 FireEntityManager.Build(),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),
                 _shop.ToOption(),
                 _blankPositionsInRooms.Values.SelectMany(positions => positions).GetAtRandom()
-            );
-        }
-    }
-    public class WorldMapBuilder
-    {
-        private readonly Id<IMap> _id;
-        private readonly string _seed;
-        private readonly List<StairsMemento> _stairs = new();
-
-        public WorldMapBuilder(Id<IMap> id, string seed)
-        {
-            _id = id;
-            _seed = seed;
-        }
-        private Vector2Int GetRandomBlankPositionInRoom()
-        {
-            return Vector2Int.zero;
-        }
-        public Vector2Int GetRandomStairPosition()
-        {
-            return GetRandomBlankPositionInRoom();
-        }
-        public void AddMovementEntity(MovementData data)
-        {
-            if (data.Id != null && data.DestinationId != null)
-                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
-                    data.Destination, data.DestinationId));
-            else
-                _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
-                    data.Destination));
-        }
-        public MapMemento Build()
-        {
-            return new MapMemento(
-                _id,
-                TilemapBuilder.Build(_seed),
-                new List<CharacterMemento>(),
-                new List<ItemEntityMemento>(),
-                EventEntityManager.Build(_stairs, new List<ChestMemento>(), new List<TrapMemento>(), new List<MoneyMemento>(), Option<EntityMemento>.None),
-                FireEntityManager.Build(),
-                new List<string>(),
-                Option<RoomMemento>.None,
-                Option<ShopMemento>.None,
-                Vector2Int.zero
             );
         }
     }

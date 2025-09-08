@@ -20,17 +20,16 @@ namespace Domain.Service.Events
     public class Chest : ISerializable<ChestMemento>, IPlayerEventEntity, IIconEntity
     {
         public EntityBase Entity { get; init; }
-        private Option<Item> _item;
+        private Option<IItem> _item;
         private Option<EnemyData> _mimic;
 
         public Chest(ChestMemento memento)
         {
-            _item = memento.Item.Map(i => new Item(i));
+            _item = memento.Item.Map(i => i.Deserialize());
             _mimic = memento.Mimic;
             Entity = new EntityBase(memento.Entity);
             Event = new PlayerEvent(
                 "宝箱を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(
@@ -118,12 +117,12 @@ namespace Domain.Service.Events
             );
         }
 
-        public static ChestMemento Build(Vector2Int position, ItemData item)
+        public static ChestMemento Build(Vector2Int position, IItemData item)
         {
-            return Build(position, new Item(item).Serialize());
+            return Build(position, item.Build());
         }
 
-        public static ChestMemento Build(Vector2Int position, ItemMemento item)
+        public static ChestMemento Build(Vector2Int position, IItemMemento item)
         {
             return new ChestMemento
             (

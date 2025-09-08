@@ -36,7 +36,6 @@ namespace Domain.Service.Events
             };
             Event = new PlayerEvent(
                 $"{entityName}を見つけた",
-                true,
                 new List<PlayerChoiceEvent>
                 {
                     new(
@@ -62,6 +61,13 @@ namespace Domain.Service.Events
 
         private UniTask DoEvent(IGameManager gameManager)
         {
+            var se = Type switch {
+                MovementEntityType.UpStairs => SE.Stairs,
+                MovementEntityType.DownStairs => SE.Stairs,
+                MovementEntityType.MagicCircle => SE.Teleport,
+                _ => SE.Stairs,
+            };
+            gameManager.PlaySE(se);
             gameManager.MoveMap(Destination, DestinationId);
             return UniTask.CompletedTask;
         }

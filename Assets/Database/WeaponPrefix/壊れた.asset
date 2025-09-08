@@ -17,7 +17,3 @@ MonoBehaviour:
   PowerMagnification: 0.5
   UsageLimitMagnification: 0.2
   AdditionalUpgradeLimit: -1
-  AdditionalEffects: []
-  references:
-    version: 2
-    RefIds: []

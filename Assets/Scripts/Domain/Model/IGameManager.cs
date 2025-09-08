@@ -11,6 +11,7 @@ namespace Domain.Model
         public UniTask<int> GetChoice(string? text, params string[] choices);
         public UniTask<string> GetTextInput();
         public void MoveMap(Id<IMap> destination, Id<IEntity> from);
+        public void PlayBGM(BGM bgm);
         public void PlaySE(SE se);
     }
 }

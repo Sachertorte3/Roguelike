@@ -24,6 +24,7 @@ using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using Unity.Logging;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -118,8 +119,6 @@ namespace Game
                 ItemManager.SpawnItem(item);
             }
 
-            SetRules();
-
             if (map.MonsterHouse.HasValue)
             {
                 _monsterHouse = new MonsterHouse(map.MonsterHouse.Value, Player.Character.Entity.CurrentPosition);
@@ -145,11 +144,13 @@ namespace Game
 
                 if (clerk != null)
                 {
-                    _shop = new Shop(map.Shop.Value, clerk, this);
+                    _shop = new Shop(map.Shop.Value, clerk, Globals.GameManager, this);
                     EventEntityManager.Add(_shop.Clerk);
                     _eventAreas.Add(_shop);
                 }
             }
+
+            SetRules();
 
             KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
                 .Select(character => CharacterManager.Characters.ById(new Id<IEntity>(character)))
@@ -490,6 +491,7 @@ namespace Game
                 _tilemap.UpdateChunk(positionChanged);
                 if (IsGrass(positionChanged))
                 {
+                    Log.Debug($"SetGrasses: {Player.Character.Entity.CurrentPosition}");
                     SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
                     Globals.GameManager.PlaySE(SE.GrassWalk);
                 }

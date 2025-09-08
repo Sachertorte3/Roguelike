@@ -4141,6 +4141,7 @@ MonoBehaviour:
   _audioSource: {fileID: 883410307}
   _normalBGM: {fileID: 8300000, guid: 1b6d88c16610001499d6e2f1866e4f66, type: 3}
   _stolenBGM: {fileID: 8300000, guid: a6b3442616705ec47bb67d3911a3b5f9, type: 3}
+  _shopBGM: {fileID: 8300000, guid: 9889d8d8c8c697b4c860037e7ef138c7, type: 3}
 --- !u!224 &897980653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2055982679562989546, guid: 944d5a06bd2180d45b6c21218789d241, type: 3}

@@ -25,6 +25,15 @@ namespace Domain.Service.Effect
         public bool ApplyToTrap = true;
         public bool ApplyToChest = true;
 
+        public BreakEffect(bool applyToCharacter, bool applyToItem, bool applyToMoney, bool applyToTrap, bool applyToChest)
+        {
+            ApplyToCharacter = applyToCharacter;
+            ApplyToItem = applyToItem;
+            ApplyToMoney = applyToMoney;
+            ApplyToTrap = applyToTrap;
+            ApplyToChest = applyToChest;
+        }
+
         public override UniTask Apply(IEntity target, Vector2Int position, IMap map)
         {
             if (target is Character character && ApplyToCharacter)

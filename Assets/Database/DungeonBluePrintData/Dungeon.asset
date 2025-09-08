@@ -90,6 +90,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e554e921d09e12641b64a9d7d94e8da5, type: 2}
       - {fileID: 11400000, guid: a521a7f0b6e112e43aa5abd15f33e2ce, type: 2}
       - {fileID: 11400000, guid: b9f904d06d12b5341b2c06dd70f44911, type: 2}
+      - {fileID: 11400000, guid: 67ab94dcf2dc98b4a8ba5b6dd2a296be, type: 2}
     Artifacts:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
@@ -235,11 +236,11 @@ MonoBehaviour:
       Weight: 1
   WeaponPrefixes:
     items:
-    - {fileID: 11400000, guid: 286a975024aab3d4e8025507cc4962d0, type: 2}
     - {fileID: 11400000, guid: 09d567260d3482f469285f4b1da91479, type: 2}
     - {fileID: 11400000, guid: 526c339ba4a7d7447bc8bc9c74ea0c80, type: 2}
     - {fileID: 11400000, guid: b893a210f15e56c4dacad01a4e30b4cf, type: 2}
-    - {fileID: 11400000, guid: 271ca7b9d9597a84192e54d2658054c7, type: 2}
+    - {fileID: 11400000, guid: 099aa4020680bd24480656810b93f663, type: 2}
+    - {fileID: 11400000, guid: 0bab0ebc5b7427e4cafabd27b89fee87, type: 2}
   Npcs:
     items:
     - Item: {fileID: 11400000, guid: 1001b1655125ead4cb43187754915553, type: 2}

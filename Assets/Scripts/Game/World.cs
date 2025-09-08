@@ -174,6 +174,7 @@ namespace Game
 
             _activeMapId = mapId;
             _activeMap.Value = map;
+
             return map;
         }
     }

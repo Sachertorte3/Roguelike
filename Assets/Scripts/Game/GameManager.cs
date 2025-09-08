@@ -31,6 +31,8 @@ namespace Game
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
         private readonly ReactiveProperty<Statistics?> _activeStatistics = new();
         public ReadOnlyReactiveProperty<Statistics?> ActiveStatistics => _activeStatistics;
+        private readonly Subject<BGM> _onPlayBGM = new();
+        public Observable<BGM> OnPlayBGM => _onPlayBGM;
         private readonly Subject<SE> _onPlaySE = new();
         public Observable<SE> OnPlaySE => _onPlaySE;
         private readonly ReactiveProperty<GameState> _state = new();
@@ -93,6 +95,7 @@ namespace Game
             {
                 var revivePlayer = false;
                 LoadPreview(saveData);
+                PlayBGM(BGM.Normal);
                 var firstWaitTime = saveData.TurnWaitTime;
                 if (!saveData.World.IsPlayerDead)
                 {
@@ -127,6 +130,9 @@ namespace Game
                     saveData = null;
                     firstWaitTime = 0;
                 }
+
+                
+                PlayBGM(BGM.Normal);
 
                 MapManager map;
                 if (saveData == null)
@@ -219,10 +225,16 @@ namespace Game
         {
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
+            PlayBGM(BGM.Normal);
             var map = _world.LoadMap(mapId, destination);
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");
+        }
+
+        public void PlayBGM(BGM bgm)
+        {
+            _onPlayBGM.OnNext(bgm);
         }
 
         public void PlaySE(SE se)

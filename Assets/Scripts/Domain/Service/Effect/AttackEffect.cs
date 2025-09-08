@@ -28,12 +28,14 @@ namespace Domain.Service.Effect
             _criticalRate = criticalRate;
         }
 
-        public void MultiplyPower(float multiplier)
+        public List<ElementPower> MultiplyPower(float multiplier)
         {
+            var result = new List<ElementPower>();
             foreach (var elementPower in _elementPowers)
             {
-                elementPower.MultiplyPower(multiplier);
+                result.Add(elementPower.MultiplyPower(multiplier));
             }
+            return result;
         }
 
         public override Color Color => Colors.Red;

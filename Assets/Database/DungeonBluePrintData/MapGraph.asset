@@ -128,6 +128,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 7b644bd8-2421-4da3-a8e9-c14934c0dd7c
 --- !u!114 &-8704829509910598880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,6 +313,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 2ace4e47-24b8-4b99-9683-55552fb5f899
 --- !u!114 &-8280694011459171652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +447,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: c72dc9ec-188e-4605-8aff-a40f92642bb1
 --- !u!114 &-8252536695972427569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,6 +584,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: ff1a2b85-8db8-44e0-80ae-f081fd66c4cf
 --- !u!114 &-7782572915970204524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -714,6 +718,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 9aef76f9-95a4-4197-a4bb-af7a95b0c154
 --- !u!114 &-7403749162726336941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,7 +775,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
+    RestRoomChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -840,7 +845,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
+    RestRoomChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 300
@@ -1087,6 +1092,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: cda8c0cf-4fc1-496c-b9ac-9439e535b4a3
 --- !u!114 &-4392587624264873912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1346,6 +1352,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 2b00c775-ce3a-4d16-bbf4-47a224ec6d64
 --- !u!114 &-3797997761962492589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1479,6 +1486,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: f4e8ed32-77f4-47b0-8f0d-67cbc41d8a11
 --- !u!114 &-3161589598696151335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1823,6 +1831,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: a65b020f-08a7-4bba-8c83-1c386516f4b1
 --- !u!114 &761465357129200511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1956,6 +1965,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: a5974048-d9d3-48fc-ab33-d0002ae9d4f3
 --- !u!114 &1255173468955364467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2089,6 +2099,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: a81bed78-5ce4-463b-a3c5-cd95e727e04a
 --- !u!114 &3664893730446323036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2279,6 +2290,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 222dccdf-f7b5-4562-b98a-7de90a2be7c5
 --- !u!114 &5437942102726374776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2463,6 +2475,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: c6c02538-0ad3-48c8-a52e-1e2a47aef582
 --- !u!114 &5720250255583208601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2593,6 +2606,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 2dd4385f-1d74-451c-9d56-183ec8fa2c49
 --- !u!114 &7860269649140603457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2830,6 +2844,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 5608f3f7-bfbd-45ea-8c0a-d7a148323573
 --- !u!114 &8653616506524685821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2963,6 +2978,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 396f9d48-5d43-46ea-80c8-02a934764d82
 --- !u!114 &8726780541111111057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3044,7 +3060,7 @@ MonoBehaviour:
     ShinyChance: 0
     SleepChance: 0.75
     MimicChance: 0.1
-    ShopChance: 0
+    ShopChance: 1
     MonsterHouseChance: 0
     RestRoomChance: 0
     ItemCount: 2
@@ -3199,6 +3215,7 @@ MonoBehaviour:
   _nextMap: 0
   _teleportIn: 0
   _teleportOut: 0
+  _mapId: 5e1ea3f2-39f8-4179-a552-875992cade41
 --- !u!114 &9206932752471496282
 MonoBehaviour:
   m_ObjectHideFlags: 0

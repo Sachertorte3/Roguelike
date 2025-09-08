@@ -6,6 +6,7 @@ using Sirenix.Utilities;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 namespace View.UI
 {
@@ -19,6 +20,7 @@ namespace View.UI
         public Observable<int> OnSelected => _onSelected;
         public void SetCapacity(int capacity)
         {
+            Log.Debug($"[View]StorageView SetCapacity: {capacity}");
             Clear();
             _itemViews = new InventoryItemView[capacity];
             for (var i = 0; i < capacity; i++)
@@ -27,24 +29,52 @@ namespace View.UI
             }
             _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ => _onSelected.OnNext(index)).AddTo(view));
 
-            for (var i = 0; i < capacity; i++)
-            {
-                var nav = new Navigation
-                {
-                    mode = Navigation.Mode.Explicit,
-                    selectOnLeft = _itemViews[(i - 1 + _itemViews.Length) % _itemViews.Length]
-                        .GetComponent<Selectable>(),
-                    selectOnRight = _itemViews[(i + 1) % _itemViews.Length].GetComponent<Selectable>()
-                };
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
-            }
+            UpdateHorizontalNavigation();
         }
         public void SetDefaultIcon(int index, Sprite icon)
         {
             _itemViews[index].SetDefaultIcon(icon);
         }
-        public void ResetNavigation()
+
+        private void UpdateHorizontalNavigation()
         {
+            Log.Verbose($"[View]StorageView UpdateNavigation");
+            for (var i = 0; i < _itemViews.Length; i++)
+            {
+                var currentNav = _itemViews[i].GetComponent<Selectable>().navigation;
+                var nav = new Navigation
+                {
+                    mode = Navigation.Mode.Explicit,
+                    selectOnLeft = FindInteractableItem(i, -1),
+                    selectOnRight = FindInteractableItem(i, 1),
+                    selectOnUp = currentNav.selectOnUp,
+                    selectOnDown = currentNav.selectOnDown
+                };
+                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+            }
+        }
+
+        private Selectable? FindInteractableItem(int currentIndex, int direction)
+        {
+            var startIndex = currentIndex;
+            var index = (currentIndex + direction + _itemViews.Length) % _itemViews.Length;
+
+            while (index != startIndex)
+            {
+                var canSkip = _itemViews[index].CanSkip;
+
+                if (!canSkip)
+                {
+                    return _itemViews[index].GetComponent<Selectable>();
+                }
+                index = (index + direction + _itemViews.Length) % _itemViews.Length;
+            }
+
+            return null;
+        }
+        public void ResetVerticalNavigation()
+        {
+            Log.Verbose($"[View]StorageView ResetNavigation");
             for (var i = 0; i < Capacity; i++)
             {
                 var nav = _itemViews[i].GetComponent<Selectable>().navigation;
@@ -55,6 +85,7 @@ namespace View.UI
         }
         public void SetParentNavigation(StorageView parent, int index)
         {
+            Log.Verbose($"[View]StorageView SetParentNavigation: {index}");
             for (var i = 0; i < Capacity; i++)
             {
                 var nav = _itemViews[i].GetComponent<Selectable>().navigation;
@@ -64,6 +95,7 @@ namespace View.UI
         }
         public void SetChildrenNavigation(StorageView children)
         {
+            Log.Verbose($"[View]StorageView SetChildrenNavigation");
             for (var i = 0; i < Capacity; i++)
             {
                 var nav = _itemViews[i].GetComponent<Selectable>().navigation;
@@ -73,36 +105,49 @@ namespace View.UI
         }
         public void Clear()
         {
-            foreach (var view in _itemViews)
+            Log.Debug($"[View]StorageView Clear (Capacity: {_itemViews.Length})");
+            foreach (var view in _itemViews.WhereNotNull())
                 Destroy(view.gameObject);
             _itemViews = Array.Empty<InventoryItemView>();
         }
 
         public void Select(int index)
         {
-            _itemViews[index].Select();
+            Log.Verbose($"[View]StorageView Select: {index}");
+            if (_itemViews[index].interactable)
+                _itemViews[index].Select();
         }
 
-        public void Replace(ItemViewData itemViewData, int index, bool interactable)
+        public void Replace(ItemViewData itemViewData, int index, bool interactable, bool canSkip)
         {
+            Log.Verbose($"[View]StorageView Replace: {index}");
             _itemViews[index].Set(itemViewData.icon, itemViewData.count, itemViewData.isCursed, itemViewData.isShiny, itemViewData.isCountIdentified, itemViewData.isCurseIdentified);
             _itemViews[index].UpdateInteractable(interactable);
+            _itemViews[index].UpdateSkip(canSkip);
+            UpdateHorizontalNavigation();
         }
 
-        public void Remove(int index)
+        public void Remove(int index, bool interactable, bool canSkip)
         {
+            Log.Verbose($"[View]StorageView Remove: {index}");
             _itemViews[index].Remove();
-            _itemViews[index].UpdateInteractable(true);
+            _itemViews[index].UpdateInteractable(interactable);
+            _itemViews[index].UpdateSkip(canSkip);
+            UpdateHorizontalNavigation();
         }
         public void EnableAll()
         {
+            Log.Debug($"[View]StorageView EnableAll");
             foreach (var view in _itemViews)
                 view.UpdateInteractable(true);
+            UpdateHorizontalNavigation();
         }
         public void DisableAll()
         {
+            Log.Debug($"[View]StorageView DisableAll");
             foreach (var view in _itemViews)
                 view.UpdateInteractable(false);
+            UpdateHorizontalNavigation();
         }
     }
 }

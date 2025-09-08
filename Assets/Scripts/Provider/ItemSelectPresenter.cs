@@ -20,7 +20,7 @@ namespace Provider
                 {
                     if (message.IsWaiting)
                     {
-                        itemSelectText.Show();
+                        itemSelectText.Show(message.Text);
                         inventoryView.LockItems(message.DisabledItemIndexes.Select(index => index.ToInventoryViewIndex()).ToArray());
                     }
                     else

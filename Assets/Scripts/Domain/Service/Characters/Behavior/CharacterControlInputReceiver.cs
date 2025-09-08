@@ -8,23 +8,23 @@ namespace Domain.Service.Characters.Behavior
 {
     public class CharacterControlInputReceiver
     {
-        private ItemFocus _focus = ItemFocus.Empty;
+        private ItemFocus _focus = new(0);
         private readonly Subject<Unit> _onActionRead = new();
         private readonly AsyncReactiveProperty<(Move action, bool isStarted)> _onMoveInputReceived = new((null, false));
 
         private readonly AsyncReactiveProperty<ItemFocus>
-            _onUseItemActionReceived = new(ItemFocus.Empty);
+            _onUseItemActionReceived = new(new(0));
 
         private readonly AsyncReactiveProperty<ItemFocus> _onThrowItemActionReceived =
-            new(ItemFocus.Empty);
+            new(new(0));
 
         private readonly AsyncReactiveProperty<ItemFocus> _onDropItemActionReceived =
-            new(ItemFocus.Empty);
+            new(new(0));
 
         private readonly AsyncReactiveProperty<Unit> _onDoNothingActionReceived = new(Unit.Default);
 
         private readonly AsyncReactiveProperty<ItemFocus> _onRenameItemActionReceived =
-            new(ItemFocus.Empty);
+            new(new(0));
 
         private readonly ReactiveProperty<bool> _enable = new(false);
 

@@ -99,7 +99,10 @@ namespace Domain.Service.Characters
                 }
             });
 
-            AutoIdentify.Where(autoIdentify => autoIdentify).Subscribe(_ =>
+            Observable.Merge(
+                AutoIdentify.Where(autoIdentify => autoIdentify).AsUnitObservable(),
+                Settings.WorldSettings.AutoIdentify.Value.Where(autoIdentify => autoIdentify).AsUnitObservable()
+            ).Subscribe(_ =>
             {
                 foreach (var item in Inventory.AllItemsRecursive)
                 {
@@ -440,7 +443,8 @@ namespace Domain.Service.Characters
 
                         return result;
                     },
-                    async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
+                    async itemTarget => await item.Use(this, Entity.CurrentPosition, direction, map),
+                    async inventoryTarget => await item.Use(this, Entity.CurrentPosition, direction, map)
                 );
                 if (result.Result == SkillResult.Success)
                 {
@@ -795,7 +799,7 @@ namespace Domain.Service.Characters
 
         public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index)
         {
-            if (item != null && item.IdentifyIfGot || AutoIdentify.CurrentValue)
+            if (item != null && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
             {
                 KnowItem(item, false);
             }

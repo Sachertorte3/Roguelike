@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
-using Domain.Model.Character;
 using Domain.Model.Character.Message;
 using Domain.Model.Item;
 using Domain.Model.Memento;
@@ -46,7 +45,7 @@ namespace Domain.Service.Items
         public Storage(StorageMemento data)
         {
             _items = new ObservableList<IItem?>();
-            for (var i = 0; i < data.Items.Length; i++)
+            for (var i = 0; i < data.Items.Count; i++)
             {
                 //MEMO: Since you are only subscribed to Replace, additions must also be done using Replace.
                 _items.Add(null);
@@ -73,9 +72,9 @@ namespace Domain.Service.Items
                 }
             });
 
-            for (var i = 0; i < data.Items.Length; i++)
+            foreach (var (item, i) in data.Items.Index())
             {
-                Replace(data.Items[i].Map(item => new Item(item)).Value, i);
+                Replace(data.Items[i].Map(item => item.Deserialize()).Value, i);
             }
         }
 
@@ -91,7 +90,7 @@ namespace Domain.Service.Items
         {
             return new StorageMemento
             (
-                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToArray(),
+                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToList(),
                 _canAddItemsWithStorage
             );
         }
@@ -99,15 +98,15 @@ namespace Domain.Service.Items
         public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage)
         {
             return new StorageMemento(
-                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToArray(),
+                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToList(),
                 canAddItemsWithStorage
             );
         }
 
         public static StorageMemento Build(int capacity, bool canAddItemsWithStorage)
         {
-            var itemArray = EnumerableExtension.CreateNewInstances<Option<ItemMemento>>(capacity).ToArray();
-            return new StorageMemento(itemArray, canAddItemsWithStorage);
+            var items = EnumerableExtension.CreateNewInstances<Option<IItemMemento>>(capacity).ToList();
+            return new StorageMemento(items, canAddItemsWithStorage);
         }
 
         public bool HasEmptySpace()
@@ -125,6 +124,12 @@ namespace Domain.Service.Items
             return _items.IndexOf(item);
         }
 
+        public void Add(IItem item)
+        {
+            if (!TryAdd(item))
+                throw new Exception("Can't add item to storage");
+        }
+
         public bool TryAdd(IItem item)
         {
             if (!_canAddItemsWithStorage && item.ItemStorage.IsSome)
@@ -137,6 +142,12 @@ namespace Domain.Service.Items
             }
 
             return false;
+        }
+
+        public void Remove(IItem item)
+        {
+            if (!TryRemove(item))
+                throw new Exception("Can't remove item from storage");
         }
 
         public bool TryRemove(IItem item)
@@ -166,14 +177,6 @@ namespace Domain.Service.Items
         public IItem? Remove(int index)
         {
             return Replace(null, index).Value;
-        }
-
-        public bool Remove(IItem item)
-        {
-            var index = _items.IndexOf(item);
-            if (index < 0)
-                return false;
-            return Remove(index) != null;
         }
 
         public IEnumerable<IItem> Clear()

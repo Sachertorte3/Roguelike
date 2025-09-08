@@ -1,11 +1,12 @@
 #nullable enable
 using System.Collections.Generic;
+using System.Linq;
+using R3;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using R3;
-using Sirenix.Utilities;
-using System.Linq;
+using Utilities;
 
 namespace View.UI
 {
@@ -31,8 +32,11 @@ namespace View.UI
 
         private void GenerateViews()
         {
-            foreach (var view in _itemViews)
+            Debug.Log($"GenerateViews: {_items.Count}");
+            foreach (var view in _itemViews.WhereNotNull())
+            {
                 Destroy(view.gameObject);
+            }
             _itemViews.Clear();
             foreach (var itemData in _items.OrderBy(item => item.Category).ThenBy(item => item.Name))
             {

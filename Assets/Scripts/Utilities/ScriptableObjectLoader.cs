@@ -10,6 +10,10 @@ namespace Utilities
             return Addressables.LoadAssetAsync<T>($"Assets/Database/{typeof(T).Name}/{name}.asset")
                         .WaitForCompletion();
         }
+        public static T LoadWithPath<T>(string path)
+        {
+            return Addressables.LoadAssetAsync<T>(path).WaitForCompletion();
+        }
         public static GameObject LoadPrefab(string name)
         {
             return Addressables.LoadAssetAsync<GameObject>($"Assets/Prefabs/{name}.prefab").WaitForCompletion();

@@ -188,8 +188,9 @@ namespace Utilities
                 var value = list[k];
                 list[k] = list[i];
                 list[i] = value;
-                yield return value;
             }
+
+            return list;
         }
     }
 }

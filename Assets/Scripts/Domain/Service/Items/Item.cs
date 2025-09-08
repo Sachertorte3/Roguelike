@@ -2,67 +2,52 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
-using Domain.Model.Character;
-using Domain.Model.Condition;
+using Domain.Model;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
-using Domain.Model.Effect.Position;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
-using Domain.Service.Logs;
-using R3;
-using Unity.Logging;
 using UnityEngine;
-using Utilities;
 using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
-    public class Item : IItem, IHasUpgrades, IDisposable
+    public class Item : BaseItem, ISerializable<ItemMemento>
     {
-        public Id<IItem> Id { get; init; }
-        public ItemCategory Category { get; init; }
-        public string BaseName { get; init; }
-        public string RevealedName { get; init; }
-        public Option<string> CustomName { get; private set; }
-
-        public string UnknownName(ItemPlaceholders itemPlaceholders)
-        {
-            return $"?{CustomName.UnwrapOr(itemPlaceholders.GetPlaceholder(BaseName, Category))}?";
-        }
-
-        public string DebugName => _fullName;
-        private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
-        private readonly List<UpgradePath> _upgradePaths;
-        public int AppliedUpgrades => _upgradePaths.Count;
-        private int _maxUsages;
-        private readonly ReactiveProperty<int> _remainingUsages;
+        private readonly ItemCategory _category;
         private readonly Option<ISkill> _skillOnUse;
         private readonly Option<ISkill> _skillOnThrow;
-        private readonly Option<Storage> _itemStorage;
-        private readonly List<IConditionData> _conditions;
-        private readonly Subject<Unit> _onItemUpdated = new();
-        private readonly Subject<bool> _onCursedChanged = new();
-        private readonly CompositeDisposable _disposables = new();
+        private readonly bool _useOnDeath;
+        private readonly bool _cannotUseIfCursed;
+        private readonly bool _cannotDropIfCursed;
+        private readonly bool _identifyIfGot;
+        private readonly bool _identifyIfUsed;
+        private readonly bool _autoDestroyWhenDisabled;
+
+        public override string RevealedName => BaseName;
+        public override ItemCategory Category => _category;
+        public override Option<ISkill> SkillOnUse => _skillOnUse;
+        public override Option<ISkill> SkillOnThrow => _skillOnThrow;
+        protected override bool HasSameEffect => _hasSameEffect;
+        protected override bool HasSameSkill => _hasSameSkill;
+        public override bool UseOnDeath => _useOnDeath;
+        public override Option<IStorage> ItemStorage => Option<IStorage>.None;
+        public override bool CannotUseIfCursed => _cannotUseIfCursed;
+        public override bool CannotDropIfCursed => _cannotDropIfCursed;
+        public override bool IdentifyIfGot => _identifyIfGot;
+        public override bool IdentifyIfUsed => _identifyIfUsed;
+        public override bool AutoDestroyWhenDisabled => _autoDestroyWhenDisabled;
+        public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         public Item(ItemData data) : this(Build(data))
         {
         }
 
-        public Item(ItemMemento data)
+        public Item(ItemMemento data) : base(
+            data.BaseItem)
         {
-            Id = new Id<IItem>(data.Id);
-            Category = data.Category;
-            BaseName = data.BaseName;
-            RevealedName = data.RevealedName;
-            CustomName = data.CustomName;
-            Icon = ScriptableObjectLoader.LoadIcon(data.IconName);
-            IsShiny = data.IsShiny;
-            State = data.State;
-            _upgradePaths = data.UpgradePaths.Select(path => new UpgradePath(path)).ToList();
+            _category = data.Category;
             _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
             _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
                 spawnEffectSkillMemento =>
@@ -76,7 +61,8 @@ namespace Domain.Service.Items
                                 probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess,
                                 log: spawnEffectSkillMemento.Log
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         ).Deserialize();
                     }
                     else if (data.HasSameSkill)
@@ -85,7 +71,8 @@ namespace Domain.Service.Items
                             spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
                                 probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
                         ).Deserialize();
                     }
                     else
@@ -93,106 +80,34 @@ namespace Domain.Service.Items
                         return new SpawnEffectSkill(spawnEffectSkillMemento);
                     }
                 },
-                itemTargetSkillMemento => new ItemTargetSkill(itemTargetSkillMemento)
+                itemTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
+                inventoryTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
             ));
-            _hasSameEffect = data.HasSameEffect;
-            _hasSameSkill = data.HasSameSkill;
-            _itemStorage = data.Storage.Map(storage =>
-            {
-                var itemStorage = new Storage(storage);
-                itemStorage.OnItemChanged.Subscribe(_ =>
-                {
-                    _onItemUpdated.OnNext(Unit.Default);
-                }).AddTo(_disposables);
-                itemStorage.OnItemUpdated.Subscribe(_ =>
-                {
-                    _onItemUpdated.OnNext(Unit.Default);
-                }).AddTo(_disposables);
-                return itemStorage;
-            });
-            UseOnDeath = data.UseOnDeath;
-            _maxUsages = data.MaxUsages;
-            _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
-            IsCursed = data.IsCursed;
-            CannotUseIfCursed = data.CannotUseIfCursed;
-            CannotDropIfCursed = data.CannotDropIfCursed;
-            IdentifyIfGot = data.IdentifyIfGot;
-            IdentifyIfUsed = data.IdentifyIfUsed;
-            IsCurseIdentified = data.IsCurseIdentified;
-            AutoDestroyWhenDisabled = data.AutoDestroyWhenDisabled;
-            UpgradeLimit = data.UpgradeLimit;
-            _conditions = data.Conditions.ToList();
+            FeaturesToMergeWeapon = data.FeaturesToMergeWeapon;
         }
 
-        public string GetName(IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            if (player.Character.IsKnownItem(this))
-                return _fullName;
-            return UnknownName(itemPlaceholders);
-        }
-
-        public Sprite Icon { get; init; }
-        public bool IsShiny { get; init; }
-        public ItemState State { get; private set; }
-        public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
-        public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
-        public bool CanActivateWhenUsed => SkillOnUse.HasValue && !IsDisabled;
-        public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
-        public Option<ISkill> SkillOnUse => _skillOnUse;
-        public Option<ISkill> SkillOnThrow => _skillOnThrow;
         private readonly bool _hasSameEffect;
         private readonly bool _hasSameSkill;
-        public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
-        public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
-        public bool UseOnDeath { get; init; }
-        public Option<IStorage> ItemStorage => _itemStorage.Map(storage => (IStorage)storage);
-        public int Price => Mathf.RoundToInt(EvaluatePrice());
-        public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
-        public int MaxUsages => _maxUsages;
-        public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
-        public bool IsCursed { get; private set; }
-        public bool CannotUseIfCursed { get; init; }
-        public bool CannotDropIfCursed { get; init; }
-        public bool IdentifyIfGot { get; init; }
-        public bool IdentifyIfUsed { get; init; }
-        public bool IsCurseIdentified { get; private set; }
-        public bool AutoDestroyWhenDisabled { get; init; }
-        public int UpgradeLimit { get; init; }
-        public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
-        public Observable<Unit> OnItemUpdated => _onItemUpdated;
-        public Observable<bool> OnCursedChanged => _onCursedChanged;
 
         public ItemMemento Serialize()
         {
-            return new ItemMemento
+            var json = JsonUtility.ToJson(new ItemMemento
             (
-                Id.ToString(),
-                Category,
-                BaseName,
-                RevealedName,
-                CustomName,
-                Icon.name,
-                IsShiny,
-                upgradePaths: _upgradePaths.Select(path => path.ToString()).ToList(),
-                state: State,
+                baseItem: SerializeBase(),
+                category: _category,
                 skillOnUse: _skillOnUse.Map(skill => skill.Serialize()),
                 skillOnThrow: _skillOnThrow.Map(skill => skill.Serialize()),
                 hasSameEffect: _hasSameEffect,
                 hasSameSkill: _hasSameSkill,
-                useOnDeath: UseOnDeath,
-                storage: _itemStorage.Map(storage => storage.Serialize()),
-                maxUsages: _maxUsages,
-                remainingUsages: _remainingUsages.CurrentValue,
-                isCursed: IsCursed,
+                useOnDeath: _useOnDeath,
                 cannotUseIfCursed: CannotUseIfCursed,
                 cannotDropIfCursed: CannotDropIfCursed,
-                identifyIfGot: IdentifyIfGot,
-                identifyIfUsed: IdentifyIfUsed,
-                isCurseIdentified: IsCurseIdentified,
-                autoDestroyWhenDisabled: AutoDestroyWhenDisabled,
-                upgradeLimit: UpgradeLimit,
-                conditions: _conditions.ToArray()
-            );
+                identifyIfGot: _identifyIfGot,
+                identifyIfUsed: _identifyIfUsed,
+                autoDestroyWhenDisabled: _autoDestroyWhenDisabled,
+                featuresToMergeWeapon: FeaturesToMergeWeapon.ToList()
+            ));
+            return JsonUtility.FromJson<ItemMemento>(json);
         }
 
         public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None)
@@ -203,466 +118,44 @@ namespace Domain.Service.Items
                     ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse)
                     : null,
                 ItemEffectType.ItemTarget => new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
-                _ => null
+                ItemEffectType.InventoryTarget => new InventoryTargetSkill(InventoryTargetSkill.Build(data.InventoryEffect)).Serialize(),
+                ItemEffectType.None => null,
+                _ => throw new Exception("Invalid item effect type")
             };
             var skillOnThrow = data.SpawnEffectsOnThrow
                 ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
                 : null;
 
-            var memento = new ItemMemento
+            var json = JsonUtility.ToJson(new ItemMemento
             (
-                Id<IItem>.Generate().ToString(),
-                data.Category,
-                data.name,
-                data.name,
-                Option<string>.None,
-                data.Icon.name,
-                data.IsShiny,
-                upgradePaths: new List<string>(),
-                state: state,
+                baseItem: BuildBase(
+                    baseName: data.name,
+                    icon: data.Icon,
+                    isShiny: data.IsShiny,
+                    additionalPrice: data.AdditionalPrice,
+                    multiplyPrice: data.MultiplyPrice,
+                    state: state,
+                    maxUsages: data.UsageLimit,
+                    isCursed: isCursed,
+                    upgradeLimit: data.UpgradeLimit,
+                    conditions: data.PassiveConditions
+                ),
+                category: data.Category,
                 skillOnUse: skillOnUse.ToOption(),
                 skillOnThrow: skillOnThrow.ToOption(),
                 hasSameEffect: data.IsSameEffect,
                 hasSameSkill: data.IsSameSkill,
                 useOnDeath: data.UseOnDeath,
-                storage: data.StorageCapacity > 0 ? Storage.Build(data.StorageCapacity, false).ToOption() : Option<StorageMemento>.None,
-                maxUsages: data.UsageLimit,
-                remainingUsages: data.UsageLimit,
-                isCursed: isCursed,
                 cannotUseIfCursed: data.CannotUseIfCursed,
                 cannotDropIfCursed: data.CannotDropIfCursed,
                 identifyIfGot: data.IdentifyIfGot,
                 identifyIfUsed: data.IdentifyIfUsed,
-                isCurseIdentified: false,
                 autoDestroyWhenDisabled: data.AutoDestroyWhenDisabled,
-                upgradeLimit: data.UpgradeLimit,
-                conditions: data.PassiveConditions.ToArray()
-            );
-            var json = JsonUtility.ToJson(memento);
+                featuresToMergeWeapon: data.FeaturesToMergeWeapon
+            ));
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
         }
 
-        public void Dispose()
-        {
-            _disposables.Dispose();
-        }
-
-        public void SetState(ItemState state)
-        {
-            State = state;
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
-        {
-            SetCurseIdentified(true);
-            if (IsCursed && CannotUseIfCursed)
-            {
-                GameLog.Add($"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
-                return SpawnEffectSkillResult.Failed;
-            }
-
-            var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
-                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(map.Player, this, map)
-            );
-            if (result.Result != SkillResult.Cancelled)
-            {
-                _remainingUsages.Value -= 1;
-                if (State == ItemState.ShopItem)
-                {
-                    State = ItemState.UsedShopItem;
-                }
-
-                _onItemUpdated.OnNext(Unit.Default);
-            }
-
-            return result;
-        }
-
-        public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
-            Direction8 direction, IMap map)
-        {
-            if (IsCursed && CannotUseIfCursed)
-            {
-                return SpawnEffectSkillResult.Failed;
-            }
-
-            var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
-                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill =>
-                {
-                    throw new Exception("The item is not configured to activate this type of skill when thrown.");
-                }
-            );
-            if (result.Result != SkillResult.Cancelled)
-            {
-                _remainingUsages.Value -= 1;
-                if (State == ItemState.ShopItem)
-                {
-                    State = ItemState.UsedShopItem;
-                }
-
-                _onItemUpdated.OnNext(Unit.Default);
-            }
-
-            return result;
-        }
-
-        public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map)
-        {
-            if (IsCursed && CannotUseIfCursed)
-            {
-                return 0;
-            }
-
-            if (UseOnDeath && _remainingUsages.CurrentValue <= 1)
-            {
-                return 0;
-            }
-
-            return SkillOnUse.MapOr(
-                0,
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
-                )
-            );
-        }
-
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
-        {
-            if (IsCursed && CannotUseIfCursed)
-            {
-                return 0;
-            }
-
-            return SkillOnThrow.MapOr(
-                0,
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(map.Player, this)
-                )
-            );
-        }
-
-        public float EvaluateBasePrice()
-        {
-            var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
-            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
-                               new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * MaxUsages;
-            price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
-            if (IsCursed)
-            {
-                price *= 0.8f;
-            }
-
-            return price;
-        }
-
-        public float EvaluatePrice()
-        {
-            var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
-            var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
-                               new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
-            price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
-            if (IsCursed)
-            {
-                price *= 0.8f;
-            }
-
-            return price;
-        }
-
-        public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            GameLog.Add($"{GetName(player, itemPlaceholders)}は修理された");
-            _remainingUsages.Value = _maxUsages;
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed)
-        {
-            SetCurseIdentified(true);
-            if (IsCursed == isCursed)
-            {
-                _onCursedChanged.OnNext(isCursed);
-                return;
-            }
-
-            IsCursed = isCursed;
-            if (isCursed)
-            {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}は呪われた");
-            }
-            else
-            {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}の呪いは解かれた");
-            }
-
-            _onCursedChanged.OnNext(isCursed);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void SetCurseIdentified(bool isCurseIdentified)
-        {
-            IsCurseIdentified = isCurseIdentified;
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void Rename(string name)
-        {
-            CustomName = Option.Some(name);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void RevertToDefaultName()
-        {
-            CustomName = Option.None<string>();
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        #region Upgrade
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            var upgrades = new List<UpgradeData>();
-            if (_maxUsages > 1)
-            {
-                upgrades.Add(
-                    new UpgradeData("使用可能回数[小]",
-                        () =>
-                        {
-                            _maxUsages += 3;
-                            _remainingUsages.Value += 3;
-                        },
-                        () =>
-                        {
-                            _maxUsages -= 3;
-                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 3);
-                        })
-                );
-                upgrades.Add(
-                    new UpgradeData("使用可能回数[大]",
-                        () =>
-                        {
-                            _maxUsages += 5;
-                            _remainingUsages.Value += 5;
-                        },
-                        () =>
-                        {
-                            _maxUsages -= 5;
-                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 5);
-                        })
-                );
-            }
-
-            return upgrades;
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            var children = new Dictionary<string, IHasUpgrades>();
-            if (SkillOnUse.HasValue)
-            {
-                children.Add("使用時", SkillOnUse.Expect("SkillOnUse is null"));
-            }
-
-            if (SkillOnThrow.HasValue)
-            {
-                children.Add("投擲時", SkillOnThrow.Expect("SkillOnThrow is null"));
-            }
-
-            return children;
-        }
-
-        public bool CanAnyUpgrade(string filter = "")
-        {
-            if (_upgradePaths.Count >= UpgradeLimit)
-            {
-                return false;
-            }
-
-            var upgrades = this.GetUpgradePathsRecursively();
-            if (filter == "")
-            {
-                return upgrades.Any();
-            }
-
-            return upgrades.Any(upgrade => upgrade.Contains(filter));
-        }
-
-        public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "")
-        {
-            var path = this.GetUpgradePathsRecursively().Where(upgrade => upgrade.Contains(filter)).GetAtRandom();
-            Upgrade(player, itemPlaceholders, path);
-        }
-
-        public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path)
-        {
-            if (player.Character.IsKnownItem(this))
-            {
-                GameLog.Add($"{_fullName}は{path.GetUpgradeName()}の効果を得た");
-            }
-            else
-            {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}は何かの効果を得た");
-            }
-
-            _upgradePaths.Add(path);
-            Log.Debug($"Upgrade: {path}");
-            this.ApplyUpgrade(path);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            if (_upgradePaths.Count == 0)
-            {
-                return;
-            }
-
-            var path = _upgradePaths.GetAtRandom();
-            if (player.Character.IsKnownItem(this))
-            {
-                GameLog.Add($"{_fullName}の{path.GetUpgradeName()}は消えた");
-            }
-            else
-            {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
-            }
-
-            _upgradePaths.Remove(path);
-            Log.Debug($"Downgrade: {path}");
-            this.ApplyDowngrade(path);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        #endregion
-        #region Info
-        public bool IsInfoIdentified(IPlayer player)
-        {
-            return player.Character.IsKnownItem(this);
-        }
-
-        public string CursedInfo()
-        {
-            if (IsCurseIdentified)
-            {
-                if (IsCursed)
-                    return "それは呪われている\n";
-                return "それは呪われていない\n";
-            }
-
-            return "それは呪われているかわからない\n";
-        }
-
-        public string Info(IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            if (IsInfoIdentified(player))
-            {
-                return FullInfo();
-            }
-            else
-            {
-                return UnknownInfo(itemPlaceholders);
-            }
-        }
-
-        public string UnknownInfo(ItemPlaceholders itemPlaceholders)
-        {
-            var info = $"{State.GetDescription()}{UnknownName(itemPlaceholders)}\n";
-            info += CursedInfo();
-            if (HasActivatableSkillWhenUsed)
-                info += "それは使用可能である\n";
-            if (HasActivatableSkillWhenThrown)
-                info += "それは投擲可能である\n";
-            return info;
-        }
-
-        public string DebugInfo()
-        {
-            return FullInfo();
-        }
-
-        public string FullInfo()
-        {
-            var info = $"{State.GetDescription()}{_fullName} ({_remainingUsages.CurrentValue}/{_maxUsages})\n";
-            info += $"{Price}Gの価値がある\n";
-            info += CursedInfo();
-            if (HasActivatableSkill)
-            {
-                if (_hasSameSkill)
-                {
-                    info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
-                        spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                    );
-                    var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Match(
-                        spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                    );
-                    var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Match(
-                        spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                    );
-                    info += $"使用時の発動は{skillOnUseSuccessProbability:P0}の確率で成功する\n";
-                    info += $"投擲時の発動は{skillOnThrowSuccessProbability:P0}の確率で成功する\n";
-                }
-                else
-                {
-                    info += SkillOnUse.MapOr(
-                        "",
-                        skill => "\n使用したときの効果...\n" + skill.Match(
-                            spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
-                            itemTargetSkill => itemTargetSkill.Info()
-                        ));
-
-                    info += SkillOnThrow.MapOr(
-                        "",
-                        skill => "\n投擲したときの効果...\n" + skill.Match(
-                            spawnEffectSkill => spawnEffectSkill.InfoOnThrow(_hasSameEffect),
-                            itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-                        ));
-                }
-            }
-
-            info += "\n";
-
-            if (UseOnDeath)
-            {
-                info += "それは死亡時に自動的に使用される\n";
-            }
-
-            foreach (var condition in PassiveConditions)
-            {
-                info += $"それは{condition.Name}の効果を授ける\n";
-            }
-
-            if (_upgradePaths.Any() || CanAnyUpgrade())
-            {
-                info += $"アップグレード ({_upgradePaths.Count}/{UpgradeLimit})\n";
-
-                foreach (var path in _upgradePaths)
-                {
-                    info += $"{path.GetUpgradeName()}\n";
-                }
-            }
-
-            return info;
-        }
-        #endregion
-
-        public bool Equals(IItem other)
-        {
-            return other.Id == Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.Value.GetHashCode();
-        }
+        protected override string FullInfoImpl() => "";
     }
 }

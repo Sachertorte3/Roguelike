@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: "\u56DE\u5FA9\u306E\u9B54\u6CD5\u66F8"
   m_EditorClassIdentifier: 
   Category: 2
-  Icon: {fileID: 1552767190, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Icon: {fileID: 1780397024, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 1
+  AdditionalPrice: 0
+  MultiplyPrice: 1
   EffectType: 1
   UseOnDeath: 0
   SpawnEffectsOnUse: 1
@@ -39,10 +41,13 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
+  InventoryEffect:
+    rid: -2
   StorageCapacity: 0
   UsageLimit: 5
   UpgradeLimit: 3
   PassiveConditions: []
+  FeaturesToMergeWeapon: 
   references:
     version: 2
     RefIds:

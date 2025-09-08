@@ -13,13 +13,6 @@ using Utilities.Table;
 
 namespace Domain.Model.Dungeon
 {
-    public interface IDungeonData
-    {
-        public string Name { get; }
-        public Id<IMap> GetStartMapId();
-        public List<MapConnection> GetDestinations(Id<IMap> mapId);
-        public DungeonMapData CreateMapData(Id<IMap> mapId);
-    }
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Dungeon")]
     public class DungeonBluePrintData : ScriptableObject, IDungeonData
     {
@@ -28,7 +21,7 @@ namespace Domain.Model.Dungeon
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
-        [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes = new();
+        [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes;
         public Table<EnemyData> Npcs;
 
         public MapNode? GetMapNode(Id<IMap> mapId)
@@ -88,7 +81,7 @@ namespace Domain.Model.Dungeon
                 floorData.Field,
                 new ItemDatabase(MasterItemDataBase, SpawnItem),
                 WeaponPrefixes,
-                MasterItemDataBase.ChestItems,
+                MasterItemDataBase.AllChestItems,
                 Traps,
                 MasterItemDataBase.ShopItems,
                 enemies,

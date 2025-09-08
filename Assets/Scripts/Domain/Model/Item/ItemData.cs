@@ -13,10 +13,13 @@ using UnityEditor;
 
 namespace Domain.Model.Item
 {
-    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
-    public class ItemData : ScriptableObject, IHasRarity
+    public interface IItemData : IHasRarity
     {
-        public ItemCategory Category;
+    }
+    [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Item")]
+    public class ItemData : ScriptableObject, IItemData
+    {
+        [SerializeField] public ItemCategory Category;
         [Required] public Sprite Icon;
         public bool IsShiny;
         public bool CannotUseIfCursed => Category != ItemCategory.Weapons;
@@ -26,6 +29,8 @@ namespace Domain.Model.Item
         public bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
+        public int AdditionalPrice = 0;
+        public float MultiplyPrice = 1f;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
 
         #region spawn effect
@@ -51,20 +56,31 @@ namespace Domain.Model.Item
 
         #region item target
 
-        [ShowIf("@EffectType == ItemEffectType.ItemTarget")] [SerializeReference] [Required]
+        [ShowIf("@EffectType == ItemEffectType.ItemTarget")]
+        [SerializeReference]
+        [Required]
         public IItemEffect? ItemEffect;
 
         #endregion
 
+        #region inventory target
+        [ShowIf("@EffectType == ItemEffectType.InventoryTarget")]
+        [SerializeReference]
+        [Required]
+        public IInventoryEffect? InventoryEffect;
+        #endregion
+
         public int StorageCapacity = 0;
-        [ShowIf("_usable")] [MinValue(1)] public int UsageLimit;
+        [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
+        public List<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         private bool _usable => EffectType switch
         {
             ItemEffectType.SpawnEffect => SpawnEffectsOnUse || SpawnEffectsOnThrow,
             ItemEffectType.ItemTarget => ItemEffect != null,
+            ItemEffectType.InventoryTarget => InventoryEffect != null,
             _ => false
         };
 
@@ -138,11 +154,6 @@ namespace Domain.Model.Item
             if (SkillOnThrow != null)
             {
                 SkillOnThrow.OnValidate();
-            }
-
-            if (UpgradeLimit == 0)
-            {
-                UpgradeLimit = 3;
             }
 
             EditorUtility.SetDirty(this);

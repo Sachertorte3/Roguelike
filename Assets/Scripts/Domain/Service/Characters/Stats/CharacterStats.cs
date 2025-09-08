@@ -70,7 +70,7 @@ namespace Domain.Service.Characters.Stats
                 elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value)),
                 conditionResistance.ToDictionary(pair => pair.Key.name, pair => new StatData(pair.Value)),
                 new StatData(viewRange),
-                new ResourceData(new StatData(waitTime), waitTime)
+                new ResourceData(new StatData(waitTime), 0)
             );
         }
 

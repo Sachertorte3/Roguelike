@@ -8,6 +8,7 @@ namespace Domain.Model.Dungeon
         Wands,
         Weapons,
         Artifacts,
+        Storage,
         Others
     }
 }

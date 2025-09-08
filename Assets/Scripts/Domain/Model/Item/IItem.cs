@@ -7,7 +7,6 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Map;
-using Domain.Model.Memento;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -15,7 +14,7 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Model.Item
 {
-    public interface IItem : ISerializable<ItemMemento>, IEquatable<IItem>, IHasUpgrades
+    public interface IItem : IEquatable<IItem>, IHasUpgrades
     {
         public Id<IItem> Id { get; }
         public string BaseName { get; }
@@ -65,7 +64,7 @@ namespace Domain.Model.Item
         public void SetCurseIdentified(bool isCurseIdentified);
         public void Rename(string name);
         public void RevertToDefaultName();
-        public bool CanAnyUpgrade(string filter = "");
+        public bool CanUpgrade(string filter = "");
         public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "");
         public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path);
         public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders);

@@ -5,14 +5,14 @@ using R3;
 using TMPro;
 using Unity.Logging;
 using UnityEngine;
-using Utilities;
+using UnityEngine.EventSystems;
 
 namespace View.UI
 {
     public class InventoryView : MonoBehaviour
     {
-        const int MainStorageSize = 10;
-        const int MainStorageIncludeGroundAndEmpty = MainStorageSize + 2;
+        public const int MainStorageSize = 10;
+        public const int MainStorageIncludeGroundAndEmpty = MainStorageSize + 2;
         public const int GroundItemIndex = MainStorageSize;
         public const int EmptyIndex = MainStorageSize + 1;
         public int SubStorageSizes(int index)
@@ -33,7 +33,7 @@ namespace View.UI
         public ReadOnlyReactiveProperty<InventoryViewIndex> Focus => _focusIndex.Select(index => GetFocus(index.index, index.subIndex)).ToReadOnlyReactiveProperty();
         public void Initialize()
         {
-            Log.Debug($"[InventoryView]Initialize");
+            Log.Debug($"[View]InventoryView Initialize");
             CreateMainView();
             CreateChildrenView(Focus.CurrentValue.Index);
             _items.Clear();
@@ -54,12 +54,11 @@ namespace View.UI
         }
         private ItemViewData? GetItem(InventoryViewIndex index)
         {
-            Log.Debug($"[InventoryView]GetItem Index: {index}");
+            Log.Debug($"[View]InventoryView GetItem Index: {index}");
             if (_items.TryGetValue(index.Index, out var value))
             {
                 if (index.SubIndex == -1)
-                    return value
-                    .main;
+                    return value.main;
                 else
                 {
                     if (value.sub.TryGetValue(index.SubIndex, out var subValue))
@@ -71,15 +70,9 @@ namespace View.UI
             else
                 return null;
         }
-        public void Clear()
-        {
-            Log.Debug($"[InventoryView]Clear");
-            _items.Clear();
-            UpdateAllItemView();
-        }
         public void Replace(InventoryViewIndex index, ItemViewData itemData)
         {
-            Log.Debug($"[InventoryView]Replace Index: {index}");
+            Log.Debug($"[View]InventoryView Replace Index: {index}");
             if (index.SubIndex < 0)
             {
                 if (!_items.ContainsKey(index.Index))
@@ -97,7 +90,7 @@ namespace View.UI
         }
         public void Remove(InventoryViewIndex index)
         {
-            Log.Debug($"[InventoryView]Remove Index: {index}");
+            Log.Debug($"[View]InventoryView Remove Index: {index}");
             if (index.SubIndex == -1)
             {
                 _items.Remove(index.Index);
@@ -114,17 +107,15 @@ namespace View.UI
 
         public void UpdateMainItemView(int mainIndex)
         {
-            Log.Debug($"[InventoryView]UpdateMainItem Index: {mainIndex}");
+            Log.Debug($"[View]InventoryView UpdateMainItem Index: {mainIndex}");
             var index = new InventoryViewIndex(mainIndex, -1);
+            var item = GetItem(index);
             var interactable = !_locked.Contains(index);
-            if (_items.TryGetValue(mainIndex, out var data))
-            {
-                _parent.Replace(data.main, index.Index, interactable);
-            }
+            var canSkip = !interactable && (item == null || item.storageSize == 0);
+            if (item != null)
+                _parent.Replace(item, index.Index, interactable, canSkip);
             else
-            {
-                _parent.Remove(index.Index);
-            }
+                _parent.Remove(index.Index, interactable, canSkip);
 
             if (!_enabled)
             {
@@ -140,17 +131,14 @@ namespace View.UI
 
         public void UpdateSubItemView(InventoryViewIndex index)
         {
-            Log.Debug($"[InventoryView]UpdateSubItem Index: {index}");
-            var interactable = !_locked.Contains(index);
+            Log.Debug($"[View]InventoryView UpdateSubItem Index: {index}");
             var item = GetItem(index);
+            var interactable = !_locked.Contains(index);
+            var canSkip = !interactable && (item == null || item.storageSize == 0);
             if (item != null)
-            {
-                _children.Replace(item, index.SubIndex, interactable);
-            }
+                _children.Replace(item, index.SubIndex, interactable, canSkip);
             else
-            {
-                _children.Remove(index.SubIndex);
-            }
+                _children.Remove(index.SubIndex, interactable, canSkip);
 
             if (!_enabled)
             {
@@ -168,12 +156,17 @@ namespace View.UI
 
         public void UpdateAllItemView()
         {
-            Log.Debug($"[InventoryView]UpdateAllItemView");
-            CreateMainView();
-            foreach (var (index, data) in _items)
+            Log.Debug($"[View]InventoryView UpdateAllItemView");
+            for (var i = 0; i < MainStorageIncludeGroundAndEmpty; i++)
             {
-                var interactable = !_locked.Contains(new InventoryViewIndex(index, -1));
-                _parent.Replace(data.main, index, interactable);
+                var index = new InventoryViewIndex(i, -1);
+                var item = GetItem(index);
+                var interactable = !_locked.Contains(index);
+                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                if (item != null)
+                    _parent.Replace(item, index.Index, interactable, canSkip);
+                else
+                    _parent.Remove(index.Index, interactable, canSkip);
             }
             if (!_enabled)
             {
@@ -191,16 +184,19 @@ namespace View.UI
 
         public void UpdateChildrenView()
         {
-            Log.Debug($"[InventoryView]UpdateChildrenView");
+            Log.Debug($"[View]InventoryView UpdateChildrenView");
             var currentFocus = Focus.CurrentValue;
             CreateChildrenView(currentFocus.Index);
-            if (_items.TryGetValue(currentFocus.Index, out var mainData))
+            for (var i = 0; i < SubStorageSizes(currentFocus.Index); i++)
             {
-                foreach (var (index, data) in mainData.sub)
-                {
-                    var interactable = !_locked.Contains(new InventoryViewIndex(currentFocus.Index, index));
-                    _children.Replace(data, index, interactable);
-                }
+                var index = new InventoryViewIndex(currentFocus.Index, i);
+                var item = GetItem(index);
+                var interactable = !_locked.Contains(index);
+                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                if (item != null)
+                    _children.Replace(item, index.SubIndex, interactable, canSkip);
+                else
+                    _children.Remove(index.SubIndex, interactable, canSkip);
             }
             if (!_enabled)
             {
@@ -213,7 +209,7 @@ namespace View.UI
             }
             else
             {
-                _parent.ResetNavigation();
+                _parent.ResetVerticalNavigation();
             }
             if (currentFocus.SubIndex >= 0 && currentFocus.SubIndex < _children.Capacity)
                 _children.Select(currentFocus.SubIndex);
@@ -226,7 +222,7 @@ namespace View.UI
 
         private void UpdateInfoText()
         {
-            Log.Debug($"[InventoryView]UpdateInfoText");
+            Log.Debug($"[View]InventoryView UpdateInfoText");
             var currentFocus = Focus.CurrentValue;
             var item = GetItem(currentFocus);
             if (item != null)
@@ -237,7 +233,7 @@ namespace View.UI
 
         public void LockItems(InventoryViewIndex[] lockedItemIndexes)
         {
-            Log.Debug($"[InventoryView]LockItems: Count: {lockedItemIndexes.Length}");
+            Log.Debug($"[View]InventoryView LockItems: Count: {lockedItemIndexes.Length}");
             foreach (var focus in lockedItemIndexes)
                 _locked.Add(focus);
             UpdateAllItemView();
@@ -245,14 +241,14 @@ namespace View.UI
 
         public void UnlockAllItems()
         {
-            Log.Debug($"[InventoryView]UnlockAllItems");
+            Log.Debug($"[View]InventoryView UnlockAllItems");
             _locked.Clear();
             UpdateAllItemView();
         }
 
         public void EnableAllItems()
         {
-            Log.Debug($"[InventoryView]EnableAllItems");
+            Log.Debug($"[View]InventoryView EnableAllItems");
             if (_enabled)
                 return;
             _enabled = true;
@@ -261,7 +257,7 @@ namespace View.UI
 
         public void DisableAllItems()
         {
-            Log.Debug($"[InventoryView]DisableAllItems");
+            Log.Debug($"[View]InventoryView DisableAllItems");
             if (!_enabled)
                 return;
             _enabled = false;

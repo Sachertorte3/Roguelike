@@ -13,7 +13,7 @@ namespace Domain.Service.ItemEffect
 
         public bool CanApplyTo(IPlayer player, IItem item)
         {
-            return item.CanAnyUpgrade(_filter);
+            return item.CanUpgrade(_filter);
         }
 
         public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)

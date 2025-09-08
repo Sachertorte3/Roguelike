@@ -18,7 +18,7 @@ namespace Domain.Service.Items
 
         public ItemEntity(ItemEntityMemento item)
         {
-            Item = new Item(item.Item);
+            Item = item.Item.Deserialize();
             Entity = new EntityBase(item.Entity);
         }
 

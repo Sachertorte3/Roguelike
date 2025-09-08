@@ -30,6 +30,7 @@ namespace Game
         private readonly List<MoneyMemento> _money = new();
         private BonfireMemento? _bonfire;
         private EntityMemento? _magicPot;
+        private EntityMemento? _teleporter;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
         private readonly ShopMemento? _shop;
@@ -65,6 +66,13 @@ namespace Game
                 var restRoom = roomIds.GetAtRandom();
                 if (CreateRestRoom(data, restRoom))
                     roomIds.Remove(restRoom);
+            }
+
+            if (Random.value < data.LakeChance && roomIds.Count() > 1)
+            {
+                var lakeRoom = roomIds.GetAtRandom();
+                if (CreateLakeRoom(data, lakeRoom))
+                    roomIds.Remove(lakeRoom);
             }
 
             foreach (var room in roomIds)
@@ -158,6 +166,45 @@ namespace Game
             AddTrapsToRoom(data, roomId, trapCount);
         }
 
+        private bool CreateLakeRoom(DungeonMapData data, Id<Room> roomId)
+        {
+            if (data.RoundRoomCorner)
+                _tilemap.RoundRoomCorner(roomId);
+
+            var lakeSize = new Vector2Int(Random.Range(4, 6), Random.Range(4, 6));
+            var innerRect = _tilemap.GetWalkablePositionsIn(roomId).GetRandomInnerRect(lakeSize + Vector2Int.one * 2);
+            if (innerRect == null)
+            {
+                return false;
+            }
+
+            var lakeRect = new RectInt(innerRect.Value.min + Vector2Int.one, lakeSize);
+            var islandRect = new RectInt(lakeRect.min + Vector2Int.one, lakeSize - Vector2Int.one * 2);
+            _tilemap.SetWater(lakeRect.RectRange().Where(position => !islandRect.Contains(position)));
+            GetAllBlankPositionInRoom(roomId).RemoveWhere(position => lakeRect.Contains(position));
+
+            var teleporterPosition = islandRect.RectRange().GetAtRandom();
+            _teleporter = Teleporter.Build(teleporterPosition);
+            var itemPositions = islandRect.RectRange().Where(position => position != teleporterPosition);
+            foreach (var position in itemPositions)
+            {
+                var item = data.ItemDatabase.GetRandomItem(data.Progress);
+                _items.Add(ItemFactory.Build(position, item.Build()));
+            }
+
+            var itemCount = data.ItemCount();
+            var moneyCount = data.MoneyCount();
+            var characterCount = data.CharacterCount();
+            var trapCount = data.TrapCount();
+
+            AddItemsToRoom(data, roomId, itemCount);
+            AddMoneyToRoom(data, roomId, moneyCount);
+            AddCharactersToRoom(data, roomId, characterCount);
+            AddTrapsToRoom(data, roomId, trapCount);
+
+            return true;
+        }
+
         private ShopMemento? CreateShop(DungeonMapData data, Id<Room> roomId)
         {
             var shopItems = data.ShopItems.GetRandomItem().Items;
@@ -210,7 +257,7 @@ namespace Game
                 return false;
             }
 
-            var center = innerRect.Value.min + new Vector2Int(2, 2);
+            var center = innerRect.Value.min + VectorExtension.FloorToInt(innerRect.Value.size / 2);
 
             if (Random.value < 0.5)
                 _bonfire = Bonfire.Build(center);
@@ -325,7 +372,14 @@ namespace Game
                 _tilemap.Build(),
                 _characters,
                 _items,
-                EventEntityManager.Build(_stairs, _chests, _traps, _money, _bonfire.ToOption(), _magicPot.ToOption()),
+                EventEntityManager.Build(
+                    _stairs,
+                    _chests,
+                    _traps,
+                    _money,
+                    _bonfire.ToOption(),
+                    _magicPot.ToOption(),
+                    _teleporter.ToOption()),
                 FireEntityManager.Build(),
                 _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),

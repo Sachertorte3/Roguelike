@@ -219,6 +219,14 @@ namespace Domain.Service.Map
             }
         }
 
+        public void SetWater(IEnumerable<Vector2Int> positions)
+        {
+            foreach (var position in positions)
+            {
+                _tiles[position.x + position.y * _width] = TileCategory.Water;
+            }
+        }
+
         public HashSet<Vector2Int> GetAllWalkablePositions()
         {
             return _tiles.Select((tile, index) => (tile, index))

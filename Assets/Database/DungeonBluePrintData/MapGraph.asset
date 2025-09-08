@@ -115,6 +115,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -301,6 +302,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -435,6 +437,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -572,6 +575,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -706,6 +710,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -776,6 +781,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.2
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -790,6 +796,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -846,6 +853,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.2
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 300
@@ -860,6 +868,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -1080,6 +1089,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -1339,6 +1349,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -1474,6 +1485,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -1819,6 +1831,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -1953,6 +1966,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2087,6 +2101,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2278,6 +2293,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2463,6 +2479,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2594,6 +2611,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2692,6 +2710,7 @@ MonoBehaviour:
     ShopChance: 0
     MonsterHouseChance: 0
     RestRoomChance: 0
+    LakeChance: 0.05
     ItemCount: 0
     MoneyCount: 0
     MoneyAverage: 100
@@ -2706,6 +2725,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2832,6 +2852,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -2966,6 +2987,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -3055,7 +3077,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: 7710638e9c725b641966015b5590bf73, type: 2}
+    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     PrefixChance: 0.1
     ShinyChance: 0
     SleepChance: 0.75
@@ -3063,6 +3085,7 @@ MonoBehaviour:
     ShopChance: 1
     MonsterHouseChance: 0
     RestRoomChance: 0
+    LakeChance: 1
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -3077,6 +3100,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -3203,6 +3227,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.05
+    LakeChance: 0.05
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100

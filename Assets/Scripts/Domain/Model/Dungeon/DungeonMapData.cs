@@ -35,6 +35,7 @@ namespace Domain.Model.Dungeon
         float ShopChance,
         float MonsterHouseChance,
         float RestRoomChance,
+        float LakeChance,
         float ItemAttempt,
         float MoneyAttempt,
         float MoneyAverage,

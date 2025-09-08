@@ -20,6 +20,7 @@ namespace Game
         private readonly List<Money> _money = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private Option<MagicPot> _magicPot = Option<MagicPot>.None;
+        private Option<Teleporter> _teleporter = Option<Teleporter>.None;
         private ObservableList<IEventEntity> _eventEntities = new();
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
         private ObservableList<IPlayerEventEntity> _playerEventEntities = new();
@@ -63,6 +64,10 @@ namespace Game
             if (_magicPot.HasValue)
                 Spawn(_magicPot.Value!);
 
+            _teleporter = eventEntities.Teleporter.Map(teleporter => new Teleporter(teleporter));
+            if (_teleporter.HasValue)
+                Spawn(_teleporter.Value!);
+
             _eventEntities.SubscribeIncludingCurrentObservables(
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
@@ -82,12 +87,20 @@ namespace Game
                 _traps.Select(trap => trap.Serialize()).ToList(),
                 _money.Select(money => money.Serialize()).ToList(),
                 _bonfire.Map(bonfire => bonfire.Serialize()),
-                _magicPot.Map(magicPot => magicPot.Serialize())
+                _magicPot.Map(magicPot => magicPot.Serialize()),
+                _teleporter.Map(teleporter => teleporter.Serialize())
             );
         }
 
-        public static EventEntitiesMemento Build(IEnumerable<StairsMemento> stairs, IEnumerable<ChestMemento> chests,
-            IEnumerable<TrapMemento> traps, IEnumerable<MoneyMemento> money, Option<BonfireMemento> bonfire, Option<EntityMemento> magicPot)
+        public static EventEntitiesMemento Build(
+            IEnumerable<StairsMemento> stairs,
+            IEnumerable<ChestMemento> chests,
+            IEnumerable<TrapMemento> traps,
+            IEnumerable<MoneyMemento> money,
+            Option<BonfireMemento> bonfire,
+            Option<EntityMemento> magicPot,
+            Option<EntityMemento> teleporter
+        )
         {
             return new EventEntitiesMemento
             (
@@ -96,7 +109,8 @@ namespace Game
                 traps.ToList(),
                 money.ToList(),
                 bonfire,
-                magicPot
+                magicPot,
+                teleporter
             );
         }
 
@@ -162,6 +176,10 @@ namespace Game
             else if (eventEntity is MagicPot)
             {
                 _magicPot = Option<MagicPot>.None;
+            }
+            else if (eventEntity is Teleporter teleporter)
+            {
+                _teleporter = Option<Teleporter>.None;
             }
         }
     }

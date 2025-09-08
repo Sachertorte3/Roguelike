@@ -98,6 +98,7 @@ namespace Domain.Model.Dungeon
                 floorData.ShopChance,
                 floorData.MonsterHouseChance,
                 floorData.RestRoomChance,
+                floorData.LakeChance,
                 floorData.ItemCount,
                 floorData.MoneyCount,
                 floorData.MoneyAverage,

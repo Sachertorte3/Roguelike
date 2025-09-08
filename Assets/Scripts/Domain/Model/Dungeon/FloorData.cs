@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Domain.Model.Character;
 using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,6 +16,7 @@ namespace Domain.Model.Dungeon
         [Range(0, 1)] public float ShopChance = 0.05f;
         [Range(0, 1)] public float MonsterHouseChance = 0.05f;
         [Range(0, 1)] public float RestRoomChance = 0.05f;
+        [Range(0, 1)] public float LakeChance = 0.05f;
         [MinValue(0)] public float ItemCount = 2;
         [MinValue(0)] public float MoneyCount = 1;
         [MinValue(0)] public float MoneyAverage = 100;

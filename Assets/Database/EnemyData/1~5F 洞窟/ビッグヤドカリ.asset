@@ -57,6 +57,20 @@ MonoBehaviour:
     BackStepDistance: 0
     ChargeTurn: 0
     CoolTime: 0
+  - Skill:
+      <Position>k__BackingField:
+        rid: 3961642730205741161
+      <Area>k__BackingField:
+        rid: 3961642730205741162
+      <Effects>k__BackingField:
+      - rid: 3961642730205741163
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Log>k__BackingField: "\u306F\u6C34\u3092\u5410\u3044\u305F\u3002"
+    RushDistance: 0
+    BackStepDistance: 0
+    ChargeTurn: 1
+    CoolTime: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -98,6 +112,22 @@ MonoBehaviour:
     - rid: 2541219281251860517
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
+    - rid: 3961642730205741161
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 3961642730205741162
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 5
+    - rid: 3961642730205741163
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 2
+          _power: 8
+        _criticalRate: 0
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

@@ -4,7 +4,6 @@ using Domain.Model.Item;
 using Game;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 using VContainer;
 using View;

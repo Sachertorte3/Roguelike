@@ -4,6 +4,7 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using R3;
 using UnityEngine;
+using Unity.Logging;
 
 namespace Domain.Service.Rooms
 {
@@ -34,25 +35,35 @@ namespace Domain.Service.Rooms
             if (_isInside.Value)
             {
                 await UpdateTurnIfInside(gameManager, map);
+                if (!CanExecute)
+                    return;
                 if (!hasEntered)
                 {
                     if (!hasEverEntered)
                     {
                         await FirstTimeEnter(gameManager, map);
                         hasEverEntered = true;
+                        if (!CanExecute)
+                            return;
                     }
 
                     await EveryTimeEnter(gameManager, map);
                     hasEntered = true;
+                    if (!CanExecute)
+                        return;
                 }
             }
             else
             {
                 await UpdateTurnIfNotInside(gameManager, map);
+                if (!CanExecute)
+                    return;
                 if (hasEntered)
                 {
                     await EveryTimeExit(gameManager, map);
                     hasEntered = false;
+                    if (!CanExecute)
+                        return;
                 }
             }
         }

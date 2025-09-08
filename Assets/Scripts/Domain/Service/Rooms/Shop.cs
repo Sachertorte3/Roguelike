@@ -28,16 +28,12 @@ namespace Domain.Service.Rooms
         private ReactiveProperty<bool> _isStolen = new(false);
         public ReadOnlyReactiveProperty<bool> IsStolen => _isStolen;
 
-        public Shop(ShopMemento data, ICharacter clerk, IMap map) : base(data.Room,
+        public Shop(ShopMemento data, ICharacter clerk, IGameManager gameManager, IMap map) : base(data.Room,
             map.Player.Character.Entity.CurrentPosition)
         {
             Clerk = new Clerk(
                 clerk,
-                player => 
-                {
-                    Debug.Log($"CanExecute: {CanExecute}, GetSalePrice: {GetSalePrice(map)}, GetPurchasePrice: {GetPurchasePrice(map)}");
-                    return CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0);
-                },
+                player => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
                 (_, map) =>
                 {
                     Purchase(map);
@@ -47,7 +43,7 @@ namespace Domain.Service.Rooms
 
             if (data.IsStolen)
             {
-                Stolen(map);
+                Stolen(gameManager, map);
                 return;
             }
 
@@ -188,7 +184,7 @@ namespace Domain.Service.Rooms
             }
         }
 
-        public void Stolen(IMap map)
+        public void Stolen(IGameManager gameManager, IMap map)
         {
             GameLog.Add("<color=red>どろぼう！</color>");
             Clerk.OpposingThief(map.Player.Character);
@@ -199,6 +195,19 @@ namespace Domain.Service.Rooms
             MarkItemsAsStolen(map);
             CanExecute = false;
             _isStolen.Value = true;
+            gameManager.PlayBGM(BGM.Stolen);
+        }
+
+        protected override UniTask EveryTimeEnter(IGameManager gameManager, IMap map)
+        {
+            gameManager.PlayBGM(BGM.Shop);
+            return UniTask.CompletedTask;
+        }
+
+        protected override UniTask EveryTimeExit(IGameManager gameManager, IMap map)
+        {
+            gameManager.PlayBGM(BGM.Normal);
+            return UniTask.CompletedTask;
         }
 
         protected override async UniTask UpdateTurnIfNotInside(IGameManager gameManager, IMap map)
@@ -206,7 +215,7 @@ namespace Domain.Service.Rooms
             var missingItems = GetMissingItems(map);
             if (missingItems.Any())
             {
-                Stolen(map);
+                Stolen(gameManager, map);
                 await UniTask.Delay(1000);
             }
         }

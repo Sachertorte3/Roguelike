@@ -20,18 +20,6 @@ namespace Provider
             Settings.GlobalSettings.SEVolume.Value.SubscribeIncludingCurrentValue(volume => seManager.SetVolume(volume / 100f));
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
-                    bgmManager.NormalBGM();
-                    if (map.IsStolen != null)
-                    {
-                        _disposable.Add(map.IsStolen.Subscribe(isStolen =>
-                        {
-                            if (isStolen)
-                            {
-                                bgmManager.StolenBGM();
-                            }
-                        }));
-                    }
-
                     _disposable.Add(map.Characters.SubscribeIncludingCurrentObservables(character => character.OnPickUpItem,
                         (character, itemChanged) => { seManager.PickupSE(); }
                     ));
@@ -39,6 +27,21 @@ namespace Provider
                     _disposable.Add(map.Player.Character.Entity.OnTeleport.Subscribe(teleport => { seManager.TeleportSE(); }));
                 },
                 _ => _disposable.Clear());
+            gameManager.OnPlayBGM.Subscribe(bgm =>
+            {
+                switch (bgm)
+                {
+                    case BGM.Normal:
+                        bgmManager.NormalBGM();
+                        break;
+                    case BGM.Stolen:
+                        bgmManager.StolenBGM();
+                        break;
+                    case BGM.Shop:
+                        bgmManager.ShopBGM();
+                        break;
+                }
+            });
             gameManager.OnPlaySE.Subscribe(se =>
             {
                 switch (se)

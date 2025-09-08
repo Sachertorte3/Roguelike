@@ -14,6 +14,7 @@ namespace Domain.Model.Item
         Knockback,            // 吹き飛ばし
         Critical,             // クリティカル
         Dig,                  // 掘る
+        BreakTrap,            // トラップを破壊
         Absorbing,            // 吸収
         GuaranteedHit,        // 必中
         ThrowEnhance,         // 投擲強化
@@ -40,6 +41,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Knockback => "吹き飛ばし",
                 DirectWeaponFeature.Critical => "クリティカル",
                 DirectWeaponFeature.Dig => "掘る",
+                DirectWeaponFeature.BreakTrap => "トラップを破壊",
                 DirectWeaponFeature.Absorbing => "吸収",
                 DirectWeaponFeature.GuaranteedHit => "必中",
                 DirectWeaponFeature.ThrowEnhance => "投擲強化",
@@ -67,6 +69,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Knockback => CANNOT_OVERLAP,
                 DirectWeaponFeature.Critical => 4,
                 DirectWeaponFeature.Dig => CANNOT_OVERLAP,
+                DirectWeaponFeature.BreakTrap => CANNOT_OVERLAP,
                 DirectWeaponFeature.Absorbing => 4,
                 DirectWeaponFeature.GuaranteedHit => CANNOT_OVERLAP,
                 DirectWeaponFeature.ThrowEnhance => CANNOT_OVERLAP,

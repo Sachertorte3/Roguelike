@@ -54,7 +54,7 @@ MonoBehaviour:
       <Log>k__BackingField: "\u306F\u6025\u6240\u7A81\u304D\u3092\u653E\u3063\u305F\u3002"
     RushDistance: 0
     BackStepDistance: 0
-    ChargeTurn: 0
+    ChargeTurn: 99
     CoolTime: 1
   - Skill:
       <Position>k__BackingField:
@@ -68,7 +68,7 @@ MonoBehaviour:
       <Log>k__BackingField: "\u306F\u706B\u3092\u5439\u3044\u305F\u3002"
     RushDistance: 0
     BackStepDistance: 0
-    ChargeTurn: 0
+    ChargeTurn: 99
     CoolTime: 1
   - Skill:
       <Position>k__BackingField:
@@ -82,7 +82,7 @@ MonoBehaviour:
       <Log>k__BackingField: "\u306F\u8DB3\u6255\u3044\u3092\u653E\u3063\u305F\u3002"
     RushDistance: 0
     BackStepDistance: 0
-    ChargeTurn: 0
+    ChargeTurn: 99
     CoolTime: 2
   - Skill:
       <Position>k__BackingField:
@@ -96,7 +96,7 @@ MonoBehaviour:
       <Log>k__BackingField: "\u306F\u6025\u63A5\u8FD1\u3057\u305F\u3002"
     RushDistance: 0
     BackStepDistance: 0
-    ChargeTurn: 0
+    ChargeTurn: 99
     CoolTime: 30
   HasLastSkill: 0
   LastSkill:

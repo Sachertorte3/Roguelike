@@ -93,7 +93,7 @@ namespace Provider
                     previews = _effectViewSpawner.SpawnPreview(area, color);
                 }
             }).AddTo(characterView);
-            character.OnDead.Subscribe(_ =>
+            character.Entity.OnDestroyed.Subscribe(_ =>
             {
                 previews.ForEach(preview => GameObject.Destroy(preview));
             }).AddTo(characterView);

@@ -150,6 +150,11 @@ namespace Domain.Service.Items
                 effectsOnUse.Add(new DigEffect());
                 effectsOnThrow.Add(new DigEffect());
             }
+            if (features.Contains(DirectWeaponFeature.BreakTrap))
+            {
+                effectsOnUse.Add(new BreakEffect(false, false, false, true, false));
+                effectsOnThrow.Add(new BreakEffect(false, false, false, true, false));
+            }
             var abnormalConditionMultiplier = features.Count(f => f == DirectWeaponFeature.AbnormalConditionEnhance) + 1;
             if (features.Contains(DirectWeaponFeature.Paralysis))
             {
@@ -239,7 +244,8 @@ namespace Domain.Service.Items
         {
             var (skillOnUse, skillOnThrow) = BuildSkills(data.ElementPowers, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
-            var maxUsages = Mathf.RoundToInt(data.UsageLimit * prefix.ToOption().MapOr(1, prefix => prefix.UsageLimitMagnification));
+            var featureLimit = data.FeatureLimit + prefix?.FeatureLimitAdditional ?? 0;
+            var maxUsages = Mathf.RoundToInt(data.UsageLimit * (prefix?.UsageLimitMagnification ?? 1f));
 
             var json = JsonUtility.ToJson(new DirectWeaponMemento
             (

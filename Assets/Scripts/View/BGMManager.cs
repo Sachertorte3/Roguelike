@@ -8,6 +8,7 @@ namespace View
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip _normalBGM;
         [SerializeField] private AudioClip _stolenBGM;
+        [SerializeField] private AudioClip _shopBGM;
 
         public void SetVolume(float volume)
         {
@@ -24,6 +25,17 @@ namespace View
         {
             Log.Debug("[BGM]Change BGM to Stolen");
             ChangeBGM(_stolenBGM);
+        }
+
+        public void ShopBGM()
+        {
+            Log.Debug("[BGM]Change BGM to Shop");
+            ChangeBGM(_shopBGM);
+        }
+
+        public void StopBGM()
+        {
+            _audioSource.Stop();
         }
 
         public void ChangeBGM(AudioClip clip)

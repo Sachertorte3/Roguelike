@@ -95,7 +95,6 @@ namespace Domain.Service.Characters.Behavior
                             if (move.Doable(character, map))
                                 return move;
                             var (eventAction, anyEventCanExecute) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntities, swap);
-                            Debug.Log($"eventAction: {eventAction}, anyEventCanExecute: {anyEventCanExecute}");
                             if (eventAction != null)
                                 return eventAction;
                             if (!anyEventCanExecute && swap.Doable(character, map))

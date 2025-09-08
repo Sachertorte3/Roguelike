@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
@@ -10,7 +9,6 @@ using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
-using ObservableCollections;
 using R3;
 using Utilities;
 using Utilities.Serialize.Result;

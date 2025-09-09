@@ -23,8 +23,8 @@ using Domain.Service.Map;
 using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Unity.Logging;
+using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -84,9 +84,9 @@ namespace Game
             FireEntityManager = new FireEntityManager(map.Fires);
             _entities.AddWith(Characters).AddTo(_disposables);
             _entities.AddWith(Items).AddTo(_disposables);
-            _entities.AddWith(EventEntities).AddTo(_disposables);
-            _entities.AddWith(PlayerEventEntities).AddTo(_disposables);
-            _entities.AddWith(ScheduledEventEntities).AddTo(_disposables);
+            _entities.AddWith(StandaloneEventEntities).AddTo(_disposables);
+            _entities.AddWith(StandalonePlayerEventEntities).AddTo(_disposables);
+            _entities.AddWith(StandaloneScheduledEventEntities).AddTo(_disposables);
             _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
             _entities.AddWith(FireEntities).AddTo(_disposables);
 
@@ -203,6 +203,10 @@ namespace Game
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => EventEntityManager.PlayerEventEntities;
         public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities => EventEntityManager.ScheduledEventEntities;
+        public IObservableCollection<IEventEntity> StandaloneEventEntities => EventEntityManager.StandaloneEventEntities;
+        public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities => EventEntityManager.StandalonePlayerEventEntities;
+        public IObservableCollection<IScheduledEventEntity> StandaloneScheduledEventEntities => EventEntityManager.StandaloneScheduledEventEntities;
+
 
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
@@ -237,7 +241,7 @@ namespace Game
         }
 
         private readonly ObservableList<IEntity> _entities = new();
-        public IEnumerable<IEntity> Entities => _entities.Distinct(new EntityIdComparer());
+        public IObservableCollection<IEntity> Entities => _entities;
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position)
         {
@@ -335,28 +339,19 @@ namespace Game
             return null;
         }
 
-        public List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer)
+        private List<IEventEntity> GetEventEntityAt(Vector2Int position, EntityLayer layer)
         {
-            return EventEntities
-                .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
-                .Where(eventEntity => eventEntity.Entity.Layer == layer)
-                .ToList();
+            return EventEntities.At(position).On(layer).ToList();
         }
 
-        public List<IPlayerEventEntity> GetPlayerEventEntityAt(Vector2Int position, EntityLayer layer)
+        private List<IPlayerEventEntity> GetPlayerEventEntityAt(Vector2Int position, EntityLayer layer)
         {
-            return PlayerEventEntities
-                .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
-                .Where(eventEntity => eventEntity.Entity.Layer == layer)
-                .ToList();
+            return PlayerEventEntities.At(position).On(layer).ToList();
         }
 
-        public List<IScheduledEventEntity> GetScheduledEventEntityAt(Vector2Int position, EntityLayer layer)
+        private List<IScheduledEventEntity> GetScheduledEventEntityAt(Vector2Int position, EntityLayer layer)
         {
-            return ScheduledEventEntities
-                .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
-                .Where(eventEntity => eventEntity.Entity.Layer == layer)
-                .ToList();
+            return ScheduledEventEntities.At(position).On(layer).ToList();
         }
 
         public bool IsGrass(Vector2Int position)
@@ -611,6 +606,30 @@ namespace Game
                     Characters.In(visibleArea).ForEach(character => character.VisionRange.Refresh());
                 }
             }).AddTo(_disposables);
+
+            foreach (var layer in Enum.GetValues(typeof(EntityLayer)).Cast<EntityLayer>())
+            {
+                _allEntityPositions[layer] = new Dictionary<Vector2Int, IEntity>();
+            }
+
+            foreach (var entity in Entities)
+            {
+                _allEntityPositions[entity.Entity.Layer][entity.Entity.CurrentPosition] = entity;
+            }
+
+            _entities.SubscribeIncludingCurrentObservables(
+                entity => entity.Entity.Position.Pairwise(),
+                (entity, positions) =>
+                {
+                    _allEntityPositions[entity.Entity.Layer].Remove(positions.Previous);
+                    _allEntityPositions[entity.Entity.Layer].Add(positions.Current, entity);
+                }
+            ).AddTo(_disposables);
+            _entities.ObserveRemove().Subscribe(remove =>
+                {
+                    _allEntityPositions[remove.Value.Entity.Layer].Remove(remove.Value.Entity.CurrentPosition);
+                }
+            ).AddTo(_disposables);
         }
 
         ~MapManager()
@@ -697,6 +716,28 @@ namespace Game
         public HashSet<Vector2Int> AllCharacterPositions()
         {
             return CharacterManager.GetAllCharacterPositions();
+        }
+
+        private Dictionary<EntityLayer, Dictionary<Vector2Int, IEntity>> _allEntityPositions = new();
+
+        public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer)
+        {
+            return _allEntityPositions[layer].GetValueOrDefault(position);
+        }
+
+        public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position, IEnumerable<EntityLayer> layers)
+        {
+            foreach (var layer in layers)
+            {
+                var entity = _allEntityPositions[layer].GetValueOrDefault(position);
+                if (entity != null)
+                    yield return entity;
+            }
+        }
+
+        public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position)
+        {
+            return GetEntitiesFastAt(position, Enum.GetValues(typeof(EntityLayer)).Cast<EntityLayer>());
         }
 
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem)
@@ -789,7 +830,7 @@ namespace Game
             float radius)
         {
             var viewRadiusSq = radius * radius;
-            var viewArea = ViewCalculator.FieldOfView(position, 20, isTileBlocked);
+            var viewArea = ViewCalculator.FieldOfView(position, Mathf.CeilToInt(radius), isTileBlocked);
             return viewArea.Where(x => (x - position).sqrMagnitude <= viewRadiusSq).ToHashSet();
         }
     }

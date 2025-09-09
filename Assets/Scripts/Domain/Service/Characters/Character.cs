@@ -808,8 +808,9 @@ namespace Domain.Service.Characters
 
         public void UpdateTurn()
         {
-            _statusManager.UpdateTurn(this, _map.GetVisibleCharacters(this).Any());
-            _affiliationManager.UpdateTurn(_map.GetVisibleCharacters(this).Select(x => x.Affiliation));
+            var visibleCharacters = _map.GetVisibleCharacters(this);
+            _statusManager.UpdateTurn(this, visibleCharacters.Any());
+            _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
             _inventory.UpdateTurn();
             _skills.ForEach(x => x.UpdateTurn());
         }

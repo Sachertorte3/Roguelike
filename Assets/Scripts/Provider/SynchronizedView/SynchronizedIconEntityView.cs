@@ -16,7 +16,7 @@ namespace Provider
     public class SynchronizedIconEntityView : SynchronizedEntityView<IEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable[] _disposable =
-            EnumerableExtension.CreateNewInstances<SerialDisposable>(2).ToArray();
+            EnumerableExtension.CreateNewInstances<SerialDisposable>(3).ToArray();
 
         protected override InputReceiver _inputReceiver { get; init; }
 
@@ -40,6 +40,11 @@ namespace Provider
                     map.EventEntityManager.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.EventEntityManager.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
             );
+            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
+                map => _disposable[2].Disposable =
+                    map.EventEntityManager.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
+                map => map.EventEntityManager.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity))
+            );
         }
 
         protected override EntityView ViewPrefab(IEntity eventEntity)
@@ -57,6 +62,11 @@ namespace Provider
             if (eventEntity is Trap)
             {
                 return ScriptableObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
+            }
+
+            if (eventEntity is Statue)
+            {
+                return ScriptableObjectLoader.LoadPrefab("Statue").GetComponent<EntityView>();
             }
 
             if (eventEntity is Stairs stairs)

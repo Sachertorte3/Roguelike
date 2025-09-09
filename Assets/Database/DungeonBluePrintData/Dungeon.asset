@@ -234,6 +234,18 @@ MonoBehaviour:
       Weight: 1
     - Item: {fileID: 11400000, guid: e3bcbd29589786440a10dced37887374, type: 2}
       Weight: 1
+  Statues:
+    items:
+    - Item: {fileID: 11400000, guid: c35550494d973b9458bdb1eb7de36f1c, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 4661b7f47d4728a48a46bc6e7f971134, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: f1e4da86ea5161f4c944494f5dd352f6, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 09c2d030b0b14f143a9aec04edd572d9, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 371238808707d4044a5223132d942a21, type: 2}
+      Weight: 1
   WeaponPrefixes:
     items:
     - {fileID: 11400000, guid: 09d567260d3482f469285f4b1da91479, type: 2}

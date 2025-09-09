@@ -91,7 +91,7 @@ namespace Game
                     }
                 }
 
-                Update(map, characters, timeStopped, minWaitTime);
+                Update(gameManager, map, characters, timeStopped, minWaitTime);
 
                 foreach (var character in characters.Where(character => character.Status.IsWaitTimeFull()))
                 {
@@ -119,7 +119,7 @@ namespace Game
             _runCompletionSource.TrySetResult();
         }
 
-        private void Update(IMap map, List<ICharacter> characters, bool timeStopped, float minWaitTime)
+        private void Update(IGameManager gameManager, IMap map, List<ICharacter> characters, bool timeStopped, float minWaitTime)
         {
             _turnWaitTime.Gain(minWaitTime);
             if (!_turnWaitTime.IsFull())
@@ -131,6 +131,13 @@ namespace Game
                     continue;
 
                 character.UpdateTurn();
+            }
+
+            foreach (var scheduledEventEntity in map.ScheduledEventEntities)
+            {
+                scheduledEventEntity.Event.UpdateTurn();
+                if (scheduledEventEntity.Event.CanExecuteEvent())
+                    scheduledEventEntity.Event.DoEvent(gameManager, map);
             }
 
             _turnInLevel.Value++;

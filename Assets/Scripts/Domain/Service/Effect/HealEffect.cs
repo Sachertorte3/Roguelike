@@ -12,7 +12,7 @@ using Utilities;
 namespace Domain.Service.Effect
 {
     [Serializable]
-    public class HealEffect : EntityTargetEffect
+    public class HealEffect : ActorlessEntityTargetEffect
     {
         [MinValue(1)] [SerializeField] private int _power;
 
@@ -20,7 +20,7 @@ namespace Domain.Service.Effect
 
         public override Impact Impact => Impact.Beneficial;
 
-        public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
+        public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var value = Formula.CalcHeal(_power);
             GameLog.Add($"{target.GetName(map.Player)}は{value}回復");

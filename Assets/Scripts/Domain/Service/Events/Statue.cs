@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
@@ -9,29 +8,30 @@ using Domain.Service.Effect;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
+using Utilities.Stats;
 
 namespace Domain.Service.Events
 {
-    public class Trap : ISerializable<TrapMemento>, IEventEntity
+    public class Statue : ISerializable<StatueMemento>, IScheduledEventEntity
     {
         public readonly string Name;
         public EntityBase Entity { get; init; }
         private readonly SpawnActorlessEffectSkill _skill;
-        private readonly float _probabilityOfBreaking;
+        private int _attackToBreak;
 
-        public Trap(TrapMemento memento)
+        public Statue(StatueMemento memento)
         {
             Name = memento.Name;
             Entity = new EntityBase(memento.Entity);
             _skill = new SpawnActorlessEffectSkill(memento.Skill);
-            _probabilityOfBreaking = memento.ProbabilityOfBreaking;
-            Event = new CharacterEvent(
-                character => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
-                async (character, gameManager, map) => { await Execute(map); }
+            _attackToBreak = memento.AttackToBreak;
+            Event = new ScheduledEvent(
+                memento.Cycle,
+                async (gameManager, map) => { await Execute(map); }
             );
         }
 
-        public ICharacterEvent Event { get; init; }
+        public IScheduledEvent Event { get; init; }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
@@ -43,25 +43,30 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        public TrapMemento Serialize()
+        public StatueMemento Serialize()
         {
-            return new TrapMemento(Name, Entity.Serialize(), _skill.Serialize(), _probabilityOfBreaking);
+            return new StatueMemento(Name, Entity.Serialize(), _skill.Serialize(), Event.WaitTurnData, _attackToBreak);
         }
 
-        public static TrapMemento Build(TrapData trap, Vector2Int position)
+        public static StatueMemento Build(StatueData statue, Vector2Int position)
         {
-            return new TrapMemento(trap.name, EntityBase.Build(position, EntityLayer.Bottom),
-                SpawnActorlessEffectSkill.Build(trap.Skill), trap.ProbabilityOfBreaking);
+            return new StatueMemento(statue.name, EntityBase.Build(position, EntityLayer.Middle),
+                SpawnActorlessEffectSkill.Build(statue.Skill), new ResourceData(new StatData(statue.Cycle), statue.Cycle), statue.AttackToBreak);
         }
 
-        public async UniTask Execute(IMap map)
+        private async UniTask Execute(IMap map)
         {
             GameLog.Add($"<color=red>{Name}</color>が起動した");
             await _skill.Use(Name, Entity.CurrentPosition, map);
-            if (Random.value < _probabilityOfBreaking)
+        }
+
+        public void Attacked()
+        {
+            _attackToBreak -= 1;
+            if (_attackToBreak <= 0)
             {
                 GameLog.Add($"<color=red>{Name}</color>は壊れた");
-                Entity.Destroy("は壊れた");
+                Entity.Destroy($"は壊された");
             }
         }
     }

@@ -86,6 +86,7 @@ namespace Game
             _entities.AddWith(Items).AddTo(_disposables);
             _entities.AddWith(EventEntities).AddTo(_disposables);
             _entities.AddWith(PlayerEventEntities).AddTo(_disposables);
+            _entities.AddWith(ScheduledEventEntities).AddTo(_disposables);
             _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
             _entities.AddWith(FireEntities).AddTo(_disposables);
 
@@ -201,6 +202,7 @@ namespace Game
         public IObservableCollection<IItemEntity> Items => ItemManager.Items;
         public IObservableCollection<IEventEntity> EventEntities => EventEntityManager.EventEntities;
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => EventEntityManager.PlayerEventEntities;
+        public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities => EventEntityManager.ScheduledEventEntities;
 
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
@@ -215,6 +217,7 @@ namespace Game
             ItemManager.Dispose();
             EventEntities.ForEach(eventEntity => eventEntity.Dispose());
             PlayerEventEntities.ForEach(eventEntity => eventEntity.Dispose());
+            ScheduledEventEntities.ForEach(eventEntity => eventEntity.Dispose());
             ThrowAnimationEntities.ForEach(throwAnimationEntity => throwAnimationEntity.Dispose());
             FireEntities.ForEach(fireEntity => fireEntity.Dispose());
             _disposables.Dispose();
@@ -272,7 +275,7 @@ namespace Game
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
             var destination = await throwAnimationEntity.Throw(direction, this, distance, canHitLayer);
-            throwAnimationEntity.Entity.Destroy("は演出が終わったので消えた（エラー）");
+            throwAnimationEntity.Entity.Destroy("は演出が終わったので消えた");
             return destination;
         }
 
@@ -343,6 +346,14 @@ namespace Game
         public List<IPlayerEventEntity> GetPlayerEventEntityAt(Vector2Int position, EntityLayer layer)
         {
             return PlayerEventEntities
+                .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
+                .Where(eventEntity => eventEntity.Entity.Layer == layer)
+                .ToList();
+        }
+
+        public List<IScheduledEventEntity> GetScheduledEventEntityAt(Vector2Int position, EntityLayer layer)
+        {
+            return ScheduledEventEntities
                 .Where(eventEntity => eventEntity.Entity.CurrentPosition == position)
                 .Where(eventEntity => eventEntity.Entity.Layer == layer)
                 .ToList();
@@ -428,16 +439,6 @@ namespace Game
             if (At(to).IsWalkable(actor.Affiliation))
                 return route.Last() == to;
             return (route.Last() - to).sqrMagnitude <= 2;
-        }
-
-        public void RemoveEventEntity(IEventEntity eventEntity)
-        {
-            EventEntityManager.Remove(eventEntity);
-        }
-
-        public void RemoveEventEntity(IPlayerEventEntity eventEntity)
-        {
-            EventEntityManager.Remove(eventEntity);
         }
 
         public ITilemapViewer TilemapViewer => _tilemap;
@@ -669,6 +670,14 @@ namespace Game
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce)
         {
             _tilemap.SetOverlayTiles(positions, isIce ? OverlayTileCategory.FloatingIce : null);
+        }
+
+        public void AttackStatue(IEnumerable<Vector2Int> positions)
+        {
+            foreach (var statue in EventEntityManager.Statues.In(positions).ToList())
+            {
+                statue.Attacked();
+            }
         }
 
         public void SpawnFire(IEnumerable<Vector2Int> positions)

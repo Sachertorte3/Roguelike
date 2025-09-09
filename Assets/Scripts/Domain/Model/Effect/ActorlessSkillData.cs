@@ -13,7 +13,7 @@ namespace Domain.Model.Effect
     {
         [field: SerializeReference]
         [field: Required]
-        public IActorlessEffectPosition Position { get; private set; }
+        public IPositionOnlyDependentEffectPosition Position { get; private set; }
 
         [field: SerializeReference]
         [field: Required]
@@ -37,7 +37,7 @@ namespace Domain.Model.Effect
 
         public string Log => "";
 
-        public ActorlessSkillData(IActorlessEffectPosition position, INotDirectionalArea area,
+        public ActorlessSkillData(IPositionOnlyDependentEffectPosition position, INotDirectionalArea area,
             List<IActorlessEffect> effect,
             float probabilityOfSuccess)
         {

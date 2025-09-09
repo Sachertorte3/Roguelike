@@ -21,6 +21,7 @@ namespace Domain.Model.Dungeon
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
+        public Table<StatueData> Statues;
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes;
         public Table<EnemyData> Npcs;
 
@@ -83,6 +84,7 @@ namespace Domain.Model.Dungeon
                 WeaponPrefixes,
                 MasterItemDataBase.AllChestItems,
                 Traps,
+                Statues,
                 MasterItemDataBase.ShopItems,
                 enemies,
                 Npcs,
@@ -104,6 +106,7 @@ namespace Domain.Model.Dungeon
                 floorData.MoneyAverage,
                 floorData.CharacterCount,
                 floorData.TrapCount,
+                floorData.StatueChance,
                 boss,
                 sectionData.Clerk,
                 sectionData.Mimic

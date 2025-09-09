@@ -49,6 +49,7 @@ namespace Game
                     _stairs,
                     new List<ChestMemento>(),
                     new List<TrapMemento>(),
+                    new List<StatueMemento>(),
                     new List<MoneyMemento>(),
                     Option<BonfireMemento>.None,
                     Option<EntityMemento>.None,

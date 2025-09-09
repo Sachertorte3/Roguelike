@@ -27,6 +27,7 @@ namespace Game
         private readonly List<StairsMemento> _stairs = new();
         private readonly List<ChestMemento> _chests = new();
         private readonly List<TrapMemento> _traps = new();
+        private readonly List<StatueMemento> _statues = new();
         private readonly List<MoneyMemento> _money = new();
         private BonfireMemento? _bonfire;
         private EntityMemento? _magicPot;
@@ -164,6 +165,8 @@ namespace Game
             AddMoneyToRoom(data, roomId, moneyCount);
             AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
+            if (Random.value < data.StatueChance)
+                AddStatueToRoom(data, roomId);
         }
 
         private bool CreateLakeRoom(DungeonMapData data, Id<Room> roomId)
@@ -201,6 +204,8 @@ namespace Game
             AddMoneyToRoom(data, roomId, moneyCount);
             AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
+            if (Random.value < data.StatueChance)
+                AddStatueToRoom(data, roomId);
 
             return true;
         }
@@ -354,6 +359,12 @@ namespace Game
             }
         }
 
+        private void AddStatueToRoom(DungeonMapData data, Id<Room> roomId)
+        {
+            var position = GetRandomBlankPositionInRoom(roomId);
+            _statues.Add(Statue.Build(data.Statues.GetRandomItem(), position));
+        }
+
         public void AddMovementEntity(MovementData data)
         {
             if (data.Id != null && data.DestinationId != null)
@@ -376,6 +387,7 @@ namespace Game
                     _stairs,
                     _chests,
                     _traps,
+                    _statues,
                     _money,
                     _bonfire.ToOption(),
                     _magicPot.ToOption(),

@@ -11,6 +11,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public List<StairsMemento> Stairs { get; private set; }
         [field: SerializeField] public List<ChestMemento> Chests { get; private set; }
         [field: SerializeField] public List<TrapMemento> Traps { get; private set; }
+        [field: SerializeField] public List<StatueMemento> Statues { get; private set; }
         [field: SerializeField] public List<MoneyMemento> Money { get; private set; }
         [field: SerializeField] public Option<BonfireMemento> Bonfire { get; private set; }
         [field: SerializeField] public Option<EntityMemento> MagicPot { get; private set; }
@@ -20,6 +21,7 @@ namespace Domain.Model.Memento
             List<StairsMemento> stairs,
             List<ChestMemento> chests,
             List<TrapMemento> traps,
+            List<StatueMemento> statues,
             List<MoneyMemento> money,
             Option<BonfireMemento> bonfire,
             Option<EntityMemento> magicPot,
@@ -28,6 +30,7 @@ namespace Domain.Model.Memento
             Stairs = stairs;
             Chests = chests;
             Traps = traps;
+            Statues = statues;
             Money = money;
             Bonfire = bonfire;
             MagicPot = magicPot;

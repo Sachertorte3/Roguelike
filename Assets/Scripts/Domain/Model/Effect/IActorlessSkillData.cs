@@ -10,7 +10,7 @@ namespace Domain.Model.Effect
         IArea ISkillData.Area => Area;
         public new List<IActorlessEffect> Effects { get; }
         List<IEffect> ISkillData.Effects => Effects.Cast<IEffect>().ToList();
-        public new IActorlessEffectPosition Position { get; }
+        public new IPositionOnlyDependentEffectPosition Position { get; }
         IEffectPosition ISkillData.Position => Position;
     }
 }

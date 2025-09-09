@@ -456,6 +456,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "dev.kyubuns.stringserializableenum": {
+      "version": "https://github.com/kyubuns/StringSerializableEnum.git?path=Unity/Assets/StringSerializableEnum",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "25634c6deac7b8dc4b40e1491d4b26c3be6934d3"
+    },
     "jp.hadashikick.vcontainer": {
       "version": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer",
       "depth": 0,

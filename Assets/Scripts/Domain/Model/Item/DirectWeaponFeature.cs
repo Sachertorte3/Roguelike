@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StringSerializableEnum;
 
 namespace Domain.Model.Item
 {
+    [StringSerializable]
     public enum DirectWeaponFeature
     {
         //MEMO: Due to the merge specifications, it should not affect anything other than Skill.

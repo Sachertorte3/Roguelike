@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 4
-  Features: 08000000
+  _features:
+  - stringValue: GuaranteedHit
   FeatureLimit: 3
   UsageLimit: 32
   UpgradeLimit: 3

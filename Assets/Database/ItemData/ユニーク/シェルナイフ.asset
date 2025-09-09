@@ -47,7 +47,7 @@ MonoBehaviour:
   UsageLimit: 15
   UpgradeLimit: 3
   PassiveConditions: []
-  FeaturesToMergeWeapon: 
+  _featuresToMergeWeapon: []
   references:
     version: 2
     RefIds:

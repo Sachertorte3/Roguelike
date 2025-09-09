@@ -1,12 +1,11 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
-#if UNITY_EDITOR
-#endif
 
 namespace Domain.Model.Item
 {
@@ -18,7 +17,8 @@ namespace Domain.Model.Item
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
         public List<ElementPower> ElementPowers;
-        public List<DirectWeaponFeature> Features;
+        [SerializeField] private List<StringSerializableDirectWeaponFeature> _features;
+        public List<DirectWeaponFeature> Features => _features.Select(feature => feature.Value).ToList();
         [MinValue(1)] public int FeatureLimit = 3;
         [MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;

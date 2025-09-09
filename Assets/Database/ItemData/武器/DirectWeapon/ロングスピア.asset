@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 5
-  Features: 00000000
+  _features:
+  - stringValue: TwoRangeAttack
   FeatureLimit: 3
   UsageLimit: 25
   UpgradeLimit: 3

@@ -48,7 +48,7 @@ MonoBehaviour:
   UpgradeLimit: 3
   PassiveConditions:
   - rid: 3119344245011382276
-  FeaturesToMergeWeapon: 
+  _featuresToMergeWeapon: []
   references:
     version: 2
     RefIds:

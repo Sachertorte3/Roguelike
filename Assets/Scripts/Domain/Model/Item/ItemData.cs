@@ -7,6 +7,8 @@ using Domain.Model.Effect;
 using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using System.Linq;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -74,7 +76,9 @@ namespace Domain.Model.Item
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
-        public List<DirectWeaponFeature> FeaturesToMergeWeapon;
+        [SerializeField] private List<StringSerializableDirectWeaponFeature> _featuresToMergeWeapon;
+        public List<DirectWeaponFeature> FeaturesToMergeWeapon => _featuresToMergeWeapon.Select(feature => feature.Value).ToList();
+
 
         private bool _usable => EffectType switch
         {

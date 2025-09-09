@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
@@ -28,7 +27,7 @@ namespace Domain.Service.Events
                 {
                     map.Player.AddMoney(Amount);
                     GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
-                    map.RemoveEventEntity(this);
+                    Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に拾われた");
                     return UniTask.CompletedTask;
                 }
             );
@@ -60,11 +59,6 @@ namespace Domain.Service.Events
         public void SetVisibility(bool visibility)
         {
             Entity.SetVisibility(visibility);
-        }
-
-        public void Destroy(string destroyLog)
-        {
-            Entity.Destroy(destroyLog);
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)

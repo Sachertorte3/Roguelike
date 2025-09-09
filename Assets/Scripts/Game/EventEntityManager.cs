@@ -18,6 +18,7 @@ namespace Game
         public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
         private readonly List<Trap> _traps = new();
+        public readonly List<Statue> Statues = new();
         private readonly List<Money> _money = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private Option<MagicPot> _magicPot = Option<MagicPot>.None;
@@ -26,6 +27,8 @@ namespace Game
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
         private ObservableList<IPlayerEventEntity> _playerEventEntities = new();
         private ObservableList<IPlayerEventEntity> _standalonePlayerEventEntities = new();
+        private ObservableList<IScheduledEventEntity> _scheduledEventEntities = new();
+        private ObservableList<IScheduledEventEntity> _standaloneScheduledEventEntities = new();
 
         public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
@@ -48,6 +51,13 @@ namespace Game
                 var trap = new Trap(trapMemento);
                 _traps.Add(trap);
                 Spawn(trap);
+            }
+
+            foreach (var statueMemento in eventEntities.Statues)
+            {
+                var statue = new Statue(statueMemento);
+                Statues.Add(statue);
+                Spawn(statue);
             }
 
             foreach (var moneyMemento in eventEntities.Money)
@@ -77,6 +87,10 @@ namespace Game
                 eventEntity => eventEntity.Entity.OnDestroyed,
                 (eventEntity, _) => Remove(eventEntity)
             );
+            _scheduledEventEntities.SubscribeIncludingCurrentObservables(
+                eventEntity => eventEntity.Entity.OnDestroyed,
+                (eventEntity, _) => Remove(eventEntity)
+            );
         }
 
         public EventEntitiesMemento Serialize()
@@ -86,6 +100,7 @@ namespace Game
                 Stairs.Select(stairs => stairs.Serialize()).ToList(),
                 _chests.Select(chest => chest.Serialize()).ToList(),
                 _traps.Select(trap => trap.Serialize()).ToList(),
+                Statues.Select(statue => statue.Serialize()).ToList(),
                 _money.Select(money => money.Serialize()).ToList(),
                 _bonfire.Map(bonfire => bonfire.Serialize()),
                 _magicPot.Map(magicPot => magicPot.Serialize()),
@@ -97,6 +112,7 @@ namespace Game
             IEnumerable<StairsMemento> stairs,
             IEnumerable<ChestMemento> chests,
             IEnumerable<TrapMemento> traps,
+            IEnumerable<StatueMemento> statues,
             IEnumerable<MoneyMemento> money,
             Option<BonfireMemento> bonfire,
             Option<EntityMemento> magicPot,
@@ -108,6 +124,7 @@ namespace Game
                 stairs.ToList(),
                 chests.ToList(),
                 traps.ToList(),
+                statues.ToList(),
                 money.ToList(),
                 bonfire,
                 magicPot,
@@ -120,6 +137,8 @@ namespace Game
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => _playerEventEntities;
         public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities =>
             _standalonePlayerEventEntities;
+        public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities => _scheduledEventEntities;
+        public IObservableCollection<IScheduledEventEntity> StandaloneScheduledEventEntities => _standaloneScheduledEventEntities;
 
         public void Spawn(IEventEntity eventEntity)
         {
@@ -133,6 +152,12 @@ namespace Game
             Add(eventEntity);
         }
 
+        public void Spawn(IScheduledEventEntity eventEntity)
+        {
+            _standaloneScheduledEventEntities.Add(eventEntity);
+            Add(eventEntity);
+        }
+
         public void Add(IEventEntity eventEntity)
         {
             _eventEntities.Add(eventEntity);
@@ -141,6 +166,11 @@ namespace Game
         public void Add(IPlayerEventEntity eventEntity)
         {
             _playerEventEntities.Add(eventEntity);
+        }
+
+        public void Add(IScheduledEventEntity eventEntity)
+        {
+            _scheduledEventEntities.Add(eventEntity);
         }
 
         public void Remove(IEventEntity eventEntity)
@@ -184,6 +214,20 @@ namespace Game
             else if (eventEntity is MagicPot)
             {
                 _magicPot = Option<MagicPot>.None;
+            }
+            else
+            {
+                throw new Exception($"Unknown event entity: {eventEntity.GetType()}");
+            }
+        }
+
+        public void Remove(IScheduledEventEntity eventEntity)
+        {
+            _scheduledEventEntities.Remove(eventEntity);
+            _standaloneScheduledEventEntities.Remove(eventEntity);
+            if (eventEntity is Statue statue)
+            {
+                Statues.Remove(statue);
             }
             else
             {

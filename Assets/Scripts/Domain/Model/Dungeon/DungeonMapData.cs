@@ -20,6 +20,7 @@ namespace Domain.Model.Dungeon
         ICorrectionTable<WeaponPrefix> WeaponPrefixes,
         ICorrectionTable<IItemData> ChestItems,
         ITable<TrapData> Traps,
+        ITable<StatueData> Statues,
         ITable<ShopItemData> ShopItems,
         Table<EnemyData> Enemies,
         Table<EnemyData> Npcs,
@@ -41,6 +42,7 @@ namespace Domain.Model.Dungeon
         float MoneyAverage,
         float CharacterAttempt,
         float TrapAttempt,
+        float StatueChance,
         List<EnemyData> Boss,
         EnemyData Clerk,
         EnemyData Mimic

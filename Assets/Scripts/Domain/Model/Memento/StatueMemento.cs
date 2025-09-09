@@ -1,27 +1,31 @@
 #nullable enable
 using System;
 using UnityEngine;
+using Utilities.Stats;
 
 namespace Domain.Model.Memento
 {
     [Serializable]
-    public class TrapMemento
+    public class StatueMemento
     {
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public EntityMemento Entity { get; private set; }
         [field: SerializeReference] public SpawnActorlessEffectSkillMemento Skill { get; private set; }
-        [field: SerializeField] public float ProbabilityOfBreaking { get; private set; }
+        [field: SerializeField] public ResourceData Cycle { get; private set; }
+        [field: SerializeField] public int AttackToBreak { get; private set; }
 
-        public TrapMemento(
+        public StatueMemento(
             string name,
             EntityMemento entity,
             SpawnActorlessEffectSkillMemento skill,
-            float probabilityOfBreaking)
+            ResourceData cycle,
+            int attackToBreak)
         {
             Name = name;
             Entity = entity;
             Skill = skill;
-            ProbabilityOfBreaking = probabilityOfBreaking;
+            Cycle = cycle;
+            AttackToBreak = attackToBreak;
         }
     }
 }

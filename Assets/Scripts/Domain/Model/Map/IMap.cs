@@ -26,6 +26,7 @@ namespace Domain.Model.Map
         public IObservableCollection<IItemEntity> Items { get; }
         public IObservableCollection<IEventEntity> EventEntities { get; }
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities { get; }
+        public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities { get; }
 
         public HashSet<Vector2Int> GetAllPositions();
 
@@ -43,6 +44,8 @@ namespace Domain.Model.Map
         public bool IsGrass(Vector2Int position);
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
+
+        public void AttackStatue(IEnumerable<Vector2Int> positions);
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
         public ICharacter? SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
@@ -62,9 +65,6 @@ namespace Domain.Model.Map
         public void DropAllItemInStorage(IItem item);
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
-
-        public void RemoveEventEntity(IEventEntity entity);
-        public void RemoveEventEntity(IPlayerEventEntity entity);
 
         public HashSet<Vector2Int> AllCharacterPositions();
         public HashSet<Vector2Int> AllItemPositions();

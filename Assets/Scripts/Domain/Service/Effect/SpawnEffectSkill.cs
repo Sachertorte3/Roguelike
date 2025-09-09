@@ -110,6 +110,14 @@ namespace Domain.Service.Effect
                 map.SetGrasses(area, false);
             }
 
+            if (_effects.Any(effect =>
+                    effect is AttackEffect ||
+                    effect is AbsorbsEffect ||
+                    effect is PercentageDamageEffect))
+            {
+                map.AttackStatue(area);
+            }
+
             for (var i = 0; i < Repeats; i++)
             {
                 foreach (var effect in _effects)

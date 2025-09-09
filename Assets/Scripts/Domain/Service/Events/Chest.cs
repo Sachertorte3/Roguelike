@@ -48,7 +48,7 @@ namespace Domain.Service.Events
 
         private UniTask DoEvent(IMap map)
         {
-            map.RemoveEventEntity(this);
+            Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に開かれた");
             if (_item.IsSome)
             {
                 if (map.Player.Character.TryAddToInventory(_item.Value))

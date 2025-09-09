@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 5
-  Features: 07000000
+  _features:
+  - stringValue: Absorbing
   FeatureLimit: 3
   UsageLimit: 15
   UpgradeLimit: 5

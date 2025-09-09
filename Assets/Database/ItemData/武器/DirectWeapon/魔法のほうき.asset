@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 3
-  Features: 07000000
+  _features:
+  - stringValue: BreakTrap
   FeatureLimit: 3
   UsageLimit: 32
   UpgradeLimit: 3

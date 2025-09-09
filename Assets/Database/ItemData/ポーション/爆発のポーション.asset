@@ -10,34 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u5024\u5207\u308A\u306E\u6307\u8F2A"
+  m_Name: "\u7206\u767A\u306E\u30DD\u30FC\u30B7\u30E7\u30F3"
   m_EditorClassIdentifier: 
-  Category: 5
-  Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
+  Category: 0
+  Icon: {fileID: 187119880, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
-  _rarity: 1
+  _rarity: 0
   AdditionalPrice: 0
   MultiplyPrice: 1
-  EffectType: 0
+  EffectType: 1
   UseOnDeath: 0
-  SpawnEffectsOnUse: 0
-  SpawnEffectsOnThrow: 0
+  SpawnEffectsOnUse: 1
+  SpawnEffectsOnThrow: 1
   IsSameEffect: 0
-  IsSameSkill: 0
+  IsSameSkill: 1
   SkillOnUse:
     <Position>k__BackingField:
       rid: 2541219106150416411
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-    - rid: 4425516923575599144
+    - rid: 3961642730205741164
+    - rid: 3961642730205741165
+    - rid: 3961642730205741166
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 4425516923575599143
     <Effects>k__BackingField:
-    - rid: 4425516923575599144
+    - rid: 3961642730205741164
+    - rid: 3961642730205741165
+    - rid: 3961642730205741166
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
@@ -46,8 +50,7 @@ MonoBehaviour:
   StorageCapacity: 0
   UsageLimit: 1
   UpgradeLimit: 3
-  PassiveConditions:
-  - rid: 3119344245011382274
+  PassiveConditions: []
   _featuresToMergeWeapon: []
   references:
     version: 2
@@ -57,16 +60,21 @@ MonoBehaviour:
     - rid: 2541219106150416411
       type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data: 
-    - rid: 3119344245011382274
-      type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
+    - rid: 3961642730205741164
+      type: {class: PercentageDamageEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
-        _flagStatType: 10
+        _damageRate: 0.5
+    - rid: 3961642730205741165
+      type: {class: DigEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data: 
+    - rid: 3961642730205741166
+      type: {class: BreakEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        ApplyToCharacter: 0
+        ApplyToItem: 1
+        ApplyToMoney: 1
+        ApplyToTrap: 1
+        ApplyToChest: 1
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 
-    - rid: 4425516923575599144
-      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
-      data:
-        _condition:
-          _name: 
-        _probabilityOfSuccess: 0

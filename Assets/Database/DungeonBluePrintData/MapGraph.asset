@@ -781,7 +781,7 @@ MonoBehaviour:
     ShopChance: 0.05
     MonsterHouseChance: 0.05
     RestRoomChance: 0.2
-    LakeChance: 0.05
+    LakeChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100
@@ -851,9 +851,9 @@ MonoBehaviour:
     SleepChance: 0.75
     MimicChance: 0.1
     ShopChance: 0.05
-    MonsterHouseChance: 0.05
+    MonsterHouseChance: 0.1
     RestRoomChance: 0.2
-    LakeChance: 0.05
+    LakeChance: 0.2
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 300
@@ -3082,10 +3082,10 @@ MonoBehaviour:
     ShinyChance: 0
     SleepChance: 0.75
     MimicChance: 0.1
-    ShopChance: 1
+    ShopChance: 0
     MonsterHouseChance: 0
     RestRoomChance: 0
-    LakeChance: 1
+    LakeChance: 0
     ItemCount: 2
     MoneyCount: 1
     MoneyAverage: 100

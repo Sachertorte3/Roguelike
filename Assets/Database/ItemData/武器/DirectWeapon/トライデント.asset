@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 4
-  Features: 01000000
+  _features:
+  - stringValue: FanAttack
   FeatureLimit: 3
   UsageLimit: 20
   UpgradeLimit: 3

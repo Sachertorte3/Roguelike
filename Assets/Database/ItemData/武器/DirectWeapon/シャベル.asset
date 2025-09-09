@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 3
-  Features: 06000000
+  _features:
+  - stringValue: Dig
   FeatureLimit: 2
   UsageLimit: 20
   UpgradeLimit: 2

@@ -56,7 +56,7 @@ namespace Game
 
         public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerData,
             List<CharacterMemento>? partyMembers,
-            Vector2Int? playerPosition, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
+            Vector2Int? playerPosition, bool resetPertyPositions, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
             Id = map.Id;
             ItemPlaceholders = itemPlaceholders;
@@ -101,15 +101,23 @@ namespace Game
             {
                 foreach (var character in partyMembers)
                 {
-                    var ally = CharacterManager.SpawnAlly(
+                    Ally ally;
+                    if (resetPertyPositions)
+                    {
+                        ally = CharacterManager.SpawnAlly(
                         character.ReplacePosition(
                             FindBlankPositionFrom(
                                 playerPosition.Value,
                                 position => !AllCharacterPositions().Contains(position)
                             )
-                        ),
-                        this
-                    );
+                            ),
+                            this
+                        );
+                    }
+                    else
+                    {
+                        ally = CharacterManager.SpawnAlly(character, this);
+                    }
                     EventEntityManager.Add(ally);
                 }
             }

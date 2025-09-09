@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
@@ -117,7 +118,6 @@ namespace Game
         public IObservableCollection<IEventEntity> EventEntities => _eventEntities;
         public IObservableCollection<IEventEntity> StandaloneEventEntities => _standaloneEventEntities;
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities => _playerEventEntities;
-
         public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities =>
             _standalonePlayerEventEntities;
 
@@ -151,6 +151,18 @@ namespace Game
             {
                 _traps.Remove(trap);
             }
+            else if (eventEntity is Money money)
+            {
+                _money.Remove(money);
+            }
+            else if (eventEntity is Teleporter)
+            {
+                _teleporter = Option<Teleporter>.None;
+            }
+            else
+            {
+                throw new Exception($"Unknown event entity: {eventEntity.GetType()}");
+            }
         }
 
         public void Remove(IPlayerEventEntity eventEntity)
@@ -165,10 +177,6 @@ namespace Game
             {
                 Stairs.Remove(stairs);
             }
-            else if (eventEntity is Money money)
-            {
-                _money.Remove(money);
-            }
             else if (eventEntity is Bonfire)
             {
                 _bonfire = Option<Bonfire>.None;
@@ -177,9 +185,9 @@ namespace Game
             {
                 _magicPot = Option<MagicPot>.None;
             }
-            else if (eventEntity is Teleporter teleporter)
+            else
             {
-                _teleporter = Option<Teleporter>.None;
+                throw new Exception($"Unknown event entity: {eventEntity.GetType()}");
             }
         }
     }

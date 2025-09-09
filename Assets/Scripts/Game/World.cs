@@ -19,7 +19,7 @@ namespace Game
     public class World : ISerializable<WorldMemento>
     {
         private ReactiveProperty<MapManager?> _activeMap = new();
-        private Id<IMap> _activeMapId;
+        private Id<IMap>? _activeMapId => _activeMap.CurrentValue?.Id;
         private Dictionary<Id<IMap>, MapMemento> _maps = new();
         private HashSet<Id<IMap>> _updatedMapIds = new();
         private Dungeon _dungeon;
@@ -34,6 +34,10 @@ namespace Game
             _receiver = receiver;
             _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/Placeholders.asset")
                 .WaitForCompletion();
+            _activeMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            {
+                _updatedMapIds.Add(_activeMapId);
+            });
         }
 
         public void CreateNew()
@@ -70,10 +74,8 @@ namespace Game
             }
 
             MapManager map = new(mapMemento,
-                GetDungeonMapData(memento.CurrentMapId), memento.Player,
-                new List<CharacterMemento>(), memento.Player.Character.Entity.Position, _receiver, _itemPlaceholders);
+                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, _receiver, _itemPlaceholders);
 
-            _activeMapId = memento.CurrentMapId;
             _activeMap.Value = map;
 
             return map;
@@ -82,10 +84,12 @@ namespace Game
         public WorldMemento Serialize()
         {
             var playerData = _activeMap.CurrentValue.Player.Serialize();
+            var partyMembers = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
             return new WorldMemento
             (
                 _dungeon.Serialize(),
                 playerData,
+                partyMembers,
                 _activeMap.CurrentValue.Player.Character.IsDead,
                 _maps.Keys.ToList(),
                 _activeMapId,
@@ -95,6 +99,7 @@ namespace Game
 
         public List<MapMemento> SerializeUpdatedMaps()
         {
+            _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
             var updatedMaps = _updatedMapIds.Select(mapId => _maps[mapId]).ToList();
             _updatedMapIds.Clear();
             _updatedMapIds.Add(_activeMapId);
@@ -108,7 +113,6 @@ namespace Game
             if (!_maps.ContainsKey(mapId))
             {
                 _maps[mapId] = CreateMap(mapId);
-                _updatedMapIds.Add(mapId);
             }
 
             return _maps[mapId];
@@ -151,7 +155,6 @@ namespace Game
         {
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
-            _updatedMapIds.Add(mapId);
 
             PlayerMemento? playerData = null;
             List<CharacterMemento>? partyMembers = null;
@@ -170,9 +173,8 @@ namespace Game
             }
 
             MapManager map = new(mapMemento, _dungeon.CreateMapData(mapId), playerData,
-                partyMembers, initialPosition, _receiver, _itemPlaceholders);
+                partyMembers, initialPosition, true, _receiver, _itemPlaceholders);
 
-            _activeMapId = mapId;
             _activeMap.Value = map;
 
             return map;

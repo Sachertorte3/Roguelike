@@ -118,6 +118,11 @@ namespace Utilities
             {
                 return dy * (xf - x) - dx * (yf - y);
             }
+
+            public __Line DeepCopy()
+            {
+                return new __Line(xi, yi, xf, yf);
+            }
         }
 
         [Serializable]
@@ -131,6 +136,11 @@ namespace Utilities
                 this.x = x;
                 this.y = y;
                 this.parent = parent;
+            }
+
+            public __ViewBump DeepCopy()
+            {
+                return new __ViewBump(x, y, parent?.DeepCopy());
             }
         }
 
@@ -146,6 +156,15 @@ namespace Utilities
                 this.steepLine = steepLine;
                 shallowBump = null;
                 steepBump = null;
+            }
+
+            public __View DeepCopy()
+            {
+                return new __View(shallowLine.DeepCopy(), steepLine.DeepCopy())
+                {
+                    shallowBump = shallowBump?.DeepCopy(),
+                    steepBump = steepBump?.DeepCopy()
+                };
             }
         }
 

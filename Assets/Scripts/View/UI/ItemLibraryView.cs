@@ -6,6 +6,7 @@ using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Logging;
 using Utilities;
 
 namespace View.UI
@@ -32,7 +33,7 @@ namespace View.UI
 
         private void GenerateViews()
         {
-            Debug.Log($"GenerateViews: {_items.Count}");
+            Log.Debug($"GenerateViews: {_items.Count}");
             foreach (var view in _itemViews.WhereNotNull())
             {
                 Destroy(view.gameObject);

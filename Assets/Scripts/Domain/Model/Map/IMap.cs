@@ -21,7 +21,7 @@ namespace Domain.Model.Map
         public IPlayer Player { get; }
         public bool IsEventExecuting { get; }
 
-        public IEnumerable<IEntity> Entities { get; }
+        public IObservableCollection<IEntity> Entities { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
         public IObservableCollection<IEventEntity> EventEntities { get; }
@@ -29,6 +29,9 @@ namespace Domain.Model.Map
         public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities { get; }
 
         public HashSet<Vector2Int> GetAllPositions();
+        public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer);
+        public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position, IEnumerable<EntityLayer> layers);
+        public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position);
 
         public bool IsInside(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);

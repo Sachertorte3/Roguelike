@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -56,7 +57,7 @@ namespace Domain.Service.Effect
             throw new Exception("ItemTargetSkill: Item not found in inventory or ground.");
         }
 
-        public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IMap map)
+        public async UniTask<ISkillResult> Use(IPlayer player, IItem item, IEntity itemHolder, IMap map)
         {
             var selfIndex = GetItemIndex(player, item, map);
 
@@ -83,7 +84,7 @@ namespace Domain.Service.Effect
                     disabledItemIndexes.ToArray());
                 if (selectedItem != null)
                 {
-                    _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
+                    _itemEffect.Apply(player, selectedItem, itemHolder, map.ItemPlaceholders);
                     return ItemTargetSkillResult.Success;
                 }
             }
@@ -96,11 +97,11 @@ namespace Domain.Service.Effect
                     var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);
                     if (disabledItemIndexes.Contains(selectedItemIndex))
                     {
-                        GameLog.Add("しかし効果はなかった。");
+                        GameLog.Add(itemHolder.IsVisible, "しかし効果はなかった。");
                     }
                     else
                     {
-                        _itemEffect.Apply(player, selectedItem, map.ItemPlaceholders);
+                        _itemEffect.Apply(player, selectedItem, itemHolder, map.ItemPlaceholders);
                     }
 
                     return ItemTargetSkillResult.Success;

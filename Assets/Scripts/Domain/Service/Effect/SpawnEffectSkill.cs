@@ -86,11 +86,11 @@ namespace Domain.Service.Effect
             IMap map)
         {
             if (_log != null && _log != "")
-                GameLog.Add($"{actor.GetName(map.Player)}{_log}");
+                GameLog.Add(actor.IsVisible, $"{actor.GetName(map.Player)}{_log}");
 
             if (Random.value > ProbabilityOfSuccess)
             {
-                GameLog.Add("しかし効果がなかった");
+                GameLog.Add(actor.IsVisible, "しかし効果がなかった");
                 return SpawnEffectSkillResult.Failed;
             }
 

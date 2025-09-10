@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
-using Domain.Model.Character;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -36,9 +36,9 @@ namespace Domain.Service.Effect
             );
         }
 
-        public UniTask<ISkillResult> Use(IPlayer player, IStorage storage, IMap map)
+        public UniTask<ISkillResult> Use(IStorage storage, IEntity itemHolder, IMap map)
         {
-            _inventoryEffect.Apply(player, storage, map.ItemPlaceholders);
+            _inventoryEffect.Apply(map.Player, storage, itemHolder, map.ItemPlaceholders);
             return UniTask.FromResult((ISkillResult)InventoryTargetSkillResult.Success);
         }
 

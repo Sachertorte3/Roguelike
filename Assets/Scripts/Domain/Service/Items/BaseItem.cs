@@ -8,6 +8,7 @@ using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Position;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -41,7 +42,7 @@ namespace Domain.Service.Items
         private protected Subject<Unit> _onItemUpdated = new();
         private protected Subject<bool> _onCursedChanged = new();
         private CompositeDisposable _disposables = new();
-        
+
         public abstract ItemCategory Category { get; }
         public abstract string RevealedName { get; }
         protected abstract bool HasSameEffect { get; }
@@ -170,22 +171,22 @@ namespace Domain.Service.Items
             SetCurseIdentified(true);
             if (IsCursed && CannotUseIfCursed)
             {
-                GameLog.Add($"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
             }
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(map.Player, this, map),
+                itemTargetSkill => itemTargetSkill.Use(map.Player, this, actor, map),
                 inventoryTargetSkill =>
                 {
                     if (ItemStorage.HasValue)
                     {
-                        return inventoryTargetSkill.Use(map.Player, ItemStorage.Expect("ItemStorage is null"), map);
+                        return inventoryTargetSkill.Use(ItemStorage.Expect("ItemStorage is null"), actor, map);
                     }
                     else
                     {
-                        return inventoryTargetSkill.Use(map.Player, actor.Inventory, map);
+                        return inventoryTargetSkill.Use(actor.Inventory, actor, map);
                     }
                 }
             );
@@ -305,14 +306,14 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders)
+        public void Repair(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            GameLog.Add($"{GetName(player, itemPlaceholders)}は修理された");
+            GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は修理された");
             _remainingUsages.Value = MaxUsages;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed)
+        public void SetCursed(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, bool isCursed)
         {
             SetCurseIdentified(true);
             if (IsCursed == isCursed)
@@ -324,11 +325,11 @@ namespace Domain.Service.Items
             IsCursed = isCursed;
             if (isCursed)
             {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}は呪われた");
+                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は呪われた");
             }
             else
             {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}の呪いは解かれた");
+                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}の呪いは解かれた");
             }
 
             _onCursedChanged.OnNext(isCursed);
@@ -423,21 +424,21 @@ namespace Domain.Service.Items
             return upgrades.Any(upgrade => upgrade.Contains(filter));
         }
 
-        public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "")
+        public void RandomUpgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, string filter = "")
         {
             var path = this.GetUpgradePathsRecursively().Where(upgrade => upgrade.Contains(filter)).GetAtRandom();
-            Upgrade(player, itemPlaceholders, path);
+            Upgrade(player, itemHolder, itemPlaceholders, path);
         }
 
-        public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path)
+        public void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, UpgradePath path)
         {
             if (player.Character.IsKnownItem(this))
             {
-                GameLog.Add($"{_fullName}は{path.GetUpgradeName()}の効果を得た");
+                GameLog.Add(itemHolder.IsVisible, $"{_fullName}は{path.GetUpgradeName()}の効果を得た");
             }
             else
             {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}は何かの効果を得た");
+                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は何かの効果を得た");
             }
 
             _upgradePaths.Add(path);
@@ -454,7 +455,7 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders)
+        public void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             if (_upgradePaths.Count == 0)
             {
@@ -464,11 +465,11 @@ namespace Domain.Service.Items
             var path = _upgradePaths.GetAtRandom();
             if (player.Character.IsKnownItem(this))
             {
-                GameLog.Add($"{_fullName}の{path.GetUpgradeName()}は消えた");
+                GameLog.Add(itemHolder.IsVisible, $"{_fullName}の{path.GetUpgradeName()}は消えた");
             }
             else
             {
-                GameLog.Add($"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
+                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
             }
 
             _upgradePaths.Remove(path);

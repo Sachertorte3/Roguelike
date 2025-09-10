@@ -6,6 +6,7 @@ using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using R3;
 using UnityEngine;
@@ -59,15 +60,15 @@ namespace Domain.Model.Item
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map);
 
-        public void Repair(IPlayer player, ItemPlaceholders itemPlaceholders);
-        public void SetCursed(IPlayer player, ItemPlaceholders itemPlaceholders, bool isCursed);
+        public void Repair(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
+        public void SetCursed(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, bool isCursed);
         public void SetCurseIdentified(bool isCurseIdentified);
         public void Rename(string name);
         public void RevertToDefaultName();
         public bool CanUpgrade(string filter = "");
-        public void RandomUpgrade(IPlayer player, ItemPlaceholders itemPlaceholders, string filter = "");
-        public void Upgrade(IPlayer player, ItemPlaceholders itemPlaceholders, UpgradePath path);
-        public void Downgrade(IPlayer player, ItemPlaceholders itemPlaceholders);
+        public void RandomUpgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, string filter = "");
+        public void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, UpgradePath path);
+        public void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
         public string Info(IPlayer player, ItemPlaceholders itemPlaceholders);
         public string DebugInfo();
     }

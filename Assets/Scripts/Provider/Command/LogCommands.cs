@@ -26,7 +26,7 @@ namespace Provider
 
         private void AddLog(string log)
         {
-            GameLog.Add(log);
+            GameLog.AddIgnoreVisibility(log);
         }
 
         private void SetLogLevel(LogLevel level)

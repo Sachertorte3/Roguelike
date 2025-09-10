@@ -183,10 +183,9 @@ namespace Game
 
             UpdateVisibility(Entities);
 
-            if ((map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
-                || map.Characters.Any(character => character.IsShiny))
+            if (map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
             {
-                GameLog.Add("<color=yellow>不穏な気配を感じる……</color>");
+                GameLog.AddIgnoreVisibility("<color=yellow>不穏な気配を感じる……</color>");
             }
         }
 
@@ -526,7 +525,7 @@ namespace Game
                             {
                                 if (Player.Character.IsVisible(positionChanged))
                                 {
-                                    GameLog.Add(
+                                    GameLog.Add(character.Entity.IsVisible,
                                         $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>を拾った");
                                 }
                             }
@@ -537,7 +536,7 @@ namespace Game
                         }
                         else if (Player.Character.IsVisible(positionChanged))
                         {
-                            GameLog.Add(
+                            GameLog.Add(character.Entity.IsVisible,
                                 $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>の上に乗った");
                         }
                     }
@@ -661,14 +660,14 @@ namespace Game
             foreach (var character in characters)
             {
                 character.LoseHp(1, "は火に焼かれた");
-                GameLog.Add($"{character.GetName(Player)}は火に焼かれた");
+                GameLog.Add(character.Entity.IsVisible, $"{character.GetName(Player)}は火に焼かれた");
             }
 
             var items = Items.In(FireEntityManager.FireEntities.Positions()).ToList();
             foreach (var item in items)
             {
                 item.Entity.Destroy($"は灰になった");
-                GameLog.Add($"{item.Item.GetName(Player, ItemPlaceholders)}は灰になった");
+                GameLog.Add(item.IsVisible, $"{item.Item.GetName(Player, ItemPlaceholders)}は灰になった");
             }
 
             SetGrasses(FireEntityManager.FireEntities.Positions(), false);

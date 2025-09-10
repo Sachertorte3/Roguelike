@@ -42,12 +42,12 @@ namespace Domain.Service.Rooms
                                 {
                                     var index = player.Character.Inventory.GetItemIndexRecursive(item);
                                     player.Character.RemoveInventory(index);
-                                    GameLog.Add(
+                                    GameLog.Add(Entity.IsVisible,
                                         $"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {
-                                    GameLog.Add($"{Character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
+                                    GameLog.Add(Entity.IsVisible, $"{Character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
                                 }
                             }
                         }

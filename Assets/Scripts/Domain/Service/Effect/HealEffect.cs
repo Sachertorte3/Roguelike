@@ -14,7 +14,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class HealEffect : ActorlessEntityTargetEffect
     {
-        [MinValue(1)] [SerializeField] private int _power;
+        [MinValue(1)][SerializeField] private int _power;
 
         public override Color Color => Colors.Green;
 
@@ -23,7 +23,7 @@ namespace Domain.Service.Effect
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var value = Formula.CalcHeal(_power);
-            GameLog.Add($"{target.GetName(map.Player)}は{value}回復");
+            GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}は{value}回復");
             target.GainHp(value);
             return UniTask.CompletedTask;
         }

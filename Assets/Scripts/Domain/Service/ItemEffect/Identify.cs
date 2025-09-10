@@ -1,5 +1,6 @@
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 
 namespace Domain.Service.ItemEffect
@@ -11,7 +12,7 @@ namespace Domain.Service.ItemEffect
             return !player.Character.IsKnownItem(item);
         }
 
-        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             player.Character.KnowItem(item, true);
             item.SetCurseIdentified(true);

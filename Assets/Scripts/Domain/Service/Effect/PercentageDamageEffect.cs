@@ -13,7 +13,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class PercentageDamageEffect : ActorlessEntityTargetEffect
     {
-        [SerializeField] [Range(0, 1)] private float _damageRate = 0.5f;
+        [SerializeField][Range(0, 1)] private float _damageRate = 0.5f;
 
         public PercentageDamageEffect(float damageRate)
         {
@@ -27,7 +27,7 @@ namespace Domain.Service.Effect
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var damage = Formula.CalcExplosionDamage(_damageRate, target);
-            GameLog.Add($"{target.GetName(map.Player)}に{damage}のダメージ");
+            GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ");
             target.LoseHp(damage, $"は爆発に巻き込まれた");
             return UniTask.CompletedTask;
         }

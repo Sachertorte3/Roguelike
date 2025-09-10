@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Model.Setting;
 using Domain.Service.Characters;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Rooms;
@@ -30,7 +32,13 @@ namespace Game
             );
             _characters.SubscribeIncludingCurrentObservables(
                 character => character.Entity.OnDestroyed,
-                (character, _) => RemoveCharacter(character)
+                async (character, _) =>
+                {
+                    var eventId = map.StartEvent();
+                    await UniTask.Delay(Settings.GlobalSettings.CharacterFadeOutTime.CurrentValue);
+                    RemoveCharacter(character);
+                    map.EndEvent(eventId);
+                }
             );
 
             Player = CharacterFactory.CreatePlayer(playerData, receiver, map);

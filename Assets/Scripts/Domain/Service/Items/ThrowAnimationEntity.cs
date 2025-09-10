@@ -4,6 +4,7 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Setting;
+using R3;
 using UnityEngine;
 using Utilities;
 
@@ -12,11 +13,13 @@ namespace Domain.Service.Items
     public class ThrowAnimationEntity : IEntity
     {
         public EntityBase Entity { get; init; }
+        private readonly ReactiveProperty<bool> _isVisualOnly = new(true);
+        public ReadOnlyReactiveProperty<bool> IsVisualOnly => _isVisualOnly;
         public readonly Sprite Icon;
 
         public ThrowAnimationEntity(Vector2Int position, Sprite icon)
         {
-            Entity = new EntityBase(EntityBase.Build(position, EntityLayer.Middle));
+            Entity = new EntityBase(EntityBase.Build(position, EntityLayer.Middle), true);
             Icon = icon;
         }
 

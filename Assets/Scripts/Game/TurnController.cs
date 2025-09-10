@@ -154,6 +154,10 @@ namespace Game
             {
                 character.CancelChargeAction();
                 Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
+                if (character.IsPlayer)
+                {
+                    await UniTask.Delay(200);
+                }
             }
             else
             {

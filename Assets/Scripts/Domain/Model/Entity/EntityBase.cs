@@ -19,12 +19,13 @@ namespace Domain.Model.Entity
         private readonly ReactiveProperty<bool> _visibleByPlayer = new(false);
         private readonly ReactiveProperty<string?> _destroyLog;
 
-        public EntityBase(EntityMemento data)
+        public EntityBase(EntityMemento data, bool isVisualOnly = false)
         {
             Id = new Id<IEntity>(data.Id);
             _position = new(data.Position);
             _layer = data.Layer;
             _destroyLog = new(data.DestroyLog.Value);
+            IsVisualOnly = isVisualOnly;
         }
 
         public Vector2Int CurrentPosition => Position.CurrentValue;
@@ -33,6 +34,7 @@ namespace Domain.Model.Entity
         public Observable<Vector2Int> OnTeleport => _onTeleport;
         public ReadOnlyReactiveProperty<bool> Visibility => _visibleByPlayer;
         public bool IsVisible => Visibility.CurrentValue;
+        public readonly bool IsVisualOnly;
         public EntityLayer Layer => _layer;
         public bool IsDestroyed => _destroyLog.CurrentValue != null;
         public Observable<string> OnDestroyed => _destroyLog.WhereNotNull();

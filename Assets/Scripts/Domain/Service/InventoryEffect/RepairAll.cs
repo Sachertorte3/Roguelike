@@ -9,9 +9,11 @@ namespace Domain.Service.InventoryEffect
     {
         public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            foreach (var item in storage.AllItems)
+            for (var i = 0; i < storage.Capacity; i++)
             {
-                item.Repair(player, itemHolder, itemPlaceholders);
+                var item = storage.GetItem(i);
+                if (item != null)
+                    item.Repair(player, itemHolder, itemPlaceholders);
             }
         }
 

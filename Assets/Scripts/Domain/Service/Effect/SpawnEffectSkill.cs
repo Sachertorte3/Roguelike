@@ -170,12 +170,12 @@ namespace Domain.Service.Effect
 
                     await effect.Apply(actor, area, map);
                 }
-            }
 
-            if (map.Player.Character.VisibleArea.Intersect(area).Any())
-            {
-                map.SpawnEffect(area, Color);
-                await UniTask.Delay(Settings.GlobalSettings.EffectDisplayTime.CurrentValue);
+                if (map.Player.Character.VisibleArea.Intersect(area).Any())
+                {
+                    map.SpawnEffect(area, Color);
+                    await UniTask.Delay(Settings.GlobalSettings.EffectDisplayTime.CurrentValue);
+                }
             }
 
             return SpawnEffectSkillResult.Success(Color, area);

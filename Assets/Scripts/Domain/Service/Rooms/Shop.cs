@@ -165,7 +165,7 @@ namespace Domain.Service.Rooms
 
         public void Purchase(IMap map)
         {
-            if (map.Player.Money + GetSalePrice(map) >= GetPurchasePrice(map))
+            if (map.Player.Money.CurrentValue + GetSalePrice(map) >= GetPurchasePrice(map))
             {
                 GameLog.AddIgnoreVisibility(
                     $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");

@@ -36,7 +36,7 @@ namespace Domain.Service.Rooms
 
         protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap map)
         {
-            GameLog.Add("<color=red>モンスターハウスだ！</color>");
+            GameLog.AddIgnoreVisibility("<color=red>モンスターハウスだ！</color>");
             for (var i = 0; i < 10; i++)
             {
                 map.SpawnRandomEnemy(map.GetAllBlankAndStandablePositionsOn().In(Rect.RectRange())

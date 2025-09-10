@@ -79,7 +79,7 @@ namespace Domain.Service.Items
         public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             var destination = GetThrowDestination(Entity.CurrentPosition, direction, distance, map);
-            if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
+            if (Entity.IsVisible && destination != Entity.CurrentPosition)
             {
                 Entity.SetVisibility(false);
                 await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, EntityLayer.Middle);

@@ -34,7 +34,7 @@ namespace Provider
                         character => character.Status.OnDamageReceived,
                         (character, damageChanged) =>
                         {
-                            if (character.Entity.Visibility.CurrentValue)
+                            if (character.Entity.IsVisible)
                             {
                                 var damagePercentageFromMaxHp = damageChanged.Damage * 100 /
                                                                 character.Status.Stats.MaxHp.CurrentValue;
@@ -48,7 +48,7 @@ namespace Provider
                         character => character.Status.OnHealReceived,
                         (character, healChanged) =>
                         {
-                            if (character.Entity.Visibility.CurrentValue)
+                            if (character.Entity.IsVisible)
                             {
                                 var healPercentageFromMaxHp = healChanged * 100 /
                                                               character.Status.Stats.MaxHp.CurrentValue;

@@ -1,16 +1,17 @@
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 
 namespace Domain.Service.InventoryEffect
 {
     public class RepairAll : IInventoryEffect
     {
-        public void Apply(IPlayer player, IStorage storage, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             foreach (var item in storage.AllItems)
             {
-                item.Repair(player, itemPlaceholders);
+                item.Repair(player, itemHolder, itemPlaceholders);
             }
         }
 
@@ -26,11 +27,11 @@ namespace Domain.Service.InventoryEffect
     }
     public class CurseAll : IInventoryEffect
     {
-        public void Apply(IPlayer player, IStorage storage, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             foreach (var item in storage.AllItems)
             {
-                item.SetCursed(player, itemPlaceholders, true);
+                item.SetCursed(player, itemHolder, itemPlaceholders, true);
             }
         }
 

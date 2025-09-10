@@ -65,7 +65,7 @@ namespace Domain.Service.Events
             player.Character.Inventory.Remove(mergeBaseItem);
             player.Character.Inventory.Remove(mergedItem);
             player.Character.Inventory.Add(mergeBaseItem.Merge(mergedItem));
-            GameLog.Add($"{player.Character.GetName(player)}は{mergeBaseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
+            GameLog.AddIgnoreVisibility($"{player.Character.GetName(player)}は{mergeBaseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
         }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)

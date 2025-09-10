@@ -38,23 +38,23 @@ namespace Domain.Service.Effect
         {
             if (target is Character character && ApplyToCharacter)
             {
-                GameLog.Add($"{character.GetName(map.Player)}は破壊された");
+                GameLog.Add(target.IsVisible, $"{character.GetName(map.Player)}は破壊された");
             }
             else if (target is ItemEntity item && ApplyToItem)
             {
-                GameLog.Add($"{item.Item.GetName(map.Player, map.ItemPlaceholders)}は破壊された");
+                GameLog.Add(target.IsVisible, $"{item.Item.GetName(map.Player, map.ItemPlaceholders)}は破壊された");
             }
             else if (target is Money money && ApplyToMoney)
             {
-                GameLog.Add($"{money.Amount}Gは破壊された");
+                GameLog.Add(target.IsVisible, $"{money.Amount}Gは破壊された");
             }
             else if (target is Trap trap && ApplyToTrap)
             {
-                GameLog.Add($"{trap.Name}は破壊された");
+                GameLog.Add(target.IsVisible, $"{trap.Name}は破壊された");
             }
             else if (target is Chest chest && ApplyToChest)
             {
-                GameLog.Add("宝箱は破壊された");
+                GameLog.Add(target.IsVisible, "宝箱は破壊された");
             }
             else
             {

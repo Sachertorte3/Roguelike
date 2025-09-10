@@ -10,10 +10,23 @@ namespace Domain.Service.Logs
         private static readonly Subject<string> _onLogOutput = new();
         private static readonly Subject<Unit> _onClear = new();
 
-        public static void Add(string log)
+        public static void AddIgnoreVisibility(string log)
         {
             _onLogOutput.OnNext(log);
             Log.Info($"[GameLog]{log}");
+        }
+
+        public static void Add(bool isVisible, string log)
+        {
+            if (isVisible)
+            {
+                _onLogOutput.OnNext(log);
+                Log.Info($"[GameLog]{log}");
+            }
+            else
+            {
+                Log.Info($"[GameLog](Hidden){log}");
+            }
         }
 
         public static void Clear()

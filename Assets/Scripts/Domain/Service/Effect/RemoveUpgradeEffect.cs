@@ -36,13 +36,13 @@ namespace Domain.Service.Effect
             {
                 var item = upgradedItems.GetAtRandom();
                 if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
-                    item.Downgrade(map.Player, map.ItemPlaceholders);
+                    item.Downgrade(map.Player, target, map.ItemPlaceholders);
                 else
-                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");
+                    GameLog.Add(target.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}の強化は消えなかった");
             }
             else
             {
-                GameLog.Add($"{target.GetName(map.Player)}は強化されたアイテムを持っていない");
+                GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}は強化されたアイテムを持っていない");
             }
 
             return UniTask.CompletedTask;

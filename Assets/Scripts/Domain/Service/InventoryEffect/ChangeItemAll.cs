@@ -1,6 +1,7 @@
 using System;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Domain.Service.InventoryEffect
     {
         [SerializeField] private ItemData _item;
 
-        public void Apply(IPlayer player, IStorage storage, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             foreach (var item in storage.AllItems)
             {

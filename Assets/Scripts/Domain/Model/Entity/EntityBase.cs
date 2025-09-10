@@ -32,6 +32,7 @@ namespace Domain.Model.Entity
         public Observable<(Direction8 direction, Vector2Int destination, bool isThrown)> OnMove => _onMove;
         public Observable<Vector2Int> OnTeleport => _onTeleport;
         public ReadOnlyReactiveProperty<bool> Visibility => _visibleByPlayer;
+        public bool IsVisible => Visibility.CurrentValue;
         public EntityLayer Layer => _layer;
         public bool IsDestroyed => _destroyLog.CurrentValue != null;
         public Observable<string> OnDestroyed => _destroyLog.WhereNotNull();

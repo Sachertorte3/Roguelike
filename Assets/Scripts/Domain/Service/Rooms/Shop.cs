@@ -167,10 +167,10 @@ namespace Domain.Service.Rooms
         {
             if (map.Player.Money + GetSalePrice(map) >= GetPurchasePrice(map))
             {
-                GameLog.Add(
+                GameLog.AddIgnoreVisibility(
                     $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
                 map.Player.AddMoney(GetSalePrice(map));
-                GameLog.Add(
+                GameLog.AddIgnoreVisibility(
                     $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
                 map.Player.ReduceMoney(GetPurchasePrice(map));
                 var purchaseItems = GetMissingItems(map);
@@ -179,14 +179,14 @@ namespace Domain.Service.Rooms
             }
             else
             {
-                GameLog.Add(
+                GameLog.AddIgnoreVisibility(
                     $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map) - GetSalePrice(map)}G</color>持っていなかった");
             }
         }
 
         public void Stolen(IGameManager gameManager, IMap map)
         {
-            GameLog.Add("<color=red>どろぼう！</color>");
+            GameLog.AddIgnoreVisibility("<color=red>どろぼう！</color>");
             Clerk.OpposingThief(map.Player.Character);
             Clerk.Character.AddCondition(
                 Id<IEntity>.Empty,

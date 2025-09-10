@@ -1,6 +1,7 @@
 using System;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using UnityEngine;
 
@@ -16,9 +17,9 @@ namespace Domain.Service.ItemEffect
             return item.CanUpgrade(_filter);
         }
 
-        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            item.RandomUpgrade(player, itemPlaceholders, _filter);
+            item.RandomUpgrade(player, itemHolder, itemPlaceholders, _filter);
         }
 
         public float EvaluatePrice()

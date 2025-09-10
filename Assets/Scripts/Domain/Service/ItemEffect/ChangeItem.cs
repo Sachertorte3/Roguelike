@@ -1,6 +1,7 @@
 using System;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Domain.Service.ItemEffect
             return true;
         }
 
-        public void Apply(IPlayer player, IItem item, ItemPlaceholders itemPlaceholders)
+        public void Apply(IPlayer player, IItem item, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             player.Character.Inventory.Replace(new Item(_item), player.Character.Inventory.GetItemIndex(item));
         }

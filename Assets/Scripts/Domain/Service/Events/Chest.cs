@@ -53,12 +53,12 @@ namespace Domain.Service.Events
             {
                 if (map.Player.Character.TryAddToInventory(_item.Value))
                 {
-                    GameLog.Add(
+                    GameLog.AddIgnoreVisibility(
                         $"{map.Player.Character.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
-                    GameLog.Add($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
+                    GameLog.AddIgnoreVisibility($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
                     map.SpawnItem(_item.Value, Entity.CurrentPosition);
                 }
             }

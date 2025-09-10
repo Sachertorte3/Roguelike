@@ -44,14 +44,14 @@ namespace Domain.Service.Effect
             if (RandUtils.IsLessThanProbability(_fixedCriticalRate))
             {
                 var value = Formula.Calc(actor, target, _elementPowers, true);
-                GameLog.Add($"<color=red>クリティカル！{target.GetName(map.Player)}に{value}のダメージ</color>");
+                GameLog.Add(target.IsVisible, $"<color=red>クリティカル！{target.GetName(map.Player)}に{value}のダメージ</color>");
                 var loseValue = target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate * 2));
             }
             else
             {
                 var value = Formula.Calc(actor, target, _elementPowers);
-                GameLog.Add($"{target.GetName(map.Player)}に{value}のダメージ");
+                GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{value}のダメージ");
                 var loseValue = target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate));
             }

@@ -34,7 +34,7 @@ namespace Domain.Service.Effect
         {
             if (target.Status.IsFlagStat(FlagStatType.SecureHold))
             {
-                GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
+                GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 return UniTask.CompletedTask;
             }
 
@@ -49,12 +49,12 @@ namespace Domain.Service.Effect
                 }
                 else
                 {
-                    GameLog.Add($"{target.GetName(map.Player)}はアイテムを落とさなかった");
+                    GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}はアイテムを落とさなかった");
                 }
             }
             else
             {
-                GameLog.Add($"{target.GetName(map.Player)}はアイテムを持っていない");
+                GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}はアイテムを持っていない");
             }
 
             return UniTask.CompletedTask;

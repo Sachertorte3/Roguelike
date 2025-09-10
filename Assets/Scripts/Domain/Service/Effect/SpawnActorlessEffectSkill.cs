@@ -76,11 +76,11 @@ namespace Domain.Service.Effect
         public async UniTask<ISkillResult> Use(string? name, Vector2Int position, IMap map)
         {
             if (_log != null && _log != "")
-                GameLog.Add($"{name}{_log}");
+                GameLog.Add(map.Player.Character.IsVisible(position), $"{name}{_log}");
 
             if (Random.value > ProbabilityOfSuccess)
             {
-                GameLog.Add("しかし効果がなかった");
+                GameLog.Add(map.Player.Character.IsVisible(position), "しかし効果がなかった");
                 return SpawnEffectSkillResult.Failed;
             }
 

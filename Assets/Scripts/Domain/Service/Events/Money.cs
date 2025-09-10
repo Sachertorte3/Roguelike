@@ -26,7 +26,8 @@ namespace Domain.Service.Events
                 (character, gameManager, map) =>
                 {
                     map.Player.AddMoney(Amount);
-                    GameLog.Add($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
+                    gameManager.PlaySE(SE.Pickup);
+                    GameLog.AddIgnoreVisibility($"{map.Player.Character.GetName(map.Player)}は{Amount}Gを拾った");
                     Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に拾われた");
                     return UniTask.CompletedTask;
                 }

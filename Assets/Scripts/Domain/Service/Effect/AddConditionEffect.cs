@@ -60,7 +60,7 @@ namespace Domain.Service.Effect
                 }
                 else
                 {
-                    GameLog.Add($"{target.GetName(map.Player)}は{_condition.Value.name}に耐性がある");
+                    GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}は{_condition.Value.name}に耐性がある");
                 }
             }
 

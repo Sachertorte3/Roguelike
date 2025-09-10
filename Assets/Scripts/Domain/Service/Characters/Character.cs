@@ -143,7 +143,7 @@ namespace Domain.Service.Characters
 
         public string GetName(IPlayer player, bool ignoreVisibility)
         {
-            if (!ignoreVisibility && !Entity.Visibility.CurrentValue)
+            if (!ignoreVisibility && !Entity.IsVisible)
             {
                 return "何者か";
             }
@@ -429,7 +429,7 @@ namespace Domain.Service.Characters
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
 
-            GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
+            GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
             if (item.CanActivateWhenUsed)
             {
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
@@ -468,13 +468,13 @@ namespace Domain.Service.Characters
                 item.SetCurseIdentified(true);
                 if (item.IsCursed)
                 {
-                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
+                    GameLog.Add(Entity.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
                     State = CharacterState.Finish;
                     return;
                 }
             }
 
-            GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
+            GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
 
             if (!_inventory.TryRemove(item))
             {
@@ -487,7 +487,7 @@ namespace Domain.Service.Characters
 
             _onAttacked.OnNext(Unit.Default);
 
-            if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
+            if (Entity.IsVisible && destination != Entity.CurrentPosition)
             {
                 await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction,
                     CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
@@ -512,7 +512,7 @@ namespace Domain.Service.Characters
             if (item != null && isForced)
             {
                 RemoveInventory(index);
-                GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
+                GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
                         position => map.At(position).IsBlank(EntityLayer.Bottom)));
@@ -524,7 +524,7 @@ namespace Domain.Service.Characters
                 item.SetCurseIdentified(true);
                 if (item.IsCursed)
                 {
-                    GameLog.Add($"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
+                    GameLog.Add(Entity.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
                     State = CharacterState.Finish;
                     return;
                 }
@@ -539,11 +539,11 @@ namespace Domain.Service.Characters
                     if (groundItem != null)
                     {
                         map.TryPickUpAt(Entity.CurrentPosition, true);
-                        GameLog.Add($"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
+                        GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
                     }
                     if (replacedItem != null)
                     {
-                        GameLog.Add($"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
+                        GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
                         map.SpawnItem(item,
                             map.FindBlankPositionFrom(Entity.CurrentPosition,
                                 position => map.At(position).IsBlank(EntityLayer.Bottom)));
@@ -551,7 +551,7 @@ namespace Domain.Service.Characters
                 },
                 () =>
                 {
-                    GameLog.Add($"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(new ItemFocus(index.Index, -1)).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+                    GameLog.Add(Entity.IsVisible, $"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(new ItemFocus(index.Index, -1)).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
                 }
             );
 
@@ -684,7 +684,7 @@ namespace Domain.Service.Characters
             {
                 if (!IsKnownItem(item) && log)
                 {
-                    GameLog.Add($"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
+                    GameLog.Add(Entity.IsVisible, $"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
                 }
                 _knownItemNames.Add(item.BaseName);
             }
@@ -699,7 +699,7 @@ namespace Domain.Service.Characters
         {
             _knownItemNames.Clear();
             map.ItemPlaceholders.ClearPlayerAssignedNames();
-            GameLog.Add($"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
+            GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}はアイテムの名前を忘れてしまった");
         }
 
         #endregion
@@ -736,11 +736,11 @@ namespace Domain.Service.Characters
         public void GainExp(int value)
         {
             var level = _statusManager.Stats.CurrentLevel;
-            GameLog.Add($"{GetName(_map.Player)}は{value}の経験値を得た");
+            GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}は{value}の経験値を得た");
             _statusManager.GainExp(value);
             if (level < _statusManager.Stats.CurrentLevel)
             {
-                GameLog.Add($"{GetName(_map.Player)}はレベルアップした");
+                GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}はレベルアップした");
                 _statusManager.LevelUp(_statusManager.Stats.CurrentLevel - level);
             }
         }
@@ -748,7 +748,7 @@ namespace Domain.Service.Characters
         public void ClearAffiliation(IMap map)
         {
             _affiliationManager.Clear();
-            GameLog.Add($"{GetName(map.Player)}は他のキャラクターのことを忘れてしまった");
+            GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は他のキャラクターのことを忘れてしまった");
         }
 
         public bool CanPickUpItem()

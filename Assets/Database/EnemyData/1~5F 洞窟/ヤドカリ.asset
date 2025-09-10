@@ -56,7 +56,7 @@ MonoBehaviour:
     BackStepDistance: 0
     ChargeTurn: 0
     CoolTime: 0
-  HasLastSkill: 1
+  HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
       rid: 3961642890263003243

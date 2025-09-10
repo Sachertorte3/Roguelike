@@ -23,8 +23,7 @@ namespace Provider
                         }));
                         disposable.Add(Observable.EveryUpdate().Subscribe(_ =>
                         {
-                            shopInfoView.SetInfo(map.Player.Money, map.Shop.GetPurchasePrice(map),
-                                map.Shop.GetSalePrice(map));
+                            shopInfoView.SetInfo(map.Shop.GetPurchasePrice(map), map.Shop.GetSalePrice(map));
                         }));
                     }
                     else

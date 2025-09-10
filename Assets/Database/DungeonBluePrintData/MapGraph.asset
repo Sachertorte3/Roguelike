@@ -121,6 +121,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss:
@@ -308,6 +309,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -443,6 +445,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -581,6 +584,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -716,6 +720,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -782,11 +787,12 @@ MonoBehaviour:
     MonsterHouseChance: 0.05
     RestRoomChance: 0.2
     LakeChance: 0.2
-    ItemCount: 2
+    ItemCount: 1
     MoneyCount: 1
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -802,6 +808,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
 --- !u!114 &-6788424184188872890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -854,11 +861,12 @@ MonoBehaviour:
     MonsterHouseChance: 0.1
     RestRoomChance: 0.2
     LakeChance: 0.2
-    ItemCount: 2
+    ItemCount: 1
     MoneyCount: 1
     MoneyAverage: 300
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -874,6 +882,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
 --- !u!114 &-6468005376489705111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,6 +1104,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -1355,6 +1365,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss:
@@ -1491,6 +1502,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -1837,6 +1849,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -1972,6 +1985,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2107,6 +2121,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2299,6 +2314,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2485,6 +2501,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2617,6 +2634,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2716,6 +2734,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 0
     TrapCount: 0
+    StatueChance: 0.1
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -2731,6 +2750,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
 --- !u!114 &8353191741393840923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2858,6 +2878,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -2993,6 +3014,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []
@@ -3086,11 +3108,12 @@ MonoBehaviour:
     MonsterHouseChance: 0
     RestRoomChance: 0
     LakeChance: 0
-    ItemCount: 2
+    ItemCount: 1
     MoneyCount: 1
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.05
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -3106,6 +3129,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
 --- !u!114 &9031898349937062684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3233,6 +3257,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
+    StatueChance: 0.1
   _enemies:
     items: []
   Boss: []

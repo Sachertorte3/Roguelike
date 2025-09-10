@@ -73,11 +73,9 @@ MonoBehaviour:
       Value: 2
   ConditionResistance:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
-    items:
-    - Item: {fileID: 11400000, guid: 741ad8c6dab58b84c83d8c7423fd4bd6, type: 2}
-      Weight: 1
+    items: []
   references:
     version: 2
     RefIds:

@@ -50,8 +50,8 @@ namespace Game
         private ReactiveProperty<bool> _stairsLocked = new(true);
         public ReadOnlyReactiveProperty<bool> MovementEntityLocked => _stairsLocked;
         public ObservableList<ICharacter> KeyCharacters = new();
-        private int EventExecutionCount;
-        public bool IsEventExecuting => EventExecutionCount > 0;
+        private HashSet<Guid> _eventExecutionIds = new();
+        public bool IsEventExecuting => _eventExecutionIds.Count > 0;
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
 
         public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerData,
@@ -476,6 +476,20 @@ namespace Game
             );
         }
 
+        public Guid StartEvent()
+        {
+            var eventId = Guid.NewGuid();
+            _eventExecutionIds.Add(eventId);
+            return eventId;
+        }
+
+        public void EndEvent(Guid eventId)
+        {
+            if (!_eventExecutionIds.Contains(eventId))
+                throw new Exception($"EventId {eventId} not found");
+            _eventExecutionIds.Remove(eventId);
+        }
+
         private void SetRules()
         {
             Characters.SubscribeIncludingCurrentObservables(
@@ -498,13 +512,13 @@ namespace Game
                     SetGrasses(new[] { Player.Character.Entity.CurrentPosition }, false);
                     Globals.GameManager.PlaySE(SE.GrassWalk);
                 }
-                EventExecutionCount++;
+                var eventId = StartEvent();
                 foreach (var eventArea in _eventAreas)
                 {
                     await eventArea.UpdatePosition(Globals.GameManager, this, positionChanged);
                 }
+                EndEvent(eventId);
 
-                EventExecutionCount--;
             }).AddTo(_disposables);
 
             Characters.SubscribeIncludingCurrentObservables(
@@ -540,8 +554,7 @@ namespace Game
                                 $"{character.GetName(Player)}は<color=yellow>{item.Item.GetName(Player, ItemPlaceholders)}</color>の上に乗った");
                         }
                     }
-
-                    EventExecutionCount++;
+                    var eventId = StartEvent();
                     var eventEntities = GetEventEntityAt(positionChanged, EntityLayer.Bottom);
                     foreach (var eventEntity in eventEntities)
                     {
@@ -553,8 +566,7 @@ namespace Game
                         var playerEventEntities = GetPlayerEventEntityAt(positionChanged, EntityLayer.Bottom);
                         await playerEventEntities.Select(entity => entity.Event).ToList().DoEvent(Player, Globals.GameManager, this);
                     }
-
-                    EventExecutionCount--;
+                    EndEvent(eventId);
                 }
             ).AddTo(_disposables);
 
@@ -562,13 +574,12 @@ namespace Game
                 character => character.Status.GetFlagProperty(FlagStatType.IsAffectedByTrap).SkipLatestValueOnSubscribe(),
                 async (character, affectedByTrap) =>
                 {
-                    EventExecutionCount++;
+                    var eventId = StartEvent();
                     if (affectedByTrap)
                     {
                         await ExecuteTrapAt(character.Entity.CurrentPosition, character);
                     }
-
-                    EventExecutionCount--;
+                    EndEvent(eventId);
                 }
             ).AddTo(_disposables);
 
@@ -611,22 +622,29 @@ namespace Game
                 _allEntityPositions[layer] = new Dictionary<Vector2Int, IEntity>();
             }
 
-            foreach (var entity in Entities)
-            {
-                _allEntityPositions[entity.Entity.Layer][entity.Entity.CurrentPosition] = entity;
-            }
+            _entities.SubscribeIncludingCurrentItems(
+                entity =>
+                {
+                    if (entity.Entity.IsVisualOnly)
+                        return;
+                    _allEntityPositions[entity.Entity.Layer].Add(entity.Entity.CurrentPosition, entity);
+                },
+                entity =>
+                {
+                    if (entity.Entity.IsVisualOnly)
+                        return;
+                    _allEntityPositions[entity.Entity.Layer].Remove(entity.Entity.CurrentPosition);
+                }
+            ).AddTo(_disposables);
 
             _entities.SubscribeIncludingCurrentObservables(
                 entity => entity.Entity.Position.Pairwise(),
                 (entity, positions) =>
                 {
+                    if (entity.Entity.IsVisualOnly)
+                        return;
                     _allEntityPositions[entity.Entity.Layer].Remove(positions.Previous);
                     _allEntityPositions[entity.Entity.Layer].Add(positions.Current, entity);
-                }
-            ).AddTo(_disposables);
-            _entities.ObserveRemove().Subscribe(remove =>
-                {
-                    _allEntityPositions[remove.Value.Entity.Layer].Remove(remove.Value.Entity.CurrentPosition);
                 }
             ).AddTo(_disposables);
         }

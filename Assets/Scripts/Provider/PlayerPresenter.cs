@@ -35,6 +35,11 @@ namespace Provider
                         statView.SetLevel(level);
                     }));
 
+                    _disposables.Add(map.Player.Money.Subscribe(money =>
+                    {
+                        statView.SetMoney(money);
+                    }));
+
                     _disposables.Add(Observable
                         .Merge(map.Player.Character.Status.Stats.HpValue, map.Player.Character.Status.Stats.MaxHp)
                         .Subscribe(_ =>

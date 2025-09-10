@@ -204,7 +204,7 @@ MonoBehaviour:
     Wands: 10
     Weapons: 10
     Artifacts: 5
-    Storage: 5
+    Storage: 2
     Others: 1
   Traps:
     items:

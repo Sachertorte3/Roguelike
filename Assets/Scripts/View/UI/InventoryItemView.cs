@@ -52,6 +52,8 @@ namespace View.UI
 
         private void SetIcon(Sprite? icon)
         {
+            if (_icon == null)
+                Debug.LogError($"icon is null {gameObject}");
             _icon.sprite = icon;
             _icon.enabled = icon != null;
         }

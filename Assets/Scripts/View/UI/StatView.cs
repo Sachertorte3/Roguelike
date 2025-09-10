@@ -7,6 +7,7 @@ namespace View.UI
     {
         [SerializeField] private TMP_Text _level;
         [SerializeField] private StatLine _hp;
+        [SerializeField] private TMP_Text _money;
         public void SetLevel(int level)
         {
             _level.text = $"Lv.{level}";
@@ -14,6 +15,10 @@ namespace View.UI
         public void SetHp(float maxValue, float value)
         {
             _hp.SetValue(maxValue, value);
+        }
+        public void SetMoney(int money)
+        {
+            _money.text = $"{money}G";
         }
         public void SetTextColor(Color color)
         {

@@ -9,15 +9,16 @@ using UnityEngine;
 namespace Domain.Service.InventoryEffect
 {
     [Serializable]
-    public class ChangeItem : IInventoryEffect
+    public class ChangeItemAll : IInventoryEffect
     {
         [SerializeField] private ItemData _item;
 
         public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            foreach (var item in storage.AllItems)
+            for (var i = 0; i < storage.Capacity; i++)
             {
-                player.Character.Inventory.Replace(new Item(_item), player.Character.Inventory.GetItemIndex(item));
+                if (storage.GetItem(i) != null)
+                    storage.Replace(new Item(_item), i);
             }
         }
 

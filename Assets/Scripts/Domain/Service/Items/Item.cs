@@ -83,6 +83,12 @@ namespace Domain.Service.Items
                 itemTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
                 inventoryTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
             ));
+            _useOnDeath = data.UseOnDeath;
+            _cannotUseIfCursed = data.CannotUseIfCursed;
+            _cannotDropIfCursed = data.CannotDropIfCursed;
+            _identifyIfGot = data.IdentifyIfGot;
+            _identifyIfUsed = data.IdentifyIfUsed;
+            _autoDestroyWhenDisabled = data.AutoDestroyWhenDisabled;
             FeaturesToMergeWeapon = data.FeaturesToMergeWeapon;
         }
 

@@ -8722,7 +8722,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fff6c86d567ffe4d88867e9bd1c930a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moneyText: {fileID: 0}
   _purchaseText: {fileID: 303354896}
   _saleText: {fileID: 1126918104}
 --- !u!1001 &5053214011764798587

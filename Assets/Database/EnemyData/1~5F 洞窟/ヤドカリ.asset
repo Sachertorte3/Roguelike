@@ -56,17 +56,17 @@ MonoBehaviour:
     BackStepDistance: 0
     ChargeTurn: 0
     CoolTime: 0
-  HasLastSkill: 0
+  HasLastSkill: 1
   LastSkill:
     <Position>k__BackingField:
-      rid: -2
+      rid: 3961642890263003243
     <Area>k__BackingField:
-      rid: -2
+      rid: 3961642890263003244
     <Effects>k__BackingField:
-    - rid: -2
-    <Repeats>k__BackingField: 1
+    - rid: 3961642890263003245
+    <Repeats>k__BackingField: 10
     <ProbabilityOfSuccess>k__BackingField: 1
-    <Log>k__BackingField: 
+    <Log>k__BackingField: "\u306F\u5927\u9A12\u304E\u3057\u305F"
   ElementDamageRateMultiplier:
     data: []
   ConditionResistance:
@@ -75,7 +75,7 @@ MonoBehaviour:
       Value: 1
     - Key: {fileID: 11400000, guid: 3beff304c57ae794096ed14eed9f08c1, type: 2}
       Value: 1
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
     items:
     - Item: {fileID: 11400000, guid: 4f78e74bb0a46d340b80fa884693a6ba, type: 2}
@@ -83,8 +83,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2541219281251860488
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:
@@ -101,6 +99,22 @@ MonoBehaviour:
         ContainsSelf: 0
         CanIgnoreWalls: 0
         Length: 1
+    - rid: 3961642890263003243
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 3961642890263003244
+      type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Radius: 1
+    - rid: 3961642890263003245
+      type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _elementPowers:
+        - _element: 0
+          _power: 1
+        _criticalRate: 0
     - rid: 4425516923575599116
       type: {class: Crab, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

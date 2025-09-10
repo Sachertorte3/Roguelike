@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 2541219158355345424
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: fc357f5b054047f46b2d159d59216642, type: 3}
   IsBoss: 0
   Hp: 4
   Aggression: 1
@@ -71,7 +71,7 @@ MonoBehaviour:
     data: []
   ConditionResistance:
     data: []
-  DropItemRate: 0.05
+  DropItemRate: 0
   DropItemTable:
     items:
     - Item: {fileID: 11400000, guid: fdda1c29a2f3717488d5fad384da5f8f, type: 2}

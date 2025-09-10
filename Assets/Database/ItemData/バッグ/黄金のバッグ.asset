@@ -18,7 +18,7 @@ MonoBehaviour:
   AdditionalPrice: 0
   MultiplyPrice: 1
   InventoryEffect:
-    rid: 3961642730205741157
+    rid: 3961642890263003234
   StorageCapacity: 5
   UsageLimit: 1
   UpgradeLimit: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 3961642730205741157
-      type: {class: ChangeItem, ns: Domain.Service.InventoryEffect, asm: Domain.Service}
+    - rid: 3961642890263003234
+      type: {class: ChangeItemAll, ns: Domain.Service.InventoryEffect, asm: Domain.Service}
       data:
         _item: {fileID: 11400000, guid: 2f6b6211b9dd88045b004388774d225f, type: 2}

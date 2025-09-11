@@ -138,6 +138,7 @@ namespace Game
                 if (saveData == null)
                 {
                     map = CreateSaveData();
+                    await ChoiceDifficulty();
                 }
                 else if (revivePlayer)
                 {
@@ -154,6 +155,7 @@ namespace Game
             {
                 var map = CreateSaveData();
                 var _ = await GetChoice(null, "New Game");
+                await ChoiceDifficulty();
                 StartGame(map, 0);
             }
 
@@ -172,6 +174,21 @@ namespace Game
 
             _world.CreateNew();
             return _world.LoadStartMap();
+        }
+
+        private async UniTask ChoiceDifficulty()
+        {
+            var choice = await GetChoice(null, "Easy", "Normal");
+            switch (choice)
+            {
+                case 0:
+                    Settings.WorldSettings.EnableCheat.Value.Value = true;
+                    Settings.WorldSettings.RetryOnDead.Value.Value = true;
+                    Settings.WorldSettings.AutoIdentify.Value.Value = true;
+                    break;
+                case 1:
+                    break;
+            }
         }
 
         private MapManager LoadSaveData(SaveData saveData)

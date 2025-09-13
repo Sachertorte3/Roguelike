@@ -15,7 +15,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
+            InfoReceiver infoReceiver, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
             MenuController menuController, InventoryView inventoryView)
         {
             var logWindowVisible = Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible).ToReadOnlyReactiveProperty();
@@ -78,6 +78,12 @@ namespace Provider
                     }
                 })
             );
+
+            choiceReceiver.OnShownChoiceWithInfo.Subscribe(async message =>
+            {
+                var index = await menuController.GetChoiceWithInfo(message.text, message.choices);
+                choiceReceiver.SetChoicedIndex(index);
+            });
 
             choiceReceiver.OnShownChoice.Subscribe(async message =>
             {

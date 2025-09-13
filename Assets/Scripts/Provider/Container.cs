@@ -18,6 +18,7 @@ namespace Provider
             builder.Register<InputReceiver>(Lifetime.Singleton);
             builder.Register<GameInput>(Lifetime.Singleton);
             builder.Register<EffectViewSpawner>(Lifetime.Singleton);
+            builder.Register<InfoReceiver>(Lifetime.Singleton);
             builder.Register<ChoiceReceiver>(Lifetime.Singleton);
             builder.Register<TextInputReceiver>(Lifetime.Singleton);
             builder.Register<CharacterControlInputReceiver>(Lifetime.Singleton);

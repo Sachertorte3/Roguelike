@@ -1,7 +1,5 @@
 ﻿#nullable enable
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -17,7 +15,7 @@ namespace Domain.Model.Dungeon
     public class DungeonBluePrintData : ScriptableObject, IDungeonData
     {
         public string Name => name;
-        public MapGraph MapGraph;
+        [SerializeField] private MapGraph MapGraph;
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
@@ -25,59 +23,42 @@ namespace Domain.Model.Dungeon
         [Required] public RarityWeightTable<WeaponPrefix> WeaponPrefixes;
         public Table<EnemyData> Npcs;
 
-        public MapNode? GetMapNode(Id<IMap> mapId)
-        {
-            return MapGraph.nodes
-                .OfType<MapNode>()
-                .Where(node => node.Map == mapId)
-                .First();
-        }
-
-        public Id<IMap> GetStartMapId()
-        {
-            return MapGraph.nodes
-                .OfType<MapNode>()
-                .First(node => node.PrevNodes.Count() == 0).Map;
-        }
-
+        public Id<IMap> GetStartMapId() => MapGraph.GetStartMapId();
         public List<MapConnection> GetDestinations(Id<IMap> mapId)
         {
             var connections = new List<MapConnection>();
-            var mapNode = GetMapNode(mapId);
-            foreach (var prevMap in mapNode.PrevNodes)
+            var mapNode = MapGraph.GetMapNode(mapId);
+            foreach (var prevMap in mapNode.PrevMapIds(mapId))
             {
-                connections.Add(new MapConnection(MovementEntityType.UpStairs, prevMap.Map));
+                connections.Add(new MapConnection(MovementEntityType.UpStairs, prevMap));
             }
-            foreach (var nextMap in mapNode.NextNodes)
+            foreach (var nextMap in mapNode.NextMapIds(mapId))
             {
-                connections.Add(new MapConnection(MovementEntityType.DownStairs, nextMap.Map));
+                connections.Add(new MapConnection(MovementEntityType.DownStairs, nextMap));
             }
-            foreach (var teleportInMap in mapNode.TeleportInNodes)
+            foreach (var teleportInMap in mapNode.TeleportInMapIds(mapId))
             {
-                connections.Add(new MapConnection(MovementEntityType.MagicCircle, teleportInMap.Map));
+                connections.Add(new MapConnection(MovementEntityType.MagicCircle, teleportInMap));
             }
-            foreach (var teleportOutMap in mapNode.TeleportOutNodes)
+            foreach (var teleportOutMap in mapNode.TeleportOutMapIds(mapId))
             {
-                connections.Add(new MapConnection(MovementEntityType.MagicCircle, teleportOutMap.Map));
+                connections.Add(new MapConnection(MovementEntityType.MagicCircle, teleportOutMap));
             }
             return connections;
         }
 
         public DungeonMapData CreateMapData(Id<IMap> mapId)
         {
-            var maxDepth = MapGraph.nodes
-                .OfType<MapNode>()
-                .Select(node => node.Depth)
-                .Max();
-            var mapNode = GetMapNode(mapId);
+            var maxDepth = MapGraph.GetMaxDepth();
+            var mapNode = MapGraph.GetMapNode(mapId);
             var sectionData = mapNode.SectionData;
             var floorData = mapNode.FloorData;
             var enemies = mapNode.Enemies;
             var boss = mapNode.Boss;
             return new DungeonMapData(
                 name,
-                mapNode.Depth,
-                mapNode.Depth / maxDepth,
+                mapNode.Depth(mapId),
+                mapNode.Depth(mapId) / maxDepth,
                 sectionData.Type,
                 floorData.Field,
                 new ItemDatabase(MasterItemDataBase, SpawnItem),

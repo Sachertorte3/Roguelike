@@ -43,7 +43,6 @@ MonoBehaviour:
     rid: -2
   InventoryEffect:
     rid: -2
-  StorageCapacity: 0
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
@@ -60,7 +59,7 @@ MonoBehaviour:
     - rid: 3119344245011382273
       type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
-        _flagStatType: 0
+        _flagStatType: 12
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

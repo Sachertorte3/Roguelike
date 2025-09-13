@@ -34,7 +34,7 @@ namespace Provider
             return new LoggerConfig()
                 .SyncMode.FullSync()
                 .WriteTo.UnityDebugLog(
-                    minLevel: LogLevel.Info,
+                    minLevel: LogLevel.Verbose,
                     captureStackTrace: true);
         }
         private static LoggerConfig DevelopmentConfiguration()

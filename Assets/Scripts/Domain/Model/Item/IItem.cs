@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
@@ -29,6 +30,7 @@ namespace Domain.Model.Item
         public ItemState State { get; }
         public bool UseOnDeath { get; }
         public int Price { get; }
+        public int AllPrice => Price + ItemStorage.MapOr(0, storage => storage.AllItems.Sum(item => item.AllPrice));
         public bool HasActivatableSkillWhenUsed { get; }
         public bool HasActivatableSkillWhenThrown { get; }
         public bool CanActivateWhenUsed { get; }

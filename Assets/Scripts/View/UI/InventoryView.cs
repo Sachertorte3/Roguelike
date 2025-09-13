@@ -5,7 +5,6 @@ using R3;
 using TMPro;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace View.UI
 {

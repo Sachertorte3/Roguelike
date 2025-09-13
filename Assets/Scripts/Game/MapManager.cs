@@ -625,13 +625,13 @@ namespace Game
             _entities.SubscribeIncludingCurrentItems(
                 entity =>
                 {
-                    if (entity.Entity.IsVisualOnly)
+                    if (entity.Entity.IsVisualOnly.CurrentValue)
                         return;
                     _allEntityPositions[entity.Entity.Layer].Add(entity.Entity.CurrentPosition, entity);
                 },
                 entity =>
                 {
-                    if (entity.Entity.IsVisualOnly)
+                    if (entity.Entity.IsVisualOnly.CurrentValue)
                         return;
                     _allEntityPositions[entity.Entity.Layer].Remove(entity.Entity.CurrentPosition);
                 }
@@ -641,10 +641,21 @@ namespace Game
                 entity => entity.Entity.Position.Pairwise(),
                 (entity, positions) =>
                 {
-                    if (entity.Entity.IsVisualOnly)
+                    if (entity.Entity.IsVisualOnly.CurrentValue)
                         return;
                     _allEntityPositions[entity.Entity.Layer].Remove(positions.Previous);
                     _allEntityPositions[entity.Entity.Layer].Add(positions.Current, entity);
+                }
+            ).AddTo(_disposables);
+
+            _entities.SubscribeIncludingCurrentObservables(
+                entity => entity.Entity.IsVisualOnly.SkipLatestValueOnSubscribe(),
+                (entity, _) =>
+                {
+                    if (entity.Entity.IsVisualOnly.CurrentValue)
+                        _allEntityPositions[entity.Entity.Layer].Remove(entity.Entity.CurrentPosition);
+                    else
+                        _allEntityPositions[entity.Entity.Layer].Add(entity.Entity.CurrentPosition, entity);
                 }
             ).AddTo(_disposables);
         }

@@ -18,24 +18,20 @@ namespace View.UI
 
         public void Show()
         {
-            Debug.Log($"[InfoMenu]Show:");
             gameObject.SetActive(true);
         }
 
         public void Hide()
         {
-            Debug.Log($"[InfoMenu]Hide:");
             gameObject.SetActive(false);
         }
 
         public void Enable()
         {
-            Debug.Log($"[InfoMenu]Enable:");
         }
 
         public void Disable()
         {
-            Debug.Log($"[InfoMenu]Disable:");
         }
     }
 }

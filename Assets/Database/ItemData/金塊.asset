@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
   m_Name: "\u91D1\u584A"
   m_EditorClassIdentifier: Domain.Model::Domain.Model.Item.ItemData
-  Category: 0
+  Category: 7
   Icon: {fileID: 1516265498, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 0

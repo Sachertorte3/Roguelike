@@ -44,4 +44,9 @@ namespace Domain.Model.Dungeon
         }
 #endif
     }
+    [Serializable]
+    public class RoomData
+    {
+        
+    }
 }

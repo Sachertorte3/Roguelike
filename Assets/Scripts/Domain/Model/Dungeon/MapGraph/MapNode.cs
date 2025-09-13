@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
@@ -7,6 +8,11 @@ using UnityEngine;
 using Utilities;
 using Utilities.Table;
 using XNode;
+using System;
+using Sirenix.Utilities;
+
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -17,15 +23,20 @@ namespace Domain.Model.Dungeon
     [CreateNodeMenu("Map")]
     public class MapNode : Node
     {
+        [MinValue(1)]
+#if UNITY_EDITOR
+        [OnValueChanged(nameof(OnRepeatChanged))]
+#endif
+        public int Repeat = 1;
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]
         [InfoBox("Connection to SectionData is required.", InfoMessageType.Error, VisibleIf = nameof(_isSectionUnconnected))]
-        private SectionData _sectionData = null;
+        private SectionData? _sectionData = null;
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]
         [InfoBox("Connection to FloorData is required.", InfoMessageType.Error, VisibleIf = nameof(_isFloorUnconnected))]
-        private FloorData _floorData = null;
+        private FloorData? _floorData = null;
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
         [InfoBox("No enemies spawn on this map.", InfoMessageType.Info, VisibleIf = nameof(_isEnemiesUnconnected))]
-        private Table<EnemyData> _enemies = null;
+        private Table<EnemyData>? _enemies = null;
         public List<EnemyData> Boss;
 
         [Input(ShowBackingValue.Never), SerializeField]
@@ -45,41 +56,130 @@ namespace Domain.Model.Dungeon
         private bool _isFloorUnconnected => !GetInputPort("_floorData").IsConnected;
         private bool _isEnemiesUnconnected => !GetInputPort("_enemies").IsConnected;
 
-        public IEnumerable<MapNode> PrevNodes => GetInputPort(nameof(_prevMap))
-            .GetConnections()
-            .Select(connection => connection.node)
-            .OfType<MapNode>();
+        public int GetIndex(Id<IMap> mapId)
+        {
+            var index = Array.IndexOf(_mapIds, mapId.ToString());
+            if (index == -1)
+            {
+                throw new ArgumentException("MapId not found");
+            }
+            return index;
+        }
+        public bool ContainsMapId(Id<IMap> mapId) => _mapIds.Contains(mapId.ToString());
+        public IEnumerable<Id<IMap>> PrevMapIds(Id<IMap> mapId)
+        {
+            var index = GetIndex(mapId);
+            if (index == 0)
+            {
+                return GetInputPort(nameof(_prevMap))
+                    .GetConnections()
+                    .Select(connection => connection.node)
+                    .OfType<MapNode>()
+                    .Select(node => node.LastMapId);
+            }
+            else
+            {
+                return new Id<IMap>[] { new(_mapIds[index - 1]) };
+            }
+        }
 
-        public IEnumerable<MapNode> TeleportInNodes => GetInputPort(nameof(_teleportIn))
-            .GetConnections()
-            .Select(connection => connection.node)
-            .OfType<MapNode>();
-        public IEnumerable<MapNode> NextNodes => GetOutputPort("_nextMap")
-            .GetConnections()
-            .Select(connection => connection.node)
-            .OfType<MapNode>();
+        public IEnumerable<Id<IMap>> TeleportInMapIds(Id<IMap> mapId)
+        {
+            var index = GetIndex(mapId);
+            if (index == 0) // 最初のマップの場合のみ
+            {
+                return GetInputPort(nameof(_teleportIn))
+                    .GetConnections()
+                    .Select(connection => connection.node)
+                    .OfType<MapNode>()
+                    .Select(node => node.LastMapId);
+            }
+            return Enumerable.Empty<Id<IMap>>();
+        }
+        public IEnumerable<Id<IMap>> NextMapIds(Id<IMap> mapId)
+        {
+            var index = GetIndex(mapId);
+            if (index == _mapIds.Length - 1)
+            {
+                return GetOutputPort(nameof(_nextMap))
+                    .GetConnections()
+                    .Select(connection => connection.node)
+                    .OfType<MapNode>()
+                    .Select(node => node.FirstMapId);
+            }
+            else
+            {
+                return new Id<IMap>[] { new(_mapIds[index + 1]) };
+            }
+        }
 
-        public IEnumerable<MapNode> TeleportOutNodes => GetOutputPort("_teleportOut")
-            .GetConnections()
-            .Select(connection => connection.node)
-            .OfType<MapNode>();
+        public IEnumerable<Id<IMap>> TeleportOutMapIds(Id<IMap> mapId)
+        {
+            var index = GetIndex(mapId);
+            if (index == _mapIds.Length - 1) // 最後のマップの場合のみ
+            {
+                return GetOutputPort(nameof(_teleportOut))
+                    .GetConnections()
+                    .Select(connection => connection.node)
+                    .OfType<MapNode>()
+                    .Select(node => node.FirstMapId);
+            }
+            return Enumerable.Empty<Id<IMap>>();
+        }
 
         public SectionData SectionData => GetInputValue<SectionData>(nameof(_sectionData));
         public FloorData FloorData => GetInputValue<FloorData>(nameof(_floorData));
         public Table<EnemyData> Enemies => GetInputValue<Table<EnemyData>>(nameof(_enemies), new());
 
-        [SerializeField, HideInInspector] private string _mapId;
-        public Id<IMap> Map => new(_mapId);
-        [ReadOnly, ShowInInspector] public bool IsStartMap => PrevNodes.Count() == 0 && TeleportInNodes.Count() == 0;
-        [ReadOnly, ShowInInspector] public int Depth => PrevNodes.Select(node => node.Depth).DefaultIfEmpty(0).Max() + 1;
+        public override object GetValue(NodePort port)
+        {
+            return Math.Max(GetInputValues(nameof(_prevMap), 0).Max() + 1, GetInputValues(nameof(_teleportIn), 0).Max()) + Repeat - 1;
+        }
+
+        [SerializeField, HideInInspector] private string[] _mapIds;
+        public Id<IMap> FirstMapId => new(_mapIds.First());
+        public Id<IMap> LastMapId => new(_mapIds.Last());
+        public bool IsStartMapId(Id<IMap> mapId) =>
+            PrevMapIds(mapId).Count() == 0
+            && TeleportInMapIds(mapId).Count() == 0;
+        public int Depth(Id<IMap> mapId) =>
+            Math.Max(GetInputValues(nameof(_prevMap), 0).Max() + 1, GetInputValues(nameof(_teleportIn), 0).Max())
+            + GetIndex(mapId);
+
 #if UNITY_EDITOR
         protected override void Init()
         {
-            if (string.IsNullOrEmpty(_mapId))
+            base.Init();
+            if (!_mapIds.IsNullOrEmpty())
+                return;
+            _mapIds = new string[Repeat];
+            for (int i = 0; i < Repeat; i++)
             {
-                var newId = Id<IMap>.Generate().ToString();
-                _mapId = newId;
-                EditorUtility.SetDirty(this);
+                _mapIds[i] = Id<IMap>.Generate().ToString();
+            }
+            EditorUtility.SetDirty(this);
+        }
+        private void OnRepeatChanged()
+        {
+            var mapIds = new string[Repeat];
+            for (int i = 0; i < Repeat; i++)
+            {
+                mapIds[i] = string.IsNullOrEmpty(i < _mapIds.Length ? _mapIds[i] : null) ? Id<IMap>.Generate().ToString() : _mapIds[i];
+            }
+            _mapIds = mapIds;
+            EditorUtility.SetDirty(this);
+        }
+        [ShowInInspector, TextArea(1, 1)]
+        private string _infoText
+        {
+            get
+            {
+                if (_mapIds.IsNullOrEmpty()) return "Error";
+
+                var isStartMap = IsStartMapId(new Id<IMap>(_mapIds[0]));
+                var minDepth = Depth(FirstMapId);
+                var maxDepth = minDepth + Repeat - 1;
+                return $"{(isStartMap ? "Start" : "")} Depth: {minDepth}-{maxDepth}";
             }
         }
 #endif

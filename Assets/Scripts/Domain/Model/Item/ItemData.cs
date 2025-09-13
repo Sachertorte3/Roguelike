@@ -72,7 +72,6 @@ namespace Domain.Model.Item
         public IInventoryEffect? InventoryEffect;
         #endregion
 
-        public int StorageCapacity = 0;
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;

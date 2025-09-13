@@ -76,6 +76,11 @@ namespace Game
             );
         }
 
+        public UniTask<int> GetChoiceWithInfo(string? text, params (string choice, string infoTitle, string info)[] choices)
+        {
+            return _choiceReceiver.GetChoiceWithInfo(text, choices);
+        }
+
         public UniTask<int> GetChoice(string? text, params string[] choices)
         {
             return _choiceReceiver.GetChoice(text, choices);
@@ -178,7 +183,10 @@ namespace Game
 
         private async UniTask ChoiceDifficulty()
         {
-            var choice = await GetChoice(null, "Easy", "Normal");
+            var choice = await GetChoiceWithInfo(null,
+                ("Easy", "<color=#00BFFF>- Easy -</color>", "復活できます\nアイテムは自動で鑑定されます\n敵の強さはNormalと同じです"),
+                ("Normal", "<color=#FFFF00>- Normal -</color>", "全てにおいて普通です")
+            );
             switch (choice)
             {
                 case 0:

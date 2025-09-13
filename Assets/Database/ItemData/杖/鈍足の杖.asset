@@ -43,7 +43,6 @@ MonoBehaviour:
     rid: -2
   InventoryEffect:
     rid: -2
-  StorageCapacity: 0
   UsageLimit: 10
   UpgradeLimit: 3
   PassiveConditions: []

@@ -16,6 +16,8 @@ MonoBehaviour:
   Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 4
+  AdditionalPrice: 0
+  MultiplyPrice: 1
   EffectType: 0
   UseOnDeath: 0
   SpawnEffectsOnUse: 0
@@ -39,13 +41,15 @@ MonoBehaviour:
     <ProbabilityOfSuccess>k__BackingField: 0.9
   ItemEffect:
     rid: -2
-  StorageCapacity: 0
+  InventoryEffect:
+    rid: -2
   UsageLimit: 1
   UpgradeLimit: 3
   PassiveConditions:
   - rid: 2541219158355345437
   - rid: 5486256378686996488
   - rid: 5486256378686996489
+  _featuresToMergeWeapon: []
   references:
     version: 2
     RefIds:

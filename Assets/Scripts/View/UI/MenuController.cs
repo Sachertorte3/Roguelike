@@ -8,6 +8,7 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 using VContainer;
 
 namespace View.UI
@@ -18,6 +19,7 @@ namespace View.UI
         [SerializeField] private DungeonMenu _dungeonMenu;
         [SerializeField] private SettingWindow _settingMenu;
         [SerializeField] private ItemLibraryView _itemLibraryMenu;
+        [SerializeField] private InfoMenu _infoMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
         [SerializeField] private MainMenu _mainMenu;
@@ -63,14 +65,27 @@ namespace View.UI
             return _menuStack.Peek() == _dungeonMenu ? MenuType.Field : MenuType.Menu;
         }
 
+        public async UniTask<int> GetChoiceWithInfo(string? text, params (string choice, string infoTitle, string info)[] choices)
+        {
+            AddMenu(_infoMenu);
+            var disposable = _choiceMenu.SelectedIndex.SkipLatestValueOnSubscribe().Subscribe(index =>
+            {
+                _infoMenu.SetInfo(choices[index].infoTitle, choices[index].info);
+            });
+            var choiceIndex = await GetChoice(text, choices.Select(x => x.choice).ToArray());
+            PopMenu();
+            disposable.Dispose();
+            return choiceIndex;
+        }
+
         public async UniTask<int> GetChoice(string? text, params string[] choices)
         {
             _choiceMenu.SetChoices(text, choices);
             await UniTask.NextFrame();
             AddMenu(_choiceMenu);
-            var selectedIndex = await _choiceMenu.SelectedIndex.WaitAsync();
+            var choicedIndex = await _choiceMenu.ChoicedIndex.WaitAsync();
             PopMenu();
-            return selectedIndex;
+            return choicedIndex;
         }
 
         public async UniTask<string> GetTextInput()

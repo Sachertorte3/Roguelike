@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 
 namespace Utilities
 {

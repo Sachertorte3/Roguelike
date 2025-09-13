@@ -110,7 +110,7 @@ namespace Domain.Service.Rooms
 
         private void SetShopItems(IEnumerable<IItem> items)
         {
-            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
+            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.AllPrice)).ToHashSet();
             foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
@@ -136,7 +136,7 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetMissingItems(IMap map)
         {
             var itemsInRoom = GetItemsInRoom(map).Where(item => item.State == ItemState.ShopItem);
-            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
+            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.AllPrice)));
             return purchaseItems;
         }
 
@@ -154,7 +154,7 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetAddedItems(IMap map)
         {
             var saleItems = GetItemsInRoom(map).Where(item => item.State != ItemState.ShopItem);
-            return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
+            return saleItems.Select(item => new ShopItemCache(item.Id, item.AllPrice));
         }
 
         public int GetSalePrice(IMap map)

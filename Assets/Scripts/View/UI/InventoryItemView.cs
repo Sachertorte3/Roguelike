@@ -20,6 +20,13 @@ namespace View.UI
         public Observable<Unit> OnSelected => _onFocus;
         public bool CanSkip { get; private set; } = false;
 
+        public void Awake()
+        {
+            base.Awake();
+            Debug.Log(_icon);
+            Debug.Log(gameObject);
+        }
+
         public void SetDefaultIcon(Sprite icon)
         {
             _defaultIcon = icon;
@@ -52,8 +59,6 @@ namespace View.UI
 
         private void SetIcon(Sprite? icon)
         {
-            if (_icon == null)
-                Debug.LogError($"icon is null {gameObject}");
             _icon.sprite = icon;
             _icon.enabled = icon != null;
         }

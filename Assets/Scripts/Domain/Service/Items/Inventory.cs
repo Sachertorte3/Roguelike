@@ -175,7 +175,10 @@ namespace Domain.Service.Items
         {
             if (index.SubIndex < 0)
                 return _storage.Replace(item, index.Index);
-            return _storage.GetItem(index.Index).ItemStorage.Value.Replace(item, index.SubIndex);
+            var itemStorage = _storage.GetItem(index.Index);
+            if (itemStorage == null || itemStorage.ItemStorage.IsNone)
+                return Result<IItem?>.Error;
+            return itemStorage.ItemStorage.Value.Replace(item, index.SubIndex);
         }
 
         public Result<IItem?> Replace(IItem? item, int index)

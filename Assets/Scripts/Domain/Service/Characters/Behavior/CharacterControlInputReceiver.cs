@@ -33,7 +33,7 @@ namespace Domain.Service.Characters.Behavior
 
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnUseItemActionReceived => _onUseItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnThrowItemActionReceived => _onThrowItemActionReceived;
-        internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnDropItemActionReceived => _onDropItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnSwapItemActionReceived => _onDropItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnRenameItemActionReceived => _onRenameItemActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;

@@ -15,9 +15,9 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Events;
+using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
-using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -37,7 +37,7 @@ namespace Domain.Service.Characters.Behavior
             Move,
             UseItem,
             ThrowItem,
-            DropItem,
+            SwapItem,
             DoNothing,
             RenameItem
         }
@@ -123,19 +123,60 @@ namespace Domain.Service.Characters.Behavior
                         }
 
                         break;
-                    case InputType.DropItem:
+                    case InputType.SwapItem:
                         focus = result.focus!;
                         if (focus.IsEmpty)
-                            break;
-                        if (focus.IsGroundItem)
                         {
-                            if (character.TryPickUpItem(map, true))
-                                return new DoNothing();
+                            break;
+                        }
+                        var disabledItemIndexes = new List<ItemFocus> { focus };
+                        item = focus.GetItem(character.Inventory, map);
+                        if (item != null)
+                        {
+                            if (item.ItemStorage.IsSome)
+                            {
+                                for (int i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                                {
+                                    disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
+                                }
+                            }
+                            else if (focus.SubIndex >= 0)
+                            {
+                                disabledItemIndexes.Add(new ItemFocus(focus.Index));
+                            }
+                        }
+                        var focus2 = await SelectItem("入れ替え先を選択してください", character.Inventory, map, disabledItemIndexes.ToArray());
+
+                        if (focus == focus2)
+                        {
                             break;
                         }
 
-                        action = new DropItem(focus);
-                        if (action.Doable(character, map)) return action;
+                        if (focus2.IsEmpty)
+                        {
+                            break;
+                        }
+
+                        if (focus.IsGroundItem)
+                        {
+                            action = new DropItem(focus2);
+                            if (action.Doable(character, map)) return action;
+                        }
+                        else
+                        {
+                            if (focus2.IsGroundItem)
+                            {
+                                action = new DropItem(focus);
+                                if (action.Doable(character, map)) return action;
+                            }
+                            else
+                            {
+                                var tempItem = character.Inventory.Replace(null, focus);
+                                var temp2Item = character.Inventory.Replace(tempItem.Value, focus2);
+                                character.Inventory.Replace(temp2Item.Value, focus);
+                                return new DoNothing();
+                            }
+                        }
                         break;
                     case InputType.DoNothing:
                         await UniTask.Yield();
@@ -203,11 +244,11 @@ namespace Domain.Service.Characters.Behavior
                 _receiver.OnMoveInputReceived.WaitAsync(cancellationToken.Token);
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync(cancellationToken.Token);
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync(cancellationToken.Token);
-            var dropItemTask = _receiver.OnDropItemActionReceived.WaitAsync(cancellationToken.Token);
+            var swapItemTask = _receiver.OnSwapItemActionReceived.WaitAsync(cancellationToken.Token);
             var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync(cancellationToken.Token);
             var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync(cancellationToken.Token);
 
-            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, dropItemTask, doNothingTask,
+            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, swapItemTask, doNothingTask,
                 renameItemTask);
             cancellationToken.Cancel();
             return tasks.winArgumentIndex switch
@@ -215,7 +256,7 @@ namespace Domain.Service.Characters.Behavior
                 0 => (InputType.Move, tasks.result1, null),
                 1 => (InputType.UseItem, null, tasks.result2),
                 2 => (InputType.ThrowItem, null, tasks.result3),
-                3 => (InputType.DropItem, null, tasks.result4),
+                3 => (InputType.SwapItem, null, tasks.result4),
                 4 => (InputType.DoNothing, null, null),
                 5 => (InputType.RenameItem, null, tasks.result6),
                 _ => throw new IndexOutOfRangeException()
@@ -226,7 +267,7 @@ namespace Domain.Service.Characters.Behavior
         {
         }
 
-        public async UniTask<IItem?> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItemIndexes)
+        public async UniTask<ItemFocus> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItemIndexes)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(text, true, disabledItemIndexes));
 
@@ -237,9 +278,7 @@ namespace Domain.Service.Characters.Behavior
             } while (!focus.IsEmpty && disabledItemIndexes.Contains(focus));
 
             _onItemSelect.OnNext(new OnItemSelectMessage(text, false, new ItemFocus[0]));
-            if (focus.IsEmpty)
-                return null;
-            return focus.GetItem(inventory, map);
+            return focus;
         }
     }
 }

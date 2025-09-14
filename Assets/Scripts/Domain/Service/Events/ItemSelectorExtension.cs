@@ -31,8 +31,8 @@ namespace Domain.Service.Events
                 disabledItemIndexes.Add(ItemFocus.GroundItem);
             }
 
-            var selectedItem = await itemSelector.SelectItem(text, inventory, map, disabledItemIndexes.ToArray());
-            return selectedItem;
+            var focus = await itemSelector.SelectItem(text, inventory, map, disabledItemIndexes.ToArray());
+            return focus.GetItem(inventory, map);
         }
     }
 }

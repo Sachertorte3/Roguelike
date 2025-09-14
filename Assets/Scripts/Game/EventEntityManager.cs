@@ -115,7 +115,7 @@ namespace Game
             IEnumerable<StatueMemento> statues,
             IEnumerable<MoneyMemento> money,
             Option<BonfireMemento> bonfire,
-            Option<EntityMemento> magicPot,
+            Option<MagicPotMemento> magicPot,
             Option<EntityMemento> teleporter
         )
         {

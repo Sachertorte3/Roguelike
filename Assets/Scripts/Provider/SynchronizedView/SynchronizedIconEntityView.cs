@@ -113,7 +113,11 @@ namespace Provider
                 var bonfireView = entityView.GetComponent<BonfireView>();
                 bonfire.IsFire.Subscribe(isFire => bonfireView.ShowFire(isFire));
             }
-            if (eventEntity is IIconEntity iconEventEntity)
+            else if (eventEntity is MagicPot magicPot)
+            {
+                magicPot.CanUse.Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = magicPot.Icon);
+            }
+            else if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
         }
 

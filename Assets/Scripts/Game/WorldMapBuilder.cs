@@ -52,7 +52,7 @@ namespace Game
                     new List<StatueMemento>(),
                     new List<MoneyMemento>(),
                     Option<BonfireMemento>.None,
-                    Option<EntityMemento>.None,
+                    Option<MagicPotMemento>.None,
                     Option<EntityMemento>.None),
                 FireEntityManager.Build(),
                 new List<string>(),

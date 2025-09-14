@@ -1,11 +1,11 @@
 using System;
 using R3;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Utilities;
-using Unity.Logging;
 
 namespace View
 {
@@ -25,7 +25,7 @@ namespace View
             _actions.Field.Attack.AsObservable().Select(context => Unit.Default);
 
         public Observable<Unit> OnThrowPerformed => _actions.Field.Throw.AsObservable().Select(context => Unit.Default);
-        public Observable<Unit> OnDropPerformed => _actions.Field.Drop.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnSwapItemPerformed => _actions.Field.SwapItem.AsObservable().Select(context => Unit.Default);
 
         public Observable<Unit> OnDoNothingPerformed =>
             _actions.Field.DoNothing.AsObservable().Select(context => Unit.Default);
@@ -64,7 +64,7 @@ namespace View
             _actions.Menu.Enable();
             if (EventSystem.current != null)
                 EventSystem.current.GetComponent<InputSystemUIInputModule>().move = InputActionReference.Create(_actions.UI.Navigate);
-            
+
             _actions.Field.Disable();
         }
 

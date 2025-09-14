@@ -18,7 +18,7 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<ItemFocus> _onThrowItemActionReceived =
             new(new(0));
 
-        private readonly AsyncReactiveProperty<ItemFocus> _onDropItemActionReceived =
+        private readonly AsyncReactiveProperty<ItemFocus> _onSwapItemActionReceived =
             new(new(0));
 
         private readonly AsyncReactiveProperty<Unit> _onDoNothingActionReceived = new(Unit.Default);
@@ -33,7 +33,7 @@ namespace Domain.Service.Characters.Behavior
 
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnUseItemActionReceived => _onUseItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnThrowItemActionReceived => _onThrowItemActionReceived;
-        internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnSwapItemActionReceived => _onDropItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnSwapItemActionReceived => _onSwapItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnRenameItemActionReceived => _onRenameItemActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;
@@ -60,7 +60,7 @@ namespace Domain.Service.Characters.Behavior
         public void SetDropInput()
         {
             if (_enable.CurrentValue)
-                _onDropItemActionReceived.Value = _focus;
+                _onSwapItemActionReceived.Value = _focus;
         }
 
         public void SetDoNothingInput()

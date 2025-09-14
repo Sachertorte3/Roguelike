@@ -43,7 +43,7 @@ namespace Provider
                 actionReceiver.SetItemFocus(focus.ToItemFocus()));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
-            receiver.OnDropPerformed.Subscribe(_ => actionReceiver.SetDropInput());
+            receiver.OnSwapItemPerformed.Subscribe(_ => actionReceiver.SetDropInput());
             receiver.OnDoNothingPerformed.Subscribe(_ => actionReceiver.SetDoNothingInput());
             actionReceiver.OnActionRead
                 .Where(_ => receiver.IsDoNothingPerformed)

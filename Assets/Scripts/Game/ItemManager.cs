@@ -27,11 +27,13 @@ namespace Game
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             _items.SubscribeIncludingCurrentObservables(item => item.Entity.Position, (item, position) => SetAllItemPosition())
                 .AddTo(_disposables);
-            _items.SubscribeIncludingCurrentObservables(item => item.OnDisabled, (item, dead) =>
-            {
-                if (item.Item.AutoDestroyWhenDisabled)
-                    _items.Remove(item);
-            }).AddTo(_disposables);
+            _items.SubscribeIncludingCurrentObservables(
+                item => item.Item.RemainingUses.Where(value => value <= 0).AsUnitObservable(),
+                (item, _) =>
+                {
+                    if (item.Item.AutoDestroyWhenDisabled)
+                        _items.Remove(item);
+                }).AddTo(_disposables);
             _items.SubscribeIncludingCurrentObservables(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item))
                 .AddTo(_disposables);
         }

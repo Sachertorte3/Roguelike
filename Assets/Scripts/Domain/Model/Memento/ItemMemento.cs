@@ -19,11 +19,6 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool HasSameEffect { get; private set; }
         [field: SerializeField] public bool HasSameSkill { get; private set; }
         [field: SerializeField] public bool UseOnDeath { get; private set; }
-        [field: SerializeField] public bool CannotUseIfCursed { get; private set; }
-        [field: SerializeField] public bool CannotDropIfCursed { get; private set; }
-        [field: SerializeField] public bool IdentifyIfGot { get; private set; }
-        [field: SerializeField] public bool IdentifyIfUsed { get; private set; }
-        [field: SerializeField] public bool AutoDestroyWhenDisabled { get; private set; }
         [field: SerializeField] public List<DirectWeaponFeature> FeaturesToMergeWeapon { get; private set; }
 
         public ItemMemento(
@@ -34,11 +29,6 @@ namespace Domain.Model.Memento
             bool hasSameEffect,
             bool hasSameSkill,
             bool useOnDeath,
-            bool cannotUseIfCursed,
-            bool cannotDropIfCursed,
-            bool identifyIfGot,
-            bool identifyIfUsed,
-            bool autoDestroyWhenDisabled,
             List<DirectWeaponFeature> featuresToMergeWeapon)
         {
             BaseItem = baseItem;
@@ -48,11 +38,6 @@ namespace Domain.Model.Memento
             HasSameEffect = hasSameEffect;
             HasSameSkill = hasSameSkill;
             UseOnDeath = useOnDeath;
-            CannotUseIfCursed = cannotUseIfCursed;
-            CannotDropIfCursed = cannotDropIfCursed;
-            IdentifyIfGot = identifyIfGot;
-            IdentifyIfUsed = identifyIfUsed;
-            AutoDestroyWhenDisabled = autoDestroyWhenDisabled;
             FeaturesToMergeWeapon = featuresToMergeWeapon;
         }
 
@@ -64,11 +49,6 @@ namespace Domain.Model.Memento
             bool? hasSameEffect = null,
             bool? hasSameSkill = null,
             bool? useOnDeath = null,
-            bool? cannotUseIfCursed = null,
-            bool? cannotDropIfCursed = null,
-            bool? identifyIfGot = null,
-            bool? identifyIfUsed = null,
-            bool? autoDestroyWhenDisabled = null,
             List<DirectWeaponFeature>? featuresToMergeWeapon = null)
         {
             return new ItemMemento(
@@ -79,11 +59,6 @@ namespace Domain.Model.Memento
                 hasSameEffect ?? HasSameEffect,
                 hasSameSkill ?? HasSameSkill,
                 useOnDeath ?? UseOnDeath,
-                cannotUseIfCursed ?? CannotUseIfCursed,
-                cannotDropIfCursed ?? CannotDropIfCursed,
-                identifyIfGot ?? IdentifyIfGot,
-                identifyIfUsed ?? IdentifyIfUsed,
-                autoDestroyWhenDisabled ?? AutoDestroyWhenDisabled,
                 featuresToMergeWeapon ?? FeaturesToMergeWeapon
             );
         }

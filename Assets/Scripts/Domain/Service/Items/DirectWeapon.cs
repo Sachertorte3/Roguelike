@@ -77,21 +77,12 @@ namespace Domain.Service.Items
             {
                 this.ApplyDowngrade(upgradePath);
             }
-            var json = JsonUtility.ToJson(new DirectWeaponMemento
-            (
-                baseItem: SerializeBase(),
-                prefix: _prefix,
-                elementPowers: _elementPowers,
-                features: _features,
-                featureLimit: _featureLimit,
-                skillOnUse: _skillOnUse.Serialize(),
-                skillOnThrow: _skillOnThrow.Serialize()
-            ));
+            var memento = Serialize();
             foreach (var upgradePath in UpgradePaths)
             {
                 this.ApplyUpgrade(upgradePath);
             }
-            return JsonUtility.FromJson<DirectWeaponMemento>(json);
+            return memento;
         }
 
         public static (SpawnEffectSkill skillOnUse, SpawnEffectSkill skillOnThrow) BuildSkills(List<ElementPower> elementPowers, List<DirectWeaponFeature> features, WeaponPrefix? prefix = null, bool skipMultiplyPower = false)
@@ -288,7 +279,7 @@ namespace Domain.Service.Items
 
             var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
-            var mergedItem = new DirectWeapon(memento.CopyWith(
+            var item = new DirectWeapon(memento.CopyWith(
                 baseItem: memento.BaseItem.CopyWith(
                     multiplyPrice: multiplyPrice
                 ),
@@ -296,18 +287,18 @@ namespace Domain.Service.Items
                 skillOnUse: skillOnUse.Serialize(),
                 skillOnThrow: skillOnThrow.Serialize()
             ));
-            foreach (var upgradePath in mergedItem.UpgradePaths)
+            foreach (var upgradePath in item.UpgradePaths)
             {
-                mergedItem.ApplyUpgrade(upgradePath);
+                item.ApplyUpgrade(upgradePath);
             }
             foreach (var upgradePath in upgradePaths.Shuffled())
             {
-                if (mergedItem.CanUpgrade(upgradePath.ToString()))
+                if (item.CanUpgrade(upgradePath.ToString()))
                 {
-                    mergedItem.UpgradeNoLog(upgradePath);
+                    item.UpgradeNoLog(upgradePath);
                 }
             }
-            return mergedItem;
+            return item;
         }
 
         public DirectWeapon Merge(DirectWeapon mergedItem) => Merge(mergedItem._features, mergedItem.UpgradePaths);

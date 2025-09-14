@@ -25,7 +25,6 @@ namespace Domain.Service.Items
         public IItem Item { get; init; }
 
         public Sprite Icon => Item.Icon;
-        public Observable<Unit> OnDisabled => Item.RemainingUses.Where(value => value <= 0).AsUnitObservable();
 
         public void Dispose()
         {

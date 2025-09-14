@@ -52,6 +52,7 @@ namespace Domain.Model.Item
         public bool IsCurseIdentified { get; }
         public bool IsInfoIdentified(IPlayer player);
         public bool AutoDestroyWhenDisabled { get; }
+        public IReadOnlyList<UpgradePath> UpgradePaths { get; }
         public int AppliedUpgrades { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }

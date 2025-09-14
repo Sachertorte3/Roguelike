@@ -34,7 +34,8 @@ namespace Domain.Service.Rooms
                         async (gameManager, map) =>
                         {
                             var player = map.Player;
-                            var item = await player.Character.ItemSelector.SelectItem("渡すアイテムを選択してください", player.Character.Inventory, map);
+                            var focus = await player.Character.ItemSelector.SelectItem("渡すアイテムを選択してください", player.Character.Inventory, map);
+                            var item = focus.GetItem(player.Character.Inventory, map);
                             if (item != null)
                             {
                                 var result = character.Inventory.TryAdd(item);

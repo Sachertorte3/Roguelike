@@ -154,7 +154,7 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetAddedItems(IMap map)
         {
             var saleItems = GetItemsInRoom(map).Where(item => item.State != ItemState.ShopItem);
-            return saleItems.Select(item => new ShopItemCache(item.Id, item.AllPrice));
+            return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
         }
 
         public int GetSalePrice(IMap map)

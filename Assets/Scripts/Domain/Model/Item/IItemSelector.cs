@@ -7,6 +7,6 @@ namespace Domain.Model.Item
 {
     public interface IItemSelector
     {
-        public UniTask<IItem?> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItems);
+        public UniTask<ItemFocus> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItems);
     }
 }

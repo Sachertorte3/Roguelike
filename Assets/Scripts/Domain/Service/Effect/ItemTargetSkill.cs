@@ -80,8 +80,9 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var selectedItem = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
+                var focus = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
                     disabledItemIndexes.ToArray());
+                var selectedItem = focus.GetItem(player.Character.Inventory, map);
                 if (selectedItem != null)
                 {
                     _itemEffect.Apply(player, selectedItem, itemHolder, map.ItemPlaceholders);
@@ -90,8 +91,9 @@ namespace Domain.Service.Effect
             }
             else
             {
-                var selectedItem =
+                var focus =
                     await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map, selfIndex);
+                var selectedItem = focus.GetItem(player.Character.Inventory, map);
                 if (selectedItem != null)
                 {
                     var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);

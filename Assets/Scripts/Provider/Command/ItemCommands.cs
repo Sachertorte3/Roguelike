@@ -111,12 +111,12 @@ namespace Provider
                     Log.Info($"インベントリ内の指定したアイテムが見つかりません。");
                     return;
                 }
-                if (!ItemMergeExtension.CanSelectForBaseItem(item) || !ItemMergeExtension.CanSelectForMergedItem(item2 as BaseItem, item as DirectWeapon))
+                if (!ItemMergeExtension.CanSelectForBaseItem(item) || !ItemMergeExtension.CanSelectForMergedItem(item2 as BaseItem, item))
                 {
                     Log.Info($"指定したアイテムは合成できません。");
                     return;
                 }
-                var mergedItem = (item as DirectWeapon).Merge(item2);
+                var mergedItem = item.Merge(item2);
                 inventory.Replace(mergedItem, index);
                 inventory.Replace(null, index2);
                 Log.Info($"{mergedItem.GetName(_world.ActiveMap.CurrentValue.Player, _world.ActiveMap.CurrentValue.ItemPlaceholders)}をプレイヤーのインベントリに追加しました。");

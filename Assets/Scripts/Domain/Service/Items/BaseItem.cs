@@ -68,7 +68,7 @@ namespace Domain.Service.Items
         public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
-        public bool IsDisabled => _remainingUsages.CurrentValue <= 0;
+        public bool IsDisabled => (IsCursed && CannotUseIfCursed) || _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
@@ -233,12 +233,7 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (IsCursed && CannotUseIfCursed)
-            {
-                return 0;
-            }
-
-            if (UseOnDeath && _remainingUsages.CurrentValue <= 1)
+            if (UseOnDeath)
             {
                 return 0;
             }
@@ -255,11 +250,6 @@ namespace Domain.Service.Items
 
         public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
-            if (IsCursed && CannotUseIfCursed)
-            {
-                return 0;
-            }
-
             return SkillOnThrow.MapOr(
                 0,
                 skill => skill.Match(
@@ -371,7 +361,7 @@ namespace Domain.Service.Items
                         () =>
                         {
                             MaxUsages -= 3;
-                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 3);
+                            _remainingUsages.Value = _remainingUsages.Value - 3;
                         })
                 );
                 upgrades.Add(
@@ -384,7 +374,7 @@ namespace Domain.Service.Items
                         () =>
                         {
                             MaxUsages -= 5;
-                            _remainingUsages.Value = Mathf.Max(1, _remainingUsages.Value - 5);
+                            _remainingUsages.Value = _remainingUsages.Value - 5;
                         })
                 );
             }

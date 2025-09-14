@@ -55,14 +55,14 @@ namespace Domain.Service.Events
                 "ベースのアイテムを選択してください",
                 player,
                 map,
-                ItemMergeExtension.CanSelectForBaseItem) as DirectWeapon;
+                ItemMergeExtension.CanSelectForBaseItem);
             if (mergeBaseItem == null)
                 return;
             var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect(
                 "合成するアイテムを選択してください",
                 player,
                 map,
-                item => ItemMergeExtension.CanSelectForMergedItem(item as BaseItem, mergeBaseItem));
+                item => ItemMergeExtension.CanSelectForMergedItem(item, mergeBaseItem));
             if (mergedItem == null)
                 return;
 

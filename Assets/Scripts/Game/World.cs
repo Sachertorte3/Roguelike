@@ -32,7 +32,7 @@ namespace Game
         {
             Globals.World = this;
             _receiver = receiver;
-            _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/Placeholders.asset")
+            _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/ItemData/Placeholders.asset")
                 .WaitForCompletion();
             _activeMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {

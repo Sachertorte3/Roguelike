@@ -8,26 +8,30 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Items;
 using Domain.Service.Logs;
+using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class MagicPot : IDisposable, ISerializable<EntityMemento>, IPlayerEventEntity, IIconEntity
+    public class MagicPot : IDisposable, ISerializable<MagicPotMemento>, IPlayerEventEntity, IIconEntity
     {
+        private ReactiveProperty<int> _remainingUsages;
+        public ReadOnlyReactiveProperty<bool> CanUse => _remainingUsages.Select(remainingUsages => remainingUsages > 0).ToReadOnlyReactiveProperty();
         public EntityBase Entity { get; init; }
 
-        public MagicPot(EntityMemento data)
+        public MagicPot(MagicPotMemento data)
         {
-            Entity = new EntityBase(data);
+            Entity = new EntityBase(data.Entity);
+            _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
             Event = new PlayerEvent(
                 "魔法の壺を見つけた",
                 new List<PlayerChoiceEvent>
                 {
                     new(
                         "使う",
-                        player => true,
+                        player => CanUse.CurrentValue,
                         async (gameManager, map) => await DoEvent(map)
                     )
                 }
@@ -39,7 +43,7 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/icons_full_16.png[icons_full_16_270]")
+        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[icons_full_16_{(CanUse.CurrentValue ? 270 : 269)}]")
             .WaitForCompletion();
 
         public IPlayerEvent Event { get; init; }
@@ -66,6 +70,7 @@ namespace Domain.Service.Events
             player.Character.Inventory.Remove(mergedItem);
             player.Character.Inventory.Add(mergeBaseItem.Merge(mergedItem));
             GameLog.AddIgnoreVisibility($"{player.Character.GetName(player)}は{mergeBaseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
+            _remainingUsages.Value -= 1;
         }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
@@ -73,14 +78,14 @@ namespace Domain.Service.Events
             return UniTask.CompletedTask;
         }
 
-        public EntityMemento Serialize()
+        public MagicPotMemento Serialize()
         {
-            return Entity.Serialize();
+            return new MagicPotMemento(_remainingUsages.CurrentValue, Entity.Serialize());
         }
 
-        public static EntityMemento Build(Vector2Int position)
+        public static MagicPotMemento Build(Vector2Int position)
         {
-            return EntityBase.Build(position, EntityLayer.Middle);
+            return new MagicPotMemento(3, EntityBase.Build(position, EntityLayer.Middle));
         }
 
         ~MagicPot()

@@ -30,7 +30,7 @@ namespace Game
         private readonly List<StatueMemento> _statues = new();
         private readonly List<MoneyMemento> _money = new();
         private BonfireMemento? _bonfire;
-        private EntityMemento? _magicPot;
+        private MagicPotMemento? _magicPot;
         private EntityMemento? _teleporter;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;

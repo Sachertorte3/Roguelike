@@ -2,6 +2,7 @@
 using System;
 using Domain.Model.Item;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Domain.Service.Items
 {
@@ -15,6 +16,7 @@ namespace Domain.Service.Items
             var featuresToMergeWeapon = baseItem switch
             {
                 DirectWeapon weapon => weapon.Features,
+                StorageItem storageItem => new List<DirectWeaponFeature>(),
                 Item item => item.FeaturesToMergeWeapon,
                 _ => throw new Exception("Invalid item")
             };

@@ -14,7 +14,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public List<StatueMemento> Statues { get; private set; }
         [field: SerializeField] public List<MoneyMemento> Money { get; private set; }
         [field: SerializeField] public Option<BonfireMemento> Bonfire { get; private set; }
-        [field: SerializeField] public Option<EntityMemento> MagicPot { get; private set; }
+        [field: SerializeField] public Option<MagicPotMemento> MagicPot { get; private set; }
         [field: SerializeField] public Option<EntityMemento> Teleporter { get; private set; }
 
         public EventEntitiesMemento(
@@ -24,7 +24,7 @@ namespace Domain.Model.Memento
             List<StatueMemento> statues,
             List<MoneyMemento> money,
             Option<BonfireMemento> bonfire,
-            Option<EntityMemento> magicPot,
+            Option<MagicPotMemento> magicPot,
             Option<EntityMemento> teleporter)
         {
             Stairs = stairs;

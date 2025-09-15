@@ -5,20 +5,21 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Domain.Service.InventoryEffect
 {
     [Serializable]
     public class ChangeItemAll : IInventoryEffect
     {
-        [SerializeField] private ItemData _item;
+        [SerializeField] private ScriptableObjectSerializable<ItemData> _item;
 
         public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
             for (var i = 0; i < storage.Capacity; i++)
             {
                 if (storage.GetItem(i) != null)
-                    storage.Replace(new Item(_item), i);
+                    storage.Replace(new Item(_item.Value), i);
             }
         }
 
@@ -29,7 +30,7 @@ namespace Domain.Service.InventoryEffect
 
         public string Info()
         {
-            return $"変化({_item.name})";
+            return $"変化({_item.Value.name})";
         }
     }
 }

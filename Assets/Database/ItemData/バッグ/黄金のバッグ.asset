@@ -29,4 +29,5 @@ MonoBehaviour:
     - rid: 3961642890263003234
       type: {class: ChangeItemAll, ns: Domain.Service.InventoryEffect, asm: Domain.Service}
       data:
-        _item: {fileID: 11400000, guid: 2f6b6211b9dd88045b004388774d225f, type: 2}
+        _item:
+          _name: "\u91D1\u584A"

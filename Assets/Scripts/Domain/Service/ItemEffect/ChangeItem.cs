@@ -5,13 +5,14 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using UnityEngine;
+using Utilities.Serialize;
 
 namespace Domain.Service.ItemEffect
 {
     [Serializable]
     public class ChangeItem : IItemEffect
     {
-        [SerializeField] private ItemData _item;
+        [SerializeField] private ScriptableObjectSerializable<ItemData> _item;
 
         public bool CanApplyTo(IPlayer player, IItem item)
         {
@@ -20,7 +21,7 @@ namespace Domain.Service.ItemEffect
 
         public void Apply(IPlayer player, IItem item, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            player.Character.Inventory.Replace(new Item(_item), player.Character.Inventory.GetItemIndex(item));
+            player.Character.Inventory.Replace(new Item(_item.Value), player.Character.Inventory.GetItemIndex(item));
         }
 
         public float EvaluatePrice()
@@ -30,7 +31,7 @@ namespace Domain.Service.ItemEffect
 
         public string Info()
         {
-            return $"変化({_item.name})";
+            return $"変化({_item.Value.name})";
         }
     }
 }

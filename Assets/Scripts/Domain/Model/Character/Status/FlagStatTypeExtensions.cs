@@ -19,26 +19,26 @@ namespace Domain.Model.Character.Status
             FlagStatType.Heavy => "スーパーアーマー",
             FlagStatType.SecureHold => "拘束",
             FlagStatType.CurseProof => "呪い耐性",
-            FlagStatType.Haggle => "討価",
-            FlagStatType.IsAffectedByTrap => "罠影響",
+            FlagStatType.Haggle => "値切り",
+            FlagStatType.IsAffectedByTrap => "帯電",
             FlagStatType.AutoIdentify => "自動識別",
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
         public static ParticleType GetParticleType(this FlagStatType type) => type switch
         {
-            FlagStatType.CannotAct => ParticleType.None,
-            FlagStatType.CannotMove => ParticleType.None,
-            FlagStatType.Confused => ParticleType.None,
+            FlagStatType.CannotAct => ParticleType.Paralysis,
+            FlagStatType.CannotMove => ParticleType.Stuned,
+            FlagStatType.Confused => ParticleType.Confusion,
             FlagStatType.Clairvoyant => ParticleType.None,
-            FlagStatType.Blind => ParticleType.None,
+            FlagStatType.Blind => ParticleType.Blind,
             FlagStatType.OverDrive => ParticleType.None,
             FlagStatType.Hard => ParticleType.None,
             FlagStatType.Heavy => ParticleType.None,
             FlagStatType.SecureHold => ParticleType.None,
             FlagStatType.CurseProof => ParticleType.None,
             FlagStatType.Haggle => ParticleType.None,
-            FlagStatType.IsAffectedByTrap => ParticleType.None,
+            FlagStatType.IsAffectedByTrap => ParticleType.Electric,
             FlagStatType.AutoIdentify => ParticleType.None,
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };

@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 5486256464210165769
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 9a714ae802e85df4b8c3ddbd870c4e68, type: 3}
   IsBoss: 0
   Hp: 4
   Aggression: 1
@@ -46,7 +46,7 @@ MonoBehaviour:
       <Position>k__BackingField:
         rid: 5486256560184492036
       <Area>k__BackingField:
-        rid: -2
+        rid: 3961643019495538786
       <Effects>k__BackingField: []
       <Repeats>k__BackingField: 1
       <ProbabilityOfSuccess>k__BackingField: 0.95
@@ -80,6 +80,9 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 3961643019495538786
+      type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data: 
     - rid: 5486256464210165769
       type: {class: Worm, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:

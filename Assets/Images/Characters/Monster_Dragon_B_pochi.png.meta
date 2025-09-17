@@ -172,12 +172,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_0
       rect:
         serializedVersion: 2
-        x: 2
+        x: 0
         y: 90
-        width: 34
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -194,12 +194,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_1
       rect:
         serializedVersion: 2
-        x: 40
-        y: 91
-        width: 34
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 38
+        y: 90
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -216,12 +216,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_2
       rect:
         serializedVersion: 2
-        x: 78
+        x: 76
         y: 90
-        width: 34
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -238,12 +238,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_3
       rect:
         serializedVersion: 2
-        x: 122
-        y: 91
-        width: 28
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 114
+        y: 90
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_4
       rect:
         serializedVersion: 2
-        x: 155
-        y: 61
-        width: 27
+        x: 152
+        y: 90
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -282,12 +282,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_5
       rect:
         serializedVersion: 2
-        x: 160
-        y: 91
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 190
+        y: 90
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -304,12 +304,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_6
       rect:
         serializedVersion: 2
-        x: 198
-        y: 90
-        width: 27
+        x: 0
+        y: 60
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -326,12 +326,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_7
       rect:
         serializedVersion: 2
-        x: 6
+        x: 38
         y: 60
-        width: 29
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -348,12 +348,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_8
       rect:
         serializedVersion: 2
-        x: 44
+        x: 76
         y: 60
-        width: 32
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -370,12 +370,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_9
       rect:
         serializedVersion: 2
-        x: 82
+        x: 114
         y: 60
-        width: 30
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -392,12 +392,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_10
       rect:
         serializedVersion: 2
-        x: 117
+        x: 152
         y: 60
-        width: 27
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -414,12 +414,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_11
       rect:
         serializedVersion: 2
-        x: 192
-        y: 61
-        width: 28
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 190
+        y: 60
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -436,12 +436,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_12
       rect:
         serializedVersion: 2
-        x: 2
+        x: 0
         y: 30
-        width: 30
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -460,10 +460,10 @@ TextureImporter:
         serializedVersion: 2
         x: 38
         y: 30
-        width: 32
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -480,12 +480,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_14
       rect:
         serializedVersion: 2
-        x: 79
+        x: 76
         y: 30
-        width: 29
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -502,12 +502,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_15
       rect:
         serializedVersion: 2
-        x: 122
-        y: 29
-        width: 27
+        x: 114
+        y: 30
+        width: 38
         height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -524,12 +524,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_16
       rect:
         serializedVersion: 2
-        x: 160
-        y: 31
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 152
+        y: 30
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -546,12 +546,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_17
       rect:
         serializedVersion: 2
-        x: 198
-        y: 31
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 190
+        y: 30
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -568,12 +568,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_18
       rect:
         serializedVersion: 2
-        x: 2
+        x: 0
         y: 0
-        width: 34
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -590,12 +590,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_19
       rect:
         serializedVersion: 2
-        x: 40
-        y: 1
-        width: 34
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 38
+        y: 0
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -612,12 +612,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_20
       rect:
         serializedVersion: 2
-        x: 78
+        x: 76
         y: 0
-        width: 34
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -634,12 +634,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_21
       rect:
         serializedVersion: 2
-        x: 117
-        y: 1
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 114
+        y: 0
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -656,12 +656,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_22
       rect:
         serializedVersion: 2
-        x: 155
-        y: 1
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 152
+        y: 0
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -678,12 +678,12 @@ TextureImporter:
       name: Monster_Dragon_B_pochi_23
       rect:
         serializedVersion: 2
-        x: 193
+        x: 190
         y: 0
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -700,7 +700,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: e78cb2b9b9e955d4497bcbb81e2719f9
     internalID: 0
     vertices: []
     indices: 
@@ -708,7 +708,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":4.0},"gridSpriteSize":{"x":38.0,"y":30.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.25},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Monster_Dragon_B_pochi_0: 2430831666210403451
       Monster_Dragon_B_pochi_1: 7475254908781696598

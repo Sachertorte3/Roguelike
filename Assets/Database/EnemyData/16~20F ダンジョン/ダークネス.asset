@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 2541219246146060307
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 7ad5b7e93ea9c9549a48190459144e3a, type: 3}
   IsBoss: 1
   Hp: 100
   Aggression: 1
@@ -41,49 +41,7 @@ MonoBehaviour:
   CanThroughWalls: 0
   CanPickUp: 0
   CanUseItem: 0
-  Skills:
-  - Skill:
-      <Position>k__BackingField:
-        rid: -2
-      <Area>k__BackingField:
-        rid: -2
-      <Effects>k__BackingField:
-      - rid: -2
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: 
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 0
-  - Skill:
-      <Position>k__BackingField:
-        rid: -2
-      <Area>k__BackingField:
-        rid: -2
-      <Effects>k__BackingField:
-      - rid: -2
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: 
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 0
-  - Skill:
-      <Position>k__BackingField:
-        rid: -2
-      <Area>k__BackingField:
-        rid: -2
-      <Effects>k__BackingField:
-      - rid: -2
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: 
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 0
+  Skills: []
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:

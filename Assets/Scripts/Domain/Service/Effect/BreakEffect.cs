@@ -17,7 +17,7 @@ namespace Domain.Service.Effect
     [Serializable]
     public class BreakEffect : ActorlessEntityTargetEffect
     {
-        public override Color Color => Colors.Black;
+        public override Color Color => Colors.DarkGray;
         public override Impact Impact => Impact.Harmful;
         public bool ApplyToCharacter = true;
         public bool ApplyToItem = true;

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
@@ -38,6 +39,8 @@ namespace Game
         private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
+        private HashSet<Guid> _eventExecutionIds = new();
+        public bool IsEventExecuting => _eventExecutionIds.Count > 0;
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
@@ -50,7 +53,6 @@ namespace Game
             _choiceReceiver = choiceReceiver;
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
-            Globals.GameManager = this;
 
             _world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
@@ -169,7 +171,7 @@ namespace Game
 
         private MapManager LoadPreview(SaveData saveData)
         {
-            return _world.LoadWorld(saveData.World, saveData.Maps);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this);
         }
 
         private MapManager CreateSaveData()
@@ -178,7 +180,7 @@ namespace Game
             Settings.WorldSettings.Reset();
 
             _world.CreateNew();
-            return _world.LoadStartMap();
+            return _world.LoadStartMap(this);
         }
 
         private async UniTask ChoiceDifficulty()
@@ -209,7 +211,7 @@ namespace Game
                 _activeStatistics.Value.IsCheating = true;
             }
 
-            return _world.LoadWorld(saveData.World, saveData.Maps);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this);
         }
 
         private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData)
@@ -251,7 +253,7 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             PlayBGM(BGM.Normal);
-            var map = _world.LoadMap(mapId, destination);
+            var map = _world.LoadMap(mapId, destination, this);
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");
@@ -297,6 +299,20 @@ namespace Game
         public void Exit()
         {
             Application.Quit();
+        }
+
+        public Guid StartEvent()
+        {
+            var eventId = Guid.NewGuid();
+            _eventExecutionIds.Add(eventId);
+            return eventId;
+        }
+
+        public void EndEvent(Guid eventId)
+        {
+            if (!_eventExecutionIds.Contains(eventId))
+                throw new Exception($"EventId {eventId} not found");
+            _eventExecutionIds.Remove(eventId);
         }
     }
 }

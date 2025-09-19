@@ -30,7 +30,6 @@ namespace Game
         [Inject]
         public World(CharacterControlInputReceiver receiver)
         {
-            Globals.World = this;
             _receiver = receiver;
             _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/ItemData/Placeholders.asset")
                 .WaitForCompletion();
@@ -54,7 +53,7 @@ namespace Game
             return _dungeon.CreateMapData(mapId);
         }
 
-        public MapManager LoadWorld(WorldMemento memento, Dictionary<Id<IMap>, MapMemento> maps)
+        public MapManager LoadWorld(WorldMemento memento, Dictionary<Id<IMap>, MapMemento> maps, IGameManager gameManager)
         {
             _dungeon = new Dungeon(memento.Dungeon);
             _itemPlaceholders = new ItemPlaceholders(memento.ItemPlaceholders, _placeholders);
@@ -74,7 +73,7 @@ namespace Game
             }
 
             MapManager map = new(mapMemento,
-                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, _receiver, _itemPlaceholders);
+                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders);
 
             _activeMap.Value = map;
 
@@ -136,7 +135,7 @@ namespace Game
             {
                 var map = _maps[destination];
                 var destinationEntity =
-                    map.EventEntities.Stairs
+                    map.Entities.EventEntities.Stairs
                         .First(stairs => stairs.Destination == current);
                 var id = destinationEntity.DestinationId;
                 var destinationId = new Id<IEntity>(destinationEntity.Entity.Id);
@@ -146,12 +145,12 @@ namespace Game
             return new MovementData(type, destination, null, null);
         }
 
-        public MapManager LoadStartMap()
+        public MapManager LoadStartMap(IGameManager gameManager)
         {
-            return LoadMap(_dungeon.StartMapId, null);
+            return LoadMap(_dungeon.StartMapId, null, gameManager);
         }
 
-        public MapManager LoadMap(Id<IMap> mapId, Id<IEntity>? destination)
+        public MapManager LoadMap(Id<IMap> mapId, Id<IEntity>? destination, IGameManager gameManager)
         {
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
@@ -159,7 +158,7 @@ namespace Game
             PlayerMemento? playerData = null;
             List<CharacterMemento>? partyMembers = null;
             Vector2Int? initialPosition = destination != null
-                ? mapMemento.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
+                ? mapMemento.Entities.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
                     .Position
                 : null;
             if (_activeMap.CurrentValue != null)
@@ -173,7 +172,7 @@ namespace Game
             }
 
             MapManager map = new(mapMemento, _dungeon.CreateMapData(mapId), playerData,
-                partyMembers, initialPosition, true, _receiver, _itemPlaceholders);
+                partyMembers, initialPosition, true, gameManager, _receiver, _itemPlaceholders);
 
             _activeMap.Value = map;
 

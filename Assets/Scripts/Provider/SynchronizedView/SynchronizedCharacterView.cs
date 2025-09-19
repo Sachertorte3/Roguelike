@@ -32,7 +32,7 @@ namespace Provider
             _world = world;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable.Disposable = map.CharacterManager.Characters.SubscribeIncludingCurrentItems(Add, Remove),
+                map => _disposable.Disposable = map.Characters.SubscribeIncludingCurrentItems(Add, Remove),
                 map => map.Characters.ForEach(character => Remove(character))
             );
         }

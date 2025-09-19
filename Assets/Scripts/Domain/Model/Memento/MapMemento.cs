@@ -14,10 +14,7 @@ namespace Domain.Model.Memento
         [SerializeField] private string _id;
         public Id<IMap> Id => new(_id);
         [field: SerializeField] public TilemapMemento Tilemap { get; private set; }
-        [field: SerializeField] public List<CharacterMemento> Characters { get; private set; }
-        [field: SerializeField] public List<ItemEntityMemento> Items { get; private set; }
-        [field: SerializeField] public EventEntitiesMemento EventEntities { get; private set; }
-        [field: SerializeField] public FireEntitiesMemento Fires { get; private set; }
+        [field: SerializeField] public EntitiesMemento Entities { get; private set; }
         [field: SerializeField] public List<string> KeyCharacters { get; private set; }
         [field: SerializeField] public Option<RoomMemento> MonsterHouse { get; private set; }
         [field: SerializeField] public Option<ShopMemento> Shop { get; private set; }
@@ -26,10 +23,7 @@ namespace Domain.Model.Memento
         public MapMemento(
             Id<IMap> id,
             TilemapMemento tilemap,
-            List<CharacterMemento> characters,
-            List<ItemEntityMemento> items,
-            EventEntitiesMemento eventEntities,
-            FireEntitiesMemento fireEntities,
+            EntitiesMemento entities,
             List<string> keyCharacters,
             Option<RoomMemento> monsterHouse,
             Option<ShopMemento> shop,
@@ -37,10 +31,7 @@ namespace Domain.Model.Memento
         {
             _id = id.ToString();
             Tilemap = tilemap;
-            Characters = characters;
-            Items = items;
-            EventEntities = eventEntities;
-            Fires = fireEntities;
+            Entities = entities;
             KeyCharacters = keyCharacters;
             MonsterHouse = monsterHouse;
             Shop = shop;

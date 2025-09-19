@@ -8,6 +8,7 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using ObservableCollections;
+using R3;
 using UnityEngine;
 using Utilities;
 
@@ -19,7 +20,6 @@ namespace Domain.Model.Map
         public ItemDatabase ItemDatabase { get; }
         public ItemPlaceholders ItemPlaceholders { get; }
         public IPlayer Player { get; }
-        public bool IsEventExecuting { get; }
 
         public IObservableCollection<IEntity> Entities { get; }
         public IObservableCollection<ICharacter> Characters { get; }
@@ -28,10 +28,15 @@ namespace Domain.Model.Map
         public IObservableCollection<IPlayerEventEntity> PlayerEventEntities { get; }
         public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities { get; }
 
+        public ReadOnlyReactiveProperty<bool> MovementEntityLocked { get; }
+
         public HashSet<Vector2Int> GetAllPositions();
+
         public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position, IEnumerable<EntityLayer> layers);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position);
+        public HashSet<Vector2Int> AllCharacterPositionsFast();
+        public HashSet<Vector2Int> AllItemPositionsFast();
 
         public bool IsInside(Vector2Int position);
         public bool IsReachable(Vector2Int from, Vector2Int to, IHasBehavior actor);
@@ -39,9 +44,6 @@ namespace Domain.Model.Map
         public IItem? GetItemByIdFromWorldOrInventory(Id<IItem> id);
 
         public UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor);
-
-        public Guid StartEvent();
-        public void EndEvent(Guid eventId);
 
         public void UpdateTurn(int turn);
 
@@ -68,12 +70,7 @@ namespace Domain.Model.Map
 
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem);
 
-        public void DropAllItemInStorage(IItem item);
-
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
-
-        public HashSet<Vector2Int> AllCharacterPositions();
-        public HashSet<Vector2Int> AllItemPositions();
 
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);

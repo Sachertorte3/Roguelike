@@ -23,7 +23,7 @@ namespace Game
         private readonly ObservableList<ICharacter> _characters = new();
         private HashSet<Vector2Int> _allCharacterPositions = new();
 
-        public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public CharacterManager(PlayerMemento playerData, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
         {
             _characters.ObserveCountChanged().Subscribe(_ => SetAllCharacterPosition());
             _characters.SubscribeIncludingCurrentObservables(
@@ -34,14 +34,14 @@ namespace Game
                 character => character.Entity.OnDestroyed,
                 async (character, _) =>
                 {
-                    var eventId = map.StartEvent();
+                    var eventId = gameManager.StartEvent();
                     await UniTask.Delay(Settings.GlobalSettings.CharacterFadeOutTime.CurrentValue);
                     RemoveCharacter(character);
-                    map.EndEvent(eventId);
+                    gameManager.EndEvent(eventId);
                 }
             );
 
-            Player = CharacterFactory.CreatePlayer(playerData, receiver, map);
+            Player = CharacterFactory.CreatePlayer(playerData, receiver, gameManager, map);
 
             if (!Player.Character.IsDead)
             {
@@ -73,17 +73,17 @@ namespace Game
             _characters.Remove(character);
         }
 
-        public ICharacter SpawnCharacter(CharacterMemento data, IMap map)
+        public ICharacter SpawnCharacter(CharacterMemento data, IGameManager gameManager, IMap map)
         {
-            var character = CharacterFactory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Id), map);
+            var character = CharacterFactory.CreateCharacter(data, new EnemyBehavior(data.Behavior, map.Id), gameManager, map);
             AddCharacter(character);
             return character;
         }
 
-        public Ally SpawnAlly(CharacterMemento data, IMap map)
+        public Ally SpawnAlly(CharacterMemento data, IGameManager gameManager, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Id);
-            var character = CharacterFactory.CreateCharacter(data, behavior, map);
+            var character = CharacterFactory.CreateCharacter(data, behavior, gameManager, map);
             AddCharacter(character);
             return new Ally(character, behavior, map);
         }

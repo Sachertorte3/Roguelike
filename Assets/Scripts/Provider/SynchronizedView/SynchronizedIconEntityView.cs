@@ -32,18 +32,18 @@ namespace Provider
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[0].Disposable =
-                    map.EventEntityManager.StandaloneEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.EventEntityManager.StandaloneEventEntities.ForEach(entity => Remove(entity))
+                    map.StandaloneEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
+                map => map.StandaloneEventEntities.ForEach(entity => Remove(entity))
             );
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[1].Disposable =
-                    map.EventEntityManager.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.EventEntityManager.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
+                    map.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
+                map => map.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
             );
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[2].Disposable =
-                    map.EventEntityManager.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.EventEntityManager.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity))
+                    map.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
+                map => map.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity))
             );
         }
 

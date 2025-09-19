@@ -1,40 +1,41 @@
 # Summary
 
-Date : 2024-08-31 12:14:01
+Date : 2025-09-19 19:41:00
 
 Directory c:\\Users\\Torte\\Documents\\Unity\\LogRogue
 
-Total : 2203 files,  2688641 codes, 10967 comments, 22281 blanks, all 2721889 lines
+Total : 2455 files,  2716482 codes, 12611 comments, 26000 blanks, all 2755093 lines
 
 Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| XML | 1,087 | 2,524,533 | 4 | 568 | 2,525,105 |
-| Python | 388 | 111,549 | 7,577 | 13,743 | 132,869 |
-| C# | 669 | 43,553 | 3,023 | 6,285 | 52,861 |
+| XML | 1,090 | 2,527,852 | 4 | 572 | 2,528,428 |
+| Python | 388 | 111,550 | 7,577 | 13,743 | 132,870 |
+| C# | 901 | 66,832 | 4,620 | 9,770 | 81,222 |
+| UnityShader | 26 | 3,447 | 130 | 882 | 4,459 |
 | C | 1 | 2,935 | 265 | 194 | 3,394 |
-| UnityShader | 19 | 2,457 | 82 | 674 | 3,213 |
-| JSON | 8 | 2,025 | 0 | 60 | 2,085 |
-| Markdown | 5 | 556 | 0 | 328 | 884 |
+| JSON | 34 | 2,581 | 0 | 64 | 2,645 |
+| Markdown | 6 | 590 | 0 | 350 | 940 |
 | reStructuredText | 2 | 549 | 4 | 400 | 953 |
-| UnityAssemblyDefinition | 19 | 369 | 0 | 3 | 372 |
-| Shell Script | 2 | 91 | 12 | 24 | 127 |
+| Shell Script | 2 | 90 | 11 | 23 | 124 |
+| Database | 1 | 28 | 0 | 0 | 28 |
 | JSON with Comments | 1 | 10 | 0 | 0 | 10 |
 | Ini | 1 | 7 | 0 | 1 | 8 |
 | Properties | 1 | 7 | 0 | 1 | 8 |
+| Objective-C++ | 1 | 4 | 0 | 0 | 4 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 2,203 | 2,688,641 | 10,967 | 22,281 | 2,721,889 |
-| . (Files) | 1 | 10 | 0 | 0 | 10 |
+| . | 2,455 | 2,716,482 | 12,611 | 26,000 | 2,755,093 |
+| . (Files) | 2 | 38 | 0 | 0 | 38 |
 | .idea | 3 | 18 | 0 | 0 | 18 |
 | .idea\\.idea.LogRogue | 3 | 18 | 0 | 0 | 18 |
 | .idea\\.idea.LogRogue\\.idea | 3 | 18 | 0 | 0 | 18 |
-| Assets | 981 | 187,255 | 9,508 | 19,176 | 215,939 |
-| Assets (Files) | 1 | 27 | 3 | 7 | 37 |
+| Assets | 1,231 | 213,293 | 11,047 | 22,742 | 247,082 |
+| Assets (Files) | 1 | 28 | 3 | 7 | 38 |
 | Assets\\.idea | 3 | 18 | 0 | 0 | 18 |
 | Assets\\.idea\\.idea.Assets.dir | 3 | 18 | 0 | 0 | 18 |
 | Assets\\.idea\\.idea.Assets.dir\\.idea | 3 | 18 | 0 | 0 | 18 |
@@ -48,10 +49,12 @@ Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-
 | Assets\\ConsolePro\\Remote\\LiteNetLib (Files) | 15 | 4,107 | 806 | 608 | 5,521 |
 | Assets\\ConsolePro\\Remote\\LiteNetLib\\Layers | 3 | 99 | 2 | 20 | 121 |
 | Assets\\ConsolePro\\Remote\\LiteNetLib\\Utils | 9 | 2,150 | 372 | 336 | 2,858 |
-| Assets\\Editor | 408 | 116,597 | 7,878 | 14,538 | 139,013 |
-| Assets\\Editor (Files) | 5 | 330 | 11 | 47 | 388 |
+| Assets\\Editor | 415 | 116,856 | 7,878 | 14,562 | 139,296 |
+| Assets\\Editor (Files) | 8 | 463 | 11 | 56 | 530 |
 | Assets\\Editor\\HiArda | 1 | 112 | 15 | 15 | 142 |
 | Assets\\Editor\\HiArda\\ReNamer | 1 | 112 | 15 | 15 | 142 |
+| Assets\\Editor\\Utilities | 2 | 79 | 0 | 11 | 90 |
+| Assets\\Editor\\View | 2 | 47 | 0 | 4 | 51 |
 | Assets\\Editor\\WakaTime | 402 | 116,155 | 7,852 | 14,476 | 138,483 |
 | Assets\\Editor\\WakaTime (Files) | 8 | 523 | 9 | 142 | 674 |
 | Assets\\Editor\\WakaTime\\client | 394 | 115,632 | 7,843 | 14,334 | 137,809 |
@@ -91,72 +94,113 @@ Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-
 | Assets\\Editor\\WakaTime\\client\\wakatime\\packages\\urllib3\\packages\\ssl_match_hostname | 2 | 109 | 42 | 27 | 178 |
 | Assets\\Editor\\WakaTime\\client\\wakatime\\packages\\urllib3\\util | 10 | 1,640 | 135 | 453 | 2,228 |
 | Assets\\Editor\\WakaTime\\client\\wakatime\\projects | 7 | 370 | 6 | 103 | 479 |
-| Assets\\Plugins | 17 | 43,487 | 235 | 878 | 44,600 |
-| Assets\\Plugins\\Sirenix | 17 | 43,487 | 235 | 878 | 44,600 |
-| Assets\\Plugins\\Sirenix\\Assemblies | 7 | 40,878 | 4 | 404 | 41,286 |
-| Assets\\Plugins\\Sirenix\\Odin Inspector | 10 | 2,609 | 231 | 474 | 3,314 |
-| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules | 10 | 2,609 | 231 | 474 | 3,314 |
-| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables | 8 | 1,854 | 202 | 364 | 2,420 |
-| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables (Files) | 2 | 1,210 | 157 | 218 | 1,585 |
-| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Validators | 6 | 644 | 45 | 146 | 835 |
+| Assets\\Plugins | 68 | 54,395 | 1,266 | 2,454 | 58,115 |
+| Assets\\Plugins\\Demigiant | 11 | 4,531 | 555 | 225 | 5,311 |
+| Assets\\Plugins\\Demigiant\\DOTween | 11 | 4,531 | 555 | 225 | 5,311 |
+| Assets\\Plugins\\Demigiant\\DOTween (Files) | 1 | 3,089 | 0 | 1 | 3,090 |
+| Assets\\Plugins\\Demigiant\\DOTween\\Editor | 1 | 144 | 0 | 1 | 145 |
+| Assets\\Plugins\\Demigiant\\DOTween\\Modules | 9 | 1,298 | 555 | 223 | 2,076 |
+| Assets\\Plugins\\IngameDebugConsole | 24 | 4,429 | 314 | 926 | 5,669 |
+| Assets\\Plugins\\IngameDebugConsole (Files) | 1 | 23 | 0 | 0 | 23 |
+| Assets\\Plugins\\IngameDebugConsole\\Android | 1 | 44 | 1 | 10 | 55 |
+| Assets\\Plugins\\IngameDebugConsole\\Editor | 2 | 174 | 0 | 28 | 202 |
+| Assets\\Plugins\\IngameDebugConsole\\Scripts | 19 | 4,184 | 313 | 888 | 5,385 |
+| Assets\\Plugins\\IngameDebugConsole\\Scripts (Files) | 14 | 4,024 | 313 | 862 | 5,199 |
+| Assets\\Plugins\\IngameDebugConsole\\Scripts\\Attributes | 2 | 37 | 0 | 8 | 45 |
+| Assets\\Plugins\\IngameDebugConsole\\Scripts\\Commands | 3 | 123 | 0 | 18 | 141 |
+| Assets\\Plugins\\IngameDebugConsole\\iOS | 1 | 4 | 0 | 0 | 4 |
+| Assets\\Plugins\\SQliteUnityKit | 7 | 881 | 131 | 177 | 1,189 |
+| Assets\\Plugins\\SQliteUnityKit (Files) | 2 | 33 | 0 | 0 | 33 |
+| Assets\\Plugins\\SQliteUnityKit\\Scripts | 5 | 848 | 131 | 177 | 1,156 |
+| Assets\\Plugins\\Sirenix | 26 | 44,554 | 266 | 1,126 | 45,946 |
+| Assets\\Plugins\\Sirenix\\Assemblies | 8 | 40,964 | 4 | 406 | 41,374 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector | 16 | 3,208 | 248 | 637 | 4,093 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Assets | 4 | 246 | 11 | 44 | 301 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Assets\\Editor | 4 | 246 | 11 | 44 | 301 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Assets\\Editor\\Hidden | 4 | 246 | 11 | 44 | 301 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules | 12 | 2,962 | 237 | 593 | 3,792 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables | 10 | 2,207 | 208 | 483 | 2,898 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables (Files) | 2 | 1,493 | 153 | 317 | 1,963 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Internal | 2 | 52 | 10 | 14 | 76 |
+| Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Validators | 6 | 662 | 45 | 152 | 859 |
 | Assets\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Mathematics | 2 | 755 | 29 | 110 | 894 |
-| Assets\\Scripts | 487 | 16,973 | 83 | 1,874 | 18,930 |
-| Assets\\Scripts\\Domain | 375 | 10,378 | 21 | 1,217 | 11,616 |
-| Assets\\Scripts\\Domain\\Model | 286 | 5,071 | 16 | 542 | 5,629 |
-| Assets\\Scripts\\Domain\\Model (Files) | 13 | 309 | 0 | 14 | 323 |
-| Assets\\Scripts\\Domain\\Model\\Character | 201 | 3,166 | 6 | 369 | 3,541 |
-| Assets\\Scripts\\Domain\\Model\\Character (Files) | 26 | 515 | 6 | 33 | 554 |
-| Assets\\Scripts\\Domain\\Model\\Character\\Message | 9 | 42 | 0 | 4 | 46 |
-| Assets\\Scripts\\Domain\\Model\\Character\\Type | 166 | 2,609 | 0 | 332 | 2,941 |
-| Assets\\Scripts\\Domain\\Model\\Condition | 3 | 101 | 0 | 11 | 112 |
-| Assets\\Scripts\\Domain\\Model\\Effect | 28 | 666 | 10 | 78 | 754 |
-| Assets\\Scripts\\Domain\\Model\\Effect (Files) | 18 | 346 | 10 | 28 | 384 |
-| Assets\\Scripts\\Domain\\Model\\Effect\\Area | 7 | 205 | 0 | 32 | 237 |
-| Assets\\Scripts\\Domain\\Model\\Effect\\Position | 3 | 115 | 0 | 18 | 133 |
-| Assets\\Scripts\\Domain\\Model\\Item | 13 | 354 | 0 | 31 | 385 |
-| Assets\\Scripts\\Domain\\Model\\Map | 2 | 55 | 0 | 6 | 61 |
-| Assets\\Scripts\\Domain\\Model\\Mementos | 21 | 307 | 0 | 21 | 328 |
-| Assets\\Scripts\\Domain\\Model\\Setting | 5 | 113 | 0 | 12 | 125 |
-| Assets\\Scripts\\Domain\\Service | 89 | 5,307 | 5 | 675 | 5,987 |
-| Assets\\Scripts\\Domain\\Service (Files) | 2 | 109 | 0 | 2 | 111 |
-| Assets\\Scripts\\Domain\\Service\\Action | 6 | 172 | 0 | 24 | 196 |
-| Assets\\Scripts\\Domain\\Service\\Characters | 29 | 2,337 | 5 | 307 | 2,649 |
-| Assets\\Scripts\\Domain\\Service\\Characters (Files) | 8 | 1,165 | 5 | 152 | 1,322 |
-| Assets\\Scripts\\Domain\\Service\\Characters\\Behavior | 11 | 646 | 0 | 76 | 722 |
-| Assets\\Scripts\\Domain\\Service\\Characters\\Conditions | 9 | 342 | 0 | 58 | 400 |
-| Assets\\Scripts\\Domain\\Service\\Characters\\Stats | 1 | 184 | 0 | 21 | 205 |
-| Assets\\Scripts\\Domain\\Service\\Effect | 16 | 900 | 0 | 120 | 1,020 |
-| Assets\\Scripts\\Domain\\Service\\Entities | 6 | 108 | 0 | 14 | 122 |
-| Assets\\Scripts\\Domain\\Service\\Events | 11 | 356 | 0 | 54 | 410 |
-| Assets\\Scripts\\Domain\\Service\\ItemEffect | 2 | 44 | 0 | 2 | 46 |
-| Assets\\Scripts\\Domain\\Service\\Items | 6 | 643 | 0 | 75 | 718 |
-| Assets\\Scripts\\Domain\\Service\\Logs | 1 | 13 | 0 | 1 | 14 |
-| Assets\\Scripts\\Domain\\Service\\Map | 4 | 251 | 0 | 35 | 286 |
-| Assets\\Scripts\\Domain\\Service\\Map (Files) | 3 | 215 | 0 | 31 | 246 |
+| Assets\\Plugins\\Sirenix\\Odin Validator | 2 | 382 | 14 | 83 | 479 |
+| Assets\\Plugins\\Sirenix\\Odin Validator (Files) | 1 | 160 | 6 | 31 | 197 |
+| Assets\\Plugins\\Sirenix\\Odin Validator\\Assets | 1 | 222 | 8 | 52 | 282 |
+| Assets\\Plugins\\Sirenix\\Odin Validator\\Assets\\Editor | 1 | 222 | 8 | 52 | 282 |
+| Assets\\Plugins\\Sirenix\\Odin Validator\\Assets\\Editor\\Hidden | 1 | 222 | 8 | 52 | 282 |
+| Assets\\Scripts | 677 | 31,321 | 562 | 3,728 | 35,611 |
+| Assets\\Scripts\\Domain | 500 | 19,339 | 33 | 2,378 | 21,750 |
+| Assets\\Scripts\\Domain\\Model | 375 | 8,758 | 23 | 941 | 9,722 |
+| Assets\\Scripts\\Domain\\Model (Files) | 16 | 251 | 0 | 21 | 272 |
+| Assets\\Scripts\\Domain\\Model\\Character | 208 | 3,390 | 16 | 391 | 3,797 |
+| Assets\\Scripts\\Domain\\Model\\Character (Files) | 30 | 524 | 16 | 44 | 584 |
+| Assets\\Scripts\\Domain\\Model\\Character\\Message | 5 | 30 | 0 | 3 | 33 |
+| Assets\\Scripts\\Domain\\Model\\Character\\Status | 7 | 219 | 0 | 10 | 229 |
+| Assets\\Scripts\\Domain\\Model\\Character\\Type | 166 | 2,617 | 0 | 334 | 2,951 |
+| Assets\\Scripts\\Domain\\Model\\Condition | 3 | 100 | 0 | 16 | 116 |
+| Assets\\Scripts\\Domain\\Model\\Dungeon | 20 | 814 | 0 | 65 | 879 |
+| Assets\\Scripts\\Domain\\Model\\Dungeon (Files) | 15 | 564 | 0 | 46 | 610 |
+| Assets\\Scripts\\Domain\\Model\\Dungeon\\MapGraph | 5 | 250 | 0 | 19 | 269 |
+| Assets\\Scripts\\Domain\\Model\\Effect | 35 | 1,226 | 0 | 180 | 1,406 |
+| Assets\\Scripts\\Domain\\Model\\Effect (Files) | 25 | 726 | 0 | 107 | 833 |
+| Assets\\Scripts\\Domain\\Model\\Effect\\Area | 6 | 286 | 0 | 39 | 325 |
+| Assets\\Scripts\\Domain\\Model\\Effect\\Position | 4 | 214 | 0 | 34 | 248 |
+| Assets\\Scripts\\Domain\\Model\\Entity | 9 | 173 | 0 | 17 | 190 |
+| Assets\\Scripts\\Domain\\Model\\Evaluation | 1 | 39 | 0 | 3 | 42 |
+| Assets\\Scripts\\Domain\\Model\\Item | 25 | 786 | 7 | 83 | 876 |
+| Assets\\Scripts\\Domain\\Model\\Map | 12 | 309 | 0 | 41 | 350 |
+| Assets\\Scripts\\Domain\\Model\\Memento | 41 | 1,411 | 0 | 96 | 1,507 |
+| Assets\\Scripts\\Domain\\Model\\Setting | 5 | 259 | 0 | 28 | 287 |
+| Assets\\Scripts\\Domain\\Service | 125 | 10,581 | 10 | 1,437 | 12,028 |
+| Assets\\Scripts\\Domain\\Service (Files) | 1 | 29 | 0 | 0 | 29 |
+| Assets\\Scripts\\Domain\\Service\\Action | 7 | 219 | 0 | 30 | 249 |
+| Assets\\Scripts\\Domain\\Service\\Characters | 34 | 3,654 | 7 | 510 | 4,171 |
+| Assets\\Scripts\\Domain\\Service\\Characters (Files) | 7 | 1,752 | 5 | 244 | 2,001 |
+| Assets\\Scripts\\Domain\\Service\\Characters\\Behavior | 13 | 1,055 | 2 | 137 | 1,194 |
+| Assets\\Scripts\\Domain\\Service\\Characters\\Conditions | 13 | 568 | 0 | 92 | 660 |
+| Assets\\Scripts\\Domain\\Service\\Characters\\Stats | 1 | 279 | 0 | 37 | 316 |
+| Assets\\Scripts\\Domain\\Service\\Effect | 32 | 2,278 | 0 | 356 | 2,634 |
+| Assets\\Scripts\\Domain\\Service\\Events | 17 | 1,072 | 0 | 144 | 1,216 |
+| Assets\\Scripts\\Domain\\Service\\InventoryEffect | 2 | 77 | 0 | 9 | 86 |
+| Assets\\Scripts\\Domain\\Service\\ItemEffect | 6 | 167 | 0 | 26 | 193 |
+| Assets\\Scripts\\Domain\\Service\\Items | 12 | 1,758 | 3 | 190 | 1,951 |
+| Assets\\Scripts\\Domain\\Service\\Logs | 1 | 33 | 0 | 4 | 37 |
+| Assets\\Scripts\\Domain\\Service\\Map | 6 | 792 | 0 | 114 | 906 |
+| Assets\\Scripts\\Domain\\Service\\Map (Files) | 5 | 756 | 0 | 110 | 866 |
 | Assets\\Scripts\\Domain\\Service\\Map\\Tests | 1 | 36 | 0 | 4 | 40 |
-| Assets\\Scripts\\Domain\\Service\\Rooms | 6 | 374 | 0 | 41 | 415 |
-| Assets\\Scripts\\Game | 11 | 1,271 | 5 | 167 | 1,443 |
-| Assets\\Scripts\\Provider | 22 | 996 | 6 | 76 | 1,078 |
-| Assets\\Scripts\\Utilities | 37 | 1,982 | 33 | 243 | 2,258 |
-| Assets\\Scripts\\Utilities (Files) | 19 | 1,151 | 7 | 121 | 1,279 |
+| Assets\\Scripts\\Domain\\Service\\Rooms | 7 | 502 | 0 | 54 | 556 |
+| Assets\\Scripts\\Game | 21 | 2,882 | 5 | 354 | 3,241 |
+| Assets\\Scripts\\Provider | 38 | 3,465 | 478 | 225 | 4,168 |
+| Assets\\Scripts\\Provider (Files) | 23 | 1,244 | 4 | 73 | 1,321 |
+| Assets\\Scripts\\Provider\\Command | 7 | 398 | 39 | 33 | 470 |
+| Assets\\Scripts\\Provider\\Input | 2 | 1,393 | 435 | 48 | 1,876 |
+| Assets\\Scripts\\Provider\\SynchronizedView | 6 | 430 | 0 | 71 | 501 |
+| Assets\\Scripts\\Utilities | 60 | 3,196 | 40 | 488 | 3,724 |
+| Assets\\Scripts\\Utilities (Files) | 26 | 1,757 | 11 | 245 | 2,013 |
 | Assets\\Scripts\\Utilities\\Messages | 4 | 120 | 0 | 19 | 139 |
-| Assets\\Scripts\\Utilities\\Serialize | 4 | 176 | 0 | 17 | 193 |
-| Assets\\Scripts\\Utilities\\Stats | 6 | 319 | 0 | 52 | 371 |
-| Assets\\Scripts\\Utilities\\Tests | 4 | 216 | 26 | 34 | 276 |
-| Assets\\Scripts\\View | 42 | 2,346 | 18 | 171 | 2,535 |
-| Assets\\Scripts\\View (Files) | 22 | 1,792 | 16 | 108 | 1,916 |
-| Assets\\Scripts\\View\\UI | 20 | 554 | 2 | 63 | 619 |
+| Assets\\Scripts\\Utilities\\Serialize | 11 | 522 | 0 | 98 | 620 |
+| Assets\\Scripts\\Utilities\\Serialize (Files) | 5 | 183 | 0 | 27 | 210 |
+| Assets\\Scripts\\Utilities\\Serialize\\Option | 3 | 166 | 0 | 35 | 201 |
+| Assets\\Scripts\\Utilities\\Serialize\\Result | 3 | 173 | 0 | 36 | 209 |
+| Assets\\Scripts\\Utilities\\Stats | 9 | 391 | 0 | 72 | 463 |
+| Assets\\Scripts\\Utilities\\Table | 3 | 39 | 0 | 6 | 45 |
+| Assets\\Scripts\\Utilities\\Tests | 5 | 286 | 29 | 43 | 358 |
+| Assets\\Scripts\\Utilities\\WorldCreater | 2 | 81 | 0 | 5 | 86 |
+| Assets\\Scripts\\View | 58 | 2,439 | 6 | 283 | 2,728 |
+| Assets\\Scripts\\View (Files) | 27 | 991 | 4 | 129 | 1,124 |
+| Assets\\Scripts\\View\\UI | 31 | 1,448 | 2 | 154 | 1,604 |
 | Assets\\StateEffect | 3 | 152 | 0 | 58 | 210 |
 | Assets\\StateEffect (Files) | 1 | 33 | 0 | 28 | 61 |
 | Assets\\StateEffect\\EffectMaterials | 2 | 119 | 0 | 30 | 149 |
 | Assets\\StateEffect\\EffectMaterials\\Shader | 2 | 119 | 0 | 30 | 149 |
-| Assets\\TextMesh Pro | 18 | 2,493 | 82 | 646 | 3,221 |
-| Assets\\TextMesh Pro\\Shaders | 17 | 2,338 | 82 | 644 | 3,064 |
+| Assets\\TextMesh Pro | 20 | 3,015 | 111 | 758 | 3,884 |
+| Assets\\TextMesh Pro\\Shaders | 19 | 2,860 | 111 | 756 | 3,727 |
 | Assets\\TextMesh Pro\\Sprites | 1 | 155 | 0 | 2 | 157 |
 | Assets\\kyouma0220 | 13 | 765 | 10 | 124 | 899 |
 | Assets\\kyouma0220\\RandomDungeonWithBluePrint | 13 | 765 | 10 | 124 | 899 |
-| Packages | 1,218 | 2,501,358 | 1,459 | 3,105 | 2,505,922 |
-| Packages (Files) | 2 | 856 | 0 | 2 | 858 |
+| Packages | 1,219 | 2,503,133 | 1,564 | 3,258 | 2,507,955 |
+| Packages (Files) | 2 | 917 | 0 | 2 | 919 |
 | Packages\\Microsoft.NETCore.Platforms.1.1.0 | 1 | 354 | 0 | 53 | 407 |
 | Packages\\Microsoft.Win32.Primitives.4.3.0 | 10 | 360 | 0 | 0 | 360 |
 | Packages\\Microsoft.Win32.Primitives.4.3.0\\ref | 10 | 360 | 0 | 0 | 360 |
@@ -1429,43 +1473,43 @@ Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-
 | Packages\\com.ruccho.fang-auto-tile\\Runtime\\Legacy | 2 | 687 | 43 | 47 | 777 |
 | Packages\\com.ruccho.fang-auto-tile\\Samples~ | 1 | 99 | 2 | 8 | 109 |
 | Packages\\com.ruccho.fang-auto-tile\\Samples~\\Basic | 1 | 99 | 2 | 8 | 109 |
-| Packages\\com.singularitygroup.hotreload | 125 | 13,677 | 1,342 | 2,200 | 17,219 |
+| Packages\\com.singularitygroup.hotreload | 126 | 15,391 | 1,447 | 2,353 | 19,191 |
 | Packages\\com.singularitygroup.hotreload (Files) | 4 | 273 | 0 | 132 | 405 |
-| Packages\\com.singularitygroup.hotreload\\Editor | 77 | 9,993 | 856 | 1,404 | 12,253 |
-| Packages\\com.singularitygroup.hotreload\\Editor (Files) | 12 | 1,830 | 109 | 264 | 2,203 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Attribution | 2 | 93 | 18 | 19 | 130 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\CLI | 8 | 560 | 64 | 78 | 702 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\CompileChecker | 3 | 131 | 3 | 8 | 142 |
+| Packages\\com.singularitygroup.hotreload\\Editor | 78 | 11,184 | 919 | 1,504 | 13,607 |
+| Packages\\com.singularitygroup.hotreload\\Editor (Files) | 13 | 2,394 | 131 | 318 | 2,843 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Attribution | 2 | 159 | 25 | 27 | 211 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\CLI | 8 | 567 | 65 | 79 | 711 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\CompileChecker | 3 | 132 | 3 | 8 | 143 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Demo | 1 | 23 | 0 | 4 | 27 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Helpers | 8 | 1,309 | 66 | 182 | 1,557 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Installation | 5 | 391 | 15 | 54 | 460 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\PlayerBuild | 5 | 225 | 110 | 34 | 369 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Helpers | 8 | 1,659 | 67 | 193 | 1,919 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Installation | 5 | 395 | 19 | 54 | 468 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\PlayerBuild | 5 | 231 | 109 | 34 | 374 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration | 12 | 981 | 56 | 175 | 1,212 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration (Files) | 10 | 936 | 56 | 169 | 1,161 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration\\Util | 2 | 45 | 0 | 6 | 51 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\RequiredSettings | 1 | 197 | 24 | 49 | 270 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Versioning | 2 | 542 | 196 | 87 | 825 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Window | 18 | 3,711 | 195 | 450 | 4,356 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Window (Files) | 2 | 318 | 21 | 40 | 379 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI | 15 | 2,682 | 172 | 345 | 3,199 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Versioning | 2 | 544 | 196 | 87 | 827 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Window | 18 | 3,902 | 224 | 476 | 4,602 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Window (Files) | 2 | 331 | 21 | 43 | 395 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI | 15 | 2,860 | 201 | 368 | 3,429 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI (Files) | 2 | 100 | 7 | 15 | 122 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Buttons | 2 | 62 | 0 | 11 | 73 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options | 5 | 164 | 33 | 38 | 235 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options (Files) | 3 | 118 | 6 | 19 | 143 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options\\Base | 2 | 46 | 27 | 19 | 92 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs | 6 | 2,356 | 132 | 281 | 2,769 |
-| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs (Files) | 4 | 2,063 | 127 | 237 | 2,427 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs | 6 | 2,534 | 161 | 304 | 2,999 |
+| Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs (Files) | 4 | 2,241 | 156 | 260 | 2,657 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs\\Base | 1 | 24 | 0 | 10 | 34 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs\\Helpers | 1 | 269 | 5 | 34 | 308 |
 | Packages\\com.singularitygroup.hotreload\\Editor\\Window\\Styles | 1 | 711 | 2 | 65 | 778 |
-| Packages\\com.singularitygroup.hotreload\\Runtime | 42 | 3,320 | 474 | 640 | 4,434 |
-| Packages\\com.singularitygroup.hotreload\\Runtime (Files) | 28 | 2,713 | 327 | 496 | 3,536 |
-| Packages\\com.singularitygroup.hotreload\\Runtime\\Burst | 1 | 23 | 0 | 2 | 25 |
-| Packages\\com.singularitygroup.hotreload\\Runtime\\Demo | 3 | 157 | 70 | 47 | 274 |
-| Packages\\com.singularitygroup.hotreload\\Runtime\\Demo\\Scripts | 3 | 157 | 70 | 47 | 274 |
-| Packages\\com.singularitygroup.hotreload\\Runtime\\MonoBehaviours | 4 | 286 | 33 | 67 | 386 |
+| Packages\\com.singularitygroup.hotreload\\Runtime | 42 | 3,844 | 517 | 694 | 5,055 |
+| Packages\\com.singularitygroup.hotreload\\Runtime (Files) | 28 | 3,222 | 343 | 542 | 4,107 |
+| Packages\\com.singularitygroup.hotreload\\Runtime\\Burst | 1 | 24 | 0 | 2 | 26 |
+| Packages\\com.singularitygroup.hotreload\\Runtime\\Demo | 3 | 160 | 97 | 55 | 312 |
+| Packages\\com.singularitygroup.hotreload\\Runtime\\Demo\\Scripts | 3 | 160 | 97 | 55 | 312 |
+| Packages\\com.singularitygroup.hotreload\\Runtime\\MonoBehaviours | 4 | 297 | 33 | 67 | 397 |
 | Packages\\com.singularitygroup.hotreload\\Runtime\\Public | 6 | 141 | 44 | 28 | 213 |
-| Packages\\com.singularitygroup.hotreload\\Server | 2 | 91 | 12 | 24 | 127 |
-| Packages\\com.singularitygroup.hotreload\\Server\\linux-x64 | 2 | 91 | 12 | 24 | 127 |
+| Packages\\com.singularitygroup.hotreload\\Server | 2 | 90 | 11 | 23 | 124 |
+| Packages\\com.singularitygroup.hotreload\\Server\\linux-x64 | 2 | 90 | 11 | 23 | 124 |
 
 Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)

@@ -68,7 +68,7 @@ namespace View.UI
         public async UniTask<int> GetChoiceWithInfo(string? text, params (string choice, string infoTitle, string info)[] choices)
         {
             AddMenu(_infoMenu);
-            var disposable = _choiceMenu.SelectedIndex.SkipLatestValueOnSubscribe().Subscribe(index =>
+            var disposable = _choiceMenu.SelectedIndex.Subscribe(index =>
             {
                 _infoMenu.SetInfo(choices[index].infoTitle, choices[index].info);
             });

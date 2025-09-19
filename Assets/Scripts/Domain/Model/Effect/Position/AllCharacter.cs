@@ -19,7 +19,7 @@ namespace Domain.Model.Effect.Position
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IMap map)
         {
-            return map.AllCharacterPositions();
+            return map.AllCharacterPositionsFast();
         }
 
         public float EvaluateHitProbability()

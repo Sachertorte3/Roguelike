@@ -107,11 +107,11 @@ namespace Game
 
                 if (Settings.GlobalSettings.AutoSave.CurrentValue)
                 {
-                    Globals.GameManager.Save();
+                    gameManager.Save();
                 }
                 else
                 {
-                    Globals.GameManager.SaveLight();
+                    gameManager.SaveLight();
                 }
             }
 
@@ -173,9 +173,9 @@ namespace Game
                 }
             }
 
-            if (map.IsEventExecuting)
+            if (gameManager.IsEventExecuting)
             {
-                await UniTask.WaitWhile(() => map.IsEventExecuting);
+                await UniTask.WaitWhile(() => gameManager.IsEventExecuting);
             }
         }
 

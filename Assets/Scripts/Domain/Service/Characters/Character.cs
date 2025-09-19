@@ -53,7 +53,7 @@ namespace Domain.Service.Characters
         private ReactiveProperty<int> _chargeTurn = new(0);
         private bool _alreadyUsedLastSkill = false;
 
-        internal Character(CharacterMemento data, ICharacterBehavior behavior, IMap map, bool isPlayer)
+        internal Character(CharacterMemento data, ICharacterBehavior behavior, IGameManager gameManager, IMap map, bool isPlayer)
         {
             IsPlayer = isPlayer;
             _name = data.Name;
@@ -81,7 +81,7 @@ namespace Domain.Service.Characters
 
             _statusManager.OnDamageReceived.Subscribe(async damageChanged =>
             {
-                var eventId = _map.StartEvent();
+                var eventId = gameManager.StartEvent();
                 if (IsDead)
                 {
                     foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
@@ -102,7 +102,7 @@ namespace Domain.Service.Characters
                     _onDead.OnNext(Unit.Default);
                     Entity.Destroy(damageChanged.CauseOfDamageLog);
                 }
-                _map.EndEvent(eventId);
+                gameManager.EndEvent(eventId);
             });
 
             Observable.Merge(

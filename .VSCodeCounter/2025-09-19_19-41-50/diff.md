@@ -1,43 +1,44 @@
 # Diff Summary
 
-Date : 2024-08-31 12:14:37
+Date : 2025-09-19 19:41:50
 
 Directory c:\\Users\\Torte\\Documents\\Unity\\LogRogue\\Assets\\Scripts
 
-Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -2702959 lines
+Total : 1778 files,  -2685161 codes, -12049 comments, -22272 blanks, all -2719482 lines
 
 [Summary](results.md) / [Details](details.md) / Diff Summary / [Diff Details](diff-details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
+| Objective-C++ | 1 | -4 | 0 | 0 | -4 |
 | Ini | 1 | -7 | 0 | -1 | -8 |
 | Properties | 1 | -7 | 0 | -1 | -8 |
 | JSON with Comments | 1 | -10 | 0 | 0 | -10 |
-| Shell Script | 2 | -91 | -12 | -24 | -127 |
-| UnityAssemblyDefinition | 9 | -141 | 0 | -3 | -144 |
+| Database | 1 | -28 | 0 | 0 | -28 |
+| Shell Script | 2 | -90 | -11 | -23 | -124 |
 | reStructuredText | 2 | -549 | -4 | -400 | -953 |
-| Markdown | 5 | -556 | 0 | -328 | -884 |
-| JSON | 8 | -2,025 | 0 | -60 | -2,085 |
-| UnityShader | 19 | -2,457 | -82 | -674 | -3,213 |
+| Markdown | 6 | -590 | 0 | -350 | -940 |
+| JSON | 24 | -2,347 | 0 | -64 | -2,411 |
 | C | 1 | -2,935 | -265 | -194 | -3,394 |
-| C# | 192 | -26,808 | -2,940 | -4,411 | -34,159 |
-| Python | 388 | -111,549 | -7,577 | -13,743 | -132,869 |
-| XML | 1,087 | -2,524,533 | -4 | -568 | -2,525,105 |
+| UnityShader | 26 | -3,447 | -130 | -882 | -4,459 |
+| C# | 234 | -35,745 | -4,058 | -6,042 | -45,845 |
+| Python | 388 | -111,550 | -7,577 | -13,743 | -132,870 |
+| XML | 1,090 | -2,527,852 | -4 | -572 | -2,528,428 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 1,716 | -2,671,668 | -10,884 | -20,407 | -2,702,959 |
-| .. | 1,716 | -2,671,668 | -10,884 | -20,407 | -2,702,959 |
-| .. (Files) | 1 | -27 | -3 | -7 | -37 |
-| ..\\.. | 1,222 | -2,501,386 | -1,459 | -3,105 | -2,505,950 |
-| ..\\.. (Files) | 1 | -10 | 0 | 0 | -10 |
+| . | 1,778 | -2,685,161 | -12,049 | -22,272 | -2,719,482 |
+| .. | 1,778 | -2,685,161 | -12,049 | -22,272 | -2,719,482 |
+| .. (Files) | 1 | -28 | -3 | -7 | -38 |
+| ..\\.. | 1,224 | -2,503,189 | -1,564 | -3,258 | -2,508,011 |
+| ..\\.. (Files) | 2 | -38 | 0 | 0 | -38 |
 | ..\\..\\.idea | 3 | -18 | 0 | 0 | -18 |
 | ..\\..\\.idea\\.idea.LogRogue | 3 | -18 | 0 | 0 | -18 |
 | ..\\..\\.idea\\.idea.LogRogue\\.idea | 3 | -18 | 0 | 0 | -18 |
-| ..\\..\\Packages | 1,218 | -2,501,358 | -1,459 | -3,105 | -2,505,922 |
-| ..\\..\\Packages (Files) | 2 | -856 | 0 | -2 | -858 |
+| ..\\..\\Packages | 1,219 | -2,503,133 | -1,564 | -3,258 | -2,507,955 |
+| ..\\..\\Packages (Files) | 2 | -917 | 0 | -2 | -919 |
 | ..\\..\\Packages\\Microsoft.NETCore.Platforms.1.1.0 | 1 | -354 | 0 | -53 | -407 |
 | ..\\..\\Packages\\Microsoft.Win32.Primitives.4.3.0 | 10 | -360 | 0 | 0 | -360 |
 | ..\\..\\Packages\\Microsoft.Win32.Primitives.4.3.0\\ref | 10 | -360 | 0 | 0 | -360 |
@@ -1310,44 +1311,44 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | ..\\..\\Packages\\com.ruccho.fang-auto-tile\\Runtime\\Legacy | 2 | -687 | -43 | -47 | -777 |
 | ..\\..\\Packages\\com.ruccho.fang-auto-tile\\Samples~ | 1 | -99 | -2 | -8 | -109 |
 | ..\\..\\Packages\\com.ruccho.fang-auto-tile\\Samples~\\Basic | 1 | -99 | -2 | -8 | -109 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload | 125 | -13,677 | -1,342 | -2,200 | -17,219 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload | 126 | -15,391 | -1,447 | -2,353 | -19,191 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload (Files) | 4 | -273 | 0 | -132 | -405 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor | 77 | -9,993 | -856 | -1,404 | -12,253 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor (Files) | 12 | -1,830 | -109 | -264 | -2,203 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Attribution | 2 | -93 | -18 | -19 | -130 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\CLI | 8 | -560 | -64 | -78 | -702 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\CompileChecker | 3 | -131 | -3 | -8 | -142 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor | 78 | -11,184 | -919 | -1,504 | -13,607 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor (Files) | 13 | -2,394 | -131 | -318 | -2,843 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Attribution | 2 | -159 | -25 | -27 | -211 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\CLI | 8 | -567 | -65 | -79 | -711 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\CompileChecker | 3 | -132 | -3 | -8 | -143 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Demo | 1 | -23 | 0 | -4 | -27 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Helpers | 8 | -1,309 | -66 | -182 | -1,557 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Installation | 5 | -391 | -15 | -54 | -460 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\PlayerBuild | 5 | -225 | -110 | -34 | -369 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Helpers | 8 | -1,659 | -67 | -193 | -1,919 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Installation | 5 | -395 | -19 | -54 | -468 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\PlayerBuild | 5 | -231 | -109 | -34 | -374 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration | 12 | -981 | -56 | -175 | -1,212 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration (Files) | 10 | -936 | -56 | -169 | -1,161 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\ProjectGeneration\\Util | 2 | -45 | 0 | -6 | -51 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\RequiredSettings | 1 | -197 | -24 | -49 | -270 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Versioning | 2 | -542 | -196 | -87 | -825 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window | 18 | -3,711 | -195 | -450 | -4,356 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window (Files) | 2 | -318 | -21 | -40 | -379 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI | 15 | -2,682 | -172 | -345 | -3,199 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Versioning | 2 | -544 | -196 | -87 | -827 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window | 18 | -3,902 | -224 | -476 | -4,602 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window (Files) | 2 | -331 | -21 | -43 | -395 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI | 15 | -2,860 | -201 | -368 | -3,429 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI (Files) | 2 | -100 | -7 | -15 | -122 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Buttons | 2 | -62 | 0 | -11 | -73 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options | 5 | -164 | -33 | -38 | -235 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options (Files) | 3 | -118 | -6 | -19 | -143 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Options\\Base | 2 | -46 | -27 | -19 | -92 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs | 6 | -2,356 | -132 | -281 | -2,769 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs (Files) | 4 | -2,063 | -127 | -237 | -2,427 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs | 6 | -2,534 | -161 | -304 | -2,999 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs (Files) | 4 | -2,241 | -156 | -260 | -2,657 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs\\Base | 1 | -24 | 0 | -10 | -34 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\GUI\\Tabs\\Helpers | 1 | -269 | -5 | -34 | -308 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Editor\\Window\\Styles | 1 | -711 | -2 | -65 | -778 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime | 42 | -3,320 | -474 | -640 | -4,434 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime (Files) | 28 | -2,713 | -327 | -496 | -3,536 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Burst | 1 | -23 | 0 | -2 | -25 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Demo | 3 | -157 | -70 | -47 | -274 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Demo\\Scripts | 3 | -157 | -70 | -47 | -274 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\MonoBehaviours | 4 | -286 | -33 | -67 | -386 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime | 42 | -3,844 | -517 | -694 | -5,055 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime (Files) | 28 | -3,222 | -343 | -542 | -4,107 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Burst | 1 | -24 | 0 | -2 | -26 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Demo | 3 | -160 | -97 | -55 | -312 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Demo\\Scripts | 3 | -160 | -97 | -55 | -312 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\MonoBehaviours | 4 | -297 | -33 | -67 | -397 |
 | ..\\..\\Packages\\com.singularitygroup.hotreload\\Runtime\\Public | 6 | -141 | -44 | -28 | -213 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Server | 2 | -91 | -12 | -24 | -127 |
-| ..\\..\\Packages\\com.singularitygroup.hotreload\\Server\\linux-x64 | 2 | -91 | -12 | -24 | -127 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Server | 2 | -90 | -11 | -23 | -124 |
+| ..\\..\\Packages\\com.singularitygroup.hotreload\\Server\\linux-x64 | 2 | -90 | -11 | -23 | -124 |
 | ..\\.idea | 3 | -18 | 0 | 0 | -18 |
 | ..\\.idea\\.idea.Assets.dir | 3 | -18 | 0 | 0 | -18 |
 | ..\\.idea\\.idea.Assets.dir\\.idea | 3 | -18 | 0 | 0 | -18 |
@@ -1361,10 +1362,12 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | ..\\ConsolePro\\Remote\\LiteNetLib (Files) | 15 | -4,107 | -806 | -608 | -5,521 |
 | ..\\ConsolePro\\Remote\\LiteNetLib\\Layers | 3 | -99 | -2 | -20 | -121 |
 | ..\\ConsolePro\\Remote\\LiteNetLib\\Utils | 9 | -2,150 | -372 | -336 | -2,858 |
-| ..\\Editor | 408 | -116,597 | -7,878 | -14,538 | -139,013 |
-| ..\\Editor (Files) | 5 | -330 | -11 | -47 | -388 |
+| ..\\Editor | 415 | -116,856 | -7,878 | -14,562 | -139,296 |
+| ..\\Editor (Files) | 8 | -463 | -11 | -56 | -530 |
 | ..\\Editor\\HiArda | 1 | -112 | -15 | -15 | -142 |
 | ..\\Editor\\HiArda\\ReNamer | 1 | -112 | -15 | -15 | -142 |
+| ..\\Editor\\Utilities | 2 | -79 | 0 | -11 | -90 |
+| ..\\Editor\\View | 2 | -47 | 0 | -4 | -51 |
 | ..\\Editor\\WakaTime | 402 | -116,155 | -7,852 | -14,476 | -138,483 |
 | ..\\Editor\\WakaTime (Files) | 8 | -523 | -9 | -142 | -674 |
 | ..\\Editor\\WakaTime\\client | 394 | -115,632 | -7,843 | -14,334 | -137,809 |
@@ -1404,21 +1407,47 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | ..\\Editor\\WakaTime\\client\\wakatime\\packages\\urllib3\\packages\\ssl_match_hostname | 2 | -109 | -42 | -27 | -178 |
 | ..\\Editor\\WakaTime\\client\\wakatime\\packages\\urllib3\\util | 10 | -1,640 | -135 | -453 | -2,228 |
 | ..\\Editor\\WakaTime\\client\\wakatime\\projects | 7 | -370 | -6 | -103 | -479 |
-| ..\\Plugins | 17 | -43,487 | -235 | -878 | -44,600 |
-| ..\\Plugins\\Sirenix | 17 | -43,487 | -235 | -878 | -44,600 |
-| ..\\Plugins\\Sirenix\\Assemblies | 7 | -40,878 | -4 | -404 | -41,286 |
-| ..\\Plugins\\Sirenix\\Odin Inspector | 10 | -2,609 | -231 | -474 | -3,314 |
-| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules | 10 | -2,609 | -231 | -474 | -3,314 |
-| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables | 8 | -1,854 | -202 | -364 | -2,420 |
-| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables (Files) | 2 | -1,210 | -157 | -218 | -1,585 |
-| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Validators | 6 | -644 | -45 | -146 | -835 |
+| ..\\Plugins | 68 | -54,395 | -1,266 | -2,454 | -58,115 |
+| ..\\Plugins\\Demigiant | 11 | -4,531 | -555 | -225 | -5,311 |
+| ..\\Plugins\\Demigiant\\DOTween | 11 | -4,531 | -555 | -225 | -5,311 |
+| ..\\Plugins\\Demigiant\\DOTween (Files) | 1 | -3,089 | 0 | -1 | -3,090 |
+| ..\\Plugins\\Demigiant\\DOTween\\Editor | 1 | -144 | 0 | -1 | -145 |
+| ..\\Plugins\\Demigiant\\DOTween\\Modules | 9 | -1,298 | -555 | -223 | -2,076 |
+| ..\\Plugins\\IngameDebugConsole | 24 | -4,429 | -314 | -926 | -5,669 |
+| ..\\Plugins\\IngameDebugConsole (Files) | 1 | -23 | 0 | 0 | -23 |
+| ..\\Plugins\\IngameDebugConsole\\Android | 1 | -44 | -1 | -10 | -55 |
+| ..\\Plugins\\IngameDebugConsole\\Editor | 2 | -174 | 0 | -28 | -202 |
+| ..\\Plugins\\IngameDebugConsole\\Scripts | 19 | -4,184 | -313 | -888 | -5,385 |
+| ..\\Plugins\\IngameDebugConsole\\Scripts (Files) | 14 | -4,024 | -313 | -862 | -5,199 |
+| ..\\Plugins\\IngameDebugConsole\\Scripts\\Attributes | 2 | -37 | 0 | -8 | -45 |
+| ..\\Plugins\\IngameDebugConsole\\Scripts\\Commands | 3 | -123 | 0 | -18 | -141 |
+| ..\\Plugins\\IngameDebugConsole\\iOS | 1 | -4 | 0 | 0 | -4 |
+| ..\\Plugins\\SQliteUnityKit | 7 | -881 | -131 | -177 | -1,189 |
+| ..\\Plugins\\SQliteUnityKit (Files) | 2 | -33 | 0 | 0 | -33 |
+| ..\\Plugins\\SQliteUnityKit\\Scripts | 5 | -848 | -131 | -177 | -1,156 |
+| ..\\Plugins\\Sirenix | 26 | -44,554 | -266 | -1,126 | -45,946 |
+| ..\\Plugins\\Sirenix\\Assemblies | 8 | -40,964 | -4 | -406 | -41,374 |
+| ..\\Plugins\\Sirenix\\Odin Inspector | 16 | -3,208 | -248 | -637 | -4,093 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Assets | 4 | -246 | -11 | -44 | -301 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Assets\\Editor | 4 | -246 | -11 | -44 | -301 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Assets\\Editor\\Hidden | 4 | -246 | -11 | -44 | -301 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules | 12 | -2,962 | -237 | -593 | -3,792 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables | 10 | -2,207 | -208 | -483 | -2,898 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables (Files) | 2 | -1,493 | -153 | -317 | -1,963 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Internal | 2 | -52 | -10 | -14 | -76 |
+| ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Addressables\\Validators | 6 | -662 | -45 | -152 | -859 |
 | ..\\Plugins\\Sirenix\\Odin Inspector\\Modules\\Unity.Mathematics | 2 | -755 | -29 | -110 | -894 |
+| ..\\Plugins\\Sirenix\\Odin Validator | 2 | -382 | -14 | -83 | -479 |
+| ..\\Plugins\\Sirenix\\Odin Validator (Files) | 1 | -160 | -6 | -31 | -197 |
+| ..\\Plugins\\Sirenix\\Odin Validator\\Assets | 1 | -222 | -8 | -52 | -282 |
+| ..\\Plugins\\Sirenix\\Odin Validator\\Assets\\Editor | 1 | -222 | -8 | -52 | -282 |
+| ..\\Plugins\\Sirenix\\Odin Validator\\Assets\\Editor\\Hidden | 1 | -222 | -8 | -52 | -282 |
 | ..\\StateEffect | 3 | -152 | 0 | -58 | -210 |
 | ..\\StateEffect (Files) | 1 | -33 | 0 | -28 | -61 |
 | ..\\StateEffect\\EffectMaterials | 2 | -119 | 0 | -30 | -149 |
 | ..\\StateEffect\\EffectMaterials\\Shader | 2 | -119 | 0 | -30 | -149 |
-| ..\\TextMesh Pro | 18 | -2,493 | -82 | -646 | -3,221 |
-| ..\\TextMesh Pro\\Shaders | 17 | -2,338 | -82 | -644 | -3,064 |
+| ..\\TextMesh Pro | 20 | -3,015 | -111 | -758 | -3,884 |
+| ..\\TextMesh Pro\\Shaders | 19 | -2,860 | -111 | -756 | -3,727 |
 | ..\\TextMesh Pro\\Sprites | 1 | -155 | 0 | -2 | -157 |
 | ..\\kyouma0220 | 13 | -765 | -10 | -124 | -899 |
 | ..\\kyouma0220\\RandomDungeonWithBluePrint | 13 | -765 | -10 | -124 | -899 |

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
@@ -122,14 +123,14 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static IPlayer CreatePlayer(PlayerMemento playerData, CharacterControlInputReceiver receiver, IMap map)
+        public static IPlayer CreatePlayer(PlayerMemento playerData, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
         {
-            return new Player(playerData, receiver, map);
+            return new Player(playerData, receiver, gameManager, map);
         }
 
-        public static ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IMap map)
+        public static ICharacter CreateCharacter(CharacterMemento data, ICharacterBehavior behavior, IGameManager gameManager, IMap map)
         {
-            return new Character(data, behavior, map, false);
+            return new Character(data, behavior, gameManager, map, false);
         }
 
         public static int EvaluateExp(EnemyData enemyData, bool isShiny)

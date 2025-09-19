@@ -1,10 +1,10 @@
 # Diff Details
 
-Date : 2024-08-31 12:14:37
+Date : 2025-09-19 19:41:50
 
 Directory c:\\Users\\Torte\\Documents\\Unity\\LogRogue\\Assets\\Scripts
 
-Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -2702959 lines
+Total : 1778 files,  -2685161 codes, -12049 comments, -22272 blanks, all -2719482 lines
 
 [Summary](results.md) / [Details](details.md) / [Diff Summary](diff.md) / Diff Details
 
@@ -49,11 +49,18 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/ConsolePro/Remote/LiteNetLib/Utils/NtpPacket.cs](/Assets/ConsolePro/Remote/LiteNetLib/Utils/NtpPacket.cs) | C# | -149 | -238 | -39 | -426 |
 | [Assets/ConsolePro/Remote/LiteNetLib/Utils/NtpRequest.cs](/Assets/ConsolePro/Remote/LiteNetLib/Utils/NtpRequest.cs) | C# | -35 | 0 | -5 | -40 |
 | [Assets/Editor/AutoSave.cs](/Assets/Editor/AutoSave.cs) | C# | -188 | -10 | -30 | -228 |
-| [Assets/Editor/Editor.asmdef](/Assets/Editor/Editor.asmdef) | UnityAssemblyDefinition | -20 | 0 | 0 | -20 |
-| [Assets/Editor/FieldBluePrintExtension.cs](/Assets/Editor/FieldBluePrintExtension.cs) | C# | -78 | -1 | -13 | -92 |
+| [Assets/Editor/DirectWeaponDataEditor.cs](/Assets/Editor/DirectWeaponDataEditor.cs) | C# | -34 | 0 | -3 | -37 |
+| [Assets/Editor/Editor.asmdef](/Assets/Editor/Editor.asmdef) | JSON | -24 | 0 | 0 | -24 |
+| [Assets/Editor/EnemyDataEditor.cs](/Assets/Editor/EnemyDataEditor.cs) | C# | -57 | 0 | -4 | -61 |
+| [Assets/Editor/FieldBluePrintExtension.cs](/Assets/Editor/FieldBluePrintExtension.cs) | C# | -80 | -1 | -12 | -93 |
 | [Assets/Editor/HiArda/ReNamer/ReNamer.cs](/Assets/Editor/HiArda/ReNamer/ReNamer.cs) | C# | -112 | -15 | -15 | -142 |
-| [Assets/Editor/ItemPriceEvaluater.cs](/Assets/Editor/ItemPriceEvaluater.cs) | C# | -32 | 0 | -3 | -35 |
+| [Assets/Editor/ItemDataEditor.cs](/Assets/Editor/ItemDataEditor.cs) | C# | -34 | 0 | -3 | -37 |
 | [Assets/Editor/SceneBackup.cs](/Assets/Editor/SceneBackup.cs) | C# | -12 | 0 | -1 | -13 |
+| [Assets/Editor/StorageItemDataEditor.cs](/Assets/Editor/StorageItemDataEditor.cs) | C# | -34 | 0 | -3 | -37 |
+| [Assets/Editor/Utilities/Editor.Utilities.asmdef](/Assets/Editor/Utilities/Editor.Utilities.asmdef) | JSON | -16 | 0 | 0 | -16 |
+| [Assets/Editor/Utilities/SortingLayerEditorUtility.cs](/Assets/Editor/Utilities/SortingLayerEditorUtility.cs) | C# | -63 | 0 | -11 | -74 |
+| [Assets/Editor/View/Editor.View.asmdef](/Assets/Editor/View/Editor.View.asmdef) | JSON | -19 | 0 | 0 | -19 |
+| [Assets/Editor/View/ParticleControllerEditor.cs](/Assets/Editor/View/ParticleControllerEditor.cs) | C# | -28 | 0 | -4 | -32 |
 | [Assets/Editor/WakaTime/AssetChangedChecker.cs](/Assets/Editor/WakaTime/AssetChangedChecker.cs) | C# | -21 | -1 | -6 | -28 |
 | [Assets/Editor/WakaTime/ClientManager.cs](/Assets/Editor/WakaTime/ClientManager.cs) | C# | -62 | 0 | -14 | -76 |
 | [Assets/Editor/WakaTime/Constants.cs](/Assets/Editor/WakaTime/Constants.cs) | C# | -11 | 0 | -1 | -12 |
@@ -67,16 +74,16 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/setup.cfg](/Assets/Editor/WakaTime/client/setup.cfg) | Properties | -7 | 0 | -1 | -8 |
 | [Assets/Editor/WakaTime/client/setup.py](/Assets/Editor/WakaTime/client/setup.py) | Python | -42 | 0 | -4 | -46 |
 | [Assets/Editor/WakaTime/client/tox.ini](/Assets/Editor/WakaTime/client/tox.ini) | Ini | -7 | 0 | -1 | -8 |
-| [Assets/Editor/WakaTime/client/wakatime/__about__.py](/Assets/Editor/WakaTime/client/wakatime/__about__.py) | Python | -9 | 0 | -1 | -10 |
-| [Assets/Editor/WakaTime/client/wakatime/__init__.py](/Assets/Editor/WakaTime/client/wakatime/__init__.py) | Python | -10 | -1 | -7 | -18 |
+| [Assets/Editor/WakaTime/client/wakatime/\_\_about\_\_.py](/Assets/Editor/WakaTime/client/wakatime/__about__.py) | Python | -9 | 0 | -1 | -10 |
+| [Assets/Editor/WakaTime/client/wakatime/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/__init__.py) | Python | -10 | -1 | -7 | -18 |
 | [Assets/Editor/WakaTime/client/wakatime/api.py](/Assets/Editor/WakaTime/client/wakatime/api.py) | Python | -183 | -4 | -40 | -227 |
 | [Assets/Editor/WakaTime/client/wakatime/arguments.py](/Assets/Editor/WakaTime/client/wakatime/arguments.py) | Python | -249 | -6 | -25 | -280 |
 | [Assets/Editor/WakaTime/client/wakatime/cli.py](/Assets/Editor/WakaTime/client/wakatime/cli.py) | Python | -19 | -7 | -10 | -36 |
 | [Assets/Editor/WakaTime/client/wakatime/compat.py](/Assets/Editor/WakaTime/client/wakatime/compat.py) | Python | -82 | -1 | -18 | -101 |
 | [Assets/Editor/WakaTime/client/wakatime/configs.py](/Assets/Editor/WakaTime/client/wakatime/configs.py) | Python | -44 | -2 | -19 | -65 |
 | [Assets/Editor/WakaTime/client/wakatime/constants.py](/Assets/Editor/WakaTime/client/wakatime/constants.py) | Python | -37 | -1 | -10 | -48 |
-| [Assets/Editor/WakaTime/client/wakatime/dependencies/__init__.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/__init__.py) | Python | -107 | -1 | -22 | -130 |
-| [Assets/Editor/WakaTime/client/wakatime/dependencies/c_cpp.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/c_cpp.py) | Python | -39 | -1 | -12 | -52 |
+| [Assets/Editor/WakaTime/client/wakatime/dependencies/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/__init__.py) | Python | -107 | -1 | -22 | -130 |
+| [Assets/Editor/WakaTime/client/wakatime/dependencies/c\_cpp.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/c_cpp.py) | Python | -39 | -1 | -12 | -52 |
 | [Assets/Editor/WakaTime/client/wakatime/dependencies/data.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/data.py) | Python | -49 | -1 | -15 | -65 |
 | [Assets/Editor/WakaTime/client/wakatime/dependencies/dotnet.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/dotnet.py) | Python | -52 | -1 | -12 | -65 |
 | [Assets/Editor/WakaTime/client/wakatime/dependencies/go.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/go.py) | Python | -63 | -1 | -14 | -78 |
@@ -87,24 +94,24 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/dependencies/unknown.py](/Assets/Editor/WakaTime/client/wakatime/dependencies/unknown.py) | Python | -22 | -1 | -11 | -34 |
 | [Assets/Editor/WakaTime/client/wakatime/exceptions.py](/Assets/Editor/WakaTime/client/wakatime/exceptions.py) | Python | -9 | -1 | -5 | -15 |
 | [Assets/Editor/WakaTime/client/wakatime/heartbeat.py](/Assets/Editor/WakaTime/client/wakatime/heartbeat.py) | Python | -161 | -1 | -43 | -205 |
-| [Assets/Editor/WakaTime/client/wakatime/language_priorities.py](/Assets/Editor/WakaTime/client/wakatime/language_priorities.py) | Python | -13 | -1 | -5 | -19 |
+| [Assets/Editor/WakaTime/client/wakatime/language\_priorities.py](/Assets/Editor/WakaTime/client/wakatime/language_priorities.py) | Python | -13 | -1 | -5 | -19 |
 | [Assets/Editor/WakaTime/client/wakatime/languages/default.json](/Assets/Editor/WakaTime/client/wakatime/languages/default.json) | JSON | -81 | 0 | -1 | -82 |
 | [Assets/Editor/WakaTime/client/wakatime/languages/vim.json](/Assets/Editor/WakaTime/client/wakatime/languages/vim.json) | JSON | -531 | 0 | -1 | -532 |
 | [Assets/Editor/WakaTime/client/wakatime/logger.py](/Assets/Editor/WakaTime/client/wakatime/logger.py) | Python | -97 | -2 | -17 | -116 |
 | [Assets/Editor/WakaTime/client/wakatime/main.py](/Assets/Editor/WakaTime/client/wakatime/main.py) | Python | -59 | -1 | -19 | -79 |
 | [Assets/Editor/WakaTime/client/wakatime/offlinequeue.py](/Assets/Editor/WakaTime/client/wakatime/offlinequeue.py) | Python | -100 | -1 | -25 | -126 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/__init__.py) | Python | 0 | 0 | -1 | -1 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/__init__.py) | Python | 0 | 0 | -1 | -1 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/argparse.py](/Assets/Editor/WakaTime/client/wakatime/packages/argparse.py) | Python | -1,640 | -313 | -426 | -2,379 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/certifi/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/certifi/__init__.py) | Python | -2 | 0 | -2 | -4 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/certifi/__main__.py](/Assets/Editor/WakaTime/client/wakatime/packages/certifi/__main__.py) | Python | -2 | 0 | -1 | -3 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/certifi/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/certifi/__init__.py) | Python | -2 | 0 | -2 | -4 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/certifi/\_\_main\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/certifi/__main__.py) | Python | -2 | 0 | -1 | -3 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/certifi/core.py](/Assets/Editor/WakaTime/client/wakatime/packages/certifi/core.py) | Python | -24 | -2 | -11 | -37 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/chardet/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/__init__.py) | Python | -18 | -16 | -6 | -40 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/chardet/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/__init__.py) | Python | -18 | -16 | -6 | -40 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/big5freq.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/big5freq.py) | Python | -340 | -41 | -6 | -387 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/big5prober.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/big5prober.py) | Python | -16 | -26 | -6 | -48 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/chardistribution.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/chardistribution.py) | Python | -134 | -70 | -30 | -234 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/charsetgroupprober.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/charsetgroupprober.py) | Python | -72 | -26 | -9 | -107 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/charsetprober.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/charsetprober.py) | Python | -76 | -44 | -26 | -146 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/__init__.py) | Python | 0 | 0 | -2 | -2 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/__init__.py) | Python | 0 | 0 | -2 | -2 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/chardetect.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/cli/chardetect.py) | Python | -66 | -3 | -17 | -86 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/codingstatemachine.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/codingstatemachine.py) | Python | -47 | -29 | -13 | -89 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/compat.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/compat.py) | Python | -11 | -20 | -4 | -35 |
@@ -139,40 +146,40 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/universaldetector.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/universaldetector.py) | Python | -202 | -55 | -30 | -287 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/utf8prober.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/utf8prober.py) | Python | -44 | -26 | -13 | -83 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/chardet/version.py](/Assets/Editor/WakaTime/client/wakatime/packages/chardet/version.py) | Python | -7 | 0 | -3 | -10 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/configparser/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/configparser/__init__.py) | Python | -1,104 | -72 | -215 | -1,391 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/configparser/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/configparser/__init__.py) | Python | -1,104 | -72 | -215 | -1,391 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/configparser/helpers.py](/Assets/Editor/WakaTime/client/wakatime/packages/configparser/helpers.py) | Python | -126 | -5 | -41 | -172 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/idna/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/__init__.py) | Python | -2 | 0 | -1 | -3 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/idna/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/__init__.py) | Python | -2 | 0 | -1 | -3 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/codec.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/codec.py) | Python | -88 | -5 | -26 | -119 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/compat.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/compat.py) | Python | -8 | 0 | -5 | -13 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/core.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/core.py) | Python | -295 | -8 | -85 | -388 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/idnadata.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/idnadata.py) | Python | -1,583 | -1 | -2 | -1,586 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/intranges.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/intranges.py) | Python | -41 | -3 | -10 | -54 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/idna/package_data.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/package_data.py) | Python | -1 | 0 | -2 | -3 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/idna/package\_data.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/package_data.py) | Python | -1 | 0 | -2 | -3 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/idna/uts46data.py](/Assets/Editor/WakaTime/client/wakatime/packages/idna/uts46data.py) | Python | -7,556 | -2 | -77 | -7,635 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/U32.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/U32.py) | Python | -103 | -13 | -41 | -157 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/__init__.py) | Python | -2 | 0 | -1 | -3 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_hash.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_hash.py) | Python | -48 | -12 | -20 | -80 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_keys.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_keys.py) | Python | -102 | -10 | -26 | -138 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_response.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_response.py) | Python | -299 | -21 | -77 | -397 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/constants.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/constants.py) | Python | -70 | -11 | -12 | -93 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des.py) | Python | -49 | -15 | -25 | -89 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_c.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_c.py) | Python | -158 | -44 | -53 | -255 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_data.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_data.py) | Python | -295 | -31 | -23 | -349 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/gss_channel_bindings.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/gss_channel_bindings.py) | Python | -45 | -12 | -10 | -67 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/messages.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/messages.py) | Python | -266 | -30 | -64 | -360 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/ntlm.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/ntlm.py) | Python | -106 | -13 | -28 | -147 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/rc4.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/rc4.py) | Python | -31 | -13 | -8 | -52 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/session_security.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/session_security.py) | Python | -185 | -10 | -56 | -251 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/target_info.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/target_info.py) | Python | -55 | -3 | -10 | -68 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/U32.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/U32.py) | Python | -103 | -13 | -41 | -157 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/__init__.py) | Python | -2 | 0 | -1 | -3 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/compute\_hash.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_hash.py) | Python | -48 | -12 | -20 | -80 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/compute\_keys.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_keys.py) | Python | -102 | -10 | -26 | -138 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/compute\_response.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/compute_response.py) | Python | -299 | -21 | -77 | -397 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/constants.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/constants.py) | Python | -70 | -11 | -12 | -93 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/des.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des.py) | Python | -49 | -15 | -25 | -89 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/des\_c.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_c.py) | Python | -158 | -44 | -53 | -255 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/des\_data.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/des_data.py) | Python | -295 | -31 | -23 | -349 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/gss\_channel\_bindings.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/gss_channel_bindings.py) | Python | -45 | -12 | -10 | -67 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/messages.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/messages.py) | Python | -266 | -30 | -64 | -360 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/ntlm.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/ntlm.py) | Python | -106 | -13 | -28 | -147 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/rc4.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/rc4.py) | Python | -31 | -13 | -8 | -52 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/session\_security.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/session_security.py) | Python | -185 | -10 | -56 | -251 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/ntlm\_auth/target\_info.py](/Assets/Editor/WakaTime/client/wakatime/packages/ntlm_auth/target_info.py) | Python | -55 | -3 | -10 | -68 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/ordereddict.py](/Assets/Editor/WakaTime/client/wakatime/packages/ordereddict.py) | Python | -89 | -21 | -18 | -128 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/__init__.py) | Python | -70 | -1 | -20 | -91 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/__init__.py) | Python | -70 | -1 | -20 | -91 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/cmdline.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/cmdline.py) | Python | -455 | -38 | -81 | -574 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/console.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/console.py) | Python | -57 | -1 | -17 | -75 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/filter.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/filter.py) | Python | -57 | -2 | -16 | -75 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/filters/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/filters/__init__.py) | Python | -279 | -4 | -68 | -351 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/filters/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/filters/__init__.py) | Python | -279 | -4 | -68 | -351 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatter.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatter.py) | Python | -68 | -8 | -20 | -96 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/__init__.py) | Python | -116 | -5 | -33 | -154 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/_mapping.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/_mapping.py) | Python | -63 | -11 | -12 | -86 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/__init__.py) | Python | -116 | -5 | -33 | -154 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/\_mapping.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/_mapping.py) | Python | -63 | -11 | -12 | -86 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/bbcode.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/bbcode.py) | Python | -85 | -2 | -23 | -110 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/html.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/html.py) | Python | -695 | -19 | -138 | -852 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/img.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/img.py) | Python | -482 | -17 | -102 | -601 |
@@ -184,24 +191,24 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/terminal.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/terminal.py) | Python | -102 | -8 | -27 | -137 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/terminal256.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/formatters/terminal256.py) | Python | -231 | -24 | -55 | -310 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexer.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexer.py) | Python | -676 | -69 | -127 | -872 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/__init__.py) | Python | -244 | -23 | -63 | -330 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_asy_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_asy_builtins.py) | Python | -1,639 | -1 | -6 | -1,646 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cl_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cl_builtins.py) | Python | -220 | -2 | -11 | -233 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cocoa_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cocoa_builtins.py) | Python | -52 | -1 | -20 | -73 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_csound_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_csound_builtins.py) | Python | -1,275 | -69 | -3 | -1,347 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lasso_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lasso_builtins.py) | Python | -5,323 | -1 | -4 | -5,328 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lua_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lua_builtins.py) | Python | -258 | -6 | -32 | -296 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mapping.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mapping.py) | Python | -480 | -11 | -11 | -502 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mql_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mql_builtins.py) | Python | -1,166 | -1 | -6 | -1,173 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_openedge_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_openedge_builtins.py) | Python | -2,543 | -1 | -4 | -2,548 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_php_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_php_builtins.py) | Python | -4,732 | -2 | -23 | -4,757 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_postgres_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_postgres_builtins.py) | Python | -577 | -10 | -35 | -622 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_scilab_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_scilab_builtins.py) | Python | -3,075 | -3 | -17 | -3,095 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_sourcemod_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_sourcemod_builtins.py) | Python | -1,138 | -3 | -23 | -1,164 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stan_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stan_builtins.py) | Python | -523 | -1 | -9 | -533 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stata_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stata_builtins.py) | Python | -411 | -1 | -8 | -420 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_tsql_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_tsql_builtins.py) | Python | -989 | -5 | -11 | -1,005 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_vim_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_vim_builtins.py) | Python | -1,929 | -3 | -8 | -1,940 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/__init__.py) | Python | -244 | -23 | -63 | -330 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_asy\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_asy_builtins.py) | Python | -1,639 | -1 | -6 | -1,646 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_cl\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cl_builtins.py) | Python | -220 | -2 | -11 | -233 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_cocoa\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_cocoa_builtins.py) | Python | -52 | -1 | -20 | -73 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_csound\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_csound_builtins.py) | Python | -1,275 | -69 | -3 | -1,347 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_lasso\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lasso_builtins.py) | Python | -5,323 | -1 | -4 | -5,328 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_lua\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_lua_builtins.py) | Python | -258 | -6 | -32 | -296 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_mapping.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mapping.py) | Python | -480 | -11 | -11 | -502 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_mql\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_mql_builtins.py) | Python | -1,166 | -1 | -6 | -1,173 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_openedge\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_openedge_builtins.py) | Python | -2,543 | -1 | -4 | -2,548 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_php\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_php_builtins.py) | Python | -4,732 | -2 | -23 | -4,757 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_postgres\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_postgres_builtins.py) | Python | -577 | -10 | -35 | -622 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_scilab\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_scilab_builtins.py) | Python | -3,075 | -3 | -17 | -3,095 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_sourcemod\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_sourcemod_builtins.py) | Python | -1,138 | -3 | -23 | -1,164 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_stan\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stan_builtins.py) | Python | -523 | -1 | -9 | -533 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_stata\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_stata_builtins.py) | Python | -411 | -1 | -8 | -420 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_tsql\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_tsql_builtins.py) | Python | -989 | -5 | -11 | -1,005 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/\_vim\_builtins.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/_vim_builtins.py) | Python | -1,929 | -3 | -8 | -1,940 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/actionscript.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/actionscript.py) | Python | -218 | -1 | -22 | -241 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/agile.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/agile.py) | Python | -19 | -1 | -5 | -25 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/algebra.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/algebra.py) | Python | -190 | -4 | -28 | -222 |
@@ -214,8 +221,8 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/basic.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/basic.py) | Python | -417 | -40 | -44 | -501 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/bibtex.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/bibtex.py) | Python | -141 | -1 | -19 | -161 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/business.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/business.py) | Python | -496 | -57 | -60 | -613 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_cpp.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_cpp.py) | Python | -216 | -16 | -21 | -253 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_like.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_like.py) | Python | -471 | -19 | -52 | -542 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c\_cpp.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_cpp.py) | Python | -216 | -16 | -21 | -253 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c\_like.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/c_like.py) | Python | -471 | -19 | -52 | -542 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/capnproto.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/capnproto.py) | Python | -67 | -1 | -11 | -79 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/chapel.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/chapel.py) | Python | -73 | -13 | -17 | -103 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/clean.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/clean.py) | Python | -244 | -15 | -30 | -289 |
@@ -246,7 +253,7 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/foxpro.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/foxpro.py) | Python | -401 | -5 | -23 | -429 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/functional.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/functional.py) | Python | -16 | -1 | -5 | -22 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/go.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/go.py) | Python | -76 | -15 | -11 | -102 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/grammar_notation.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/grammar_notation.py) | Python | -157 | -16 | -41 | -214 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/grammar\_notation.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/grammar_notation.py) | Python | -157 | -16 | -41 | -214 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/graph.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/graph.py) | Python | -66 | -2 | -13 | -81 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/graphics.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/graphics.py) | Python | -479 | -28 | -47 | -554 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/haskell.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/haskell.py) | Python | -654 | -90 | -100 | -844 |
@@ -258,7 +265,7 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/igor.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/igor.py) | Python | -269 | -7 | -13 | -289 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/inferno.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/inferno.py) | Python | -71 | -13 | -13 | -97 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/installers.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/installers.py) | Python | -295 | -1 | -27 | -323 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/int_fiction.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/int_fiction.py) | Python | -1,229 | -64 | -51 | -1,344 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/int\_fiction.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/int_fiction.py) | Python | -1,229 | -64 | -51 | -1,344 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/iolang.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/iolang.py) | Python | -48 | -8 | -8 | -64 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/j.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/j.py) | Python | -103 | -15 | -29 | -147 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/javascript.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/lexers/javascript.py) | Python | -1,362 | -50 | -114 | -1,526 |
@@ -333,10 +340,10 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/scanner.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/scanner.py) | Python | -89 | -1 | -16 | -106 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/sphinxext.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/sphinxext.py) | Python | -125 | -1 | -33 | -159 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/style.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/style.py) | Python | -126 | -7 | -23 | -156 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/__init__.py) | Python | -67 | -3 | -11 | -81 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/__init__.py) | Python | -67 | -3 | -11 | -81 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/abap.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/abap.py) | Python | -22 | -1 | -7 | -30 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol.py) | Python | -44 | -1 | -19 | -64 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol_nu.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol_nu.py) | Python | -44 | -1 | -19 | -64 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol\_nu.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/algol_nu.py) | Python | -44 | -1 | -19 | -64 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/arduino.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/arduino.py) | Python | -83 | -1 | -15 | -99 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/autumn.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/autumn.py) | Python | -49 | -1 | -16 | -66 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/borland.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/borland.py) | Python | -39 | -1 | -12 | -52 |
@@ -352,11 +359,11 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/monokai.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/monokai.py) | Python | -88 | -2 | -17 | -107 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/murphy.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/murphy.py) | Python | -65 | -1 | -15 | -81 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/native.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/native.py) | Python | -50 | -1 | -15 | -66 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_dark.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_dark.py) | Python | -102 | -2 | -22 | -126 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_light.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_light.py) | Python | -102 | -2 | -22 | -126 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso\_dark.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_dark.py) | Python | -102 | -2 | -22 | -126 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso\_light.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/paraiso_light.py) | Python | -102 | -2 | -22 | -126 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/pastie.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/pastie.py) | Python | -59 | -1 | -16 | -76 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/perldoc.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/perldoc.py) | Python | -53 | -1 | -16 | -70 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rainbow_dash.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rainbow_dash.py) | Python | -70 | -1 | -19 | -90 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rainbow\_dash.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rainbow_dash.py) | Python | -70 | -1 | -19 | -90 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rrt.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/rrt.py) | Python | -25 | -1 | -8 | -34 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/sas.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/sas.py) | Python | -36 | -1 | -8 | -45 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/stata.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/styles/stata.py) | Python | -32 | -1 | -8 | -41 |
@@ -368,15 +375,15 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/token.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/token.py) | Python | -163 | -13 | -38 | -214 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/unistring.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/unistring.py) | Python | -132 | -12 | -74 | -218 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pygments/util.py](/Assets/Editor/WakaTime/client/wakatime/packages/pygments/util.py) | Python | -300 | -22 | -67 | -389 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/pytz/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/__init__.py) | Python | -1,401 | -24 | -110 | -1,535 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/pytz/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/__init__.py) | Python | -1,401 | -24 | -110 | -1,535 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pytz/exceptions.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/exceptions.py) | Python | -33 | 0 | -16 | -49 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pytz/lazy.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/lazy.py) | Python | -128 | -10 | -31 | -169 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pytz/reference.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/reference.py) | Python | -82 | -15 | -31 | -128 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pytz/tzfile.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/tzfile.py) | Python | -102 | -17 | -19 | -138 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/pytz/tzinfo.py](/Assets/Editor/WakaTime/client/wakatime/packages/pytz/tzinfo.py) | Python | -401 | -60 | -104 | -565 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/__init__.py) | Python | -83 | -15 | -24 | -122 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests/__version__.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/__version__.py) | Python | -10 | -3 | -2 | -15 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests/_internal_utils.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/_internal_utils.py) | Python | -32 | -1 | -10 | -43 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/__init__.py) | Python | -83 | -15 | -24 | -122 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests/\_\_version\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/__version__.py) | Python | -10 | -3 | -2 | -15 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests/\_internal\_utils.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/_internal_utils.py) | Python | -32 | -1 | -10 | -43 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/adapters.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/adapters.py) | Python | -404 | -22 | -100 | -526 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/api.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/api.py) | Python | -110 | -4 | -39 | -153 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/auth.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/auth.py) | Python | -206 | -28 | -60 | -294 |
@@ -389,34 +396,34 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/models.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/models.py) | Python | -650 | -114 | -185 | -949 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/packages.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/packages.py) | Python | -6 | -5 | -4 | -15 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/sessions.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/sessions.py) | Python | -475 | -102 | -161 | -738 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests/status_codes.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/status_codes.py) | Python | -78 | -5 | -9 | -92 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests/status\_codes.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/status_codes.py) | Python | -78 | -5 | -9 | -92 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/structures.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/structures.py) | Python | -71 | -6 | -29 | -106 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/requests/utils.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests/utils.py) | Python | -628 | -73 | -204 | -905 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/__init__.py) | Python | -2 | 0 | -2 | -4 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/requests_ntlm.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/requests_ntlm.py) | Python | -147 | -31 | -41 | -219 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/__init__.py) | Python | -478 | -4 | -94 | -576 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/_speedups.c](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/_speedups.c) | C | -2,935 | -265 | -194 | -3,394 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests\_ntlm/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/__init__.py) | Python | -2 | 0 | -2 | -4 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/requests\_ntlm/requests\_ntlm.py](/Assets/Editor/WakaTime/client/wakatime/packages/requests_ntlm/requests_ntlm.py) | Python | -147 | -31 | -41 | -219 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/__init__.py) | Python | -478 | -4 | -94 | -576 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/\_speedups.c](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/_speedups.c) | C | -2,935 | -265 | -194 | -3,394 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/compat.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/compat.py) | Python | -42 | 0 | -5 | -47 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/decoder.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/decoder.py) | Python | -330 | -25 | -46 | -401 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/encoder.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/encoder.py) | Python | -590 | -25 | -67 | -682 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/ordered_dict.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/ordered_dict.py) | Python | -96 | -4 | -20 | -120 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/ordered\_dict.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/ordered_dict.py) | Python | -96 | -4 | -20 | -120 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/scanner.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/scanner.py) | Python | -111 | -4 | -19 | -134 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/simplejson/tool.py](/Assets/Editor/WakaTime/client/wakatime/packages/simplejson/tool.py) | Python | -36 | 0 | -7 | -43 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/six.py](/Assets/Editor/WakaTime/client/wakatime/packages/six.py) | Python | -672 | -45 | -170 | -887 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/socks.py](/Assets/Editor/WakaTime/client/wakatime/packages/socks.py) | Python | -587 | -71 | -144 | -802 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/__init__.py) | Python | -7 | 0 | -1 | -8 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/__init__.py) | Python | -7 | 0 | -1 | -8 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/darwin.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/darwin.py) | Python | -43 | -2 | -15 | -60 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/unix.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/unix.py) | Python | -90 | -19 | -22 | -131 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/win32.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/win32.py) | Python | -59 | -18 | -17 | -94 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/windows_tz.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/windows_tz.py) | Python | -589 | -3 | -3 | -595 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/__init__.py) | Python | -69 | -11 | -18 | -98 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/_collections.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/_collections.py) | Python | -239 | -16 | -65 | -320 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/windows\_tz.py](/Assets/Editor/WakaTime/client/wakatime/packages/tzlocal/windows_tz.py) | Python | -589 | -3 | -3 | -595 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/__init__.py) | Python | -69 | -11 | -18 | -98 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/\_collections.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/_collections.py) | Python | -239 | -16 | -65 | -320 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/connection.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/connection.py) | Python | -260 | -42 | -72 | -374 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/connectionpool.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/connectionpool.py) | Python | -628 | -103 | -175 | -906 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/__init__.py) | Python | 0 | 0 | -1 | -1 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/__init__.py) | Python | 0 | 0 | -1 | -1 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/bindings.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/bindings.py) | Python | -497 | -4 | -93 | -594 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/low_level.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/low_level.py) | Python | -241 | -50 | -53 | -344 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/__init__.py) | Python | 0 | 0 | -1 | -1 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/\_securetransport/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/__init__.py) | Python | 0 | 0 | -1 | -1 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/\_securetransport/bindings.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/bindings.py) | Python | -497 | -4 | -93 | -594 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/\_securetransport/low\_level.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/_securetransport/low_level.py) | Python | -241 | -50 | -53 | -344 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/appengine.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/appengine.py) | Python | -220 | -13 | -64 | -297 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/ntlmpool.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/ntlmpool.py) | Python | -87 | -7 | -19 | -113 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/pyopenssl.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/contrib/pyopenssl.py) | Python | -346 | -22 | -88 | -456 |
@@ -425,74 +432,127 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/exceptions.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/exceptions.py) | Python | -153 | -8 | -86 | -247 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/fields.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/fields.py) | Python | -146 | 0 | -33 | -179 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/filepost.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/filepost.py) | Python | -66 | 0 | -29 | -95 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/__init__.py) | Python | -3 | 0 | -3 | -6 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/__init__.py) | Python | 0 | 0 | -1 | -1 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/__init__.py) | Python | -3 | 0 | -3 | -6 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/__init__.py) | Python | 0 | 0 | -1 | -1 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/makefile.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/backports/makefile.py) | Python | -48 | -1 | -5 | -54 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ordered_dict.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ordered_dict.py) | Python | -200 | -19 | -41 | -260 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ordered\_dict.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ordered_dict.py) | Python | -200 | -19 | -41 | -260 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/six.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/six.py) | Python | -654 | -45 | -170 | -869 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/__init__.py) | Python | -11 | -5 | -4 | -20 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/_implementation.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/_implementation.py) | Python | -98 | -37 | -23 | -158 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl\_match\_hostname/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/__init__.py) | Python | -11 | -5 | -4 | -20 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl\_match\_hostname/\_implementation.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/packages/ssl_match_hostname/_implementation.py) | Python | -98 | -37 | -23 | -158 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/poolmanager.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/poolmanager.py) | Python | -320 | -30 | -91 | -441 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/request.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/request.py) | Python | -113 | 0 | -36 | -149 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/response.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/response.py) | Python | -454 | -66 | -107 | -627 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/__init__.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/__init__.py) | Python | -51 | -1 | -3 | -55 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/__init__.py) | Python | -51 | -1 | -3 | -55 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/connection.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/connection.py) | Python | -88 | -13 | -30 | -131 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/request.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/request.py) | Python | -91 | -2 | -26 | -119 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/response.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/response.py) | Python | -53 | -8 | -21 | -82 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/retry.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/retry.py) | Python | -291 | -11 | -100 | -402 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/selectors.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/selectors.py) | Python | -444 | -36 | -102 | -582 |
-| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/ssl_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/ssl_.py) | Python | -253 | -31 | -58 | -342 |
+| [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/ssl\_.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/ssl_.py) | Python | -253 | -31 | -58 | -342 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/timeout.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/timeout.py) | Python | -179 | -10 | -54 | -243 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/url.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/url.py) | Python | -158 | -21 | -52 | -231 |
 | [Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/wait.py](/Assets/Editor/WakaTime/client/wakatime/packages/urllib3/util/wait.py) | Python | -32 | -2 | -7 | -41 |
 | [Assets/Editor/WakaTime/client/wakatime/project.py](/Assets/Editor/WakaTime/client/wakatime/project.py) | Python | -61 | -2 | -28 | -91 |
-| [Assets/Editor/WakaTime/client/wakatime/projects/__init__.py](/Assets/Editor/WakaTime/client/wakatime/projects/__init__.py) | Python | 0 | 0 | -1 | -1 |
+| [Assets/Editor/WakaTime/client/wakatime/projects/\_\_init\_\_.py](/Assets/Editor/WakaTime/client/wakatime/projects/__init__.py) | Python | 0 | 0 | -1 | -1 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/base.py](/Assets/Editor/WakaTime/client/wakatime/projects/base.py) | Python | -32 | -1 | -13 | -46 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/git.py](/Assets/Editor/WakaTime/client/wakatime/projects/git.py) | Python | -104 | -1 | -24 | -129 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/mercurial.py](/Assets/Editor/WakaTime/client/wakatime/projects/mercurial.py) | Python | -46 | -1 | -13 | -60 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/projectfile.py](/Assets/Editor/WakaTime/client/wakatime/projects/projectfile.py) | Python | -40 | -1 | -15 | -56 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/projectmap.py](/Assets/Editor/WakaTime/client/wakatime/projects/projectmap.py) | Python | -51 | -1 | -20 | -72 |
 | [Assets/Editor/WakaTime/client/wakatime/projects/subversion.py](/Assets/Editor/WakaTime/client/wakatime/projects/subversion.py) | Python | -97 | -1 | -17 | -115 |
-| [Assets/Editor/WakaTime/client/wakatime/session_cache.py](/Assets/Editor/WakaTime/client/wakatime/session_cache.py) | Python | -87 | -1 | -25 | -113 |
+| [Assets/Editor/WakaTime/client/wakatime/session\_cache.py](/Assets/Editor/WakaTime/client/wakatime/session_cache.py) | Python | -87 | -1 | -25 | -113 |
 | [Assets/Editor/WakaTime/client/wakatime/stats.py](/Assets/Editor/WakaTime/client/wakatime/stats.py) | Python | -247 | -8 | -83 | -338 |
 | [Assets/Editor/WakaTime/client/wakatime/utils.py](/Assets/Editor/WakaTime/client/wakatime/utils.py) | Python | -77 | -1 | -19 | -97 |
+| [Assets/Plugins/Demigiant/DOTween/DOTween.XML](/Assets/Plugins/Demigiant/DOTween/DOTween.XML) | XML | -3,089 | 0 | -1 | -3,090 |
+| [Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.XML](/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.XML) | XML | -144 | 0 | -1 | -145 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTween.Modules.asmdef](/Assets/Plugins/Demigiant/DOTween/Modules/DOTween.Modules.asmdef) | JSON | -3 | 0 | -1 | -4 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleAudio.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleAudio.cs) | C# | -94 | -80 | -25 | -199 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleEPOOutline.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleEPOOutline.cs) | C# | -109 | -18 | -20 | -147 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModulePhysics.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModulePhysics.cs) | C# | -137 | -60 | -20 | -217 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModulePhysics2D.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModulePhysics2D.cs) | C# | -125 | -51 | -18 | -194 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleSprite.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleSprite.cs) | C# | -63 | -17 | -14 | -94 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUI.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUI.cs) | C# | -390 | -203 | -70 | -663 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUnityVersion.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUnityVersion.cs) | C# | -254 | -99 | -37 | -390 |
+| [Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUtils.cs](/Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUtils.cs) | C# | -123 | -27 | -18 | -168 |
+| [Assets/Plugins/IngameDebugConsole/Android/DebugLogLogcatListener.cs](/Assets/Plugins/IngameDebugConsole/Android/DebugLogLogcatListener.cs) | C# | -44 | -1 | -10 | -55 |
+| [Assets/Plugins/IngameDebugConsole/Editor/DebugLogManagerEditor.cs](/Assets/Plugins/IngameDebugConsole/Editor/DebugLogManagerEditor.cs) | C# | -157 | 0 | -28 | -185 |
+| [Assets/Plugins/IngameDebugConsole/Editor/IngameDebugConsole.Editor.asmdef](/Assets/Plugins/IngameDebugConsole/Editor/IngameDebugConsole.Editor.asmdef) | JSON | -17 | 0 | 0 | -17 |
+| [Assets/Plugins/IngameDebugConsole/IngameDebugConsole.Runtime.asmdef](/Assets/Plugins/IngameDebugConsole/IngameDebugConsole.Runtime.asmdef) | JSON | -23 | 0 | 0 | -23 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/Attributes/ConsoleAttribute.cs](/Assets/Plugins/IngameDebugConsole/Scripts/Attributes/ConsoleAttribute.cs) | C# | -17 | 0 | -4 | -21 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/Attributes/ConsoleCustomTypeParserAttribute.cs](/Assets/Plugins/IngameDebugConsole/Scripts/Attributes/ConsoleCustomTypeParserAttribute.cs) | C# | -20 | 0 | -4 | -24 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/CircularBuffer.cs](/Assets/Plugins/IngameDebugConsole/Scripts/CircularBuffer.cs) | C# | -256 | -3 | -54 | -313 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/Commands/PlayerPrefsCommands.cs](/Assets/Plugins/IngameDebugConsole/Scripts/Commands/PlayerPrefsCommands.cs) | C# | -52 | 0 | -8 | -60 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/Commands/SceneCommands.cs](/Assets/Plugins/IngameDebugConsole/Scripts/Commands/SceneCommands.cs) | C# | -52 | 0 | -8 | -60 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/Commands/TimeCommands.cs](/Assets/Plugins/IngameDebugConsole/Scripts/Commands/TimeCommands.cs) | C# | -19 | 0 | -2 | -21 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/ConsoleMethodAttribute.cs](/Assets/Plugins/IngameDebugConsole/Scripts/ConsoleMethodAttribute.cs) | C# | -25 | 0 | -5 | -30 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/CopyLogsOnResizeButtonClick.cs](/Assets/Plugins/IngameDebugConsole/Scripts/CopyLogsOnResizeButtonClick.cs) | C# | -30 | 0 | -5 | -35 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogConsole.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogConsole.cs) | C# | -1,234 | -59 | -228 | -1,521 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogEntry.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogEntry.cs) | C# | -145 | -12 | -30 | -187 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogItem.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogItem.cs) | C# | -202 | -13 | -45 | -260 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogItemCopyWebGL.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogItemCopyWebGL.cs) | C# | -31 | 0 | -5 | -36 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogManager.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogManager.cs) | C# | -1,402 | -138 | -337 | -1,877 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogPopup.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogPopup.cs) | C# | -196 | -31 | -55 | -282 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogRecycledListView.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogRecycledListView.cs) | C# | -365 | -44 | -76 | -485 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugLogResizeListener.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugLogResizeListener.cs) | C# | -19 | -2 | -3 | -24 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/DebugsOnScrollListener.cs](/Assets/Plugins/IngameDebugConsole/Scripts/DebugsOnScrollListener.cs) | C# | -35 | -5 | -7 | -47 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/EventSystemHandler.cs](/Assets/Plugins/IngameDebugConsole/Scripts/EventSystemHandler.cs) | C# | -61 | -2 | -10 | -73 |
+| [Assets/Plugins/IngameDebugConsole/Scripts/InputFieldWarningsFixer.cs](/Assets/Plugins/IngameDebugConsole/Scripts/InputFieldWarningsFixer.cs) | C# | -23 | -4 | -2 | -29 |
+| [Assets/Plugins/IngameDebugConsole/iOS/IngameDebugConsole.mm](/Assets/Plugins/IngameDebugConsole/iOS/IngameDebugConsole.mm) | Objective-C++ | -4 | 0 | 0 | -4 |
+| [Assets/Plugins/SQliteUnityKit/SQLiteUnity.asmdef](/Assets/Plugins/SQliteUnityKit/SQLiteUnity.asmdef) | JSON | -14 | 0 | 0 | -14 |
+| [Assets/Plugins/SQliteUnityKit/Scripts/DataTable.cs](/Assets/Plugins/SQliteUnityKit/Scripts/DataTable.cs) | C# | -58 | 0 | -10 | -68 |
+| [Assets/Plugins/SQliteUnityKit/Scripts/README.md](/Assets/Plugins/SQliteUnityKit/Scripts/README.md) | Markdown | -34 | 0 | -22 | -56 |
+| [Assets/Plugins/SQliteUnityKit/Scripts/SQLite.cs](/Assets/Plugins/SQliteUnityKit/Scripts/SQLite.cs) | C# | -501 | -77 | -66 | -644 |
+| [Assets/Plugins/SQliteUnityKit/Scripts/SQLiteUtility.cs](/Assets/Plugins/SQliteUnityKit/Scripts/SQLiteUtility.cs) | C# | -64 | -9 | -11 | -84 |
+| [Assets/Plugins/SQliteUnityKit/Scripts/SqliteDatabase.cs](/Assets/Plugins/SQliteUnityKit/Scripts/SqliteDatabase.cs) | C# | -191 | -45 | -68 | -304 |
+| [Assets/Plugins/SQliteUnityKit/package.json](/Assets/Plugins/SQliteUnityKit/package.json) | JSON | -19 | 0 | 0 | -19 |
 | [Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.xml) | XML | -6,178 | -2 | -262 | -6,442 |
-| [Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.xml) | XML | -11,179 | 0 | -112 | -11,291 |
+| [Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.xml) | XML | -11,200 | 0 | -113 | -11,313 |
+| [Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinValidator.Editor.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinValidator.Editor.xml) | XML | -39 | 0 | -1 | -40 |
 | [Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.Config.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.Config.xml) | XML | -202 | 0 | -1 | -203 |
 | [Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.xml) | XML | -9,858 | 0 | -7 | -9,865 |
-| [Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.xml) | XML | -9,745 | -2 | -18 | -9,765 |
+| [Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.xml) | XML | -9,771 | -2 | -18 | -9,791 |
 | [Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.xml](/Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.xml) | XML | -3,710 | 0 | -4 | -3,714 |
 | [Assets/Plugins/Sirenix/Assemblies/link.xml](/Assets/Plugins/Sirenix/Assemblies/link.xml) | XML | -6 | 0 | 0 | -6 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/AddressablesInspectors.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/AddressablesInspectors.cs) | C# | -1,181 | -157 | -218 | -1,556 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Sirenix.OdinInspector.Modules.Unity.Addressables.asmdef](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Sirenix.OdinInspector.Modules.Unity.Addressables.asmdef) | UnityAssemblyDefinition | -29 | 0 | 0 | -29 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/AssetLabelReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/AssetLabelReferenceValidator.cs) | C# | -71 | -9 | -14 | -94 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/AssetReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/AssetReferenceValidator.cs) | C# | -220 | -12 | -48 | -280 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/CheckDuplicateBundleDependenciesValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/CheckDuplicateBundleDependenciesValidator.cs) | C# | -157 | -6 | -38 | -201 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/CheckResourcesToAddressableDuplicateDependenciesValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/CheckResourcesToAddressableDuplicateDependenciesValidator.cs) | C# | -136 | -5 | -30 | -171 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/DisallowAddressableSubAssetFieldAttributeValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/DisallowAddressableSubAssetFieldAttributeValidator.cs) | C# | -20 | -8 | -6 | -34 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/MissingAddressableGroupReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/MissingAddressableGroupReferenceValidator.cs) | C# | -40 | -5 | -10 | -55 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/ExtractSpriteShader.shader](/Assets/Plugins/Sirenix/Odin%20Inspector/Assets/Editor/Hidden/ExtractSpriteShader.shader) | UnityShader | -44 | -1 | -6 | -51 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/GUIUtilShader.shader](/Assets/Plugins/Sirenix/Odin%20Inspector/Assets/Editor/Hidden/GUIUtilShader.shader) | UnityShader | -80 | -3 | -15 | -98 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/LazyEditorIconShader.shader](/Assets/Plugins/Sirenix/Odin%20Inspector/Assets/Editor/Hidden/LazyEditorIconShader.shader) | UnityShader | -41 | -7 | -9 | -57 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/SdfIconShader.shader](/Assets/Plugins/Sirenix/Odin%20Inspector/Assets/Editor/Hidden/SdfIconShader.shader) | UnityShader | -81 | 0 | -14 | -95 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/AddressablesInspectors.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/AddressablesInspectors.cs) | C# | -1,464 | -153 | -317 | -1,934 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Internal/OdinAddressableReflection.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Internal/OdinAddressableReflection.cs) | C# | -19 | -5 | -6 | -30 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Internal/OdinAddressableReflectionValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Internal/OdinAddressableReflectionValidator.cs) | C# | -33 | -5 | -8 | -46 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Sirenix.OdinInspector.Modules.Unity.Addressables.asmdef](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Sirenix.OdinInspector.Modules.Unity.Addressables.asmdef) | JSON | -29 | 0 | 0 | -29 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/AssetLabelReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/AssetLabelReferenceValidator.cs) | C# | -74 | -9 | -15 | -98 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/AssetReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/AssetReferenceValidator.cs) | C# | -223 | -12 | -49 | -284 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/CheckDuplicateBundleDependenciesValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/CheckDuplicateBundleDependenciesValidator.cs) | C# | -160 | -6 | -39 | -205 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/CheckResourcesToAddressableDuplicateDependenciesValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/CheckResourcesToAddressableDuplicateDependenciesValidator.cs) | C# | -139 | -5 | -31 | -175 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/DisallowAddressableSubAssetFieldAttributeValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/DisallowAddressableSubAssetFieldAttributeValidator.cs) | C# | -23 | -8 | -7 | -38 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables/Validators/MissingAddressableGroupReferenceValidator.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Addressables/Validators/MissingAddressableGroupReferenceValidator.cs) | C# | -43 | -5 | -11 | -59 |
 | [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Mathematics/MathematicsDrawers.cs](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Mathematics/MathematicsDrawers.cs) | C# | -744 | -29 | -110 | -883 |
-| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Mathematics/Sirenix.OdinInspector.Modules.UnityMathematics.asmdef](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Mathematics/Sirenix.OdinInspector.Modules.UnityMathematics.asmdef) | UnityAssemblyDefinition | -11 | 0 | 0 | -11 |
+| [Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Mathematics/Sirenix.OdinInspector.Modules.UnityMathematics.asmdef](/Assets/Plugins/Sirenix/Odin%20Inspector/Modules/Unity.Mathematics/Sirenix.OdinInspector.Modules.UnityMathematics.asmdef) | JSON | -11 | 0 | 0 | -11 |
+| [Assets/Plugins/Sirenix/Odin Validator/Assets/Editor/Hidden/ValidatorSpinningShader.shader](/Assets/Plugins/Sirenix/Odin%20Validator/Assets/Editor/Hidden/ValidatorSpinningShader.shader) | UnityShader | -222 | -8 | -52 | -282 |
+| [Assets/Plugins/Sirenix/Odin Validator/EnsureCorrectOdinVersion.cs](/Assets/Plugins/Sirenix/Odin%20Validator/EnsureCorrectOdinVersion.cs) | C# | -160 | -6 | -31 | -197 |
 | [Assets/StateEffect/Demo.cs](/Assets/StateEffect/Demo.cs) | C# | -33 | 0 | -28 | -61 |
 | [Assets/StateEffect/EffectMaterials/Shader/EffectStateColorChange.shader](/Assets/StateEffect/EffectMaterials/Shader/EffectStateColorChange.shader) | UnityShader | -58 | 0 | -16 | -74 |
 | [Assets/StateEffect/EffectMaterials/Shader/EffectStateColorNegate.shader](/Assets/StateEffect/EffectMaterials/Shader/EffectStateColorNegate.shader) | UnityShader | -61 | 0 | -14 | -75 |
-| [Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader) | UnityShader | -109 | -2 | -33 | -144 |
-| [Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap-Mobile.shader) | UnityShader | -112 | -3 | -31 | -146 |
-| [Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap.shader) | UnityShader | -109 | -2 | -33 | -144 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF%20Overlay.shader) | UnityShader | -243 | -4 | -71 | -318 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF%20SSD.shader) | UnityShader | -241 | -4 | -66 | -311 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20Masking.shader) | UnityShader | -188 | -10 | -50 | -248 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20Overlay.shader) | UnityShader | -183 | -8 | -50 | -241 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20SSD.shader) | UnityShader | -82 | -4 | -21 | -107 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile.shader) | UnityShader | -183 | -8 | -50 | -241 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Surface-Mobile.shader) | UnityShader | -103 | -8 | -28 | -139 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Surface.shader) | UnityShader | -122 | -4 | -33 | -159 |
-| [Assets/TextMesh Pro/Shaders/TMP_SDF.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF.shader) | UnityShader | -243 | -4 | -71 | -318 |
-| [Assets/TextMesh Pro/Shaders/TMP_Sprite.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Sprite.shader) | UnityShader | -97 | 0 | -20 | -117 |
+| [Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl](/Assets/TextMesh%20Pro/Shaders/SDFFunctions.hlsl) | UnityShader | -130 | -18 | -31 | -179 |
+| [Assets/TextMesh Pro/Shaders/TMP\_Bitmap-Custom-Atlas.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader) | UnityShader | -113 | -2 | -31 | -146 |
+| [Assets/TextMesh Pro/Shaders/TMP\_Bitmap-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap-Mobile.shader) | UnityShader | -123 | -3 | -30 | -156 |
+| [Assets/TextMesh Pro/Shaders/TMP\_Bitmap.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Bitmap.shader) | UnityShader | -113 | -2 | -31 | -146 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF Overlay.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF%20Overlay.shader) | UnityShader | -253 | -4 | -70 | -327 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF SSD.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF%20SSD.shader) | UnityShader | -253 | -4 | -65 | -322 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Mobile Masking.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20Masking.shader) | UnityShader | -198 | -10 | -51 | -259 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Mobile Overlay.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20Overlay.shader) | UnityShader | -193 | -8 | -52 | -253 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Mobile SSD.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile%20SSD.shader) | UnityShader | -82 | -4 | -21 | -107 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Mobile-2-Pass.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader) | UnityShader | -290 | -15 | -85 | -390 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Mobile.shader) | UnityShader | -192 | -8 | -51 | -251 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Surface-Mobile.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Surface-Mobile.shader) | UnityShader | -104 | -8 | -28 | -140 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF-Surface.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF-Surface.shader) | UnityShader | -123 | -4 | -33 | -160 |
+| [Assets/TextMesh Pro/Shaders/TMP\_SDF.shader](/Assets/TextMesh%20Pro/Shaders/TMP_SDF.shader) | UnityShader | -253 | -4 | -70 | -327 |
+| [Assets/TextMesh Pro/Shaders/TMP\_Sprite.shader](/Assets/TextMesh%20Pro/Shaders/TMP_Sprite.shader) | UnityShader | -111 | 0 | -21 | -132 |
 | [Assets/TextMesh Pro/Shaders/TMPro.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro.cginc) | UnityShader | -63 | -2 | -20 | -85 |
-| [Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Mobile.cginc) | UnityShader | -122 | -2 | -34 | -158 |
-| [Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Properties.cginc) | UnityShader | -62 | -10 | -14 | -86 |
-| [Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Surface.cginc) | UnityShader | -76 | -7 | -19 | -102 |
+| [Assets/TextMesh Pro/Shaders/TMPro\_Mobile.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Mobile.cginc) | UnityShader | -129 | -2 | -35 | -166 |
+| [Assets/TextMesh Pro/Shaders/TMPro\_Properties.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Properties.cginc) | UnityShader | -62 | -6 | -13 | -81 |
+| [Assets/TextMesh Pro/Shaders/TMPro\_Surface.cginc](/Assets/TextMesh%20Pro/Shaders/TMPro_Surface.cginc) | UnityShader | -75 | -7 | -18 | -100 |
 | [Assets/TextMesh Pro/Sprites/EmojiOne.json](/Assets/TextMesh%20Pro/Sprites/EmojiOne.json) | JSON | -155 | 0 | -2 | -157 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Connection.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Connection.cs) | C# | -16 | 0 | -2 | -18 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Constants.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Constants.cs) | C# | -84 | 0 | -13 | -97 |
@@ -502,12 +562,12 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/FieldBuilder.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/FieldBuilder.cs) | C# | -201 | -2 | -30 | -233 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/FieldView.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/FieldView.cs) | C# | -23 | 0 | -4 | -27 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Grid.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Grid.cs) | C# | -45 | 0 | -6 | -51 |
-| [Assets/kyouma0220/RandomDungeonWithBluePrint/RandomDungeonWithBluePrint.asmdef](/Assets/kyouma0220/RandomDungeonWithBluePrint/RandomDungeonWithBluePrint.asmdef) | UnityAssemblyDefinition | -3 | 0 | -1 | -4 |
+| [Assets/kyouma0220/RandomDungeonWithBluePrint/RandomDungeonWithBluePrint.asmdef](/Assets/kyouma0220/RandomDungeonWithBluePrint/RandomDungeonWithBluePrint.asmdef) | JSON | -3 | 0 | -1 | -4 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/RandomMapTest.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/RandomMapTest.cs) | C# | -48 | 0 | -8 | -56 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Relay.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Relay.cs) | C# | -14 | 0 | -3 | -17 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Room.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Room.cs) | C# | -47 | -2 | -8 | -57 |
 | [Assets/kyouma0220/RandomDungeonWithBluePrint/Section.cs](/Assets/kyouma0220/RandomDungeonWithBluePrint/Section.cs) | C# | -54 | 0 | -10 | -64 |
-| [Assets/namespaceRenamer.py](/Assets/namespaceRenamer.py) | Python | -27 | -3 | -7 | -37 |
+| [Assets/namespaceRenamer.py](/Assets/namespaceRenamer.py) | Python | -28 | -3 | -7 | -38 |
 | [LogRogue.code-workspace](/LogRogue.code-workspace) | JSON with Comments | -10 | 0 | 0 | -10 |
 | [Packages/Microsoft.NETCore.Platforms.1.1.0/runtime.json](/Packages/Microsoft.NETCore.Platforms.1.1.0/runtime.json) | JSON | -354 | 0 | -53 | -407 |
 | [Packages/Microsoft.Win32.Primitives.4.3.0/ref/netstandard1.3/Microsoft.Win32.Primitives.xml](/Packages/Microsoft.Win32.Primitives.4.3.0/ref/netstandard1.3/Microsoft.Win32.Primitives.xml) | XML | -36 | 0 | 0 | -36 |
@@ -1584,13 +1644,13 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/ru/System.Xml.XDocument.xml](/Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/ru/System.Xml.XDocument.xml) | XML | -1,887 | 0 | 0 | -1,887 |
 | [Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/zh-hans/System.Xml.XDocument.xml](/Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/zh-hans/System.Xml.XDocument.xml) | XML | -1,741 | 0 | 0 | -1,741 |
 | [Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/zh-hant/System.Xml.XDocument.xml](/Packages/System.Xml.XDocument.4.3.0/ref/netstandard1.3/zh-hant/System.Xml.XDocument.xml) | XML | -1,925 | 0 | 0 | -1,925 |
-| [Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTile.Editor.asmdef](/Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTile.Editor.asmdef) | UnityAssemblyDefinition | -17 | 0 | 0 | -17 |
+| [Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTile.Editor.asmdef](/Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTile.Editor.asmdef) | JSON | -17 | 0 | 0 | -17 |
 | [Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTileEditor.cs](/Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTileEditor.cs) | C# | -1,012 | -51 | -286 | -1,349 |
 | [Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTilePackerEditor.cs](/Packages/com.ruccho.fang-auto-tile/Editor/FangAutoTilePackerEditor.cs) | C# | -163 | -4 | -35 | -202 |
 | [Packages/com.ruccho.fang-auto-tile/README.ja.md](/Packages/com.ruccho.fang-auto-tile/README.ja.md) | Markdown | -151 | 0 | -99 | -250 |
 | [Packages/com.ruccho.fang-auto-tile/README.md](/Packages/com.ruccho.fang-auto-tile/README.md) | Markdown | -152 | 0 | -98 | -250 |
 | [Packages/com.ruccho.fang-auto-tile/Runtime/AssemblyInfo.cs](/Packages/com.ruccho.fang-auto-tile/Runtime/AssemblyInfo.cs) | C# | -4 | 0 | -1 | -5 |
-| [Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.asmdef](/Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.asmdef) | UnityAssemblyDefinition | -3 | 0 | -1 | -4 |
+| [Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.asmdef](/Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.asmdef) | JSON | -3 | 0 | -1 | -4 |
 | [Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.cs](/Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTile.cs) | C# | -411 | -17 | -93 | -521 |
 | [Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTilePacker.cs](/Packages/com.ruccho.fang-auto-tile/Runtime/FangAutoTilePacker.cs) | C# | -19 | 0 | -2 | -21 |
 | [Packages/com.ruccho.fang-auto-tile/Runtime/FangConnectorTile.cs](/Packages/com.ruccho.fang-auto-tile/Runtime/FangConnectorTile.cs) | C# | -61 | 0 | -9 | -70 |
@@ -1601,44 +1661,45 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.ruccho.fang-auto-tile/Samples~/Basic/OnMapPlayerController.cs](/Packages/com.ruccho.fang-auto-tile/Samples~/Basic/OnMapPlayerController.cs) | C# | -99 | -2 | -8 | -109 |
 | [Packages/com.ruccho.fang-auto-tile/package.json](/Packages/com.ruccho.fang-auto-tile/package.json) | JSON | -28 | 0 | 0 | -28 |
 | [Packages/com.singularitygroup.hotreload/Editor/Attribution/Attribution.cs](/Packages/com.singularitygroup.hotreload/Editor/Attribution/Attribution.cs) | C# | -43 | -9 | -9 | -61 |
-| [Packages/com.singularitygroup.hotreload/Editor/Attribution/VSAttribution.cs](/Packages/com.singularitygroup.hotreload/Editor/Attribution/VSAttribution.cs) | C# | -50 | -9 | -10 | -69 |
+| [Packages/com.singularitygroup.hotreload/Editor/Attribution/VSAttribution.cs](/Packages/com.singularitygroup.hotreload/Editor/Attribution/VSAttribution.cs) | C# | -116 | -16 | -18 | -150 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/CliUtils.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/CliUtils.cs) | C# | -108 | -7 | -13 | -128 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/FallbackCliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/FallbackCliController.cs) | C# | -10 | 0 | -3 | -13 |
-| [Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs) | C# | -197 | -20 | -23 | -240 |
+| [Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs) | C# | -202 | -20 | -23 | -245 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/ICliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/ICliController.cs) | C# | -10 | 0 | -3 | -13 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/LinuxCliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/LinuxCliController.cs) | C# | -62 | -4 | -8 | -74 |
-| [Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs) | C# | -134 | -31 | -24 | -189 |
+| [Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs) | C# | -136 | -32 | -25 | -193 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/StartArgs.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/StartArgs.cs) | C# | -11 | -1 | 0 | -12 |
 | [Packages/com.singularitygroup.hotreload/Editor/CLI/WindowsCliController.cs](/Packages/com.singularitygroup.hotreload/Editor/CLI/WindowsCliController.cs) | C# | -28 | -1 | -4 | -33 |
-| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs) | C# | -64 | -3 | -4 | -71 |
-| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/ICompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/ICompileChecker.cs) | C# | -15 | 0 | -2 | -17 |
-| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/LegacyCompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/LegacyCompileChecker.cs) | C# | -52 | 0 | -2 | -54 |
-| [Packages/com.singularitygroup.hotreload/Editor/Constants.cs](/Packages/com.singularitygroup.hotreload/Editor/Constants.cs) | C# | -38 | 0 | -4 | -42 |
+| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs) | C# | -63 | -3 | -4 | -70 |
+| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/ICompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/ICompileChecker.cs) | C# | -16 | 0 | -2 | -18 |
+| [Packages/com.singularitygroup.hotreload/Editor/CompileChecker/LegacyCompileChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/LegacyCompileChecker.cs) | C# | -53 | 0 | -2 | -55 |
+| [Packages/com.singularitygroup.hotreload/Editor/Constants.cs](/Packages/com.singularitygroup.hotreload/Editor/Constants.cs) | C# | -40 | 0 | -4 | -44 |
 | [Packages/com.singularitygroup.hotreload/Editor/Demo/EditorDemo.cs](/Packages/com.singularitygroup.hotreload/Editor/Demo/EditorDemo.cs) | C# | -23 | 0 | -4 | -27 |
-| [Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs](/Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs) | C# | -772 | -43 | -98 | -913 |
-| [Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs](/Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs) | C# | -159 | -8 | -11 | -178 |
+| [Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs](/Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs) | C# | -1,195 | -64 | -130 | -1,389 |
+| [Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs](/Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs) | C# | -171 | -8 | -11 | -190 |
 | [Packages/com.singularitygroup.hotreload/Editor/GitUtil.cs](/Packages/com.singularitygroup.hotreload/Editor/GitUtil.cs) | C# | -58 | -22 | -7 | -87 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/AssemblyOmission.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/AssemblyOmission.cs) | C# | -128 | -31 | -29 | -188 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/BuildInfoHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/BuildInfoHelper.cs) | C# | -121 | -10 | -13 | -144 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/EditorWindowHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/EditorWindowHelper.cs) | C# | -84 | -4 | -14 | -102 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/GUIHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/GUIHelper.cs) | C# | -128 | -11 | -24 | -163 |
-| [Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs) | C# | -303 | -3 | -23 | -329 |
-| [Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs) | C# | -400 | -5 | -50 | -455 |
+| [Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs) | C# | -510 | -3 | -26 | -539 |
+| [Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs) | C# | -543 | -6 | -58 | -607 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/Spinner.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/Spinner.cs) | C# | -68 | 0 | -12 | -80 |
 | [Packages/com.singularitygroup.hotreload/Editor/Helpers/UnitySettingsHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Helpers/UnitySettingsHelper.cs) | C# | -77 | -2 | -17 | -96 |
+| [Packages/com.singularitygroup.hotreload/Editor/HotReloadAttributeProcessor.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadAttributeProcessor.cs) | C# | -32 | -1 | -3 | -36 |
 | [Packages/com.singularitygroup.hotreload/Editor/HotReloadEventPopup.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadEventPopup.cs) | C# | -83 | 0 | -12 | -95 |
 | [Packages/com.singularitygroup.hotreload/Editor/HotReloadOverlay.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadOverlay.cs) | C# | -148 | -4 | -27 | -179 |
-| [Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs) | C# | -364 | -2 | -64 | -430 |
+| [Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs) | C# | -420 | -2 | -75 | -497 |
 | [Packages/com.singularitygroup.hotreload/Editor/HotReloadSettingsEditor.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadSettingsEditor.cs) | C# | -48 | -14 | -8 | -70 |
-| [Packages/com.singularitygroup.hotreload/Editor/HotReloadState.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadState.cs) | C# | -30 | 0 | -8 | -38 |
+| [Packages/com.singularitygroup.hotreload/Editor/HotReloadState.cs](/Packages/com.singularitygroup.hotreload/Editor/HotReloadState.cs) | C# | -65 | 0 | -16 | -81 |
 | [Packages/com.singularitygroup.hotreload/Editor/InspectorFreezeFix.cs](/Packages/com.singularitygroup.hotreload/Editor/InspectorFreezeFix.cs) | C# | -85 | -13 | -20 | -118 |
 | [Packages/com.singularitygroup.hotreload/Editor/Installation/DownloadUtility.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/DownloadUtility.cs) | C# | -83 | -4 | -12 | -99 |
 | [Packages/com.singularitygroup.hotreload/Editor/Installation/ExponentialBackoff.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/ExponentialBackoff.cs) | C# | -14 | 0 | -4 | -18 |
-| [Packages/com.singularitygroup.hotreload/Editor/Installation/InstallUtility.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/InstallUtility.cs) | C# | -50 | -2 | -6 | -58 |
+| [Packages/com.singularitygroup.hotreload/Editor/Installation/InstallUtility.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/InstallUtility.cs) | C# | -54 | -6 | -6 | -66 |
 | [Packages/com.singularitygroup.hotreload/Editor/Installation/ServerDownloader.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/ServerDownloader.cs) | C# | -166 | -4 | -21 | -191 |
 | [Packages/com.singularitygroup.hotreload/Editor/Installation/UpdateUtility.cs](/Packages/com.singularitygroup.hotreload/Editor/Installation/UpdateUtility.cs) | C# | -78 | -5 | -11 | -94 |
 | [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/BuildGenerateBuildInfo.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/BuildGenerateBuildInfo.cs) | C# | -33 | -5 | -5 | -43 |
-| [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/HotReloadBuildHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/HotReloadBuildHelper.cs) | C# | -69 | -25 | -12 | -106 |
+| [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/HotReloadBuildHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/HotReloadBuildHelper.cs) | C# | -75 | -24 | -12 | -111 |
 | [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildModifyAndroidManifest.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildModifyAndroidManifest.cs) | C# | -64 | -61 | -8 | -133 |
 | [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildSendProjectState.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildSendProjectState.cs) | C# | -24 | -1 | -1 | -26 |
 | [Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PrebuildIncludeResources.cs](/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PrebuildIncludeResources.cs) | C# | -35 | -18 | -8 | -61 |
@@ -1656,8 +1717,8 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/Util/StringUtils.cs](/Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/Util/StringUtils.cs) | C# | -13 | 0 | -1 | -14 |
 | [Packages/com.singularitygroup.hotreload/Editor/RequiredSettings/RequiredSettingChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/RequiredSettings/RequiredSettingChecker.cs) | C# | -197 | -24 | -49 | -270 |
 | [Packages/com.singularitygroup.hotreload/Editor/ServerHealthCheck.cs](/Packages/com.singularitygroup.hotreload/Editor/ServerHealthCheck.cs) | C# | -17 | -3 | -5 | -25 |
-| [Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.Editor.asmdef](/Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.Editor.asmdef) | UnityAssemblyDefinition | -28 | 0 | 0 | -28 |
-| [Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs) | C# | -247 | -8 | -33 | -288 |
+| [Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.Editor.asmdef](/Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.Editor.asmdef) | JSON | -32 | 0 | 0 | -32 |
+| [Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs](/Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs) | C# | -249 | -8 | -33 | -290 |
 | [Packages/com.singularitygroup.hotreload/Editor/Versioning/SemVer.cs](/Packages/com.singularitygroup.hotreload/Editor/Versioning/SemVer.cs) | C# | -295 | -188 | -54 | -537 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Buttons/OpenDialogueButton.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Buttons/OpenDialogueButton.cs) | C# | -37 | 0 | -6 | -43 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Buttons/OpenURLButton.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Buttons/OpenURLButton.cs) | C# | -25 | 0 | -5 | -30 |
@@ -1672,9 +1733,9 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/Helpers/RedeemLicenseHelper.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/Helpers/RedeemLicenseHelper.cs) | C# | -269 | -5 | -34 | -308 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadAboutTab.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadAboutTab.cs) | C# | -259 | -16 | -36 | -311 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadOptionsSection.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadOptionsSection.cs) | C# | -33 | -9 | -8 | -50 |
-| [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs) | C# | -1,212 | -39 | -117 | -1,368 |
-| [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs) | C# | -559 | -63 | -76 | -698 |
-| [Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs) | C# | -311 | -21 | -40 | -372 |
+| [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs) | C# | -1,223 | -40 | -120 | -1,383 |
+| [Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs) | C# | -726 | -91 | -96 | -913 |
+| [Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs) | C# | -324 | -21 | -43 | -388 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/ShowOnStartupEnum.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/ShowOnStartupEnum.cs) | C# | -7 | 0 | 0 | -7 |
 | [Packages/com.singularitygroup.hotreload/Editor/Window/Styles/HotReloadWindowStyles.cs](/Packages/com.singularitygroup.hotreload/Editor/Window/Styles/HotReloadWindowStyles.cs) | C# | -711 | -2 | -65 | -778 |
 | [Packages/com.singularitygroup.hotreload/LICENSE.md](/Packages/com.singularitygroup.hotreload/LICENSE.md) | Markdown | -26 | 0 | -20 | -46 |
@@ -1682,9 +1743,9 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.singularitygroup.hotreload/Runtime/AppCallbackListener.cs](/Packages/com.singularitygroup.hotreload/Runtime/AppCallbackListener.cs) | C# | -35 | -11 | -10 | -56 |
 | [Packages/com.singularitygroup.hotreload/Runtime/BuildInfo.cs](/Packages/com.singularitygroup.hotreload/Runtime/BuildInfo.cs) | C# | -77 | -75 | -20 | -172 |
 | [Packages/com.singularitygroup.hotreload/Runtime/BurstChecker.cs](/Packages/com.singularitygroup.hotreload/Runtime/BurstChecker.cs) | C# | -34 | -4 | -4 | -42 |
-| [Packages/com.singularitygroup.hotreload/Runtime/Burst/JobHotReloadUtility.cs](/Packages/com.singularitygroup.hotreload/Runtime/Burst/JobHotReloadUtility.cs) | C# | -23 | 0 | -2 | -25 |
-| [Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs](/Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs) | C# | -379 | -7 | -54 | -440 |
-| [Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs](/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs) | C# | -85 | -63 | -32 | -180 |
+| [Packages/com.singularitygroup.hotreload/Runtime/Burst/JobHotReloadUtility.cs](/Packages/com.singularitygroup.hotreload/Runtime/Burst/JobHotReloadUtility.cs) | C# | -24 | 0 | -2 | -26 |
+| [Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs](/Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs) | C# | -632 | -24 | -66 | -722 |
+| [Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs](/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs) | C# | -88 | -90 | -40 | -218 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBurstJobsDemo.cs](/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBurstJobsDemo.cs) | C# | -50 | -5 | -9 | -64 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/IDemo.cs](/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/IDemo.cs) | C# | -22 | -2 | -6 | -30 |
 | [Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsObject.cs](/Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsObject.cs) | C# | -96 | -25 | -20 | -141 |
@@ -1692,11 +1753,11 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.singularitygroup.hotreload/Runtime/IServerHealthCheck.cs](/Packages/com.singularitygroup.hotreload/Runtime/IServerHealthCheck.cs) | C# | -10 | 0 | -2 | -12 |
 | [Packages/com.singularitygroup.hotreload/Runtime/InstallQRDialog.cs](/Packages/com.singularitygroup.hotreload/Runtime/InstallQRDialog.cs) | C# | -21 | -2 | -5 | -28 |
 | [Packages/com.singularitygroup.hotreload/Runtime/IpHelper.cs](/Packages/com.singularitygroup.hotreload/Runtime/IpHelper.cs) | C# | -55 | -2 | -8 | -65 |
-| [Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs) | C# | -93 | -7 | -11 | -111 |
-| [Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs) | C# | -411 | -2 | -88 | -501 |
-| [Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs) | C# | -21 | 0 | -2 | -23 |
+| [Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs) | C# | -99 | -7 | -11 | -117 |
+| [Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs) | C# | -598 | -1 | -118 | -717 |
+| [Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs](/Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs) | C# | -33 | 0 | -3 | -36 |
 | [Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/ConnectionDialog.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/ConnectionDialog.cs) | C# | -56 | -11 | -14 | -81 |
-| [Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs) | C# | -101 | -12 | -22 | -135 |
+| [Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs) | C# | -112 | -12 | -22 | -146 |
 | [Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/QuestionDialog.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/QuestionDialog.cs) | C# | -53 | -1 | -11 | -65 |
 | [Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/RetryDialog.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/RetryDialog.cs) | C# | -76 | -9 | -20 | -105 |
 | [Packages/com.singularitygroup.hotreload/Runtime/MonoMethod.cs](/Packages/com.singularitygroup.hotreload/Runtime/MonoMethod.cs) | C# | -104 | -45 | -48 | -197 |
@@ -1704,28 +1765,29 @@ Total : 1716 files,  -2671668 codes, -10884 comments, -20407 blanks, all -270295
 | [Packages/com.singularitygroup.hotreload/Runtime/PackageConst.cs](/Packages/com.singularitygroup.hotreload/Runtime/PackageConst.cs) | C# | -13 | -4 | -4 | -21 |
 | [Packages/com.singularitygroup.hotreload/Runtime/PatchServerInfo.cs](/Packages/com.singularitygroup.hotreload/Runtime/PatchServerInfo.cs) | C# | -34 | -3 | -5 | -42 |
 | [Packages/com.singularitygroup.hotreload/Runtime/PersistencePaths.cs](/Packages/com.singularitygroup.hotreload/Runtime/PersistencePaths.cs) | C# | -13 | 0 | -3 | -16 |
-| [Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs](/Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs) | C# | -78 | -28 | -13 | -119 |
-| [Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs](/Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs) | C# | -130 | -13 | -17 | -160 |
+| [Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs](/Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs) | C# | -78 | -27 | -13 | -118 |
+| [Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs](/Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs) | C# | -131 | -13 | -18 | -162 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Public/HotReloadLogging.cs](/Packages/com.singularitygroup.hotreload/Runtime/Public/HotReloadLogging.cs) | C# | -7 | -10 | -1 | -18 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Public/InvokeOnHotReload.cs](/Packages/com.singularitygroup.hotreload/Runtime/Public/InvokeOnHotReload.cs) | C# | -17 | -12 | -4 | -33 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Public/InvokeOnHotReloadLocal.cs](/Packages/com.singularitygroup.hotreload/Runtime/Public/InvokeOnHotReloadLocal.cs) | C# | -10 | -9 | -4 | -23 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Public/Log.cs](/Packages/com.singularitygroup.hotreload/Runtime/Public/Log.cs) | C# | -94 | -3 | -12 | -109 |
 | [Packages/com.singularitygroup.hotreload/Runtime/Public/LogLevel.cs](/Packages/com.singularitygroup.hotreload/Runtime/Public/LogLevel.cs) | C# | -10 | -10 | -6 | -26 |
-| [Packages/com.singularitygroup.hotreload/Runtime/Public/SingularityGroup.HotReload.Runtime.Public.asmdef](/Packages/com.singularitygroup.hotreload/Runtime/Public/SingularityGroup.HotReload.Runtime.Public.asmdef) | UnityAssemblyDefinition | -3 | 0 | -1 | -4 |
-| [Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs](/Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs) | C# | -345 | -19 | -55 | -419 |
+| [Packages/com.singularitygroup.hotreload/Runtime/Public/SingularityGroup.HotReload.Runtime.Public.asmdef](/Packages/com.singularitygroup.hotreload/Runtime/Public/SingularityGroup.HotReload.Runtime.Public.asmdef) | JSON | -3 | 0 | -1 | -4 |
+| [Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs](/Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs) | C# | -382 | -20 | -57 | -459 |
 | [Packages/com.singularitygroup.hotreload/Runtime/ServerHandshake.cs](/Packages/com.singularitygroup.hotreload/Runtime/ServerHandshake.cs) | C# | -174 | -46 | -26 | -246 |
 | [Packages/com.singularitygroup.hotreload/Runtime/ServerHealthCheck.cs](/Packages/com.singularitygroup.hotreload/Runtime/ServerHealthCheck.cs) | C# | -47 | -3 | -9 | -59 |
-| [Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef](/Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef) | UnityAssemblyDefinition | -27 | 0 | 0 | -27 |
-| [Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs](/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs) | C# | -81 | 0 | -10 | -91 |
-| [Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs](/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs) | C# | -12 | 0 | -3 | -15 |
+| [Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef](/Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef) | JSON | -28 | 0 | 0 | -28 |
+| [Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs](/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs) | C# | -91 | 0 | -9 | -100 |
+| [Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs](/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs) | C# | -14 | 0 | -4 | -18 |
 | [Packages/com.singularitygroup.hotreload/Runtime/TaskExtensions.cs](/Packages/com.singularitygroup.hotreload/Runtime/TaskExtensions.cs) | C# | -35 | -10 | -4 | -49 |
 | [Packages/com.singularitygroup.hotreload/Runtime/ThreadUtility.cs](/Packages/com.singularitygroup.hotreload/Runtime/ThreadUtility.cs) | C# | -179 | -7 | -41 | -227 |
 | [Packages/com.singularitygroup.hotreload/Runtime/UnityHelper.cs](/Packages/com.singularitygroup.hotreload/Runtime/UnityHelper.cs) | C# | -33 | 0 | -10 | -43 |
-| [Packages/com.singularitygroup.hotreload/Server/linux-x64/hotreload-start-script.sh](/Packages/com.singularitygroup.hotreload/Server/linux-x64/hotreload-start-script.sh) | Shell Script | -67 | -4 | -16 | -87 |
+| [Packages/com.singularitygroup.hotreload/Server/linux-x64/hotreload-start-script.sh](/Packages/com.singularitygroup.hotreload/Server/linux-x64/hotreload-start-script.sh) | Shell Script | -66 | -3 | -15 | -84 |
 | [Packages/com.singularitygroup.hotreload/Server/linux-x64/terminal-run.sh](/Packages/com.singularitygroup.hotreload/Server/linux-x64/terminal-run.sh) | Shell Script | -24 | -8 | -8 | -40 |
 | [Packages/com.singularitygroup.hotreload/Third Party Notices.md](/Packages/com.singularitygroup.hotreload/Third%20Party%20Notices.md) | Markdown | -222 | 0 | -106 | -328 |
 | [Packages/com.singularitygroup.hotreload/package.json](/Packages/com.singularitygroup.hotreload/package.json) | JSON | -20 | 0 | -1 | -21 |
-| [Packages/manifest.json](/Packages/manifest.json) | JSON | -75 | 0 | -1 | -76 |
-| [Packages/packages-lock.json](/Packages/packages-lock.json) | JSON | -781 | 0 | -1 | -782 |
+| [Packages/manifest.json](/Packages/manifest.json) | JSON | -77 | 0 | -1 | -78 |
+| [Packages/packages-lock.json](/Packages/packages-lock.json) | JSON | -840 | 0 | -1 | -841 |
+| [save.db](/save.db) | Database | -28 | 0 | 0 | -28 |
 
 [Summary](results.md) / [Details](details.md) / [Diff Summary](diff.md) / Diff Details

@@ -4,7 +4,6 @@ using Game;
 using ObservableCollections;
 using R3;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utilities;
 using View;
 
@@ -17,7 +16,7 @@ namespace Provider
         {
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
-                var movementEntities = map.EventEntityManager.Stairs.Select(iconEntities.Get);
+                var movementEntities = map.Stairs.Select(iconEntities.Get);
                 var lockPrefab = ScriptableObjectLoader.LoadPrefab("Lock");
                 foreach (var movementEntity in movementEntities)
                 {

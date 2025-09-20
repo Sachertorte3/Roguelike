@@ -24,9 +24,6 @@ namespace Domain.Model.Map
         public IObservableCollection<IEntity> Entities { get; }
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
-        public IObservableCollection<IEventEntity> EventEntities { get; }
-        public IObservableCollection<IPlayerEventEntity> PlayerEventEntities { get; }
-        public IObservableCollection<IScheduledEventEntity> ScheduledEventEntities { get; }
 
         public ReadOnlyReactiveProperty<bool> MovementEntityLocked { get; }
 
@@ -35,6 +32,9 @@ namespace Domain.Model.Map
         public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position, IEnumerable<EntityLayer> layers);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position);
+        public IEventEntity? GetEventEntityFastAt(Vector2Int position, EntityLayer layer);
+        public IPlayerEventEntity? GetPlayerEventEntityFastAt(Vector2Int position, EntityLayer layer);
+        public IScheduledEventEntity? GetScheduledEventEntityFastAt(Vector2Int position, EntityLayer layer);
         public HashSet<Vector2Int> AllCharacterPositionsFast();
         public HashSet<Vector2Int> AllItemPositionsFast();
 

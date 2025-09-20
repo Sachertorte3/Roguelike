@@ -80,12 +80,13 @@ namespace Game
             return character;
         }
 
-        public Ally SpawnAlly(CharacterMemento data, IGameManager gameManager, IMap map)
+        public ICharacter SpawnAlly(CharacterMemento data, IGameManager gameManager, IMap map)
         {
             var behavior = new EnemyBehavior(data.Behavior, map.Id);
             var character = CharacterFactory.CreateCharacter(data, behavior, gameManager, map);
             AddCharacter(character);
-            return new Ally(character, behavior, map);
+            character.AddEvent(new Ally(character, behavior));
+            return character;
         }
 
         public HashSet<Vector2Int> GetAllCharacterPositions()

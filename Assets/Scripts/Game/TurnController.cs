@@ -133,13 +133,6 @@ namespace Game
                 character.UpdateTurn();
             }
 
-            foreach (var scheduledEventEntity in map.ScheduledEventEntities)
-            {
-                scheduledEventEntity.Event.UpdateTurn();
-                if (scheduledEventEntity.Event.CanExecuteEvent())
-                    scheduledEventEntity.Event.DoEvent(gameManager, map);
-            }
-
             _turnInLevel.Value++;
             _onTurnChanged.OnNext(Unit.Default);
             Log.Debug($"[Turn]Start turn in level:{_turnInLevel.Value})\nCharacters:{map.Characters.Count}");

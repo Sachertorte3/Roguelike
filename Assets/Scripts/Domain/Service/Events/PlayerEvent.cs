@@ -20,16 +20,16 @@ namespace Domain.Service.Events
             Events = choices;
         }
 
-        public bool CanExecuteEvent(IPlayer player)
+        public bool CanExecuteEvent(IPlayer player, IMap map)
         {
-            return Events.Where(e => e.CanExecuteEvent(player)).Any();
+            return Events.Where(e => e.CanExecuteEvent(player, map)).Any();
         }
 
         public async UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map)
         {
             var choices = new List<string>();
 
-            var executableEvents = Events.Where(e => e.CanExecuteEvent(player)).ToList();
+            var executableEvents = Events.Where(e => e.CanExecuteEvent(player, map)).ToList();
             foreach (var eventData in executableEvents)
             {
                 choices.Add(eventData.ChoiceText);
@@ -55,7 +55,7 @@ namespace Domain.Service.Events
 
         public async UniTask<IAction?> DoAction(IPlayer player, IGameManager gameManager, IMap map, IAction swap)
         {
-            var executableEvents = Events.Where(e => e.CanExecuteEvent(player)).ToList();
+            var executableEvents = Events.Where(e => e.CanExecuteEvent(player, map)).ToList();
             if (!executableEvents.Any())
             {
                 return null;

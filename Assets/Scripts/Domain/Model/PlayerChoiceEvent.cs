@@ -9,10 +9,10 @@ namespace Domain.Model
     public class PlayerChoiceEvent
     {
         public string ChoiceText { get; init; }
-        private readonly Func<IPlayer, bool> _canExecuteEvent;
+        private readonly Func<IPlayer, IMap, bool> _canExecuteEvent;
         private readonly Func<IGameManager, IMap, UniTask> _doEvent;
 
-        public PlayerChoiceEvent(string choiceText, Func<IPlayer, bool> canExecuteEvent,
+        public PlayerChoiceEvent(string choiceText, Func<IPlayer, IMap, bool> canExecuteEvent,
             Func<IGameManager, IMap, UniTask> doEvent)
         {
             ChoiceText = choiceText;
@@ -20,14 +20,14 @@ namespace Domain.Model
             _doEvent = doEvent;
         }
 
-        public bool CanExecuteEvent(IPlayer player)
+        public bool CanExecuteEvent(IPlayer player, IMap map)
         {
-            return _canExecuteEvent(player);
+            return _canExecuteEvent(player, map);
         }
 
         public async UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map)
         {
-            if (CanExecuteEvent(player))
+            if (CanExecuteEvent(player, map))
             {
                 await _doEvent(gameManager, map);
                 return true;

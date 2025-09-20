@@ -21,25 +21,28 @@ namespace Domain.Service.Events
         {
             Entity = new EntityBase(memento.Entity);
             _isFire = new(memento.IsFire);
-            Event = new PlayerEvent(
-                "焚き火を見つけた",
-                new List<PlayerChoiceEvent>
-                {
-                    new(
-                        "休憩する",
-                        player => _isFire.CurrentValue,
-                        (gameManager, map) =>
-                        {
-                            map.Player.Character.RestoreToFullHealth();
-                            _isFire.Value = false;
-                            return UniTask.CompletedTask;
-                        }
-                    )
-                }
-            );
+            Events = new List<IPlayerEvent>
+            {
+                new PlayerEvent(
+                    "焚き火を見つけた",
+                    new List<PlayerChoiceEvent>
+                    {
+                        new(
+                            "休憩する",
+                            (player, map) => _isFire.CurrentValue,
+                            (gameManager, map) =>
+                            {
+                                map.Player.Character.RestoreToFullHealth();
+                                _isFire.Value = false;
+                                return UniTask.CompletedTask;
+                            }
+                        )
+                    }
+                )
+            };
         }
 
-        public IPlayerEvent Event { get; init; }
+        public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {

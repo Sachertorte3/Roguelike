@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -10,6 +9,7 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
 using R3;
@@ -18,10 +18,9 @@ using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Shop : Room<ShopMemento>, IShop, IDisposable
+    public class Shop : Room<ShopMemento>, IShop
     {
-        public readonly Clerk Clerk;
-
+        private readonly ICharacter _clerk;
         private record ShopItemCache(Id<IItem> Id, int Price);
 
         private HashSet<ShopItemCache> _shopItems = new();
@@ -31,15 +30,21 @@ namespace Domain.Service.Rooms
         public Shop(ShopMemento data, ICharacter clerk, IGameManager gameManager, IMap map) : base(data.Room,
             map.Player.Character.Entity.CurrentPosition)
         {
-            Clerk = new Clerk(
-                clerk,
-                player => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
-                (_, map) =>
+            _clerk = clerk;
+            clerk.AddEvent(new PlayerEvent(
+                null,
+                new List<PlayerChoiceEvent>
                 {
-                    Purchase(map);
-                    return UniTask.CompletedTask;
+                    new(
+                        "代金を支払う",
+                        (player, map) => CanExecute && (GetSalePrice(map) > 0 || GetPurchasePrice(map) > 0),
+                        (gameManager, map) =>{
+                            Purchase(map);
+                            return UniTask.CompletedTask;
+                        }
+                    )
                 }
-            );
+            ));
 
             if (data.IsStolen)
             {
@@ -48,16 +53,6 @@ namespace Domain.Service.Rooms
             }
 
             _shopItems = data.Items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
-        }
-
-        public void Dispose()
-        {
-            Clerk.Dispose();
-        }
-
-        ~Shop()
-        {
-            Dispose();
         }
 
         public static ShopMemento Build(RectInt rect, Id<IEntity> clerkId, List<ItemEntityMemento> items)
@@ -71,7 +66,8 @@ namespace Domain.Service.Rooms
                     false
                 ),
                 clerkId,
-                items.Select(itemMemento => {
+                items.Select(itemMemento =>
+                {
                     var item = itemMemento.Item.Deserialize();
                     return new ShopItemMemento
                     (
@@ -93,7 +89,7 @@ namespace Domain.Service.Rooms
                     hasEntered,
                     hasEverEntered
                 ),
-                Clerk.Entity.Id,
+                _clerk.Entity.Id,
                 _shopItems.Select(item => new ShopItemMemento
                 (
                     item.Id,
@@ -167,12 +163,18 @@ namespace Domain.Service.Rooms
         {
             if (map.Player.Money.CurrentValue + GetSalePrice(map) >= GetPurchasePrice(map))
             {
-                GameLog.AddIgnoreVisibility(
-                    $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
-                map.Player.AddMoney(GetSalePrice(map));
-                GameLog.AddIgnoreVisibility(
-                    $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
-                map.Player.ReduceMoney(GetPurchasePrice(map));
+                if (GetSalePrice(map) > 0)
+                {
+                    GameLog.AddIgnoreVisibility(
+                        $"{map.Player.Character.GetName(map.Player)}は<color=green>{GetSalePrice(map)}G</color>受け取った");
+                    map.Player.AddMoney(GetSalePrice(map));
+                }
+                if (GetPurchasePrice(map) > 0)
+                {
+                    GameLog.AddIgnoreVisibility(
+                        $"{map.Player.Character.GetName(map.Player)}は<color=yellow>{GetPurchasePrice(map)}G</color>支払った");
+                    map.Player.ReduceMoney(GetPurchasePrice(map));
+                }
                 var purchaseItems = GetMissingItems(map);
                 RemoveMark(map, purchaseItems);
                 SetShopItems(GetItemsInRoom(map));
@@ -187,8 +189,8 @@ namespace Domain.Service.Rooms
         public void Stolen(IGameManager gameManager, IMap map)
         {
             GameLog.AddIgnoreVisibility("<color=red>どろぼう！</color>");
-            Clerk.OpposingThief(map.Player.Character);
-            Clerk.Character.AddCondition(
+            _clerk.Affiliation.AddForceAffiliation(map.Player.Character.Entity.Id, AffiliationType.Enemy);
+            _clerk.AddCondition(
                 Id<IEntity>.Empty,
                 ScriptableObjectLoader.Load<ConditionTemplate>("店員の怒り")
             );

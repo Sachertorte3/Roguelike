@@ -10,7 +10,7 @@ namespace Domain.Model
     {
         public string? ChoiceMessage { get; }
         public IReadOnlyList<PlayerChoiceEvent> Events { get; }
-        public bool CanExecuteEvent(IPlayer player);
+        public bool CanExecuteEvent(IPlayer player, IMap map);
         public UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map);
         public UniTask<IAction?> DoAction(IPlayer player, IGameManager gameManager, IMap map, IAction? swap);
     }

@@ -47,6 +47,7 @@ namespace Domain.Service.Characters
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         public int DropExp { get; init; }
+        private readonly List<IPlayerEvent> _events = new();
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
         private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
@@ -131,6 +132,7 @@ namespace Domain.Service.Characters
         public bool CanUseItem { get; init; }
         public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);
         public CharacterState State { get; set; } = CharacterState.Wait;
+        public IReadOnlyList<IPlayerEvent> Events => _events;
 
         public void SetWaitState()
         {
@@ -810,6 +812,11 @@ namespace Domain.Service.Characters
                 KnowItem(item, false);
             }
             return _inventory.Replace(item, index);
+        }
+
+        public void AddEvent(IPlayerEvent ev)
+        {
+            _events.Add(ev);
         }
 
         public void UpdateTurn()

@@ -20,7 +20,7 @@ using Utilities.Serialize.Result;
 namespace Domain.Model.Character
 {
     public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IHasBehavior,
-        IHasCondition
+        IHasCondition, IPlayerEventEntity
     {
         public ICharacterType CharacterType { get; init; }
         public bool IsPlayer { get; }
@@ -51,6 +51,7 @@ namespace Domain.Model.Character
         public IItem? RemoveInventory(ItemFocus index);
         public IEnumerable<IItem> ClearInventory();
         public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index);
+        public void AddEvent(IPlayerEvent ev);
         public void UpdateTurn();
 
         public bool IsVisible(Vector2Int position)

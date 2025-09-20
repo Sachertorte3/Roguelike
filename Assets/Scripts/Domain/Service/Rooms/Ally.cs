@@ -3,34 +3,26 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
-using Domain.Model.Effect;
-using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Logs;
-using Utilities;
 
 namespace Domain.Service.Rooms
 {
-    public class Ally : IPlayerEventEntity
+    public class Ally : IPlayerEvent
     {
-        public readonly ICharacter Character;
-        public EntityBase Entity => Character.Entity;
-        public readonly EnemyBehavior Behavior;
         public IPlayerEvent Event { get; init; }
 
-        public Ally(ICharacter character, EnemyBehavior behavior, IMap map)
+        public Ally(ICharacter character, EnemyBehavior behavior)
         {
-            Character = character;
-            Behavior = behavior;
             Event = new PlayerEvent(
                 null,
                 new List<PlayerChoiceEvent>
                 {
                     new(
                         "渡す",
-                        player => Character.CanUseItem && Character.IsAlly(player.Character),
+                        (player, map) => character.CanUseItem && character.IsAlly(player.Character),
                         async (gameManager, map) =>
                         {
                             var player = map.Player;
@@ -43,40 +35,40 @@ namespace Domain.Service.Rooms
                                 {
                                     var index = player.Character.Inventory.GetItemIndexRecursive(item);
                                     player.Character.RemoveInventory(index);
-                                    GameLog.Add(Entity.IsVisible,
-                                        $"{Character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
+                                    GameLog.Add(character.Entity.IsVisible,
+                                        $"{character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                                 }
                                 else
                                 {
-                                    GameLog.Add(Entity.IsVisible, $"{Character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
+                                    GameLog.Add(character.Entity.IsVisible, $"{character.GetName(player)}は{item.GetName(player, map.ItemPlaceholders)}を持てない。");
                                 }
                             }
                         }
                     ),
                     new(
                         "一緒に行動",
-                        player => Character.IsAlly(player.Character),
+                        (player, map) => character.IsAlly(player.Character),
                         (gameManager, map) =>
                         {
-                            Behavior.BehaviorData.ChaseLeader = true;
-                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
+                            behavior.BehaviorData.ChaseLeader = true;
+                            behavior.BehaviorData.PrioritizeEnemiesOverLeaders = false;
                             return UniTask.CompletedTask;
                         }),
                     new(
                         "敵優先",
-                        player => Character.IsAlly(player.Character),
+                        (player, map) => character.IsAlly(player.Character),
                         (gameManager, map) =>
                         {
-                            Behavior.BehaviorData.ChaseLeader = true;
-                            Behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
+                            behavior.BehaviorData.ChaseLeader = true;
+                            behavior.BehaviorData.PrioritizeEnemiesOverLeaders = true;
                             return UniTask.CompletedTask;
                         }),
                     new(
                         "自由行動",
-                        player => Character.IsAlly(player.Character),
+                        (player, map) => character.IsAlly(player.Character),
                         (gameManager, map) =>
                         {
-                            Behavior.BehaviorData.ChaseLeader = false;
+                            behavior.BehaviorData.ChaseLeader = false;
                             return UniTask.CompletedTask;
                         }
                     )
@@ -84,19 +76,10 @@ namespace Domain.Service.Rooms
             );
         }
 
-        public void Dispose()
-        {
-            Character.Dispose();
-        }
-
-        ~Ally()
-        {
-            Dispose();
-        }
-
-        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
-        {
-            return Character.BlowAway(actor, direction, distance, map);
-        }
+        public string? ChoiceMessage => null;
+        public IReadOnlyList<PlayerChoiceEvent> Events => Event.Events;
+        public bool CanExecuteEvent(IPlayer player, IMap map) => Event.CanExecuteEvent(player, map);
+        public UniTask<bool> DoEvent(IPlayer player, IGameManager gameManager, IMap map) => Event.DoEvent(player, gameManager, map);
+        public UniTask<IAction?> DoAction(IPlayer player, IGameManager gameManager, IMap map, IAction? swap) => Event.DoAction(player, gameManager, map, swap);
     }
 }

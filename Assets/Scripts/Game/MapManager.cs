@@ -107,7 +107,6 @@ namespace Game
                 if (clerk != null)
                 {
                     _shop = new Shop(map.Shop.Value, clerk, gameManager, this);
-                    EntityManager.AddClerk(_shop.Clerk);
                     _rooms.Add(_shop);
                 }
             }
@@ -218,13 +217,10 @@ namespace Game
 
         public async UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor)
         {
-            var eventEntities = EntityManager.GetEventEntityAt(position, EntityLayer.Bottom);
-            foreach (var eventEntity in eventEntities)
+            var eventEntity = EntityManager.GetEventEntityFastAt(position, EntityLayer.Bottom);
+            if (eventEntity != null && eventEntity is Trap trapEntity)
             {
-                if (eventEntity is Trap trapEntity)
-                {
-                    await trapEntity.Event.DoEvent(actor, _gameManager, this);
-                }
+                await trapEntity.Event.DoEvent(actor, _gameManager, this);
             }
         }
 
@@ -385,16 +381,19 @@ namespace Game
                         }
                     }
                     var eventId = gameManager.StartEvent();
-                    var eventEntities = EntityManager.GetEventEntityAt(positionChanged, EntityLayer.Bottom);
-                    foreach (var eventEntity in eventEntities)
+                    var eventEntity = EntityManager.GetEventEntityFastAt(positionChanged, EntityLayer.Bottom);
+                    if (eventEntity != null)
                     {
                         await eventEntity.Event.DoEvent(character, _gameManager, this);
                     }
 
                     if (character.IsPlayer)
                     {
-                        var playerEventEntities = EntityManager.GetPlayerEventEntityAt(positionChanged, EntityLayer.Bottom);
-                        await playerEventEntities.Select(entity => entity.Event).ToList().DoEvent(EntityManager.Player, _gameManager, this);
+                        var playerEventEntity = EntityManager.GetPlayerEventEntityFastAt(positionChanged, EntityLayer.Bottom);
+                        if (playerEventEntity != null)
+                        {
+                            await playerEventEntity.Events.DoEvent(EntityManager.Player, _gameManager, this);
+                        }
                     }
                     gameManager.EndEvent(eventId);
                 }
@@ -473,7 +472,7 @@ namespace Game
                 EntityManager.RemoveCharacter(character);
             }
 
-            EntityManager.UpdateTurn(this);
+            EntityManager.UpdateTurn(_gameManager, this);
 
             SetGrasses(EntityManager.FireEntities.Positions(), false);
 
@@ -587,6 +586,9 @@ namespace Game
         public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer) => EntityManager.GetEntityFastAt(position, layer);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position, IEnumerable<EntityLayer> layers) => EntityManager.GetEntitiesFastAt(position, layers);
         public IEnumerable<IEntity> GetEntitiesFastAt(Vector2Int position) => EntityManager.GetEntitiesFastAt(position);
+        public IEventEntity? GetEventEntityFastAt(Vector2Int position, EntityLayer layer) => EntityManager.GetEventEntityFastAt(position, layer);
+        public IPlayerEventEntity? GetPlayerEventEntityFastAt(Vector2Int position, EntityLayer layer) => EntityManager.GetPlayerEventEntityFastAt(position, layer);
+        public IScheduledEventEntity? GetScheduledEventEntityFastAt(Vector2Int position, EntityLayer layer) => EntityManager.GetScheduledEventEntityFastAt(position, layer);
         public IItem? GetItemByIdFromWorldOrInventory(Id<IItem> id) => EntityManager.GetItemByIdFromWorldOrInventory(id);
         public HashSet<Vector2Int> AllCharacterPositionsFast() => EntityManager.AllCharacterPositionsFast();
         public HashSet<Vector2Int> AllItemPositionsFast() => EntityManager.AllItemPositionsFast();

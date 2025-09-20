@@ -28,23 +28,26 @@ namespace Domain.Service.Events
             _item = memento.Item.Map(i => i.Deserialize());
             _mimic = memento.Mimic;
             Entity = new EntityBase(memento.Entity);
-            Event = new PlayerEvent(
-                "宝箱を見つけた",
-                new List<PlayerChoiceEvent>
-                {
-                    new(
-                        "開ける",
-                        player => true,
-                        async (gameManager, map) => { await DoEvent(map); }
-                    )
-                }
-            );
+            Events = new List<IPlayerEvent>
+            {
+                new PlayerEvent(
+                    "宝箱を見つけた",
+                    new List<PlayerChoiceEvent>
+                    {
+                        new(
+                            "開ける",
+                            (player, map) => true,
+                            async (gameManager, map) => { await DoEvent(map); }
+                        )
+                    }
+                )
+            };
         }
 
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>("Assets/Images/Monsters/ChestA.png[Chest_0]")
             .WaitForCompletion();
 
-        public IPlayerEvent Event { get; init; }
+        public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
         private UniTask DoEvent(IMap map)
         {

@@ -11,9 +11,9 @@ namespace Domain.Service.Events
 {
     public static class PlayerEventExtensions
     {
-        public static async UniTask<bool> DoEvent(this List<IPlayerEvent> playerEvents, IPlayer player, IGameManager gameManager, IMap map)
+        public static async UniTask<bool> DoEvent(this IReadOnlyList<IPlayerEvent> playerEvents, IPlayer player, IGameManager gameManager, IMap map)
         {
-            playerEvents = playerEvents.Where(e => e.CanExecuteEvent(player)).ToList();
+            playerEvents = playerEvents.Where(e => e.CanExecuteEvent(player, map)).ToList();
             if (!playerEvents.Any())
                 return false;
             var index = 0;
@@ -28,7 +28,7 @@ namespace Domain.Service.Events
                     firstChoiceIndex += 1;
                 }
 
-                var executableEvents = playerEvents[index].Events.Where(e => e.CanExecuteEvent(player)).ToList();
+                var executableEvents = playerEvents[index].Events.Where(e => e.CanExecuteEvent(player, map)).ToList();
                 foreach (var eventData in executableEvents)
                 {
                     choices.Add(eventData.ChoiceText);
@@ -63,9 +63,9 @@ namespace Domain.Service.Events
                 }
             }
         }
-        public static async UniTask<IAction?> DoAction(this List<IPlayerEvent> playerEvents, IPlayer player, IGameManager gameManager, IMap map, IAction swap)
+        public static async UniTask<IAction?> DoAction(this IReadOnlyList<IPlayerEvent> playerEvents, IPlayer player, IGameManager gameManager, IMap map, IAction swap)
         {
-            playerEvents = playerEvents.Where(e => e.CanExecuteEvent(player)).ToList();
+            playerEvents = playerEvents.Where(e => e.CanExecuteEvent(player, map)).ToList();
             if (!playerEvents.Any())
                 return null;
             var index = 0;
@@ -86,7 +86,7 @@ namespace Domain.Service.Events
                     firstChoiceIndex += 1;
                 }
 
-                var executableEvents = playerEvents[index].Events.Where(e => e.CanExecuteEvent(player)).ToList();
+                var executableEvents = playerEvents[index].Events.Where(e => e.CanExecuteEvent(player, map)).ToList();
                 foreach (var eventData in executableEvents)
                 {
                     choices.Add(eventData.ChoiceText);

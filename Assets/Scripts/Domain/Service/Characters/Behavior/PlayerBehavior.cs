@@ -77,11 +77,11 @@ namespace Domain.Service.Characters.Behavior
                         var (move, started) = result.move!.Value;
 
                         var destination = character.Entity.CurrentPosition + move.Direction.Vector();
-                        var playerEventEntities = map.PlayerEventEntities.At(destination).On(EntityLayer.Middle);
+                        var playerEventEntity = map.GetPlayerEventEntityFastAt(destination, EntityLayer.Middle);
                         if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
-                            var (eventAction, _) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntities, new Swap(move.Direction));
+                            var (eventAction, _) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntity, new Swap(move.Direction));
                             if (eventAction != null)
                                 return eventAction;
                         }
@@ -94,7 +94,7 @@ namespace Domain.Service.Characters.Behavior
                             character.Turn(move.Direction);
                             if (move.Doable(character, map))
                                 return move;
-                            var (eventAction, anyEventCanExecute) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntities, swap);
+                            var (eventAction, anyEventCanExecute) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntity, swap);
                             if (eventAction != null)
                                 return eventAction;
                             if (!anyEventCanExecute && swap.Doable(character, map))
@@ -227,11 +227,11 @@ namespace Domain.Service.Characters.Behavior
             }
         }
 
-        private static async UniTask<(IAction? action, bool anyEventCanExecute)> TryGetPlayerEventAction(IHasBehavior character, IGameManager gameManager, IMap map, IEnumerable<IPlayerEventEntity> playerEventEntities, Swap swap)
+        private static async UniTask<(IAction? action, bool anyEventCanExecute)> TryGetPlayerEventAction(IHasBehavior character, IGameManager gameManager, IMap map, IHasPlayerEvent? playerEventEntity, Swap swap)
         {
-            if (!playerEventEntities.Where(e => e.Event.CanExecuteEvent(map.Player)).Any())
+            if (playerEventEntity == null || !playerEventEntity.Events.Any(e => e.CanExecuteEvent(map.Player, map)))
                 return (null, false);
-            var eventAction = await playerEventEntities.Select(e => e.Event).ToList().DoAction(map.Player, gameManager, map, swap);
+            var eventAction = await playerEventEntity.Events.DoAction(map.Player, gameManager, map, swap);
             if (eventAction != null && eventAction.Doable(character, map))
                 return (eventAction, true);
             return (null, true);

@@ -25,17 +25,20 @@ namespace Domain.Service.Events
         {
             Entity = new EntityBase(data.Entity);
             _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
-            Event = new PlayerEvent(
-                "魔法の壺を見つけた",
-                new List<PlayerChoiceEvent>
-                {
-                    new(
-                        "使う",
-                        player => CanUse.CurrentValue,
-                        async (gameManager, map) => await DoEvent(map)
-                    )
-                }
-            );
+            Events = new List<IPlayerEvent>
+            {
+                new PlayerEvent(
+                    "魔法の壺を見つけた",
+                    new List<PlayerChoiceEvent>
+                    {
+                        new(
+                            "使う",
+                            (player, map) => CanUse.CurrentValue,
+                            async (gameManager, map) => await DoEvent(map)
+                        )
+                    }
+                )
+            };
         }
 
         public void Dispose()
@@ -46,7 +49,7 @@ namespace Domain.Service.Events
         public Sprite Icon => Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[icons_full_16_{(CanUse.CurrentValue ? 270 : 269)}]")
             .WaitForCompletion();
 
-        public IPlayerEvent Event { get; init; }
+        public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
         private async UniTask DoEvent(IMap map)
         {

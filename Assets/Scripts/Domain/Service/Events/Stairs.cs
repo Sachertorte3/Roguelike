@@ -34,17 +34,20 @@ namespace Domain.Service.Events
                 MovementEntityType.MagicCircle => "魔法陣",
                 _ => throw new NotImplementedException(),
             };
-            Event = new PlayerEvent(
-                $"{entityName}を見つけた",
-                new List<PlayerChoiceEvent>
-                {
-                    new(
-                        "進む",
-                        player => CanExecuteEvent(),
-                        (gameManager, map) => DoEvent(gameManager)
-                    )
-                }
-            );
+            Events = new List<IPlayerEvent>
+            {
+                new PlayerEvent(
+                    $"{entityName}を見つけた",
+                    new List<PlayerChoiceEvent>
+                    {
+                        new(
+                            "進む",
+                            (player, map) => CanExecuteEvent(),
+                            (gameManager, map) => DoEvent(gameManager)
+                        )
+                    }
+                )
+            };
         }
 
         public void Dispose()
@@ -52,7 +55,7 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        public IPlayerEvent Event { get; init; }
+        public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
         private bool CanExecuteEvent()
         {

@@ -9,7 +9,7 @@ using Domain.Service.Action;
 
 namespace Domain.Service.Events
 {
-    internal class PlayerEvent : IPlayerEvent
+    public class PlayerEvent : IPlayerEvent
     {
         public string? ChoiceMessage { get; init; }
         public IReadOnlyList<PlayerChoiceEvent> Events { get; init; }

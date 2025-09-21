@@ -11,9 +11,6 @@ using XNode;
 using System;
 using Sirenix.Utilities;
 
-
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -28,10 +25,10 @@ namespace Domain.Model.Dungeon
         [OnValueChanged(nameof(OnRepeatChanged))]
 #endif
         public int Repeat = 1;
-        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]
+        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
         [InfoBox("Connection to SectionData is required.", InfoMessageType.Error, VisibleIf = nameof(_isSectionUnconnected))]
         private SectionData? _sectionData = null;
-        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField, Required]
+        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
         [InfoBox("Connection to FloorData is required.", InfoMessageType.Error, VisibleIf = nameof(_isFloorUnconnected))]
         private FloorData? _floorData = null;
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
@@ -150,6 +147,9 @@ namespace Domain.Model.Dungeon
         protected override void Init()
         {
             base.Init();
+            _sectionData = null;
+            _floorData = null;
+            _enemies = null;
             if (!_mapIds.IsNullOrEmpty())
                 return;
             _mapIds = new string[Repeat];

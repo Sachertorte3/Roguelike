@@ -129,32 +129,41 @@ namespace Domain.Service.Characters.Behavior
                         {
                             break;
                         }
-                        var disabledItemIndexes = new List<ItemFocus> { focus };
-                        item = focus.GetItem(character.Inventory, map);
-                        if (item != null)
+                        ItemFocus focus2;
+                        if (focus.IsGroundItem && character.Inventory.HasEmptySpace())
                         {
-                            if (item.ItemStorage.IsSome)
+                            var emptyIndex = character.Inventory.GetItemIndex(null);
+                            focus2 = new ItemFocus(emptyIndex);
+                        }
+                        else
+                        {
+                            var disabledItemIndexes = new List<ItemFocus> { focus };
+                            item = focus.GetItem(character.Inventory, map);
+                            if (item != null)
                             {
-                                for (int i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                                if (item.ItemStorage.IsSome)
                                 {
-                                    disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
+                                    for (int i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                                    {
+                                        disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
+                                    }
+                                }
+                                else if (focus.SubIndex >= 0)
+                                {
+                                    disabledItemIndexes.Add(new ItemFocus(focus.Index));
                                 }
                             }
-                            else if (focus.SubIndex >= 0)
+                            focus2 = await SelectItem("入れ替え先を選択してください", character.Inventory, map, disabledItemIndexes.ToArray());
+
+                            if (focus == focus2)
                             {
-                                disabledItemIndexes.Add(new ItemFocus(focus.Index));
+                                break;
                             }
-                        }
-                        var focus2 = await SelectItem("入れ替え先を選択してください", character.Inventory, map, disabledItemIndexes.ToArray());
 
-                        if (focus == focus2)
-                        {
-                            break;
-                        }
-
-                        if (focus2.IsEmpty)
-                        {
-                            break;
+                            if (focus2.IsEmpty)
+                            {
+                                break;
+                            }
                         }
 
                         if (focus.IsGroundItem)

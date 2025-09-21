@@ -8,6 +8,8 @@ using Domain.Model.Memento;
 using Domain.Service.Events;
 using ObservableCollections;
 using R3;
+using UnityEngine;
+using Utilities;
 using Utilities.Serialize.Option;
 
 namespace Game
@@ -74,6 +76,19 @@ namespace Game
             _teleporter = eventEntities.Teleporter.Map(teleporter => new Teleporter(teleporter));
             if (_teleporter.HasValue)
                 Spawn(_teleporter.Value!);
+
+            _standaloneEventEntities.SubscribeIncludingCurrentObservables(
+                entity => entity.Entity.OnDestroyed,
+                (entity, _) => Remove(entity)
+            );
+            _standalonePlayerEventEntities.SubscribeIncludingCurrentObservables(
+                entity => entity.Entity.OnDestroyed,
+                (entity, _) => Remove(entity)
+            );
+            _standaloneScheduledEventEntities.SubscribeIncludingCurrentObservables(
+                entity => entity.Entity.OnDestroyed,
+                (entity, _) => Remove(entity)
+            );
         }
 
         public EventEntitiesMemento Serialize()
@@ -137,6 +152,7 @@ namespace Game
 
         public void Remove(IEventEntity eventEntity)
         {
+            Debug.Log($"Remove event entity: {eventEntity.GetType()}");
             _standaloneEventEntities.Remove(eventEntity);
             if (eventEntity is Trap trap)
             {

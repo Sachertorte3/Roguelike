@@ -15,6 +15,7 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
@@ -103,22 +104,22 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case InputType.UseItem:
                         var focus = result.focus!;
-                        var item = focus.GetItem(character.Inventory, map);
+                        var focusItem = focus.GetItem(character.Inventory, map);
                         IAction action;
 
-                        if (item == null)
+                        if (focusItem == null)
                             action = new UseSkill(character.Skills[0], character.CurrentDirection);
                         else
-                            action = new UseItem(item, character.CurrentDirection);
+                            action = new UseItem(focusItem, character.CurrentDirection);
 
                         if (action.Doable(character, map)) return action;
                         break;
                     case InputType.ThrowItem:
                         focus = result.focus!;
-                        item = focus.GetItem(character.Inventory, map);
-                        if (item != null)
+                        focusItem = focus.GetItem(character.Inventory, map);
+                        if (focusItem != null)
                         {
-                            action = new ThrowItem(item, character.CurrentDirection);
+                            action = new ThrowItem(focusItem, character.CurrentDirection);
                             if (action.Doable(character, map)) return action;
                         }
 
@@ -138,19 +139,36 @@ namespace Domain.Service.Characters.Behavior
                         else
                         {
                             var disabledItemIndexes = new List<ItemFocus> { focus };
-                            item = focus.GetItem(character.Inventory, map);
-                            if (item != null)
+                            focusItem = focus.GetItem(character.Inventory, map);
+                            if (focusItem != null)
                             {
-                                if (item.ItemStorage.IsSome)
+                                if (focusItem.ItemStorage.IsSome)
                                 {
-                                    for (int i = 0; i < item.ItemStorage.Value.Capacity; i++)
+                                    for (int i = 0; i < focusItem.ItemStorage.Value.Capacity; i++)
                                     {
                                         disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
                                     }
                                 }
                                 else if (focus.SubIndex >= 0)
                                 {
+                                    var parentIndex = new ItemFocus(focus.Index);
+                                    var storage = parentIndex.GetItem(character.Inventory, map);
+                                    if (!storage.ItemStorage.Value.CanRemoveItem)
+                                    {
+                                        GameLog.AddIgnoreVisibility($"{focusItem.GetName(map.Player, map.ItemPlaceholders)}は取り出せない");
+                                        break;
+                                    }
                                     disabledItemIndexes.Add(new ItemFocus(focus.Index));
+                                }
+                            }
+                            foreach (var (item, i) in character.Inventory.AllItemsWithIndex)
+                            {
+                                if (item.ItemStorage.IsSome && !item.ItemStorage.Value.CanRemoveItem)
+                                {
+                                    foreach (var (_, j) in item.ItemStorage.Value.AllItemsWithIndex)
+                                    {
+                                        disabledItemIndexes.Add(new ItemFocus(i, j));
+                                    }
                                 }
                             }
                             focus2 = await SelectItem("入れ替え先を選択してください", character.Inventory, map, disabledItemIndexes.ToArray());
@@ -192,16 +210,16 @@ namespace Domain.Service.Characters.Behavior
                         return new DoNothing();
                     case InputType.RenameItem:
                         focus = result.focus!;
-                        item = focus.GetItem(character.Inventory, map);
-                        if (item == null)
+                        focusItem = focus.GetItem(character.Inventory, map);
+                        if (focusItem == null)
                             break;
 
                         var choices = new List<string>();
-                        if (!item.IsInfoIdentified(map.Player))
+                        if (!focusItem.IsInfoIdentified(map.Player))
                         {
                             choices.Add("このアイテムの種類に名前をつける");
                         }
-                        if (item.CustomName.IsSome)
+                        if (focusItem.CustomName.IsSome)
                         {
                             choices.Add("このアイテム単体の名前を変える");
                             choices.Add("このアイテム単体の名前をデフォルトに戻す");
@@ -216,13 +234,13 @@ namespace Domain.Service.Characters.Behavior
                         switch (choices[choice])
                         {
                             case "このアイテムの種類に名前をつける":
-                                map.ItemPlaceholders.Rename(item.BaseName, await gameManager.GetTextInput());
+                                map.ItemPlaceholders.Rename(focusItem.BaseName, await gameManager.GetTextInput());
                                 break;
                             case "このアイテム単体に名前をつける":
-                                item.Rename(await gameManager.GetTextInput());
+                                focusItem.Rename(await gameManager.GetTextInput());
                                 break;
                             case "このアイテム単体の名前をデフォルトに戻す":
-                                item.RevertToDefaultName();
+                                focusItem.RevertToDefaultName();
                                 break;
                             case "やめる":
                                 break;

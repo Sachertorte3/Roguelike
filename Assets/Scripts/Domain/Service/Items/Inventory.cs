@@ -46,6 +46,7 @@ namespace Domain.Service.Items
             });
 
         public int Capacity => _storage.Capacity;
+        public bool CanRemoveItem => _storage.CanRemoveItem;
         public Observable<OnItemChanged> OnItemChanged => _storage.OnItemChanged;
         public Observable<OnItemUpdated> OnItemUpdated => _storage.OnItemUpdated;
 

@@ -12,6 +12,7 @@ namespace Domain.Model.Item
         public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex { get; }
         public IEnumerable<IItem> AllItemsRecursive { get; }
         public int Capacity { get; }
+        public bool CanRemoveItem { get; }
         public Observable<OnItemChanged> OnItemChanged { get; }
         public Observable<OnItemUpdated> OnItemUpdated { get; }
         public bool HasEmptySpace();

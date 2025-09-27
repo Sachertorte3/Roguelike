@@ -80,7 +80,7 @@ namespace Domain.Service.Items
                     conditions: data.PassiveConditions
                 ),
                 skillOnUse: skillOnUse,
-                storage: Storage.Build(data.StorageCapacity, false)
+                storage: Storage.Build(data.StorageCapacity, false, data.CanRemoveItem)
             ));
             return JsonUtility.FromJson<StorageItemMemento>(json); //MEMO: To break the sharing of references
         }

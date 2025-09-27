@@ -19,6 +19,8 @@ namespace Provider
             EnumerableExtension.CreateNewInstances<SerialDisposable>(3).ToArray();
 
         protected override InputReceiver _inputReceiver { get; init; }
+        protected override GameManager _gameManager { get; init; }
+        protected override World _world { get; init; }
 
         protected override EntityView GetEntityView(EntityView view)
         {
@@ -26,9 +28,11 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedIconEntityView(World world, InputReceiver inputReceiver)
+        public SynchronizedIconEntityView(World world, InputReceiver inputReceiver, GameManager gameManager)
         {
             _inputReceiver = inputReceiver;
+            _gameManager = gameManager;
+            _world = world;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable[0].Disposable =
@@ -88,8 +92,10 @@ namespace Provider
             {
                 return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
             }
-
-            return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
+            else
+            {
+                return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
+            }
         }
 
         public void Dispose()

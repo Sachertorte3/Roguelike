@@ -2,8 +2,11 @@
 using BidirectionalMap;
 using Domain.Model.Entity;
 using Domain.Model.Setting;
+using Domain.Service.Events;
+using Game;
 using R3;
 using UnityEngine;
+using Utilities;
 using View;
 
 namespace Provider
@@ -13,6 +16,8 @@ namespace Provider
         private readonly BiMap<T, TView> _viewDict = new();
         protected abstract TView ViewPrefab(T obj);
         protected abstract InputReceiver _inputReceiver { get; init; }
+        protected abstract World _world { get; init; }
+        protected abstract GameManager _gameManager { get; init; }
 
         protected abstract EntityView GetEntityView(TView view);
 
@@ -63,6 +68,19 @@ namespace Provider
             Settings.GlobalSettings.ThrowMilliseconds.Value.Subscribe(value => entityView.SetThrowMilliseconds(value)).AddTo(entityView);
             Settings.GlobalSettings.MoveMilliseconds.Value.Subscribe(value => entityView.SetMoveMilliseconds(value)).AddTo(entityView);
             Settings.GlobalSettings.DashMilliseconds.Value.Subscribe(value => entityView.SetDashMilliseconds(value)).AddTo(entityView);
+
+            if (entity is IPlayerEventEntity playerEventEntity)
+            {
+                var eventArrowPrefab = ScriptableObjectLoader.LoadPrefab("EvArrow");
+                var eventArrow = GameObject.Instantiate(eventArrowPrefab, entityView.transform);
+                _gameManager.Turn.SubscribeIncludingCurrentValue(turn =>
+                {
+                    var map = _world.ActiveMap.CurrentValue;
+                    var canExecuteEvent = playerEventEntity.Events.CanExecuteEvent(map.Player, map);
+                    var color = canExecuteEvent ? Color.green : Color.clear;
+                    eventArrow.GetComponent<SpriteRenderer>().color = color;
+                }).AddTo(entityView);
+            }
 
             var spriteView = entityView.GetComponent<SpriteView>();
             spriteView.transform.position = new Vector3(entity.Entity.CurrentPosition.x,

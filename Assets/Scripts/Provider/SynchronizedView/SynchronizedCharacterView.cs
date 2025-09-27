@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Setting;
+using Domain.Service.Events;
 using Game;
 using R3;
 using UnityEngine;
@@ -17,7 +18,8 @@ namespace Provider
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
         private readonly EffectViewSpawner _effectViewSpawner;
-        private readonly World _world;
+        protected override GameManager _gameManager { get; init; }
+        protected override World _world { get; init; }
 
         protected override EntityView GetEntityView(CharacterView view)
         {
@@ -25,10 +27,11 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedCharacterView(InputReceiver receiver, EffectViewSpawner effectViewSpawner, World world)
+        public SynchronizedCharacterView(InputReceiver receiver, EffectViewSpawner effectViewSpawner, GameManager gameManager, World world)
         {
             _inputReceiver = receiver;
             _effectViewSpawner = effectViewSpawner;
+            _gameManager = gameManager;
             _world = world;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(

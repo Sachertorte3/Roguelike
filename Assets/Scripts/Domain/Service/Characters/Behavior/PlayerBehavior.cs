@@ -15,7 +15,6 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Events;
-using Domain.Service.Items;
 using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
@@ -116,8 +115,7 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case InputType.ThrowItem:
                         focus = result.focus!;
-                        focusItem = focus.GetItem(character.Inventory, map);
-                        if (focusItem != null)
+                        if (focus.IsOnItem(character.Inventory, map, out focusItem))
                         {
                             action = new ThrowItem(focusItem, character.CurrentDirection);
                             if (action.Doable(character, map)) return action;
@@ -126,12 +124,12 @@ namespace Domain.Service.Characters.Behavior
                         break;
                     case InputType.SwapItem:
                         focus = result.focus!;
-                        if (focus.IsEmpty)
+                        if (focus.IsOnEmpty)
                         {
                             break;
                         }
                         ItemFocus focus2;
-                        if (focus.IsGroundItem && character.Inventory.HasEmptySpace())
+                        if (focus.IsOnGroundItem && character.Inventory.HasEmptySpace())
                         {
                             var emptyIndex = character.Inventory.GetItemIndex(null);
                             focus2 = new ItemFocus(emptyIndex);
@@ -139,12 +137,11 @@ namespace Domain.Service.Characters.Behavior
                         else
                         {
                             var disabledItemIndexes = new List<ItemFocus> { focus };
-                            focusItem = focus.GetItem(character.Inventory, map);
-                            if (focusItem != null)
+                            if (focus.IsOnItem(character.Inventory, map, out focusItem))
                             {
-                                if (focusItem.ItemStorage.IsSome)
+                                if (focusItem.ItemStorage.IsSome(out var itemStorage))
                                 {
-                                    for (int i = 0; i < focusItem.ItemStorage.Value.Capacity; i++)
+                                    for (int i = 0; i < itemStorage.Capacity; i++)
                                     {
                                         disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
                                     }
@@ -152,10 +149,10 @@ namespace Domain.Service.Characters.Behavior
                                 else if (focus.SubIndex >= 0)
                                 {
                                     var parentIndex = new ItemFocus(focus.Index);
-                                    var storage = parentIndex.GetItem(character.Inventory, map);
-                                    if (!storage.ItemStorage.Value.CanRemoveItem)
+                                    var storageItem = parentIndex.GetItem(character.Inventory, map);
+                                    if (!storageItem.ItemStorage.Value.CanRemoveItem)
                                     {
-                                        GameLog.AddIgnoreVisibility($"{focusItem.GetName(map.Player, map.ItemPlaceholders)}は取り出せない");
+                                        GameLog.AddIgnoreVisibility($"{storageItem.GetName(map.Player, map.ItemPlaceholders)}からはアイテムを取り出せない");
                                         break;
                                     }
                                     disabledItemIndexes.Add(new ItemFocus(focus.Index));
@@ -163,7 +160,7 @@ namespace Domain.Service.Characters.Behavior
                             }
                             foreach (var (item, i) in character.Inventory.AllItemsWithIndex)
                             {
-                                if (item.ItemStorage.IsSome && !item.ItemStorage.Value.CanRemoveItem)
+                                if (item.ItemStorage.IsSome(out var itemStorage) && !itemStorage.CanRemoveItem)
                                 {
                                     foreach (var (_, j) in item.ItemStorage.Value.AllItemsWithIndex)
                                     {
@@ -178,20 +175,20 @@ namespace Domain.Service.Characters.Behavior
                                 break;
                             }
 
-                            if (focus2.IsEmpty)
+                            if (focus2.IsOnEmpty)
                             {
                                 break;
                             }
                         }
 
-                        if (focus.IsGroundItem)
+                        if (focus.IsOnGroundItem)
                         {
                             action = new DropItem(focus2);
                             if (action.Doable(character, map)) return action;
                         }
                         else
                         {
-                            if (focus2.IsGroundItem)
+                            if (focus2.IsOnGroundItem)
                             {
                                 action = new DropItem(focus);
                                 if (action.Doable(character, map)) return action;
@@ -219,7 +216,7 @@ namespace Domain.Service.Characters.Behavior
                         {
                             choices.Add("このアイテムの種類に名前をつける");
                         }
-                        if (focusItem.CustomName.IsSome)
+                        if (focusItem.CustomName.IsSome())
                         {
                             choices.Add("このアイテム単体の名前を変える");
                             choices.Add("このアイテム単体の名前をデフォルトに戻す");
@@ -302,7 +299,7 @@ namespace Domain.Service.Characters.Behavior
             do
             {
                 focus = await _receiver.OnUseItemActionReceived.WaitAsync();
-            } while (!focus.IsEmpty && disabledItemIndexes.Contains(focus));
+            } while (!focus.IsOnEmpty && disabledItemIndexes.Contains(focus));
 
             _onItemSelect.OnNext(new OnItemSelectMessage(text, false, new ItemFocus[0]));
             return focus;

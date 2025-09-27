@@ -15,9 +15,11 @@ namespace Domain.Model.Item
         public bool CanRemoveItem { get; }
         public Observable<OnItemChanged> OnItemChanged { get; }
         public Observable<OnItemUpdated> OnItemUpdated { get; }
+        public Observable<OnItemOverflowed> OnItemOverflowed { get; }
         public bool HasEmptySpace();
         public IItem? GetItem(int index);
-        public int GetItemIndex(IItem item);
+        public bool HasItemAt(int index, out IItem item);
+        public int GetItemIndex(IItem? item);
         public void Add(IItem item);
         public bool TryAdd(IItem item);
         public void Remove(IItem item);

@@ -25,16 +25,13 @@ namespace Domain.Service.Items
         public override bool CannotDropIfCursed => false;
         public override bool IdentifyIfGot => false;
         public override bool IdentifyIfUsed => true;
-        public override bool AutoDestroyWhenDisabled => false;
+        public override bool AutoDestroyWhenDisabled => true;
         public override Option<ISkill> SkillOnUse => _skillOnUse.Map(skill => (ISkill)skill);
         public override Option<ISkill> SkillOnThrow => Option.None<ISkill>();
         protected override bool HasSameEffect => false;
         protected override bool HasSameSkill => false;
 
-        public StorageItem(StorageItemData data) : this(Build(data))
-        {
-        }
-
+        public StorageItem(StorageItemData data) : this(Build(data)) {}
         public StorageItem(StorageItemMemento data) : base(data.BaseItem)
         {
             _skillOnUse = data.SkillOnUse.Map(skill => new InventoryTargetSkill(skill));

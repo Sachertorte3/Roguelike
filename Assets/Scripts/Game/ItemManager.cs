@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Item;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Items;
+using Domain.Service.Logs;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -22,20 +24,35 @@ namespace Game
         private CompositeDisposable _disposables = new();
 
         [Inject]
-        public ItemManager()
+        public ItemManager(IMap map)
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
-            _items.SubscribeIncludingCurrentObservables(item => item.Entity.Position, (item, position) => SetAllItemPosition())
-                .AddTo(_disposables);
             _items.SubscribeIncludingCurrentObservables(
-                item => item.Item.RemainingUses.Where(value => value <= 0).AsUnitObservable(),
-                (item, _) =>
+                item => item.Entity.Position,
+                (item, position) => SetAllItemPosition()
+            ).AddTo(_disposables);
+            _items.SubscribeIncludingCurrentObservables(
+                item => item.Item.RemainingUses.SkipLatestValueOnSubscribe(),
+                (item, remainingUses) =>
                 {
-                    if (item.Item.AutoDestroyWhenDisabled)
+                    if (remainingUses <= 0 && item.Item.AutoDestroyWhenDisabled)
+                    {
                         _items.Remove(item);
-                }).AddTo(_disposables);
-            _items.SubscribeIncludingCurrentObservables(item => item.Entity.OnDestroyed, (item, dead) => _items.Remove(item))
-                .AddTo(_disposables);
+                        if (item.Item.ItemStorage.IsSome(out var itemStorage))
+                        {
+                            GameLog.Add(item.Entity.IsVisible, $"{item.Item.GetName(map.Player, map.ItemPlaceholders)}の中身が散らばった");
+                            foreach (var overflowedItem in itemStorage.AllItems)
+                            {
+                                map.SpawnItem(overflowedItem, item.Entity.Position.CurrentValue);
+                            }
+                        }
+                    }
+                }
+            ).AddTo(_disposables);
+            _items.SubscribeIncludingCurrentObservables(
+                item => item.Entity.OnDestroyed,
+                (item, dead) => _items.Remove(item)
+            ).AddTo(_disposables);
         }
 
         public IObservableCollection<IItemEntity> Items => _items;

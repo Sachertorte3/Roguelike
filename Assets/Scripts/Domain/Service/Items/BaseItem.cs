@@ -519,7 +519,11 @@ namespace Domain.Service.Items
 
         public string FullInfo()
         {
-            var info = $"{State.GetDescription()}{_fullName} ({_remainingUsages.CurrentValue}/{MaxUsages})\n";
+            var info = $"{State.GetDescription()}{_fullName}";
+            if (MaxUsages > 1) {
+                info += $" ({_remainingUsages.CurrentValue}/{MaxUsages})";
+            }
+            info += "\n";
             info += $"{Price}Gの価値がある\n";
             info += CursedInfo();
             if (HasActivatableSkill)

@@ -11,8 +11,7 @@ namespace Domain.Service.InventoryEffect
         {
             for (var i = 0; i < storage.Capacity; i++)
             {
-                var item = storage.GetItem(i);
-                if (item != null)
+                if (storage.HasItemAt(i, out var item))
                     item.Repair(player, itemHolder, itemPlaceholders);
             }
         }

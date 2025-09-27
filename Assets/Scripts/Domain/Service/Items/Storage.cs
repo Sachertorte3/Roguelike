@@ -8,7 +8,6 @@ using Domain.Model.Item;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 using Utilities.Serialize.Result;
@@ -33,6 +32,8 @@ namespace Domain.Service.Items
                     .Append(x)
             );
         private readonly bool _canAddItemsWithStorage;
+        private readonly bool _canRemoveItem;
+        public bool CanRemoveItem => _canRemoveItem;
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
 
         public Observable<OnItemChanged> OnItemChanged => _items.ObserveReplace().Select(itemChanged =>
@@ -52,7 +53,7 @@ namespace Domain.Service.Items
                 _items.Add(null);
             }
             _canAddItemsWithStorage = data.CanAddItemsWithStorage;
-
+            _canRemoveItem = data.CanRemoveItem;
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
             _disposable = _items.ObserveReplace().Subscribe(itemChanged =>
             {
@@ -92,22 +93,24 @@ namespace Domain.Service.Items
             return new StorageMemento
             (
                 _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToList(),
-                _canAddItemsWithStorage
+                _canAddItemsWithStorage,
+                _canRemoveItem
             );
         }
 
-        public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage)
+        public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage, bool canRemoveItem)
         {
             return new StorageMemento(
                 items.Select(item => item.ToOption().Map(item => item.Serialize())).ToList(),
-                canAddItemsWithStorage
+                canAddItemsWithStorage,
+                canRemoveItem
             );
         }
 
-        public static StorageMemento Build(int capacity, bool canAddItemsWithStorage)
+        public static StorageMemento Build(int capacity, bool canAddItemsWithStorage, bool canRemoveItem)
         {
             var items = EnumerableExtension.CreateNewInstances<Option<IItemMemento>>(capacity).ToList();
-            return new StorageMemento(items, canAddItemsWithStorage);
+            return new StorageMemento(items, canAddItemsWithStorage, canRemoveItem);
         }
 
         public bool HasEmptySpace()
@@ -156,7 +159,7 @@ namespace Domain.Service.Items
             var index = _items.IndexOf(item);
             if (index >= 0)
             {
-                Remove(index);
+                Replace(null, index);
                 return true;
             }
             return false;
@@ -167,6 +170,8 @@ namespace Domain.Service.Items
             if (!_canAddItemsWithStorage && item != null && item.ItemStorage.IsSome)
                 return Result<IItem?>.Error;
             var removed = _items[index];
+            if (!_canRemoveItem && removed != null)
+                return Result<IItem?>.Error;
             if (item != null || removed != null)
             {
                 _items[index] = item;

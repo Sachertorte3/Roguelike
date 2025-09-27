@@ -20,6 +20,7 @@ namespace Domain.Model.Item
         public float MultiplyPrice = 1f;
         [SerializeReference] public IInventoryEffect? InventoryEffect = null;
         [MinValue(1)] public int StorageCapacity = 0;
+        public bool CanRemoveItem = false;
         [MinValue(1), ShowIf("@InventoryEffect != null")] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;

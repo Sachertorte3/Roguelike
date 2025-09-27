@@ -63,7 +63,7 @@ namespace Domain.Service.Characters
                     )
                 },
                 Option<SpawnEffectSkillMemento>.None,
-                Storage.Build(10, true),
+                Storage.Build(10, true, true),
                 new List<string>(),
                 CharacterAffiliationManager.Build(CharacterGroup.Human),
                 Aggression.AttackAnyone,
@@ -83,7 +83,7 @@ namespace Domain.Service.Characters
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
             IAffiliation? affiliation = null, Location? homeLocation = null)
         {
-            var inventory = Storage.Build(10, true);
+            var inventory = Storage.Build(10, true, true);
             if (RandUtils.IsLessThanProbability(data.DropItemRate) && data.DropItemTable.Count > 0)
             {
                 var dropItem = data.DropItemTable.GetRandomItem();

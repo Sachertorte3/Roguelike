@@ -81,11 +81,11 @@ namespace Provider
                         item.Info(player, itemPlaceholders)
                     )
                 );
-                if (item.ItemStorage.IsSome)
+                if (item.ItemStorage.IsSome(out var itemStorage))
                 {
-                    for (var subIndex = 0; subIndex < item.ItemStorage.Value.Capacity; subIndex++)
+                    for (var subIndex = 0; subIndex < itemStorage.Capacity; subIndex++)
                     {
-                        var subItem = item.ItemStorage.Value.GetItem(subIndex);
+                        var subItem = itemStorage.GetItem(subIndex);
                         ReplaceItemView(inventoryView, subItem, new InventoryViewIndex(index.Index, subIndex), player, itemPlaceholders);
                     }
                 }

@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
@@ -52,22 +53,26 @@ namespace Domain.Service.Events
         private UniTask DoEvent(IMap map)
         {
             Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に開かれた");
-            if (_item.IsSome)
+            if (_item.IsSome(out var item))
             {
-                if (map.Player.Character.TryAddToInventory(_item.Value))
+                if (map.Player.Character.TryAddToInventory(item))
                 {
                     GameLog.AddIgnoreVisibility(
-                        $"{map.Player.Character.GetName(map.Player)}は{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
+                        $"{map.Player.Character.GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
-                    GameLog.AddIgnoreVisibility($"{_item.Value.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
-                    map.SpawnItem(_item.Value, Entity.CurrentPosition);
+                    GameLog.AddIgnoreVisibility($"{item.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
+                    map.SpawnItem(item, Entity.CurrentPosition);
                 }
+            }
+            else if (_mimic.IsSome(out var mimic))
+            {
+                map.SpawnEnemy(mimic, Entity.CurrentPosition, isSlept: false, isShiny: false);
             }
             else
             {
-                map.SpawnEnemy(_mimic.Value, Entity.CurrentPosition, isSlept: false, isShiny: false);
+                throw new Exception("Chest has no item and mimic");
             }
 
             return UniTask.CompletedTask;

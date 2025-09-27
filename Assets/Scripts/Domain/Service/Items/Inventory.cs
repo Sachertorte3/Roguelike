@@ -36,19 +36,21 @@ namespace Domain.Service.Items
                     .Append((main.Item, new ItemFocus(main.Index)))
             );
         public IEnumerable<ItemFocus> AllIndexesRecursive => Enumerable.Range(0, _storage.Capacity)
-            .SelectMany(main => {
-                var item = GetItem(main);
-                if (item == null || item.ItemStorage.IsNone)
+            .SelectMany(main =>
+            {
+                if (HasItemAt(main, out var item) && item.ItemStorage.IsSome(out var itemStorage))
+                    return Enumerable.Range(0, itemStorage.Capacity)
+                        .Select(sub => new ItemFocus(main, sub))
+                        .Append(new ItemFocus(main));
+                else
                     return new[] { new ItemFocus(main) };
-                return Enumerable.Range(0, item.ItemStorage.Value.Capacity)
-                    .Select(sub => new ItemFocus(main, sub))
-                    .Append(new ItemFocus(main));
             });
 
         public int Capacity => _storage.Capacity;
         public bool CanRemoveItem => _storage.CanRemoveItem;
         public Observable<OnItemChanged> OnItemChanged => _storage.OnItemChanged;
         public Observable<OnItemUpdated> OnItemUpdated => _storage.OnItemUpdated;
+        public Observable<OnItemOverflowed> OnItemOverflowed => _storage.OnItemOverflowed;
 
         public Inventory(StorageMemento data, IHasCondition hasCondition)
         {
@@ -109,20 +111,10 @@ namespace Domain.Service.Items
             }
         }
 
-        public StorageMemento Serialize()
-        {
-            return _storage.Serialize();
-        }
-
-        public bool HasEmptySpace()
-        {
-            return _storage.HasEmptySpace();
-        }
-
-        public IItem? GetItem(int index)
-        {
-            return _storage.GetItem(index);
-        }
+        public StorageMemento Serialize() => _storage.Serialize();
+        public bool HasEmptySpace() => _storage.HasEmptySpace();
+        public IItem? GetItem(int index) => _storage.GetItem(index);
+        public bool HasItemAt(int index, out IItem item) => _storage.HasItemAt(index, out item);
 
         public IItem? GetItem(ItemFocus index)
         {
@@ -131,10 +123,7 @@ namespace Domain.Service.Items
             return _storage.GetItem(index.Index).ItemStorage.Value.GetItem(index.SubIndex);
         }
 
-        public int GetItemIndex(IItem item)
-        {
-            return _storage.GetItemIndex(item);
-        }
+        public int GetItemIndex(IItem? item) => _storage.GetItemIndex(item);
 
         public ItemFocus? GetItemIndexRecursive(IItem item)
         {
@@ -166,7 +155,7 @@ namespace Domain.Service.Items
                 return true;
 
             var storages = _storage.AllItems
-                .Where(x => x.ItemStorage.IsSome)
+                .Where(x => x.ItemStorage.IsSome())
                 .Select(x => x.ItemStorage.Value);
 
             return storages.Any(storage => storage.TryRemove(item));
@@ -182,14 +171,7 @@ namespace Domain.Service.Items
             return itemStorage.ItemStorage.Value.Replace(item, index.SubIndex);
         }
 
-        public Result<IItem?> Replace(IItem? item, int index)
-        {
-            return _storage.Replace(item, index);
-        }
-
-        public IEnumerable<IItem> Clear()
-        {
-            return _storage.Clear();
-        }
+        public Result<IItem?> Replace(IItem? item, int index) => _storage.Replace(item, index);
+        public IEnumerable<IItem> Clear() => _storage.Clear();
     }
 }

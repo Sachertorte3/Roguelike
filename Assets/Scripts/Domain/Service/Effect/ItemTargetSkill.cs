@@ -82,8 +82,7 @@ namespace Domain.Service.Effect
             {
                 var focus = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
                     disabledItemIndexes.ToArray());
-                var selectedItem = focus.GetItem(player.Character.Inventory, map);
-                if (selectedItem != null)
+                if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
                     _itemEffect.Apply(player, selectedItem, itemHolder, map.ItemPlaceholders);
                     return ItemTargetSkillResult.Success;
@@ -93,11 +92,9 @@ namespace Domain.Service.Effect
             {
                 var focus =
                     await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map, selfIndex);
-                var selectedItem = focus.GetItem(player.Character.Inventory, map);
-                if (selectedItem != null)
+                if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
-                    var selectedItemIndex = player.Character.Inventory.GetItemIndexRecursive(selectedItem);
-                    if (disabledItemIndexes.Contains(selectedItemIndex))
+                    if (disabledItemIndexes.Contains(focus))
                     {
                         GameLog.Add(itemHolder.IsVisible, "しかし効果はなかった。");
                     }

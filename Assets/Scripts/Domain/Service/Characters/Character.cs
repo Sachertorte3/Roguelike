@@ -105,6 +105,16 @@ namespace Domain.Service.Characters
                 }
                 gameManager.EndEvent(eventId);
             });
+
+            _inventory.OnItemOverflowed.Subscribe(overflowed =>
+            {
+                GameLog.Add(Entity.IsVisible, $"{overflowed.From.GetName(_map.Player, _map.ItemPlaceholders)}の中身が散らばった");
+                foreach (var item in overflowed.Items)
+                {
+                    _map.SpawnItem(item, Entity.CurrentPosition);
+                }
+            });
+
             HasEvent = _events.ObserveCountChanged().Select(x => x > 0).ToReadOnlyReactiveProperty();
 
             Observable.Merge(

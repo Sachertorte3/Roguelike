@@ -22,8 +22,7 @@ namespace Domain.Service.Rooms
                     {
                         var player = map.Player;
                         var focus = await player.Character.ItemSelector.SelectItem("渡すアイテムを選択してください", player.Character.Inventory, map);
-                        var item = focus.GetItem(player.Character.Inventory, map);
-                        if (item != null)
+                        if (focus.IsOnItem(player.Character.Inventory, map, out var item))
                         {
                             var result = character.Inventory.TryAdd(item);
                             if (result)

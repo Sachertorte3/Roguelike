@@ -35,12 +35,12 @@ namespace Domain.Service.Items
         private readonly bool _canRemoveItem;
         public bool CanRemoveItem => _canRemoveItem;
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
-
+        private readonly Subject<OnItemOverflowed> _onItemOverflowed = new();
         public Observable<OnItemChanged> OnItemChanged => _items.ObserveReplace().Select(itemChanged =>
             new OnItemChanged(itemChanged.OldValue, itemChanged.NewValue, itemChanged.Index)
         );
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
-
+        public Observable<OnItemOverflowed> OnItemOverflowed => _onItemOverflowed;
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable[] _disposables;
 
@@ -55,22 +55,36 @@ namespace Domain.Service.Items
             _canAddItemsWithStorage = data.CanAddItemsWithStorage;
             _canRemoveItem = data.CanRemoveItem;
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
-            _disposable = _items.ObserveReplace().Subscribe(itemChanged =>
+            _disposable = _items.SubscribeIncludingCurrentItems(itemChanged =>
             {
-                _disposables[itemChanged.Index].Clear();
-                if (itemChanged.NewValue != null)
+                var index = _items.IndexOf(itemChanged);
+                _disposables[index].Clear();
+                if (itemChanged != null)
                 {
-                    itemChanged.NewValue.OnItemUpdated.Subscribe(
-                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged.NewValue, itemChanged.Index))
-                    ).AddTo(_disposables[itemChanged.Index]);
+                    itemChanged.OnItemUpdated.Subscribe(
+                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged, index))
+                    ).AddTo(_disposables[index]);
 
-                    itemChanged.NewValue.RemainingUses.Subscribe(
+                    if (itemChanged.ItemStorage.IsSome(out var itemStorage))
+                    {
+                        itemStorage.OnItemOverflowed.Subscribe(
+                            items => _onItemOverflowed.OnNext(items)
+                        ).AddTo(_disposables[index]);
+                    }
+
+                    itemChanged.RemainingUses.SkipLatestValueOnSubscribe().Subscribe(
                         remainingUses =>
                         {
-                            if (remainingUses <= 0 && itemChanged.NewValue.AutoDestroyWhenDisabled)
-                                Remove(itemChanged.Index);
+                            if (remainingUses <= 0 && itemChanged.AutoDestroyWhenDisabled)
+                            {
+                                Remove(itemChanged);
+                                if (itemChanged.ItemStorage.IsSome(out var itemStorage))
+                                {
+                                    _onItemOverflowed.OnNext(new OnItemOverflowed(itemChanged, itemStorage.AllItems));
+                                }
+                            }
                         }
-                    ).AddTo(_disposables[itemChanged.Index]);
+                    ).AddTo(_disposables[index]);
                 }
             });
 
@@ -123,7 +137,13 @@ namespace Domain.Service.Items
             return _items[index];
         }
 
-        public int GetItemIndex(IItem item)
+        public bool HasItemAt(int index, out IItem item)
+        {
+            item = _items[index];
+            return item != null;
+        }
+
+        public int GetItemIndex(IItem? item)
         {
             return _items.IndexOf(item);
         }
@@ -136,7 +156,7 @@ namespace Domain.Service.Items
 
         public bool TryAdd(IItem item)
         {
-            if (!_canAddItemsWithStorage && item.ItemStorage.IsSome)
+            if (!_canAddItemsWithStorage && item.ItemStorage.IsSome())
                 return false;
             var index = _items.IndexOf(null);
             if (index >= 0)
@@ -167,7 +187,7 @@ namespace Domain.Service.Items
 
         public Result<IItem?> Replace(IItem? item, int index)
         {
-            if (!_canAddItemsWithStorage && item != null && item.ItemStorage.IsSome)
+            if (!_canAddItemsWithStorage && item != null && item.ItemStorage.IsSome())
                 return Result<IItem?>.Error;
             var removed = _items[index];
             if (!_canRemoveItem && removed != null)

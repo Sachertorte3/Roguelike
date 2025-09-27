@@ -11,6 +11,10 @@ namespace Domain.Service.Events
 {
     public static class PlayerEventExtensions
     {
+        public static bool CanExecuteEvent(this IReadOnlyList<IPlayerEvent> playerEvents, IPlayer player, IMap map)
+        {
+            return playerEvents.Where(e => e.CanExecuteEvent(player, map)).Any();
+        }
         public static async UniTask<bool> DoEvent(this IReadOnlyList<IPlayerEvent> playerEvents, IPlayer player, IGameManager gameManager, IMap map)
         {
             playerEvents = playerEvents.Where(e => e.CanExecuteEvent(player, map)).ToList();

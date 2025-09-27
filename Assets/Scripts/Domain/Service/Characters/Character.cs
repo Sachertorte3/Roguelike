@@ -47,7 +47,7 @@ namespace Domain.Service.Characters
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         public int DropExp { get; init; }
-        private readonly List<IPlayerEvent> _events = new();
+        private readonly ObservableList<IPlayerEvent> _events = new();
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
         private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
@@ -105,6 +105,7 @@ namespace Domain.Service.Characters
                 }
                 gameManager.EndEvent(eventId);
             });
+            HasEvent = _events.ObserveCountChanged().Select(x => x > 0).ToReadOnlyReactiveProperty();
 
             Observable.Merge(
                 AutoIdentify.Where(autoIdentify => autoIdentify).AsUnitObservable(),
@@ -133,6 +134,7 @@ namespace Domain.Service.Characters
         public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);
         public CharacterState State { get; set; } = CharacterState.Wait;
         public IReadOnlyList<IPlayerEvent> Events => _events;
+        public ReadOnlyReactiveProperty<bool> HasEvent { get; init; }
 
         public void SetWaitState()
         {

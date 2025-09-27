@@ -9,6 +9,11 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Model.Entity
 {
+    public abstract record EntityAppearance
+    {
+        public record Icon(int Id) : EntityAppearance;
+        public record Prefab(string Name) : EntityAppearance;
+    }
     public class EntityBase : IDisposable, ISerializable<EntityMemento>
     {
         public readonly Id<IEntity> Id;

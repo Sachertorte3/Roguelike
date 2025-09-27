@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Message;
@@ -30,6 +29,7 @@ namespace Domain.Model.Character
         public void SetWaitState();
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
+        public ReadOnlyReactiveProperty<bool> HasEvent { get; }
         public Observable<Unit> OnAttacked { get; }
         public Observable<Unit> OnDead { get; }
         public Observable<Unit> OnPickUpItem { get; }

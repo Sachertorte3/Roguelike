@@ -14,6 +14,7 @@ namespace Domain.Model.Evaluation
         public const float DamagePerAttack = MonsterMaxHealth / AttacksToDefeatPlayer;
         public const float OneTurnStunEquivalentHpReduction = OneTurnStunEquivalentDamage / MonsterMaxHealth;
         public const float OneTurnStunEquivalentDamage = 5;
+        public const int PlayerVisionRange = 8;
         public const float EvaluateCoefficient = 0.05f;
         public const int ThrowDistance = 10;
         public const float SkillOnUseProbabilityOfSuccess = 0.95f;

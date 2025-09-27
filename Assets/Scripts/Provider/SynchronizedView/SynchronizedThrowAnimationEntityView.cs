@@ -15,6 +15,8 @@ namespace Provider
     {
         private readonly SerialDisposable _disposable = new();
         protected override InputReceiver _inputReceiver { get; init; }
+        protected override GameManager _gameManager { get; init; }
+        protected override World _world { get; init; }
 
         protected override EntityView GetEntityView(EntityView view)
         {
@@ -22,9 +24,11 @@ namespace Provider
         }
 
         [Inject]
-        public SynchronizedThrowAnimationEntityView(World world, InputReceiver inputReceiver)
+        public SynchronizedThrowAnimationEntityView(World world, InputReceiver inputReceiver, GameManager gameManager)
         {
             _inputReceiver = inputReceiver;
+            _gameManager = gameManager;
+            _world = world;
 
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
                 map => _disposable.Disposable = map.ThrowAnimationEntities.SubscribeIncludingCurrentItems(Add, Remove),

@@ -35,7 +35,7 @@ namespace Domain.Service.Characters
                 CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth,
                     CommonSenseParameters.PlayerNaturalRecoveryRate,
                     new Dictionary<Element, float>(), new Dictionary<Element, float>(),
-                    new Dictionary<ConditionTemplate, float>(), 10, false, false, true, 1, false),
+                    new Dictionary<ConditionTemplate, float>(), CommonSenseParameters.PlayerVisionRange, false, false, true, 1, false),
                 EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 Direction8.Down,
                 new List<CharacterSkillMemento>

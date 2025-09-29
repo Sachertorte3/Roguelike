@@ -3,7 +3,6 @@ using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Model.Effect
@@ -17,6 +16,6 @@ namespace Domain.Model.Effect
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
         public void ListenToAlert(Location location);
-        public void DropItem(ItemFocus index, IMap map, bool isForced = false);
+        public void ForceDropItem(ItemFocus index, IMap map);
     }
 }

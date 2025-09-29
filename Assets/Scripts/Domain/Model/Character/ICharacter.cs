@@ -7,14 +7,12 @@ using Domain.Model.Character.Type;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize.Result;
 
 namespace Domain.Model.Character
 {
@@ -30,9 +28,9 @@ namespace Domain.Model.Character
         public bool IsDead { get; }
         public ReadOnlyReactiveProperty<Direction8> Direction { get; }
         public ReadOnlyReactiveProperty<bool> HasEvent { get; }
+        public ReadOnlyReactiveProperty<bool> AutoIdentify { get; }
         public Observable<Unit> OnAttacked { get; }
         public Observable<Unit> OnDead { get; }
-        public Observable<Unit> OnPickUpItem { get; }
         public Observable<OnItemSelectMessage> OnItemSelect { get; }
         public IObservableCollection<string> KnownItemNames { get; }
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated { get; }
@@ -47,10 +45,6 @@ namespace Domain.Model.Character
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
         public void CancelChargeAction();
         public bool CanPickUpItem();
-        public bool TryAddToInventory(IItem item);
-        public IItem? RemoveInventory(ItemFocus index);
-        public IEnumerable<IItem> ClearInventory();
-        public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index);
         public void AddEvent(IPlayerEvent ev);
         public void UpdateTurn();
 

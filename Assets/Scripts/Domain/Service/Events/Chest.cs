@@ -55,8 +55,9 @@ namespace Domain.Service.Events
             Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に開かれた");
             if (_item.IsSome(out var item))
             {
-                if (map.Player.Character.TryAddToInventory(item))
+                if (map.Player.Character.Inventory.CanAddToEmpty(item))
                 {
+                    map.Player.Character.Inventory.AddToEmpty(item);
                     GameLog.AddIgnoreVisibility(
                         $"{map.Player.Character.GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }

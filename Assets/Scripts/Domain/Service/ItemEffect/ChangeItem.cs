@@ -21,7 +21,7 @@ namespace Domain.Service.ItemEffect
 
         public void Apply(IPlayer player, IItem item, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            player.Character.Inventory.Replace(new Item(_item.Value), player.Character.Inventory.GetItemIndex(item));
+            player.Character.Inventory.Replace(new Item(_item.Value), player.Character.Inventory.GetItemIndexRecursive(item));
         }
 
         public float EvaluatePrice()

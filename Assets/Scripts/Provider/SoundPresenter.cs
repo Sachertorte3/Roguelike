@@ -20,9 +20,6 @@ namespace Provider
             Settings.GlobalSettings.SEVolume.Value.SubscribeIncludingCurrentValue(volume => seManager.SetVolume(volume / 100f));
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
                 {
-                    _disposable.Add(map.Characters.SubscribeIncludingCurrentObservables(character => character.OnPickUpItem,
-                        (character, itemChanged) => { seManager.PickupSE(); }
-                    ));
                     _disposable.Add(map.OnEffectSpawned.Subscribe(effectSpawned => { seManager.AttackSE(); }));
                     _disposable.Add(map.Player.Character.Entity.OnTeleport.Subscribe(teleport => { seManager.TeleportSE(); }));
                 },

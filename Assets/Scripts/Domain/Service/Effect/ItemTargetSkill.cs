@@ -64,8 +64,7 @@ namespace Domain.Service.Effect
             var disabledItemIndexes = new List<ItemFocus>();
             foreach (var index in player.Character.Inventory.AllIndexesRecursive)
             {
-                var inventoryItem = player.Character.Inventory.GetItem(index);
-                if (inventoryItem == null || !_itemEffect.CanApplyTo(player, inventoryItem))
+                if (player.Character.Inventory.HasItemAt(index, out var inventoryItem) || !_itemEffect.CanApplyTo(player, inventoryItem))
                 {
                     disabledItemIndexes.Add(index);
                 }
@@ -80,7 +79,7 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var focus = await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map,
+                var focus = await player.Character.SelectItem("適応するアイテムを選択してください",
                     disabledItemIndexes.ToArray());
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
@@ -91,7 +90,7 @@ namespace Domain.Service.Effect
             else
             {
                 var focus =
-                    await player.Character.ItemSelector.SelectItem("適応するアイテムを選択してください", player.Character.Inventory, map, selfIndex);
+                    await player.Character.SelectItem("適応するアイテムを選択してください", selfIndex);
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
                     if (disabledItemIndexes.Contains(focus))

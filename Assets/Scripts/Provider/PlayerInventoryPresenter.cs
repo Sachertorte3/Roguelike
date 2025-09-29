@@ -8,7 +8,6 @@ using Domain.Model.Map;
 using Game;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -32,7 +31,7 @@ namespace Provider
                         inventory.OnItemUpdated.Select(itemUpdated => ((IItem?)itemUpdated.Item, itemUpdated.Index))
                     ).Subscribe(data =>
                     {
-                        ReplaceItemView(inventoryView, data.Item, new InventoryViewIndex(data.Index),
+                        ReplaceItemView(inventoryView, data.Item, inventory.CanRemoveItem, new InventoryViewIndex(data.Index),
                             map.Player, map.ItemPlaceholders);
                     }).AddTo(_disposables);
 
@@ -51,7 +50,7 @@ namespace Provider
 
                     foreach (var (item, index) in inventory.AllItemsWithIndex)
                     {
-                        ReplaceItemView(inventoryView, item, new InventoryViewIndex(index),
+                        ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, new InventoryViewIndex(index),
                             map.Player, map.ItemPlaceholders);
                     }
                 },
@@ -63,7 +62,7 @@ namespace Provider
             return map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
         }
 
-        private void ReplaceItemView(InventoryView inventoryView, IItem? item,
+        private void ReplaceItemView(InventoryView inventoryView, IItem? item, bool canSelect,
             InventoryViewIndex index, IPlayer player, ItemPlaceholders itemPlaceholders)
         {
             if (item != null)
@@ -72,6 +71,7 @@ namespace Provider
                     index,
                     new ItemViewData(
                         item.Icon,
+                        canSelect,
                         item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
                         item.IsCursed,
                         item.IsShiny,
@@ -86,7 +86,7 @@ namespace Provider
                     for (var subIndex = 0; subIndex < itemStorage.Capacity; subIndex++)
                     {
                         var subItem = itemStorage.GetItem(subIndex);
-                        ReplaceItemView(inventoryView, subItem, new InventoryViewIndex(index.Index, subIndex), player, itemPlaceholders);
+                        ReplaceItemView(inventoryView, subItem, itemStorage.CanRemoveItem, new InventoryViewIndex(index.Index, subIndex), player, itemPlaceholders);
                     }
                 }
             }
@@ -100,8 +100,9 @@ namespace Provider
         {
             for (var i = 0; i < InventoryView.MainStorageSize; i++)
             {
-                var item = map.Player.Character.Inventory.GetItem(i);
-                ReplaceItemView(inventoryView, item, new InventoryViewIndex(i), map.Player, map.ItemPlaceholders);
+                var inventory = map.Player.Character.Inventory;
+                var item = inventory.GetItem(i);
+                ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, new InventoryViewIndex(i), map.Player, map.ItemPlaceholders);
             }
             UpdateGroundItemView(inventoryView, map);
         }
@@ -110,7 +111,7 @@ namespace Provider
         {
             var item = GetGroundItem(map);
             if (item != null)
-                ReplaceItemView(inventoryView, item, InventoryViewIndex.GroundItem,
+                ReplaceItemView(inventoryView, item, true, InventoryViewIndex.GroundItem,
                     map.Player, map.ItemPlaceholders);
             else
                 inventoryView.Remove(InventoryViewIndex.GroundItem);

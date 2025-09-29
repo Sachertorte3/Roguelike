@@ -532,18 +532,18 @@ namespace Domain.Service.Items
                 {
                     info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
-                        inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnUse can not be ItemTargetSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnUse can not be InventoryTargetSkill")
                     );
                     var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
-                        inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnUse can not be ItemTargetSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnUse can not be InventoryTargetSkill")
                     );
                     var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
-                        itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
-                        inventoryTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                        itemTargetSkill => throw new Exception("SkillOnThrow can not be ItemTargetSkill"),
+                        inventoryTargetSkill => throw new Exception("SkillOnThrow can not be InventoryTargetSkill")
                     );
                     info += $"使用時の発動は{skillOnUseSuccessProbability:P0}の確率で成功する\n";
                     info += $"投擲時の発動は{skillOnThrowSuccessProbability:P0}の確率で成功する\n";
@@ -562,8 +562,8 @@ namespace Domain.Service.Items
                         "",
                         skill => "\n投擲したときの効果...\n" + skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnThrow(HasSameEffect),
-                            itemTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
-                            inventoryTargetSkill => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
+                            itemTargetSkill => throw new Exception("SkillOnThrow can not be ItemTargetSkill"),
+                            inventoryTargetSkill => throw new Exception("SkillOnThrow can not be InventoryTargetSkill")
                         ));
                 }
             }

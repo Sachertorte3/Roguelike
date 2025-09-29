@@ -361,8 +361,9 @@ namespace Game
                         {
                             EntityManager.PickUpAt(positionChanged,
                                 character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue);
-                            if (character.TryAddToInventory(item.Item))
+                            if (character.Inventory.CanAddToEmpty(item.Item))
                             {
+                                character.Inventory.AddToEmpty(item.Item);
                                 if (EntityManager.Player.Character.IsVisible(positionChanged))
                                 {
                                     GameLog.Add(character.Entity.IsVisible,
@@ -496,7 +497,7 @@ namespace Game
 
         public void DropAllItem(ICharacter character)
         {
-            foreach (var item in character.ClearInventory())
+            foreach (var item in character.Inventory.Clear())
             {
                 SpawnItem(item,
                     FindBlankPositionFrom(character.Entity.CurrentPosition,
@@ -601,7 +602,11 @@ namespace Game
                     EntityManager.SpawnFire(position);
             }
         }
-        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem) => EntityManager.TryPickUpAt(position, canPickUpShopItem);
+        public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem)
+        {
+            _gameManager.PlaySE(SE.Pickup);
+            return EntityManager.TryPickUpAt(position, canPickUpShopItem);
+        }
         public IEnumerable<ICharacter> GetFollowingCharacters() => EntityManager.GetFollowingCharacters();
     }
 }

@@ -17,6 +17,11 @@ namespace Domain.Service.Action
                 return false;
             }
 
+            if (!actor.Inventory.CanRemove(Item))
+            {
+                return false;
+            }
+
             if (!Item.IsInfoIdentified(map.Player) && Item.HasActivatableSkillWhenUsed)
             {
                 return true;

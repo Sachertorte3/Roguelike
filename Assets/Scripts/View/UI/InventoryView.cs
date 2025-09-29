@@ -26,6 +26,7 @@ namespace View.UI
         [SerializeField] private Sprite _emptyIcon;
         private readonly ReactiveProperty<(int index, int subIndex)> _focusIndex = new((0, -1));
         private Dictionary<int, (ItemViewData main, Dictionary<int, ItemViewData> sub)> _items = new();
+        private bool _canSkip = false;
         private HashSet<InventoryViewIndex> _locked = new();
         private bool _enabled = true;
         private readonly Subject<InventoryViewIndex> _onLogUpdated = new();
@@ -109,8 +110,8 @@ namespace View.UI
             Log.Debug($"[View]InventoryView UpdateMainItem Index: {mainIndex}");
             var index = new InventoryViewIndex(mainIndex, -1);
             var item = GetItem(index);
-            var interactable = !_locked.Contains(index);
-            var canSkip = !interactable && (item == null || item.storageSize == 0);
+            var interactable = !_locked.Contains(index) && (item == null || item.canSelect);
+            var canSkip = _canSkip && !interactable && (item == null || item.storageSize == 0);
             if (item != null)
                 _parent.Replace(item, index.Index, interactable, canSkip);
             else
@@ -132,8 +133,8 @@ namespace View.UI
         {
             Log.Debug($"[View]InventoryView UpdateSubItem Index: {index}");
             var item = GetItem(index);
-            var interactable = !_locked.Contains(index);
-            var canSkip = !interactable && (item == null || item.storageSize == 0);
+            var interactable = !_locked.Contains(index) && (item == null || item.canSelect);
+            var canSkip = _canSkip && !interactable && (item == null || item.storageSize == 0);
             if (item != null)
                 _children.Replace(item, index.SubIndex, interactable, canSkip);
             else
@@ -160,8 +161,8 @@ namespace View.UI
             {
                 var index = new InventoryViewIndex(i, -1);
                 var item = GetItem(index);
-                var interactable = !_locked.Contains(index);
-                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                var interactable = !_locked.Contains(index) && (item == null || item.canSelect);
+                var canSkip = _canSkip && !interactable && (item == null || item.storageSize == 0);
                 if (item != null)
                     _parent.Replace(item, index.Index, interactable, canSkip);
                 else
@@ -190,8 +191,8 @@ namespace View.UI
             {
                 var index = new InventoryViewIndex(currentFocus.Index, i);
                 var item = GetItem(index);
-                var interactable = !_locked.Contains(index);
-                var canSkip = !interactable && (item == null || item.storageSize == 0);
+                var interactable = !_locked.Contains(index) && (item == null || item.canSelect);
+                var canSkip = _canSkip && !interactable && (item == null || item.storageSize == 0);
                 if (item != null)
                     _children.Replace(item, index.SubIndex, interactable, canSkip);
                 else
@@ -228,6 +229,12 @@ namespace View.UI
                 _infoText.text = item.info;
             else
                 _infoText.text = "";
+        }
+
+        public void SetCanSkip(bool canSkip)
+        {
+            _canSkip = canSkip;
+            UpdateAllItemView();
         }
 
         public void LockItems(InventoryViewIndex[] lockedItemIndexes)

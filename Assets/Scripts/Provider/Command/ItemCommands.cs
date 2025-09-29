@@ -83,8 +83,9 @@ namespace Provider
                     );
                 }
 
-                if (character.Inventory.TryAdd(item))
+                if (character.Inventory.CanAddToEmpty(item))
                 {
+                    character.Inventory.AddToEmpty(item);
                     var map = _world.ActiveMap.CurrentValue;
                     Log.Info($"{item.GetName(map.Player, map.ItemPlaceholders)}を{target}のインベントリに追加しました。");
                 }

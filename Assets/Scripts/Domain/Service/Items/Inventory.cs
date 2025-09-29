@@ -11,7 +11,6 @@ using Domain.Model.Item;
 using Domain.Model.Memento;
 using R3;
 using Utilities;
-using Utilities.Serialize.Result;
 
 namespace Domain.Service.Items
 {
@@ -38,8 +37,9 @@ namespace Domain.Service.Items
         public IEnumerable<ItemFocus> AllIndexesRecursive => Enumerable.Range(0, _storage.Capacity)
             .SelectMany(main =>
             {
-                if (HasItemAt(main, out var item) && item.ItemStorage.IsSome(out var itemStorage))
-                    return Enumerable.Range(0, itemStorage.Capacity)
+                var storage = _storage.GetItemStorage(main);
+                if (storage != null)
+                    return Enumerable.Range(0, storage.Capacity)
                         .Select(sub => new ItemFocus(main, sub))
                         .Append(new ItemFocus(main));
                 else
@@ -113,65 +113,122 @@ namespace Domain.Service.Items
 
         public StorageMemento Serialize() => _storage.Serialize();
         public bool HasEmptySpace() => _storage.HasEmptySpace();
-        public IItem? GetItem(int index) => _storage.GetItem(index);
-        public bool HasItemAt(int index, out IItem item) => _storage.HasItemAt(index, out item);
-
-        public IItem? GetItem(ItemFocus index)
+        private T ExecuteOnStorage<T>(ItemFocus index, Func<IStorage, int, T> func)
         {
             if (index.SubIndex < 0)
-                return _storage.GetItem(index.Index);
-            return _storage.GetItem(index.Index).ItemStorage.Value.GetItem(index.SubIndex);
+                return func(_storage, index.Index);
+            var itemStorage = _storage.GetItemStorage(index.Index);
+            if (itemStorage == null)
+                throw new Exception("Index is not valid");
+            return func(itemStorage, index.SubIndex);
         }
-
+        private void ExecuteOnStorage(ItemFocus index, Action<IStorage, int> action)
+        {
+            if (index.SubIndex < 0)
+                action(_storage, index.Index);
+            var itemStorage = _storage.GetItemStorage(index.Index);
+            if (itemStorage == null)
+                throw new Exception("Index is not valid");
+            action(itemStorage, index.SubIndex);
+        }
+        public bool HasItemAt(ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.HasItemAt(index));
+        }
+        public bool HasItemAt(ItemFocus index, out IItem item)
+        {
+            IItem? tempItem = null;
+            var result = ExecuteOnStorage(index, (storage, index) => storage.HasItemAt(index, out tempItem));
+            item = tempItem;
+            return result;
+        }
+        public bool Contains(IItem item) => _storage.Contains(item);
+        public IItem? GetItem(ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.GetItem(index));
+        }
         public int GetItemIndex(IItem? item) => _storage.GetItemIndex(item);
-
         public ItemFocus? GetItemIndexRecursive(IItem item)
         {
             if (AllItemsWithIndexRecursive.Any(x => x.Item == item))
                 return AllItemsWithIndexRecursive.First(x => x.Item == item).Index;
             return null;
         }
-
-        public void Add(IItem item)
+        public bool CanAddToEmpty(IItem item) => _storage.CanAddToEmpty(item);
+        public bool CanAdd(IItem item, ItemFocus index)
         {
-            if (!TryAdd(item))
-                throw new Exception("Can't add item to inventory");
+            return ExecuteOnStorage(index, (storage, index) => storage.CanAdd(item, index));
         }
-
-        public bool TryAdd(IItem item)
+        public bool CanAddOrNot(IItem? item, ItemFocus index)
         {
-            return _storage.TryAdd(item);
+            if (item == null)
+                return true;
+            return CanAdd(item, index);
         }
-
+        public bool CanRemove(ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.CanRemove(index));
+        }
+        public bool CanRemove(IItem item) => _storage.CanRemove(item);
+        public bool CanReplace(IItem item, ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.CanReplace(item, index));
+        }
+        public bool CanReplaceOrRemove(IItem? item, ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.CanReplaceOrRemove(item, index));
+        }
+        public void AddToEmpty(IItem item) => _storage.AddToEmpty(item);
+        public void Add(IItem item, ItemFocus index)
+        {
+            ExecuteOnStorage(index, (storage, index) => storage.Add(item, index));
+        }
+        public void AddOrNot(IItem? item, ItemFocus index)
+        {
+            if (item == null)
+                return;
+            CanAdd(item, index);
+        }
+        public IItem? Remove(ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.Remove(index));
+        }
         public void Remove(IItem item)
         {
-            if (!TryRemove(item))
-                throw new Exception("Can't remove item from inventory");
-        }
-
-        public bool TryRemove(IItem item)
-        {
-            if (_storage.TryRemove(item))
-                return true;
+            if (_storage.Contains(item))
+            {
+                _storage.Remove(item);
+                return;
+            }
 
             var storages = _storage.AllItems
                 .Where(x => x.ItemStorage.IsSome())
                 .Select(x => x.ItemStorage.Value);
 
-            return storages.Any(storage => storage.TryRemove(item));
+            storages.First(storage => storage.Contains(item)).Remove(item);
         }
-
-        public Result<IItem?> Replace(IItem? item, ItemFocus index)
+        public IItem? Replace(IItem? item, ItemFocus index)
         {
-            if (index.SubIndex < 0)
-                return _storage.Replace(item, index.Index);
-            var itemStorage = _storage.GetItem(index.Index);
-            if (itemStorage == null || itemStorage.ItemStorage.IsNone)
-                return Result<IItem?>.Error;
-            return itemStorage.ItemStorage.Value.Replace(item, index.SubIndex);
+            return ExecuteOnStorage(index, (storage, index) => storage.Replace(item, index));
         }
-
-        public Result<IItem?> Replace(IItem? item, int index) => _storage.Replace(item, index);
+        public IItem? ReplaceOrRemove(IItem? item, ItemFocus index)
+        {
+            return ExecuteOnStorage(index, (storage, index) => storage.ReplaceOrRemove(item, index));
+        }
+        public bool HasItemAt(int index) => _storage.HasItemAt(index);
+        public bool HasItemAt(int index, out IItem item) => _storage.HasItemAt(index, out item);
+        public IItem? GetItem(int index) => _storage.GetItem(index);
+        public IStorage? GetItemStorage(int index) => _storage.GetItemStorage(index);
+        public bool CanAdd(IItem item, int index) => _storage.CanAdd(item, index);
+        public void Add(IItem item, int index) => _storage.Add(item, index);
+        public bool CanAddOrNot(IItem? item, int index) => _storage.CanAddOrNot(item, index);
+        public void AddOrNot(IItem? item, int index) => _storage.AddOrNot(item, index);
+        public bool CanRemove(int index) => _storage.CanRemove(index);
+        public IItem? Remove(int index) => _storage.Remove(index);
+        public bool CanReplace(IItem item, int index) => _storage.CanReplace(item, index);
+        public IItem? Replace(IItem item, int index) => _storage.Replace(item, index);
+        public bool CanReplaceOrRemove(IItem? item, int index) => _storage.CanReplaceOrRemove(item, index);
+        public IItem? ReplaceOrRemove(IItem? item, int index) => _storage.ReplaceOrRemove(item, index);
         public IEnumerable<IItem> Clear() => _storage.Clear();
     }
 }

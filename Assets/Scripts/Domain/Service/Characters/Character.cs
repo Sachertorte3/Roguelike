@@ -28,7 +28,6 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
-using Utilities.Serialize.Result;
 
 namespace Domain.Service.Characters
 {
@@ -39,10 +38,9 @@ namespace Domain.Service.Characters
         private readonly Aggression _aggression;
         private readonly ReactiveProperty<Direction8> _direction;
         public EntityBase Entity { get; init; }
-        private readonly Inventory _inventory;
+        private readonly CharacterInventory _inventory;
         private readonly ObservableHashSet<string> _knownItemNames = new();
         private readonly Subject<Unit> _onAttacked = new();
-        private readonly Subject<Unit> _onPickUpItem = new();
         private readonly List<CharacterSkill> _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
@@ -64,7 +62,7 @@ namespace Domain.Service.Characters
             _statusManager = new CharacterStatusManager(data.Status, Entity.Position, this, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToList();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
-            _inventory = new Inventory(data.Inventory, this);
+            _inventory = new CharacterInventory(data.Inventory, this);
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
             _behavior = behavior;
             _canThroughWalls = data.CanThroughWalls;
@@ -178,7 +176,6 @@ namespace Domain.Service.Characters
 
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<Unit> OnAttacked => _onAttacked;
-        public Observable<Unit> OnPickUpItem => _onPickUpItem;
         public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
         public IObservableCollection<string> KnownItemNames => _knownItemNames;
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
@@ -192,12 +189,15 @@ namespace Domain.Service.Characters
                 ).Value
             ));
         public ICharacterType CharacterType { get; init; }
-        public IItemSelector ItemSelector => _behavior;
         public IStatusManager Status => _statusManager;
         public Aggression Aggression => _aggression;
         public IAffiliation Affiliation => _affiliationManager;
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
+        public Observable<Unit> OnDead => _onDead;
+        public IReadOnlyList<ICharacterSkill> Skills => _skills;
+        public IVisionRange VisionRange => _statusManager.VisionRange;
+        public IEnumerable<Vector2Int> VisibleArea => _statusManager.VisionRange.VisibleArea;
 
         #region CanMove
 
@@ -496,7 +496,11 @@ namespace Domain.Service.Characters
 
             GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
 
-            if (!_inventory.TryRemove(item))
+            if (_inventory.Contains(item))
+            {
+                _inventory.Remove(item);
+            }
+            else
             {
                 map.TryPickUpAt(Entity.CurrentPosition, true);
             }
@@ -526,20 +530,21 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public void DropItem(ItemFocus index, IMap map, bool isForced)
+        public void ForceDropItem(ItemFocus index, IMap map)
         {
-            var item = Inventory.GetItem(index);
-            if (item != null && isForced)
+            if (Inventory.HasItemAt(index) && Inventory.CanRemove(index))
             {
-                RemoveInventory(index);
+                var item = Inventory.Remove(index);
                 GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
                 map.SpawnItem(item,
                     map.FindBlankPositionFrom(Entity.CurrentPosition,
                         position => map.At(position).IsBlank(EntityLayer.Bottom)));
                 State = CharacterState.Finish;
-                return;
             }
-            if (item != null && item.CannotDropIfCursed)
+        }
+        public void DropItem(ItemFocus index, IMap map)
+        {
+            if (Inventory.HasItemAt(index, out var item) && item.CannotDropIfCursed)
             {
                 item.SetCurseIdentified(true);
                 if (item.IsCursed)
@@ -552,28 +557,27 @@ namespace Domain.Service.Characters
 
             var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
 
-            var result = ReplaceInventory(groundItem?.Item, index);
-            result.Match(
-                replacedItem =>
+            if (Inventory.CanReplaceOrRemove(groundItem?.Item, index))
+            {
+                var replacedItem = Inventory.Replace(groundItem?.Item, index);
+                if (groundItem != null)
                 {
-                    if (groundItem != null)
-                    {
-                        map.TryPickUpAt(Entity.CurrentPosition, true);
-                        GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
-                    }
-                    if (replacedItem != null)
-                    {
-                        GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
-                        map.SpawnItem(item,
-                            map.FindBlankPositionFrom(Entity.CurrentPosition,
-                                position => map.At(position).IsBlank(EntityLayer.Bottom)));
-                    }
-                },
-                () =>
-                {
-                    GameLog.Add(Entity.IsVisible, $"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(new ItemFocus(index.Index, -1)).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+                    map.TryPickUpAt(Entity.CurrentPosition, true);
+                    GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
                 }
-            );
+                if (replacedItem != null)
+                {
+                    GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{replacedItem.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
+                    map.SpawnItem(replacedItem,
+                        map.FindBlankPositionFrom(Entity.CurrentPosition,
+                            position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                }
+            }
+            else
+            {
+                var storageIndex = new ItemFocus(index.Index, index.SubIndex);
+                GameLog.Add(Entity.IsVisible, $"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(storageIndex).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+            }
 
             State = CharacterState.Finish;
         }
@@ -592,13 +596,6 @@ namespace Domain.Service.Characters
             _inventory.Dispose();
             _direction.Dispose();
         }
-
-        public Observable<Unit> OnDead => _onDead;
-
-        public IReadOnlyList<ICharacterSkill> Skills => _skills;
-
-        public IVisionRange VisionRange => _statusManager.VisionRange;
-        public IEnumerable<Vector2Int> VisibleArea => _statusManager.VisionRange.VisibleArea;
 
         public CharacterMemento Serialize()
         {
@@ -776,21 +773,6 @@ namespace Domain.Service.Characters
             return _inventory.HasEmptySpace();
         }
 
-        public bool TryAddToInventory(IItem item)
-        {
-            if (_inventory.TryAdd(item))
-            {
-                _onPickUpItem.OnNext(Unit.Default);
-                if (item.IdentifyIfGot || AutoIdentify.CurrentValue)
-                {
-                    KnowItem(item, false);
-                }
-                return true;
-            }
-
-            return false;
-        }
-
         public bool TryPickUpItem(IMap map, bool canPickUpShopItem)
         {
             if (!CanPickUpItem())
@@ -800,35 +782,40 @@ namespace Domain.Service.Characters
             {
                 return false;
             }
-
-            if (!TryAddToInventory(item.Item))
-                throw new Exception("Can't add item to inventory");
-
+            if (!Inventory.CanAddToEmpty(item.Item))
+                return false;
+            Inventory.AddToEmpty(item.Item);
             return true;
-        }
-
-        public IItem? RemoveInventory(ItemFocus index)
-        {
-            return _inventory.Replace(null, index).Unwrap();
-        }
-
-        public IEnumerable<IItem> ClearInventory()
-        {
-            return _inventory.Clear();
-        }
-
-        public Result<IItem?> ReplaceInventory(IItem? item, ItemFocus index)
-        {
-            if (item != null && (item.IdentifyIfGot || AutoIdentify.CurrentValue))
-            {
-                KnowItem(item, false);
-            }
-            return _inventory.Replace(item, index);
         }
 
         public void AddEvent(IPlayerEvent ev)
         {
             _events.Add(ev);
+        }
+
+        public async UniTask<ItemFocus> SelectItem(string text, params ItemFocus[] disabledItems)
+        {
+            return await _behavior.SelectItem(text, disabledItems);
+        }
+
+        public async UniTask<ItemFocus> SelectItemWithCanSelect(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect)
+        {
+            var disabledItemIndexes = new List<ItemFocus>();
+            foreach (var index in Inventory.AllIndexesRecursive)
+            {
+                if (Inventory.HasItemAt(index, out var inventoryItem) || !canSelect(inventoryItem))
+                {
+                    disabledItemIndexes.Add(index);
+                }
+            }
+
+            var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
+            if (groundItem == null || !canSelect(groundItem))
+            {
+                disabledItemIndexes.Add(ItemFocus.GroundItem);
+            }
+
+            return await SelectItem(text, disabledItemIndexes.ToArray());
         }
 
         public void UpdateTurn()

@@ -54,24 +54,39 @@ namespace Domain.Service.Events
         private async UniTask DoEvent(IMap map)
         {
             var player = map.Player;
-            var mergeBaseItem = await player.Character.ItemSelector.SelectItemWithCanSelect(
+            var mergeBaseItem = (await player.Character.SelectItemWithCanSelect(
                 "ベースのアイテムを選択してください",
                 player,
                 map,
-                ItemMergeExtension.CanSelectForBaseItem);
+                ItemMergeExtension.CanSelectForBaseItem)).GetItem(player.Character.Inventory, map);
             if (mergeBaseItem == null)
                 return;
-            var mergedItem = await player.Character.ItemSelector.SelectItemWithCanSelect(
+            var mergedItem = (await player.Character.SelectItemWithCanSelect(
                 "合成するアイテムを選択してください",
                 player,
                 map,
-                item => ItemMergeExtension.CanSelectForMergedItem(item, mergeBaseItem));
+                item => ItemMergeExtension.CanSelectForMergedItem(item, mergeBaseItem))).GetItem(player.Character.Inventory, map);
             if (mergedItem == null)
                 return;
 
+            if (!player.Character.Inventory.CanRemove(mergeBaseItem))
+            {
+                GameLog.AddIgnoreVisibility($"{mergeBaseItem.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
+                return;
+            }
+            if (!player.Character.Inventory.CanRemove(mergedItem))
+            {
+                GameLog.AddIgnoreVisibility($"{mergedItem.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
+                return;
+            }
+            if (!player.Character.Inventory.CanAddToEmpty(mergeBaseItem.Merge(mergedItem)))
+            {
+                GameLog.AddIgnoreVisibility($"合成したアイテムがインベントリに入れられなかった");
+                return;
+            }
             player.Character.Inventory.Remove(mergeBaseItem);
             player.Character.Inventory.Remove(mergedItem);
-            player.Character.Inventory.Add(mergeBaseItem.Merge(mergedItem));
+            player.Character.Inventory.AddToEmpty(mergeBaseItem.Merge(mergedItem));
             GameLog.AddIgnoreVisibility($"{player.Character.GetName(player)}は{mergeBaseItem.GetName(player, map.ItemPlaceholders)}と{mergedItem.GetName(player, map.ItemPlaceholders)}を合成した。");
             _remainingUsages.Value -= 1;
         }

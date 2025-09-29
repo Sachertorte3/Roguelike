@@ -12,7 +12,17 @@ namespace Domain.Service.Action
     {
         public bool Doable(IActor actor, IMap map)
         {
-            return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
+            if (actor.Status.IsFlagStat(FlagStatType.CannotAct))
+            {
+                return false;
+            }
+
+            if (!actor.Inventory.CanRemove(Item))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async UniTask Do(IActor actor, IMap map, IInput input)

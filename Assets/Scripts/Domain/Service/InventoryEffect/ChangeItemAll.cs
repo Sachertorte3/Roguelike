@@ -18,7 +18,7 @@ namespace Domain.Service.InventoryEffect
         {
             for (var i = 0; i < storage.Capacity; i++)
             {
-                if (storage.GetItem(i) != null)
+                if (storage.HasItemAt(i))
                     storage.Replace(new Item(_item.Value), i);
             }
         }

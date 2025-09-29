@@ -45,7 +45,7 @@ namespace Domain.Service.Effect
                 {
                     var item = items.GetAtRandom();
                     var index = target.Inventory.GetItemIndexRecursive(item);
-                    target.DropItem(index, map, true);
+                    target.ForceDropItem(index, map);
                 }
                 else
                 {

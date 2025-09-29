@@ -22,11 +22,13 @@ namespace Provider
                     {
                         itemSelectText.Show(message.Text);
                         inventoryView.LockItems(message.DisabledItemIndexes.Select(index => index.ToInventoryViewIndex()).ToArray());
+                        inventoryView.SetCanSkip(true);
                     }
                     else
                     {
                         itemSelectText.Hide();
                         inventoryView.UnlockAllItems();
+                        inventoryView.SetCanSkip(false);
                     }
                 });
             });

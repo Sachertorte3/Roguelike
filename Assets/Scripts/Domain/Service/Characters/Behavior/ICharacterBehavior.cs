@@ -6,7 +6,6 @@ using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using R3;
-using UnityEngine;
 
 namespace Domain.Service.Characters.Behavior
 {

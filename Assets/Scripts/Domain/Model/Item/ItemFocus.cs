@@ -28,11 +28,7 @@ namespace Domain.Model.Item
                 return null;
             if (IsOnGroundItem)
                 return map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
-            var item = inventory.GetItem(Index);
-            if (SubIndex == -1)
-                return item;
-            else
-                return item?.ItemStorage.Value?.GetItem(SubIndex);
+            return inventory.GetItem(this);
         }
         public bool IsOnItem(IInventory inventory, IMap map) => GetItem(inventory, map) != null;
         public bool IsOnItem(IInventory inventory, IMap map, out IItem item)

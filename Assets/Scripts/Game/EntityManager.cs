@@ -13,7 +13,6 @@ using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Domain.Service.Logs;
-using Domain.Service.Rooms;
 using ObservableCollections;
 using R3;
 using UnityEngine;

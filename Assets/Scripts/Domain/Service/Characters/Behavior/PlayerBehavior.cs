@@ -162,13 +162,13 @@ namespace Domain.Service.Characters.Behavior
                             {
                                 if (item.ItemStorage.IsSome(out var itemStorage) && !itemStorage.CanRemoveItem)
                                 {
-                                    foreach (var (_, j) in item.ItemStorage.Value.AllItemsWithIndex)
+                                    foreach (var (_, j) in itemStorage.AllItemsWithIndex)
                                     {
                                         disabledItemIndexes.Add(new ItemFocus(i, j));
                                     }
                                 }
                             }
-                            focus2 = await SelectItem("入れ替え先を選択してください", character.Inventory, map, disabledItemIndexes.ToArray());
+                            focus2 = await SelectItem("入れ替え先を選択してください", disabledItemIndexes.ToArray());
 
                             if (focus == focus2)
                             {
@@ -193,13 +193,25 @@ namespace Domain.Service.Characters.Behavior
                                 action = new DropItem(focus);
                                 if (action.Doable(character, map)) return action;
                             }
-                            else
+                            if (!character.Inventory.CanRemove(focus))
                             {
-                                var tempItem = character.Inventory.Replace(null, focus);
-                                var temp2Item = character.Inventory.Replace(tempItem.Value, focus2);
-                                character.Inventory.Replace(temp2Item.Value, focus);
-                                return new DoNothing();
+                                throw new Exception("Can't remove item from inventory");
                             }
+                            var tempItem = character.Inventory.GetItem(focus);
+                            if (!character.Inventory.CanReplaceOrRemove(tempItem, focus2))
+                            {
+                                throw new Exception("Can't replace item in inventory");
+                            }
+                            var temp2Item = character.Inventory.GetItem(focus2);
+                            if (!character.Inventory.CanAddOrNot(temp2Item, focus))
+                            {
+                                throw new Exception("Can't add item to inventory");
+                            }
+
+                            tempItem = character.Inventory.Remove(focus);
+                            temp2Item = character.Inventory.ReplaceOrRemove(tempItem, focus2);
+                            character.Inventory.AddOrNot(temp2Item, focus);
+                            return new DoNothing();
                         }
                         break;
                     case InputType.DoNothing:
@@ -291,7 +303,7 @@ namespace Domain.Service.Characters.Behavior
         {
         }
 
-        public async UniTask<ItemFocus> SelectItem(string text, IInventory inventory, IMap map, params ItemFocus[] disabledItemIndexes)
+        public async UniTask<ItemFocus> SelectItem(string text, params ItemFocus[] disabledItemIndexes)
         {
             _onItemSelect.OnNext(new OnItemSelectMessage(text, true, disabledItemIndexes));
 

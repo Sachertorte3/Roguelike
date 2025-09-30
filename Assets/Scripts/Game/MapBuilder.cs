@@ -46,6 +46,13 @@ namespace Game
 
             var roomIds = _tilemap.RoomIds.ToList();
 
+            // 孤立したSectionを検出してIsolateRoomとして処理（最初に処理）
+            foreach (var isolateRoomId in _tilemap.IsolateRooms)
+            {
+                CreateIsolateRoom(data, isolateRoomId);
+                roomIds.Remove(isolateRoomId); // 通常の部屋処理から除外
+            }
+
             if (Random.value < data.ShopChance && roomIds.Count() > 1)
             {
                 var shopRoom = roomIds.GetAtRandom();
@@ -363,6 +370,23 @@ namespace Game
         {
             var position = GetRandomBlankPositionInRoom(roomId);
             _statues.Add(Statue.Build(data.Statues.GetRandomItem(), position));
+        }
+
+        private bool CreateIsolateRoom(DungeonMapData data, Id<Room> roomId)
+        {
+            // テレポーターを先に配置（空白位置管理を使用）
+            var teleporterPosition = GetRandomBlankPositionInRoom(roomId);
+            _teleporter = Teleporter.Build(teleporterPosition);
+
+            // 残りの位置をMoneyで埋める（空白位置管理を使用）
+            var walkablePositions = _tilemap.GetWalkablePositionsIn(roomId);
+            var moneyPositions = walkablePositions.Where(p => p != teleporterPosition).ToList();
+            foreach (var position in GetRandomBlankPositionsInRoom(roomId, moneyPositions.Count))
+            {
+                _money.Add(Money.Build(position, data.MoneyAmount()));
+            }
+
+            return true;
         }
 
         public void AddMovementEntity(MovementData data)

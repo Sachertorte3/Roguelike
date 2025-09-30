@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Map;
@@ -18,31 +19,32 @@ namespace Domain.Service.Map
         private readonly float _waterChance;
         private readonly float _randomValueForWater;
         private readonly Dictionary<Id<Room>, RectInt> _rooms = new();
+        private readonly Dictionary<int, Id<Room>> _sectionToRoomMap = new();
+        private readonly Field _field;
+        private readonly List<Id<Room>> _isolateRooms = new();
         public List<Id<Room>> RoomIds => _rooms.Keys.ToList();
+        public List<Id<Room>> IsolateRooms => _isolateRooms;
 
         public TilemapBuilder(MapType mapType, FieldBluePrint bluePrint, float waterChance)
         {
-            var field = FieldBuilder.Build(bluePrint);
-            _width = field.Grid.Size.x + 2;
+            _field = FieldBuilder.Build(bluePrint);
+            _width = _field.Grid.Size.x + 2;
             _mapType = mapType;
-            _tiles = new TileCategory[_width * (field.Grid.Size.y + 2)];
+            _tiles = new TileCategory[_width * (_field.Grid.Size.y + 2)];
             _waterChance = waterChance;
             _randomValueForWater = Random.value * 1024;
-            var roomRects = field.Rooms.Select(room => room.Rect)
-                .Select(rect => new RectInt(rect.position + new Vector2Int(1, 1), rect.size));
-
-            for (var x = -1; x < field.Grid.Size.x + 1; x++)
+            for (var x = -1; x < _field.Grid.Size.x + 1; x++)
             {
-                for (var y = -1; y < field.Grid.Size.y + 1; y++)
+                for (var y = -1; y < _field.Grid.Size.y + 1; y++)
                 {
                     TileCategory tileType;
-                    if (x == -1 || y == -1 || x == field.Grid.Size.x || y == field.Grid.Size.y)
+                    if (x == -1 || y == -1 || x == _field.Grid.Size.x || y == _field.Grid.Size.y)
                     {
                         tileType = TileCategory.UnbreakableWall;
                     }
                     else
                     {
-                        var mapChipType = field.Grid[x, y];
+                        var mapChipType = _field.Grid[x, y];
                         tileType = mapChipType == (int)MapChipType.Wall
                             ? GetNotWalkableCategory(x, y)
                             : TileCategory.Floor;
@@ -52,11 +54,16 @@ namespace Domain.Service.Map
                 }
             }
 
-            foreach (var room in roomRects)
+            foreach (var section in _field.Sections.Where(s => s.ExistRoom))
             {
+                var roomRect = new RectInt(section.Room.Rect.position + new Vector2Int(1, 1), section.Room.Rect.size);
                 var roomId = Id<Room>.Generate();
-                _rooms[roomId] = room;
+                _rooms[roomId] = roomRect;
+                _sectionToRoomMap[section.Index] = roomId;
             }
+
+            // 孤立したSectionを検出してIsolateRoomとして処理
+            ProcessIsolatedSections();
         }
 
         private TileCategory GetNotWalkableCategory(int x, int y)
@@ -242,6 +249,27 @@ namespace Domain.Service.Map
                 _tiles.Select(tile => TileData.Build(_mapType, tile, false)).ToArray(),
                 _overlayTiles
             );
+        }
+
+        private void ProcessIsolatedSections()
+        {
+            var isolatedSections = _field.Sections.Where(section => _field.IsIsolatedSection(section)).ToList();
+
+            foreach (var isolatedSection in isolatedSections)
+            {
+                // 孤立したSectionに対応するRoomIdを取得
+                var roomId = GetRoomIdForSection(isolatedSection);
+                if (roomId != null)
+                {
+                    _isolateRooms.Add(roomId);
+                }
+            }
+        }
+
+        private Id<Room>? GetRoomIdForSection(Section section)
+        {
+            // SectionのIndexからRoomIdを取得
+            return _sectionToRoomMap.TryGetValue(section.Index, out var roomId) ? roomId : null;
         }
 
         public static TilemapMemento Build(string seed)

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
@@ -30,6 +31,7 @@ namespace Domain.Service.Characters
         private readonly CharacterStats _stats;
         private readonly VisionRange _visionRange;
         private readonly Dictionary<FlagStatType, FlagStat> _flagStats = new();
+        private readonly ICharacter _character;
 
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
@@ -39,6 +41,7 @@ namespace Domain.Service.Characters
             _flagStats = data.FlagStats.ToDictionary(x => x.Key, x => new FlagStat(x.Value));
             _visionRange = new VisionRange(position, _stats.ViewRangeValue, GetFlagStat(FlagStatType.Clairvoyant),
                 GetFlagStat(FlagStatType.Blind), () => character.CanThroughWalls, map);
+            _character = character;
         }
 
         public void Dispose()
@@ -103,7 +106,7 @@ namespace Domain.Service.Characters
             return gainValue;
         }
 
-        public int LoseHp(float value, string causeOfDeathLog, bool notifyOnlyActualLoss = false)
+        public async UniTask<int> LoseHp(float value, string causeOfDeathLog, bool notifyOnlyActualLoss = false)
         {
             var loseValue = _stats.Hp.Lose(value);
             if (notifyOnlyActualLoss)
@@ -118,6 +121,20 @@ namespace Domain.Service.Characters
                 _onDamageReceived.OnNext(new OnDamageReceivedMessage(Mathf.RoundToInt(value), causeOfDeathLog));
             }
 
+            if (loseValue == 0)
+                return 0;
+
+            if (IsDead)
+            {
+                await _character.UseItemOnDeath();
+            }
+
+            if (IsDead)
+            {
+                await _character.UseLastSkill();
+                _character.Die(causeOfDeathLog);
+            }
+
             return loseValue;
         }
 
@@ -127,13 +144,13 @@ namespace Domain.Service.Characters
             _conditions.Clear();
         }
 
-        public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
+        public async UniTask UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
             if (_stats.HpNaturalRecoveryAmount.CurrentValue > 0)
                 GainHp(_stats.HpNaturalRecoveryAmount.CurrentValue, true);
             else
-                LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", true);
-            _conditions.UpdateTurn(hasCondition, characterVisible);
+                await LoseHp(-_stats.HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", true);
+            await _conditions.UpdateTurn(hasCondition, characterVisible);
         }
 
         public void WasAttacked()

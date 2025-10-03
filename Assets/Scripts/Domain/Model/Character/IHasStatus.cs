@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 
@@ -14,7 +15,7 @@ namespace Domain.Model.Character
         /// </summary>
         /// <param name="value">The amount of damage to take</param>
         /// <returns>The actual amount of HP reduced</returns>
-        public int LoseHp(int value, string causeOfDamageLog);
+        public UniTask<int> LoseHp(int value, string causeOfDamageLog);
 
         /// <summary>
         /// Recovers HP

@@ -455,7 +455,7 @@ namespace Game
             Dispose();
         }
 
-        public void UpdateTurn(int turn)
+        public async UniTask UpdateTurn(int turn)
         {
             if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))
             {
@@ -473,7 +473,7 @@ namespace Game
                 EntityManager.RemoveCharacter(character);
             }
 
-            EntityManager.UpdateTurn(_gameManager, this);
+            await EntityManager.UpdateTurn(_gameManager, this);
 
             SetGrasses(EntityManager.FireEntities.Positions(), false);
 

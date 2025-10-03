@@ -17,11 +17,13 @@ namespace Domain.Model.Character.Status
             FlagStatType.OverDrive => "オーバードライブ",
             FlagStatType.Hard => "硬質",
             FlagStatType.Heavy => "スーパーアーマー",
-            FlagStatType.SecureHold => "拘束",
+            FlagStatType.SecureHold => "手放さず",
             FlagStatType.CurseProof => "呪い耐性",
             FlagStatType.Haggle => "値切り",
             FlagStatType.IsAffectedByTrap => "帯電",
             FlagStatType.AutoIdentify => "自動識別",
+            FlagStatType.RandomTeleport => "気まぐれワープ",
+            FlagStatType.RandomExplosion => "気まぐれ爆発",
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -40,6 +42,8 @@ namespace Domain.Model.Character.Status
             FlagStatType.Haggle => ParticleType.None,
             FlagStatType.IsAffectedByTrap => ParticleType.Electric,
             FlagStatType.AutoIdentify => ParticleType.None,
+            FlagStatType.RandomTeleport => ParticleType.None,
+            FlagStatType.RandomExplosion => ParticleType.None,
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -58,6 +62,8 @@ namespace Domain.Model.Character.Status
             FlagStatType.Haggle => Impact.Beneficial,
             FlagStatType.IsAffectedByTrap => Impact.Harmful,
             FlagStatType.AutoIdentify => Impact.Beneficial,
+            FlagStatType.RandomTeleport => Impact.Harmful,
+            FlagStatType.RandomExplosion => Impact.Harmful,
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -79,7 +85,9 @@ namespace Domain.Model.Character.Status
                 FlagStatType.CurseProof => 0.1f,
                 FlagStatType.Haggle => 0.1f,
                 FlagStatType.IsAffectedByTrap => 0.1f,
-                FlagStatType.AutoIdentify => 0.1f,
+                FlagStatType.AutoIdentify => 1f,
+                FlagStatType.RandomTeleport => 0.1f,
+                FlagStatType.RandomExplosion => 0.1f,
                 _ => throw new ArgumentException($"Invalid flag stat type: {type}")
             };
         }
@@ -99,6 +107,8 @@ namespace Domain.Model.Character.Status
             FlagStatType.Haggle => 0.2f,
             FlagStatType.IsAffectedByTrap => 0.5f,
             FlagStatType.AutoIdentify => 3f,
+            FlagStatType.RandomTeleport => 1f,
+            FlagStatType.RandomExplosion => 1f,
             _ => 0f
         };
     }

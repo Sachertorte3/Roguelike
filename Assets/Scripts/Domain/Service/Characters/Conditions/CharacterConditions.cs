@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
@@ -8,7 +9,6 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
@@ -74,10 +74,18 @@ namespace Domain.Service.Characters.Conditions
             }
         }
 
-        public void UpdateTurn(IHasCondition hasCondition, bool characterVisible)
+        public async UniTask UpdateTurn(IHasCondition hasCondition, bool characterVisible)
         {
-            _conditions.RemoveRange(_conditions.Where(condition => condition.ShouldDelete(characterVisible)).ToList());
-            _conditions.ForEach(condition => condition.UpdateTurn(hasCondition));
+            var removedConditions = _conditions.Where(condition => condition.ShouldDelete(characterVisible)).ToList();
+            foreach (var condition in removedConditions)
+            {
+                _conditions.Remove(condition);
+                _inflicterMap.Remove(condition);
+            }
+            foreach (var condition in _conditions)
+            {
+                await condition.UpdateTurn(hasCondition);
+            }
         }
 
         public void WasAttacked()

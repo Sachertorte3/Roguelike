@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -39,23 +40,22 @@ namespace Domain.Service.Effect
             }
         }
 
-        public override UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
+        public override async UniTask Apply(IActorOfEffect actor, ITargetOfEffect target, Vector2Int position, IMap map)
         {
             if (RandUtils.IsLessThanProbability(_fixedCriticalRate))
             {
                 var value = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add(target.IsVisible, $"<color=red>クリティカル！{target.GetName(map.Player)}に{value}のダメージ</color>");
-                var loseValue = target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
+                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate * 2));
             }
             else
             {
                 var value = Formula.Calc(actor, target, _elementPowers);
                 GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{value}のダメージ");
-                var loseValue = target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
+                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate));
             }
-            return UniTask.CompletedTask;
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

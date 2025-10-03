@@ -16,7 +16,6 @@ namespace View.UI
         private readonly Subject<int> _onSelected = new();
         private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
         public int Capacity => _itemViews.Length;
-        public Selectable? First => _itemViews.FirstOrDefault()?.GetComponent<Selectable>();
         public Observable<int> OnSelected => _onSelected;
         public void SetCapacity(int capacity)
         {
@@ -27,7 +26,8 @@ namespace View.UI
             {
                 _itemViews[i] = Instantiate(_itemViewPrefab, transform);
             }
-            _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ => _onSelected.OnNext(index)).AddTo(view));
+            foreach (var (view, index) in _itemViews.Index())
+                view.OnSelected.Subscribe(_ => _onSelected.OnNext(index)).AddTo(view);
 
             UpdateHorizontalNavigation();
         }

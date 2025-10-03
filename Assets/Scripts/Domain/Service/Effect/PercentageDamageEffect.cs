@@ -24,12 +24,11 @@ namespace Domain.Service.Effect
 
         public override Impact Impact => Impact.Harmful;
 
-        public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
+        public override async UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var damage = Formula.CalcExplosionDamage(_damageRate, target);
             GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ");
-            target.LoseHp(damage, $"は爆発に巻き込まれた");
-            return UniTask.CompletedTask;
+            await target.LoseHp(damage, $"は爆発に巻き込まれた");
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

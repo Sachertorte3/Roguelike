@@ -1,4 +1,5 @@
 #nullable enable
+using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using ObservableCollections;
@@ -13,7 +14,7 @@ namespace Domain.Model.Character.Status
         public Observable<OnDamageReceivedMessage> OnDamageReceived { get; }
         public Observable<int> OnHealReceived { get; }
         public IObservableCollection<ICondition> Conditions { get; }
-        public void UpdateTurn(IHasCondition hasCondition, bool enemyVisible);
+        public UniTask UpdateTurn(IHasCondition hasCondition, bool enemyVisible);
         public void AddStatValue(StatType type, float value);
         public void RemoveStatValue(StatType type, float value);
         public void AddStatMultiplier(StatType type, float value);

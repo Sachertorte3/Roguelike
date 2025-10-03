@@ -10,6 +10,8 @@ using Domain.Model.Character.Status;
 using Domain.Model.Character.Type;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
+using Domain.Model.Effect.Area;
+using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
@@ -50,7 +52,6 @@ namespace Domain.Service.Characters
         private readonly Subject<Unit> _onDead = new();
         private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
         private ReactiveProperty<int> _chargeTurn = new(0);
-        private bool _alreadyUsedLastSkill = false;
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, IGameManager gameManager, IMap map, bool isPlayer)
         {
@@ -77,32 +78,6 @@ namespace Domain.Service.Characters
             CanUseItem = data.CanUseItem;
 
             _map = map;
-
-            _statusManager.OnDamageReceived.Subscribe(async damageChanged =>
-            {
-                var eventId = gameManager.StartEvent();
-                if (IsDead)
-                {
-                    foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
-                    {
-                        await UseItem(item, CurrentDirection, _map);
-                        if (!IsDead)
-                            break;
-                    }
-                }
-
-                if (IsDead)
-                {
-                    if (_lastSkill != null && !_alreadyUsedLastSkill)
-                    {
-                        _alreadyUsedLastSkill = true;
-                        await _lastSkill.Use(this, Entity.CurrentPosition, CurrentDirection, _map);
-                    }
-                    _onDead.OnNext(Unit.Default);
-                    Entity.Destroy(damageChanged.CauseOfDamageLog);
-                }
-                gameManager.EndEvent(eventId);
-            });
 
             _inventory.OnItemOverflowed.Subscribe(overflowed =>
             {
@@ -444,6 +419,14 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
+        public async UniTask UseLastSkill()
+        {
+            if (_lastSkill != null)
+            {
+                await _lastSkill.Use(this, Entity.CurrentPosition, CurrentDirection, _map);
+            }
+        }
+
         public async UniTask UseItem(IItem item, Direction8 direction, IMap map)
         {
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
@@ -476,6 +459,16 @@ namespace Domain.Service.Characters
             }
 
             State = CharacterState.Finish;
+        }
+
+        public async UniTask UseItemOnDeath()
+        {
+            foreach (var item in Inventory.AllItems.Where(x => x.UseOnDeath))
+            {
+                await UseItem(item, CurrentDirection, _map);
+                if (!IsDead)
+                    break;
+            }
         }
 
         public async UniTask ThrowItem(IItem item, Direction8 direction, IMap map)
@@ -641,6 +634,12 @@ namespace Domain.Service.Characters
             }
         }
 
+        public void Die(string causeOfDamageLog)
+        {
+            _onDead.OnNext(Unit.Default);
+            Entity.Destroy(causeOfDamageLog);
+        }
+
         #region Status
 
         public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
@@ -651,9 +650,9 @@ namespace Domain.Service.Characters
             return _statusManager.GainHp(value);
         }
 
-        public int LoseHp(int value, string causeOfDamageLog)
+        public async UniTask<int> LoseHp(int value, string causeOfDamageLog)
         {
-            return _statusManager.LoseHp(value, causeOfDamageLog);
+            return await _statusManager.LoseHp(value, causeOfDamageLog);
         }
 
         public void RestoreToFullHealth()
@@ -818,13 +817,53 @@ namespace Domain.Service.Characters
             return await SelectItem(text, disabledItemIndexes.ToArray());
         }
 
-        public void UpdateTurn()
+        public async UniTask UpdateTurn()
         {
             var visibleCharacters = _map.GetVisibleCharacters(this);
-            _statusManager.UpdateTurn(this, visibleCharacters.Any());
+            await _statusManager.UpdateTurn(this, visibleCharacters.Any());
             _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
             _inventory.UpdateTurn();
             _skills.ForEach(x => x.UpdateTurn());
+            if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(0.1f))
+            {
+                var skill = new CharacterSkill(
+                    CharacterSkill.Build(
+                        new SpawnEffectSkillMemento(
+                            new AtFeet(),
+                            new SelfArea(),
+                            new List<IEffect> { new TeleportEffect() },
+                            1,
+                            1,
+                            "はテレポートした"
+                        ),
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+                );
+                await UseSkill(skill, CurrentDirection, _map);
+            }
+            if (_statusManager.IsFlagStat(FlagStatType.RandomExplosion) && RandUtils.IsLessThanProbability(0.1f))
+            {
+                var skill = new CharacterSkill(
+                    CharacterSkill.Build(
+                        new SpawnEffectSkillMemento(
+                            new AtFeet(),
+                            new CircleArea(2, true, false),
+                            new List<IEffect> { new PercentageDamageEffect(0.25f) },
+                            1,
+                            1,
+                            "は爆発した"
+                        ),
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+                );
+                await UseSkill(skill, CurrentDirection, _map);
+            }
         }
 
         ~Character()

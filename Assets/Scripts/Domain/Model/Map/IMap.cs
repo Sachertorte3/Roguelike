@@ -45,7 +45,7 @@ namespace Domain.Model.Map
 
         public UniTask ExecuteTrapAt(Vector2Int position, ICharacter actor);
 
-        public void UpdateTurn(int turn);
+        public UniTask UpdateTurn(int turn);
 
         public void RemoveWalls(IEnumerable<Vector2Int> positions);
 

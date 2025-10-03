@@ -70,11 +70,7 @@ MonoBehaviour:
   ElementDamageRateMultiplier:
     data: []
   ConditionResistance:
-    data:
-    - Key: {fileID: 11400000, guid: 96584de854caadf40a738a0adbc649aa, type: 2}
-      Value: 1
-    - Key: {fileID: 11400000, guid: 3beff304c57ae794096ed14eed9f08c1, type: 2}
-      Value: 1
+    data: []
   DropItemRate: 0
   DropItemTable:
     items:

@@ -20,13 +20,6 @@ namespace View.UI
         public Observable<Unit> OnSelected => _onFocus;
         public bool CanSkip { get; private set; } = false;
 
-        public void Awake()
-        {
-            base.Awake();
-            Debug.Log(_icon);
-            Debug.Log(gameObject);
-        }
-
         public void SetDefaultIcon(Sprite icon)
         {
             _defaultIcon = icon;

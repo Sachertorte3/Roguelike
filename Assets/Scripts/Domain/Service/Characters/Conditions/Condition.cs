@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
@@ -59,10 +60,10 @@ namespace Domain.Service.Characters.Conditions
             _condition.Condition.Delete(hasCondition, actor);
         }
 
-        public void UpdateTurn(IHasCondition hasCondition)
+        public async UniTask UpdateTurn(IHasCondition hasCondition)
         {
             _elapsedTurn += 1;
-            _condition.Condition.Persist(hasCondition);
+            await _condition.Condition.Persist(hasCondition);
         }
 
         public bool ShouldDelete(bool characterVisible)

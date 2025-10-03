@@ -182,14 +182,14 @@ namespace Game
                 }
             ).AddTo(_disposables);
         }
-        public void UpdateTurn(IGameManager gameManager, IMap map)
+        public async UniTask UpdateTurn(IGameManager gameManager, IMap map)
         {
             FireEntityManager.UpdateTurn(map);
 
             var characters = Characters.In(FireEntities.Positions()).ToList();
             foreach (var character in characters)
             {
-                character.LoseHp(1, "は火に焼かれた");
+                await character.LoseHp(1, "は火に焼かれた");
                 GameLog.Add(character.Entity.IsVisible, $"{character.GetName(Player)}は火に焼かれた");
             }
 

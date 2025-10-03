@@ -14,6 +14,8 @@ namespace Domain.Model.Character.Status
         CurseProof,
         Haggle,
         IsAffectedByTrap,
-        AutoIdentify
+        AutoIdentify,
+        RandomTeleport,
+        RandomExplosion
     }
 }

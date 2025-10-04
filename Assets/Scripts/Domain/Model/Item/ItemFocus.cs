@@ -9,6 +9,7 @@ namespace Domain.Model.Item
     {
         public int Index { get; init; }
         public int SubIndex { get; init; }
+        public bool IsInInventory => !IsOnGroundItem && !IsOnEmpty;
         public bool IsOnGroundItem { get; init; }
         public bool IsOnEmpty { get; init; }
         public ItemFocus(int index, int subIndex, bool isGroundItem, bool isEmpty)

@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#nullable enable
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
@@ -17,7 +19,8 @@ namespace Domain.Service.Action
                 return false;
             }
 
-            if (!actor.Inventory.CanRemove(Item))
+            if (!actor.Inventory.CanRemove(Item)
+                && map.Items.At(actor.Entity.CurrentPosition).FirstOrDefault()?.Item != Item)
             {
                 return false;
             }

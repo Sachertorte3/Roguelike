@@ -20,7 +20,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddConditionResistance(Condition.Value, ResistanceRate);
+            hasCondition.Status.GetConditionResistanceStat(Condition.Value).Add(ResistanceRate);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -30,7 +30,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveConditionResistance(Condition.Value, ResistanceRate);
+            hasCondition.Status.GetConditionResistanceStat(Condition.Value).Remove(ResistanceRate);
         }
 
         public float Evaluate(ITargetOfEffect target)

@@ -18,7 +18,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddElementAttackMultiplier(Element, AddedMultiplier);
+            hasCondition.Status.GetElementAttackMultiplierStat(Element).Add(AddedMultiplier);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -28,7 +28,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveElementAttackMultiplier(Element, AddedMultiplier);
+            hasCondition.Status.GetElementAttackMultiplierStat(Element).Remove(AddedMultiplier);
         }
 
         public float Evaluate(ITargetOfEffect target)

@@ -54,7 +54,7 @@ namespace Domain.Service.Effect
         {
             if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
             {
-                if (RandUtils.IsGreaterThanProbability(target.GetConditionResistance(_condition.Value)))
+                if (RandUtils.IsGreaterThanProbability(target.Status.GetConditionResistance(_condition.Value)))
                 {
                     target.AddCondition(actorId, _condition.Value);
                 }

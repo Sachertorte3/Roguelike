@@ -17,7 +17,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddStatValue(StatType.MaxHp, AddValue);
+            hasCondition.Status.GetStat(StatType.MaxHp).Add(AddValue);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,12 +27,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveStatValue(StatType.MaxHp, AddValue);
+            hasCondition.Status.GetStat(StatType.MaxHp).Remove(AddValue);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return AddValue / target.GetStatValue(StatType.MaxHp);
+            return AddValue / target.Status.GetStatValue(StatType.MaxHp);
         }
 
         public float EvaluatePrice()

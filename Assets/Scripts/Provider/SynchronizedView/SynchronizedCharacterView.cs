@@ -64,10 +64,10 @@ namespace Provider
             if (character.IsBoss)
                 characterView.SetScale(1.5f);
 
-            character.Status.Stats.HpValue.SubscribeIncludingCurrentValue(hp =>
-                characterView.UpdateHpBar(character.Status.Stats.MaxHp.CurrentValue, hp)).AddTo(characterView);
-            character.Status.Stats.MaxHp.SubscribeIncludingCurrentValue(maxHp =>
-                    characterView.UpdateHpBar(maxHp, character.Status.Stats.HpValue.CurrentValue))
+            character.Status.HpValue.SubscribeIncludingCurrentValue(hp =>
+                characterView.UpdateHpBar(character.Status.MaxHp.CurrentValue, hp)).AddTo(characterView);
+            character.Status.MaxHp.SubscribeIncludingCurrentValue(maxHp =>
+                    characterView.UpdateHpBar(maxHp, character.CurrentHp))
                 .AddTo(characterView);
 
             characterView.GetComponent<OverrideSprite>().SetTexture(

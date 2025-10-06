@@ -5,20 +5,15 @@ namespace Domain.Model.Character.Status
 {
     public interface IStats
     {
-        public ReadOnlyReactiveProperty<int> ExpValue { get; }
-        public int CurrentExp { get; }
         public ReadOnlyReactiveProperty<int> Level { get; }
-        public int CurrentLevel { get; }
-        public ReadOnlyReactiveProperty<int> HpValue { get; }
-        public int CurrentHp { get; }
         public ReadOnlyReactiveProperty<int> MaxHp { get; }
-        public int CurrentMaxHp { get; }
+        public ReadOnlyReactiveProperty<int> HpValue { get; }
+        public ReadOnlyReactiveProperty<float> WaitTimeValue { get; }
+        public bool IsFlagStat(FlagStatType type);
+        public ReadOnlyReactiveProperty<bool> GetFlagProperty(FlagStatType type);
+        public float GetStatValue(StatType type);
         public float GetElementAttackMultiplier(Element element);
         public float GetElementDamageRateMultiplier(Element element);
         public float GetConditionResistance(ConditionTemplate condition);
-        public ReadOnlyReactiveProperty<float> ViewRangeValue { get; }
-        public float CurrentViewRange { get; }
-        public float CurrentMaxWaitTime { get; }
-        public float CurrentWaitTime { get; }
     }
 }

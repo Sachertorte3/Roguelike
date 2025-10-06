@@ -8,6 +8,7 @@ using Domain.Service.Effect;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize.Option;
 using Utilities.Stats;
 
 namespace Domain.Service.Events
@@ -50,8 +51,14 @@ namespace Domain.Service.Events
 
         public static StatueMemento Build(StatueData statue, Vector2Int position)
         {
-            return new StatueMemento(statue.name, EntityBase.Build(position, EntityLayer.Middle),
-                SpawnActorlessEffectSkill.Build(statue.Skill), new ResourceData(new StatData(statue.Cycle), statue.Cycle), statue.AttackToBreak);
+            return new StatueMemento(
+                name: statue.name,
+                entity: EntityBase.Build(position, EntityLayer.Middle),
+                skill: SpawnActorlessEffectSkill.Build(statue.Skill),
+                cycle: new ResourceData(
+                    new StatData(statue.Cycle, minValue: 0f),
+                    statue.Cycle),
+                attackToBreak: statue.AttackToBreak);
         }
 
         private async UniTask Execute(IMap map)

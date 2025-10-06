@@ -30,7 +30,7 @@ namespace Provider
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                    _disposables.Add(map.Player.Character.Status.Stats.Level.Subscribe(level =>
+                    _disposables.Add(map.Player.Character.Status.Level.Subscribe(level =>
                     {
                         statView.SetLevel(level);
                     }));
@@ -41,13 +41,13 @@ namespace Provider
                     }));
 
                     _disposables.Add(Observable
-                        .Merge(map.Player.Character.Status.Stats.HpValue, map.Player.Character.Status.Stats.MaxHp)
+                        .Merge(map.Player.Character.Status.HpValue, map.Player.Character.Status.MaxHp)
                         .Subscribe(_ =>
                         {
-                            var hpPercentageFromMaxHp = map.Player.Character.Status.Stats.HpValue.CurrentValue * 100 /
-                                                        map.Player.Character.Status.Stats.MaxHp.CurrentValue;
-                            statView.SetHp(map.Player.Character.Status.Stats.MaxHp.CurrentValue,
-                                map.Player.Character.Status.Stats.HpValue.CurrentValue);
+                            var hpPercentageFromMaxHp = map.Player.Character.CurrentHp * 100 /
+                                                        map.Player.Character.CurrentMaxHp;
+                            statView.SetHp(map.Player.Character.CurrentMaxHp,
+                                map.Player.Character.CurrentHp);
                             if (hpPercentageFromMaxHp < Settings.GlobalSettings.LowHpThresholdPercentage.CurrentValue)
                             {
                                 statView.SetTextColor(Color.red);

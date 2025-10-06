@@ -642,8 +642,8 @@ namespace Domain.Service.Characters
 
         #region Status
 
-        public int CurrentMaxHp => _statusManager.Stats.CurrentMaxHp;
-        public int CurrentHp => _statusManager.Stats.CurrentHp;
+        public int CurrentMaxHp => _statusManager.Hp.Max.CurrentIntValue;
+        public int CurrentHp => _statusManager.Hp.Value.CurrentValue;
 
         public int GainHp(int value)
         {
@@ -658,26 +658,6 @@ namespace Domain.Service.Characters
         public void RestoreToFullHealth()
         {
             _statusManager.RestoreToFullHealth();
-        }
-
-        public float GetStatValue(StatType statType)
-        {
-            return _statusManager.GetStatValue(statType);
-        }
-
-        public float GetElementAttackMultiplier(Element element)
-        {
-            return _statusManager.Stats.GetElementAttackMultiplier(element);
-        }
-
-        public float GetElementDamageRateMultiplier(Element element)
-        {
-            return _statusManager.Stats.GetElementDamageRateMultiplier(element);
-        }
-
-        public float GetConditionResistance(ConditionTemplate condition)
-        {
-            return _statusManager.Stats.GetConditionResistance(condition);
         }
 
         public void AddCondition(Id<IEntity> actor, ConditionTemplate condition)
@@ -751,13 +731,13 @@ namespace Domain.Service.Characters
 
         public void GainExp(int value)
         {
-            var level = _statusManager.Stats.CurrentLevel;
+            var level = _statusManager.Level.CurrentValue;
             GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}は{value}の経験値を得た");
             _statusManager.GainExp(value);
-            if (level < _statusManager.Stats.CurrentLevel)
+            if (level < _statusManager.Level.CurrentValue)
             {
                 GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}はレベルアップした");
-                _statusManager.LevelUp(_statusManager.Stats.CurrentLevel - level);
+                _statusManager.LevelUp(_statusManager.Level.CurrentValue - level);
             }
         }
 

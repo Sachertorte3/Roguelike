@@ -20,7 +20,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddStatValue(StatType.HpNaturalRecovery, -Power);
+            hasCondition.Status.GetStat(StatType.HpNaturalRecovery).Remove(Power);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -30,7 +30,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddStatValue(StatType.HpNaturalRecovery, Power);
+            hasCondition.Status.GetStat(StatType.HpNaturalRecovery).Add(Power);
         }
 
         public float Evaluate(ITargetOfEffect target)

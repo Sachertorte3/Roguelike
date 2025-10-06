@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
+using DG.Tweening;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Service.Events;
@@ -117,11 +118,21 @@ namespace Provider
             if (eventEntity is Bonfire bonfire)
             {
                 var bonfireView = entityView.GetComponent<BonfireView>();
-                bonfire.IsFire.Subscribe(isFire => bonfireView.ShowFire(isFire));
+                bonfire.IsFire
+                    .Subscribe(isFire => bonfireView.ShowFire(isFire))
+                    .AddTo(entityView);
             }
             else if (eventEntity is MagicPot magicPot)
             {
-                magicPot.CanUse.Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = magicPot.Icon);
+                magicPot.CanUse
+                    .Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = magicPot.Icon)
+                    .AddTo(entityView);
+            }
+            else if (eventEntity is Statue statue)
+            {
+                statue.OnAttacked
+                    .Subscribe(_ => entityView.transform.DOShakePosition(0.5f, 0.1f))
+                    .AddTo(entityView);
             }
             else if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;

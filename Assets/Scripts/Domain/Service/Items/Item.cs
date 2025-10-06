@@ -34,7 +34,7 @@ namespace Domain.Service.Items
         public override bool CannotDropIfCursed => Category == ItemCategory.Weapons;
         public override bool IdentifyIfGot => Category == ItemCategory.Weapons;
         public override bool IdentifyIfUsed => Category != ItemCategory.Wands;
-        public override bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls;
+        public override bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls || Category == ItemCategory.Others;
         public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
 
         public Item(ItemData data) : this(Build(data))

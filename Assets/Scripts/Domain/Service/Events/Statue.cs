@@ -6,9 +6,9 @@ using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
 using Domain.Service.Logs;
+using R3;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize.Option;
 using Utilities.Stats;
 
 namespace Domain.Service.Events
@@ -19,6 +19,8 @@ namespace Domain.Service.Events
         public EntityBase Entity { get; init; }
         private readonly SpawnActorlessEffectSkill _skill;
         private int _attackToBreak;
+        private readonly Subject<Unit> _onAttacked = new();
+        public Observable<Unit> OnAttacked => _onAttacked;
 
         public Statue(StatueMemento memento)
         {
@@ -75,6 +77,7 @@ namespace Domain.Service.Events
                 GameLog.Add(Entity.IsVisible, $"<color=red>{Name}</color>は壊れた");
                 Entity.Destroy($"は壊された");
             }
+            _onAttacked.OnNext(Unit.Default);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Domain.Model.Character.Status
         public static ParticleType GetParticleType(this FlagStatType type) => type switch
         {
             FlagStatType.CannotAct => ParticleType.Paralysis,
-            FlagStatType.CannotMove => ParticleType.Stuned,
+            FlagStatType.CannotMove => ParticleType.Paralysis,
             FlagStatType.Confused => ParticleType.Confusion,
             FlagStatType.Clairvoyant => ParticleType.None,
             FlagStatType.Blind => ParticleType.Blind,

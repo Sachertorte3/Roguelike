@@ -126,7 +126,7 @@ namespace Domain.Service.Characters.Behavior
             }
 
             var actions = new List<IAction>();
-            if (!result.IsDiscoveringCharacter())
+            if (!result.IsDiscoveringEnemy())
             {
                 actions.AddRange(GenerateDoableMoves(character, result, map));
             }

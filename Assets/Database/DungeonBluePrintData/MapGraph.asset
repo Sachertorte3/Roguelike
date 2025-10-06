@@ -2177,7 +2177,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 1
     MonsterHouseChance: 0
-    RestRoomChance: 0
+    RestRoomChance: 1
     LakeChance: 0
     ItemCount: 1
     MoneyCount: 1

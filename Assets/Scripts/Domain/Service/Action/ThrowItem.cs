@@ -35,7 +35,9 @@ namespace Domain.Service.Action
 
         public float Evaluate(IActor actor, IMap map)
         {
-            return actor.EvaluateThrow(Item, Direction, map);
+            if (Item.RemainingUses.CurrentValue > 0)
+                return actor.EvaluateThrow(Item, Direction, map) / Item.RemainingUses.CurrentValue;
+            return 0;
         }
 
         public string Info()

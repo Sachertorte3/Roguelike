@@ -517,7 +517,7 @@ namespace Domain.Service.Characters
             item = itemEntity.Item;
             if (item.CanActivateWhenThrown)
             {
-                await item.UseWhenThrown(this, destination, direction, map);
+                var result = await item.UseWhenThrown(this, destination, direction, map);
             }
 
             State = CharacterState.Finish;

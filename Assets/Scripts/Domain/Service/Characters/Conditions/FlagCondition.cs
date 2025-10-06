@@ -36,7 +36,14 @@ namespace Domain.Service.Characters.Conditions
             hasCondition.Status.GetFlagStat(_flagStatType).Remove();
         }
 
-        public float Evaluate(ITargetOfEffect target) => _flagStatType.Evaluate(target);
+        public float Evaluate(ITargetOfEffect target)
+        {
+            if (target.Status.GetFlagStat(_flagStatType).CurrentValue)
+            {
+                return _flagStatType.Evaluate(target);
+            }
+            return 0;
+        }
         public float EvaluatePrice() => _flagStatType.EvaluatePrice();
     }
 }

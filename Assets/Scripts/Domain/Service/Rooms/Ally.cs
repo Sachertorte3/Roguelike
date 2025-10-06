@@ -21,7 +21,7 @@ namespace Domain.Service.Rooms
                     (player, map) =>
                         character.CanUseItem
                         && character.IsAlly(player.Character)
-                        && player.Character.Inventory.HasEmptySpace(),
+                        && character.Inventory.HasEmptySpace(),
                     async (gameManager, map) =>
                     {
                         var player = map.Player;

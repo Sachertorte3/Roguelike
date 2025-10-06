@@ -16,7 +16,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.MultiplyStat(StatType.MaxWaitTime, 0.5f);
+            hasCondition.Status.GetStat(StatType.MaxWaitTime).AddDivisor(1);
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -26,12 +26,12 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.DivideStat(StatType.MaxWaitTime, 0.5f);
+            hasCondition.Status.GetStat(StatType.MaxWaitTime).RemoveDivisor(1);
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            return 1 / CommonSenseParameters.AttacksToDefeatPlayer;
+            return 1f / CommonSenseParameters.AttacksToDefeatPlayer;
         }
 
         public float EvaluatePrice()

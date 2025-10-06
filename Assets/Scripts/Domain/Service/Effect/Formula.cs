@@ -18,8 +18,8 @@ namespace Domain.Service.Effect
             var elementDamages = new List<float>();
             foreach (var elementPower in powers)
             {
-                var elementAttackMultiplier = actor.GetElementAttackMultiplier(elementPower.Element);
-                var elementResistanceMultiplier = target.GetElementDamageRateMultiplier(elementPower.Element);
+                var elementAttackMultiplier = actor.Status.GetElementAttackMultiplier(elementPower.Element);
+                var elementResistanceMultiplier = target.Status.GetElementDamageRateMultiplier(elementPower.Element);
                 elementDamages.Add(elementPower.Power * elementAttackMultiplier * elementResistanceMultiplier);
             }
 

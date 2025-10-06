@@ -23,7 +23,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddFlagStat(_flagStatType);
+            hasCondition.Status.GetFlagStat(_flagStatType).Add();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -33,7 +33,7 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveFlagStat(_flagStatType);
+            hasCondition.Status.GetFlagStat(_flagStatType).Remove();
         }
 
         public float Evaluate(ITargetOfEffect target) => _flagStatType.Evaluate(target);

@@ -13,8 +13,8 @@ namespace Domain.Service.Characters
     {
         private ReadOnlyReactiveProperty<Vector2Int> _position;
         private ReadOnlyReactiveProperty<float> _range;
-        private readonly FlagStat _clairvoyantFlags;
-        private readonly FlagStat _blindFlags;
+        private readonly IFlagStat _clairvoyantFlags;
+        private readonly IFlagStat _blindFlags;
         private readonly Func<bool> _canThroughWalls;
         public bool IsClairvoyant => _clairvoyantFlags.CurrentValue;
         public bool IsBlind => _blindFlags.CurrentValue;
@@ -22,7 +22,7 @@ namespace Domain.Service.Characters
         private readonly IMap _map;
 
         public VisionRange(ReadOnlyReactiveProperty<Vector2Int> position, ReadOnlyReactiveProperty<float> range,
-            FlagStat clairvoyantFlags, FlagStat blindFlags, Func<bool> canThroughWalls, IMap map)
+            IFlagStat clairvoyantFlags, IFlagStat blindFlags, Func<bool> canThroughWalls, IMap map)
         {
             _position = position;
             _range = range;

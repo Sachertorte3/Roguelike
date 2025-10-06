@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Status;
-using Domain.Model.Effect;
 
 namespace Domain.Model.Character
 {
@@ -24,9 +23,5 @@ namespace Domain.Model.Character
         /// <returns>The actual amount of HP recovered</returns>
         public int GainHp(int value);
         public void RestoreToFullHealth();
-        public float GetStatValue(StatType type);
-        public float GetElementAttackMultiplier(Element element);
-        public float GetElementDamageRateMultiplier(Element element);
-        public float GetConditionResistance(ConditionTemplate condition);
     }
 }

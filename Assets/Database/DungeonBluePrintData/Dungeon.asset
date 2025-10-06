@@ -113,6 +113,8 @@ MonoBehaviour:
       - {fileID: 11400000, guid: d943d6945159400489b26d553e2fc5f1, type: 2}
       - {fileID: 11400000, guid: 9a2bb90f631700f4191149a29e985959, type: 2}
       - {fileID: 11400000, guid: 23fea5d7d79f7ea41a3fa6e03982059a, type: 2}
+      - {fileID: 11400000, guid: bb246d89a47042443aae9223593825d0, type: 2}
+      - {fileID: 11400000, guid: 8618b49a8cbd0ac439fe8d78d3af0e77, type: 2}
     StorageItems:
       items:
       - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}

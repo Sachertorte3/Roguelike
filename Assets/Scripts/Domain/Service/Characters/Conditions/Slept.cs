@@ -16,8 +16,8 @@ namespace Domain.Service.Characters.Conditions
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.AddFlagStat(FlagStatType.CannotAct);
-            hasCondition.Status.AddFlagStat(FlagStatType.Blind);
+            hasCondition.Status.GetFlagStat(FlagStatType.CannotAct).Add();
+            hasCondition.Status.GetFlagStat(FlagStatType.Blind).Add();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -27,8 +27,8 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.RemoveFlagStat(FlagStatType.CannotAct);
-            hasCondition.Status.RemoveFlagStat(FlagStatType.Blind);
+            hasCondition.Status.GetFlagStat(FlagStatType.CannotAct).Remove();
+            hasCondition.Status.GetFlagStat(FlagStatType.Blind).Remove();
         }
 
         public float Evaluate(ITargetOfEffect target)

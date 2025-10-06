@@ -55,9 +55,9 @@ namespace Game
                 }
 
                 var minWaitTime = characters.Min(character =>
-                    character.Status.Stats.CurrentMaxWaitTime - character.Status.Stats.CurrentWaitTime);
+                    character.Status.GetStatValue(StatType.MaxWaitTime) - character.Status.WaitTimeValue.CurrentValue);
                 minWaitTime = Mathf.Min(minWaitTime,
-                    _turnWaitTime.MaxValue.CurrentValue - _turnWaitTime.Value.CurrentValue);
+                    _turnWaitTime.Max.CurrentValue - _turnWaitTime.Value.CurrentValue);
 
                 foreach (var character in characters)
                 {

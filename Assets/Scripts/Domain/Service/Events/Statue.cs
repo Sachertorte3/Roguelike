@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -13,11 +14,12 @@ using Utilities.Stats;
 
 namespace Domain.Service.Events
 {
-    public class Statue : ISerializable<StatueMemento>, IScheduledEventEntity
+    public class Statue : ISerializable<StatueMemento>, IScheduledEventEntity, IIconEntity
     {
         public readonly string Name;
         public EntityBase Entity { get; init; }
         private readonly SpawnActorlessEffectSkill _skill;
+        public StatueType Type;
         private int _attackToBreak;
         private readonly Subject<Unit> _onAttacked = new();
         public Observable<Unit> OnAttacked => _onAttacked;
@@ -27,6 +29,7 @@ namespace Domain.Service.Events
             Name = memento.Name;
             Entity = new EntityBase(memento.Entity);
             _skill = new SpawnActorlessEffectSkill(memento.Skill);
+            Type = memento.Type;
             _attackToBreak = memento.AttackToBreak;
             Event = new ScheduledEvent(
                 memento.Cycle,
@@ -35,6 +38,14 @@ namespace Domain.Service.Events
         }
 
         public IScheduledEvent Event { get; init; }
+
+        public Sprite Icon => Type switch
+        {
+            StatueType.Beneficial => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_923"),
+            StatueType.Harmful => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_924"),
+            StatueType.Neutral => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_908"),
+            _ => throw new NotImplementedException()
+        };
 
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
@@ -48,7 +59,13 @@ namespace Domain.Service.Events
 
         public StatueMemento Serialize()
         {
-            return new StatueMemento(Name, Entity.Serialize(), _skill.Serialize(), Event.WaitTurnData, _attackToBreak);
+            return new StatueMemento(
+                Name,
+                Entity.Serialize(),
+                _skill.Serialize(),
+                Type,
+                Event.WaitTurnData,
+                _attackToBreak);
         }
 
         public static StatueMemento Build(StatueData statue, Vector2Int position)
@@ -57,6 +74,7 @@ namespace Domain.Service.Events
                 name: statue.name,
                 entity: EntityBase.Build(position, EntityLayer.Middle),
                 skill: SpawnActorlessEffectSkill.Build(statue.Skill),
+                type: statue.Type,
                 cycle: new ResourceData(
                     new StatData(statue.Cycle, minValue: 0f),
                     statue.Cycle),

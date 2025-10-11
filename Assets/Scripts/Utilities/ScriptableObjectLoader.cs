@@ -26,6 +26,10 @@ namespace Utilities
         {
             return Addressables.LoadAssetAsync<Sprite>($"Assets/Images/icons_full_16.png[{name}]").WaitForCompletion();
         }
+        public static Sprite LoadMapChip(string name)
+        {
+            return Addressables.LoadAssetAsync<Sprite>($"MapChip/(Base)BaseChip_pipo.png[{name}]").WaitForCompletion();
+        }
         public static RuntimeAnimatorController LoadAnimation(string name)
         {
             return Addressables.LoadAssetAsync<RuntimeAnimatorController>($"Assets/Animations/{name}.controller")

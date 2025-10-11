@@ -2201,7 +2201,7 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
-    StatueChance: 0.05
+    StatueChance: 1
     MagicPotChance: 0.5
   Output:
     Field: {fileID: 0}

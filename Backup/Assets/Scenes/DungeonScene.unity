@@ -2104,6 +2104,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Utilities::Utilities.FollowSelectedNode
   _nodePrefab: {fileID: 4965566580593340212, guid: c4f92b6139c253d47ab6f0f99be0afd4, type: 3}
   _verticalLayoutGroup: {fileID: 1975510421}
+  _scrollDuration: 0.2
+  _scrollEase: 9
 --- !u!1 &417451215
 GameObject:
   m_ObjectHideFlags: 0
@@ -6256,7 +6258,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 8.4375
+  orthographic size: 11.078125
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -7071,7 +7073,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.821429
+  orthographic size: 5.5390625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

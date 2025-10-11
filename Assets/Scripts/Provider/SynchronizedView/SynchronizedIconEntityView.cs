@@ -69,11 +69,6 @@ namespace Provider
                 return ScriptableObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
             }
 
-            if (eventEntity is Statue)
-            {
-                return ScriptableObjectLoader.LoadPrefab("Statue").GetComponent<EntityView>();
-            }
-
             if (eventEntity is Stairs stairs)
             {
                 switch (stairs.Type)
@@ -93,9 +88,13 @@ namespace Provider
             {
                 return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
             }
-            else
+            else if (eventEntity.Entity.Layer == EntityLayer.Bottom)
             {
                 return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -134,7 +133,7 @@ namespace Provider
                     .Subscribe(_ => entityView.transform.DOShakePosition(0.5f, 0.1f))
                     .AddTo(entityView);
             }
-            else if (eventEntity is IIconEntity iconEventEntity)
+            if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
         }
 

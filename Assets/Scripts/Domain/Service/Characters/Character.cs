@@ -531,7 +531,7 @@ namespace Domain.Service.Characters
         {
             var groundItem = map.Items.At(Entity.CurrentPosition).First();
 
-            if (Inventory.CanAddToEmpty(groundItem.Item))
+            if (Inventory.CanAddToEmpty())
             {
                 map.TryPickUpAt(Entity.CurrentPosition, true);
                 Inventory.AddToEmpty(groundItem.Item);
@@ -767,7 +767,7 @@ namespace Domain.Service.Characters
             {
                 return false;
             }
-            if (!Inventory.CanAddToEmpty(item.Item))
+            if (!Inventory.CanAddToEmpty())
                 return false;
             Inventory.AddToEmpty(item.Item);
             return true;
@@ -809,7 +809,6 @@ namespace Domain.Service.Characters
             await _statusManager.UpdateTurn(this, visibleCharacters.Any());
             _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
             _inventory.UpdateTurn();
-            _skills.ForEach(x => x.UpdateTurn());
             if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(0.1f))
             {
                 var skill = new CharacterSkill(
@@ -850,6 +849,11 @@ namespace Domain.Service.Characters
                 );
                 await UseSkill(skill, CurrentDirection, _map);
             }
+        }
+
+        public void UpdateCharacterTurn()
+        {
+            _skills.ForEach(x => x.CoolDown());
         }
 
         ~Character()

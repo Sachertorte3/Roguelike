@@ -79,7 +79,7 @@ namespace Domain.Service.Events
                 GameLog.AddIgnoreVisibility($"{mergedItem.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
                 return;
             }
-            if (!player.Character.Inventory.CanAddToEmpty(mergeBaseItem.Merge(mergedItem)))
+            if (!player.Character.Inventory.CanAddToEmpty())
             {
                 GameLog.AddIgnoreVisibility($"合成したアイテムがインベントリに入れられなかった");
                 return;

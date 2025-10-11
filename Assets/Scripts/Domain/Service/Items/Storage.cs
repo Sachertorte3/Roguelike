@@ -14,7 +14,10 @@ namespace Domain.Service.Items
 {
     internal class Storage : IStorage, IDisposable, ISerializable<StorageMemento>
     {
-        public int Capacity { get; init; }
+        private readonly ReactiveProperty<int> _currentItemCount = new();
+        public ReadOnlyReactiveProperty<int> CurrentItemCount => _currentItemCount;
+        private readonly ReactiveProperty<int> _capacity = new();
+        public ReadOnlyReactiveProperty<int> Capacity => _capacity;
         private readonly ObservableList<IItem> _items;
         public IEnumerable<IItem> AllItems => _items
             .WhereNotNull();
@@ -35,52 +38,63 @@ namespace Domain.Service.Items
         );
         private readonly Subject<OnItemUpdated> _onItemUpdated = new();
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
-        private readonly IDisposable _disposable;
-        private readonly CompositeDisposable[] _disposables;
+        private readonly CompositeDisposable _disposables = new();
+        private readonly Dictionary<IItem, CompositeDisposable> _itemDisposables = new();
 
         public Storage(StorageMemento data)
         {
-            Capacity = data.Capacity;
+            _currentItemCount.Value = data.Items.Count;
+            _capacity = new ReactiveProperty<int>(data.Capacity);
             _items = new ObservableList<IItem>(data.Items.Select(x => x.Deserialize()));
             CanAddItem = data.CanAddItem;
             CanRemoveItem = data.CanRemoveItem;
-            _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
-            _disposable = _items.SubscribeIncludingCurrentItems(itemChanged =>
-            {
-                var index = _items.IndexOf(itemChanged);
-                _disposables[index].Clear();
-                if (itemChanged != null)
+            _items.SubscribeIncludingCurrentItems(
+                itemAdded =>
                 {
-                    itemChanged.OnItemUpdated.Subscribe(
-                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged))
-                    ).AddTo(_disposables[index]);
+                    var index = _items.IndexOf(itemAdded);
+                    _itemDisposables[itemAdded] = new CompositeDisposable();
+                    if (itemAdded != null)
+                    {
+                        itemAdded.OnItemUpdated.Subscribe(
+                            _ => _onItemUpdated.OnNext(new OnItemUpdated(itemAdded))
+                        ).AddTo(_itemDisposables[itemAdded]);
 
-                    itemChanged.RemainingUses.SkipLatestValueOnSubscribe().Subscribe(
-                        remainingUses =>
-                        {
-                            if (remainingUses <= 0 && itemChanged.AutoDestroyWhenDisabled)
+                        itemAdded.RemainingUses.SkipLatestValueOnSubscribe().Subscribe(
+                            remainingUses =>
                             {
-                                ForceRemove(itemChanged);
+                                if (remainingUses <= 0 && itemAdded.AutoDestroyWhenDisabled)
+                                {
+                                    ForceRemove(itemAdded);
+                                }
                             }
-                        }
-                    ).AddTo(_disposables[index]);
-                }
-            });
+                        ).AddTo(_itemDisposables[itemAdded]);
+                    }
+                },
+                itemRemoved =>
+                {
+                    _itemDisposables[itemRemoved].Dispose();
+                    _itemDisposables.Remove(itemRemoved);
+                }).AddTo(_disposables);
+            _items.ObserveCountChanged().Subscribe(count =>
+            {
+                _currentItemCount.Value = count;
+            }).AddTo(_disposables);
         }
 
         public void Dispose()
         {
             _onItemUpdated.Dispose();
-            _disposable.Dispose();
-            foreach (var disposable in _disposables)
-                disposable.Dispose();
+            _disposables.Dispose();
+            foreach (var disposable in _itemDisposables)
+                disposable.Value.Dispose();
+            _itemDisposables.Clear();
         }
 
         public StorageMemento Serialize()
         {
             return new StorageMemento
             (
-                Capacity,
+                _capacity.CurrentValue,
                 _items.Select(x => x.Serialize()).ToList(),
                 CanAddItem,
                 CanRemoveItem
@@ -94,7 +108,7 @@ namespace Domain.Service.Items
 
         public bool HasEmptySpace()
         {
-            return _items.Count < Capacity;
+            return _items.Count < _capacity.CurrentValue;
         }
 
         public bool HasItem(IItem item)
@@ -104,13 +118,13 @@ namespace Domain.Service.Items
 
         public bool HasItemAt(int index)
         {
-            return index < Capacity;
+            return index < _capacity.CurrentValue;
         }
 
         public bool HasItemAt(int index, out IItem item)
         {
             item = GetItem(index);
-            return index < Capacity;
+            return index < _capacity.CurrentValue;
         }
 
         public bool Contains(IItem item)
@@ -129,14 +143,14 @@ namespace Domain.Service.Items
             return index >= 0 ? index : null;
         }
 
-        public bool CanAddToEmpty(IItem item)
+        public bool CanAddToEmpty()
         {
             return CanAddItem && HasEmptySpace();
         }
 
-        public bool CanInsert(IItem item, int index)
+        public bool CanInsert(int index)
         {
-            return CanAddItem && HasEmptySpace() && index >= 0 && index < Capacity;
+            return CanAddItem && HasEmptySpace() && index >= 0 && index < _capacity.CurrentValue;
         }
 
         public bool CanRemove(int index)
@@ -149,21 +163,21 @@ namespace Domain.Service.Items
             return CanRemoveItem && Contains(item);
         }
 
-        public bool CanReplace(IItem item, int index)
+        public bool CanReplace(int index)
         {
             return CanAddItem && CanRemove(index);
         }
 
         public void AddToEmpty(IItem item)
         {
-            if (!CanAddToEmpty(item))
+            if (!CanAddToEmpty())
                 throw new Exception("Can't add item to storage");
             _items.Add(item);
         }
 
         public void Insert(IItem item, int index)
         {
-            if (!CanInsert(item, index))
+            if (!CanInsert(index))
                 throw new Exception("Can't insert item to storage");
             _items.Insert(index, item);
         }
@@ -186,7 +200,7 @@ namespace Domain.Service.Items
 
         public IItem Replace(IItem item, int index)
         {
-            if (!CanReplace(item, index))
+            if (!CanReplace(index))
                 throw new Exception("Can't replace item from storage");
             var removed = Remove(index);
             Insert(item, index);
@@ -211,7 +225,7 @@ namespace Domain.Service.Items
             var item2 = GetItem(index2);
             if (item1 == null || item2 == null)
                 return false;
-            return CanRemove(index1) && CanReplace(item1, index2) && CanInsert(item2, index1);
+            return CanAddItem && CanRemoveItem;
         }
 
         public void Swap(int index1, int index2)

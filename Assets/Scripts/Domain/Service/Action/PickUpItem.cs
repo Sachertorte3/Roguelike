@@ -14,7 +14,7 @@ namespace Domain.Service.Action
             var Item = map.Items.At(actor.Entity.CurrentPosition).FirstOrDefault()?.Item;
             if (Item == null)
                 return false;
-            if (!actor.Inventory.CanAddToEmpty(Item))
+            if (!actor.Inventory.CanAddToEmpty())
                 return false;
             return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
         }

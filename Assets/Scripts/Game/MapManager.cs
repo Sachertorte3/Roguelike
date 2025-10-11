@@ -364,7 +364,7 @@ namespace Game
                         {
                             EntityManager.PickUpAt(positionChanged,
                                 character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue);
-                            if (character.Inventory.CanAddToEmpty(item.Item))
+                            if (character.Inventory.CanAddToEmpty())
                             {
                                 character.Inventory.AddToEmpty(item.Item);
                                 if (EntityManager.Player.Character.IsVisible(positionChanged))

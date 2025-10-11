@@ -41,25 +41,26 @@ namespace Domain.Service.Characters
                 skills: new List<CharacterSkillMemento>
                 {
                     CharacterSkill.Build(
-                        SpawnEffectSkill.Build(
+                        skill: SpawnEffectSkill.Build(
                             new SkillData(
-                                new AtFeet(),
-                                new LineArea(1, false, false),
-                                new List<IEffect>
+                                position: new AtFeet(),
+                                area: new LineArea(1, false, false),
+                                effects: new List<IEffect>
                                 {
                                     new AttackEffect(
                                         new List<ElementPower> { new(Element.Physical, CommonSenseParameters.PlayerAttackPowerWhenUnarmed) },
                                         0
                                     )
                                 },
-                                1,
-                                CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
-                                "は殴りかかった")
+                                repeats: 1,
+                                probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
+                                log: "は殴りかかった"
+                            )
                         ),
-                        0,
-                        0,
-                        0,
-                        0
+                        rushDistance: 0,
+                        backStepDistance: 0,
+                        chargeTurn: 0,
+                        coolTime: 0
                     )
                 },
                 lastSkill: Option<SpawnEffectSkillMemento>.None,

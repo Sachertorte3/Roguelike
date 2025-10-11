@@ -18,7 +18,8 @@ MonoBehaviour:
   ElementPowers:
   - _element: 0
     _power: 4
-  _features: []
+  _features:
+  - stringValue: EnhanceDurability
   FeatureLimit: 2
   UsageLimit: 40
   UpgradeLimit: 2

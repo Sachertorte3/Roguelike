@@ -17,14 +17,15 @@ namespace Domain.Service.Items
     {
         private readonly Storage _storage;
 
-        private readonly IDisposable _disposable;
-        private readonly CompositeDisposable[] _disposables;
+        private readonly CompositeDisposable _disposables = new();
+        private readonly Dictionary<IItem, CompositeDisposable> _itemDisposables = new();
 
         private ICharacter _character;
 
         public IEnumerable<IItem> AllItems => _storage.AllItems;
         public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex => _storage.AllItemsWithIndex;
-        public int Capacity => _storage.Capacity;
+        public ReadOnlyReactiveProperty<int> CurrentItemCount => _storage.CurrentItemCount;
+        public ReadOnlyReactiveProperty<int> Capacity => _storage.Capacity;
         public bool CanAddItem => _storage.CanAddItem;
         public bool CanRemoveItem => _storage.CanRemoveItem;
         public Observable<OnItemInserted> OnItemInserted => _storage.OnItemInserted;
@@ -36,81 +37,77 @@ namespace Domain.Service.Items
         {
             _storage = new Storage(data);
             _character = character;
-            _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(_storage.Capacity).ToArray();
 
-            _disposable = _storage.OnItemInserted.Subscribe(itemChanged =>
+            foreach (var item in _storage.AllItems)
             {
-                _disposables[itemChanged.Index].Clear();
+                _itemDisposables[item] = new CompositeDisposable();
 
-                if (itemChanged.NewItem != null && !itemChanged.NewItem.IsCursed)
-                {
-                    foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                        condition.Inflict(_character, Id<IEntity>.Empty);
-                }
+                item.OnCursedChanged.Subscribe(
+                    isCursed =>
+                    {
+                        if (isCursed)
+                            foreach (var condition in item.PassiveConditions)
+                                condition.Delete(_character, Id<IEntity>.Empty);
+                        else
+                            foreach (var condition in item.PassiveConditions)
+                                condition.Inflict(_character, Id<IEntity>.Empty);
+                    }
+                ).AddTo(_itemDisposables[item]);
+            }
 
-                if (itemChanged.NewItem != null)
-                {
-                    itemChanged.NewItem.OnCursedChanged.Subscribe(
-                        isCursed =>
-                        {
-                            if (isCursed)
-                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                                    condition.Delete(_character, Id<IEntity>.Empty);
-                            else
-                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                                    condition.Inflict(_character, Id<IEntity>.Empty);
-                        }
-                    ).AddTo(_disposables[itemChanged.Index]);
-                }
-            });
-            _disposable = _storage.OnItemRemoved.Subscribe(itemChanged =>
+            _storage.OnItemInserted.Subscribe(itemChanged => InitializeAddedItem(itemChanged.NewItem));
+            _storage.OnItemRemoved.Subscribe(itemChanged => InitializeRemovedItem(itemChanged.OldItem));
+            _storage.OnItemReplaced.Subscribe(itemChanged =>
             {
-                _disposables[itemChanged.Index].Clear();
-
-                if (itemChanged.OldItem != null && !itemChanged.OldItem.IsCursed)
-                {
-                    foreach (var condition in itemChanged.OldItem.PassiveConditions)
-                        condition.Delete(_character, Id<IEntity>.Empty);
-                }
+                InitializeRemovedItem(itemChanged.OldItem);
+                InitializeAddedItem(itemChanged.NewItem);
             });
-            _disposable = _storage.OnItemReplaced.Subscribe(itemChanged =>
+        }
+
+        private void InitializeAddedItem(IItem item)
+        {
+            _itemDisposables[item] = new CompositeDisposable();
+            if (item.IdentifyIfGot || _character.AutoIdentify.CurrentValue)
             {
-                _disposables[itemChanged.Index].Clear();
+                _character.KnowItem(item, false);
+            }
 
-                if (itemChanged.NewItem != null && !itemChanged.NewItem.IsCursed)
-                {
-                    foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                        condition.Inflict(_character, Id<IEntity>.Empty);
-                }
+            if (!item.IsCursed)
+            {
+                foreach (var condition in item.PassiveConditions)
+                    condition.Inflict(_character, Id<IEntity>.Empty);
+            }
 
-                if (itemChanged.OldItem != null && !itemChanged.OldItem.IsCursed)
+            item.OnCursedChanged.Subscribe(
+                isCursed =>
                 {
-                    foreach (var condition in itemChanged.OldItem.PassiveConditions)
-                        condition.Delete(_character, Id<IEntity>.Empty);
+                    if (isCursed)
+                        foreach (var condition in item.PassiveConditions)
+                            condition.Delete(_character, Id<IEntity>.Empty);
+                    else
+                        foreach (var condition in item.PassiveConditions)
+                            condition.Inflict(_character, Id<IEntity>.Empty);
                 }
+            ).AddTo(_itemDisposables[item]);
+        }
 
-                if (itemChanged.NewItem != null)
-                {
-                    itemChanged.NewItem.OnCursedChanged.Subscribe(
-                        isCursed =>
-                        {
-                            if (isCursed)
-                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                                    condition.Delete(_character, Id<IEntity>.Empty);
-                            else
-                                foreach (var condition in itemChanged.NewItem.PassiveConditions)
-                                    condition.Inflict(_character, Id<IEntity>.Empty);
-                        }
-                    ).AddTo(_disposables[itemChanged.Index]);
-                }
-            });
+        private void InitializeRemovedItem(IItem item)
+        {
+            _itemDisposables[item].Clear();
+            _itemDisposables.Remove(item);
+            if (!item.IsCursed)
+            {
+                foreach (var condition in item.PassiveConditions)
+                    condition.Delete(_character, Id<IEntity>.Empty);
+            }
         }
 
         public void Dispose()
         {
-            _disposable.Dispose();
-            foreach (var disposable in _disposables)
-                disposable.Dispose();
+            _disposables.Dispose();
+            foreach (var disposable in _itemDisposables)
+                disposable.Value.Dispose();
+            _itemDisposables.Clear();
         }
 
         public void UpdateTurn()
@@ -134,10 +131,10 @@ namespace Domain.Service.Items
         public bool HasItemAt(int index) => _storage.HasItemAt(index);
         public bool HasItemAt(int index, out IItem item) => _storage.HasItemAt(index, out item);
         public IItem? GetItem(int index) => _storage.GetItem(index);
-        public bool CanAddToEmpty(IItem item) => _storage.CanAddToEmpty(item);
+        public bool CanAddToEmpty() => _storage.CanAddToEmpty();
         public void AddToEmpty(IItem item)
         {
-            if (_storage.CanAddToEmpty(item))
+            if (_storage.CanAddToEmpty())
             {
                 _storage.AddToEmpty(item);
                 if (item.IdentifyIfGot || _character.AutoIdentify.CurrentValue)
@@ -152,7 +149,7 @@ namespace Domain.Service.Items
         {
             if (item == null)
                 return true;
-            return CanAddToEmpty(item);
+            return CanAddToEmpty();
         }
         public void AddOrNot(IItem? item)
         {
@@ -160,14 +157,25 @@ namespace Domain.Service.Items
                 return;
             AddToEmpty(item);
         }
+        public bool CanInsert(int index) => _storage.CanInsert(index);
+        public void Insert(IItem item, int index)
+        {
+            if (_storage.CanInsert(index))
+            {
+                _storage.Insert(item, index);
+
+            }
+            else
+                throw new Exception("Can't insert item to inventory");
+        }
         public bool CanRemove(IItem item) => _storage.CanRemove(item);
         public void Remove(IItem item) => _storage.Remove(item);
         public bool CanRemove(int index) => _storage.CanRemove(index);
         public IItem Remove(int index) => _storage.Remove(index);
-        public bool CanReplace(IItem item, int index) => _storage.CanReplace(item, index);
+        public bool CanReplace(int index) => _storage.CanReplace(index);
         public IItem Replace(IItem item, int index)
         {
-            if (_storage.CanReplace(item, index))
+            if (_storage.CanReplace(index))
             {
                 if (item.IdentifyIfGot || _character.AutoIdentify.CurrentValue)
                 {
@@ -185,7 +193,7 @@ namespace Domain.Service.Items
         {
             if (item == null)
                 return CanRemove(index);
-            return CanReplace(item, index);
+            return CanReplace(index);
         }
         public IItem ReplaceOrRemove(IItem? item, int index)
         {

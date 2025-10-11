@@ -42,10 +42,10 @@ namespace Domain.Service.Effect
 
         private ItemFocus GetItemIndex(IPlayer player, IItem item, IMap map)
         {
-            var selfIndex = player.Character.Inventory.GetItemIndexRecursive(item);
+            var selfIndex = player.Character.Inventory.GetItemIndex(item);
             if (selfIndex != null)
             {
-                return selfIndex;
+                return new ItemFocus(selfIndex.Value);
             }
 
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
@@ -62,11 +62,11 @@ namespace Domain.Service.Effect
             var selfIndex = GetItemIndex(player, item, map);
 
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var index in player.Character.Inventory.AllIndexesRecursive)
+            foreach (var (item2, index) in player.Character.Inventory.AllItemsWithIndex)
             {
-                if (player.Character.Inventory.HasItemAt(index, out var inventoryItem) || !_itemEffect.CanApplyTo(player, inventoryItem))
+                if (!_itemEffect.CanApplyTo(player, item2))
                 {
-                    disabledItemIndexes.Add(index);
+                    disabledItemIndexes.Add(new ItemFocus(index));
                 }
             }
 

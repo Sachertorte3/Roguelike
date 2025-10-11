@@ -9,47 +9,40 @@ using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
 using Utilities;
-using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
     internal class Storage : IStorage, IDisposable, ISerializable<StorageMemento>
     {
-        public int Capacity => _items.Count;
-        private readonly ObservableList<IItem?> _items;
+        public int Capacity { get; init; }
+        private readonly ObservableList<IItem> _items;
         public IEnumerable<IItem> AllItems => _items
             .WhereNotNull();
         public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex => _items
             .Select((item, index) => (item, index))
             .Where(x => x.item != null)
             .Cast<(IItem, int)>();
-        public IEnumerable<IItem> AllItemsRecursive => AllItems
-            .SelectMany(x =>
-                x.ItemStorage
-                    .MapOr(Enumerable.Empty<IItem>(), storage => storage.AllItemsRecursive)
-                    .Append(x)
-            );
-        public bool CanAddItemsWithStorage { get; init; }
+        public bool CanAddItem { get; init; }
         public bool CanRemoveItem { get; init; }
-        private readonly Subject<OnItemUpdated> _onItemUpdated = new();
-        private readonly Subject<OnItemOverflowed> _onItemOverflowed = new();
-        public Observable<OnItemChanged> OnItemChanged => _items.ObserveReplace().Select(itemChanged =>
-            new OnItemChanged(itemChanged.OldValue, itemChanged.NewValue, itemChanged.Index)
+        public Observable<OnItemInserted> OnItemInserted => _items.ObserveAdd().Select(itemAdded =>
+            new OnItemInserted(itemAdded.Value, itemAdded.Index)
         );
+        public Observable<OnItemRemoved> OnItemRemoved => _items.ObserveRemove().Select(itemRemoved =>
+            new OnItemRemoved(itemRemoved.Value, itemRemoved.Index)
+        );
+        public Observable<OnItemReplaced> OnItemReplaced => _items.ObserveReplace().Select(itemChanged =>
+            new OnItemReplaced(itemChanged.NewValue, itemChanged.OldValue, itemChanged.Index)
+        );
+        private readonly Subject<OnItemUpdated> _onItemUpdated = new();
         public Observable<OnItemUpdated> OnItemUpdated => _onItemUpdated;
-        public Observable<OnItemOverflowed> OnItemOverflowed => _onItemOverflowed;
         private readonly IDisposable _disposable;
         private readonly CompositeDisposable[] _disposables;
 
         public Storage(StorageMemento data)
         {
-            _items = new ObservableList<IItem?>();
-            for (var i = 0; i < data.Items.Count; i++)
-            {
-                //MEMO: Since you are only subscribed to Replace, additions must also be done using Replace.
-                _items.Add(null);
-            }
-            CanAddItemsWithStorage = data.CanAddItemsWithStorage;
+            Capacity = data.Capacity;
+            _items = new ObservableList<IItem>(data.Items.Select(x => x.Deserialize()));
+            CanAddItem = data.CanAddItem;
             CanRemoveItem = data.CanRemoveItem;
             _disposables = EnumerableExtension.CreateNewInstances<CompositeDisposable>(Capacity).ToArray();
             _disposable = _items.SubscribeIncludingCurrentItems(itemChanged =>
@@ -59,37 +52,20 @@ namespace Domain.Service.Items
                 if (itemChanged != null)
                 {
                     itemChanged.OnItemUpdated.Subscribe(
-                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged, index))
+                        _ => _onItemUpdated.OnNext(new OnItemUpdated(itemChanged))
                     ).AddTo(_disposables[index]);
-
-                    if (itemChanged.ItemStorage.IsSome(out var itemStorage))
-                    {
-                        itemStorage.OnItemOverflowed.Subscribe(
-                            items => _onItemOverflowed.OnNext(items)
-                        ).AddTo(_disposables[index]);
-                    }
 
                     itemChanged.RemainingUses.SkipLatestValueOnSubscribe().Subscribe(
                         remainingUses =>
                         {
                             if (remainingUses <= 0 && itemChanged.AutoDestroyWhenDisabled)
                             {
-                                ForceRemove(index);
-                                if (itemChanged.ItemStorage.IsSome(out var itemStorage))
-                                {
-                                    _onItemOverflowed.OnNext(new OnItemOverflowed(itemChanged, itemStorage.AllItems));
-                                }
+                                ForceRemove(itemChanged);
                             }
                         }
                     ).AddTo(_disposables[index]);
                 }
             });
-
-            foreach (var (itemMemento, i) in data.Items.Index())
-            {
-                if (itemMemento.IsSome(out var item))
-                    Replace(item.Deserialize(), i);
-            }
         }
 
         public void Dispose()
@@ -104,41 +80,37 @@ namespace Domain.Service.Items
         {
             return new StorageMemento
             (
-                _items.Select(x => x.ToOption().Map(x => x.Serialize())).ToList(),
-                CanAddItemsWithStorage,
+                Capacity,
+                _items.Select(x => x.Serialize()).ToList(),
+                CanAddItem,
                 CanRemoveItem
             );
         }
 
-        public static StorageMemento Build(IItem?[] items, bool canAddItemsWithStorage, bool canRemoveItem)
+        public static StorageMemento Build(int capacity, List<IItemMemento> items, bool canAddItemsWithStorage, bool canRemoveItem)
         {
-            return new StorageMemento(
-                items.Select(item => item.ToOption().Map(item => item.Serialize())).ToList(),
-                canAddItemsWithStorage,
-                canRemoveItem
-            );
-        }
-
-        public static StorageMemento Build(int capacity, bool canAddItemsWithStorage, bool canRemoveItem)
-        {
-            var items = EnumerableExtension.CreateNewInstances<Option<IItemMemento>>(capacity).ToList();
-            return new StorageMemento(items, canAddItemsWithStorage, canRemoveItem);
+            return new StorageMemento(capacity, items, canAddItemsWithStorage, canRemoveItem);
         }
 
         public bool HasEmptySpace()
         {
-            return _items.IndexOf(null) >= 0;
+            return _items.Count < Capacity;
+        }
+
+        public bool HasItem(IItem item)
+        {
+            return _items.IndexOf(item) >= 0;
         }
 
         public bool HasItemAt(int index)
         {
-            return _items[index] != null;
+            return index < Capacity;
         }
 
         public bool HasItemAt(int index, out IItem item)
         {
-            item = _items[index];
-            return item != null;
+            item = GetItem(index);
+            return index < Capacity;
         }
 
         public bool Contains(IItem item)
@@ -148,39 +120,28 @@ namespace Domain.Service.Items
 
         public IItem? GetItem(int index)
         {
-            return _items[index];
+            return index < _items.Count ? _items[index] : null;
         }
 
-        public int GetItemIndex(IItem? item)
+        public int? GetItemIndex(IItem item)
         {
-            return _items.IndexOf(item);
-        }
-
-        public IStorage? GetItemStorage(int index)
-        {
-            return _items[index]?.ItemStorage.Value;
+            var index = _items.IndexOf(item);
+            return index >= 0 ? index : null;
         }
 
         public bool CanAddToEmpty(IItem item)
         {
-            return (CanAddItemsWithStorage || item.ItemStorage.IsNone) && HasEmptySpace();
+            return CanAddItem && HasEmptySpace();
         }
 
-        public bool CanAdd(IItem item, int index)
+        public bool CanInsert(IItem item, int index)
         {
-            return (CanAddItemsWithStorage || item.ItemStorage.IsNone) && _items[index] == null;
-        }
-
-        public bool CanAddOrNot(IItem? item, int index)
-        {
-            if (item == null)
-                return true;
-            return CanAdd(item, index);
+            return CanAddItem && HasEmptySpace() && index >= 0 && index < Capacity;
         }
 
         public bool CanRemove(int index)
         {
-            return CanRemoveItem || _items[index] == null;
+            return CanRemoveItem && GetItem(index) != null;
         }
 
         public bool CanRemove(IItem item)
@@ -190,83 +151,74 @@ namespace Domain.Service.Items
 
         public bool CanReplace(IItem item, int index)
         {
-            return (CanAddItemsWithStorage || item.ItemStorage.IsNone) && CanRemove(index);
-        }
-
-        public bool CanReplaceOrRemove(IItem? item, int index)
-        {
-            if (item == null)
-                return CanRemove(index);
-            return CanReplace(item, index);
+            return CanAddItem && CanRemove(index);
         }
 
         public void AddToEmpty(IItem item)
         {
-            if (!CanAddItemsWithStorage && item.ItemStorage.IsSome())
+            if (!CanAddToEmpty(item))
                 throw new Exception("Can't add item to storage");
-            var index = _items.IndexOf(null);
-            if (index < 0)
-                throw new Exception("No empty space in storage");
-            _items[index] = item;
+            _items.Add(item);
         }
 
-        public void Add(IItem item, int index)
+        public void Insert(IItem item, int index)
         {
-            if (!CanAddItemsWithStorage && item.ItemStorage.IsSome())
-                throw new Exception("Can't add item to storage");
-            if (_items[index] != null)
-                throw new Exception("Item already exists in storage");
-            _items[index] = item;
+            if (!CanInsert(item, index))
+                throw new Exception("Can't insert item to storage");
+            _items.Insert(index, item);
         }
 
-        public void AddOrNot(IItem? item, int index)
+        public IItem Remove(int index)
         {
-            if (item != null)
-                Add(item, index);
-        }
-
-        public IItem? Remove(int index)
-        {
-            var removed = _items[index];
-            if (!CanRemoveItem && removed != null)
+            if (!CanRemove(index))
                 throw new Exception("Can't remove item from storage");
-            _items[index] = null;
+            var removed = GetItem(index);
+            _items.RemoveAt(index);
             return removed;
         }
 
         public void Remove(IItem item)
         {
-            if (!CanRemoveItem)
+            if (!CanRemove(item))
                 throw new Exception("Can't remove item from storage");
-            var index = _items.IndexOf(item);
-            if (index < 0)
-                throw new Exception("Item not found in storage");
-            _items[index] = null;
+            _items.Remove(item);
         }
 
-        public IItem? Replace(IItem item, int index)
+        public IItem Replace(IItem item, int index)
         {
-            if (!CanAddItemsWithStorage && item.ItemStorage.IsSome())
-                throw new Exception("Can't add item to storage");
-            var removed = _items[index];
-            if (!CanRemoveItem && removed != null)
-                throw new Exception("Can't remove item from storage");
-            _items[index] = item;
+            if (!CanReplace(item, index))
+                throw new Exception("Can't replace item from storage");
+            var removed = Remove(index);
+            Insert(item, index);
             return removed;
-        }
-
-        public IItem? ReplaceOrRemove(IItem? item, int index)
-        {
-            if (item == null)
-                return Remove(index);
-            return Replace(item, index);
         }
 
         public IItem? ForceRemove(int index)
         {
-            var removed = _items[index];
-            _items[index] = null;
+            var removed = GetItem(index);
+            _items.RemoveAt(index);
             return removed;
+        }
+
+        public void ForceRemove(IItem item)
+        {
+            _items.Remove(item);
+        }
+
+        public bool CanSwap(int index1, int index2)
+        {
+            var item1 = GetItem(index1);
+            var item2 = GetItem(index2);
+            if (item1 == null || item2 == null)
+                return false;
+            return CanRemove(index1) && CanReplace(item1, index2) && CanInsert(item2, index1);
+        }
+
+        public void Swap(int index1, int index2)
+        {
+            var item1 = Remove(index1);
+            var item2 = Replace(item1, index2);
+            Insert(item2, index1);
         }
 
         public IEnumerable<IItem> Clear()

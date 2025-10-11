@@ -354,6 +354,9 @@ namespace Game
                     var item = EntityManager.GetItemAt(positionChanged);
                     if (item != null)
                     {
+                        Log.Debug($"CanPickUp: {character.CanPickUp}");
+                        Log.Debug($"CanPickUpItem: {character.CanPickUpItem()}");
+                        Log.Debug($"CanPickUpAt: {EntityManager.CanPickUpAt(positionChanged, character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue)}");
                         if (character.CanPickUp
                             && character.CanPickUpItem()
                             && EntityManager.CanPickUpAt(positionChanged,
@@ -502,19 +505,6 @@ namespace Game
                 SpawnItem(item,
                     FindBlankPositionFrom(character.Entity.CurrentPosition,
                         position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
-            }
-        }
-
-        public void DropAllItemInStorage(IItem storageItem)
-        {
-            if (storageItem.ItemStorage.IsNone)
-                return;
-            var position = EntityManager.GetItemPositionByIdFromWorldOrInventory(storageItem.Id);
-            if (!position.HasValue)
-                throw new Exception("Item not found in world or inventory");
-            foreach (var item in storageItem.ItemStorage.Expect("ItemStorage is null").Clear())
-            {
-                SpawnItem(item, FindBlankPositionFrom(position.Value, position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }
         }
 

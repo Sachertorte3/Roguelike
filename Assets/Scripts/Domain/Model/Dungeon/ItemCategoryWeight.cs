@@ -12,12 +12,11 @@ namespace Domain.Model.Dungeon
         public float Wands;
         public float Weapons;
         public float Artifacts;
-        public float Storage;
         public float Others;
 
         public ItemCategory GetRandomCategory()
         {
-            return new[] { Potions, Scrolls, Books, Wands, Weapons, Artifacts, Storage, Others }.WeightedIndex() switch
+            return new[] { Potions, Scrolls, Books, Wands, Weapons, Artifacts, Others }.WeightedIndex() switch
             {
                 0 => ItemCategory.Potions,
                 1 => ItemCategory.Scrolls,
@@ -25,8 +24,7 @@ namespace Domain.Model.Dungeon
                 3 => ItemCategory.Wands,
                 4 => ItemCategory.Weapons,
                 5 => ItemCategory.Artifacts,
-                6 => ItemCategory.Storage,
-                7 => ItemCategory.Others,
+                6 => ItemCategory.Others,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

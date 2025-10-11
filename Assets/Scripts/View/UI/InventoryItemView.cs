@@ -9,23 +9,15 @@ using Utilities;
 namespace View.UI
 {
     [RequireComponent(typeof(Image), typeof(Selectable))]
-    internal class InventoryItemView : Selectable, ISelectHandler
+    public class InventoryItemView : Selectable, ISelectHandler
     {
+        public ItemViewData ItemData { get; private set; }
         [SerializeField] private Image _icon;
-        private Sprite? _defaultIcon;
         [SerializeField] private TMP_Text _count;
         [SerializeField] private Image _cursedIcon;
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnSelected => _onFocus;
-        public bool CanSkip { get; private set; } = false;
-
-        public void SetDefaultIcon(Sprite icon)
-        {
-            _defaultIcon = icon;
-            if (_icon.sprite == null)
-                SetIcon(_defaultIcon);
-        }
 
         public override void OnSelect(BaseEventData eventData)
         {
@@ -33,21 +25,13 @@ namespace View.UI
             base.OnSelect(eventData);
         }
 
-        public void Set(Sprite icon, int? count, bool isCursed, bool isShiny, bool isCountIdentified,
-            bool isCurseIdentified)
+        public void Set(ItemViewData itemData)
         {
-            SetIcon(icon);
-            SetCount(count, isCountIdentified);
-            SetCursed(isCursed, isCurseIdentified);
-            SetShiny(isShiny);
-        }
-
-        public void Remove()
-        {
-            SetIcon(_defaultIcon);
-            RemoveCount();
-            SetCursed(false, true);
-            SetShiny(false);
+            ItemData = itemData;
+            SetIcon(itemData.icon);
+            SetCount(itemData.count, itemData.isCountIdentified);
+            SetCursed(itemData.isCursed, itemData.isCurseIdentified);
+            SetShiny(itemData.isShiny);
         }
 
         private void SetIcon(Sprite? icon)
@@ -86,19 +70,9 @@ namespace View.UI
                 _count.text = "";
         }
 
-        private void RemoveCount()
-        {
-            _count.text = "";
-        }
-
         public void UpdateInteractable(bool interactable)
         {
             this.interactable = interactable;
-        }
-
-        public void UpdateSkip(bool canSkip)
-        {
-            CanSkip = canSkip;
         }
     }
 }

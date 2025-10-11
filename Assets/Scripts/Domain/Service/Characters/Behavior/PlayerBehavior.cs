@@ -15,7 +15,6 @@ using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Action;
 using Domain.Service.Events;
-using Domain.Service.Logs;
 using R3;
 using Unity.Logging;
 using Utilities;
@@ -28,8 +27,10 @@ namespace Domain.Service.Characters.Behavior
         private readonly IntelligentDashController _intelligentDashController = new();
         private readonly CharacterControlInputReceiver _receiver;
         public BehaviorData BehaviorData => new();
-        private readonly Subject<OnItemSelectMessage> _onItemSelect = new();
-        public Observable<OnItemSelectMessage> OnItemSelect => _onItemSelect;
+        private readonly Subject<OnStartItemSelectMessage> _onStartItemSelect = new();
+        public Observable<OnStartItemSelectMessage> OnStartItemSelect => _onStartItemSelect;
+        private readonly Subject<Unit> _onSelectedItemSelect = new();
+        public Observable<Unit> OnSelectedItemSelect => _onSelectedItemSelect;
         private Option<Location> _homeLocation;
 
         private enum InputType
@@ -128,92 +129,38 @@ namespace Domain.Service.Characters.Behavior
                         {
                             break;
                         }
-                        ItemFocus focus2;
-                        if (focus.IsOnGroundItem && character.Inventory.HasEmptySpace())
-                        {
-                            var emptyIndex = character.Inventory.GetItemIndex(null);
-                            focus2 = new ItemFocus(emptyIndex);
-                        }
-                        else
-                        {
-                            var disabledItemIndexes = new List<ItemFocus> { focus };
-                            if (focus.IsOnItem(character.Inventory, map, out focusItem))
-                            {
-                                if (focusItem.ItemStorage.IsSome(out var itemStorage))
-                                {
-                                    for (int i = 0; i < itemStorage.Capacity; i++)
-                                    {
-                                        disabledItemIndexes.Add(new ItemFocus(focus.Index, i));
-                                    }
-                                }
-                                else if (focus.SubIndex >= 0)
-                                {
-                                    var parentIndex = new ItemFocus(focus.Index);
-                                    var storageItem = parentIndex.GetItem(character.Inventory, map);
-                                    if (!storageItem.ItemStorage.Value.CanRemoveItem)
-                                    {
-                                        GameLog.AddIgnoreVisibility($"{storageItem.GetName(map.Player, map.ItemPlaceholders)}からはアイテムを取り出せない");
-                                        break;
-                                    }
-                                    disabledItemIndexes.Add(new ItemFocus(focus.Index));
-                                }
-                            }
-                            foreach (var (item, i) in character.Inventory.AllItemsWithIndex)
-                            {
-                                if (item.ItemStorage.IsSome(out var itemStorage) && !itemStorage.CanRemoveItem)
-                                {
-                                    foreach (var (_, j) in itemStorage.AllItemsWithIndex)
-                                    {
-                                        disabledItemIndexes.Add(new ItemFocus(i, j));
-                                    }
-                                }
-                            }
-                            focus2 = await SelectItem("入れ替え先を選択してください", disabledItemIndexes.ToArray());
-
-                            if (focus == focus2)
-                            {
-                                break;
-                            }
-
-                            if (focus2.IsOnEmpty)
-                            {
-                                break;
-                            }
-                        }
-
                         if (focus.IsOnGroundItem)
                         {
-                            action = new DropItem(focus2);
+                            action = new PickUpItem();
+                            if (action.Doable(character, map)) return action;
+                        }
+                        var focus2 = await SelectItem("入れ替え先を選択してください", new ItemFocus[] { focus });
+                        if (focus2.IsOnEmpty)
+                        {
+                            break;
+                        }
+
+                        var item1 = focus.GetItem(character.Inventory, map);
+                        var item2 = focus2.GetItem(character.Inventory, map);
+                        if (focus.IsOnGroundItem)
+                        {
+                            action = new DropItem(item2);
+                            if (action.Doable(character, map)) return action;
+                        }
+                        else if (focus2.IsOnGroundItem)
+                        {
+                            action = new DropItem(item1);
                             if (action.Doable(character, map)) return action;
                         }
                         else
                         {
-                            if (focus2.IsOnGroundItem)
+                            if (!character.Inventory.CanSwap(focus.Index, focus2.Index))
                             {
-                                action = new DropItem(focus);
-                                if (action.Doable(character, map)) return action;
+                                throw new Exception($"Can't swap item from inventory: focus: {focus}, focus2: {focus2}");
                             }
-                            if (!character.Inventory.CanRemove(focus))
-                            {
-                                throw new Exception("Can't remove item from inventory");
-                            }
-                            var tempItem = character.Inventory.GetItem(focus);
-                            if (!character.Inventory.CanReplaceOrRemove(tempItem, focus2))
-                            {
-                                throw new Exception("Can't replace item in inventory");
-                            }
-                            var temp2Item = character.Inventory.GetItem(focus2);
-                            if (!character.Inventory.CanAddOrNot(temp2Item, focus))
-                            {
-                                throw new Exception("Can't add item to inventory");
-                            }
-
-                            tempItem = character.Inventory.Remove(focus);
-                            temp2Item = character.Inventory.ReplaceOrRemove(tempItem, focus2);
-                            character.Inventory.AddOrNot(temp2Item, focus);
-                            return new DoNothing();
+                            character.Inventory.Swap(focus.Index, focus2.Index);
                         }
-                        break;
+                        return new DoNothing();
                     case InputType.DoNothing:
                         await UniTask.Yield();
                         return new DoNothing();
@@ -305,7 +252,7 @@ namespace Domain.Service.Characters.Behavior
 
         public async UniTask<ItemFocus> SelectItem(string text, params ItemFocus[] disabledItemIndexes)
         {
-            _onItemSelect.OnNext(new OnItemSelectMessage(text, true, disabledItemIndexes));
+            _onStartItemSelect.OnNext(new OnStartItemSelectMessage(text, disabledItemIndexes));
 
             ItemFocus? focus;
             do
@@ -313,7 +260,7 @@ namespace Domain.Service.Characters.Behavior
                 focus = await _receiver.OnUseItemActionReceived.WaitAsync();
             } while (!focus.IsOnEmpty && disabledItemIndexes.Contains(focus));
 
-            _onItemSelect.OnNext(new OnItemSelectMessage(text, false, new ItemFocus[0]));
+            _onSelectedItemSelect.OnNext(Unit.Default);
             return focus;
         }
     }

@@ -2177,14 +2177,14 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0
     MonsterHouseChance: 0
-    RestRoomChance: 0
+    RestRoomChance: 1
     LakeChance: 0
     ItemCount: 1
     MoneyCount: 1
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
-    StatueChance: 1
+    StatueChance: 0.05
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1

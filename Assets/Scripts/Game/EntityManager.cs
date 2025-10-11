@@ -53,7 +53,7 @@ namespace Game
         public EntityManager(EntitiesMemento entitiesMemento, PlayerMemento playerData, List<CharacterMemento>? partyMembers, Vector2Int playerPosition, bool resetPertyPositions, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
         {
             CharacterManager = new CharacterManager(playerData, receiver, gameManager, map);
-            ItemManager = new ItemManager(map);
+            ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(entitiesMemento.EventEntities, map.MovementEntityLocked);
             ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
             FireEntityManager = new FireEntityManager(entitiesMemento.Fires);

@@ -1,24 +1,27 @@
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
-using Domain.Model.Item;
 using Domain.Model.Map;
 
 namespace Domain.Service.Action
 {
-    internal record DropItem(IItem Item) : IAction
+    internal record PickUpItem() : IAction
     {
         public bool Doable(IActor actor, IMap map)
         {
-            if (!actor.Inventory.CanRemove(Item))
+            var Item = map.Items.At(actor.Entity.CurrentPosition).FirstOrDefault()?.Item;
+            if (Item == null)
+                return false;
+            if (!actor.Inventory.CanAddToEmpty(Item))
                 return false;
             return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            actor.DropItem(Item, map);
+            actor.PickUpItem(map);
             return UniTask.CompletedTask;
         }
 
@@ -29,7 +32,7 @@ namespace Domain.Service.Action
 
         public string Info()
         {
-            return $"DropItem: Item:{Item.DebugInfo()}";
+            return $"PickUpItem";
         }
     }
 }

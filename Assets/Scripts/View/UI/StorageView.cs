@@ -1,8 +1,6 @@
 #nullable enable
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using R3;
-using Sirenix.Utilities;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,101 +12,93 @@ namespace View.UI
     {
         [SerializeField] private InventoryItemView _itemViewPrefab;
         private readonly Subject<int> _onSelected = new();
-        private InventoryItemView[] _itemViews = Array.Empty<InventoryItemView>();
-        public int Capacity => _itemViews.Length;
+        private readonly List<InventoryItemView> _itemViews = new();
+        public IReadOnlyList<InventoryItemView> ItemViews => _itemViews;
         public Observable<int> OnSelected => _onSelected;
-        public void SetCapacity(int capacity)
-        {
-            Log.Debug($"[View]StorageView SetCapacity: {capacity}");
-            Clear();
-            _itemViews = new InventoryItemView[capacity];
-            for (var i = 0; i < capacity; i++)
-            {
-                _itemViews[i] = Instantiate(_itemViewPrefab, transform);
-            }
-            foreach (var (view, index) in _itemViews.Index())
-                view.OnSelected.Subscribe(_ => _onSelected.OnNext(index)).AddTo(view);
+        private bool _canSkip = false;
 
-            UpdateHorizontalNavigation();
-        }
-        public void SetDefaultIcon(int index, Sprite icon)
+        public ItemViewData GetItem(int index)
         {
-            _itemViews[index].SetDefaultIcon(icon);
+            Log.Verbose($"[View]StorageView GetItem: {index}");
+            return _itemViews[index].ItemData;
+        }
+
+        public int GetIndex(InventoryItemView itemView)
+        {
+            return _itemViews.IndexOf(itemView);
         }
 
         private void UpdateHorizontalNavigation()
         {
             Log.Verbose($"[View]StorageView UpdateNavigation");
-            for (var i = 0; i < _itemViews.Length; i++)
+            foreach (var (view, index) in _itemViews.Index())
             {
-                var currentNav = _itemViews[i].GetComponent<Selectable>().navigation;
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnLeft = FindInteractableItem(i, -1),
-                    selectOnRight = FindInteractableItem(i, 1),
-                    selectOnUp = currentNav.selectOnUp,
-                    selectOnDown = currentNav.selectOnDown
+                    selectOnLeft = FindInteractableItem(index, -1),
+                    selectOnRight = FindInteractableItem(index, 1),
+                    selectOnUp = null,
+                    selectOnDown = null
                 };
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+                view.GetComponent<Selectable>().navigation = nav;
             }
         }
 
         private Selectable? FindInteractableItem(int currentIndex, int direction)
         {
             var startIndex = currentIndex;
-            var index = (currentIndex + direction + _itemViews.Length) % _itemViews.Length;
+            var index = (currentIndex + direction + _itemViews.Count) % _itemViews.Count;
 
             while (index != startIndex)
             {
-                var canSkip = _itemViews[index].CanSkip;
-
-                if (!canSkip)
+                if (!_canSkip || _itemViews[index].interactable)
                 {
                     return _itemViews[index].GetComponent<Selectable>();
                 }
-                index = (index + direction + _itemViews.Length) % _itemViews.Length;
+                index = (index + direction + _itemViews.Count) % _itemViews.Count;
             }
 
             return null;
         }
-        public void ResetVerticalNavigation()
+
+        public void Reset(List<ItemViewData> itemDatas)
         {
-            Log.Verbose($"[View]StorageView ResetNavigation");
-            for (var i = 0; i < Capacity; i++)
+            Log.Debug($"[View]StorageView Reset (Capacity: {ItemViews.Count})");
+            var desiredCount = itemDatas.Count;
+            var currentCount = _itemViews.Count;
+
+            var reuseCount = Mathf.Min(currentCount, desiredCount);
+            for (int i = 0; i < reuseCount; i++)
             {
-                var nav = _itemViews[i].GetComponent<Selectable>().navigation;
-                nav.selectOnUp = null;
-                nav.selectOnDown = null;
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+                Replace(itemDatas[i], i, true);
             }
-        }
-        public void SetParentNavigation(StorageView parent, int index)
-        {
-            Log.Verbose($"[View]StorageView SetParentNavigation: {index}");
-            for (var i = 0; i < Capacity; i++)
+
+            if (currentCount > desiredCount)
             {
-                var nav = _itemViews[i].GetComponent<Selectable>().navigation;
-                nav.selectOnUp = parent._itemViews[index];
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+                for (int i = currentCount - 1; i >= desiredCount; i--)
+                {
+                    Remove(i);
+                }
             }
-        }
-        public void SetChildrenNavigation(StorageView children)
-        {
-            Log.Verbose($"[View]StorageView SetChildrenNavigation");
-            for (var i = 0; i < Capacity; i++)
+            else if (desiredCount > currentCount)
             {
-                var nav = _itemViews[i].GetComponent<Selectable>().navigation;
-                nav.selectOnDown = children._itemViews.First();
-                _itemViews[i].GetComponent<Selectable>().navigation = nav;
+                for (int i = currentCount; i < desiredCount; i++)
+                {
+                    Insert(itemDatas[i], i, true);
+                }
             }
+
+            UpdateHorizontalNavigation();
+            UpdateSiblingOrder();
         }
+
         public void Clear()
         {
-            Log.Debug($"[View]StorageView Clear (Capacity: {_itemViews.Length})");
+            Log.Debug($"[View]StorageView Clear (Capacity: {ItemViews.Count})");
             foreach (var view in _itemViews.WhereNotNull())
                 Destroy(view.gameObject);
-            _itemViews = Array.Empty<InventoryItemView>();
+            _itemViews.Clear();
         }
 
         public void Select(int index)
@@ -118,35 +108,54 @@ namespace View.UI
                 _itemViews[index].Select();
         }
 
-        public void Replace(ItemViewData itemViewData, int index, bool interactable, bool canSkip)
+        public void UpdateSiblingOrder()
         {
-            Log.Verbose($"[View]StorageView Replace: {index}");
-            _itemViews[index].Set(itemViewData.icon, itemViewData.count, itemViewData.isCursed, itemViewData.isShiny, itemViewData.isCountIdentified, itemViewData.isCurseIdentified);
-            _itemViews[index].UpdateInteractable(interactable);
-            _itemViews[index].UpdateSkip(canSkip);
-            UpdateHorizontalNavigation();
+            for (int i = 0; i < _itemViews.Count; i++)
+            {
+                _itemViews[i].transform.SetSiblingIndex(i);
+            }
         }
 
-        public void Remove(int index, bool interactable, bool canSkip)
+        public void Insert(ItemViewData itemData, int index, bool interactable)
+        {
+            Log.Verbose($"[View]StorageView Insert: {index}");
+            var view = Instantiate(_itemViewPrefab, transform);
+            _itemViews.Insert(index, view);
+            view.Set(itemData);
+            view.UpdateInteractable(interactable);
+            view.OnSelected.Subscribe(_ => _onSelected.OnNext(GetIndex(view))).AddTo(view);
+            UpdateHorizontalNavigation();
+            UpdateSiblingOrder();
+        }
+
+        public void Remove(int index)
         {
             Log.Verbose($"[View]StorageView Remove: {index}");
-            _itemViews[index].Remove();
-            _itemViews[index].UpdateInteractable(interactable);
-            _itemViews[index].UpdateSkip(canSkip);
+            Destroy(ItemViews[index].gameObject);
+            _itemViews.RemoveAt(index);
             UpdateHorizontalNavigation();
+            UpdateSiblingOrder();
         }
-        public void EnableAll()
+
+        public void Replace(ItemViewData itemData, int index, bool interactable)
         {
-            Log.Debug($"[View]StorageView EnableAll");
-            foreach (var view in _itemViews)
-                view.UpdateInteractable(true);
-            UpdateHorizontalNavigation();
+            Log.Verbose($"[View]StorageView Replace: {index}");
+            var view = _itemViews[index];
+            view.Set(itemData);
+            view.UpdateInteractable(interactable);
         }
-        public void DisableAll()
+
+        public void UpdateItemInteractable(int index, bool interactable)
         {
-            Log.Debug($"[View]StorageView DisableAll");
-            foreach (var view in _itemViews)
-                view.UpdateInteractable(false);
+            Log.Verbose($"[View]StorageView UpdateItemState: {index}");
+            var view = _itemViews[index];
+            view.UpdateInteractable(interactable);
+        }
+
+        public void UpdateItemSkip(bool canSkip)
+        {
+            Log.Verbose($"[View]StorageView UpdateItemSkip: {canSkip}");
+            _canSkip = canSkip;
             UpdateHorizontalNavigation();
         }
     }

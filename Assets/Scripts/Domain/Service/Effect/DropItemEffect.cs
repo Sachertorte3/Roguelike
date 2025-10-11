@@ -44,8 +44,8 @@ namespace Domain.Service.Effect
                 if (RandUtils.IsLessThanProbability(_probabilityOfSuccess))
                 {
                     var item = items.GetAtRandom();
-                    var index = target.Inventory.GetItemIndexRecursive(item);
-                    target.ForceDropItem(index, map);
+                    var index = target.Inventory.GetItemIndex(item);
+                    target.ForceDropItem(index.Value, map);
                 }
                 else
                 {

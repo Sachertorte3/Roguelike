@@ -187,7 +187,7 @@ namespace Game
         {
             var choice = await GetChoiceWithInfo(null,
                 ("Easy", "<color=#00BFFF>- Easy -</color>", "復活できます\nアイテムは自動で鑑定されます\n敵の強さはNormalと同じです"),
-                ("Normal", "<color=#FFFF00>- Normal -</color>", "全てにおいて普通です")
+                ("Normal", "<color=#FFFF00>- Normal -</color>", "復活できません\nアイテムの詳細は鑑定するまで不明です")
             );
             switch (choice)
             {

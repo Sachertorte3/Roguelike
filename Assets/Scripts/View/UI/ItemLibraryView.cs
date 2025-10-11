@@ -42,7 +42,8 @@ namespace View.UI
             foreach (var itemData in _items.OrderBy(item => item.Category).ThenBy(item => item.Name))
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
-                view.Set(itemData.Icon, null, false, itemData.IsShiny, true, true);
+                var itemViewData = new ItemViewData(itemData.Icon, false, null, false, itemData.IsShiny, true, true, itemData.Info);
+                view.Set(itemViewData);
                 _itemViews.Add(view);
             }
 

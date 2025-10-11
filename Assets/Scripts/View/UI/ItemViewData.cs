@@ -11,7 +11,6 @@ namespace View.UI
         bool isShiny,
         bool isCountIdentified,
         bool isCurseIdentified,
-        int storageSize,
         string info
     );
 }

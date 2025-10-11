@@ -64,8 +64,8 @@ namespace Provider
                         throw new Exception($"Cannot add prefix {prefixName} to {itemName}");
                 }
 
-                var spawnedItem = _world.ActiveMap.CurrentValue.SpawnItem(item, position);
-                var map = _world.ActiveMap.CurrentValue;
+                var spawnedItem = _world.CurrentMap.SpawnItem(item, position);
+                var map = _world.CurrentMap;
                 Log.Info($"{spawnedItem.Item.GetName(map.Player, map.ItemPlaceholders)}を{position}にスポーンしました。");
             }
             catch (Exception e)
@@ -79,9 +79,9 @@ namespace Provider
             try
             {
                 var enemyData = ScriptableObjectLoader.Load<EnemyData>(enemyName);
-                var enemy = _world.ActiveMap.CurrentValue.SpawnEnemy(enemyData, position, isSlept: isSlept,
+                var enemy = _world.CurrentMap.SpawnEnemy(enemyData, position, isSlept: isSlept,
                     isShiny: isShiny);
-                Log.Info($"{enemy.GetNameIgnoreVisibility(_world.ActiveMap.CurrentValue.Player)}を{position}にスポーンしました。");
+                Log.Info($"{enemy.GetNameIgnoreVisibility(_world.CurrentMap.Player)}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

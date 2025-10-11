@@ -237,9 +237,10 @@ namespace Domain.Service.Items
 
         public IEnumerable<IItem> Clear()
         {
-            for (int i = 0; i < _items.Count; i++)
+            var count = _items.Count;
+            for (int i = 0; i < count; i++)
             {
-                var item = ForceRemove(i);
+                var item = ForceRemove(0);
                 if (item != null)
                     yield return item;
             }

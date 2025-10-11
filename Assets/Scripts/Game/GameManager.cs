@@ -54,9 +54,9 @@ namespace Game
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
 
-            _world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            _world.OnActiveMapChanged.Subscribe(mapChanged =>
             {
-                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed
+                _disposable.Disposable = mapChanged.Map.Player.Character.Entity.OnDestroyed
                     .Where(_ => State.CurrentValue == GameState.Dungeon)
                     .Subscribe(async _ =>
                 {

@@ -69,15 +69,14 @@ namespace Provider
             });
 
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+                disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
                 {
                     if (isNoMove)
                     {
-                        map.Player.Character.FaceNearestCharacter(map);
+                        mapChanged.Map.Player.Character.FaceNearestCharacter(mapChanged.Map);
                     }
-                })
-            );
+                }));
 
             choiceReceiver.OnShownChoiceWithInfo.Subscribe(async message =>
             {

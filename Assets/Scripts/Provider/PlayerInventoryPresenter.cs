@@ -23,8 +23,9 @@ namespace Provider
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
             inventoryView.Initialize();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
+                    var map = mapChanged.Map;
                     var inventory = map.Player.Character.Inventory;
                     inventoryView.Reset(
                         inventory.AllItems.Select(
@@ -39,8 +40,8 @@ namespace Provider
                                 item.IsCurseIdentified,
                                 item.Info(map.Player, map.ItemPlaceholders)
                             )
-                        ).ToList()
-                    );
+                        ).ToList(),
+                        mapChanged.IsNewWorld);
 
                     inventory.OnItemInserted.Subscribe(inserted =>
                     {
@@ -87,10 +88,7 @@ namespace Provider
                             map.Player, map.ItemPlaceholders);
                     }
                 },
-                _ =>
-                {
-                    _disposables.Clear();
-                }
+                _ => _disposables.Clear()
             );
         }
 

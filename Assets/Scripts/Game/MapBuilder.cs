@@ -47,13 +47,12 @@ namespace Game
             var roomIds = _tilemap.RoomIds.ToList();
             var grassRoomIds = _tilemap.RoomIds.ToList();
 
-            // 孤立したSectionを検出してIsolateRoomとして処理（最初に処理）
             foreach (var isolateRoomId in _tilemap.IsolateRooms)
             {
                 if (roomIds.Count() > 1)
                 {
                     CreateIsolateRoom(data, isolateRoomId);
-                    roomIds.Remove(isolateRoomId); // 通常の部屋処理から除外
+                    roomIds.Remove(isolateRoomId);
                 }
             }
 
@@ -278,10 +277,10 @@ namespace Game
 
             var center = innerRect.Value.min + VectorExtension.FloorToInt(innerRect.Value.size / 2);
 
-            if (Random.value < 0.5)
-                _bonfire = Bonfire.Build(center);
-            else
+            if (RandUtils.IsLessThanProbability(data.MagicPotChance))
                 _magicPot = MagicPot.Build(center);
+            else
+                _bonfire = Bonfire.Build(center);
 
             foreach (var position in innerRect.Value.RectRange())
             {

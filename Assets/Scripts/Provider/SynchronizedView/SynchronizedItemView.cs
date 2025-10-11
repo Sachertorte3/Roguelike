@@ -29,10 +29,11 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable.Disposable = map.Items.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.Items.ForEach(item => Remove(item))
-            );
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.Items.ForEach(item => Remove(item));
+                _disposable.Disposable = mapChanged.Map.Items.SubscribeIncludingCurrentItems(Add, Remove);
+            });
         }
 
         protected override ItemView ViewPrefab(IItemEntity _)

@@ -34,10 +34,11 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable.Disposable = map.Characters.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.Characters.ForEach(character => Remove(character))
-            );
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.Characters.ForEach(character => Remove(character));
+                _disposable.Disposable = mapChanged.Map.Characters.SubscribeIncludingCurrentItems(Add, Remove);
+            });
         }
 
         protected override CharacterView ViewPrefab(ICharacter _)
@@ -58,7 +59,7 @@ namespace Provider
         protected override void InitializeView(ICharacter character, CharacterView characterView)
         {
             var disposables = new CompositeDisposable();
-            var player = _world.ActiveMap.CurrentValue.Player;
+            var player = _world.CurrentMap.Player;
             characterView.Construct(character.CharacterType.TypeName(), character.IsEnemy(player.Character),
                 character.IsAlly(player.Character));
             if (character.IsBoss)

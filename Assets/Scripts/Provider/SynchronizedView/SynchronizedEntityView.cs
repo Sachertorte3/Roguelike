@@ -75,8 +75,7 @@ namespace Provider
                 var eventArrow = GameObject.Instantiate(eventArrowPrefab, entityView.transform);
                 _gameManager.Turn.SubscribeIncludingCurrentValue(turn =>
                 {
-                    var map = _world.ActiveMap.CurrentValue;
-                    var canExecuteEvent = playerEventEntity.Events.CanExecuteEvent(map.Player, map);
+                    var canExecuteEvent = playerEventEntity.Events.CanExecuteEvent(_world.CurrentMap.Player, _world.CurrentMap);
                     var color = canExecuteEvent ? Color.green : Color.clear;
                     eventArrow.GetComponent<SpriteRenderer>().color = color;
                 }).AddTo(entityView);

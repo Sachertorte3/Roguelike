@@ -15,14 +15,14 @@ namespace Provider
         public Presenter(GameManager gameManager, World world, SynchronizedIconEntityView _, SynchronizedThrowAnimationEntityView _2,
             SynchronizedFireEntityView _3, MenuController menuController)
         {
-            gameManager.State.Subscribe(async state =>
+            gameManager.State.Subscribe(state =>
             {
                 switch (state)
                 {
                     case GameState.Title:
                         Log.Debug("[Game]Change to title scene.");
                         gameManager.Title().Forget();
-                        var player = world.ActiveMap.CurrentValue.Player;
+                        var player = world.CurrentMap.Player;
                         var destroyLog = player.Character.Entity.DestroyLog;
                         if (destroyLog != null && gameManager.ActiveStatistics.CurrentValue != null)
                         {

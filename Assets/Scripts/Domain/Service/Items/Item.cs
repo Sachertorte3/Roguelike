@@ -32,7 +32,7 @@ namespace Domain.Service.Items
         public bool CanMergeUses => Category == ItemCategory.Books || Category == ItemCategory.Wands;
         public override bool CannotUseIfCursed => Category != ItemCategory.Weapons;
         public override bool CannotDropIfCursed => Category == ItemCategory.Weapons;
-        public override bool IdentifyIfGot => Category == ItemCategory.Weapons;
+        public override bool IdentifyIfGot => Category == ItemCategory.Weapons || Category == ItemCategory.Others;
         public override bool IdentifyIfUsed => Category != ItemCategory.Wands;
         public override bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls || Category == ItemCategory.Others;
         public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
@@ -143,6 +143,7 @@ namespace Domain.Service.Items
                     multiplyPrice: data.MultiplyPrice,
                     state: state,
                     maxUsages: data.UsageLimit,
+                    usageLossChance: 1,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit,
                     conditions: data.PassiveConditions

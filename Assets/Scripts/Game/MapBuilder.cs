@@ -45,12 +45,16 @@ namespace Game
             _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
 
             var roomIds = _tilemap.RoomIds.ToList();
+            var grassRoomIds = _tilemap.RoomIds.ToList();
 
             // 孤立したSectionを検出してIsolateRoomとして処理（最初に処理）
             foreach (var isolateRoomId in _tilemap.IsolateRooms)
             {
-                CreateIsolateRoom(data, isolateRoomId);
-                roomIds.Remove(isolateRoomId); // 通常の部屋処理から除外
+                if (roomIds.Count() > 1)
+                {
+                    CreateIsolateRoom(data, isolateRoomId);
+                    roomIds.Remove(isolateRoomId); // 通常の部屋処理から除外
+                }
             }
 
             if (Random.value < data.ShopChance && roomIds.Count() > 1)
@@ -58,7 +62,10 @@ namespace Game
                 var shopRoom = roomIds.GetAtRandom();
                 _shop = CreateShop(data, shopRoom);
                 if (_shop != null)
+                {
                     roomIds.Remove(shopRoom);
+                    grassRoomIds.Remove(shopRoom);
+                }
             }
 
             if (Random.value < data.MonsterHouseChance && roomIds.Count() > 1)
@@ -102,7 +109,7 @@ namespace Game
                 }
             }
 
-            foreach (var room in roomIds)
+            foreach (var room in grassRoomIds)
                 AddGrasses(data, room);
         }
 

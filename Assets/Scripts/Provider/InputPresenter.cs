@@ -15,7 +15,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            InfoReceiver infoReceiver, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
+            ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
             MenuController menuController, InventoryView inventoryView)
         {
             var logWindowVisible = Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible).ToReadOnlyReactiveProperty();

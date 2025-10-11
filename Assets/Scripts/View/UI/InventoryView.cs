@@ -11,19 +11,20 @@ namespace View.UI
     public class InventoryView : MonoBehaviour
     {
         [SerializeField] private StorageView _storageView;
-        [SerializeField] private InventoryItemView _itemViewPrefab;
         [SerializeField] private TMP_Text _infoText;
         [SerializeField] private Sprite _groundItemIcon;
         [SerializeField] private Sprite _emptyIcon;
         private readonly ReactiveProperty<int> _focusIndex = new(0);
         private ItemViewData _defaultGroundItemItem;
+        private ItemViewData _defaultEmptyItem;
         private List<InventoryViewIndex> _lockedItemIndexes = new();
         private bool _enabled = true;
         public ReadOnlyReactiveProperty<InventoryViewIndex> Focus => _focusIndex.Select(index => GetFocus(index)).ToReadOnlyReactiveProperty();
         public void Initialize()
         {
             Log.Debug($"[View]InventoryView Initialize");
-            _defaultGroundItemItem = new ItemViewData(_groundItemIcon, true, null, false, false, true, true, "");
+            _defaultGroundItemItem = new ItemViewData("[足元]", _groundItemIcon, true, null, false, false, true, true, "");
+            _defaultEmptyItem = new ItemViewData("", _emptyIcon, true, null, false, false, true, true, "");
             Reset(new());
 
             _storageView.OnSelected
@@ -42,8 +43,8 @@ namespace View.UI
             Log.Debug($"[View]InventoryView Clear");
             var itemDataListAndEtc = new List<ItemViewData>(itemDataList)
             {
-                new ItemViewData(_groundItemIcon, true, null, false, false, true, true, ""),
-                new ItemViewData(_emptyIcon, true, null, false, false, true, true, "")
+                _defaultGroundItemItem,
+                _defaultEmptyItem
             };
             _storageView.Reset(itemDataListAndEtc);
             UpdateInfoText();
@@ -81,7 +82,10 @@ namespace View.UI
         public void UpdateGroundItem(ItemViewData? itemData)
         {
             Log.Debug($"[View]InventoryView UpdateGroundItem");
-            _storageView.Replace(itemData ?? _defaultGroundItemItem, _storageView.ItemViews.Count - 2, true);
+            if (itemData != null)
+                _storageView.Replace(itemData with { name = $"[足元] {itemData.name}" }, _storageView.ItemViews.Count - 2, true);
+            else
+                _storageView.Replace(_defaultGroundItemItem, _storageView.ItemViews.Count - 2, true);
             if (Focus.CurrentValue.IsOnGroundItem)
                 UpdateInfoText();
         }

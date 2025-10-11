@@ -10,7 +10,7 @@ namespace Domain.Model.Effect
 {
     public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill, IHasInfo
     {
-        public void UpdateTurn();
+        public void CoolDown();
         public bool IsUsable();
         public Color Color { get; }
         public int ChargeTurn { get; }

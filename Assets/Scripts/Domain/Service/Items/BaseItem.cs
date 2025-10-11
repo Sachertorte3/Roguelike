@@ -35,6 +35,7 @@ namespace Domain.Service.Items
         private readonly List<UpgradePath> _upgradePaths;
         public int MaxUsages { get; private set; }
         private protected ReactiveProperty<int> _remainingUsages;
+        public float UsageLossChance { get; private set; }
         public bool IsCursed { get; private set; }
         public bool IsCurseIdentified { get; private set; }
         public int UpgradeLimit { get; private set; }
@@ -98,6 +99,7 @@ namespace Domain.Service.Items
             _upgradePaths = baseItem.UpgradePaths;
             MaxUsages = baseItem.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(baseItem.RemainingUsages);
+            UsageLossChance = baseItem.UsageLossChance;
             IsCursed = baseItem.IsCursed;
             IsCurseIdentified = baseItem.IsCurseIdentified;
             UpgradeLimit = baseItem.UpgradeLimit;
@@ -118,6 +120,7 @@ namespace Domain.Service.Items
                 upgradePaths: _upgradePaths,
                 maxUsages: MaxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
+                usageLossChance: UsageLossChance,
                 isCursed: IsCursed,
                 isCurseIdentified: IsCurseIdentified,
                 upgradeLimit: UpgradeLimit,
@@ -132,6 +135,7 @@ namespace Domain.Service.Items
             float multiplyPrice,
             ItemState state,
             int maxUsages,
+            float usageLossChance,
             bool isCursed,
             int upgradeLimit,
             List<IConditionData> conditions
@@ -149,6 +153,7 @@ namespace Domain.Service.Items
                 upgradePaths: new List<UpgradePath>(),
                 maxUsages: maxUsages,
                 remainingUsages: maxUsages,
+                usageLossChance: usageLossChance,
                 isCursed: isCursed,
                 isCurseIdentified: false,
                 upgradeLimit: upgradeLimit,
@@ -192,7 +197,10 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                _remainingUsages.Value -= 1;
+                if (UnityEngine.Random.value < UsageLossChance)
+                {
+                    _remainingUsages.Value -= 1;
+                }
                 if (State == ItemState.ShopItem)
                 {
                     State = ItemState.UsedShopItem;
@@ -219,7 +227,10 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                _remainingUsages.Value -= 1;
+                if (UnityEngine.Random.value < UsageLossChance)
+                {
+                    _remainingUsages.Value -= 1;
+                }
                 if (State == ItemState.ShopItem)
                 {
                     State = ItemState.UsedShopItem;
@@ -283,7 +294,7 @@ namespace Domain.Service.Items
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2 * Mathf.Max(UsageLossChance, 0.1f);
             price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
@@ -573,6 +584,15 @@ namespace Domain.Service.Items
             if (UseOnDeath)
             {
                 info += "それは死亡時に自動的に使用される\n";
+            }
+
+            if (UsageLossChance == 0)
+            {
+                info += "それは使用可能回数が減少しない\n";
+            }
+            else if (UsageLossChance < 1)
+            {
+                info += $"それは{(1-UsageLossChance):P0}の確率で使用可能回数が減少しない\n";
             }
 
             foreach (var condition in PassiveConditions)

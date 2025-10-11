@@ -19,7 +19,7 @@ MonoBehaviour:
   - _element: 0
     _power: 4
   _features:
-  - stringValue: AbnormalConditionEnhance
+  - stringValue: EnhanceAbnormalCondition
   FeatureLimit: 3
   UsageLimit: 32
   UpgradeLimit: 2

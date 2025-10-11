@@ -9,6 +9,7 @@ namespace Domain.Model.Item
     public enum DirectWeaponFeature
     {
         //MEMO: Due to the merge specifications, it should not affect anything other than Skill.
+        EnhanceDurability,   // 耐久強化
         TwoRangeAttack,      // 2マス攻撃
         FanAttack,           // 扇型攻撃
         SpinAttack,          // 回転攻撃
@@ -19,7 +20,7 @@ namespace Domain.Model.Item
         BreakTrap,            // トラップを破壊
         Absorbing,            // 吸収
         GuaranteedHit,        // 必中
-        ThrowEnhance,         // 投擲強化
+        EnhanceThrow,         // 投擲強化
         Paralysis,             // 麻痺
         Blind,                 // 盲目
         Confusion,             // 混乱
@@ -27,7 +28,7 @@ namespace Domain.Model.Item
         Poison,                // 毒
         Slowness,              // 鈍足
         Restraint,             // 拘束
-        AbnormalConditionEnhance,    // 状態異常付与率強化
+        EnhanceAbnormalCondition,// 状態異常付与率強化
         Artistic,                  // 芸術
     }
     public static class DirectWeaponFeatureExtensions
@@ -36,6 +37,7 @@ namespace Domain.Model.Item
         {
             return feature switch
             {
+                DirectWeaponFeature.EnhanceDurability => "耐久強化",
                 DirectWeaponFeature.TwoRangeAttack => "2マス攻撃",
                 DirectWeaponFeature.FanAttack => "扇型攻撃",
                 DirectWeaponFeature.SpinAttack => "回転攻撃",
@@ -46,7 +48,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.BreakTrap => "トラップを破壊",
                 DirectWeaponFeature.Absorbing => "吸収",
                 DirectWeaponFeature.GuaranteedHit => "必中",
-                DirectWeaponFeature.ThrowEnhance => "投擲強化",
+                DirectWeaponFeature.EnhanceThrow => "投擲強化",
                 DirectWeaponFeature.Paralysis => "麻痺",
                 DirectWeaponFeature.Blind => "盲目",
                 DirectWeaponFeature.Confusion => "混乱",
@@ -54,7 +56,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Poison => "毒",
                 DirectWeaponFeature.Slowness => "鈍足",
                 DirectWeaponFeature.Restraint => "拘束",
-                DirectWeaponFeature.AbnormalConditionEnhance => "状態異常付与率強化",
+                DirectWeaponFeature.EnhanceAbnormalCondition => "状態異常付与率強化",
                 DirectWeaponFeature.Artistic => "美術品",
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
@@ -64,6 +66,7 @@ namespace Domain.Model.Item
             const int CANNOT_OVERLAP = 1;
             return feature switch
             {
+                DirectWeaponFeature.EnhanceDurability => 5,
                 DirectWeaponFeature.TwoRangeAttack => CANNOT_OVERLAP,
                 DirectWeaponFeature.FanAttack => CANNOT_OVERLAP,
                 DirectWeaponFeature.SpinAttack => CANNOT_OVERLAP,
@@ -74,7 +77,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.BreakTrap => CANNOT_OVERLAP,
                 DirectWeaponFeature.Absorbing => 4,
                 DirectWeaponFeature.GuaranteedHit => CANNOT_OVERLAP,
-                DirectWeaponFeature.ThrowEnhance => CANNOT_OVERLAP,
+                DirectWeaponFeature.EnhanceThrow => CANNOT_OVERLAP,
                 DirectWeaponFeature.Paralysis => CANNOT_OVERLAP,
                 DirectWeaponFeature.Blind => CANNOT_OVERLAP,
                 DirectWeaponFeature.Confusion => CANNOT_OVERLAP,
@@ -82,7 +85,7 @@ namespace Domain.Model.Item
                 DirectWeaponFeature.Poison => CANNOT_OVERLAP,
                 DirectWeaponFeature.Slowness => CANNOT_OVERLAP,
                 DirectWeaponFeature.Restraint => CANNOT_OVERLAP,
-                DirectWeaponFeature.AbnormalConditionEnhance => CANNOT_OVERLAP,
+                DirectWeaponFeature.EnhanceAbnormalCondition => 4,
                 DirectWeaponFeature.Artistic => CANNOT_OVERLAP,
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };

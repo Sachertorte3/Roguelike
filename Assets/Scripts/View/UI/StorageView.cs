@@ -28,7 +28,7 @@ namespace View.UI
             return _itemViews.IndexOf(itemView);
         }
 
-        private void UpdateHorizontalNavigation()
+        private void UpdateVerticalNavigation()
         {
             Log.Verbose($"[View]StorageView UpdateNavigation");
             foreach (var (view, index) in _itemViews.Index())
@@ -36,10 +36,10 @@ namespace View.UI
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnLeft = FindInteractableItem(index, -1),
-                    selectOnRight = FindInteractableItem(index, 1),
-                    selectOnUp = null,
-                    selectOnDown = null
+                    selectOnLeft = null,
+                    selectOnRight = null,
+                    selectOnUp = FindInteractableItem(index, -1),
+                    selectOnDown = FindInteractableItem(index, 1)
                 };
                 view.GetComponent<Selectable>().navigation = nav;
             }
@@ -89,7 +89,7 @@ namespace View.UI
                 }
             }
 
-            UpdateHorizontalNavigation();
+            UpdateVerticalNavigation();
             UpdateSiblingOrder();
         }
 
@@ -124,7 +124,7 @@ namespace View.UI
             view.Set(itemData);
             view.UpdateInteractable(interactable);
             view.OnSelected.Subscribe(_ => _onSelected.OnNext(GetIndex(view))).AddTo(view);
-            UpdateHorizontalNavigation();
+            UpdateVerticalNavigation();
             UpdateSiblingOrder();
         }
 
@@ -133,7 +133,7 @@ namespace View.UI
             Log.Verbose($"[View]StorageView Remove: {index}");
             Destroy(ItemViews[index].gameObject);
             _itemViews.RemoveAt(index);
-            UpdateHorizontalNavigation();
+            UpdateVerticalNavigation();
             UpdateSiblingOrder();
         }
 
@@ -156,7 +156,7 @@ namespace View.UI
         {
             Log.Verbose($"[View]StorageView UpdateItemSkip: {canSkip}");
             _canSkip = canSkip;
-            UpdateHorizontalNavigation();
+            UpdateVerticalNavigation();
         }
     }
 }

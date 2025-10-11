@@ -81,7 +81,7 @@ namespace Provider
                     );
                 }
 
-                if (character.Inventory.CanAddToEmpty(item))
+                if (character.Inventory.CanAddToEmpty())
                 {
                     character.Inventory.AddToEmpty(item);
                     var map = _world.ActiveMap.CurrentValue;

@@ -105,7 +105,7 @@ namespace Domain.Service.Items
                 elementPowers = elementPowers.Select(power => power.MultiplyPower(prefix.PowerMagnification)).ToList();
             }
             var criticalRate = features.Count(f => f == DirectWeaponFeature.Critical) * 0.25f;
-            var throwEnhance = features.Contains(DirectWeaponFeature.ThrowEnhance) ? 1.5f : 1f;
+            var throwEnhance = features.Contains(DirectWeaponFeature.EnhanceThrow) ? 1.5f : 1f;
             if (features.Contains(DirectWeaponFeature.Absorbing))
             {
                 var absorbRate = features.Count(f => f == DirectWeaponFeature.Absorbing) * 0.25f;
@@ -146,7 +146,7 @@ namespace Domain.Service.Items
                 effectsOnUse.Add(new BreakEffect(false, false, false, true, false));
                 effectsOnThrow.Add(new BreakEffect(false, false, false, true, false));
             }
-            var abnormalConditionMultiplier = features.Count(f => f == DirectWeaponFeature.AbnormalConditionEnhance) + 1;
+            var abnormalConditionMultiplier = features.Count(f => f == DirectWeaponFeature.EnhanceAbnormalCondition) + 1;
             if (features.Contains(DirectWeaponFeature.Paralysis))
             {
                 var probability = 0.05f * abnormalConditionMultiplier;
@@ -248,6 +248,7 @@ namespace Domain.Service.Items
                     multiplyPrice: multiplyPrice,
                     state: state,
                     maxUsages: maxUsages,
+                    usageLossChance: 1,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
                     conditions: data.PassiveConditions
@@ -279,9 +280,11 @@ namespace Domain.Service.Items
 
             var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
+            var usageLossChance = 1 - features.Count(f => f == DirectWeaponFeature.EnhanceDurability) * 0.2f;
             var item = new DirectWeapon(memento.CopyWith(
                 baseItem: memento.BaseItem.CopyWith(
-                    multiplyPrice: multiplyPrice
+                    multiplyPrice: multiplyPrice,
+                    usageLossChance: usageLossChance
                 ),
                 features: features,
                 skillOnUse: skillOnUse.Serialize(),

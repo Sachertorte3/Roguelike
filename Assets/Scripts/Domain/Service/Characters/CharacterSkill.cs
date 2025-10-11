@@ -120,7 +120,7 @@ namespace Domain.Service.Characters
             return _skill.GetChildren();
         }
 
-        public void UpdateTurn()
+        public void CoolDown()
         {
             if (_remainingCoolTime > 0)
             {

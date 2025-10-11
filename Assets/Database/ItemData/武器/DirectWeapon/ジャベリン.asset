@@ -19,7 +19,7 @@ MonoBehaviour:
   - _element: 0
     _power: 5
   _features:
-  - stringValue: ThrowEnhance
+  - stringValue: EnhanceThrow
   FeatureLimit: 3
   UsageLimit: 24
   UpgradeLimit: 3

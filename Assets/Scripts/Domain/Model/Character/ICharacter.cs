@@ -50,6 +50,7 @@ namespace Domain.Model.Character
         public bool CanPickUpItem();
         public void AddEvent(IPlayerEvent ev);
         public UniTask UpdateTurn();
+        public void UpdateCharacterTurn();
 
         public bool IsVisible(Vector2Int position)
         {

@@ -40,6 +40,17 @@ namespace Provider
                         statView.SetMoney(money);
                     }));
 
+                    _disposables.Add(
+                        Observable.Merge(
+                            map.Player.Character.Inventory.CurrentItemCount.AsUnitObservable(),
+                            map.Player.Character.Inventory.Capacity.AsUnitObservable()
+                        ).Subscribe(_ =>
+                    {
+                        var currentItems = map.Player.Character.Inventory.CurrentItemCount.CurrentValue;
+                        var capacity = map.Player.Character.Inventory.Capacity.CurrentValue;
+                        statView.SetInventory(currentItems, capacity);
+                    }));
+
                     _disposables.Add(Observable
                         .Merge(map.Player.Character.Status.HpValue, map.Player.Character.Status.MaxHp)
                         .Subscribe(_ =>

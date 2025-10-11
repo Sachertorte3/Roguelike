@@ -30,6 +30,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool IsCursed { get; private set; }
         [field: SerializeField] public bool IsCurseIdentified { get; private set; }
         [field: SerializeField] public int UpgradeLimit { get; private set; }
+        [field: SerializeField] public float UsageLossChance { get; private set; }
         [field: SerializeReference] public List<IConditionData> Conditions { get; private set; }
         public BaseItemMemento(
             Id<IItem> id,
@@ -46,6 +47,7 @@ namespace Domain.Model.Memento
             bool isCursed,
             bool isCurseIdentified,
             int upgradeLimit,
+            float usageLossChance,
             List<IConditionData> conditions)
         {
             _id = id.ToString();
@@ -62,6 +64,7 @@ namespace Domain.Model.Memento
             IsCursed = isCursed;
             IsCurseIdentified = isCurseIdentified;
             UpgradeLimit = upgradeLimit;
+            UsageLossChance = usageLossChance;
             Conditions = conditions;
         }
 
@@ -80,6 +83,7 @@ namespace Domain.Model.Memento
             bool? isCursed = null,
             bool? isCurseIdentified = null,
             int? upgradeLimit = null,
+            float? usageLossChance = null,
             List<IConditionData>? conditions = null)
         {
             return new BaseItemMemento(
@@ -97,6 +101,7 @@ namespace Domain.Model.Memento
                 isCursed ?? IsCursed,
                 isCurseIdentified ?? IsCurseIdentified,
                 upgradeLimit ?? UpgradeLimit,
+                usageLossChance ?? UsageLossChance,
                 conditions ?? Conditions
             );
         }

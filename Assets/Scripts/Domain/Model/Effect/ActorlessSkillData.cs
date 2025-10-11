@@ -23,7 +23,6 @@ namespace Domain.Model.Effect
         [field: Required]
         public List<IActorlessEffect> Effects { get; private set; }
 
-        [field: SerializeReference]
         [field: MinValue(1)]
         public int Repeats { get; private set; } = 1;
 

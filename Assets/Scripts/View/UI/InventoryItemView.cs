@@ -15,6 +15,7 @@ namespace View.UI
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _count;
         [SerializeField] private Image _cursedIcon;
+        [SerializeField] private TMP_Text _name;
         private ParticleController _particles => _icon.GetComponent<ParticleController>();
         private readonly Subject<Unit> _onFocus = new();
         public Observable<Unit> OnSelected => _onFocus;
@@ -32,6 +33,7 @@ namespace View.UI
             SetCount(itemData.count, itemData.isCountIdentified);
             SetCursed(itemData.isCursed, itemData.isCurseIdentified);
             SetShiny(itemData.isShiny);
+            SetName(itemData.name);
         }
 
         private void SetIcon(Sprite? icon)
@@ -68,6 +70,11 @@ namespace View.UI
                 _count.text = count.ToString();
             else
                 _count.text = "";
+        }
+
+        private void SetName(string name)
+        {
+            _name.text = name;
         }
 
         public void UpdateInteractable(bool interactable)

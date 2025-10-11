@@ -9,7 +9,8 @@ namespace Domain.Model.Item
     {
         public IEnumerable<IItem> AllItems { get; }
         public IEnumerable<(IItem Item, int Index)> AllItemsWithIndex { get; }
-        public int Capacity { get; }
+        public ReadOnlyReactiveProperty<int> CurrentItemCount { get; }
+        public ReadOnlyReactiveProperty<int> Capacity { get; }
         public bool CanAddItem { get; }
         public bool CanRemoveItem { get; }
         public Observable<OnItemInserted> OnItemInserted { get; }
@@ -23,13 +24,15 @@ namespace Domain.Model.Item
         public bool Contains(IItem item);
         public IItem? GetItem(int index);
         public int? GetItemIndex(IItem item);
-        public bool CanAddToEmpty(IItem item);
+        public bool CanAddToEmpty();
         public void AddToEmpty(IItem item);
+        public bool CanInsert(int index);
+        public void Insert(IItem item, int index);
         public bool CanRemove(int index);
         public IItem Remove(int index);
         public bool CanRemove(IItem item);
         public void Remove(IItem item);
-        public bool CanReplace(IItem item, int index);
+        public bool CanReplace(int index);
         public IItem Replace(IItem item, int index);
         public bool CanSwap(int index1, int index2);
         public void Swap(int index1, int index2);

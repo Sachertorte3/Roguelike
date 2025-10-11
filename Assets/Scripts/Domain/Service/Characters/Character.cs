@@ -40,7 +40,7 @@ namespace Domain.Service.Characters
         private readonly Aggression _aggression;
         private readonly ReactiveProperty<Direction8> _direction;
         public EntityBase Entity { get; init; }
-        private readonly CharacterInventory _inventory;
+        private readonly Inventory _inventory;
         private readonly ObservableHashSet<string> _knownItemNames = new();
         private readonly Subject<Unit> _onAttacked = new();
         private readonly List<CharacterSkill> _skills;
@@ -63,7 +63,7 @@ namespace Domain.Service.Characters
             _statusManager = new CharacterStatusManager(data.Status, Entity.Position, this, map);
             _skills = data.Skills.Select(x => new CharacterSkill(x)).ToList();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
-            _inventory = new CharacterInventory(data.Inventory, this);
+            _inventory = new Inventory(data.Inventory, this);
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
             _behavior = behavior;
             _canThroughWalls = data.CanThroughWalls;
@@ -79,15 +79,6 @@ namespace Domain.Service.Characters
 
             _map = map;
 
-            _inventory.OnItemOverflowed.Subscribe(overflowed =>
-            {
-                GameLog.Add(Entity.IsVisible, $"{overflowed.From.GetName(_map.Player, _map.ItemPlaceholders)}の中身が散らばった");
-                foreach (var item in overflowed.Items)
-                {
-                    _map.SpawnItem(item, Entity.CurrentPosition);
-                }
-            });
-
             HasEvent = _events.ObserveCountChanged().Select(x => x > 0).ToReadOnlyReactiveProperty();
 
             Observable.Merge(
@@ -95,7 +86,7 @@ namespace Domain.Service.Characters
                 Settings.WorldSettings.AutoIdentify.Value.Where(autoIdentify => autoIdentify).AsUnitObservable()
             ).Subscribe(_ =>
             {
-                foreach (var item in Inventory.AllItemsRecursive)
+                foreach (var item in Inventory.AllItems)
                 {
                     KnowItem(item, false);
                 }
@@ -151,7 +142,8 @@ namespace Domain.Service.Characters
 
         public ReadOnlyReactiveProperty<Direction8> Direction => _direction;
         public Observable<Unit> OnAttacked => _onAttacked;
-        public Observable<OnItemSelectMessage> OnItemSelect => _behavior.OnItemSelect;
+        public Observable<OnStartItemSelectMessage> OnStartItemSelect => _behavior.OnStartItemSelect;
+        public Observable<Unit> OnSelectedItemSelect => _behavior.OnSelectedItemSelect;
         public IObservableCollection<string> KnownItemNames => _knownItemNames;
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
             _chargeTurn.Select(x => new OnChargeActionUpdatedMessage(
@@ -523,9 +515,9 @@ namespace Domain.Service.Characters
             State = CharacterState.Finish;
         }
 
-        public void ForceDropItem(ItemFocus index, IMap map)
+        public void ForceDropItem(int index, IMap map)
         {
-            if (Inventory.HasItemAt(index) && Inventory.CanRemove(index))
+            if (Inventory.CanRemove(index))
             {
                 var item = Inventory.Remove(index);
                 GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
@@ -535,9 +527,26 @@ namespace Domain.Service.Characters
                 State = CharacterState.Finish;
             }
         }
-        public void DropItem(ItemFocus index, IMap map)
+        public void PickUpItem(IMap map)
         {
-            if (Inventory.HasItemAt(index, out var item) && item.CannotDropIfCursed)
+            var groundItem = map.Items.At(Entity.CurrentPosition).First();
+
+            if (Inventory.CanAddToEmpty(groundItem.Item))
+            {
+                map.TryPickUpAt(Entity.CurrentPosition, true);
+                Inventory.AddToEmpty(groundItem.Item);
+                GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
+            }
+            else
+            {
+                throw new Exception("Can't add item to inventory");
+            }
+
+            State = CharacterState.Finish;
+        }
+        public void DropItem(IItem item, IMap map)
+        {
+            if (item.CannotDropIfCursed)
             {
                 item.SetCurseIdentified(true);
                 if (item.IsCursed)
@@ -549,27 +558,24 @@ namespace Domain.Service.Characters
             }
 
             var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
+            var index = Inventory.GetItemIndex(item).Value;
 
             if (Inventory.CanReplaceOrRemove(groundItem?.Item, index))
             {
-                var replacedItem = Inventory.Replace(groundItem?.Item, index);
+                var replacedItem = Inventory.ReplaceOrRemove(groundItem?.Item, index);
                 if (groundItem != null)
                 {
                     map.TryPickUpAt(Entity.CurrentPosition, true);
                     GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
                 }
-                if (replacedItem != null)
-                {
-                    GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{replacedItem.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
-                    map.SpawnItem(replacedItem,
-                        map.FindBlankPositionFrom(Entity.CurrentPosition,
-                            position => map.At(position).IsBlank(EntityLayer.Bottom)));
-                }
+                GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{replacedItem.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
+                map.SpawnItem(replacedItem,
+                    map.FindBlankPositionFrom(Entity.CurrentPosition,
+                        position => map.At(position).IsBlank(EntityLayer.Bottom)));
             }
             else
             {
-                var storageIndex = new ItemFocus(index.Index, index.SubIndex);
-                GameLog.Add(Entity.IsVisible, $"{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}は{Inventory.GetItem(storageIndex).GetName(map.Player, map.ItemPlaceholders)}には入れられない");
+                throw new Exception("Can't replace or remove item in inventory");
             }
 
             State = CharacterState.Finish;
@@ -780,11 +786,11 @@ namespace Domain.Service.Characters
         public async UniTask<ItemFocus> SelectItemWithCanSelect(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect)
         {
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var index in Inventory.AllIndexesRecursive)
+            foreach (var (item, index) in Inventory.AllItemsWithIndex)
             {
-                if (Inventory.HasItemAt(index, out var inventoryItem) || !canSelect(inventoryItem))
+                if (!canSelect(item))
                 {
-                    disabledItemIndexes.Add(index);
+                    disabledItemIndexes.Add(new ItemFocus(index));
                 }
             }
 

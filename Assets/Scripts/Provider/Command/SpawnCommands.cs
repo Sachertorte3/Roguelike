@@ -50,8 +50,7 @@ namespace Provider
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
                 var item = baseItemData.Match<IItem>(
                     itemData => new Item(itemData),
-                    directWeaponData => new DirectWeapon(directWeaponData),
-                    storageItemData => new StorageItem(storageItemData)
+                    directWeaponData => new DirectWeapon(directWeaponData)
                 );
                 if (prefixName != null)
                 {

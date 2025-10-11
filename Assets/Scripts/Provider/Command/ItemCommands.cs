@@ -70,16 +70,14 @@ namespace Provider
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
                 var item = baseItemData.Match<IItem>(
                     itemData => new Item(itemData),
-                    directWeaponData => new DirectWeapon(directWeaponData),
-                    storageItemData => new StorageItem(storageItemData)
+                    directWeaponData => new DirectWeapon(directWeaponData)
                 );
                 if (prefixName != null)
                 {
                     var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
                     item = baseItemData.Match<IItem>(
                         itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
-                        directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData)),
-                        storageItemData => new StorageItem(StorageItem.Build(storageItemData, prefixData))
+                        directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData))
                     );
                 }
 

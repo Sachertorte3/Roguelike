@@ -21,7 +21,8 @@ namespace Domain.Service.Characters.Behavior
 {
     public sealed class EnemyBehavior : ICharacterBehavior
     {
-        public Observable<OnItemSelectMessage> OnItemSelect { get; init; } = new Subject<OnItemSelectMessage>();
+        public Observable<OnStartItemSelectMessage> OnStartItemSelect { get; init; } = new Subject<OnStartItemSelectMessage>();
+        public Observable<Unit> OnSelectedItemSelect { get; init; } = new Subject<Unit>();
 
         private BehaviorResult _previousResult;
         private readonly Option<Location> _homeLocation = Option.None<Location>();

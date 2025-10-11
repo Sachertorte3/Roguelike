@@ -14,22 +14,20 @@ namespace Provider
         public ItemSelectPresenter(World world, ItemSelectText itemSelectText, InventoryView inventoryView)
         {
             var disposable = new SerialDisposable();
+            var disposable2 = new SerialDisposable();
             world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
             {
-                disposable.Disposable = map.Player.Character.OnItemSelect.Subscribe(message =>
+                disposable.Disposable = map.Player.Character.OnStartItemSelect.Subscribe(message =>
                 {
-                    if (message.IsWaiting)
-                    {
-                        itemSelectText.Show(message.Text);
-                        inventoryView.LockItems(message.DisabledItemIndexes.Select(index => index.ToInventoryViewIndex()).ToArray());
-                        inventoryView.SetCanSkip(true);
-                    }
-                    else
-                    {
-                        itemSelectText.Hide();
-                        inventoryView.UnlockAllItems();
-                        inventoryView.SetCanSkip(false);
-                    }
+                    itemSelectText.Show(message.Text);
+                    inventoryView.LockItems(message.DisabledItemIndexes.Select(index => index.ToInventoryViewIndex()).ToList());
+                    inventoryView.SetCanSkip(true);
+                });
+                disposable2.Disposable = map.Player.Character.OnSelectedItemSelect.Subscribe(message =>
+                {
+                    itemSelectText.Hide();
+                    inventoryView.UnlockAllItems();
+                    inventoryView.SetCanSkip(false);
                 });
             });
         }

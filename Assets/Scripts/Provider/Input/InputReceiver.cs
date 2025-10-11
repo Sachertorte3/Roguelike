@@ -60,7 +60,7 @@ namespace View
 
         public void SwitchMenu()
         {
-            Log.Info("Switch input to Menu");
+            Log.Info("[Input] Switch input to Menu");
             _actions.Menu.Enable();
             if (EventSystem.current != null)
                 EventSystem.current.GetComponent<InputSystemUIInputModule>().move = InputActionReference.Create(_actions.UI.Navigate);
@@ -70,7 +70,7 @@ namespace View
 
         public void SwitchField()
         {
-            Log.Info("Switch input to Field");
+            Log.Info("[Input] Switch input to Field");
             _actions.Field.Enable();
             if (EventSystem.current != null)
                 EventSystem.current.GetComponent<InputSystemUIInputModule>().move = InputActionReference.Create(_actions.Field.Navigate);

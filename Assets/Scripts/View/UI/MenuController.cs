@@ -8,7 +8,6 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Utilities;
 using VContainer;
 
 namespace View.UI
@@ -98,7 +97,7 @@ namespace View.UI
 
         public void SwitchMenu(IMenu menu)
         {
-            Log.Info($"[Menu]SwitchMenu: {menu}");
+            Log.Info($"[Menu]SwitchMenu: {menu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -117,7 +116,7 @@ namespace View.UI
 
         public void PushMenu(IMenu pushedMenu)
         {
-            Log.Info($"[Menu]PushMenu: {pushedMenu}");
+            Log.Info($"[Menu]PushMenu: {pushedMenu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -134,7 +133,7 @@ namespace View.UI
 
         public void AddMenu(IMenu addedMenu)
         {
-            Log.Info($"[Menu]AddMenu: {addedMenu}");
+            Log.Info($"[Menu]AddMenu: {addedMenu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -151,7 +150,7 @@ namespace View.UI
         public void PopMenu()
         {
             var poppedMenu = _menuStack.Pop();
-            Log.Info($"[Menu]PopMenu: {poppedMenu}");
+            Log.Info($"[Menu]PopMenu: {poppedMenu} MenuStack Count: {_menuStack.Count}");
             _selectedObject[poppedMenu] = EventSystem.current.currentSelectedGameObject;
             if (_menuStack.Count > 0)
             {

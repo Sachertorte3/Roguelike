@@ -35,7 +35,8 @@ namespace Provider
                     ));
                     disposables.Add(Observable.Merge(
                         inventoryView.Focus.AsUnitObservable(),
-                        map.Player.Character.Inventory.OnItemChanged.AsUnitObservable(),
+                        map.Player.Character.Inventory.OnItemRemoved.AsUnitObservable(),
+                        map.Player.Character.Inventory.OnItemReplaced.AsUnitObservable(),
                         map.Player.Character.Direction.AsUnitObservable(),
                         gameManager.OnTurnChanged
                     ).Subscribe(_ =>
@@ -48,10 +49,10 @@ namespace Provider
                         }
 
                         var focus = inventoryView.Focus.CurrentValue;
-                        if (!focus.IsEmpty)
+                        if (!focus.IsOnEmpty)
                         {
                             IItem? item = null;
-                            if (focus.IsGroundItem)
+                            if (focus.IsOnGroundItem)
                             {
                                 item = map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
                             }

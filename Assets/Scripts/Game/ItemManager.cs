@@ -24,7 +24,7 @@ namespace Game
         private CompositeDisposable _disposables = new();
 
         [Inject]
-        public ItemManager(IMap map)
+        public ItemManager()
         {
             _items.ObserveCountChanged().Subscribe(_ => SetAllItemPosition());
             _items.SubscribeIncludingCurrentObservables(
@@ -38,14 +38,6 @@ namespace Game
                     if (remainingUses <= 0 && item.Item.AutoDestroyWhenDisabled)
                     {
                         _items.Remove(item);
-                        if (item.Item.ItemStorage.IsSome(out var itemStorage))
-                        {
-                            GameLog.Add(item.Entity.IsVisible, $"{item.Item.GetName(map.Player, map.ItemPlaceholders)}の中身が散らばった");
-                            foreach (var overflowedItem in itemStorage.AllItems)
-                            {
-                                map.SpawnItem(overflowedItem, item.Entity.Position.CurrentValue);
-                            }
-                        }
                     }
                 }
             ).AddTo(_disposables);

@@ -19,8 +19,9 @@ namespace Provider
         public TilemapPresenter(TileViewController tileView, OverlayTileViewController overlayTileView,
             MinimapController minimapController, TilePalette tilePalette, World world)
         {
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
+                    var map = mapChanged.Map;
                     tileView.Clear();
                     overlayTileView.Clear();
                     minimapController.Clear();

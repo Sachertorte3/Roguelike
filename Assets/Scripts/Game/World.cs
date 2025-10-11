@@ -18,8 +18,9 @@ namespace Game
 {
     public class World : ISerializable<WorldMemento>
     {
-        private ReactiveProperty<MapManager?> _activeMap = new();
-        private Id<IMap>? _activeMapId => _activeMap.CurrentValue?.Id;
+        private ReactiveProperty<MapManager> _activeMap = new();
+        private Id<IMap> _activeMapId => _activeMap.CurrentValue.Id;
+        private Subject<OnActiveMapChangedMessage> _onActiveMapChanged = new();
         private Dictionary<Id<IMap>, MapMemento> _maps = new();
         private HashSet<Id<IMap>> _updatedMapIds = new();
         private Dungeon _dungeon;
@@ -33,9 +34,9 @@ namespace Game
             _receiver = receiver;
             _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/ItemData/Placeholders.asset")
                 .WaitForCompletion();
-            _activeMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            _activeMap.SkipLatestValueOnSubscribe().Subscribe(map =>
             {
-                _updatedMapIds.Add(_activeMapId);
+                _updatedMapIds.Add(map.Id);
             });
         }
 
@@ -45,12 +46,18 @@ namespace Game
             _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(), _placeholders);
             _maps = new Dictionary<Id<IMap>, MapMemento>();
             _updatedMapIds = new HashSet<Id<IMap>>();
-            _activeMap.Value = null;
         }
 
         public DungeonMapData GetDungeonMapData(Id<IMap> mapId)
         {
             return _dungeon.CreateMapData(mapId);
+        }
+
+        public void SetActiveMap(MapManager map, bool isNewWorld)
+        {
+            var previousMap = _activeMap.CurrentValue;
+            _activeMap.Value = map;
+            _onActiveMapChanged.OnNext(new OnActiveMapChangedMessage(map, previousMap, isNewWorld));
         }
 
         public MapManager LoadWorld(WorldMemento memento, Dictionary<Id<IMap>, MapMemento> maps, IGameManager gameManager)
@@ -75,7 +82,7 @@ namespace Game
             MapManager map = new(mapMemento,
                 GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders);
 
-            _activeMap.Value = map;
+            SetActiveMap(map, true);
 
             return map;
         }
@@ -105,7 +112,8 @@ namespace Game
             return updatedMaps;
         }
 
-        public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
+        public MapManager CurrentMap => _activeMap.CurrentValue;
+        public Observable<OnActiveMapChangedMessage> OnActiveMapChanged => _onActiveMapChanged;
 
         private MapMemento GetMapMemento(Id<IMap> mapId)
         {
@@ -174,7 +182,7 @@ namespace Game
             MapManager map = new(mapMemento, _dungeon.CreateMapData(mapId), playerData,
                 partyMembers, initialPosition, true, gameManager, _receiver, _itemPlaceholders);
 
-            _activeMap.Value = map;
+            SetActiveMap(map, false);
 
             return map;
         }

@@ -14,8 +14,9 @@ namespace Provider
         [Inject]
         public DamagePresenter(World world, DamageTextSpawner damageTextSpawner, FlushController flushController)
         {
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
+                    var map = mapChanged.Map;
                     damageTextSpawner.DeleteAllText();
                     _disposable.Add(map.Player.Character.Status.OnDamageReceived.Subscribe(damageChanged =>
                         {

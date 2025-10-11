@@ -123,6 +123,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss:
@@ -313,6 +314,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -375,6 +377,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -391,6 +394,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
 --- !u!114 &-6788424184188872890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +450,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -462,6 +467,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
 --- !u!114 &-6699882812533938179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,6 +514,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 1
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -524,6 +531,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
 --- !u!114 &-6468005376489705111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -747,6 +755,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -1001,6 +1010,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss:
@@ -1321,6 +1331,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -1461,6 +1472,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -1702,6 +1714,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -1837,6 +1850,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -1942,6 +1956,7 @@ MonoBehaviour:
     CharacterCount: 0
     TrapCount: 0
     StatueChance: 0.1
+    MagicPotChance: 0.5
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -1958,6 +1973,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
 --- !u!114 &8353191741393840923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2087,6 +2103,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []
@@ -2185,6 +2202,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.05
+    MagicPotChance: 0.5
   Output:
     Field: {fileID: 0}
     PrefixChance: 0.1
@@ -2201,6 +2219,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
 --- !u!114 &9031898349937062684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2333,6 +2352,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    MagicPotChance: 0.5
   _enemies:
     items: []
   Boss: []

@@ -30,10 +30,11 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable.Disposable = map.ThrowAnimationEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.ThrowAnimationEntities.ForEach(entity => Remove(entity))
-            );
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.ThrowAnimationEntities.ForEach(entity => Remove(entity));
+                _disposable.Disposable = mapChanged.Map.ThrowAnimationEntities.SubscribeIncludingCurrentItems(Add, Remove);
+            });
         }
 
         protected override EntityView ViewPrefab(ThrowAnimationEntity _)

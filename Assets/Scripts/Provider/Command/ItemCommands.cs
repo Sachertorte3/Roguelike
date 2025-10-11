@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Game;
@@ -66,7 +65,7 @@ namespace Provider
         {
             try
             {
-                var character = CommandUtilities.GetTarget(target, _world.ActiveMap.CurrentValue);
+                var character = CommandUtilities.GetTarget(target, _world.CurrentMap);
                 var baseItemData = ScriptableObjectLoaderExtension.LoadItemData(itemName);
                 var item = baseItemData.Match<IItem>(
                     itemData => new Item(itemData),
@@ -84,7 +83,7 @@ namespace Provider
                 if (character.Inventory.CanAddToEmpty())
                 {
                     character.Inventory.AddToEmpty(item);
-                    var map = _world.ActiveMap.CurrentValue;
+                    var map = _world.CurrentMap;
                     Log.Info($"{item.GetName(map.Player, map.ItemPlaceholders)}を{target}のインベントリに追加しました。");
                 }
                 else
@@ -102,7 +101,7 @@ namespace Provider
         {
             try
             {
-                var inventory = _world.ActiveMap.CurrentValue.Player.Character.Inventory;
+                var inventory = _world.CurrentMap.Player.Character.Inventory;
                 var item = inventory.GetItem(index);
                 var item2 = inventory.GetItem(index2);
                 if (item == null || item2 == null)
@@ -117,8 +116,8 @@ namespace Provider
                 }
                 var mergedItem = item.Merge(item2);
                 inventory.Replace(mergedItem, index);
-                inventory.Replace(null, index2);
-                Log.Info($"{mergedItem.GetName(_world.ActiveMap.CurrentValue.Player, _world.ActiveMap.CurrentValue.ItemPlaceholders)}をプレイヤーのインベントリに追加しました。");
+                inventory.Remove(index2);
+                Log.Info($"{mergedItem.GetName(_world.CurrentMap.Player, _world.CurrentMap.ItemPlaceholders)}をプレイヤーのインベントリに追加しました。");
             }
             catch (Exception e)
             {

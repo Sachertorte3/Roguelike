@@ -24,7 +24,8 @@ namespace Domain.Service.Items
     {
         public override string RevealedName => _prefix.MapOr("", prefix => prefix.Name) + BaseName;
         public override ItemCategory Category => ItemCategory.Weapons;
-        protected override bool HasSameEffect => true;
+        private bool _hasSameEffect;
+        protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => false;
         public override bool UseOnDeath => false;
         public override Option<IStorage> ItemStorage => Option.None<IStorage>();
@@ -66,7 +67,8 @@ namespace Domain.Service.Items
                 features: _features,
                 featureLimit: _featureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
-                skillOnThrow: _skillOnThrow.Serialize()
+                skillOnThrow: _skillOnThrow.Serialize(),
+                hasSameEffect: _hasSameEffect
             ));
             return JsonUtility.FromJson<DirectWeaponMemento>(json);
         }
@@ -85,7 +87,7 @@ namespace Domain.Service.Items
             return memento;
         }
 
-        public static (SpawnEffectSkill skillOnUse, SpawnEffectSkill skillOnThrow) BuildSkills(List<ElementPower> elementPowers, List<DirectWeaponFeature> features, WeaponPrefix? prefix = null, bool skipMultiplyPower = false)
+        public static (SpawnEffectSkill skillOnUse, SpawnEffectSkill skillOnThrow, bool hasSameEffect) BuildSkills(List<ElementPower> elementPowers, List<DirectWeaponFeature> features, WeaponPrefix? prefix = null, bool skipMultiplyPower = false)
         {
             var range = features.Contains(DirectWeaponFeature.TwoRangeAttack) ? 2 : 1;
             var area = (IArea)new LineArea(range, false, false);
@@ -106,6 +108,7 @@ namespace Domain.Service.Items
             }
             var criticalRate = features.Count(f => f == DirectWeaponFeature.Critical) * 0.25f;
             var throwEnhance = features.Contains(DirectWeaponFeature.EnhanceThrow) ? 1.5f : 1f;
+            var hasSameEffect = throwEnhance == 1f;
             if (features.Contains(DirectWeaponFeature.Absorbing))
             {
                 var absorbRate = features.Count(f => f == DirectWeaponFeature.Absorbing) * 0.25f;
@@ -228,12 +231,12 @@ namespace Domain.Service.Items
                     skillOnThrowProbabilityOfSuccess,
                     "")
             ));
-            return (skillOnUse, skillOnThrow);
+            return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
         public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None)
         {
-            var (skillOnUse, skillOnThrow) = BuildSkills(data.ElementPowers, data.Features, prefix);
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.ElementPowers, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var featureLimit = data.FeatureLimit + prefix?.FeatureLimitAdditional ?? 0;
             var maxUsages = Mathf.RoundToInt(data.UsageLimit * (prefix?.UsageLimitMagnification ?? 1f));
@@ -258,7 +261,8 @@ namespace Domain.Service.Items
                 features: data.Features,
                 featureLimit: data.FeatureLimit,
                 skillOnUse: skillOnUse.Serialize(),
-                skillOnThrow: skillOnThrow.Serialize()
+                skillOnThrow: skillOnThrow.Serialize(),
+                hasSameEffect: hasSameEffect
             ));
             var item = JsonUtility.FromJson<DirectWeaponMemento>(json); //MEMO: To break the sharing references
             return item;
@@ -278,7 +282,7 @@ namespace Domain.Service.Items
                 features = features.Merge(feature).ToList();
             }
 
-            var (skillOnUse, skillOnThrow) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var usageLossChance = 1 - features.Count(f => f == DirectWeaponFeature.EnhanceDurability) * 0.2f;
             var item = new DirectWeapon(memento.CopyWith(
@@ -288,7 +292,8 @@ namespace Domain.Service.Items
                 ),
                 features: features,
                 skillOnUse: skillOnUse.Serialize(),
-                skillOnThrow: skillOnThrow.Serialize()
+                skillOnThrow: skillOnThrow.Serialize(),
+                hasSameEffect: hasSameEffect
             ));
             foreach (var upgradePath in item.UpgradePaths)
             {

@@ -30,8 +30,9 @@ namespace Game
             _knownItemNames = new(memento.KnownItemNames);
             IsCheating = memento.IsCheating;
 
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
             {
+                var map = mapChanged.Map;
                 if (map.Depth > MaxMapLevel)
                     MaxMapLevel = map.Depth;
                 map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>

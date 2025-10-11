@@ -171,8 +171,8 @@ namespace View.UI
 
         public void TitleMenuWhenGameOver(int level, string causeOfDeath)
         {
-            SwitchMenu(_titleMenu);
             _titleMenu.SetData(level, causeOfDeath);
+            SwitchMenu(_titleMenu);
         }
 
         public void DungeonMenu()

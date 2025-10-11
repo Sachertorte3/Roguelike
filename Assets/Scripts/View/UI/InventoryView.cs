@@ -25,7 +25,7 @@ namespace View.UI
             Log.Debug($"[View]InventoryView Initialize");
             _defaultGroundItemItem = new ItemViewData("[足元]", _groundItemIcon, true, null, false, false, true, true, "");
             _defaultEmptyItem = new ItemViewData("", _emptyIcon, true, null, false, false, true, true, "");
-            Reset(new());
+            Reset(new(), true);
 
             _storageView.OnSelected
                 .Subscribe(index =>
@@ -38,7 +38,7 @@ namespace View.UI
                 UpdateInfoText();
             });
         }
-        public void Reset(List<ItemViewData> itemDataList)
+        public void Reset(List<ItemViewData> itemDataList, bool resetFocus)
         {
             Log.Debug($"[View]InventoryView Clear");
             var itemDataListAndEtc = new List<ItemViewData>(itemDataList)
@@ -47,6 +47,8 @@ namespace View.UI
                 _defaultEmptyItem
             };
             _storageView.Reset(itemDataListAndEtc);
+            if (resetFocus)
+                _storageView.Select(0);
             UpdateInfoText();
         }
 

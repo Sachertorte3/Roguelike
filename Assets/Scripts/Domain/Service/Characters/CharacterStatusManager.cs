@@ -148,6 +148,11 @@ namespace Domain.Service.Characters
 
         public IStat GetConditionResistanceStat(ConditionTemplate condition)
         {
+            if (IsFlagStat(FlagStatType.AllConditionProof))
+            {
+                return new Stat(1);
+            }
+
             if (!ConditionResistance.ContainsKey(condition.name))
             {
                 ConditionResistance[condition.name] = new Stat(0);
@@ -298,7 +303,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy,
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool hasAllConditionProof, bool isHard, bool isHeavy,
             bool isAffectedByTrap, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
@@ -317,6 +322,11 @@ namespace Domain.Service.Characters
             {
                 flagStats[FlagStatType.CannotAct] = 1;
                 flagStats[FlagStatType.Blind] = 1;
+            }
+
+            if (hasAllConditionProof)
+            {
+                flagStats[FlagStatType.AllConditionProof] = 1;
             }
 
             if (isHard)

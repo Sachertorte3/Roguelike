@@ -11,6 +11,7 @@ namespace Domain.Model.Character.Status
         Clairvoyant,
         Blind,
         OverDrive,
+        AllConditionProof,
         Hard,
         ExplosionProof,
         Heavy,

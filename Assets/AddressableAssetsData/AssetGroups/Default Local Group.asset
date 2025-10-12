@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7e9cd6ea47fbe44e98b33935eb5ad41
+    m_Address: Assets/Database/PlayerData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bce174c3e834b0142803afc072c4bfae
     m_Address: Assets/Database/EnemyData
     m_ReadOnly: 0

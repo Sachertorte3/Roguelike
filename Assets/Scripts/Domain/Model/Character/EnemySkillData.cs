@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 namespace Domain.Model.Character
 {
     [Serializable]
-    public class EnemySkillData
+    public class CharacterSkillData
     {
         [Required] public SkillData Skill;
         [MinValue(0)] public int RushDistance;

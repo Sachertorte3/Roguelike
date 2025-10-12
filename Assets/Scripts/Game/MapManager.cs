@@ -54,7 +54,7 @@ namespace Game
         private readonly IGameManager _gameManager;
         public EntityManager EntityManager { get; init; }
 
-        public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerData,
+        public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerMemento,
             List<CharacterMemento>? partyMembers,
             Vector2Int? playerPosition, bool resetPertyPositions, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
@@ -69,16 +69,17 @@ namespace Game
 
             _tilemap = new Tilemap(map.Tilemap);
 
-            if (playerData == null)
+            if (playerMemento == null)
             {
-                playerData = CharacterFactory.BuildPlayer("Player", playerPosition.Value);
+                var playerData = ScriptableObjectLoader.Load<PlayerData>("Player");
+                playerMemento = CharacterFactory.BuildPlayer(playerData, playerPosition.Value);
             }
             else
             {
-                playerData = playerData.CopyWith(character: playerData.Character.ReplacePosition(playerPosition.Value));
+                playerMemento = playerMemento.CopyWith(character: playerMemento.Character.ReplacePosition(playerPosition.Value));
             }
 
-            EntityManager = new EntityManager(map.Entities, playerData, partyMembers, playerPosition.Value, resetPertyPositions, receiver, gameManager, this);
+            EntityManager = new EntityManager(map.Entities, playerMemento, partyMembers, playerPosition.Value, resetPertyPositions, receiver, gameManager, this);
 
             _dungeonData = data;
 

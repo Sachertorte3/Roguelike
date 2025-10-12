@@ -47,7 +47,7 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterSkillMemento Build(EnemySkillData skill)
+        public static CharacterSkillMemento Build(CharacterSkillData skill)
         {
             return Build(
                 SpawnEffectSkill.Build(skill.Skill),

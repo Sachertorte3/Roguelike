@@ -25,55 +25,44 @@ namespace Domain.Service.Characters
 {
     public sealed class CharacterFactory
     {
-        public static PlayerMemento BuildPlayer(string Name, Vector2Int spawnPosition)
+        public static PlayerMemento BuildPlayer(PlayerData data, Vector2Int spawnPosition)
         {
             var character = new CharacterMemento
             (
-                name: Name,
-                characterType: new Human("Chara_Hero1_USM"),
+                name: data.Name,
+                characterType: data.CharacterType,
                 behavior: PlayerBehavior.Build(),
-                status: CharacterStatusManager.Build(CommonSenseParameters.PlayerMaxHealth,
-                    CommonSenseParameters.PlayerNaturalRecoveryRate,
-                    new Dictionary<Element, float>(), new Dictionary<Element, float>(),
-                    new Dictionary<ConditionTemplate, float>(), CommonSenseParameters.PlayerVisionRange, false, false, true, 1, false),
+                status: CharacterStatusManager.Build(
+                    maxHp: CommonSenseParameters.PlayerMaxHealth,
+                    hpNaturalRecoveryAmount: CommonSenseParameters.PlayerNaturalRecoveryRate,
+                    elementAttackMultiplier: data.ElementAttackMultiplier,
+                    elementDamageRateMultiplier: data.ElementDamageRateMultiplier,
+                    conditionResistance: data.ConditionResistance,
+                    viewRange: CommonSenseParameters.PlayerVisionRange,
+                    hasAllConditionProof: data.HasAllConditionProof,
+                    isHard: data.IsHard,
+                    isHeavy: data.IsHeavy,
+                    isAffectedByTrap: true,
+                    waitTime: data.MoveSpeed.ToWaitTime(),
+                    isSlept: false
+                ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
                 skills: new List<CharacterSkillMemento>
                 {
-                    CharacterSkill.Build(
-                        skill: SpawnEffectSkill.Build(
-                            new SkillData(
-                                position: new AtFeet(),
-                                area: new LineArea(1, false, false),
-                                effects: new List<IEffect>
-                                {
-                                    new AttackEffect(
-                                        new List<ElementPower> { new(Element.Physical, CommonSenseParameters.PlayerAttackPowerWhenUnarmed) },
-                                        0
-                                    )
-                                },
-                                repeats: 1,
-                                probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
-                                log: "は殴りかかった"
-                            )
-                        ),
-                        rushDistance: 0,
-                        backStepDistance: 0,
-                        chargeTurn: 0,
-                        coolTime: 0
-                    )
+                    CharacterSkill.Build(data.DefaultSkill)
                 },
                 lastSkill: Option<SpawnEffectSkillMemento>.None,
-                inventory: Storage.Build(20, new(), true, true),
+                inventory: Storage.Build(data.InventoryCapacity, new(), true, true),
                 knownItemNames: new List<string>(),
                 affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human),
                 aggression: Aggression.AttackAnyone,
                 dropExp: 0,
                 isLeader: true,
                 isShiny: false,
-                isBoss: false,
-                isFlying: false,
-                canThroughWalls: false,
+                isBoss: data.IsBoss,
+                isFlying: data.IsFlying,
+                canThroughWalls: data.CanThroughWalls,
                 canPickUp: true,
                 canUseItem: true
             );
@@ -92,6 +81,10 @@ namespace Domain.Service.Characters
             }
             var inventory = Storage.Build(20, items, true, true);
 
+            var elementAttackMultiplier = isShiny
+                ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
+                : new Dictionary<Element, float>();
+
             return new CharacterMemento
             (
                 name: isShiny ? "☆" + data.Name : data.Name,
@@ -100,12 +93,20 @@ namespace Domain.Service.Characters
                     data.Behavior,
                     homeLocation.ToOption()
                 ),
-                status: CharacterStatusManager.Build(isShiny ? data.Hp * 10 : data.Hp, 0.1f,
-                    isShiny
-                        ? Enum.GetValues(typeof(Element)).Cast<Element>().ToDictionary(element => element, _ => 2f)
-                        : new Dictionary<Element, float>(), data.ElementDamageRateMultiplier, data.ConditionResistance,
-                    8, data.IsHard,
-                    data.IsHeavy, false, data.MoveSpeed.ToWaitTime(), isSlept),
+                status: CharacterStatusManager.Build(
+                    maxHp: isShiny ? data.Hp * 10 : data.Hp,
+                    hpNaturalRecoveryAmount: 0.1f,
+                    elementAttackMultiplier: elementAttackMultiplier,
+                    elementDamageRateMultiplier: data.ElementDamageRateMultiplier,
+                    conditionResistance: data.ConditionResistance,
+                    viewRange: 8,
+                    hasAllConditionProof: data.HasAllConditionProof,
+                    isHard: data.IsHard,
+                    isHeavy: data.IsHeavy,
+                    isAffectedByTrap: false,
+                    waitTime: data.MoveSpeed.ToWaitTime(),
+                    isSlept: isSlept
+                ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
                 skills: data.Skills.Select(x => CharacterSkill.Build(x)).ToList(),
@@ -201,7 +202,7 @@ namespace Domain.Service.Characters
             }
             return sum / Enum.GetValues(typeof(Element)).Length;
         }
-        public static float EvaluateSkills(IEnumerable<EnemySkillData> skills)
+        public static float EvaluateSkills(IEnumerable<CharacterSkillData> skills)
         {
             var virtualSkills = skills.Select(x => new VirtualSkill(x)).ToList();
             var sum = 0f;
@@ -240,7 +241,7 @@ namespace Domain.Service.Characters
             public int ChargeTurn;
             public int CoolTime;
             private int _remainingCoolTime;
-            public VirtualSkill(EnemySkillData skill)
+            public VirtualSkill(CharacterSkillData skill)
             {
                 Value = new CharacterSkill(CharacterSkill.Build(skill)).EvaluatePrice();
                 ChargeTurn = skill.ChargeTurn;

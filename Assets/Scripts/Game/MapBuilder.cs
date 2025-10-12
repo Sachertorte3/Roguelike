@@ -12,6 +12,7 @@ using Domain.Service.Items;
 using Domain.Service.Map;
 using Domain.Service.Rooms;
 using RandomDungeonWithBluePrint;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
@@ -31,6 +32,7 @@ namespace Game
         private readonly List<MoneyMemento> _money = new();
         private BonfireMemento? _bonfire;
         private MagicPotMemento? _magicPot;
+        private WorkbenchMemento? _workbench;
         private EntityMemento? _teleporter;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
@@ -277,10 +279,22 @@ namespace Game
 
             var center = innerRect.Value.min + VectorExtension.FloorToInt(innerRect.Value.size / 2);
 
-            if (RandUtils.IsLessThanProbability(data.MagicPotChance))
-                _magicPot = MagicPot.Build(center);
-            else
-                _bonfire = Bonfire.Build(center);
+            switch (RandUtils.WeightedIndex(data.MagicPotWeight, data.WorkbenchWeight, data.BonfireWeight))
+            {
+                case 0:
+                    _magicPot = MagicPot.Build(center);
+                    break;
+                case 1:
+                    _workbench = Workbench.Build(center);
+                    break;
+                case 2:
+                    _bonfire = Bonfire.Build(center);
+                    break;
+                default:
+                    Log.Warning("Invalid weight");
+                    _bonfire = Bonfire.Build(center);
+                    break;
+            }
 
             foreach (var position in innerRect.Value.RectRange())
             {
@@ -422,6 +436,7 @@ namespace Game
                         _money,
                         _bonfire.ToOption(),
                         _magicPot.ToOption(),
+                        _workbench.ToOption(),
                         _teleporter.ToOption()),
                     FireEntityManager.Build()),
                 _keyCharacters.Select(key => key.ToString()).ToList(),

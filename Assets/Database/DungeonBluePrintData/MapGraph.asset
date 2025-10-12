@@ -1407,7 +1407,10 @@ MonoBehaviour:
       _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
         RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
       _direction: 0
       _connectionType: 1
       _typeConstraint: 0
@@ -2367,6 +2370,9 @@ MonoBehaviour:
       - fieldName: _fields
         node: {fileID: 5720250255583208601}
         reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 132433583354238991}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2376,16 +2382,16 @@ MonoBehaviour:
     - Item: {fileID: 11400000, guid: 68e9de5972a77e54696183ab4d0100bf, type: 2}
       Weight: 8
     - Item: {fileID: 11400000, guid: 86a4b3365bea4d845b0ef9c226ae20a3, type: 2}
-      Weight: 4
-    - Item: {fileID: 11400000, guid: 0524b3bc0103ad54e8b2e31ec5b512a4, type: 2}
-      Weight: 1
+      Weight: 2
     - Item: {fileID: 11400000, guid: 651bcfb659ab8fa4cb823b5068e6ed53, type: 2}
-      Weight: 1
+      Weight: 2
     - Item: {fileID: 11400000, guid: 63c47df808f594c438d27c0e30c3bcad, type: 2}
-      Weight: 1
+      Weight: 2
     - Item: {fileID: 11400000, guid: 38d377018ddca994089be554c9fc6dc1, type: 2}
-      Weight: 1
+      Weight: 999
     - Item: {fileID: 11400000, guid: d72033cc55f63624297ef81e250c107f, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: 0524b3bc0103ad54e8b2e31ec5b512a4, type: 2}
       Weight: 1
     - Item: {fileID: 11400000, guid: 400686b6bdaa5e948a5d642c2e0e4b5a, type: 2}
       Weight: 1
@@ -2432,7 +2438,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0
     MonsterHouseChance: 0
-    RestRoomChance: 0
+    RestRoomChance: 1
     LakeChance: 0
     ItemCount: 1
     MoneyCount: 1
@@ -2440,7 +2446,7 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.05
-    MagicPotChance: 0.5
+    MagicPotChance: 0
   Output:
     PrefixChance: 0.1
     ShinyChance: 0.01

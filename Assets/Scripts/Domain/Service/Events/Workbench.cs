@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Domain.Model;
+using Domain.Model.Effect;
+using Domain.Model.Entity;
+using Domain.Model.Item;
+using Domain.Model.Map;
+using Domain.Model.Memento;
+using R3;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using Utilities;
+
+namespace Domain.Service.Events
+{
+    public class Workbench : IDisposable, ISerializable<WorkbenchMemento>, IPlayerEventEntity, IIconEntity
+    {
+        private ReactiveProperty<int> _remainingUsages;
+        public ReadOnlyReactiveProperty<bool> CanUse => _remainingUsages.Select(remainingUsages => remainingUsages > 0).ToReadOnlyReactiveProperty();
+        public EntityBase Entity { get; init; }
+
+        public Workbench(WorkbenchMemento data)
+        {
+            Entity = new EntityBase(data.Entity);
+            _remainingUsages = new ReactiveProperty<int>(data.RemainingUsages);
+            Events = new List<IPlayerEvent>
+            {
+                new PlayerEvent(
+                    "工作台を見つけた",
+                    new List<PlayerChoiceEvent>
+                    {
+                        new(
+                            "アイテムを修理する",
+                            (player, map) => CanUse.CurrentValue,
+                            async (gameManager, map) => await DoRepairEvent(map)
+                        ),
+                        new(
+                            "アイテムを強化する",
+                            (player, map) => CanUse.CurrentValue,
+                            async (gameManager, map) => await DoUpgradeEvent(map)
+                        )
+                    }
+                )
+            };
+        }
+
+        public void Dispose()
+        {
+            Entity.Dispose();
+        }
+
+        public Sprite Icon => Addressables.LoadAssetAsync<Sprite>($"MapChip/(Base)BaseChip_pipo.png[(Base)BaseChip_pipo_683]")
+            .WaitForCompletion();
+
+        public IReadOnlyList<IPlayerEvent> Events { get; init; }
+
+        private bool CanRepair(IItem item)
+        {
+            return item.RemainingUses.CurrentValue < item.MaxUsages;
+        }
+
+        private async UniTask DoRepairEvent(IMap map)
+        {
+            var player = map.Player;
+            var item = (await player.Character.SelectItemWithCanSelect(
+                "修理するアイテムを選択してください",
+                player,
+                map,
+                CanRepair)).GetItem(player.Character.Inventory, map);
+            if (item == null)
+                return;
+            item.Repair(player, player.Character, map.ItemPlaceholders);
+            _remainingUsages.Value -= 1;
+        }
+
+        private bool CanUpgrade(IItem item)
+        {
+            return item.CanUpgrade();
+        }
+
+        private async UniTask DoUpgradeEvent(IMap map)
+        {
+            var player = map.Player;
+            var item = (await player.Character.SelectItemWithCanSelect(
+                "強化するアイテムを選択してください",
+                player,
+                map, CanUpgrade)).GetItem(player.Character.Inventory, map);
+            if (item == null)
+                return;
+            item.RandomUpgrade(player, player.Character, map.ItemPlaceholders);
+            _remainingUsages.Value -= 1;
+        }
+
+        public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
+        {
+            return UniTask.CompletedTask;
+        }
+
+        public WorkbenchMemento Serialize()
+        {
+            return new WorkbenchMemento(_remainingUsages.CurrentValue, Entity.Serialize());
+        }
+
+        public static WorkbenchMemento Build(Vector2Int position)
+        {
+            return new WorkbenchMemento(3, EntityBase.Build(position, EntityLayer.Middle));
+        }
+
+        ~Workbench()
+        {
+            Dispose();
+        }
+    }
+}

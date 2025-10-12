@@ -43,7 +43,9 @@ namespace Domain.Model.Dungeon
         float CharacterAttempt,
         float TrapAttempt,
         float StatueChance,
-        float MagicPotChance,
+        float BonfireWeight,
+        float MagicPotWeight,
+        float WorkbenchWeight,
         List<EnemyData> Boss,
         EnemyData Clerk,
         EnemyData Mimic

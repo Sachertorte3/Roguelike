@@ -127,6 +127,12 @@ namespace Provider
                     .Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = magicPot.Icon)
                     .AddTo(entityView);
             }
+            else if (eventEntity is Workbench workbench)
+            {
+                workbench.CanUse
+                    .Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = workbench.Icon)
+                    .AddTo(entityView);
+            }
             else if (eventEntity is Statue statue)
             {
                 statue.OnAttacked

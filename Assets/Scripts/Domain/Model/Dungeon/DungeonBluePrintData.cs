@@ -89,7 +89,9 @@ namespace Domain.Model.Dungeon
                 floorData.CharacterCount,
                 floorData.TrapCount,
                 floorData.StatueChance,
-                floorData.MagicPotChance,
+                floorData.BonfireWeight,
+                floorData.MagicPotWeight,
+                floorData.WorkbenchWeight,
                 boss,
                 sectionData.Clerk,
                 sectionData.Mimic

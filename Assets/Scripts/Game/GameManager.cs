@@ -138,7 +138,6 @@ namespace Game
                     firstWaitTime = 0;
                 }
 
-                
                 PlayBGM(BGM.Normal);
 
                 MapManager map;
@@ -171,7 +170,7 @@ namespace Game
 
         private MapManager LoadPreview(SaveData saveData)
         {
-            return _world.LoadWorld(saveData.World, saveData.Maps, this);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this, true);
         }
 
         private MapManager CreateSaveData()
@@ -211,7 +210,7 @@ namespace Game
                 _activeStatistics.Value.IsCheating = true;
             }
 
-            return _world.LoadWorld(saveData.World, saveData.Maps, this);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this, true);
         }
 
         private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData)
@@ -253,7 +252,7 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             PlayBGM(BGM.Normal);
-            var map = _world.LoadMap(mapId, destination, this);
+            var map = _world.LoadMap(mapId, destination, this, false);
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");

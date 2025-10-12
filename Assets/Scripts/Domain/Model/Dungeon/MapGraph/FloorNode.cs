@@ -1,3 +1,4 @@
+#nullable enable
 using XNode;
 
 namespace Domain.Model.Dungeon

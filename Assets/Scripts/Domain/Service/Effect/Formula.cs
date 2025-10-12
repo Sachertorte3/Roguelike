@@ -43,7 +43,10 @@ namespace Domain.Service.Effect
 
         public static int CalcExplosionDamage(float damageRate, ITargetOfEffect target)
         {
-            return Mathf.Max(1, Mathf.RoundToInt(target.CurrentMaxHp * damageRate));
+            var damage = Mathf.Max(1, Mathf.RoundToInt(target.CurrentMaxHp * damageRate));
+            if (target.Status.IsFlagStat(FlagStatType.ExplosionProof))
+                return Mathf.Min(CommonSenseParameters.DamageWhenExplosionProof, damage);
+            return damage;
         }
 
         public static int EvaluateExplosionDamage(float damageRate)

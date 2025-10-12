@@ -69,3 +69,4 @@ MonoBehaviour:
         ApplyToMoney: 1
         ApplyToTrap: 1
         ApplyToChest: 1
+        ApplyToStatue: 0

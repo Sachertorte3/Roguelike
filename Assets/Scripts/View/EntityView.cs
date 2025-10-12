@@ -46,6 +46,7 @@ namespace View
         public void Teleport(Vector2Int position)
         {
             _disposable.Disposable = null;
+            transform.DOKill();
             SetPosition(position);
             IsMoving = false;
         }

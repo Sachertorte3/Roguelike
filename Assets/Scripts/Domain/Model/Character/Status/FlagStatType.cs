@@ -1,5 +1,8 @@
+using StringSerializableEnum;
+
 namespace Domain.Model.Character.Status
 {
+    [StringSerializable]
     public enum FlagStatType
     {
         CannotAct,
@@ -9,6 +12,7 @@ namespace Domain.Model.Character.Status
         Blind,
         OverDrive,
         Hard,
+        ExplosionProof,
         Heavy,
         SecureHold,
         CurseProof,
@@ -16,6 +20,6 @@ namespace Domain.Model.Character.Status
         IsAffectedByTrap,
         AutoIdentify,
         RandomTeleport,
-        RandomExplosion
+        RandomExplosion,
     }
 }

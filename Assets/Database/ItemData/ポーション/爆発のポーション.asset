@@ -74,6 +74,7 @@ MonoBehaviour:
         ApplyToMoney: 1
         ApplyToTrap: 1
         ApplyToChest: 1
+        ApplyToStatue: 1
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

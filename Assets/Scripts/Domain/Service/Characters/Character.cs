@@ -809,7 +809,7 @@ namespace Domain.Service.Characters
             await _statusManager.UpdateTurn(this, visibleCharacters.Any());
             _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
             _inventory.UpdateTurn();
-            if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(0.1f))
+            if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(CommonSenseParameters.RandomTeleportProbability))
             {
                 var skill = new CharacterSkill(
                     CharacterSkill.Build(
@@ -829,14 +829,18 @@ namespace Domain.Service.Characters
                 );
                 await UseSkill(skill, CurrentDirection, _map);
             }
-            if (_statusManager.IsFlagStat(FlagStatType.RandomExplosion) && RandUtils.IsLessThanProbability(0.1f))
+            if (_statusManager.IsFlagStat(FlagStatType.RandomExplosion) && RandUtils.IsLessThanProbability(CommonSenseParameters.RandomExplosionProbability))
             {
                 var skill = new CharacterSkill(
                     CharacterSkill.Build(
                         new SpawnEffectSkillMemento(
                             new AtFeet(),
                             new CircleArea(2, true, false),
-                            new List<IEffect> { new PercentageDamageEffect(0.25f) },
+                            new List<IEffect>
+                            {
+                                new PercentageDamageEffect(0.25f),
+                                new BreakEffect(false, true, true, true, true, true)
+                            },
                             1,
                             1,
                             "は爆発した"

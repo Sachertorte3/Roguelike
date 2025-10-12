@@ -7,9 +7,6 @@ namespace Editor
 {
     public partial class FieldBluePrintEditor : EditorWindow
     {
-        [MenuItem("GameObject/Create Field Blue Print", false, 20)]
-        public static void OpenFromHierarchy() => OpenWindow();
-
         [MenuItem("Assets/Open Field Blue Print Editor", false, 20)]
         public static void OpenFromProject() => OpenWindow();
 
@@ -57,6 +54,16 @@ namespace Editor
             public RectInt rect;
             public RoomGenerationType roomGenerationType = RoomGenerationType.Random;
             public Vector2Int minRoomSize;
+            public SectionRect(RectInt rect, RoomGenerationType roomGenerationType, Vector2Int minRoomSize)
+            {
+                this.rect = rect;
+                this.roomGenerationType = roomGenerationType;
+                this.minRoomSize = minRoomSize;
+            }
+            public SectionRect CopyWith(RectInt? rect=null, RoomGenerationType? roomGenerationType=null, Vector2Int? minRoomSize=null)
+            {
+                return new SectionRect(rect ?? this.rect, roomGenerationType ?? this.roomGenerationType, minRoomSize ?? this.minRoomSize);
+            }
         }
 
         private class Connection
@@ -103,10 +110,11 @@ namespace Editor
                 );
 
                 var sectionRect = new SectionRect
-                {
-                    rect = flippedRect,
-                    minRoomSize = section.MinRoomSize
-                };
+                (
+                    flippedRect,
+                    RoomGenerationType.Random,
+                    section.MinRoomSize
+                );
 
                 // RoomGenerationTypeを変換
 
@@ -383,7 +391,7 @@ namespace Editor
             int validSections = 0;
             foreach (var section in sections)
             {
-                if (IsSectionInsideArea(section))
+                if (IsSectionInsideArea(section.rect))
                     validSections++;
             }
             GUILayout.Label($"Valid Sections: {validSections}");

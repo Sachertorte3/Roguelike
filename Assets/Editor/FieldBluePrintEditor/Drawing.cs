@@ -186,7 +186,7 @@ namespace Editor
                 );
 
                 // エリア外のルームは赤色で表示
-                bool isOutsideArea = !IsSectionInsideArea(section);
+                bool isOutsideArea = !IsSectionInsideArea(section.rect);
                 bool isSelected = section == selectedSection;
                 Color sectionColor = GetSectionColor(section.roomGenerationType, isOutsideArea, isSelected);
 

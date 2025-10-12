@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c9d6e8f38cdc547ad116f2420ef50e, type: 3}
-  m_Name: "\u30C6\u30EC\u30DD\u30FC\u30C8\u306E\u6307\u8F2A"
+  m_Name: "\u7206\u7834\u8010\u6027\u306E\u6307\u8F2A"
   m_EditorClassIdentifier: 
   Category: 5
   Icon: {fileID: 1240741089, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
@@ -60,7 +60,7 @@ MonoBehaviour:
       type: {class: FlagCondition, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
         _flagStatType:
-          stringValue: RandomTeleport
+          stringValue: ExplosionProof
     - rid: 4425516923575599143
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

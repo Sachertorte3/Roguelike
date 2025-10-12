@@ -4,13 +4,13 @@ namespace Editor
 {
     public partial class FieldBluePrintEditor
     {
-        private bool IsOverlapping(SectionRect section, SectionRect excludeSection)
+        private bool IsOverlapping(RectInt sectionRect, SectionRect excludeSection)
         {
             foreach (var otherSection in sections)
             {
                 if (otherSection == excludeSection) continue;
 
-                if (section.rect.Overlaps(otherSection.rect))
+                if (sectionRect.Overlaps(otherSection.rect))
                 {
                     return true;
                 }
@@ -18,18 +18,18 @@ namespace Editor
             return false;
         }
 
-        private bool IsSectionInsideArea(SectionRect section)
+        private bool IsSectionInsideArea(RectInt sectionRect)
         {
-            return IsSectionInsideArea(section, new RectInt(Vector2Int.zero, areaSize));
+            return IsSectionInsideArea(sectionRect, new RectInt(Vector2Int.zero, areaSize));
         }
 
-        private bool IsSectionInsideArea(SectionRect section, RectInt areaRect)
+        private bool IsSectionInsideArea(RectInt sectionRect, RectInt areaRect)
         {
             // エリアの境界上も含めて有効にする
-            return section.rect.xMin >= areaRect.xMin &&
-                   section.rect.yMin >= areaRect.yMin &&
-                   section.rect.xMax <= areaRect.xMax &&
-                   section.rect.yMax <= areaRect.yMax;
+            return sectionRect.xMin >= areaRect.xMin &&
+                   sectionRect.yMin >= areaRect.yMin &&
+                   sectionRect.xMax <= areaRect.xMax &&
+                   sectionRect.yMax <= areaRect.yMax;
         }
 
         private Vector2Int AdjustPositionToConstraints(Vector2Int targetPosition, SectionRect currentSection)
@@ -264,7 +264,7 @@ namespace Editor
             // すべてのセクションが含まれているかチェック
             foreach (var section in sections)
             {
-                if (!IsSectionInsideArea(section, rect))
+                if (!IsSectionInsideArea(section.rect, rect))
                 {
                     return false;
                 }
@@ -320,7 +320,7 @@ namespace Editor
                     if (testRect.Contains(clickPosition))
                     {
                         // 配置可能かチェック
-                        if (!IsOverlapping(new SectionRect { rect = testRect }, null) && IsSectionInsideArea(new SectionRect { rect = testRect }))
+                        if (!IsOverlapping(testRect, null) && IsSectionInsideArea(testRect))
                         {
                             return testRect.position;
                         }
@@ -348,7 +348,7 @@ namespace Editor
             // すべてのSectionがエリア内にあるかチェック
             foreach (var section in sections)
             {
-                if (!IsSectionInsideArea(section))
+                if (!IsSectionInsideArea(section.rect))
                 {
                     return false;
                 }

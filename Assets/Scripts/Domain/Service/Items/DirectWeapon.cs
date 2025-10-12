@@ -146,8 +146,8 @@ namespace Domain.Service.Items
             }
             if (features.Contains(DirectWeaponFeature.BreakTrap))
             {
-                effectsOnUse.Add(new BreakEffect(false, false, false, true, false));
-                effectsOnThrow.Add(new BreakEffect(false, false, false, true, false));
+                effectsOnUse.Add(new BreakEffect(false, false, false, true, false, false));
+                effectsOnThrow.Add(new BreakEffect(false, false, false, true, false, false));
             }
             var abnormalConditionMultiplier = features.Count(f => f == DirectWeaponFeature.EnhanceAbnormalCondition) + 1;
             if (features.Contains(DirectWeaponFeature.Paralysis))
@@ -238,6 +238,7 @@ namespace Domain.Service.Items
         {
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.ElementPowers, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
+            var usageLossChance = 1 - data.Features.Count(f => f == DirectWeaponFeature.EnhanceDurability) * 0.2f;
             var featureLimit = data.FeatureLimit + prefix?.FeatureLimitAdditional ?? 0;
             var maxUsages = Mathf.RoundToInt(data.UsageLimit * (prefix?.UsageLimitMagnification ?? 1f));
 
@@ -251,7 +252,7 @@ namespace Domain.Service.Items
                     multiplyPrice: multiplyPrice,
                     state: state,
                     maxUsages: maxUsages,
-                    usageLossChance: 1,
+                    usageLossChance: usageLossChance,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
                     conditions: data.PassiveConditions

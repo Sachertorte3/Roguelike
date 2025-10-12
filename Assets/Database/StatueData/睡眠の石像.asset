@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec14853cf10a39458718f29d90278a7, type: 3}
   m_Name: "\u7761\u7720\u306E\u77F3\u50CF"
   m_EditorClassIdentifier: Domain.Model::Domain.Model.Entity.StatueData
+  <Type>k__BackingField: 1
   <Skill>k__BackingField:
     <Position>k__BackingField:
       rid: 3961642730205741884
@@ -19,7 +20,6 @@ MonoBehaviour:
       rid: 3961642730205741885
     <Effects>k__BackingField:
     - rid: 3961642730205741886
-    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
   <Cycle>k__BackingField: 20
   <AttackToBreak>k__BackingField: 3

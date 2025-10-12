@@ -1,5 +1,4 @@
 using System;
-using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ namespace Domain.Model.Dungeon
     [Serializable]
     public class FloorData
     {
-        [Required] public FieldBluePrint Field;
         [Range(0, 1)] public float PrefixChance = 0.1f;
         [Range(0, 1)] public float ShinyChance = 0.01f;
         [Range(0, 1)] public float SleepChance = 0.75f;

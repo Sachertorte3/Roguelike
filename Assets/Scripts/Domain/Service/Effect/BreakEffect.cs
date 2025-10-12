@@ -24,14 +24,15 @@ namespace Domain.Service.Effect
         public bool ApplyToMoney = true;
         public bool ApplyToTrap = true;
         public bool ApplyToChest = true;
-
-        public BreakEffect(bool applyToCharacter, bool applyToItem, bool applyToMoney, bool applyToTrap, bool applyToChest)
+        public bool ApplyToStatue = true;
+        public BreakEffect(bool applyToCharacter, bool applyToItem, bool applyToMoney, bool applyToTrap, bool applyToChest, bool applyToStatue)
         {
             ApplyToCharacter = applyToCharacter;
             ApplyToItem = applyToItem;
             ApplyToMoney = applyToMoney;
             ApplyToTrap = applyToTrap;
             ApplyToChest = applyToChest;
+            ApplyToStatue = applyToStatue;
         }
 
         public override UniTask Apply(IEntity target, Vector2Int position, IMap map)
@@ -55,6 +56,10 @@ namespace Domain.Service.Effect
             else if (target is Chest chest && ApplyToChest)
             {
                 GameLog.Add(target.IsVisible, "宝箱は破壊された");
+            }
+            else if (target is Statue statue && ApplyToStatue)
+            {
+                GameLog.Add(target.IsVisible, $"{statue.Name}は破壊された");
             }
             else
             {
@@ -95,6 +100,7 @@ namespace Domain.Service.Effect
             if (ApplyToMoney) targets.Add("お金");
             if (ApplyToTrap) targets.Add("罠");
             if (ApplyToChest) targets.Add("宝箱");
+            if (ApplyToStatue) targets.Add("石像");
             return $"{string.Join("、", targets)}を破壊する\n";
         }
     }

@@ -1407,10 +1407,7 @@ MonoBehaviour:
       _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
         RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 1
       _typeConstraint: 0
@@ -2350,9 +2347,6 @@ MonoBehaviour:
         Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: _fields
-        node: {fileID: 132433583354238991}
-        reroutePoints: []
-      - fieldName: _fields
         node: {fileID: 5670028076644485680}
         reroutePoints: []
       - fieldName: _fields
@@ -2381,6 +2375,8 @@ MonoBehaviour:
     items:
     - Item: {fileID: 11400000, guid: 68e9de5972a77e54696183ab4d0100bf, type: 2}
       Weight: 8
+    - Item: {fileID: 11400000, guid: 86a4b3365bea4d845b0ef9c226ae20a3, type: 2}
+      Weight: 4
     - Item: {fileID: 11400000, guid: 0524b3bc0103ad54e8b2e31ec5b512a4, type: 2}
       Weight: 1
     - Item: {fileID: 11400000, guid: 651bcfb659ab8fa4cb823b5068e6ed53, type: 2}

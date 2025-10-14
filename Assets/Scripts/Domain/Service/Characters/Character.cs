@@ -833,9 +833,8 @@ namespace Domain.Service.Characters
         public async UniTask UpdateTurn()
         {
             var visibleCharacters = _map.GetVisibleCharacters(this);
-            await _statusManager.UpdateTurn(this, visibleCharacters.Any());
+            await _statusManager.UpdateTurn(visibleCharacters.Any());
             _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
-            _inventory.UpdateTurn();
             if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(CommonSenseParameters.RandomTeleportProbability))
             {
                 var skill = new CharacterSkill(
@@ -895,6 +894,17 @@ namespace Domain.Service.Characters
         public string Info()
         {
             var info = $"{_name}\n";
+            info += $"{_statusManager.Info()}\n";
+            info += "スキル:\n";
+            foreach (var skill in Skills)
+            {
+                info += $"{skill.Info()}\n";
+            }
+            if (_lastSkill != null)
+            {
+                info += "死亡時のスキル:\n";
+                info += $"{_lastSkill.InfoOnUse()}\n";
+            }
             return info;
         }
     }

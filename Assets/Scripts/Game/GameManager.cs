@@ -100,15 +100,23 @@ namespace Game
 
         private async UniTask<PlayerData> GetPlayerData()
         {
-            var players = new List<PlayerData> {
-                ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
-                ScriptableObjectLoader.Load<PlayerData>("Witch"),
-                ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
-                ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+            var players = new List<(PlayerData data, string unlockCondition, bool usable)> {
+                (ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
+                "最初から", true),
+                (ScriptableObjectLoader.Load<PlayerData>("Witch"),
+                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+                (ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
+                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+                (ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
             };
             var index = await _characterSelectReceiver.GetCharacter(
-                players.Select(player => (player.Name, player.CharacterType.SubtypeName(), player.Info())).ToList());
-            return players[index];
+                players.Select(player => (
+                    player.data.Name,
+                    player.data.CharacterType.SubtypeName(),
+                    $"解放条件\n{player.unlockCondition}\n\n{player.data.InfoWithoutName()}",
+                    player.usable)).ToList());
+            return players[index].data;
         }
 
         public UniTask<string> GetTextInput()

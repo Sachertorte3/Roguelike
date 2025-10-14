@@ -22,7 +22,7 @@ namespace View.UI
         private readonly List<ChoiceButton> _buttons = new();
         [SerializeField] private TMP_Text _infoText;
 
-        public void SetChoices(List<(string name, string textureName, string info)> characters)
+        public void SetChoices(List<(string name, string textureName, string info, bool usable)> characters)
         {
             foreach (var button in _buttons)
             {
@@ -35,7 +35,9 @@ namespace View.UI
             foreach (var (choice, index) in characters.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
-                button.Construct(characters[index].name,
+                button.Construct(
+                    characters[index].name,
+                    characters[index].usable,
                     () =>
                     {
                         _selectedIndex.Value = index;

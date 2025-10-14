@@ -34,14 +34,13 @@ namespace Domain.Model.Character
         public SerializableDictionary<Element, float> ElementAttackMultiplier;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
         public SerializableDictionary<ConditionTemplate, float> ConditionResistance;
-        public string Info()
+        public string InfoWithoutName()
         {
             var info = "";
-            info += $"{Name}\n\n";
             info += $"HP: {Hp}\n";
+            info += $"所持上限: {InventoryCapacity}\n";
             if (MoveSpeed != MoveSpeed.Normal)
                 info += $"速度: {MoveSpeed.GetName()}\n";
-            info += $"所持上限: {InventoryCapacity}\n";
             foreach (var flag in Flags)
             {
                 info += $"{flag.GetName()}\n";

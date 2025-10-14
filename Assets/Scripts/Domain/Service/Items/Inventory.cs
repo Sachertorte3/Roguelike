@@ -8,6 +8,7 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using R3;
+using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Items

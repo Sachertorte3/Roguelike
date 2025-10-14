@@ -4,9 +4,9 @@ using System.Linq;
 using R3;
 using Sirenix.Utilities;
 using TMPro;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.Logging;
 using Utilities;
 
 namespace View.UI
@@ -61,9 +61,9 @@ namespace View.UI
             var nav = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
-                selectOnLeft = _itemViews[(index - 1 + _itemViews.Count) % _itemViews.Count]
+                selectOnLeft = _itemViews[(index - 1).WrapIndex(_itemViews.Count)]
                     .GetComponent<Selectable>(),
-                selectOnRight = _itemViews[(index + 1) % _itemViews.Count].GetComponent<Selectable>()
+                selectOnRight = _itemViews[(index + 1).WrapIndex(_itemViews.Count)].GetComponent<Selectable>()
             };
             _itemViews[index].GetComponent<Selectable>().navigation = nav;
         }

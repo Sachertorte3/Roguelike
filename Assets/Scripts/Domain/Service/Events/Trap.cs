@@ -26,7 +26,7 @@ namespace Domain.Service.Events
             _skill = new SpawnActorlessEffectSkill(memento.Skill);
             _probabilityOfBreaking = memento.ProbabilityOfBreaking;
             Event = new CharacterEvent(
-                character => character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
+                character => !character.IsFlying && character.Status.IsFlagStat(FlagStatType.IsAffectedByTrap),
                 async (character, gameManager, map) => { await Execute(map); }
             );
         }

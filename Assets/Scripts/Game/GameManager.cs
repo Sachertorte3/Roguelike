@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Setting;
@@ -143,7 +144,8 @@ namespace Game
                 MapManager map;
                 if (saveData == null)
                 {
-                    map = CreateSaveData();
+                    var playerData = await GetPlayerData();
+                    map = CreateSaveData(playerData);
                     await ChoiceDifficulty();
                 }
                 else if (revivePlayer)
@@ -159,7 +161,8 @@ namespace Game
             }
             else
             {
-                var map = CreateSaveData();
+                var playerData = ScriptableObjectLoader.Load<PlayerData>("Adventurer");
+                var map = CreateSaveData(playerData);
                 var _ = await GetChoice(null, "New Game");
                 await ChoiceDifficulty();
                 StartGame(map, 0);
@@ -168,18 +171,30 @@ namespace Game
             _state.Value = GameState.Dungeon;
         }
 
+        private async UniTask<PlayerData> GetPlayerData()
+        {
+            var characterIndex = await GetChoice("キャラクターを選択してください", "Adventurer", "Witch", "Rabbit", "Fairy");
+            return characterIndex switch {
+                0 => ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
+                1 => ScriptableObjectLoader.Load<PlayerData>("Witch"),
+                2 => ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
+                3 => ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+                _ => throw new Exception("Invalid character name")
+            };
+        }
+
         private MapManager LoadPreview(SaveData saveData)
         {
             return _world.LoadWorld(saveData.World, saveData.Maps, this, true);
         }
 
-        private MapManager CreateSaveData()
+        private MapManager CreateSaveData(PlayerData playerData)
         {
             _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
             Settings.WorldSettings.Reset();
 
             _world.CreateNew();
-            return _world.LoadStartMap(this);
+            return _world.LoadStartMap(playerData, this);
         }
 
         private async UniTask ChoiceDifficulty()
@@ -252,7 +267,7 @@ namespace Game
             Log.Debug("[Game]Start LoadMap");
             await StopMap();
             PlayBGM(BGM.Normal);
-            var map = _world.LoadMap(mapId, destination, this, false);
+            var map = _world.LoadMap(mapId, destination, this);
             Save();
             StartMap(map, 0);
             Log.Debug("[Game]End LoadMap");

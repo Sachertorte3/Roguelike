@@ -1,79 +1,79 @@
 fileFormatVersion: 2
-guid: c29a5959deef7cf40868a8cb49d9bcc2
+guid: 9c32e2d83e1f6224db0f33d37b97161d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6153685214833334013
-    second: Monster_RabbitMan1_makiba_0
+      213: -2990309890484215505
+    second: fairy_0
   - first:
-      213: -3976613344535076844
-    second: Monster_RabbitMan1_makiba_1
+      213: 4808560381157864972
+    second: fairy_1
   - first:
-      213: -6948203209753290204
-    second: Monster_RabbitMan1_makiba_2
+      213: 4520698335586148961
+    second: fairy_2
   - first:
-      213: -1080947662704713116
-    second: Monster_RabbitMan1_makiba_3
+      213: 4704531112747684950
+    second: fairy_3
   - first:
-      213: -5347642580183797881
-    second: Monster_RabbitMan1_makiba_4
+      213: 2485916238653805972
+    second: fairy_4
   - first:
-      213: -2837334683300352225
-    second: Monster_RabbitMan1_makiba_5
+      213: 9038047207732080932
+    second: fairy_5
   - first:
-      213: -1455155350626443030
-    second: Monster_RabbitMan1_makiba_6
+      213: -8129247833136589367
+    second: fairy_6
   - first:
-      213: 7432130383145628818
-    second: Monster_RabbitMan1_makiba_7
+      213: 6792007461002973164
+    second: fairy_7
   - first:
-      213: 6430737651443389218
-    second: Monster_RabbitMan1_makiba_8
+      213: 1773943826619582110
+    second: fairy_8
   - first:
-      213: 3657750704757613260
-    second: Monster_RabbitMan1_makiba_9
+      213: 7485137534063864438
+    second: fairy_9
   - first:
-      213: -780349246373408592
-    second: Monster_RabbitMan1_makiba_10
+      213: 959771502127576029
+    second: fairy_10
   - first:
-      213: 4910072749374011226
-    second: Monster_RabbitMan1_makiba_11
+      213: 1241416875379797157
+    second: fairy_11
   - first:
-      213: -5960247883293697676
-    second: Monster_RabbitMan1_makiba_12
+      213: 4370943649567634205
+    second: fairy_12
   - first:
-      213: 5788939353335508579
-    second: Monster_RabbitMan1_makiba_13
+      213: 4286923907197484123
+    second: fairy_13
   - first:
-      213: -3303246737746639353
-    second: Monster_RabbitMan1_makiba_14
+      213: 3795496344913853951
+    second: fairy_14
   - first:
-      213: -6688823328214964796
-    second: Monster_RabbitMan1_makiba_15
+      213: -661347578312439332
+    second: fairy_15
   - first:
-      213: 5884286581304181370
-    second: Monster_RabbitMan1_makiba_16
+      213: -6593865649591695147
+    second: fairy_16
   - first:
-      213: -6974207204323041130
-    second: Monster_RabbitMan1_makiba_17
+      213: 3638101259513179197
+    second: fairy_17
   - first:
-      213: -1219858555258718483
-    second: Monster_RabbitMan1_makiba_18
+      213: -2703134291172277994
+    second: fairy_18
   - first:
-      213: 3564029529602589396
-    second: Monster_RabbitMan1_makiba_19
+      213: -1591989784333265226
+    second: fairy_19
   - first:
-      213: 6139860016588246598
-    second: Monster_RabbitMan1_makiba_20
+      213: -5755592807001189688
+    second: fairy_20
   - first:
-      213: 2866405043512840318
-    second: Monster_RabbitMan1_makiba_21
+      213: 3106673742438364204
+    second: fairy_21
   - first:
-      213: -7227280980215923830
-    second: Monster_RabbitMan1_makiba_22
+      213: -7179021438088083092
+    second: fairy_22
   - first:
-      213: 2688308834742071370
-    second: Monster_RabbitMan1_makiba_23
+      213: -2551922652090264816
+    second: fairy_23
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -169,13 +169,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_0
+      name: fairy_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 66
-        width: 14
-        height: 22
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,20 +184,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 309294696e7b99aa0800000000000000
-      internalID: -6153685214833334013
+      spriteID: f21e9597ff84086d0800000000000000
+      internalID: -2990309890484215505
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_1
+      name: fairy_1
       rect:
         serializedVersion: 2
-        x: 14
-        y: 66
-        width: 14
-        height: 22
+        x: 20
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -206,20 +206,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 410a8ed6b3b30d8c0800000000000000
-      internalID: -3976613344535076844
+      spriteID: c067ee790307bb240800000000000000
+      internalID: 4808560381157864972
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_2
+      name: fairy_2
       rect:
         serializedVersion: 2
-        x: 28
-        y: 66
-        width: 14
-        height: 22
+        x: 40
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,20 +228,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 42a1d6f6ef5039f90800000000000000
-      internalID: -6948203209753290204
+      spriteID: 162ef4d3f2fbcbe30800000000000000
+      internalID: 4520698335586148961
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_3
+      name: fairy_3
       rect:
         serializedVersion: 2
-        x: 42
-        y: 66
-        width: 14
-        height: 22
+        x: 60
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,20 +250,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 46262bfe3d3bff0f0800000000000000
-      internalID: -1080947662704713116
+      spriteID: 65459121f1ad94140800000000000000
+      internalID: 4704531112747684950
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_4
+      name: fairy_4
       rect:
         serializedVersion: 2
-        x: 56
-        y: 66
-        width: 14
-        height: 22
+        x: 80
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -272,20 +272,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 78f2466086b59c5b0800000000000000
-      internalID: -5347642580183797881
+      spriteID: 495d55ae5afbf7220800000000000000
+      internalID: 2485916238653805972
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_5
+      name: fairy_5
       rect:
         serializedVersion: 2
-        x: 70
-        y: 66
-        width: 14
-        height: 22
+        x: 100
+        y: 84
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -294,152 +294,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f1facfc6323cf98d0800000000000000
-      internalID: -2837334683300352225
+      spriteID: 421f410cc089d6d70800000000000000
+      internalID: 9038047207732080932
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ae0e6e81bef3ecbe0800000000000000
-      internalID: -1455155350626443030
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_7
-      rect:
-        serializedVersion: 2
-        x: 14
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 29478c3d43b342760800000000000000
-      internalID: 7432130383145628818
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_8
-      rect:
-        serializedVersion: 2
-        x: 28
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 223530e82d19e3950800000000000000
-      internalID: 6430737651443389218
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_9
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cc2230ae2e0f2c230800000000000000
-      internalID: 3657750704757613260
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_10
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0b05b21be74ab25f0800000000000000
-      internalID: -780349246373408592
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_11
-      rect:
-        serializedVersion: 2
-        x: 70
-        y: 44
-        width: 14
-        height: 22
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a5773cf9625142440800000000000000
-      internalID: 4910072749374011226
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_12
+      name: fairy_6
       rect:
         serializedVersion: 2
         x: 0
-        y: 22
-        width: 14
-        height: 22
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -448,20 +316,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 479510ff022f84da0800000000000000
-      internalID: -5960247883293697676
+      spriteID: 9c597c69a2c1f2f80800000000000000
+      internalID: -8129247833136589367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_13
+      name: fairy_7
       rect:
         serializedVersion: 2
-        x: 14
-        y: 22
-        width: 14
-        height: 22
+        x: 20
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -470,20 +338,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 36ea7d5bba1765050800000000000000
-      internalID: 5788939353335508579
+      spriteID: cef82e8dcce024e50800000000000000
+      internalID: 6792007461002973164
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_14
+      name: fairy_8
       rect:
         serializedVersion: 2
-        x: 28
-        y: 22
-        width: 14
-        height: 22
+        x: 40
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -492,20 +360,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 706c427e7928822d0800000000000000
-      internalID: -3303246737746639353
+      spriteID: e964825f2805e9810800000000000000
+      internalID: 1773943826619582110
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_15
+      name: fairy_9
       rect:
         serializedVersion: 2
-        x: 42
-        y: 22
-        width: 14
-        height: 22
+        x: 60
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -514,20 +382,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c5a6643f968c23a0800000000000000
-      internalID: -6688823328214964796
+      spriteID: 67ae1d4edec80e760800000000000000
+      internalID: 7485137534063864438
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_16
+      name: fairy_10
       rect:
         serializedVersion: 2
-        x: 56
-        y: 22
-        width: 14
-        height: 22
+        x: 80
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -536,20 +404,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a72cb3b287f29a150800000000000000
-      internalID: 5884286581304181370
+      spriteID: dd37bd9981bc15d00800000000000000
+      internalID: 959771502127576029
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_17
+      name: fairy_11
       rect:
         serializedVersion: 2
-        x: 70
-        y: 22
-        width: 14
-        height: 22
+        x: 100
+        y: 56
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -558,20 +426,152 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 690ea54af73a63f90800000000000000
-      internalID: -6974207204323041130
+      spriteID: 5ac203322166a3110800000000000000
+      internalID: 1241416875379797157
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_18
+      name: fairy_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d137abd4716b8ac30800000000000000
+      internalID: 4370943649567634205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_13
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5cb2ab94963e7b30800000000000000
+      internalID: 4286923907197484123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_14
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffd32e8f0df4ca430800000000000000
+      internalID: 3795496344913853951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_15
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd94f99a1eb62d6f0800000000000000
+      internalID: -661347578312439332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_16
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d8cf63a022ed74a0800000000000000
+      internalID: -6593865649591695147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_17
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3c2f2ee1d12d7230800000000000000
+      internalID: 3638101259513179197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fairy_18
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -580,20 +580,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: de635996b11321fe0800000000000000
-      internalID: -1219858555258718483
+      spriteID: 611cf7a1fa98c7ad0800000000000000
+      internalID: -2703134291172277994
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_19
+      name: fairy_19
       rect:
         serializedVersion: 2
-        x: 14
+        x: 20
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -602,20 +602,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4d207f069f9f57130800000000000000
-      internalID: 3564029529602589396
+      spriteID: 6b6d3c2d9bd18e9e0800000000000000
+      internalID: -1591989784333265226
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_20
+      name: fairy_20
       rect:
         serializedVersion: 2
-        x: 28
+        x: 40
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -624,20 +624,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 64ecd5b972a253550800000000000000
-      internalID: 6139860016588246598
+      spriteID: 8c296e226d60020b0800000000000000
+      internalID: -5755592807001189688
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_21
+      name: fairy_21
       rect:
         serializedVersion: 2
-        x: 42
+        x: 60
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -646,20 +646,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e7098f0433487c720800000000000000
-      internalID: 2866405043512840318
+      spriteID: c2472131f4f1d1b20800000000000000
+      internalID: 3106673742438364204
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_22
+      name: fairy_22
       rect:
         serializedVersion: 2
-        x: 56
+        x: 80
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -668,20 +668,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a8bfa428d3a83bb90800000000000000
-      internalID: -7227280980215923830
+      spriteID: c6988d3c90efe5c90800000000000000
+      internalID: -7179021438088083092
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Monster_RabbitMan1_makiba_23
+      name: fairy_23
       rect:
         serializedVersion: 2
-        x: 70
+        x: 100
         y: 0
-        width: 14
-        height: 22
+        width: 20
+        height: 28
       alignment: 9
       pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -690,8 +690,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a40785554aace4520800000000000000
-      internalID: 2688308834742071370
+      spriteID: 01313eb5edfb59cd0800000000000000
+      internalID: -2551922652090264816
       vertices: []
       indices: 
       edges: []
@@ -700,7 +700,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5fe584fb2e8450f49b5b03020794c543
+    spriteID: a2df5b84d7040694dbc7dacf9e74fec6
     internalID: 0
     vertices: []
     indices: 
@@ -710,32 +710,32 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":4.0},"gridSpriteSize":{"x":14.0,"y":22.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.25},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":4.0},"gridSpriteSize":{"x":20.0,"y":28.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.25},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Monster_RabbitMan1_makiba_0: -6153685214833334013
-      Monster_RabbitMan1_makiba_1: -3976613344535076844
-      Monster_RabbitMan1_makiba_10: -780349246373408592
-      Monster_RabbitMan1_makiba_11: 4910072749374011226
-      Monster_RabbitMan1_makiba_12: -5960247883293697676
-      Monster_RabbitMan1_makiba_13: 5788939353335508579
-      Monster_RabbitMan1_makiba_14: -3303246737746639353
-      Monster_RabbitMan1_makiba_15: -6688823328214964796
-      Monster_RabbitMan1_makiba_16: 5884286581304181370
-      Monster_RabbitMan1_makiba_17: -6974207204323041130
-      Monster_RabbitMan1_makiba_18: -1219858555258718483
-      Monster_RabbitMan1_makiba_19: 3564029529602589396
-      Monster_RabbitMan1_makiba_2: -6948203209753290204
-      Monster_RabbitMan1_makiba_20: 6139860016588246598
-      Monster_RabbitMan1_makiba_21: 2866405043512840318
-      Monster_RabbitMan1_makiba_22: -7227280980215923830
-      Monster_RabbitMan1_makiba_23: 2688308834742071370
-      Monster_RabbitMan1_makiba_3: -1080947662704713116
-      Monster_RabbitMan1_makiba_4: -5347642580183797881
-      Monster_RabbitMan1_makiba_5: -2837334683300352225
-      Monster_RabbitMan1_makiba_6: -1455155350626443030
-      Monster_RabbitMan1_makiba_7: 7432130383145628818
-      Monster_RabbitMan1_makiba_8: 6430737651443389218
-      Monster_RabbitMan1_makiba_9: 3657750704757613260
+      fairy_0: -2990309890484215505
+      fairy_1: 4808560381157864972
+      fairy_10: 959771502127576029
+      fairy_11: 1241416875379797157
+      fairy_12: 4370943649567634205
+      fairy_13: 4286923907197484123
+      fairy_14: 3795496344913853951
+      fairy_15: -661347578312439332
+      fairy_16: -6593865649591695147
+      fairy_17: 3638101259513179197
+      fairy_18: -2703134291172277994
+      fairy_19: -1591989784333265226
+      fairy_2: 4520698335586148961
+      fairy_20: -5755592807001189688
+      fairy_21: 3106673742438364204
+      fairy_22: -7179021438088083092
+      fairy_23: -2551922652090264816
+      fairy_3: 4704531112747684950
+      fairy_4: 2485916238653805972
+      fairy_5: 9038047207732080932
+      fairy_6: -8129247833136589367
+      fairy_7: 6792007461002973164
+      fairy_8: 1773943826619582110
+      fairy_9: 7485137534063864438
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

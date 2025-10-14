@@ -6,6 +6,10 @@ using Domain.Model.Evaluation;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Serialize;
+using System.Collections.Generic;
+using System.Linq;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -24,9 +28,7 @@ namespace Domain.Model.Character
         [MinValue(1)] public int Hp;
         public MoveSpeed MoveSpeed = MoveSpeed.Normal;
         [MinValue(0)] public int InventoryCapacity = 20;
-        public bool HasAllConditionProof;
-        public bool IsHard;
-        public bool IsHeavy;
+        public List<FlagStatType> Flags;
         public bool IsFlying;
         public bool CanThroughWalls;
         public CharacterSkillData DefaultSkill;
@@ -38,7 +40,8 @@ namespace Domain.Model.Character
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
-            EditorUtility.SetDirty(this);
+
+            Flags = Flags.Distinct().ToList();
 
             DefaultSkill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
 

@@ -50,7 +50,7 @@ namespace Game
 
         private readonly CompositeDisposable _disposables = new();
 
-        public EntityManager(EntitiesMemento entitiesMemento, PlayerMemento playerData, List<CharacterMemento>? partyMembers, Vector2Int playerPosition, bool resetPertyPositions, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
+        public EntityManager(EntitiesMemento entitiesMemento, PlayerMemento playerData, List<CharacterMemento> partyMembers, Vector2Int playerPosition, bool resetPertyPositions, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
         {
             CharacterManager = new CharacterManager(playerData, receiver, gameManager, map);
             ItemManager = new ItemManager();
@@ -76,27 +76,24 @@ namespace Game
                 SpawnCharacter(character, gameManager, map);
             }
 
-            if (partyMembers != null)
+            foreach (var character in partyMembers)
             {
-                foreach (var character in partyMembers)
+                if (resetPertyPositions)
                 {
-                    if (resetPertyPositions)
-                    {
-                        SpawnCharacter(
-                        character.ReplacePosition(
-                            map.FindBlankPositionFrom(
-                                playerPosition,
-                                position => !AllCharacterPositionsFast().Contains(position)
-                            )
-                            ),
-                            gameManager,
-                            map
-                        );
-                    }
-                    else
-                    {
-                        SpawnCharacter(character, gameManager, map);
-                    }
+                    SpawnCharacter(
+                    character.ReplacePosition(
+                        map.FindBlankPositionFrom(
+                            playerPosition,
+                            position => !AllCharacterPositionsFast().Contains(position)
+                        )
+                        ),
+                        gameManager,
+                        map
+                    );
+                }
+                else
+                {
+                    SpawnCharacter(character, gameManager, map);
                 }
             }
 
@@ -138,7 +135,7 @@ namespace Game
             );
         }
 
-        public void SetRules(IGameManager gameManager)
+        public void SetRules()
         {
             foreach (var layer in Enum.GetValues(typeof(EntityLayer)).Cast<EntityLayer>())
             {

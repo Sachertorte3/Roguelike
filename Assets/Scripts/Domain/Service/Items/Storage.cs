@@ -148,6 +148,11 @@ namespace Domain.Service.Items
             return CanAddItem && HasEmptySpace();
         }
 
+        public bool CanAddIgnoreEmptySpace()
+        {
+            return CanAddItem;
+        }
+
         public bool CanInsert(int index)
         {
             return CanAddItem && HasEmptySpace() && index >= 0 && index < _capacity.CurrentValue;
@@ -165,7 +170,7 @@ namespace Domain.Service.Items
 
         public bool CanReplace(int index)
         {
-            return CanAddItem && CanRemove(index);
+            return CanAddIgnoreEmptySpace() && CanRemove(index);
         }
 
         public void AddToEmpty(IItem item)
@@ -205,6 +210,14 @@ namespace Domain.Service.Items
             var removed = Remove(index);
             Insert(item, index);
             return removed;
+        }
+
+        public void Replace(IItem oldItem, IItem newItem)
+        {
+            var index = GetItemIndex(oldItem).Value;
+            if (!CanReplace(index))
+                throw new Exception("Can't replace item from storage");
+            Replace(newItem, index);
         }
 
         public IItem? ForceRemove(int index)

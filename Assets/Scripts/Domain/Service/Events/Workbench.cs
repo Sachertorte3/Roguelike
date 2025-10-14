@@ -63,13 +63,12 @@ namespace Domain.Service.Events
         private async UniTask DoRepairEvent(IMap map)
         {
             var player = map.Player;
-            var item = (await player.Character.SelectItemWithCanSelect(
+            var itemIndex = await player.Character.SelectItemWithCanSelect(
                 "修理するアイテムを選択してください",
-                player,
-                map,
-                CanRepair)).GetItem(player.Character.Inventory, map);
-            if (item == null)
+                CanRepair);
+            if (itemIndex == null)
                 return;
+            var item = player.Character.Inventory.GetItem(itemIndex.Value);
             item.Repair(player, player.Character, map.ItemPlaceholders);
             _remainingUsages.Value -= 1;
         }
@@ -82,12 +81,12 @@ namespace Domain.Service.Events
         private async UniTask DoUpgradeEvent(IMap map)
         {
             var player = map.Player;
-            var item = (await player.Character.SelectItemWithCanSelect(
+            var itemIndex = await player.Character.SelectItemWithCanSelect(
                 "強化するアイテムを選択してください",
-                player,
-                map, CanUpgrade)).GetItem(player.Character.Inventory, map);
-            if (item == null)
+                CanUpgrade);
+            if (itemIndex == null)
                 return;
+            var item = player.Character.Inventory.GetItem(itemIndex.Value);
             item.RandomUpgrade(player, player.Character, map.ItemPlaceholders);
             _remainingUsages.Value -= 1;
         }

@@ -90,10 +90,10 @@ namespace Domain.Model.Item
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }
-        public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, DirectWeaponFeature otherFeatures)
+        private static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, DirectWeaponFeature otherFeatures)
         {
             var allFeatures = features.ToList();
-            
+
             allFeatures.Add(otherFeatures);
 
             var groupedFeatures = allFeatures
@@ -103,16 +103,17 @@ namespace Domain.Model.Item
 
             return groupedFeatures;
         }
-        public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures)
+        public static IOrderedEnumerable<DirectWeaponFeature> Merge(this IEnumerable<DirectWeaponFeature> features, IEnumerable<DirectWeaponFeature> otherFeatures, int maxFeatureCount)
         {
-            var allFeatures = features.Concat(otherFeatures);
+            var result = features.OrderBy(f => f);
+            foreach (var feature in otherFeatures)
+            {
+                if (result.Count() >= maxFeatureCount)
+                    break;
+                result = result.Merge(feature);
+            }
 
-            var groupedFeatures = allFeatures
-                .GroupBy(f => f)
-                .SelectMany(g => Enumerable.Repeat(g.Key, Math.Min(g.Count(), g.Key.CanOverlap())))
-                .OrderBy(f => f);
-
-            return groupedFeatures;
+            return result;
         }
     }
 }

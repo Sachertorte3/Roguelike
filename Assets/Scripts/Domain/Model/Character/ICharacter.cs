@@ -15,7 +15,7 @@ using Utilities;
 
 namespace Domain.Model.Character
 {
-    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IHasBehavior,
+    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IEntity, IHasBehavior,
         IHasCondition, IPlayerEventEntity
     {
         public ICharacterType CharacterType { get; init; }

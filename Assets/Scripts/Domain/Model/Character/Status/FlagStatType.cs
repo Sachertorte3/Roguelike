@@ -17,10 +17,12 @@ namespace Domain.Model.Character.Status
         Heavy,
         SecureHold,
         CurseProof,
-        Haggle,
+        Negotiator,
         IsAffectedByTrap,
         AutoIdentify,
         RandomTeleport,
         RandomExplosion,
+        BookMaster,
+        WandMaster,
     }
 }

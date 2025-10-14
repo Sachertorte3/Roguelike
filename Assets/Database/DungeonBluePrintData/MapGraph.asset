@@ -2414,7 +2414,7 @@ MonoBehaviour:
   Fields:
     items:
     - Item: {fileID: 11400000, guid: 68e9de5972a77e54696183ab4d0100bf, type: 2}
-      Weight: 8
+      Weight: 16
     - Item: {fileID: 11400000, guid: 86a4b3365bea4d845b0ef9c226ae20a3, type: 2}
       Weight: 2
     - Item: {fileID: 11400000, guid: 651bcfb659ab8fa4cb823b5068e6ed53, type: 2}
@@ -2471,10 +2471,10 @@ MonoBehaviour:
     SleepChance: 0.75
     MimicChance: 0.1
     ShopChance: 0
-    MonsterHouseChance: 0
+    MonsterHouseChance: 1
     RestRoomChance: 0
     LakeChance: 0
-    ItemCount: 1
+    ItemCount: 0.5
     MoneyCount: 1
     MoneyAverage: 100
     CharacterCount: 1

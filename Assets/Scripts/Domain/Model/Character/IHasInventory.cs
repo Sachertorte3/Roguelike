@@ -11,7 +11,9 @@ namespace Domain.Model.Character
         public IInventory Inventory { get; }
         public void KnowItem(IItem item, bool log);
         public bool IsKnownItem(IItem item);
-        public UniTask<ItemFocus> SelectItem(string text, params ItemFocus[] disabledItems);
-        public UniTask<ItemFocus> SelectItemWithCanSelect(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect);
+        public UniTask<int?> SelectItem(string text, params int[] disabledItems);
+        public UniTask<int?> SelectItemWithCanSelect(string text, Func<IItem, bool> canSelect);
+        public UniTask<ItemFocus> SelectItemContainsGroundItem(string text, params ItemFocus[] disabledItems);
+        public UniTask<ItemFocus> SelectItemWithCanSelectContainsGroundItem(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect);
     }
 }

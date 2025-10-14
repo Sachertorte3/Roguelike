@@ -20,6 +20,7 @@ MonoBehaviour:
       rid: 3961642730205741885
     <Effects>k__BackingField:
     - rid: 3961642730205741887
+    <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
   <Cycle>k__BackingField: 20
   <AttackToBreak>k__BackingField: 3

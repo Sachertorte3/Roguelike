@@ -74,7 +74,7 @@ namespace Domain.Service.Characters.Conditions
             }
         }
 
-        public async UniTask UpdateTurn(IHasCondition hasCondition, bool characterVisible)
+        public void UpdateTurn(bool characterVisible)
         {
             var removedConditions = _conditions.Where(condition => condition.ShouldDelete(characterVisible)).ToList();
             foreach (var condition in removedConditions)
@@ -84,7 +84,7 @@ namespace Domain.Service.Characters.Conditions
             }
             foreach (var condition in _conditions)
             {
-                await condition.UpdateTurn(hasCondition);
+                condition.UpdateTurn();
             }
         }
 

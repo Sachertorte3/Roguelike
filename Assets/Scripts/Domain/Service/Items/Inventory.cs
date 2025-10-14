@@ -109,19 +109,6 @@ namespace Domain.Service.Items
             _itemDisposables.Clear();
         }
 
-        public void UpdateTurn()
-        {
-            foreach (var item in _storage.AllItems)
-            {
-                if (item == null)
-                    continue;
-                foreach (var condition in item.PassiveConditions)
-                {
-                    condition.Persist(_character);
-                }
-            }
-        }
-
         public StorageMemento Serialize() => _storage.Serialize();
         public bool HasEmptySpace() => _storage.HasEmptySpace();
         public bool Contains(IItem item) => _storage.Contains(item);

@@ -7254,8 +7254,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -192, y: 50}
-  m_SizeDelta: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -199.9842, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &377030489
 MonoBehaviour:
@@ -7784,7 +7784,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8899ece7288a94cb790f1228f5b00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: View::View.CharacterDemoDisplay
-  _texture: {fileID: 2800000, guid: 53687608a12380a4e92b7e43685cae62, type: 3}
 --- !u!95 &555876245
 Animator:
   serializedVersion: 7
@@ -7854,7 +7853,7 @@ SpriteRenderer:
   m_SortingLayerID: -1853008491
   m_SortingLayer: 5
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1996816407, guid: 16a4cf2300c3f0840a4a116846e4d7d1, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7862,7 +7861,7 @@ SpriteRenderer:
   m_Size: {x: 1.25, y: 1.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!222 &555876247
@@ -7962,11 +7961,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257c7e3beeed5d942a228f6b3cdc0371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Utilities::Utilities.FollowSelectedNodeHorizontal
-  _scrollRect: {fileID: 560944528}
-  _viewportRectransform: {fileID: 1950699250}
-  _contentTransform: {fileID: 377030488}
   _nodePrefab: {fileID: 4034379852945337008, guid: 3a39fb630b9e1304296ec9ea033ca5f6, type: 3}
   _horizontalLayoutGroup: {fileID: 377030489}
+  _scrollDuration: 0.2
+  _scrollEase: 9
 --- !u!1001 &562147898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10756,7 +10754,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4F55\u3089\u304B\u306E\u30A4\u30AB\u3057\u305F\u89E3\u8AAC"
+  m_text: "\u8AAC\u660E\u304C\u3042\u308A\u307E\u305B\u3093"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 37048231315fad1469fdc00c9d965347, type: 2}
   m_sharedMaterial: {fileID: 4435184959169666709, guid: 37048231315fad1469fdc00c9d965347, type: 2}
@@ -10783,15 +10781,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -11103,7 +11101,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 150, y: 0}
+  m_AnchoredPosition: {x: 120, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1009334636
@@ -12389,7 +12387,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 8.4375
+  orthographic size: 11.078125
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -13288,8 +13286,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 394d03e215728be478ee5422d33533af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: View::View.UI.CharacterSelectMenu
+  _characterDemoDisplay: {fileID: 555876244}
   _content: {fileID: 377030488}
   _choiceButtonPrefab: {fileID: 5797102767202074745, guid: 3a39fb630b9e1304296ec9ea033ca5f6, type: 3}
+  _infoText: {fileID: 962404413}
 --- !u!1 &1447751023
 GameObject:
   m_ObjectHideFlags: 0
@@ -13435,7 +13435,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.821429
+  orthographic size: 5.5390625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -13901,7 +13901,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 0}
+  m_AnchoredPosition: {x: -120, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1569318878
@@ -19988,7 +19988,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1950699251
 MonoBehaviour:

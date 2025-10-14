@@ -32,8 +32,10 @@ namespace Game
         private readonly CharacterControlInputReceiver _receiver;
         public Observable<Unit> OnTurnChanged => _turnController.OnTurnChanged;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
-        private readonly ReactiveProperty<Statistics?> _activeStatistics = new();
-        public ReadOnlyReactiveProperty<Statistics?> ActiveStatistics => _activeStatistics;
+        private GlobalStatistics _globalStatistics;
+        public GlobalStatistics GlobalStatistics => _globalStatistics;
+        private readonly ReactiveProperty<WorldStatistics?> _activeStatistics = new();
+        public ReadOnlyReactiveProperty<WorldStatistics?> ActiveStatistics => _activeStatistics;
         private readonly Subject<BGM> _onPlayBGM = new();
         public Observable<BGM> OnPlayBGM => _onPlayBGM;
         private readonly Subject<SE> _onPlaySE = new();
@@ -69,6 +71,10 @@ namespace Game
                     GameOver();
                 });
             });
+
+            var globalSaveData = _saveDataManager.LoadGlobal() ?? new GlobalSaveData(GlobalStatistics.Build(), new());
+            _globalStatistics = new GlobalStatistics(globalSaveData.GlobalStatistics, _world);
+            Settings.GlobalSettings.SetValues(globalSaveData.GlobalSettings);
 
             var disposable = new SerialDisposable();
             _activeStatistics.SubscribeIncludingCurrentValueIgnoreNull(statistics =>
@@ -194,7 +200,7 @@ namespace Game
 
         private MapManager CreateSaveData(PlayerData playerData)
         {
-            _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
+            _activeStatistics.Value = new WorldStatistics(WorldStatistics.Build(), this, _world);
             Settings.WorldSettings.Reset();
 
             _world.CreateNew();
@@ -221,7 +227,7 @@ namespace Game
 
         private MapManager LoadSaveData(SaveData saveData)
         {
-            _activeStatistics.Value = new Statistics(saveData.Statistics, this, _world);
+            _activeStatistics.Value = new WorldStatistics(saveData.Statistics, this, _world);
             Settings.SetValues(saveData.Settings);
             if (saveData.IsRollbacked)
             {
@@ -295,12 +301,16 @@ namespace Game
         public void Save()
         {
             Log.Info("[Game]Save");
+            var globalStatistics = _globalStatistics.Serialize();
+            var globalSettings = Settings.GlobalSettings.GetValues();
+            var globalSaveData = new GlobalSaveData(globalStatistics, globalSettings);
+
             var world = _world.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id, map => map);
             var statistics = _activeStatistics.Value.Serialize();
-            var settings = Settings.GetValues();
+            var settings = Settings.WorldSettings.GetValues();
             var saveData = new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false);
-            _saveDataManager.SaveFull(saveData);
+            _saveDataManager.SaveFull(globalSaveData, saveData);
             Log.Info("[Game]End Save");
         }
 

@@ -35,9 +35,7 @@ MonoBehaviour:
     PrioritizeEnemiesOverLeaders: 0
     ChaseLeader: 1
   MoveSpeed: 3
-  HasAllConditionProof: 0
-  IsHard: 0
-  IsHeavy: 0
+  Flags: 
   IsFlying: 1
   CanThroughWalls: 0
   CanPickUp: 0

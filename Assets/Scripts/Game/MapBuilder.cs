@@ -354,11 +354,11 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
-                if (Random.value < data.MimicChance)
+                if (RandUtils.IsLessThanProbability(data.MimicChance))
                 {
                     _chests.Add(Chest.Build(position, data.Mimic));
                 }
-                else if (Random.value < data.WeaponChanceInChest)
+                else if (RandUtils.IsLessThanProbability(data.WeaponChanceInChest))
                 {
                     var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
                     if (weapon is DirectWeaponData directWeapon)

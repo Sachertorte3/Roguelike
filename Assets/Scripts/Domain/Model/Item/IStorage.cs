@@ -25,6 +25,7 @@ namespace Domain.Model.Item
         public IItem? GetItem(int index);
         public int? GetItemIndex(IItem item);
         public bool CanAddToEmpty();
+        public bool CanAddIgnoreEmptySpace();
         public void AddToEmpty(IItem item);
         public bool CanInsert(int index);
         public void Insert(IItem item, int index);
@@ -34,6 +35,7 @@ namespace Domain.Model.Item
         public void Remove(IItem item);
         public bool CanReplace(int index);
         public IItem Replace(IItem item, int index);
+        public void Replace(IItem oldItem, IItem newItem);
         public bool CanSwap(int index1, int index2);
         public void Swap(int index1, int index2);
         public IEnumerable<IItem> Clear();

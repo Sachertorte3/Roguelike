@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -171,6 +173,19 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
+        private bool ShouldDecreaseUsage(IActorOfEffect actor)
+        {
+            if (Category == ItemCategory.Books
+            && actor.Status.IsFlagStat(FlagStatType.BookMaster)
+            && RandUtils.IsGreaterThanProbability(CommonSenseParameters.BookMasterUsageLossChance))
+                return false;
+            if (Category == ItemCategory.Wands
+            && actor.Status.IsFlagStat(FlagStatType.WandMaster)
+            && RandUtils.IsGreaterThanProbability(CommonSenseParameters.WandMasterUsageLossChance))
+                return false;
+            return RandUtils.IsLessThanProbability(UsageLossChance);
+        }
+
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             SetCurseIdentified(true);
@@ -197,9 +212,13 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                if (UnityEngine.Random.value < UsageLossChance)
+                if (ShouldDecreaseUsage(actor))
                 {
                     _remainingUsages.Value -= 1;
+                }
+                else
+                {
+                    GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は消費しなかった");
                 }
                 if (State == ItemState.ShopItem)
                 {
@@ -227,9 +246,13 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                if (UnityEngine.Random.value < UsageLossChance)
+                if (ShouldDecreaseUsage(actor))
                 {
                     _remainingUsages.Value -= 1;
+                }
+                else
+                {
+                    GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は消費しなかった");
                 }
                 if (State == ItemState.ShopItem)
                 {
@@ -259,7 +282,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public float EvaluateWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
             return SkillOnThrow.MapOr(
                 0,

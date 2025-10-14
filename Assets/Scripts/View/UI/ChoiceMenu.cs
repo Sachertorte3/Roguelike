@@ -53,8 +53,8 @@ namespace View.UI
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnUp = _buttons[(i - 1 + _buttons.Count) % _buttons.Count].GetComponent<Button>(),
-                    selectOnDown = _buttons[(i + 1) % _buttons.Count].GetComponent<Button>()
+                    selectOnUp = _buttons[(i - 1).WrapIndex(_buttons.Count)].GetComponent<Button>(),
+                    selectOnDown = _buttons[(i + 1).WrapIndex(_buttons.Count)].GetComponent<Button>()
                 };
                 _buttons[i].GetComponent<Button>().navigation = nav;
             }

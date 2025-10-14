@@ -303,8 +303,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool hasAllConditionProof, bool isHard, bool isHeavy,
-            bool isAffectedByTrap, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, HashSet<FlagStatType> flags, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -324,24 +323,9 @@ namespace Domain.Service.Characters
                 flagStats[FlagStatType.Blind] = 1;
             }
 
-            if (hasAllConditionProof)
+            foreach (var flag in flags)
             {
-                flagStats[FlagStatType.AllConditionProof] = 1;
-            }
-
-            if (isHard)
-            {
-                flagStats[FlagStatType.Hard] = 1;
-            }
-
-            if (isHeavy)
-            {
-                flagStats[FlagStatType.Heavy] = 1;
-            }
-
-            if (isAffectedByTrap)
-            {
-                flagStats[FlagStatType.IsAffectedByTrap] = 1;
+                flagStats[flag] = 1;
             }
 
             return new CharacterStatusMemento

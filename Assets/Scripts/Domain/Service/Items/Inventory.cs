@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Message;
@@ -132,6 +131,7 @@ namespace Domain.Service.Items
         public bool HasItemAt(int index, out IItem item) => _storage.HasItemAt(index, out item);
         public IItem? GetItem(int index) => _storage.GetItem(index);
         public bool CanAddToEmpty() => _storage.CanAddToEmpty();
+        public bool CanAddIgnoreEmptySpace() => _storage.CanAddIgnoreEmptySpace();
         public void AddToEmpty(IItem item)
         {
             if (_storage.CanAddToEmpty())
@@ -186,6 +186,11 @@ namespace Domain.Service.Items
             }
             else
                 throw new Exception("Can't replace item in inventory");
+        }
+        public void Replace(IItem oldItem, IItem newItem)
+        {
+            var index = GetItemIndex(oldItem).Value;
+            _storage.Replace(newItem, index);
         }
         public bool CanSwap(int index1, int index2) => _storage.CanSwap(index1, index2);
         public void Swap(int index1, int index2) => _storage.Swap(index1, index2);

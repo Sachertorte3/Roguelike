@@ -36,8 +36,8 @@ namespace View.UI
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnLeft = null,
-                    selectOnRight = null,
+                    selectOnLeft = FindInteractableItem(index, -1, 10),
+                    selectOnRight = FindInteractableItem(index, 1, 10),
                     selectOnUp = FindInteractableItem(index, -1),
                     selectOnDown = FindInteractableItem(index, 1)
                 };
@@ -45,10 +45,12 @@ namespace View.UI
             }
         }
 
-        private Selectable? FindInteractableItem(int currentIndex, int direction)
+        private Selectable? FindInteractableItem(int currentIndex, int direction, int distance = 1)
         {
+            if (_itemViews.Count == 0) return null;
+
             var startIndex = currentIndex;
-            var index = (currentIndex + direction + _itemViews.Count) % _itemViews.Count;
+            var index = (currentIndex + direction * distance).Mod(_itemViews.Count);
 
             while (index != startIndex)
             {
@@ -56,7 +58,7 @@ namespace View.UI
                 {
                     return _itemViews[index].GetComponent<Selectable>();
                 }
-                index = (index + direction + _itemViews.Count) % _itemViews.Count;
+                index = (index + direction).WrapIndex(_itemViews.Count);
             }
 
             return null;

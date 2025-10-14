@@ -80,6 +80,7 @@ namespace Provider
 
             character.Entity.OnMove
                 .Where(move => !move.isThrown)
+                .Where(move => !character.IsFlying)
                 .Subscribe(move => characterView.PlayWalkAnimation().Forget())
                 .AddTo(characterView);
             character.OnAttacked

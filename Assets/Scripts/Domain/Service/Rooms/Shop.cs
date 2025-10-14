@@ -139,7 +139,7 @@ namespace Domain.Service.Rooms
         public int GetPurchasePrice(IMap map)
         {
             var purchaseItems = GetMissingItems(map);
-            if (map.Player.Character.Status.IsFlagStat(FlagStatType.Haggle))
+            if (map.Player.Character.Status.IsFlagStat(FlagStatType.Negotiator))
             {
                 return Mathf.RoundToInt(purchaseItems.Sum(item => item.Price) / 2f);
             }

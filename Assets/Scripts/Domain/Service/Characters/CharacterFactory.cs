@@ -27,22 +27,21 @@ namespace Domain.Service.Characters
     {
         public static PlayerMemento BuildPlayer(PlayerData data, Vector2Int spawnPosition)
         {
+            var flags = data.Flags.ToHashSet();
+            flags.Add(FlagStatType.IsAffectedByTrap);
             var character = new CharacterMemento
             (
                 name: data.Name,
                 characterType: data.CharacterType,
                 behavior: PlayerBehavior.Build(),
                 status: CharacterStatusManager.Build(
-                    maxHp: CommonSenseParameters.PlayerMaxHealth,
+                    maxHp: data.Hp,
                     hpNaturalRecoveryAmount: CommonSenseParameters.PlayerNaturalRecoveryRate,
                     elementAttackMultiplier: data.ElementAttackMultiplier,
                     elementDamageRateMultiplier: data.ElementDamageRateMultiplier,
                     conditionResistance: data.ConditionResistance,
                     viewRange: CommonSenseParameters.PlayerVisionRange,
-                    hasAllConditionProof: data.HasAllConditionProof,
-                    isHard: data.IsHard,
-                    isHeavy: data.IsHeavy,
-                    isAffectedByTrap: true,
+                    flags: flags,
                     waitTime: data.MoveSpeed.ToWaitTime(),
                     isSlept: false
                 ),
@@ -100,10 +99,7 @@ namespace Domain.Service.Characters
                     elementDamageRateMultiplier: data.ElementDamageRateMultiplier,
                     conditionResistance: data.ConditionResistance,
                     viewRange: 8,
-                    hasAllConditionProof: data.HasAllConditionProof,
-                    isHard: data.IsHard,
-                    isHeavy: data.IsHeavy,
-                    isAffectedByTrap: false,
+                    flags: data.Flags.ToHashSet(),
                     waitTime: data.MoveSpeed.ToWaitTime(),
                     isSlept: isSlept
                 ),
@@ -157,11 +153,11 @@ namespace Domain.Service.Characters
             {
                 value *= 0.5f;
             }
-            if (enemyData.IsHard)
+            if (enemyData.Flags.Contains(FlagStatType.Hard))
             {
                 value *= 5.0f;
             }
-            if (enemyData.IsHeavy)
+            if (enemyData.Flags.Contains(FlagStatType.Heavy))
             {
                 value *= 1.2f;
             }

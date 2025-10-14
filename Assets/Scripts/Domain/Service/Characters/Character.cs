@@ -778,12 +778,39 @@ namespace Domain.Service.Characters
             _events.Add(ev);
         }
 
-        public async UniTask<ItemFocus> SelectItem(string text, params ItemFocus[] disabledItems)
+        public async UniTask<int?> SelectItem(string text, params int[] disabledItems)
+        {
+            var disabledItemIndexes = disabledItems.Select(x => new ItemFocus(x));
+            disabledItemIndexes.Append(ItemFocus.GroundItem);
+            var focus = await _behavior.SelectItem(text, disabledItemIndexes.ToArray());
+            if (focus.IsInInventory)
+                return focus.Index;
+            else if (focus.IsOnEmpty)
+                return null;
+            else
+                throw new Exception("Unexpected item focus");
+        }
+
+        public async UniTask<int?> SelectItemWithCanSelect(string text, Func<IItem, bool> canSelect)
+        {
+            var disabledItemIndexes = new List<int>();
+            foreach (var (item, index) in Inventory.AllItemsWithIndex)
+            {
+                if (!canSelect(item))
+                {
+                    disabledItemIndexes.Add(index);
+                }
+            }
+
+            return await SelectItem(text, disabledItemIndexes.ToArray());
+        }
+
+        public async UniTask<ItemFocus> SelectItemContainsGroundItem(string text, params ItemFocus[] disabledItems)
         {
             return await _behavior.SelectItem(text, disabledItems);
         }
 
-        public async UniTask<ItemFocus> SelectItemWithCanSelect(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect)
+        public async UniTask<ItemFocus> SelectItemWithCanSelectContainsGroundItem(string text, IPlayer player, IMap map, Func<IItem, bool> canSelect)
         {
             var disabledItemIndexes = new List<ItemFocus>();
             foreach (var (item, index) in Inventory.AllItemsWithIndex)
@@ -800,7 +827,7 @@ namespace Domain.Service.Characters
                 disabledItemIndexes.Add(ItemFocus.GroundItem);
             }
 
-            return await SelectItem(text, disabledItemIndexes.ToArray());
+            return await SelectItemContainsGroundItem(text, disabledItemIndexes.ToArray());
         }
 
         public async UniTask UpdateTurn()

@@ -22,7 +22,7 @@ namespace Domain.Service.Items
                         _ => throw new Exception("Invalid item")
                     };
                     var mergeBaseweaponFeatures = mergeBaseweapon.Features;
-                    if (!mergeBaseweaponFeatures.Merge(featuresToMergeWeapon).SequenceEqual(mergeBaseweaponFeatures))
+                    if (!mergeBaseweaponFeatures.Merge(featuresToMergeWeapon, mergeBaseweapon.FeatureLimit).SequenceEqual(mergeBaseweaponFeatures))
                     {
                         return true;
                     }

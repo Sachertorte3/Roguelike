@@ -38,7 +38,7 @@ namespace Domain.Service.Items
         private readonly List<ElementPower> _elementPowers;
         private readonly List<DirectWeaponFeature> _features;
         public IReadOnlyList<DirectWeaponFeature> Features => _features;
-        private readonly int _featureLimit;
+        public readonly int FeatureLimit;
         private readonly SpawnEffectSkill _skillOnUse;
         private readonly SpawnEffectSkill _skillOnThrow;
         public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
@@ -52,7 +52,7 @@ namespace Domain.Service.Items
             _prefix = data.Prefix;
             _elementPowers = data.ElementPowers;
             _features = data.Features;
-            _featureLimit = data.FeatureLimit;
+            FeatureLimit = data.FeatureLimit;
             _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
             _skillOnThrow = new SpawnEffectSkill(data.SkillOnThrow);
         }
@@ -65,7 +65,7 @@ namespace Domain.Service.Items
                 prefix: _prefix,
                 elementPowers: _elementPowers,
                 features: _features,
-                featureLimit: _featureLimit,
+                featureLimit: FeatureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
                 skillOnThrow: _skillOnThrow.Serialize(),
                 hasSameEffect: _hasSameEffect
@@ -273,15 +273,7 @@ namespace Domain.Service.Items
         {
             //MEMO: There is also a way to reload the data and regenerate it from scratch.
             var memento = SerializeIgnoreUpgrades();
-            var features = memento.Features;
-            foreach (var feature in featuresToMergeWeapon)
-            {
-                if (features.Count >= memento.FeatureLimit)
-                {
-                    break;
-                }
-                features = features.Merge(feature).ToList();
-            }
+            var features = memento.Features.Merge(featuresToMergeWeapon, memento.FeatureLimit).ToList();
 
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
             var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
@@ -323,7 +315,7 @@ namespace Domain.Service.Items
         {
             var info = "";
 
-            info += $"能力 ({_features.Count}/{_featureLimit})\n";
+            info += $"能力 ({_features.Count}/{FeatureLimit})\n";
 
             foreach (var feature in _features)
             {

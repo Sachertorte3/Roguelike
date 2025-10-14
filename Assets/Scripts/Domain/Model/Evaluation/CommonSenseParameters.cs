@@ -25,6 +25,8 @@ namespace Domain.Model.Evaluation
         public const float SpawnEnemyProbabilityPerTurn = 1 / 64f;
         public const float SpawnGrassProbabilityPerTurn = 1 / 256f;
         public const float DestroyFireProbabilityPerTurn = 1 / 4f;
+        public const float BookMasterUsageLossChance = 0.5f;
+        public const float WandMasterUsageLossChance = 0.5f;
 
         public static float BlowAwayPrice(int distance)
         {

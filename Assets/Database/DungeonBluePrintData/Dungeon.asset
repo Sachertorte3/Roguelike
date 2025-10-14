@@ -195,8 +195,8 @@ MonoBehaviour:
             - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
         Weight: 1
   SpawnItem:
-    Potions: 10
-    Scrolls: 10
+    Potions: 20
+    Scrolls: 15
     Books: 10
     Wands: 10
     Weapons: 10

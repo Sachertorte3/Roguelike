@@ -21,11 +21,13 @@ namespace Domain.Model.Character.Status
             FlagStatType.Heavy => "スーパーアーマー",
             FlagStatType.SecureHold => "手放さず",
             FlagStatType.CurseProof => "呪い耐性",
-            FlagStatType.Haggle => "値切り",
+            FlagStatType.Negotiator => "値切り",
             FlagStatType.IsAffectedByTrap => "帯電",
             FlagStatType.AutoIdentify => "自動識別",
             FlagStatType.RandomTeleport => "気まぐれワープ",
             FlagStatType.RandomExplosion => "気まぐれ爆発",
+            FlagStatType.BookMaster => "魔法書マスター",
+            FlagStatType.WandMaster => "杖マスター",
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -43,11 +45,13 @@ namespace Domain.Model.Character.Status
             FlagStatType.Heavy => ParticleType.None,
             FlagStatType.SecureHold => ParticleType.None,
             FlagStatType.CurseProof => ParticleType.None,
-            FlagStatType.Haggle => ParticleType.None,
+            FlagStatType.Negotiator => ParticleType.None,
             FlagStatType.IsAffectedByTrap => ParticleType.Electric,
             FlagStatType.AutoIdentify => ParticleType.None,
             FlagStatType.RandomTeleport => ParticleType.None,
             FlagStatType.RandomExplosion => ParticleType.None,
+            FlagStatType.BookMaster => ParticleType.None,
+            FlagStatType.WandMaster => ParticleType.None,
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -65,11 +69,13 @@ namespace Domain.Model.Character.Status
             FlagStatType.Heavy => Impact.Beneficial,
             FlagStatType.SecureHold => Impact.Beneficial,
             FlagStatType.CurseProof => Impact.Beneficial,
-            FlagStatType.Haggle => Impact.Beneficial,
+            FlagStatType.Negotiator => Impact.Beneficial,
             FlagStatType.IsAffectedByTrap => Impact.Harmful,
             FlagStatType.AutoIdentify => Impact.Beneficial,
             FlagStatType.RandomTeleport => Impact.Harmful,
             FlagStatType.RandomExplosion => Impact.Harmful,
+            FlagStatType.BookMaster => Impact.Beneficial,
+            FlagStatType.WandMaster => Impact.Beneficial,
             _ => throw new ArgumentException($"Invalid flag stat type: {type}")
         };
 
@@ -91,11 +97,13 @@ namespace Domain.Model.Character.Status
                 FlagStatType.Heavy => 0.1f,
                 FlagStatType.SecureHold => 0.1f,
                 FlagStatType.CurseProof => 0.1f,
-                FlagStatType.Haggle => 0.1f,
+                FlagStatType.Negotiator => 0.1f,
                 FlagStatType.IsAffectedByTrap => 0.1f,
                 FlagStatType.AutoIdentify => 1f,
                 FlagStatType.RandomTeleport => 0.1f,
                 FlagStatType.RandomExplosion => 0.1f,
+                FlagStatType.BookMaster => 0.2f,
+                FlagStatType.WandMaster => 0.2f,
                 _ => throw new ArgumentException($"Invalid flag stat type: {type}")
             };
         }
@@ -114,11 +122,13 @@ namespace Domain.Model.Character.Status
             FlagStatType.Heavy => 1f,
             FlagStatType.SecureHold => 1f,
             FlagStatType.CurseProof => 1f,
-            FlagStatType.Haggle => 0.2f,
+            FlagStatType.Negotiator => 0.2f,
             FlagStatType.IsAffectedByTrap => 0.5f,
             FlagStatType.AutoIdentify => 3f,
             FlagStatType.RandomTeleport => 1f,
             FlagStatType.RandomExplosion => 1f,
+            FlagStatType.BookMaster => 0.4f,
+            FlagStatType.WandMaster => 0.4f,
             _ => 0f
         };
     }

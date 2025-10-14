@@ -79,7 +79,7 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var focus = await player.Character.SelectItem("適応するアイテムを選択してください",
+                var focus = await player.Character.SelectItemContainsGroundItem("適応するアイテムを選択してください",
                     disabledItemIndexes.ToArray());
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
@@ -90,7 +90,7 @@ namespace Domain.Service.Effect
             else
             {
                 var focus =
-                    await player.Character.SelectItem("適応するアイテムを選択してください", selfIndex);
+                    await player.Character.SelectItemContainsGroundItem("適応するアイテムを選択してください", selfIndex);
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
                     if (disabledItemIndexes.Contains(focus))

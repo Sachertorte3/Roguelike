@@ -72,8 +72,8 @@ namespace View.UI
                 _infoMenu.SetInfo(choices[index].infoTitle, choices[index].info);
             });
             var choiceIndex = await GetChoice(text, choices.Select(x => x.choice).ToArray());
-            PopMenu();
             disposable.Dispose();
+            PopMenu();
             return choiceIndex;
         }
 

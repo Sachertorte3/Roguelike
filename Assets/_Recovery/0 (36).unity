@@ -7387,7 +7387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Utilities::Utilities.FollowSelectedNode
   _nodePrefab: {fileID: 4965566580593340212, guid: c4f92b6139c253d47ab6f0f99be0afd4, type: 3}
-  _verticalLayoutGroup: {fileID: 1975510421}
+  _verticalLayoutGroup: {fileID: 0}
   _scrollDuration: 0.2
   _scrollEase: 9
 --- !u!1 &417451215
@@ -7962,11 +7962,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257c7e3beeed5d942a228f6b3cdc0371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Utilities::Utilities.FollowSelectedNodeHorizontal
-  _scrollRect: {fileID: 560944528}
-  _viewportRectransform: {fileID: 1950699250}
-  _contentTransform: {fileID: 377030488}
   _nodePrefab: {fileID: 4034379852945337008, guid: 3a39fb630b9e1304296ec9ea033ca5f6, type: 3}
   _horizontalLayoutGroup: {fileID: 377030489}
+  _scrollDuration: 0.2
+  _scrollEase: 9
 --- !u!1001 &562147898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20593,17 +20592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47fa4b5165f3dd546bd567ea643697bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1975510421 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8187704012525280751, guid: 9c137c80f91532a46b09797b7d3ff418, type: 3}
-  m_PrefabInstance: {fileID: 1975510414}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39620669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
 --- !u!114 &1975510422
 MonoBehaviour:
   m_ObjectHideFlags: 0

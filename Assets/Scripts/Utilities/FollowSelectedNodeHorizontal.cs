@@ -4,21 +4,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Utilities
+namespace UI
 {
     [RequireComponent(typeof(ScrollRect))]
-    public class FollowSelectedNode : MonoBehaviour
+    public class FollowSelectedNodeHorizontal : MonoBehaviour
     {
         private ScrollRect _scrollRect;
         private RectTransform _viewportRectransform;
         private Transform _contentTransform;
         [SerializeField] private RectTransform _nodePrefab;
-        [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
+        [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
         [SerializeField] private float _scrollDuration = 0.2f;
         [SerializeField] private Ease _scrollEase = Ease.OutCubic;
         private Tween _scrollTween;
 
-        void Start()
+        private void Start()
         {
             _scrollRect = GetComponent<ScrollRect>();
             _viewportRectransform = _scrollRect.viewport;
@@ -50,51 +50,55 @@ namespace Utilities
             return -1;
         }
 
-        void Scroll(int nodeIndex)
+        public void Scroll(int nodeIndex)
         {
-            var spacing = _verticalLayoutGroup.spacing;
-            var p = 1.0f - _scrollRect.verticalNormalizedPosition;
-            var nodeCount = _contentTransform.childCount;
-            var viewportSize = _viewportRectransform.rect.y;
-            var harlViewport = viewportSize * 0.5f;
+            float spacing = _horizontalLayoutGroup.spacing;
+            float p = _scrollRect.horizontalNormalizedPosition;
+            int nodeCount = _contentTransform.childCount;
+            float viewportSize = _viewportRectransform.rect.width;
+            float halfViewport = viewportSize * 0.5f;
 
-            var nodeSize = _nodePrefab.rect.height + spacing;
+            float nodeSize = _nodePrefab.rect.width + spacing;
 
-            var scrollableHeight = nodeSize * nodeCount - viewportSize;
-            if (scrollableHeight <= 0f) return;
+            float scrollableWidth = nodeSize * nodeCount - viewportSize;
+            if (scrollableWidth <= 0f) return;
 
-            var centerPosition = scrollableHeight * p + harlViewport;
-            var topPosition = centerPosition - harlViewport;
-            var bottomPosition = centerPosition + harlViewport;
+            float centerPosition = scrollableWidth * p + halfViewport;
+            float leftPosition = centerPosition - halfViewport;
+            float rightPosition = centerPosition + halfViewport;
 
-            var nodeCenterPosition = nodeSize * nodeIndex + nodeSize / 2.0f;
+            float nodeCenterPosition = nodeSize * nodeIndex + nodeSize / 2.0f;
+
+            float nodeLeftPosition = nodeCenterPosition - nodeSize / 2;
+            float nodeRightPosition = nodeCenterPosition + nodeSize / 2;
 
             float? target = null;
 
-            if (topPosition > nodeCenterPosition)
+            if (leftPosition > nodeLeftPosition)
             {
-                var newP = (nodeSize * nodeIndex) / scrollableHeight;
-                target = 1.0f - newP;
+                float newP = (nodeSize * nodeIndex) / scrollableWidth;
+                target = newP;
             }
-            else if (nodeCenterPosition > bottomPosition)
+
+            if (nodeRightPosition > rightPosition)
             {
-                var newP = (nodeSize * (nodeIndex + 1) + spacing - viewportSize) / scrollableHeight;
-                target = 1.0f - newP;
+                float newP = (((nodeSize * (nodeIndex + 1)) + spacing - viewportSize)) / scrollableWidth;
+                target = newP;
             }
 
             if (target.HasValue)
             {
                 if (_scrollTween != null && _scrollTween.IsActive()) _scrollTween.Kill();
                 _scrollTween = DOTween.To(
-                    () => _scrollRect.verticalNormalizedPosition,
-                    v => _scrollRect.verticalNormalizedPosition = v,
+                    () => _scrollRect.horizontalNormalizedPosition,
+                    v => _scrollRect.horizontalNormalizedPosition = v,
                     target.Value,
                     _scrollDuration
                 ).SetEase(_scrollEase);
             }
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (_scrollTween != null && _scrollTween.IsActive()) _scrollTween.Kill();
         }

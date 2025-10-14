@@ -2471,7 +2471,7 @@ MonoBehaviour:
     SleepChance: 0.75
     MimicChance: 0.1
     ShopChance: 0
-    MonsterHouseChance: 1
+    MonsterHouseChance: 0
     RestRoomChance: 0
     LakeChance: 0
     ItemCount: 0.5

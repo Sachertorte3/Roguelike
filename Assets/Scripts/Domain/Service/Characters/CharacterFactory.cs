@@ -29,6 +29,31 @@ namespace Domain.Service.Characters
         {
             var flags = data.Flags.ToHashSet();
             flags.Add(FlagStatType.IsAffectedByTrap);
+
+            var defaultSkill = new CharacterSkillData(
+                skill: new SkillData(
+                    position: new AtFeet(),
+                    area: new LineArea(1, false, false),
+                    effects: new List<IEffect>
+                    {
+                        new AttackEffect(
+                            new List<ElementPower>
+                            {
+                                new ElementPower(Element.Physical, 1)
+                            },
+                            0
+                        )
+                    },
+                    repeats: 1,
+                    probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
+                    log: "は殴りかかった"
+                ),
+                rushDistance: 0,
+                backStepDistance: 0,
+                chargeTurn: 0,
+                coolTime: 0
+            );
+
             var character = new CharacterMemento
             (
                 name: data.Name,
@@ -49,7 +74,7 @@ namespace Domain.Service.Characters
                 direction: Direction8.Down,
                 skills: new List<CharacterSkillMemento>
                 {
-                    CharacterSkill.Build(data.DefaultSkill)
+                    CharacterSkill.Build(defaultSkill)
                 },
                 lastSkill: Option<SpawnEffectSkillMemento>.None,
                 inventory: Storage.Build(data.InventoryCapacity, new(), true, true),

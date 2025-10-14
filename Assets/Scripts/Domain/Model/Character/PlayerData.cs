@@ -31,10 +31,40 @@ namespace Domain.Model.Character
         public List<FlagStatType> Flags;
         public bool IsFlying;
         public bool CanThroughWalls;
-        public CharacterSkillData DefaultSkill;
         public SerializableDictionary<Element, float> ElementAttackMultiplier;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
         public SerializableDictionary<ConditionTemplate, float> ConditionResistance;
+        public string Info()
+        {
+            var info = "";
+            info += $"{Name}\n\n";
+            info += $"HP: {Hp}\n";
+            if (MoveSpeed != MoveSpeed.Normal)
+                info += $"速度: {MoveSpeed.GetName()}\n";
+            info += $"所持上限: {InventoryCapacity}\n";
+            foreach (var flag in Flags)
+            {
+                info += $"{flag.GetName()}\n";
+            }
+            if (IsFlying)
+                info += $"飛行\n";
+            if (CanThroughWalls)
+                info += $"壁を貫通可能\n";
+            info += $"\n";
+            foreach (var element in ElementAttackMultiplier.Keys)
+            {
+                info += $"{element.Name()}属性攻撃倍率: {ElementAttackMultiplier[element]:P0}\n";
+            }
+            foreach (var element in ElementDamageRateMultiplier.Keys)
+            {
+                info += $"{element.Name()}属性被ダメージ倍率: {ElementDamageRateMultiplier[element]:P0}\n";
+            }
+            foreach (var condition in ConditionResistance.Keys)
+            {
+                info += $"{condition.name}耐性: {ConditionResistance[condition]:P0}\n";
+            }
+            return info;
+        }
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -42,8 +72,6 @@ namespace Domain.Model.Character
             Name = Path.GetFileNameWithoutExtension(assetPath);
 
             Flags = Flags.Distinct().ToList();
-
-            DefaultSkill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
 
             EditorUtility.SetDirty(this);
         }

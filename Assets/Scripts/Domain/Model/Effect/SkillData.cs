@@ -65,15 +65,13 @@ namespace Domain.Model.Effect
         {
             var info = "";
             if (Repeats > 1)
-                info += $"発動回数: {Repeats}回\n";
+                info += $"効果は{Repeats}回発動する\n";
+            info += $"{Position.Info()}の{Area.Info()}を対象に\n";
             foreach (var (effect, index) in Effects.Index())
             {
-                info += $"効果{index + 1}: {effect.Info()}\n";
+                info += effect.Info();
             }
-
-            info += $"発動位置: {Position.Info()}\n";
-            info += $"範囲: {Area.Info()}\n";
-            info += $"発動確率: {ProbabilityOfSuccess:P0}";
+            info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
             return info;
         }
     }

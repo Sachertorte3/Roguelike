@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using Domain.Model.Setting;
 using Unity.Logging;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize;
 
 namespace Game
 {
+    public record GlobalSaveData(
+        GlobalStatisticsMemento GlobalStatistics,
+        Dictionary<string, int> GlobalSettings);
     public record SaveData(
         WorldMemento World,
         Dictionary<Id<IMap>, MapMemento> Maps,
@@ -44,9 +45,12 @@ namespace Game
             Log.Debug("[Save]End Save Light");
         }
 
-        public void SaveFull(SaveData saveData)
+        public void SaveFull(GlobalSaveData globalSaveData, SaveData saveData)
         {
-            Log.Debug("[Save]Start Save");
+            Log.Debug("[Save]Start Save"); 
+            db.SaveGlobalStatistics(JsonUtility.ToJson(globalSaveData.GlobalStatistics));
+            db.SaveGlobalSettings(globalSaveData.GlobalSettings);
+
             db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime);
             db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
             foreach (var map in saveData.Maps)
@@ -54,18 +58,32 @@ namespace Game
                 db.SaveMap(_saveDataSlot, map.Key.ToString(), JsonUtility.ToJson(map.Value));
             }
             db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
-            db.SaveSettings(_saveDataSlot, Settings.GetValues().ToSerializable());
+            db.SaveSettings(_saveDataSlot, saveData.Settings);
 
             Log.Debug("[Save]End Save");
         }
 
-        public SaveData? Load()
+        public GlobalSaveData? LoadGlobal()
         {
-            Log.Debug("[Save]Start Load");
-            if (!db.ExistSave(_saveDataSlot))
+            if (!IsExistSave())
             {
                 return null;
             }
+            Log.Debug("[Save]Start Load Global");
+            var globalStatisticsData = db.LoadGlobalStatistics();
+            var globalStatistics = JsonUtility.FromJson<GlobalStatisticsMemento>(globalStatisticsData);
+            var globalSettings = db.LoadGlobalSettings();
+            Log.Debug("[Save]End Load Global");
+            return new GlobalSaveData(globalStatistics, globalSettings);
+        }
+
+        public SaveData? Load()
+        {
+            if (!IsExistSave())
+            {
+                return null;
+            }
+            Log.Debug("[Save]Start Load");
             var (worldData, turnWaitTime) = db.Load(_saveDataSlot);
             var world = JsonUtility.FromJson<WorldMemento>(worldData);
             Dictionary<Id<IMap>, MapMemento> maps = new();

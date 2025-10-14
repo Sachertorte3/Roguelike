@@ -20,6 +20,7 @@ namespace View.UI
         [SerializeField] private ItemLibraryView _itemLibraryMenu;
         [SerializeField] private InfoMenu _infoMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
+        [SerializeField] private CharacterSelectMenu _characterSelectMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
         [SerializeField] private MainMenu _mainMenu;
         private readonly ObservableStack<IMenu> _menuStack = new();
@@ -85,6 +86,16 @@ namespace View.UI
             var choicedIndex = await _choiceMenu.ChoicedIndex.WaitAsync();
             PopMenu();
             return choicedIndex;
+        }
+
+        public async UniTask<int> GetCharacter(List<(string name, string textureName, string info)> characters)
+        {
+            _characterSelectMenu.SetChoices(characters);
+            await UniTask.NextFrame();
+            AddMenu(_characterSelectMenu);
+            var choiceIndex = await _characterSelectMenu.ChoicedIndex.WaitAsync();
+            PopMenu();
+            return choiceIndex;
         }
 
         public async UniTask<string> GetTextInput()

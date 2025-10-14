@@ -2,9 +2,6 @@ using System;
 using R3;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 using Utilities;
 
 namespace View

@@ -9,19 +9,20 @@ using Utilities;
 
 namespace View.UI
 {
-    public class ChoiceMenu : MonoBehaviour, IMenu
+    public class CharacterSelectMenu : MonoBehaviour, IMenu
     {
         public bool CanClose => false;
+        [SerializeField] private CharacterDemoDisplay _characterDemoDisplay;
         private readonly ReactiveProperty<int> _selectedIndex = new(-1);
         public ReadOnlyReactiveProperty<int> SelectedIndex => _selectedIndex;
         private readonly AsyncReactiveProperty<int> _choicedIndex = new(-1);
         public IReadOnlyAsyncReactiveProperty<int> ChoicedIndex => _choicedIndex;
-        [SerializeField] private TextMeshProUGUI _choiceText;
         [SerializeField] private RectTransform _content;
         [SerializeField] private ChoiceButton _choiceButtonPrefab;
         private readonly List<ChoiceButton> _buttons = new();
+        [SerializeField] private TMP_Text _infoText;
 
-        public void SetChoices(string? choiceText, params string[] choices)
+        public void SetChoices(List<(string name, string textureName, string info)> characters)
         {
             foreach (var button in _buttons)
             {
@@ -30,17 +31,17 @@ namespace View.UI
 
             _buttons.Clear();
 
-            if (choiceText != null)
-                _choiceText.text = choiceText;
-            else
-                _choiceText.text = "";
-
             _selectedIndex.Value = 0;
-            foreach (var (choice, index) in choices.Index())
+            foreach (var (choice, index) in characters.Index())
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
-                button.Construct(choice,
-                    () => _selectedIndex.Value = index,
+                button.Construct(characters[index].name,
+                    () =>
+                    {
+                        _selectedIndex.Value = index;
+                        _characterDemoDisplay.SetTexture(characters[index].textureName);
+                        _infoText.text = characters[index].info;
+                    },
                     () => _choicedIndex.Value = index);
                 _buttons.Add(button);
             }
@@ -50,8 +51,8 @@ namespace View.UI
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnUp = _buttons[(i - 1).WrapIndex(_buttons.Count)].GetComponent<Button>(),
-                    selectOnDown = _buttons[(i + 1).WrapIndex(_buttons.Count)].GetComponent<Button>()
+                    selectOnLeft = _buttons[(i - 1).WrapIndex(_buttons.Count)].GetComponent<Button>(),
+                    selectOnRight = _buttons[(i + 1).WrapIndex(_buttons.Count)].GetComponent<Button>()
                 };
                 _buttons[i].GetComponent<Button>().navigation = nav;
             }

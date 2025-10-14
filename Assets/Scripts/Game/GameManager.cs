@@ -27,6 +27,7 @@ namespace Game
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         private readonly ChoiceReceiver _choiceReceiver;
+        private readonly CharacterSelectReceiver _characterSelectReceiver;
         private readonly TextInputReceiver _textInputReceiver;
         private readonly CharacterControlInputReceiver _receiver;
         public Observable<Unit> OnTurnChanged => _turnController.OnTurnChanged;
@@ -45,6 +46,7 @@ namespace Game
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
+            CharacterSelectReceiver characterSelectReceiver,
             TextInputReceiver textInputReceiver,
             CharacterControlInputReceiver receiver)
         {
@@ -52,6 +54,7 @@ namespace Game
             _turnController = new TurnController(input);
             _saveDataManager = new SaveDataManager(0);
             _choiceReceiver = choiceReceiver;
+            _characterSelectReceiver = characterSelectReceiver;
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
 
@@ -87,6 +90,19 @@ namespace Game
         public UniTask<int> GetChoice(string? text, params string[] choices)
         {
             return _choiceReceiver.GetChoice(text, choices);
+        }
+
+        private async UniTask<PlayerData> GetPlayerData()
+        {
+            var players = new List<PlayerData> {
+                ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
+                ScriptableObjectLoader.Load<PlayerData>("Witch"),
+                ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
+                ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+            };
+            var index = await _characterSelectReceiver.GetCharacter(
+                players.Select(player => (player.Name, player.CharacterType.SubtypeName(), player.Info())).ToList());
+            return players[index];
         }
 
         public UniTask<string> GetTextInput()
@@ -169,18 +185,6 @@ namespace Game
             }
 
             _state.Value = GameState.Dungeon;
-        }
-
-        private async UniTask<PlayerData> GetPlayerData()
-        {
-            var characterIndex = await GetChoice("キャラクターを選択してください", "Adventurer", "Witch", "Rabbit", "Fairy");
-            return characterIndex switch {
-                0 => ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
-                1 => ScriptableObjectLoader.Load<PlayerData>("Witch"),
-                2 => ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
-                3 => ScriptableObjectLoader.Load<PlayerData>("Fairy"),
-                _ => throw new Exception("Invalid character name")
-            };
         }
 
         private MapManager LoadPreview(SaveData saveData)

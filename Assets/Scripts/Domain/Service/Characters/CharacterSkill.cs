@@ -137,12 +137,19 @@ namespace Domain.Service.Characters
         {
             var info = "";
             if (RushDistance > 0)
-                info += $"最初に{RushDistance}マス前に進み\n";
+                info += $"最初に{RushDistance}マス前に進む\n";
 
             info += _skill.InfoOnUse(omitProbabilityOfSuccess);
 
             if (BackStepDistance > 0)
                 info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+
+            if (ChargeTurn > 0)
+                info += $"発動には{ChargeTurn}ターンかかる\n";
+
+            if (_coolTime > 0)
+                info += $"発動後に{_coolTime}ターンは再使用不能\n";
+
             return info;
         }
     }

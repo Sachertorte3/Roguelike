@@ -160,7 +160,6 @@ namespace Game
 
         public void Remove(IEventEntity eventEntity)
         {
-            Debug.Log($"Remove event entity: {eventEntity.GetType()}");
             _standaloneEventEntities.Remove(eventEntity);
             if (eventEntity is Trap trap)
             {

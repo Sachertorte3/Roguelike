@@ -40,6 +40,7 @@ namespace View.UI
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
                 button.Construct(choice,
+                    true,
                     () => _selectedIndex.Value = index,
                     () => _choicedIndex.Value = index);
                 _buttons.Add(button);

@@ -3,6 +3,7 @@ using System.Linq;
 using Domain.Model.Memento;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game
 {
@@ -20,9 +21,9 @@ namespace Game
                 var map = mapChanged.Map;
                 if (map.Depth > MaxMapLevel)
                     MaxMapLevel = map.Depth;
-                map.Player.Character.KnownItemNames.ObserveChanged().Subscribe(item =>
+                map.Player.Character.KnownItemNames.ObserveAdd().Subscribe(item =>
                 {
-                    _knownItemNames.Add(item.NewItem);
+                    _knownItemNames.Add(item.Value);
                 });
             });
         }

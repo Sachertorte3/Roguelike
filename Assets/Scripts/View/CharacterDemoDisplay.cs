@@ -6,13 +6,18 @@ namespace View
     [RequireComponent(typeof(SpriteRenderer), typeof(OverrideSprite))]
     public class CharacterDemoDisplay : MonoBehaviour, IDirectional
     {
+        private OverrideSprite _overrideSprite;
         private string _textureName;
+
+        private void Awake()
+        {
+            _overrideSprite = GetComponent<OverrideSprite>();
+        }
 
         public void SetTexture(string textureName)
         {
-            Debug.Log("SetTexture: " + textureName);
             _textureName = textureName;
-            GetComponent<OverrideSprite>().SetTexture("Human", _textureName, true);
+            _overrideSprite.SetTexture("Human", _textureName, true);
         }
 
         public Direction8 GetDirection()

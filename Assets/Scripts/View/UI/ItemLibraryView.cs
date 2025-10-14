@@ -39,7 +39,8 @@ namespace View.UI
                 Destroy(view.gameObject);
             }
             _itemViews.Clear();
-            foreach (var itemData in _items.OrderBy(item => item.Category).ThenBy(item => item.Name))
+            var sortedItems = _items.OrderBy(item => item.Category).ThenBy(item => item.Name).ToList();
+            foreach (var itemData in sortedItems)
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
                 var itemViewData = new ItemViewData("", itemData.Icon, false, null, false, itemData.IsShiny, true, true, itemData.Info);
@@ -49,7 +50,7 @@ namespace View.UI
 
             _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ =>
             {
-                _infoText.text = _items[index].Info;
+                _infoText.text = sortedItems[index].Info;
             }).AddTo(view));
 
             for (var i = 0; i < _itemViews.Count; i++)

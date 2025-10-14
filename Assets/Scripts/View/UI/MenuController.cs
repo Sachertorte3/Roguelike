@@ -88,7 +88,7 @@ namespace View.UI
             return choicedIndex;
         }
 
-        public async UniTask<int> GetCharacter(List<(string name, string textureName, string info)> characters)
+        public async UniTask<int> GetCharacter(List<(string name, string textureName, string info, bool usable)> characters)
         {
             _characterSelectMenu.SetChoices(characters);
             await UniTask.NextFrame();

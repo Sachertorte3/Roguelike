@@ -81,10 +81,7 @@ namespace Domain.Service.Characters
 
             HasEvent = _events.ObserveCountChanged().Select(x => x > 0).ToReadOnlyReactiveProperty();
 
-            Observable.Merge(
-                AutoIdentify.Where(autoIdentify => autoIdentify).AsUnitObservable(),
-                Settings.WorldSettings.AutoIdentify.Value.Where(autoIdentify => autoIdentify).AsUnitObservable()
-            ).Subscribe(_ =>
+            AutoIdentify.Subscribe(autoIdentify =>
             {
                 foreach (var item in Inventory.AllItems)
                 {
@@ -105,7 +102,12 @@ namespace Domain.Service.Characters
         public bool CanThroughWalls => _canThroughWalls ? true : IsPlayer && Settings.WorldSettings.IgnoreWall.CurrentValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
-        public ReadOnlyReactiveProperty<bool> AutoIdentify => _statusManager.GetFlagProperty(FlagStatType.AutoIdentify);
+        public ReadOnlyReactiveProperty<bool> AutoIdentify => Observable
+            .CombineLatest(
+                _statusManager.GetFlagProperty(FlagStatType.AutoIdentify),
+                Settings.WorldSettings.AutoIdentify.Value,
+                (statusFlag, worldSetting) => statusFlag || worldSetting
+            ).ToReadOnlyReactiveProperty();
         public CharacterState State { get; set; } = CharacterState.Wait;
         public IReadOnlyList<IPlayerEvent> Events => _events;
         public ReadOnlyReactiveProperty<bool> HasEvent { get; init; }
@@ -443,7 +445,7 @@ namespace Domain.Service.Characters
                 );
                 if (result.Result == SkillResult.Success)
                 {
-                    if (!IsKnownItem(item) && item.IdentifyIfUsed)
+                    if (!item.IdentifyIfUsed)
                     {
                         KnowItem(item, true);
                     }
@@ -684,7 +686,7 @@ namespace Domain.Service.Characters
         {
             if (IsPlayer)
             {
-                if (!IsKnownItem(item) && log)
+                if (!IsKnownItem(item) && !Settings.WorldSettings.AutoIdentify.CurrentValue && log)
                 {
                     GameLog.Add(Entity.IsVisible, $"{item.UnknownName(_map.ItemPlaceholders)}は{item.RevealedName}だった");
                 }
@@ -694,7 +696,7 @@ namespace Domain.Service.Characters
 
         public bool IsKnownItem(IItem item)
         {
-            return _knownItemNames.Contains(item.BaseName) || Settings.WorldSettings.AutoIdentify.CurrentValue;
+            return _knownItemNames.Contains(item.BaseName);
         }
 
         public void ClearKnownItems(IMap map)

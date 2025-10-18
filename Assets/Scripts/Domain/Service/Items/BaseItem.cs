@@ -52,6 +52,7 @@ namespace Domain.Service.Items
         protected abstract bool HasSameSkill { get; }
         public abstract bool UseOnDeath { get; }
         public abstract bool CannotUseIfCursed { get; }
+        public abstract bool RequiresLiteracy { get; }
         public abstract bool CannotDropIfCursed { get; }
         public abstract bool IdentifyIfGot { get; }
         public abstract bool IdentifyIfUsed { get; }
@@ -194,6 +195,11 @@ namespace Domain.Service.Items
                 GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
             }
+            if (!actor.CanReadItem && RequiresLiteracy)
+            {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は文字が読めない");
+                return SpawnEffectSkillResult.Failed;
+            }
 
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
@@ -236,6 +242,12 @@ namespace Domain.Service.Items
         {
             if (IsCursed && CannotUseIfCursed)
             {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
+                return SpawnEffectSkillResult.Failed;
+            }
+            if (!actor.CanReadItem && RequiresLiteracy)
+            {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は文字が読めない");
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -554,7 +566,8 @@ namespace Domain.Service.Items
         public string FullInfo()
         {
             var info = $"{State.GetDescription()}{_fullName}";
-            if (MaxUsages > 1) {
+            if (MaxUsages > 1)
+            {
                 info += $" ({_remainingUsages.CurrentValue}/{MaxUsages})";
             }
             info += "\n";
@@ -615,7 +628,7 @@ namespace Domain.Service.Items
             }
             else if (UsageLossChance < 1)
             {
-                info += $"それは{(1-UsageLossChance):P0}の確率で使用可能回数が減少しない\n";
+                info += $"それは{(1 - UsageLossChance):P0}の確率で使用可能回数が減少しない\n";
             }
 
             foreach (var condition in PassiveConditions)

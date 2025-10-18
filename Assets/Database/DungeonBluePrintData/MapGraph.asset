@@ -402,7 +402,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.2
+    RestRoomChance: 0.5
     LakeChance: 0.2
     ItemCount: 1
     MoneyCount: 1
@@ -441,10 +441,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
-  m_Name: SnowFloor
+  m_Name: NormalFloor
   m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
   graph: {fileID: 11400000}
-  position: {x: -824, y: 632}
+  position: {x: -952, y: 632}
   ports:
     keys:
     - Output
@@ -477,7 +477,7 @@ MonoBehaviour:
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.1
-    RestRoomChance: 0.2
+    RestRoomChance: 0.5
     LakeChance: 0.2
     ItemCount: 1
     MoneyCount: 1
@@ -551,9 +551,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
-    BonfireWeight: 1
+    BonfireWeight: 0
     MagicPotWeight: 1
-    WorkbenchWeight: 1
+    WorkbenchWeight: 0
   Output:
     PrefixChance: 0.1
     ShinyChance: 0.01
@@ -1321,6 +1321,7 @@ MonoBehaviour:
   - {fileID: -6699882812533938179}
   - {fileID: 8777509353249933111}
   - {fileID: -3961507359562520991}
+  - {fileID: 6032777219994288072}
 --- !u!114 &132433583354238991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2048,6 +2049,69 @@ MonoBehaviour:
   - f82fd327-db70-4584-a6cc-58e6f8d1d6a8
   - 9f8d2916-94b7-4210-908a-fcb7afb671b4
   - e0eece72-864f-410c-a860-8c59361bb6fa
+--- !u!114 &6032777219994288072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: NormalRestFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -760, y: 632}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 6032777219994288072}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    ShopChance: 1
+    MonsterHouseChance: 0.1
+    RestRoomChance: 1
+    LakeChance: 0.2
+    ItemCount: 1
+    MoneyCount: 1
+    MoneyAverage: 300
+    CharacterCount: 1
+    TrapCount: 0.5
+    StatueChance: 0.1
+    BonfireWeight: 0
+    MagicPotWeight: 0
+    WorkbenchWeight: 1
+  Output:
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    LakeChance: 0.05
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &7860269649140603457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2474,7 +2538,7 @@ MonoBehaviour:
     MonsterHouseChance: 0
     RestRoomChance: 0
     LakeChance: 0
-    ItemCount: 0.5
+    ItemCount: 1
     MoneyCount: 1
     MoneyAverage: 100
     CharacterCount: 1

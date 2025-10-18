@@ -102,6 +102,7 @@ namespace Domain.Service.Characters
         public bool CanThroughWalls => _canThroughWalls ? true : IsPlayer && Settings.WorldSettings.IgnoreWall.CurrentValue;
         public bool CanPickUp { get; init; }
         public bool CanUseItem { get; init; }
+        public bool CanReadItem => !Status.IsFlagStat(FlagStatType.Blind);
         public ReadOnlyReactiveProperty<bool> AutoIdentify => Observable
             .CombineLatest(
                 _statusManager.GetFlagProperty(FlagStatType.AutoIdentify),
@@ -696,7 +697,7 @@ namespace Domain.Service.Characters
 
         public bool IsKnownItem(IItem item)
         {
-            return _knownItemNames.Contains(item.BaseName);
+            return _knownItemNames.Contains(item.BaseName) || Settings.WorldSettings.AutoIdentify.CurrentValue;
         }
 
         public void ClearKnownItems(IMap map)

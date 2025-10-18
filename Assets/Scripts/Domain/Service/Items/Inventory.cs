@@ -8,7 +8,6 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using R3;
-using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Items
@@ -47,10 +46,16 @@ namespace Domain.Service.Items
                     {
                         if (isCursed)
                             foreach (var condition in item.PassiveConditions)
-                                condition.Delete(_character, Id<IEntity>.Empty);
+                            {
+                                if (item.CannotUseIfCursed)
+                                    condition.Delete(_character, Id<IEntity>.Empty);
+                            }
                         else
                             foreach (var condition in item.PassiveConditions)
-                                condition.Inflict(_character, Id<IEntity>.Empty);
+                            {
+                                if (item.CannotUseIfCursed)
+                                    condition.Inflict(_character, Id<IEntity>.Empty);
+                            }
                     }
                 ).AddTo(_itemDisposables[item]);
             }

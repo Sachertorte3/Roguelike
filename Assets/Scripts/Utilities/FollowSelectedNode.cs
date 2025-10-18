@@ -55,7 +55,7 @@ namespace Utilities
             var spacing = _verticalLayoutGroup.spacing;
             var p = 1.0f - _scrollRect.verticalNormalizedPosition;
             var nodeCount = _contentTransform.childCount;
-            var viewportSize = _viewportRectransform.rect.y;
+            var viewportSize = _viewportRectransform.rect.height;
             var harlViewport = viewportSize * 0.5f;
 
             var nodeSize = _nodePrefab.rect.height + spacing;

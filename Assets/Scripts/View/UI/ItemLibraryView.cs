@@ -62,8 +62,9 @@ namespace View.UI
             var nav = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
-                selectOnLeft = _itemViews[(index - 1).WrapIndex(_itemViews.Count)]
-                    .GetComponent<Selectable>(),
+                selectOnUp = _itemViews[(index - 10).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
+                selectOnDown = _itemViews[(index + 10).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
+                selectOnLeft = _itemViews[(index - 1).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
                 selectOnRight = _itemViews[(index + 1).WrapIndex(_itemViews.Count)].GetComponent<Selectable>()
             };
             _itemViews[index].GetComponent<Selectable>().navigation = nav;

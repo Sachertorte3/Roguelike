@@ -19,25 +19,7 @@ namespace Domain.Model.Effect.Position
         public IEnumerable<Vector2Int> Get(Vector2Int position, Direction8 direction,
             IMap map)
         {
-            var pos = position;
-            for (var i = 0; i < CommonSenseParameters.ThrowDistance; i++)
-            {
-                if (map.At(pos + direction.Vector()).IsBlank(CanHitLayer.ToArray()))
-                {
-                    pos += direction.Vector();
-                }
-                else if (map.At(pos + direction.Vector()).IsPassableOnMap())
-                {
-                    pos += direction.Vector();
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return new[] { pos };
+            return new[] { map.GetThrowDestination(position, direction, CommonSenseParameters.ThrowDistance, CanHitLayer.ToArray()) };
         }
 
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,

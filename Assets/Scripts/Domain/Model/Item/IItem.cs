@@ -44,6 +44,8 @@ namespace Domain.Model.Item
         public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public bool IsCursed { get; }
+        public bool CannotUseIfCursed { get; }
+        public bool RequiresLiteracy { get; }
         public bool CannotDropIfCursed { get; }
         public bool IdentifyIfGot { get; }
         public bool IdentifyIfUsed { get; }

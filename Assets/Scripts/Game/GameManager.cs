@@ -104,7 +104,7 @@ namespace Game
                 (ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
                 "最初から", true),
                 (ScriptableObjectLoader.Load<PlayerData>("Witch"),
-                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+                "50種類のアイテムを発見", _globalStatistics.KnownItemNames.Count >= 50),
                 (ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
                 "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
                 (ScriptableObjectLoader.Load<PlayerData>("Fairy"),

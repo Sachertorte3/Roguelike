@@ -359,6 +359,8 @@ namespace Domain.Service.Characters.Behavior
             {
                 if (!item.CanActivateWhenUsed)
                     continue;
+                if (!character.CanReadItem && item.RequiresLiteracy)
+                    continue;
 
                 if (item.SkillOnUse.MapOr(false, skill => skill.IsDirectional))
                 {
@@ -380,12 +382,18 @@ namespace Domain.Service.Characters.Behavior
                 return Enumerable.Empty<ThrowItem>();
             }
 
-            return character.Inventory.AllItems
-                .SelectMany(
-                    item => DirectionMethods.AllDirections
-                        .Select(direction => new ThrowItem(item, direction))
-                )
-                .Where(action => action.Doable(character, map));
+            var actions = new List<ThrowItem>();
+            foreach (var item in character.Inventory.AllItems)
+            {
+                if (!item.CanActivateWhenThrown)
+                    continue;
+                if (!character.CanReadItem && item.RequiresLiteracy)
+                    continue;
+
+                actions.AddRange(DirectionMethods.AllDirections.Select(direction => new ThrowItem(item, direction)));
+            }
+
+            return actions.Where(action => action.Doable(character, map));
         }
 
         public void KnowLocationOf(Location location)

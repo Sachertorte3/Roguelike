@@ -581,6 +581,29 @@ namespace Game
             return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsWalkable, position);
         }
 
+        public Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer)
+        {
+            var pos = position;
+            for (var i = 0; i < distance; i++)
+            {
+                if (At(pos + direction.Vector()).IsBlank(canHitLayer))
+                {
+                    pos += direction.Vector();
+                }
+                else if (At(pos + direction.Vector()).IsPassableOnMap())
+                {
+                    pos += direction.Vector();
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return pos;
+        }
+
         private Dictionary<Vector2Int, HashSet<Vector2Int>> _visionCache = new();
         private HashSet<Vector2Int>? _fullVisibleArea;
 

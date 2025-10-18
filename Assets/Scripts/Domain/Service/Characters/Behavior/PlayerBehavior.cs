@@ -85,6 +85,10 @@ namespace Domain.Service.Characters.Behavior
                             var (eventAction, _) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntity, new Swap(move.Direction));
                             if (eventAction != null)
                                 return eventAction;
+                            if (character.Status.IsFlagStat(FlagStatType.CannotMove))
+                            {
+                                return new DoNothing();
+                            }
                         }
                         else
                         {

@@ -71,6 +71,7 @@ namespace Domain.Model.Map
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem);
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
+        public Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer);
 
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);

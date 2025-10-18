@@ -30,6 +30,7 @@ namespace Domain.Service.Items
         public override bool UseOnDeath => false;
         public override Option<IStorage> ItemStorage => Option.None<IStorage>();
         public override bool CannotUseIfCursed => false;
+        public override bool RequiresLiteracy => false;
         public override bool CannotDropIfCursed => true;
         public override bool IdentifyIfGot => true;
         public override bool IdentifyIfUsed => true;

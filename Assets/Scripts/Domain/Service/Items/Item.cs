@@ -31,6 +31,7 @@ namespace Domain.Service.Items
         public override Option<IStorage> ItemStorage => Option<IStorage>.None;
         public bool CanMergeUses => Category == ItemCategory.Books || Category == ItemCategory.Wands;
         public override bool CannotUseIfCursed => Category != ItemCategory.Weapons;
+        public override bool RequiresLiteracy => Category == ItemCategory.Books || Category == ItemCategory.Scrolls;
         public override bool CannotDropIfCursed => Category == ItemCategory.Weapons;
         public override bool IdentifyIfGot => Category == ItemCategory.Weapons || Category == ItemCategory.Others;
         public override bool IdentifyIfUsed => Category != ItemCategory.Wands;
@@ -177,7 +178,7 @@ namespace Domain.Service.Items
                 baseItem: memento.BaseItem.CopyWith(
                     maxUsages: MaxUsages + mergedItemIgnoreUpgrade.MaxUsages,
                     remainingUsages: RemainingUses.CurrentValue + mergedItem.RemainingUses.CurrentValue
-                    //MEMO: It's not wrong to use values ​​that include upgrades here.
+                //MEMO: It's not wrong to use values ​​that include upgrades here.
                 )
             ));
             foreach (var upgradePath in mergedItem.UpgradePaths.Shuffled())

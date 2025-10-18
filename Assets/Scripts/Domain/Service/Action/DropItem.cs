@@ -7,16 +7,18 @@ using Domain.Model.Map;
 
 namespace Domain.Service.Action
 {
-    internal record DropItem(ItemFocus Index) : IAction
+    internal record DropItem(IItem Item) : IAction
     {
         public bool Doable(IActor actor, IMap map)
         {
+            if (!actor.Inventory.CanRemove(Item))
+                return false;
             return !actor.Status.IsFlagStat(FlagStatType.CannotAct);
         }
 
         public UniTask Do(IActor actor, IMap map, IInput input)
         {
-            actor.DropItem(Index, map);
+            actor.DropItem(Item, map);
             return UniTask.CompletedTask;
         }
 
@@ -27,7 +29,7 @@ namespace Domain.Service.Action
 
         public string Info()
         {
-            return $"DropItem: Index:{Index}";
+            return $"DropItem: Item:{Item.DebugInfo()}";
         }
     }
 }

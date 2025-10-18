@@ -65,11 +65,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 601eb0af1f7338347abf0abd20ba0318
-    m_Address: Assets/Database/ItemData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 751ada207877dc843b986e894dfa571c
     m_Address: Assets/Database/ItemData
     m_ReadOnly: 0
@@ -132,6 +127,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a670071d25a609f47867e236cc8a1526
     m_Address: Assets/Database/ItemData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7e9cd6ea47fbe44e98b33935eb5ad41
+    m_Address: Assets/Database/PlayerData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

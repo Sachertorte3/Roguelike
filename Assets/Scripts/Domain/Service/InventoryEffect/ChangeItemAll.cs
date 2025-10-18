@@ -16,7 +16,7 @@ namespace Domain.Service.InventoryEffect
 
         public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            for (var i = 0; i < storage.Capacity; i++)
+            for (var i = 0; i < storage.Capacity.CurrentValue; i++)
             {
                 if (storage.HasItemAt(i))
                     storage.Replace(new Item(_item.Value), i);

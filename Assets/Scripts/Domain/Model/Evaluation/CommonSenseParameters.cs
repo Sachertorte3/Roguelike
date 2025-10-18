@@ -14,6 +14,9 @@ namespace Domain.Model.Evaluation
         public const float DamagePerAttack = MonsterMaxHealth / AttacksToDefeatPlayer;
         public const float OneTurnStunEquivalentHpReduction = OneTurnStunEquivalentDamage / MonsterMaxHealth;
         public const float OneTurnStunEquivalentDamage = 5;
+        public const int DamageWhenExplosionProof = 5;
+        public const float RandomTeleportProbability = 0.1f;
+        public const float RandomExplosionProbability = 0.05f;
         public const int PlayerVisionRange = 8;
         public const float EvaluateCoefficient = 0.05f;
         public const int ThrowDistance = 10;
@@ -22,6 +25,8 @@ namespace Domain.Model.Evaluation
         public const float SpawnEnemyProbabilityPerTurn = 1 / 64f;
         public const float SpawnGrassProbabilityPerTurn = 1 / 256f;
         public const float DestroyFireProbabilityPerTurn = 1 / 4f;
+        public const float BookMasterUsageLossChance = 0.5f;
+        public const float WandMasterUsageLossChance = 0.5f;
 
         public static float BlowAwayPrice(int distance)
         {

@@ -40,11 +40,9 @@ namespace View.UI
             {
                 var button = Instantiate(_choiceButtonPrefab, _content);
                 button.Construct(choice,
+                    true,
                     () => _selectedIndex.Value = index,
-                    () =>
-                    {
-                        _choicedIndex.Value = index;
-                    });
+                    () => _choicedIndex.Value = index);
                 _buttons.Add(button);
             }
 
@@ -53,8 +51,8 @@ namespace View.UI
                 var nav = new Navigation
                 {
                     mode = Navigation.Mode.Explicit,
-                    selectOnUp = _buttons[(i - 1 + _buttons.Count) % _buttons.Count].GetComponent<Button>(),
-                    selectOnDown = _buttons[(i + 1) % _buttons.Count].GetComponent<Button>()
+                    selectOnUp = _buttons[(i - 1).WrapIndex(_buttons.Count)].GetComponent<Button>(),
+                    selectOnDown = _buttons[(i + 1).WrapIndex(_buttons.Count)].GetComponent<Button>()
                 };
                 _buttons[i].GetComponent<Button>().navigation = nav;
             }

@@ -35,21 +35,21 @@ namespace Provider
             _gameManager = gameManager;
             _world = world;
 
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable[0].Disposable =
-                    map.StandaloneEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.StandaloneEventEntities.ForEach(entity => Remove(entity))
-            );
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable[1].Disposable =
-                    map.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.StandalonePlayerEventEntities.ForEach(entity => Remove(entity))
-            );
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => _disposable[2].Disposable =
-                    map.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove),
-                map => map.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity))
-            );
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.StandaloneEventEntities.ForEach(entity => Remove(entity));
+                _disposable[0].Disposable = mapChanged.Map.StandaloneEventEntities.SubscribeIncludingCurrentItems(Add, Remove);
+            });
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.StandalonePlayerEventEntities.ForEach(entity => Remove(entity));
+                _disposable[1].Disposable = mapChanged.Map.StandalonePlayerEventEntities.SubscribeIncludingCurrentItems(Add, Remove);
+            });
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity));
+                _disposable[2].Disposable = mapChanged.Map.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove);
+            });
         }
 
         protected override EntityView ViewPrefab(IEntity eventEntity)
@@ -67,11 +67,6 @@ namespace Provider
             if (eventEntity is Trap)
             {
                 return ScriptableObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
-            }
-
-            if (eventEntity is Statue)
-            {
-                return ScriptableObjectLoader.LoadPrefab("Statue").GetComponent<EntityView>();
             }
 
             if (eventEntity is Stairs stairs)
@@ -93,9 +88,13 @@ namespace Provider
             {
                 return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
             }
-            else
+            else if (eventEntity.Entity.Layer == EntityLayer.Bottom)
             {
                 return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -128,13 +127,19 @@ namespace Provider
                     .Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = magicPot.Icon)
                     .AddTo(entityView);
             }
+            else if (eventEntity is Workbench workbench)
+            {
+                workbench.CanUse
+                    .Subscribe(canUse => spriteView.GetComponent<SpriteRenderer>().sprite = workbench.Icon)
+                    .AddTo(entityView);
+            }
             else if (eventEntity is Statue statue)
             {
                 statue.OnAttacked
                     .Subscribe(_ => entityView.transform.DOShakePosition(0.5f, 0.1f))
                     .AddTo(entityView);
             }
-            else if (eventEntity is IIconEntity iconEventEntity)
+            if (eventEntity is IIconEntity iconEventEntity)
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
         }
 

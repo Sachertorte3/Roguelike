@@ -7,6 +7,7 @@ using IngameDebugConsole;
 using Unity.Logging;
 using UnityEngine;
 using VContainer;
+using R3;
 
 namespace Provider
 {
@@ -38,7 +39,7 @@ namespace Provider
 
         private void ShowCharacter(ICharacter character)
         {
-            var info = $"{character.GetNameIgnoreVisibility(_world.ActiveMap.CurrentValue.Player)}\n"
+            var info = $"{character.GetNameIgnoreVisibility(_world.CurrentMap.Player)}\n"
                        + $"Id: {character.Entity.Id}\n"
                        + $"Position: {character.Entity.CurrentPosition}\n"
                        + $"CharacterType: {character.CharacterType.SubtypeName()}";
@@ -53,7 +54,7 @@ namespace Provider
         private void FindCharacter(Vector2Int position)
         {
             var character =
-                _world.ActiveMap.CurrentValue.Characters.FirstOrDefault(character =>
+                _world.CurrentMap.Characters.FirstOrDefault(character =>
                     character.Entity.CurrentPosition == position);
             if (character != null)
             {
@@ -67,7 +68,7 @@ namespace Provider
 
         private void FindAllCharacters()
         {
-            var characters = _world.ActiveMap.CurrentValue.Characters;
+            var characters = _world.CurrentMap.Characters;
             foreach (var character in characters)
             {
                 ShowCharacter(character);
@@ -78,7 +79,7 @@ namespace Provider
         {
             try
             {
-                var character = CommandUtilities.GetTarget(target, _world.ActiveMap.CurrentValue);
+                var character = CommandUtilities.GetTarget(target, _world.CurrentMap);
                 ShowCharacterJson(character);
             }
             catch (Exception e)

@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
-using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
@@ -17,7 +16,6 @@ using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
-using Utilities.Serialize.Option;
 using Utilities.Stats;
 
 namespace Domain.Service.Characters
@@ -148,6 +146,11 @@ namespace Domain.Service.Characters
 
         public IStat GetConditionResistanceStat(ConditionTemplate condition)
         {
+            if (IsFlagStat(FlagStatType.AllConditionProof))
+            {
+                return new Stat(1);
+            }
+
             if (!ConditionResistance.ContainsKey(condition.name))
             {
                 ConditionResistance[condition.name] = new Stat(0);
@@ -267,13 +270,13 @@ namespace Domain.Service.Characters
             _conditions.Clear();
         }
 
-        public async UniTask UpdateTurn(IHasCondition hasCondition, bool characterVisible)
+        public async UniTask UpdateTurn(bool characterVisible)
         {
             if (HpNaturalRecoveryAmount.CurrentValue > 0)
                 GainHp(HpNaturalRecoveryAmount.CurrentValue, true);
             else
                 await LoseHp(-HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", true);
-            await _conditions.UpdateTurn(hasCondition, characterVisible);
+            _conditions.UpdateTurn(characterVisible);
         }
 
         public void WasAttacked()
@@ -298,8 +301,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, bool isHard, bool isHeavy,
-            bool isAffectedByTrap, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, HashSet<FlagStatType> flags, float waitTime, bool isSlept)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -319,19 +321,9 @@ namespace Domain.Service.Characters
                 flagStats[FlagStatType.Blind] = 1;
             }
 
-            if (isHard)
+            foreach (var flag in flags)
             {
-                flagStats[FlagStatType.Hard] = 1;
-            }
-
-            if (isHeavy)
-            {
-                flagStats[FlagStatType.Heavy] = 1;
-            }
-
-            if (isAffectedByTrap)
-            {
-                flagStats[FlagStatType.IsAffectedByTrap] = 1;
+                flagStats[flag] = 1;
             }
 
             return new CharacterStatusMemento
@@ -365,6 +357,47 @@ namespace Domain.Service.Characters
         public void ClearCondition()
         {
             _conditions.Clear();
+        }
+
+        public string Info()
+        {
+            var info = "";
+            info += $"Lv{Level.CurrentValue} Exp{Exp.Value}\n";
+            info += $"Hp:{Hp.Value}/{Hp.Max.CurrentValue}\n";
+            info += $"Hp自然回復量:{HpNaturalRecoveryAmount.CurrentValue}\n";
+            info += $"視界範囲:{ViewRange.CurrentValue}\n";
+            info += $"待機時間:{WaitTime.Max.CurrentValue}\n";
+            foreach (var element in ElementAttackMultiplier.Keys)
+            {
+                if (ElementAttackMultiplier[element].CurrentValue == 1)
+                    continue;
+                info += $"攻撃倍率:{element.Name()}:{ElementAttackMultiplier[element].CurrentValue:P0}\n";
+            }
+            foreach (var element in ElementDamageRateMultiplier.Keys)
+            {
+                if (ElementDamageRateMultiplier[element].CurrentValue == 1)
+                    continue;
+                info += $"被ダメージ倍率:{element.Name()}:{ElementDamageRateMultiplier[element].CurrentValue:P0}\n";
+            }
+            foreach (var condition in ConditionResistance.Keys)
+            {
+                if (ConditionResistance[condition].CurrentValue == 0)
+                    continue;
+                info += $"状態異常耐性:{condition}:{ConditionResistance[condition].CurrentValue:P0}\n";
+            }
+            info += "フラグ:\n";
+            foreach (var flag in _flagStats)
+            {
+                if (!flag.Value.CurrentValue)
+                    continue;
+                info += $"{flag.Key.GetName()}\n";
+            }
+            info += "状態異常:\n";
+            foreach (var condition in _conditions.Conditions)
+            {
+                info += $"{condition.Info()}\n";
+            }
+            return info;
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 namespace View.UI
 {
     public record ItemViewData(
+        string name,
         Sprite icon,
         bool canSelect,
         int? count,
@@ -11,7 +12,6 @@ namespace View.UI
         bool isShiny,
         bool isCountIdentified,
         bool isCurseIdentified,
-        int storageSize,
         string info
     );
 }

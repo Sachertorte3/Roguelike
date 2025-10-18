@@ -51,6 +51,7 @@ namespace Domain.Model.Dungeon
         {
             var maxDepth = MapGraph.GetMaxDepth();
             var mapNode = MapGraph.GetMapNode(mapId);
+            var fields = mapNode.Fields;
             var sectionData = mapNode.SectionData;
             var floorData = mapNode.FloorData;
             var enemies = mapNode.Enemies;
@@ -60,7 +61,7 @@ namespace Domain.Model.Dungeon
                 mapNode.Depth(mapId),
                 mapNode.Depth(mapId) / maxDepth,
                 sectionData.Type,
-                floorData.Field,
+                fields.GetRandomItem(),
                 new ItemDatabase(MasterItemDataBase, SpawnItem),
                 WeaponPrefixes,
                 MasterItemDataBase.AllChestItems,
@@ -88,6 +89,9 @@ namespace Domain.Model.Dungeon
                 floorData.CharacterCount,
                 floorData.TrapCount,
                 floorData.StatueChance,
+                floorData.BonfireWeight,
+                floorData.MagicPotWeight,
+                floorData.WorkbenchWeight,
                 boss,
                 sectionData.Clerk,
                 sectionData.Mimic

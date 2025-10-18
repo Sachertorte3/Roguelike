@@ -60,6 +60,7 @@ MonoBehaviour:
         ApplyToMoney: 0
         ApplyToTrap: 1
         ApplyToChest: 0
+        ApplyToStatue: 0
     - rid: 5486256292201496578
       type: {class: ProjectileImpact, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:

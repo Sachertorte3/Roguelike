@@ -4,9 +4,9 @@ using System.Linq;
 using R3;
 using Sirenix.Utilities;
 using TMPro;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.Logging;
 using Utilities;
 
 namespace View.UI
@@ -39,16 +39,18 @@ namespace View.UI
                 Destroy(view.gameObject);
             }
             _itemViews.Clear();
-            foreach (var itemData in _items.OrderBy(item => item.Category).ThenBy(item => item.Name))
+            var sortedItems = _items.OrderBy(item => item.Category).ThenBy(item => item.Name).ToList();
+            foreach (var itemData in sortedItems)
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
-                view.Set(itemData.Icon, null, false, itemData.IsShiny, true, true);
+                var itemViewData = new ItemViewData("", itemData.Icon, false, null, false, itemData.IsShiny, true, true, itemData.Info);
+                view.Set(itemViewData);
                 _itemViews.Add(view);
             }
 
             _itemViews.ForEach((view, index) => view.OnSelected.Subscribe(_ =>
             {
-                _infoText.text = _items[index].Info;
+                _infoText.text = sortedItems[index].Info;
             }).AddTo(view));
 
             for (var i = 0; i < _itemViews.Count; i++)
@@ -60,9 +62,10 @@ namespace View.UI
             var nav = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
-                selectOnLeft = _itemViews[(index - 1 + _itemViews.Count) % _itemViews.Count]
-                    .GetComponent<Selectable>(),
-                selectOnRight = _itemViews[(index + 1) % _itemViews.Count].GetComponent<Selectable>()
+                selectOnUp = _itemViews[(index - 10).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
+                selectOnDown = _itemViews[(index + 10).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
+                selectOnLeft = _itemViews[(index - 1).WrapIndex(_itemViews.Count)].GetComponent<Selectable>(),
+                selectOnRight = _itemViews[(index + 1).WrapIndex(_itemViews.Count)].GetComponent<Selectable>()
             };
             _itemViews[index].GetComponent<Selectable>().navigation = nav;
         }

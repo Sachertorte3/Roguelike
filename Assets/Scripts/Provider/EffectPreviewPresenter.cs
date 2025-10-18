@@ -8,7 +8,6 @@ using Domain.Service.Effect;
 using Game;
 using R3;
 using UnityEngine;
-using Utilities;
 using VContainer;
 using View;
 using View.UI;
@@ -23,51 +22,53 @@ namespace Provider
         {
             var disposables = new CompositeDisposable();
             var previews = new List<GameObject>();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
+                    var map = mapChanged.Map;
+                    var player = map.Player.Character;
                     disposables.Add(map.OnEffectSpawned.Subscribe(effectSpawned =>
                         effectViewSpawner.Spawn(
-                            effectSpawned.Area.Intersect(map.Player.Character.VisibleArea),
+                            effectSpawned.Area.Intersect(player.VisibleArea),
                             effectSpawned.Color,
                             Settings.GlobalSettings.EffectDisplayTime.CurrentValue
                         )
                     ));
                     disposables.Add(Observable.Merge(
                         inventoryView.Focus.AsUnitObservable(),
-                        map.Player.Character.Inventory.OnItemChanged.AsUnitObservable(),
-                        map.Player.Character.Direction.AsUnitObservable(),
+                        player.Inventory.OnItemRemoved.AsUnitObservable(),
+                        player.Inventory.OnItemReplaced.AsUnitObservable(),
+                        player.Direction.AsUnitObservable(),
                         gameManager.OnTurnChanged
                     ).Subscribe(_ =>
                     {
                         previews.ForEach(preview => Object.Destroy(preview));
                         previews.Clear();
-                        if (map.Player.Character.IsDead)
+                        if (player.IsDead)
                         {
                             return;
                         }
 
                         var focus = inventoryView.Focus.CurrentValue;
-                        if (!focus.IsEmpty)
+                        if (!focus.IsOnEmpty)
                         {
                             IItem? item = null;
-                            if (focus.IsGroundItem)
+                            if (focus.IsOnGroundItem)
                             {
-                                item = map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
+                                item = map.Items.At(player.Entity.CurrentPosition).FirstOrDefault()?.Item;
                             }
                             else
                             {
-                                item = map.Player.Character.Inventory.GetItem(focus.Index);
+                                item = player.Inventory.GetItem(focus.Index);
                             }
 
-                            if (item != null && map.Player.Character.IsKnownItem(item))
+                            if (item != null && player.IsKnownItem(item))
                             {
                                 if (item.SkillOnUse.HasValue &&
                                     item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
                                 {
-                                    var area = spawnEffectSkill.GetArea(map.Player.Character,
-                                        map.Player.Character.Entity.CurrentPosition,
-                                        map.Player.Character.CurrentDirection, map, true);
+                                    var area = spawnEffectSkill.GetArea(player,
+                                        player.Entity.CurrentPosition,
+                                        player.CurrentDirection, map, true);
                                     var color = spawnEffectSkill.Color;
                                     color.a = 0.25f;
                                     previews = effectViewSpawner.SpawnPreview(area, color);

@@ -18,6 +18,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int FeatureLimit { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnThrow { get; private set; }
+        [field: SerializeField] public bool HasSameEffect { get; private set; }
 
         public DirectWeaponMemento(
             BaseItemMemento baseItem,
@@ -26,7 +27,8 @@ namespace Domain.Model.Memento
             List<DirectWeaponFeature> features,
             int featureLimit,
             SpawnEffectSkillMemento skillOnUse,
-            SpawnEffectSkillMemento skillOnThrow
+            SpawnEffectSkillMemento skillOnThrow,
+            bool hasSameEffect
         )
         {
             BaseItem = baseItem;
@@ -36,6 +38,7 @@ namespace Domain.Model.Memento
             FeatureLimit = featureLimit;
             SkillOnUse = skillOnUse;
             SkillOnThrow = skillOnThrow;
+            HasSameEffect = hasSameEffect;
         }
 
         public DirectWeaponMemento CopyWith(
@@ -45,7 +48,8 @@ namespace Domain.Model.Memento
             List<DirectWeaponFeature>? features = null,
             int? featureLimit = null,
             SpawnEffectSkillMemento? skillOnUse = null,
-            SpawnEffectSkillMemento? skillOnThrow = null
+            SpawnEffectSkillMemento? skillOnThrow = null,
+            bool? hasSameEffect = null
         )
         {
             return new DirectWeaponMemento(
@@ -55,7 +59,8 @@ namespace Domain.Model.Memento
                 features ?? Features,
                 featureLimit ?? FeatureLimit,
                 skillOnUse ?? SkillOnUse,
-                skillOnThrow ?? SkillOnThrow
+                skillOnThrow ?? SkillOnThrow,
+                hasSameEffect ?? HasSameEffect
             );
         }
     }

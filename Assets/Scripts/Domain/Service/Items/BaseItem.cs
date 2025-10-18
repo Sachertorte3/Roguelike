@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
@@ -35,6 +37,7 @@ namespace Domain.Service.Items
         private readonly List<UpgradePath> _upgradePaths;
         public int MaxUsages { get; private set; }
         private protected ReactiveProperty<int> _remainingUsages;
+        public float UsageLossChance { get; private set; }
         public bool IsCursed { get; private set; }
         public bool IsCurseIdentified { get; private set; }
         public int UpgradeLimit { get; private set; }
@@ -49,6 +52,7 @@ namespace Domain.Service.Items
         protected abstract bool HasSameSkill { get; }
         public abstract bool UseOnDeath { get; }
         public abstract bool CannotUseIfCursed { get; }
+        public abstract bool RequiresLiteracy { get; }
         public abstract bool CannotDropIfCursed { get; }
         public abstract bool IdentifyIfGot { get; }
         public abstract bool IdentifyIfUsed { get; }
@@ -98,6 +102,7 @@ namespace Domain.Service.Items
             _upgradePaths = baseItem.UpgradePaths;
             MaxUsages = baseItem.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(baseItem.RemainingUsages);
+            UsageLossChance = baseItem.UsageLossChance;
             IsCursed = baseItem.IsCursed;
             IsCurseIdentified = baseItem.IsCurseIdentified;
             UpgradeLimit = baseItem.UpgradeLimit;
@@ -118,6 +123,7 @@ namespace Domain.Service.Items
                 upgradePaths: _upgradePaths,
                 maxUsages: MaxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
+                usageLossChance: UsageLossChance,
                 isCursed: IsCursed,
                 isCurseIdentified: IsCurseIdentified,
                 upgradeLimit: UpgradeLimit,
@@ -132,6 +138,7 @@ namespace Domain.Service.Items
             float multiplyPrice,
             ItemState state,
             int maxUsages,
+            float usageLossChance,
             bool isCursed,
             int upgradeLimit,
             List<IConditionData> conditions
@@ -149,6 +156,7 @@ namespace Domain.Service.Items
                 upgradePaths: new List<UpgradePath>(),
                 maxUsages: maxUsages,
                 remainingUsages: maxUsages,
+                usageLossChance: usageLossChance,
                 isCursed: isCursed,
                 isCurseIdentified: false,
                 upgradeLimit: upgradeLimit,
@@ -166,12 +174,30 @@ namespace Domain.Service.Items
             _onItemUpdated.OnNext(Unit.Default);
         }
 
+        private bool ShouldDecreaseUsage(IActorOfEffect actor)
+        {
+            if (Category == ItemCategory.Books
+            && actor.Status.IsFlagStat(FlagStatType.BookMaster)
+            && RandUtils.IsGreaterThanProbability(CommonSenseParameters.BookMasterUsageLossChance))
+                return false;
+            if (Category == ItemCategory.Wands
+            && actor.Status.IsFlagStat(FlagStatType.WandMaster)
+            && RandUtils.IsGreaterThanProbability(CommonSenseParameters.WandMasterUsageLossChance))
+                return false;
+            return RandUtils.IsLessThanProbability(UsageLossChance);
+        }
+
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
             SetCurseIdentified(true);
             if (IsCursed && CannotUseIfCursed)
             {
                 GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
+                return SpawnEffectSkillResult.Failed;
+            }
+            if (!actor.CanReadItem && RequiresLiteracy)
+            {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は文字が読めない");
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -192,7 +218,14 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                _remainingUsages.Value -= 1;
+                if (ShouldDecreaseUsage(actor))
+                {
+                    _remainingUsages.Value -= 1;
+                }
+                else
+                {
+                    GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は消費しなかった");
+                }
                 if (State == ItemState.ShopItem)
                 {
                     State = ItemState.UsedShopItem;
@@ -209,6 +242,12 @@ namespace Domain.Service.Items
         {
             if (IsCursed && CannotUseIfCursed)
             {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
+                return SpawnEffectSkillResult.Failed;
+            }
+            if (!actor.CanReadItem && RequiresLiteracy)
+            {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は文字が読めない");
                 return SpawnEffectSkillResult.Failed;
             }
 
@@ -219,7 +258,14 @@ namespace Domain.Service.Items
             );
             if (result.Result != SkillResult.Cancelled)
             {
-                _remainingUsages.Value -= 1;
+                if (ShouldDecreaseUsage(actor))
+                {
+                    _remainingUsages.Value -= 1;
+                }
+                else
+                {
+                    GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は消費しなかった");
+                }
                 if (State == ItemState.ShopItem)
                 {
                     State = ItemState.UsedShopItem;
@@ -248,7 +294,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map)
+        public float EvaluateWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
             return SkillOnThrow.MapOr(
                 0,
@@ -283,7 +329,7 @@ namespace Domain.Service.Items
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                new ProjectileImpact().EvaluateHitProbability();
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2;
+            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2 * Mathf.Max(UsageLossChance, 0.1f);
             price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
             if (IsCursed)
@@ -520,7 +566,8 @@ namespace Domain.Service.Items
         public string FullInfo()
         {
             var info = $"{State.GetDescription()}{_fullName}";
-            if (MaxUsages > 1) {
+            if (MaxUsages > 1)
+            {
                 info += $" ({_remainingUsages.CurrentValue}/{MaxUsages})";
             }
             info += "\n";
@@ -573,6 +620,15 @@ namespace Domain.Service.Items
             if (UseOnDeath)
             {
                 info += "それは死亡時に自動的に使用される\n";
+            }
+
+            if (UsageLossChance == 0)
+            {
+                info += "それは使用可能回数が減少しない\n";
+            }
+            else if (UsageLossChance < 1)
+            {
+                info += $"それは{(1 - UsageLossChance):P0}の確率で使用可能回数が減少しない\n";
             }
 
             foreach (var condition in PassiveConditions)

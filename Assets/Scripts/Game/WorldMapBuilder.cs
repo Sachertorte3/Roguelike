@@ -54,6 +54,7 @@ namespace Game
                         new List<MoneyMemento>(),
                         Option<BonfireMemento>.None,
                         Option<MagicPotMemento>.None,
+                        Option<WorkbenchMemento>.None,
                         Option<EntityMemento>.None),
                     FireEntityManager.Build()),
                 new List<string>(),

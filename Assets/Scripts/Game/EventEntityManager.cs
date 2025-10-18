@@ -23,6 +23,7 @@ namespace Game
         private readonly List<Money> _money = new();
         private Option<Bonfire> _bonfire = Option<Bonfire>.None;
         private Option<MagicPot> _magicPot = Option<MagicPot>.None;
+        private Option<Workbench> _workbench = Option<Workbench>.None;
         private Option<Teleporter> _teleporter = Option<Teleporter>.None;
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
         private ObservableList<IPlayerEventEntity> _standalonePlayerEventEntities = new();
@@ -73,6 +74,10 @@ namespace Game
             if (_magicPot.HasValue)
                 Spawn(_magicPot.Value!);
 
+            _workbench = eventEntities.Workbench.Map(workbench => new Workbench(workbench));
+            if (_workbench.HasValue)
+                Spawn(_workbench.Value!);
+
             _teleporter = eventEntities.Teleporter.Map(teleporter => new Teleporter(teleporter));
             if (_teleporter.HasValue)
                 Spawn(_teleporter.Value!);
@@ -102,6 +107,7 @@ namespace Game
                 _money.Select(money => money.Serialize()).ToList(),
                 _bonfire.Map(bonfire => bonfire.Serialize()),
                 _magicPot.Map(magicPot => magicPot.Serialize()),
+                _workbench.Map(workbench => workbench.Serialize()),
                 _teleporter.Map(teleporter => teleporter.Serialize())
             );
         }
@@ -114,6 +120,7 @@ namespace Game
             IEnumerable<MoneyMemento> money,
             Option<BonfireMemento> bonfire,
             Option<MagicPotMemento> magicPot,
+            Option<WorkbenchMemento> workbench,
             Option<EntityMemento> teleporter
         )
         {
@@ -126,6 +133,7 @@ namespace Game
                 money.ToList(),
                 bonfire,
                 magicPot,
+                workbench,
                 teleporter
             );
         }
@@ -152,7 +160,6 @@ namespace Game
 
         public void Remove(IEventEntity eventEntity)
         {
-            Debug.Log($"Remove event entity: {eventEntity.GetType()}");
             _standaloneEventEntities.Remove(eventEntity);
             if (eventEntity is Trap trap)
             {
@@ -190,6 +197,10 @@ namespace Game
             else if (eventEntity is MagicPot)
             {
                 _magicPot = Option<MagicPot>.None;
+            }
+            else if (eventEntity is Workbench)
+            {
+                _workbench = Option<Workbench>.None;
             }
             else
             {

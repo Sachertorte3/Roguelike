@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Setting;
@@ -26,12 +27,15 @@ namespace Game
         public Func<bool>? IsDash;
         public Func<bool>? IsNoMove;
         private readonly ChoiceReceiver _choiceReceiver;
+        private readonly CharacterSelectReceiver _characterSelectReceiver;
         private readonly TextInputReceiver _textInputReceiver;
         private readonly CharacterControlInputReceiver _receiver;
         public Observable<Unit> OnTurnChanged => _turnController.OnTurnChanged;
         public ReadOnlyReactiveProperty<int> Turn => _turnController.TurnInLevel;
-        private readonly ReactiveProperty<Statistics?> _activeStatistics = new();
-        public ReadOnlyReactiveProperty<Statistics?> ActiveStatistics => _activeStatistics;
+        private GlobalStatistics _globalStatistics;
+        public GlobalStatistics GlobalStatistics => _globalStatistics;
+        private readonly ReactiveProperty<WorldStatistics?> _activeStatistics = new();
+        public ReadOnlyReactiveProperty<WorldStatistics?> ActiveStatistics => _activeStatistics;
         private readonly Subject<BGM> _onPlayBGM = new();
         public Observable<BGM> OnPlayBGM => _onPlayBGM;
         private readonly Subject<SE> _onPlaySE = new();
@@ -44,6 +48,7 @@ namespace Game
 
         [Inject]
         public GameManager(World world, GameInput input, ChoiceReceiver choiceReceiver,
+            CharacterSelectReceiver characterSelectReceiver,
             TextInputReceiver textInputReceiver,
             CharacterControlInputReceiver receiver)
         {
@@ -51,12 +56,13 @@ namespace Game
             _turnController = new TurnController(input);
             _saveDataManager = new SaveDataManager(0);
             _choiceReceiver = choiceReceiver;
+            _characterSelectReceiver = characterSelectReceiver;
             _textInputReceiver = textInputReceiver;
             _receiver = receiver;
 
-            _world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            _world.OnActiveMapChanged.Subscribe(mapChanged =>
             {
-                _disposable.Disposable = map.Player.Character.Entity.OnDestroyed
+                _disposable.Disposable = mapChanged.Map.Player.Character.Entity.OnDestroyed
                     .Where(_ => State.CurrentValue == GameState.Dungeon)
                     .Subscribe(async _ =>
                 {
@@ -65,6 +71,10 @@ namespace Game
                     GameOver();
                 });
             });
+
+            var globalSaveData = _saveDataManager.LoadGlobal() ?? new GlobalSaveData(GlobalStatistics.Build(), new());
+            _globalStatistics = new GlobalStatistics(globalSaveData.GlobalStatistics, _world);
+            Settings.GlobalSettings.SetValues(globalSaveData.GlobalSettings);
 
             var disposable = new SerialDisposable();
             _activeStatistics.SubscribeIncludingCurrentValueIgnoreNull(statistics =>
@@ -86,6 +96,27 @@ namespace Game
         public UniTask<int> GetChoice(string? text, params string[] choices)
         {
             return _choiceReceiver.GetChoice(text, choices);
+        }
+
+        private async UniTask<PlayerData> GetPlayerData()
+        {
+            var players = new List<(PlayerData data, string unlockCondition, bool usable)> {
+                (ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
+                "最初から", true),
+                (ScriptableObjectLoader.Load<PlayerData>("Witch"),
+                "50種類のアイテムを発見", _globalStatistics.KnownItemNames.Count >= 50),
+                (ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
+                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+                (ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+            };
+            var index = await _characterSelectReceiver.GetCharacter(
+                players.Select(player => (
+                    player.data.Name,
+                    player.data.CharacterType.SubtypeName(),
+                    $"解放条件\n{player.unlockCondition}\n\n{player.data.InfoWithoutName()}",
+                    player.usable)).ToList());
+            return players[index].data;
         }
 
         public UniTask<string> GetTextInput()
@@ -138,13 +169,13 @@ namespace Game
                     firstWaitTime = 0;
                 }
 
-                
                 PlayBGM(BGM.Normal);
 
                 MapManager map;
                 if (saveData == null)
                 {
-                    map = CreateSaveData();
+                    var playerData = await GetPlayerData();
+                    map = CreateSaveData(playerData);
                     await ChoiceDifficulty();
                 }
                 else if (revivePlayer)
@@ -160,7 +191,8 @@ namespace Game
             }
             else
             {
-                var map = CreateSaveData();
+                var playerData = ScriptableObjectLoader.Load<PlayerData>("Adventurer");
+                var map = CreateSaveData(playerData);
                 var _ = await GetChoice(null, "New Game");
                 await ChoiceDifficulty();
                 StartGame(map, 0);
@@ -171,23 +203,23 @@ namespace Game
 
         private MapManager LoadPreview(SaveData saveData)
         {
-            return _world.LoadWorld(saveData.World, saveData.Maps, this);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this, true);
         }
 
-        private MapManager CreateSaveData()
+        private MapManager CreateSaveData(PlayerData playerData)
         {
-            _activeStatistics.Value = new Statistics(Statistics.Build(), this, _world);
+            _activeStatistics.Value = new WorldStatistics(WorldStatistics.Build(), this, _world);
             Settings.WorldSettings.Reset();
 
             _world.CreateNew();
-            return _world.LoadStartMap(this);
+            return _world.LoadStartMap(playerData, this);
         }
 
         private async UniTask ChoiceDifficulty()
         {
             var choice = await GetChoiceWithInfo(null,
                 ("Easy", "<color=#00BFFF>- Easy -</color>", "復活できます\nアイテムは自動で鑑定されます\n敵の強さはNormalと同じです"),
-                ("Normal", "<color=#FFFF00>- Normal -</color>", "全てにおいて普通です")
+                ("Normal", "<color=#FFFF00>- Normal -</color>", "復活できません\nアイテムの詳細は鑑定するまで不明です")
             );
             switch (choice)
             {
@@ -203,7 +235,7 @@ namespace Game
 
         private MapManager LoadSaveData(SaveData saveData)
         {
-            _activeStatistics.Value = new Statistics(saveData.Statistics, this, _world);
+            _activeStatistics.Value = new WorldStatistics(saveData.Statistics, this, _world);
             Settings.SetValues(saveData.Settings);
             if (saveData.IsRollbacked)
             {
@@ -211,7 +243,7 @@ namespace Game
                 _activeStatistics.Value.IsCheating = true;
             }
 
-            return _world.LoadWorld(saveData.World, saveData.Maps, this);
+            return _world.LoadWorld(saveData.World, saveData.Maps, this, true);
         }
 
         private MapManager LoadSaveDataAndRevivePlayer(SaveData saveData)
@@ -277,12 +309,16 @@ namespace Game
         public void Save()
         {
             Log.Info("[Game]Save");
+            var globalStatistics = _globalStatistics.Serialize();
+            var globalSettings = Settings.GlobalSettings.GetValues();
+            var globalSaveData = new GlobalSaveData(globalStatistics, globalSettings);
+
             var world = _world.Serialize();
             var maps = _world.SerializeUpdatedMaps().ToDictionary(map => map.Id, map => map);
             var statistics = _activeStatistics.Value.Serialize();
-            var settings = Settings.GetValues();
+            var settings = Settings.WorldSettings.GetValues();
             var saveData = new SaveData(world, maps, statistics, settings, _turnController.GetWaitTime(), false);
-            _saveDataManager.SaveFull(saveData);
+            _saveDataManager.SaveFull(globalSaveData, saveData);
             Log.Info("[Game]End Save");
         }
 

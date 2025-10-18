@@ -15,7 +15,6 @@ namespace Domain.Model.Dungeon
         public RarityWeightTable<DirectWeaponData> DirectWeapons;
         public RarityWeightTable<IItemData> AllWeapons => Weapons.Concat<IItemData, ItemData, DirectWeaponData>(DirectWeapons);
         public RarityWeightTable<ItemData> Artifacts;
-        public RarityWeightTable<StorageItemData> StorageItems;
         public RarityWeightTable<ItemData> Others;
         public RarityWeightTable<ItemData> ChestItems;
         public RarityWeightTable<DirectWeaponData> ChestDirectWeapons;
@@ -32,7 +31,6 @@ namespace Domain.Model.Dungeon
                 ItemCategory.Wands => Wands.GetRandomItem(progress),
                 ItemCategory.Weapons => AllWeapons.GetRandomItem(progress),
                 ItemCategory.Artifacts => Artifacts.GetRandomItem(progress),
-                ItemCategory.Storage => StorageItems.GetRandomItem(progress),
                 ItemCategory.Others => Others.GetRandomItem(progress),
                 _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
             };

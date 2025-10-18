@@ -54,8 +54,83 @@ namespace Game
         private readonly IGameManager _gameManager;
         public EntityManager EntityManager { get; init; }
 
-        public MapManager(MapMemento map, DungeonMapData data, PlayerMemento? playerData,
-            List<CharacterMemento>? partyMembers,
+        public MapManager(MapMemento map, DungeonMapData data, PlayerData playerData, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
+        {
+            Id = map.Id;
+            ItemPlaceholders = itemPlaceholders;
+            _gameManager = gameManager;
+
+            var playerPosition = map.RandomBlankPosition;
+
+            _tilemap = new Tilemap(map.Tilemap);
+
+            var playerMemento = CharacterFactory.BuildPlayer(playerData, playerPosition);
+
+            EntityManager = new EntityManager(map.Entities, playerMemento, new(), playerPosition, false, receiver, gameManager, this);
+
+            _dungeonData = data;
+
+            if (map.MonsterHouse.HasValue)
+            {
+                _monsterHouse = new MonsterHouse(map.MonsterHouse.Value, EntityManager.Player.Character.Entity.CurrentPosition);
+                _rooms.Add(_monsterHouse);
+            }
+
+            if (map.Shop.HasValue)
+            {
+                var clerk = EntityManager.Characters.FirstOrDefault(character =>
+                    character.Entity.Id == map.Shop.Value.ClerkId);
+                if (clerk == null && !map.Shop.Value.IsStolen)
+                {
+                    var clerkPosition = GetAllBlankPositionsOn(EntityLayer.Middle)
+                        .In(map.Shop.Value.Room.Room.RectRange())
+                        .GetAtRandom();
+                    clerk = EntityManager.SpawnCharacter(
+                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position,
+                            homeLocation: new Location(Id, clerkPosition.Position)),
+                            gameManager,
+                            this);
+                }
+
+                if (clerk != null)
+                {
+                    _shop = new Shop(map.Shop.Value, clerk, gameManager, this);
+                    _rooms.Add(_shop);
+                }
+            }
+
+            SetRules(gameManager);
+
+            KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
+                .Select(character => EntityManager.Characters.ById(new Id<IEntity>(character)))
+                .WhereNotNull()
+            );
+            if (KeyCharacters.Any())
+            {
+                KeyCharacters.ForEach(character =>
+                    character.Entity.OnDestroyed.Subscribe(_ => KeyCharacters.Remove(character)).AddTo(_disposables));
+                KeyCharacters.ObserveCountChanged().Where(count => count == 0)
+                    .Subscribe(_ => _stairsLocked.Value = false).AddTo(_disposables);
+            }
+            else
+            {
+                _stairsLocked.Value = false;
+            }
+
+            var visibleArea = EntityManager.Player.Character.VisionRange.VisibleArea;
+            _tilemap.UpdateChunk(EntityManager.Player.Character.Entity.CurrentPosition);
+            _tilemap.SetTilesKnown(visibleArea, true);
+
+            UpdateVisibility(EntityManager.Entities);
+
+            if (map.MonsterHouse.HasValue && !map.MonsterHouse.Value.HasEverEntered)
+            {
+                GameLog.AddIgnoreVisibility("<color=yellow>不穏な気配を感じる……</color>");
+            }
+        }
+
+        public MapManager(MapMemento map, DungeonMapData data, PlayerMemento playerMemento,
+            List<CharacterMemento> partyMembers,
             Vector2Int? playerPosition, bool resetPertyPositions, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
         {
             Id = map.Id;
@@ -69,16 +144,9 @@ namespace Game
 
             _tilemap = new Tilemap(map.Tilemap);
 
-            if (playerData == null)
-            {
-                playerData = CharacterFactory.BuildPlayer("Player", playerPosition.Value);
-            }
-            else
-            {
-                playerData = playerData.CopyWith(character: playerData.Character.ReplacePosition(playerPosition.Value));
-            }
+            playerMemento = playerMemento.CopyWith(character: playerMemento.Character.ReplacePosition(playerPosition.Value));
 
-            EntityManager = new EntityManager(map.Entities, playerData, partyMembers, playerPosition.Value, resetPertyPositions, receiver, gameManager, this);
+            EntityManager = new EntityManager(map.Entities, playerMemento, partyMembers, playerPosition.Value, resetPertyPositions, receiver, gameManager, this);
 
             _dungeonData = data;
 
@@ -318,6 +386,8 @@ namespace Game
 
         private void SetRules(IGameManager gameManager)
         {
+            EntityManager.SetRules();
+
             EntityManager.Characters.SubscribeIncludingCurrentObservables(
                 character => character.OnDead,
                 (character, _) => { DropAllItem(character); }
@@ -354,6 +424,9 @@ namespace Game
                     var item = EntityManager.GetItemAt(positionChanged);
                     if (item != null)
                     {
+                        Log.Debug($"CanPickUp: {character.CanPickUp}");
+                        Log.Debug($"CanPickUpItem: {character.CanPickUpItem()}");
+                        Log.Debug($"CanPickUpAt: {EntityManager.CanPickUpAt(positionChanged, character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue)}");
                         if (character.CanPickUp
                             && character.CanPickUpItem()
                             && EntityManager.CanPickUpAt(positionChanged,
@@ -361,7 +434,7 @@ namespace Game
                         {
                             EntityManager.PickUpAt(positionChanged,
                                 character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue);
-                            if (character.Inventory.CanAddToEmpty(item.Item))
+                            if (character.Inventory.CanAddToEmpty())
                             {
                                 character.Inventory.AddToEmpty(item.Item);
                                 if (EntityManager.Player.Character.IsVisible(positionChanged))
@@ -446,8 +519,6 @@ namespace Game
                     EntityManager.Characters.In(visibleArea).ForEach(character => character.VisionRange.Refresh());
                 }
             }).AddTo(_disposables);
-
-            EntityManager.SetRules(gameManager);
         }
 
         ~MapManager()
@@ -505,22 +576,32 @@ namespace Game
             }
         }
 
-        public void DropAllItemInStorage(IItem storageItem)
-        {
-            if (storageItem.ItemStorage.IsNone)
-                return;
-            var position = EntityManager.GetItemPositionByIdFromWorldOrInventory(storageItem.Id);
-            if (!position.HasValue)
-                throw new Exception("Item not found in world or inventory");
-            foreach (var item in storageItem.ItemStorage.Expect("ItemStorage is null").Clear())
-            {
-                SpawnItem(item, FindBlankPositionFrom(position.Value, position => At(position).IsBlankAndStandable(EntityLayer.Bottom)));
-            }
-        }
-
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc)
         {
             return BlankFinder.FindBlankPosition(isBlankFunc, TilemapViewer.IsWalkable, position);
+        }
+
+        public Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer)
+        {
+            var pos = position;
+            for (var i = 0; i < distance; i++)
+            {
+                if (At(pos + direction.Vector()).IsBlank(canHitLayer))
+                {
+                    pos += direction.Vector();
+                }
+                else if (At(pos + direction.Vector()).IsPassableOnMap())
+                {
+                    pos += direction.Vector();
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return pos;
         }
 
         private Dictionary<Vector2Int, HashSet<Vector2Int>> _visionCache = new();

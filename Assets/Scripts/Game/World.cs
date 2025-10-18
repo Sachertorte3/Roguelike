@@ -1,7 +1,9 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Entity;
 using Domain.Model.Map;
@@ -18,8 +20,10 @@ namespace Game
 {
     public class World : ISerializable<WorldMemento>
     {
-        private ReactiveProperty<MapManager?> _activeMap = new();
-        private Id<IMap>? _activeMapId => _activeMap.CurrentValue?.Id;
+        private ReactiveProperty<MapManager> _previousMap = new();
+        private Id<IMap> _previousMapId => _previousMap.CurrentValue.Id;
+        private ReactiveProperty<bool> _isLoaded = new(false);
+        private Subject<OnActiveMapChangedMessage> _onActiveMapChanged = new();
         private Dictionary<Id<IMap>, MapMemento> _maps = new();
         private HashSet<Id<IMap>> _updatedMapIds = new();
         private Dungeon _dungeon;
@@ -33,9 +37,10 @@ namespace Game
             _receiver = receiver;
             _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/ItemData/Placeholders.asset")
                 .WaitForCompletion();
-            _activeMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            _previousMap.SkipLatestValueOnSubscribe().Pairwise().Subscribe(map =>
             {
-                _updatedMapIds.Add(_activeMapId);
+                map.Previous.Dispose();
+                _updatedMapIds.Add(map.Current.Id);
             });
         }
 
@@ -45,7 +50,7 @@ namespace Game
             _itemPlaceholders = new ItemPlaceholders(ItemPlaceholders.Build(), _placeholders);
             _maps = new Dictionary<Id<IMap>, MapMemento>();
             _updatedMapIds = new HashSet<Id<IMap>>();
-            _activeMap.Value = null;
+            _isLoaded.Value = false;
         }
 
         public DungeonMapData GetDungeonMapData(Id<IMap> mapId)
@@ -53,59 +58,33 @@ namespace Game
             return _dungeon.CreateMapData(mapId);
         }
 
-        public MapManager LoadWorld(WorldMemento memento, Dictionary<Id<IMap>, MapMemento> maps, IGameManager gameManager)
-        {
-            _dungeon = new Dungeon(memento.Dungeon);
-            _itemPlaceholders = new ItemPlaceholders(memento.ItemPlaceholders, _placeholders);
-            _maps = memento.MapIds.ToDictionary(
-                mapId => mapId,
-                mapId => maps[mapId]
-            );
-
-            _updatedMapIds = new HashSet<Id<IMap>> { memento.CurrentMapId };
-
-            Log.Debug($"LoadMap mapId:{memento.CurrentMapId}");
-            var mapMemento = GetMapMemento(memento.CurrentMapId);
-
-            if (_activeMap.CurrentValue != null)
-            {
-                _activeMap.CurrentValue.Dispose();
-            }
-
-            MapManager map = new(mapMemento,
-                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders);
-
-            _activeMap.Value = map;
-
-            return map;
-        }
-
         public WorldMemento Serialize()
         {
-            var playerData = _activeMap.CurrentValue.Player.Serialize();
-            var partyMembers = _activeMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
+            var playerData = _previousMap.CurrentValue.Player.Serialize();
+            var partyMembers = _previousMap.CurrentValue.GetFollowingCharacters().Select(character => character.Serialize()).ToList();
             return new WorldMemento
             (
                 _dungeon.Serialize(),
                 playerData,
                 partyMembers,
-                _activeMap.CurrentValue.Player.Character.IsDead,
+                _previousMap.CurrentValue.Player.Character.IsDead,
                 _maps.Keys.ToList(),
-                _activeMapId,
+                _previousMapId,
                 _itemPlaceholders.Serialize()
             );
         }
 
         public List<MapMemento> SerializeUpdatedMaps()
         {
-            _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
+            _maps[_previousMapId] = _previousMap.CurrentValue.SerializeWithoutPartyMembers();
             var updatedMaps = _updatedMapIds.Select(mapId => _maps[mapId]).ToList();
             _updatedMapIds.Clear();
-            _updatedMapIds.Add(_activeMapId);
+            _updatedMapIds.Add(_previousMapId);
             return updatedMaps;
         }
 
-        public ReadOnlyReactiveProperty<MapManager?> ActiveMap => _activeMap;
+        public MapManager? CurrentMap => _isLoaded.CurrentValue ? _previousMap.CurrentValue : null;
+        public Observable<OnActiveMapChangedMessage> OnActiveMapChanged => _onActiveMapChanged;
 
         private MapMemento GetMapMemento(Id<IMap> mapId)
         {
@@ -145,9 +124,51 @@ namespace Game
             return new MovementData(type, destination, null, null);
         }
 
-        public MapManager LoadStartMap(IGameManager gameManager)
+        public void SetActiveMap(MapManager map, bool isNewWorld)
         {
-            return LoadMap(_dungeon.StartMapId, null, gameManager);
+            _isLoaded.Value = true;
+            var previousMap = _previousMap.CurrentValue;
+            _previousMap.Value = map;
+            _onActiveMapChanged.OnNext(new OnActiveMapChangedMessage(map, previousMap, isNewWorld));
+        }
+
+        public MapManager LoadWorld(WorldMemento memento, Dictionary<Id<IMap>, MapMemento> maps, IGameManager gameManager, bool isNewWorld)
+        {
+            _dungeon = new Dungeon(memento.Dungeon);
+            _itemPlaceholders = new ItemPlaceholders(memento.ItemPlaceholders, _placeholders);
+            _maps = memento.MapIds.ToDictionary(
+                mapId => mapId,
+                mapId => maps[mapId]
+            );
+
+            _updatedMapIds = new HashSet<Id<IMap>> { memento.CurrentMapId };
+
+            Log.Debug($"LoadMap mapId:{memento.CurrentMapId}");
+            var mapMemento = GetMapMemento(memento.CurrentMapId);
+
+            MapManager map = new(mapMemento,
+                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders);
+
+            SetActiveMap(map, isNewWorld);
+
+            return map;
+        }
+
+        public MapManager LoadStartMap(PlayerData playerData, IGameManager gameManager)
+        {
+            return LoadMap(_dungeon.StartMapId, playerData, gameManager);
+        }
+
+        public MapManager LoadMap(Id<IMap> mapId, PlayerData playerData, IGameManager gameManager)
+        {
+            Log.Debug($"LoadMap mapId:{mapId}");
+            var mapMemento = GetMapMemento(mapId);
+
+            var map = new MapManager(mapMemento, _dungeon.CreateMapData(mapId), playerData, gameManager, _receiver, _itemPlaceholders);
+
+            SetActiveMap(map, true);
+
+            return map;
         }
 
         public MapManager LoadMap(Id<IMap> mapId, Id<IEntity>? destination, IGameManager gameManager)
@@ -155,26 +176,24 @@ namespace Game
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
 
-            PlayerMemento? playerData = null;
-            List<CharacterMemento>? partyMembers = null;
-            Vector2Int? initialPosition = destination != null
-                ? mapMemento.Entities.EventEntities.Stairs.First(stairs => stairs.Entity.Id == destination.ToString()).Entity
-                    .Position
-                : null;
-            if (_activeMap.CurrentValue != null)
-            {
-                _maps[_activeMapId] = _activeMap.CurrentValue.SerializeWithoutPartyMembers();
-                playerData = _activeMap.CurrentValue.Player.Serialize();
-                partyMembers = _activeMap.CurrentValue.GetFollowingCharacters()
-                    .Select(character => character.Serialize()).ToList();
+            if (CurrentMap == null)
+                throw new Exception("CurrentMap is null");
 
-                _activeMap.CurrentValue.Dispose();
+            _maps[_previousMapId] = CurrentMap.SerializeWithoutPartyMembers();
+            var playerData = CurrentMap.Player.Serialize();
+            var partyMembers = CurrentMap.GetFollowingCharacters()
+                .Select(character => character.Serialize()).ToList();
+            Vector2Int? initialPosition = null;
+            if (destination != null)
+            {
+                initialPosition = mapMemento.Entities.EventEntities.Stairs
+                    .First(stairs => stairs.Entity.Id == destination.ToString()).Entity.Position;
             }
 
-            MapManager map = new(mapMemento, _dungeon.CreateMapData(mapId), playerData,
+            var map = new MapManager(mapMemento, _dungeon.CreateMapData(mapId), playerData,
                 partyMembers, initialPosition, true, gameManager, _receiver, _itemPlaceholders);
 
-            _activeMap.Value = map;
+            SetActiveMap(map, false);
 
             return map;
         }

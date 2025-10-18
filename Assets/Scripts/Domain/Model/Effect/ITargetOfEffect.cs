@@ -16,6 +16,6 @@ namespace Domain.Model.Effect
         public void ClearKnownItems(IMap map);
         public void ClearAffiliation(IMap map);
         public void ListenToAlert(Location location);
-        public void ForceDropItem(ItemFocus index, IMap map);
+        public void ForceDropItem(int index, IMap map);
     }
 }

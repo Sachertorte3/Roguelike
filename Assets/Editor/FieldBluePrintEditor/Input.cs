@@ -295,11 +295,11 @@ namespace Editor
             if (validPosition.HasValue)
             {
                 var newSection = new SectionRect
-                {
-                    rect = new RectInt(validPosition.Value.x, validPosition.Value.y, defaultMinSectionSize.x, defaultMinSectionSize.y),
-                    roomGenerationType = RoomGenerationType.Random,
-                    minRoomSize = defaultMinRoomSize
-                };
+                (
+                    new RectInt(validPosition.Value.x, validPosition.Value.y, defaultMinSectionSize.x, defaultMinSectionSize.y),
+                    RoomGenerationType.Random,
+                    defaultMinRoomSize
+                );
                 sections.Add(newSection);
                 selectedSection = newSection;
             }
@@ -307,8 +307,7 @@ namespace Editor
 
         private void CopySection(SectionRect section)
         {
-            // Sectionのコピーを作成（位置は異なる）
-            copiedSection = new SectionRect { rect = section.rect };
+            copiedSection = section.CopyWith();
         }
 
         private void PasteSectionAtPosition(Vector2 screenPosition)
@@ -324,7 +323,7 @@ namespace Editor
 
             if (validPosition.HasValue)
             {
-                var newSection = new SectionRect { rect = new RectInt(validPosition.Value.x, validPosition.Value.y, copiedSection.rect.width, copiedSection.rect.height) };
+                var newSection = copiedSection.CopyWith(new RectInt(validPosition.Value.x, validPosition.Value.y, copiedSection.rect.width, copiedSection.rect.height));
                 sections.Add(newSection);
                 selectedSection = newSection;
             }

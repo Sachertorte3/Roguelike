@@ -63,6 +63,7 @@ MonoBehaviour:
         ApplyToMoney: 0
         ApplyToTrap: 1
         ApplyToChest: 0
+        ApplyToStatue: 0
     - rid: 4425516923575599136
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

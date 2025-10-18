@@ -42,26 +42,7 @@ namespace Domain.Service.Items
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
         {
-            var result = position;
-
-            for (var i = 0; i < distance; i++)
-            {
-                if (map.At(result + direction.Vector()).CanPlace(true, false, false, EntityLayer.Middle))
-                {
-                    result += direction.Vector();
-                }
-                else
-                {
-                    if (map.At(result + direction.Vector()).CanPlace(true, false, true, EntityLayer.Middle))
-                    {
-                        result += direction.Vector();
-                    }
-
-                    break;
-                }
-            }
-
-            return result;
+            return map.GetThrowDestination(position, direction, distance, EntityLayer.Middle);
         }
 
         public static float EvaluateThrow(IItem item, Vector2Int position, IActor actor, Direction8 direction,

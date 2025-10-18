@@ -98,6 +98,11 @@ namespace Utilities
             return WeightedIndex(source, Random.value);
         }
 
+        public static int WeightedIndex(params float[] source)
+        {
+            return WeightedIndex(source, Random.value);
+        }
+
         public static int WeightedIndex(this IEnumerable<float> source, float value)
         {
             var weights = source.ToArray();

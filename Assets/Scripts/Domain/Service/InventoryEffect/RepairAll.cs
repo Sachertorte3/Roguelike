@@ -9,10 +9,9 @@ namespace Domain.Service.InventoryEffect
     {
         public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            for (var i = 0; i < storage.Capacity; i++)
+            foreach (var item in storage.AllItems)
             {
-                if (storage.HasItemAt(i, out var item))
-                    item.Repair(player, itemHolder, itemPlaceholders);
+                item.Repair(player, itemHolder, itemPlaceholders);
             }
         }
 
@@ -24,26 +23,6 @@ namespace Domain.Service.InventoryEffect
         public string Info()
         {
             return "修理(全て)";
-        }
-    }
-    public class CurseAll : IInventoryEffect
-    {
-        public void Apply(IPlayer player, IStorage storage, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
-        {
-            foreach (var item in storage.AllItems)
-            {
-                item.SetCursed(player, itemHolder, itemPlaceholders, true);
-            }
-        }
-
-        public float EvaluatePrice()
-        {
-            return 100 * 5;
-        }
-
-        public string Info()
-        {
-            return "呪い(全て)";
         }
     }
 }

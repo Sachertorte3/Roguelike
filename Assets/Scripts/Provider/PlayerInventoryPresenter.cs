@@ -22,16 +22,50 @@ namespace Provider
         [Inject]
         public PlayerInventoryPresenter(GameManager gameManager, World world, InventoryView inventoryView)
         {
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            inventoryView.Initialize();
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
-                    inventoryView.Initialize();
+                    var map = mapChanged.Map;
                     var inventory = map.Player.Character.Inventory;
-                    Observable.Merge<(IItem? Item, int Index)>(
-                        inventory.OnItemChanged.Select(itemChanged => ((IItem?)itemChanged.NewItem, itemChanged.Index)),
-                        inventory.OnItemUpdated.Select(itemUpdated => ((IItem?)itemUpdated.Item, itemUpdated.Index))
-                    ).Subscribe(data =>
+                    inventoryView.Reset(
+                        inventory.AllItems.Select(
+                            item => new ItemViewData(
+                                item.GetName(map.Player, map.ItemPlaceholders),
+                                item.Icon,
+                                true,
+                                item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                                item.IsCursed,
+                                item.IsShiny,
+                                map.Player.Character.IsKnownItem(item),
+                                item.IsCurseIdentified,
+                                item.Info(map.Player, map.ItemPlaceholders)
+                            )
+                        ).ToList(),
+                        mapChanged.IsNewWorld);
+
+                    inventory.OnItemInserted.Subscribe(inserted =>
                     {
-                        ReplaceItemView(inventoryView, data.Item, inventory.CanRemoveItem, new InventoryViewIndex(data.Index),
+                        InsertItemView(inventoryView, inserted.NewItem, inventory.CanRemoveItem, inserted.Index,
+                            map.Player, map.ItemPlaceholders);
+                    }).AddTo(_disposables);
+
+                    inventory.OnItemRemoved.Subscribe(removed =>
+                    {
+                        RemoveItemView(inventoryView, removed.Index);
+                    }).AddTo(_disposables);
+
+                    inventory.OnItemReplaced.Subscribe(replaced =>
+                    {
+                        ReplaceItemView(inventoryView, replaced.NewItem, inventory.CanRemoveItem, replaced.Index,
+                            map.Player, map.ItemPlaceholders);
+                    }).AddTo(_disposables);
+
+                    inventory.OnItemUpdated.Subscribe(itemUpdated =>
+                    {
+                        var index = inventory.GetItemIndex(itemUpdated.Item);
+                        if (index == null)
+                            return;
+                        ReplaceItemView(inventoryView, itemUpdated.Item, inventory.CanRemoveItem, index.Value,
                             map.Player, map.ItemPlaceholders);
                     }).AddTo(_disposables);
 
@@ -45,16 +79,70 @@ namespace Provider
                         map.ItemPlaceholders.OnItemRenamed
                     ).Subscribe(_ =>
                     {
-                        UpdateAllItemViews(inventoryView, map);
+                        ReplaceAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
 
                     foreach (var (item, index) in inventory.AllItemsWithIndex)
                     {
-                        ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, new InventoryViewIndex(index),
+                        ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, index,
                             map.Player, map.ItemPlaceholders);
                     }
                 },
-                _ => _disposables.Clear());
+                _ => _disposables.Clear()
+            );
+        }
+
+        private void ReplaceAllItemViews(InventoryView inventoryView, IMap map)
+        {
+            var inventory = map.Player.Character.Inventory;
+            foreach (var (item, index) in inventory.AllItemsWithIndex)
+            {
+                ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, index, map.Player, map.ItemPlaceholders);
+            }
+            UpdateGroundItemView(inventoryView, map);
+        }
+
+        private void InsertItemView(InventoryView inventoryView, IItem item, bool canSelect,
+            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        {
+            inventoryView.Insert(
+                index,
+                new ItemViewData(
+                    item.GetName(player, itemPlaceholders),
+                    item.Icon,
+                    canSelect,
+                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                    item.IsCursed,
+                    item.IsShiny,
+                    player.Character.IsKnownItem(item),
+                    item.IsCurseIdentified,
+                    item.Info(player, itemPlaceholders)
+                )
+            );
+        }
+
+        private void RemoveItemView(InventoryView inventoryView, int index)
+        {
+            inventoryView.Remove(index);
+        }
+
+        private void ReplaceItemView(InventoryView inventoryView, IItem item, bool canSelect,
+            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        {
+            inventoryView.Replace(
+                index,
+                new ItemViewData(
+                    item.GetName(player, itemPlaceholders),
+                    item.Icon,
+                    canSelect,
+                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                    item.IsCursed,
+                    item.IsShiny,
+                    player.Character.IsKnownItem(item),
+                    item.IsCurseIdentified,
+                    item.Info(player, itemPlaceholders)
+                )
+            );
         }
 
         private IItem? GetGroundItem(IMap map)
@@ -62,59 +150,23 @@ namespace Provider
             return map.Items.At(map.Player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
         }
 
-        private void ReplaceItemView(InventoryView inventoryView, IItem? item, bool canSelect,
-            InventoryViewIndex index, IPlayer player, ItemPlaceholders itemPlaceholders)
-        {
-            if (item != null)
-            {
-                inventoryView.Replace(
-                    index,
-                    new ItemViewData(
-                        item.Icon,
-                        canSelect,
-                        item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                        item.IsCursed,
-                        item.IsShiny,
-                        player.Character.IsKnownItem(item),
-                        item.IsCurseIdentified,
-                        item.ItemStorage.MapOr(0, storage => storage.Capacity),
-                        item.Info(player, itemPlaceholders)
-                    )
-                );
-                if (item.ItemStorage.IsSome(out var itemStorage))
-                {
-                    for (var subIndex = 0; subIndex < itemStorage.Capacity; subIndex++)
-                    {
-                        var subItem = itemStorage.GetItem(subIndex);
-                        ReplaceItemView(inventoryView, subItem, itemStorage.CanRemoveItem, new InventoryViewIndex(index.Index, subIndex), player, itemPlaceholders);
-                    }
-                }
-            }
-            else
-            {
-                inventoryView.Remove(index);
-            }
-        }
-
-        private void UpdateAllItemViews(InventoryView inventoryView, IMap map)
-        {
-            for (var i = 0; i < InventoryView.MainStorageSize; i++)
-            {
-                var inventory = map.Player.Character.Inventory;
-                var item = inventory.GetItem(i);
-                ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, new InventoryViewIndex(i), map.Player, map.ItemPlaceholders);
-            }
-            UpdateGroundItemView(inventoryView, map);
-        }
-
         private void UpdateGroundItemView(InventoryView inventoryView, IMap map)
         {
             var item = GetGroundItem(map);
-            if (item != null)
-                ReplaceItemView(inventoryView, item, true, InventoryViewIndex.GroundItem,
-                    map.Player, map.ItemPlaceholders);
+            if (item == null)
+                inventoryView.UpdateGroundItem(null);
             else
-                inventoryView.Remove(InventoryViewIndex.GroundItem);
+                inventoryView.UpdateGroundItem(new ItemViewData(
+                    item.GetName(map.Player, map.ItemPlaceholders),
+                    item.Icon,
+                    true,
+                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                    item.IsCursed,
+                    item.IsShiny,
+                    map.Player.Character.IsKnownItem(item),
+                    item.IsCurseIdentified,
+                    item.Info(map.Player, map.ItemPlaceholders)
+                ));
         }
     }
 }

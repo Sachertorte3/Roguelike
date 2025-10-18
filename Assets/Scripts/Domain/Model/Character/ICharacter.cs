@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Message;
 using Domain.Model.Character.Type;
@@ -16,7 +15,7 @@ using Utilities;
 
 namespace Domain.Model.Character
 {
-    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IHasInfo, IEntity, IHasBehavior,
+    public interface ICharacter : IDisposable, ISerializable<CharacterMemento>, IEntity, IHasBehavior,
         IHasCondition, IPlayerEventEntity
     {
         public ICharacterType CharacterType { get; init; }
@@ -31,7 +30,8 @@ namespace Domain.Model.Character
         public ReadOnlyReactiveProperty<bool> AutoIdentify { get; }
         public Observable<Unit> OnAttacked { get; }
         public Observable<Unit> OnDead { get; }
-        public Observable<OnItemSelectMessage> OnItemSelect { get; }
+        public Observable<OnStartItemSelectMessage> OnStartItemSelect { get; }
+        public Observable<Unit> OnSelectedItemSelect { get; }
         public IObservableCollection<string> KnownItemNames { get; }
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls,
@@ -50,6 +50,7 @@ namespace Domain.Model.Character
         public bool CanPickUpItem();
         public void AddEvent(IPlayerEvent ev);
         public UniTask UpdateTurn();
+        public void UpdateCharacterTurn();
 
         public bool IsVisible(Vector2Int position)
         {

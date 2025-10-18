@@ -65,6 +65,7 @@ namespace Game
                         continue;
 
                     character.Status.AddWaitTime(minWaitTime);
+                    character.UpdateCharacterTurn();
                     if (character.Status.IsWaitTimeFull())
                     {
                         switch (character.State)

@@ -17,37 +17,49 @@ namespace Provider
             StatView statView)
         {
             CompositeDisposable _disposables = new();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
                 {
-                    if (map.Player.Character.IsDead)
+                    var player = mapChanged.Map.Player;
+                    if (player.Character.IsDead)
                     {
                         return;
                     }
 
-                    var playerView = characters.Get(map.Player.Character);
+                    var playerView = characters.Get(player.Character);
 
                     var arrowPrefab = ScriptableObjectLoader.LoadPrefab("Arrow");
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 
-                    _disposables.Add(map.Player.Character.Status.Level.Subscribe(level =>
+                    _disposables.Add(player.Character.Status.Level.Subscribe(level =>
                     {
                         statView.SetLevel(level);
                     }));
 
-                    _disposables.Add(map.Player.Money.Subscribe(money =>
+                    _disposables.Add(player.Money.Subscribe(money =>
                     {
                         statView.SetMoney(money);
                     }));
 
+                    _disposables.Add(
+                        Observable.Merge(
+                            player.Character.Inventory.CurrentItemCount.AsUnitObservable(),
+                            player.Character.Inventory.Capacity.AsUnitObservable()
+                        ).Subscribe(_ =>
+                    {
+                        var currentItems = player.Character.Inventory.CurrentItemCount.CurrentValue;
+                        var capacity = player.Character.Inventory.Capacity.CurrentValue;
+                        statView.SetInventory(currentItems, capacity);
+                    }));
+
                     _disposables.Add(Observable
-                        .Merge(map.Player.Character.Status.HpValue, map.Player.Character.Status.MaxHp)
+                        .Merge(player.Character.Status.HpValue, player.Character.Status.MaxHp)
                         .Subscribe(_ =>
                         {
-                            var hpPercentageFromMaxHp = map.Player.Character.CurrentHp * 100 /
-                                                        map.Player.Character.CurrentMaxHp;
-                            statView.SetHp(map.Player.Character.CurrentMaxHp,
-                                map.Player.Character.CurrentHp);
+                            var hpPercentageFromMaxHp = player.Character.CurrentHp * 100 /
+                                                        player.Character.CurrentMaxHp;
+                            statView.SetHp(player.Character.CurrentMaxHp,
+                                player.Character.CurrentHp);
                             if (hpPercentageFromMaxHp < Settings.GlobalSettings.LowHpThresholdPercentage.CurrentValue)
                             {
                                 statView.SetTextColor(Color.red);

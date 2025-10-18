@@ -42,10 +42,10 @@ namespace Domain.Service.Effect
 
         private ItemFocus GetItemIndex(IPlayer player, IItem item, IMap map)
         {
-            var selfIndex = player.Character.Inventory.GetItemIndexRecursive(item);
+            var selfIndex = player.Character.Inventory.GetItemIndex(item);
             if (selfIndex != null)
             {
-                return selfIndex;
+                return new ItemFocus(selfIndex.Value);
             }
 
             var groundItem = map.Items.At(player.Character.Entity.CurrentPosition).FirstOrDefault()?.Item;
@@ -62,11 +62,11 @@ namespace Domain.Service.Effect
             var selfIndex = GetItemIndex(player, item, map);
 
             var disabledItemIndexes = new List<ItemFocus>();
-            foreach (var index in player.Character.Inventory.AllIndexesRecursive)
+            foreach (var (item2, index) in player.Character.Inventory.AllItemsWithIndex)
             {
-                if (player.Character.Inventory.HasItemAt(index, out var inventoryItem) || !_itemEffect.CanApplyTo(player, inventoryItem))
+                if (!_itemEffect.CanApplyTo(player, item2))
                 {
-                    disabledItemIndexes.Add(index);
+                    disabledItemIndexes.Add(new ItemFocus(index));
                 }
             }
 
@@ -79,7 +79,7 @@ namespace Domain.Service.Effect
             disabledItemIndexes.Add(selfIndex);
             if (player.Character.IsKnownItem(item))
             {
-                var focus = await player.Character.SelectItem("適応するアイテムを選択してください",
+                var focus = await player.Character.SelectItemContainsGroundItem("適応するアイテムを選択してください",
                     disabledItemIndexes.ToArray());
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
@@ -90,7 +90,7 @@ namespace Domain.Service.Effect
             else
             {
                 var focus =
-                    await player.Character.SelectItem("適応するアイテムを選択してください", selfIndex);
+                    await player.Character.SelectItemContainsGroundItem("適応するアイテムを選択してください", selfIndex);
                 if (focus.IsOnItem(player.Character.Inventory, map, out var selectedItem))
                 {
                     if (disabledItemIndexes.Contains(focus))

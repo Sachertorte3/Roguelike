@@ -1,5 +1,6 @@
 #nullable enable
 using Domain.Model.Item;
+using Unity.Logging;
 using View.UI;
 
 namespace Provider
@@ -8,21 +9,23 @@ namespace Provider
     {
         public static InventoryViewIndex ToInventoryViewIndex(this ItemFocus focus)
         {
-            if (focus == ItemFocus.GroundItem)
+            Log.Verbose($"ToInventoryViewIndex: focus: {focus}");
+            if (focus.IsOnGroundItem)
                 return InventoryViewIndex.GroundItem;
-            else if (focus == ItemFocus.Empty)
+            else if (focus.IsOnEmpty)
                 return InventoryViewIndex.Empty;
             else
-                return new(focus.Index, focus.SubIndex);
+                return new(focus.Index);
         }
         public static ItemFocus ToItemFocus(this InventoryViewIndex index)
         {
-            if (index == InventoryViewIndex.GroundItem)
+            Log.Verbose($"ToItemFocus: index: {index}");
+            if (index.IsOnGroundItem)
                 return ItemFocus.GroundItem;
-            else if (index == InventoryViewIndex.Empty)
+            else if (index.IsOnEmpty)
                 return ItemFocus.Empty;
             else
-                return new(index.Index, index.SubIndex);
+                return new(index.Index);
         }
     }
 }

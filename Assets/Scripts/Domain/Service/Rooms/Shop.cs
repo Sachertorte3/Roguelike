@@ -106,7 +106,7 @@ namespace Domain.Service.Rooms
 
         private void SetShopItems(IEnumerable<IItem> items)
         {
-            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.AllPrice)).ToHashSet();
+            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
             foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
@@ -132,14 +132,14 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetMissingItems(IMap map)
         {
             var itemsInRoom = GetItemsInRoom(map).Where(item => item.State == ItemState.ShopItem);
-            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.AllPrice)));
+            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
             return purchaseItems;
         }
 
         public int GetPurchasePrice(IMap map)
         {
             var purchaseItems = GetMissingItems(map);
-            if (map.Player.Character.Status.IsFlagStat(FlagStatType.Haggle))
+            if (map.Player.Character.Status.IsFlagStat(FlagStatType.Negotiator))
             {
                 return Mathf.RoundToInt(purchaseItems.Sum(item => item.Price) / 2f);
             }

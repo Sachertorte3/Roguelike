@@ -23,6 +23,7 @@ MonoBehaviour:
     - _nextMap
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -8828215430129327242}
@@ -97,7 +98,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: -8828215430129327242}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -3961507359562520991}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 1
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -108,7 +124,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -123,6 +138,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss:
@@ -207,6 +225,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: -8415772247081253821}
@@ -287,7 +306,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: -8415772247081253821}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 5
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -298,7 +332,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -313,6 +346,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -360,14 +396,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.05
-    RestRoomChance: 0.2
+    RestRoomChance: 0.5
     LakeChance: 0.2
     ItemCount: 1
     MoneyCount: 1
@@ -375,8 +410,10 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   Output:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -391,6 +428,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &-6788424184188872890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,10 +441,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
-  m_Name: SnowFloor
+  m_Name: NormalFloor
   m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
   graph: {fileID: 11400000}
-  position: {x: -824, y: 632}
+  position: {x: -952, y: 632}
   ports:
     keys:
     - Output
@@ -431,14 +471,13 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
     MimicChance: 0.1
     ShopChance: 0.05
     MonsterHouseChance: 0.1
-    RestRoomChance: 0.2
+    RestRoomChance: 0.5
     LakeChance: 0.2
     ItemCount: 1
     MoneyCount: 1
@@ -446,8 +485,10 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   Output:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -462,6 +503,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &-6699882812533938179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +537,6 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -508,8 +551,10 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 0
+    MagicPotWeight: 1
+    WorkbenchWeight: 0
   Output:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -524,6 +569,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &-6468005376489705111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -638,6 +686,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -5128896849670103603}
@@ -721,7 +770,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: -5128896849670103603}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 1
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -732,7 +796,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -747,6 +810,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -878,6 +944,46 @@ MonoBehaviour:
       Weight: 1
   Output:
     items: []
+--- !u!114 &-3961507359562520991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed944b68e0d0cc44887baf844232c29, type: 3}
+  m_Name: BossField
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.FieldNode
+  graph: {fileID: 11400000}
+  position: {x: 792, y: -328}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: -3961507359562520991}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _fields
+        node: {fileID: -3908742665158575060}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: -8828215430129327242}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Fields:
+    items:
+    - Item: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
+      Weight: 1
+  Output:
+    items: []
 --- !u!114 &-3908742665158575060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -901,6 +1007,7 @@ MonoBehaviour:
     - _nextMap
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -3908742665158575060}
@@ -975,7 +1082,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: -3908742665158575060}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: -3961507359562520991}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 1
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -986,7 +1108,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1001,6 +1122,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss:
@@ -1195,6 +1319,9 @@ MonoBehaviour:
   - {fileID: 7860269649140603457}
   - {fileID: -8828215430129327242}
   - {fileID: -6699882812533938179}
+  - {fileID: 8777509353249933111}
+  - {fileID: -3961507359562520991}
+  - {fileID: 6032777219994288072}
 --- !u!114 &132433583354238991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1218,6 +1345,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 132433583354238991}
@@ -1295,7 +1423,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 132433583354238991}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 3
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1306,7 +1449,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1321,6 +1463,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -1355,6 +1500,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 761465357129200511}
@@ -1435,7 +1581,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 761465357129200511}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 5
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1446,7 +1607,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1461,6 +1621,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -1596,6 +1759,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 5670028076644485680}
@@ -1676,7 +1840,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 5670028076644485680}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 1
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1687,7 +1866,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1702,6 +1880,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -1734,6 +1915,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 5720250255583208601}
@@ -1811,7 +1993,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 5720250255583208601}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 5
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1822,7 +2019,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1837,6 +2033,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -1850,6 +2049,69 @@ MonoBehaviour:
   - f82fd327-db70-4584-a6cc-58e6f8d1d6a8
   - 9f8d2916-94b7-4210-908a-fcb7afb671b4
   - e0eece72-864f-410c-a860-8c59361bb6fa
+--- !u!114 &6032777219994288072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebb2f628e4ae3e4ea9061c101e40e2a, type: 3}
+  m_Name: NormalRestFloor
+  m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.FloorNode
+  graph: {fileID: 11400000}
+  position: {x: -760, y: 632}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 6032777219994288072}
+      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Data:
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    ShopChance: 1
+    MonsterHouseChance: 0.1
+    RestRoomChance: 1
+    LakeChance: 0.2
+    ItemCount: 1
+    MoneyCount: 1
+    MoneyAverage: 300
+    CharacterCount: 1
+    TrapCount: 0.5
+    StatueChance: 0.1
+    BonfireWeight: 0
+    MagicPotWeight: 0
+    WorkbenchWeight: 1
+  Output:
+    PrefixChance: 0.1
+    ShinyChance: 0.01
+    SleepChance: 0.75
+    MimicChance: 0.1
+    ShopChance: 0.05
+    MonsterHouseChance: 0.05
+    RestRoomChance: 0.05
+    LakeChance: 0.05
+    ItemCount: 2
+    MoneyCount: 1
+    MoneyAverage: 100
+    CharacterCount: 1
+    TrapCount: 0.5
+    StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &7860269649140603457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1927,7 +2189,6 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: 7042be0eb365704439c061dcc4a54cfb, type: 2}
     PrefixChance: 0
     ShinyChance: 0
     SleepChance: 0
@@ -1942,8 +2203,10 @@ MonoBehaviour:
     CharacterCount: 0
     TrapCount: 0
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   Output:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -1958,6 +2221,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &8353191741393840923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1981,6 +2247,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 8353191741393840923}
@@ -2061,7 +2328,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 8353191741393840923}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 5
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -2072,7 +2354,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -2087,6 +2368,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
@@ -2139,6 +2423,82 @@ MonoBehaviour:
       Weight: 1
   Output:
     items: []
+--- !u!114 &8777509353249933111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed944b68e0d0cc44887baf844232c29, type: 3}
+  m_Name: Field
+  m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.FieldNode
+  graph: {fileID: 11400000}
+  position: {x: -440, y: -600}
+  ports:
+    keys:
+    - Output
+    values:
+    - _fieldName: Output
+      _node: {fileID: 8777509353249933111}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: _fields
+        node: {fileID: 5670028076644485680}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: -5128896849670103603}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 9031898349937062684}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 8353191741393840923}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 761465357129200511}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: -8415772247081253821}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 5720250255583208601}
+        reroutePoints: []
+      - fieldName: _fields
+        node: {fileID: 132433583354238991}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Fields:
+    items:
+    - Item: {fileID: 11400000, guid: 68e9de5972a77e54696183ab4d0100bf, type: 2}
+      Weight: 16
+    - Item: {fileID: 11400000, guid: 86a4b3365bea4d845b0ef9c226ae20a3, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: 651bcfb659ab8fa4cb823b5068e6ed53, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: 63c47df808f594c438d27c0e30c3bcad, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: 38d377018ddca994089be554c9fc6dc1, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: d72033cc55f63624297ef81e250c107f, type: 2}
+      Weight: 2
+    - Item: {fileID: 11400000, guid: 0524b3bc0103ad54e8b2e31ec5b512a4, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 400686b6bdaa5e948a5d642c2e0e4b5a, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: c0475acd6289c4a4baeb3123fbe87d1a, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: ae4a4f34aa6384a4bba4ce6e4f336539, type: 2}
+      Weight: 1
+  Output:
+    items: []
 --- !u!114 &8847253103253929321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2170,7 +2530,6 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Data:
-    Field: {fileID: 11400000, guid: c3d9f0474aac3694bb6567ce60d526b2, type: 2}
     PrefixChance: 0.1
     ShinyChance: 0
     SleepChance: 0.75
@@ -2184,9 +2543,11 @@ MonoBehaviour:
     MoneyAverage: 100
     CharacterCount: 1
     TrapCount: 0.5
-    StatueChance: 1
+    StatueChance: 0.05
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   Output:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -2201,6 +2562,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
 --- !u!114 &9031898349937062684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2224,6 +2588,7 @@ MonoBehaviour:
     - _teleportIn
     - _teleportOut
     - _enemies
+    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 9031898349937062684}
@@ -2307,7 +2672,22 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: _fields
+      _node: {fileID: 9031898349937062684}
+      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
+        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Output
+        node: {fileID: 8777509353249933111}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
   Repeat: 5
+  _fields:
+    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -2318,7 +2698,6 @@ MonoBehaviour:
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
   _floorData:
-    Field: {fileID: 0}
     PrefixChance: 0.1
     ShinyChance: 0.01
     SleepChance: 0.75
@@ -2333,6 +2712,9 @@ MonoBehaviour:
     CharacterCount: 1
     TrapCount: 0.5
     StatueChance: 0.1
+    BonfireWeight: 1
+    MagicPotWeight: 1
+    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []

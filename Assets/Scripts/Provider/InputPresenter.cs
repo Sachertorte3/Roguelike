@@ -15,7 +15,7 @@ namespace Provider
     {
         [Inject]
         public InputPresenter(InputReceiver receiver, GameInput input, CharacterControlInputReceiver actionReceiver,
-            InfoReceiver infoReceiver, ChoiceReceiver choiceReceiver, TextInputReceiver textInputReceiver, World world,
+            ChoiceReceiver choiceReceiver, CharacterSelectReceiver characterSelectReceiver, TextInputReceiver textInputReceiver, World world,
             MenuController menuController, InventoryView inventoryView)
         {
             var logWindowVisible = Observable.EveryValueChanged(DebugLogManager.Instance, x => x.IsLogWindowVisible).ToReadOnlyReactiveProperty();
@@ -69,15 +69,14 @@ namespace Provider
             });
 
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(
-                map => disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+                disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
                 {
                     if (isNoMove)
                     {
-                        map.Player.Character.FaceNearestCharacter(map);
+                        mapChanged.Map.Player.Character.FaceNearestCharacter(mapChanged.Map);
                     }
-                })
-            );
+                }));
 
             choiceReceiver.OnShownChoiceWithInfo.Subscribe(async message =>
             {
@@ -89,6 +88,12 @@ namespace Provider
             {
                 var index = await menuController.GetChoice(message.text, message.choices);
                 choiceReceiver.SetChoicedIndex(index);
+            });
+
+            characterSelectReceiver.OnShownChoice.Subscribe(async message =>
+            {
+                var index = await menuController.GetCharacter(message);
+                characterSelectReceiver.SetChoicedIndex(index);
             });
 
             textInputReceiver.OnShownTextInput.Subscribe(async _ =>

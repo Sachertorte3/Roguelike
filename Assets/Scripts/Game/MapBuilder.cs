@@ -12,6 +12,7 @@ using Domain.Service.Items;
 using Domain.Service.Map;
 using Domain.Service.Rooms;
 using RandomDungeonWithBluePrint;
+using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
@@ -31,6 +32,7 @@ namespace Game
         private readonly List<MoneyMemento> _money = new();
         private BonfireMemento? _bonfire;
         private MagicPotMemento? _magicPot;
+        private WorkbenchMemento? _workbench;
         private EntityMemento? _teleporter;
         private readonly List<Id<IEntity>> _keyCharacters = new();
         private readonly RoomMemento? _monsterHouse;
@@ -45,12 +47,15 @@ namespace Game
             _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
 
             var roomIds = _tilemap.RoomIds.ToList();
+            var grassRoomIds = _tilemap.RoomIds.ToList();
 
-            // 孤立したSectionを検出してIsolateRoomとして処理（最初に処理）
             foreach (var isolateRoomId in _tilemap.IsolateRooms)
             {
-                CreateIsolateRoom(data, isolateRoomId);
-                roomIds.Remove(isolateRoomId); // 通常の部屋処理から除外
+                if (roomIds.Count() > 1)
+                {
+                    CreateIsolateRoom(data, isolateRoomId);
+                    roomIds.Remove(isolateRoomId);
+                }
             }
 
             if (Random.value < data.ShopChance && roomIds.Count() > 1)
@@ -58,7 +63,10 @@ namespace Game
                 var shopRoom = roomIds.GetAtRandom();
                 _shop = CreateShop(data, shopRoom);
                 if (_shop != null)
+                {
                     roomIds.Remove(shopRoom);
+                    grassRoomIds.Remove(shopRoom);
+                }
             }
 
             if (Random.value < data.MonsterHouseChance && roomIds.Count() > 1)
@@ -102,7 +110,7 @@ namespace Game
                 }
             }
 
-            foreach (var room in roomIds)
+            foreach (var room in grassRoomIds)
                 AddGrasses(data, room);
         }
 
@@ -271,10 +279,22 @@ namespace Game
 
             var center = innerRect.Value.min + VectorExtension.FloorToInt(innerRect.Value.size / 2);
 
-            if (Random.value < 0.5)
-                _bonfire = Bonfire.Build(center);
-            else
-                _magicPot = MagicPot.Build(center);
+            switch (RandUtils.WeightedIndex(data.MagicPotWeight, data.WorkbenchWeight, data.BonfireWeight))
+            {
+                case 0:
+                    _magicPot = MagicPot.Build(center);
+                    break;
+                case 1:
+                    _workbench = Workbench.Build(center);
+                    break;
+                case 2:
+                    _bonfire = Bonfire.Build(center);
+                    break;
+                default:
+                    Log.Warning("Invalid weight");
+                    _bonfire = Bonfire.Build(center);
+                    break;
+            }
 
             foreach (var position in innerRect.Value.RectRange())
             {
@@ -334,11 +354,11 @@ namespace Game
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
-                if (Random.value < data.MimicChance)
+                if (RandUtils.IsLessThanProbability(data.MimicChance))
                 {
                     _chests.Add(Chest.Build(position, data.Mimic));
                 }
-                else if (Random.value < data.WeaponChanceInChest)
+                else if (RandUtils.IsLessThanProbability(data.WeaponChanceInChest))
                 {
                     var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
                     if (weapon is DirectWeaponData directWeapon)
@@ -416,6 +436,7 @@ namespace Game
                         _money,
                         _bonfire.ToOption(),
                         _magicPot.ToOption(),
+                        _workbench.ToOption(),
                         _teleporter.ToOption()),
                     FireEntityManager.Build()),
                 _keyCharacters.Select(key => key.ToString()).ToList(),

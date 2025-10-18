@@ -47,7 +47,7 @@ namespace Domain.Service.Characters
             );
         }
 
-        public static CharacterSkillMemento Build(EnemySkillData skill)
+        public static CharacterSkillMemento Build(CharacterSkillData skill)
         {
             return Build(
                 SpawnEffectSkill.Build(skill.Skill),
@@ -120,7 +120,7 @@ namespace Domain.Service.Characters
             return _skill.GetChildren();
         }
 
-        public void UpdateTurn()
+        public void CoolDown()
         {
             if (_remainingCoolTime > 0)
             {
@@ -137,12 +137,19 @@ namespace Domain.Service.Characters
         {
             var info = "";
             if (RushDistance > 0)
-                info += $"最初に{RushDistance}マス前に進み\n";
+                info += $"最初に{RushDistance}マス前に進む\n";
 
             info += _skill.InfoOnUse(omitProbabilityOfSuccess);
 
             if (BackStepDistance > 0)
                 info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+
+            if (ChargeTurn > 0)
+                info += $"発動には{ChargeTurn}ターンかかる\n";
+
+            if (_coolTime > 0)
+                info += $"発動後に{_coolTime}ターンは再使用不能\n";
+
             return info;
         }
     }

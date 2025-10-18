@@ -1,5 +1,7 @@
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Logs;
@@ -37,10 +39,22 @@ namespace Domain.Service.Rooms
         protected override async UniTask FirstTimeEnter(IGameManager gameManager, IMap map)
         {
             GameLog.AddIgnoreVisibility("<color=red>モンスターハウスだ！</color>");
-            for (var i = 0; i < 10; i++)
+            var area = Rect.size.x * Rect.size.y;
+            var monsterCount = area switch
             {
-                map.SpawnRandomEnemy(map.GetAllBlankAndStandablePositionsOn().In(Rect.RectRange())
-                    .GetAtRandom().Position, false, false);
+                < 50 => 10,
+                < 100 => 15,
+                < 200 => 20,
+                _ => 30,
+            };
+            var allPositions = map
+                .GetAllBlankAndStandablePositionsOn(EntityLayer.Middle)
+                .In(Rect.RectRange());
+            var positions = allPositions
+                .GetAtRandom(Mathf.Min(allPositions.Count(), monsterCount));
+            foreach (var position in positions)
+            {
+                map.SpawnRandomEnemy(position.Position, false, false);
             }
 
             await UniTask.Delay(1000);

@@ -8,6 +8,7 @@ namespace View.UI
         [SerializeField] private TMP_Text _level;
         [SerializeField] private StatLine _hp;
         [SerializeField] private TMP_Text _money;
+        [SerializeField] private TMP_Text _inventory;
         public void SetLevel(int level)
         {
             _level.text = $"Lv.{level}";
@@ -19,6 +20,10 @@ namespace View.UI
         public void SetMoney(int money)
         {
             _money.text = $"{money}G";
+        }
+        public void SetInventory(int currentItems, int maxCapacity)
+        {
+            _inventory.text = $"{currentItems}/{maxCapacity}";
         }
         public void SetTextColor(Color color)
         {

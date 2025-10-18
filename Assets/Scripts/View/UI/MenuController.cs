@@ -8,7 +8,6 @@ using R3;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Utilities;
 using VContainer;
 
 namespace View.UI
@@ -21,6 +20,7 @@ namespace View.UI
         [SerializeField] private ItemLibraryView _itemLibraryMenu;
         [SerializeField] private InfoMenu _infoMenu;
         [SerializeField] private ChoiceMenu _choiceMenu;
+        [SerializeField] private CharacterSelectMenu _characterSelectMenu;
         [SerializeField] private TextInputMenu _textInputMenu;
         [SerializeField] private MainMenu _mainMenu;
         private readonly ObservableStack<IMenu> _menuStack = new();
@@ -73,8 +73,8 @@ namespace View.UI
                 _infoMenu.SetInfo(choices[index].infoTitle, choices[index].info);
             });
             var choiceIndex = await GetChoice(text, choices.Select(x => x.choice).ToArray());
-            PopMenu();
             disposable.Dispose();
+            PopMenu();
             return choiceIndex;
         }
 
@@ -88,6 +88,16 @@ namespace View.UI
             return choicedIndex;
         }
 
+        public async UniTask<int> GetCharacter(List<(string name, string textureName, string info, bool usable)> characters)
+        {
+            _characterSelectMenu.SetChoices(characters);
+            await UniTask.NextFrame();
+            AddMenu(_characterSelectMenu);
+            var choiceIndex = await _characterSelectMenu.ChoicedIndex.WaitAsync();
+            PopMenu();
+            return choiceIndex;
+        }
+
         public async UniTask<string> GetTextInput()
         {
             AddMenu(_textInputMenu);
@@ -98,7 +108,7 @@ namespace View.UI
 
         public void SwitchMenu(IMenu menu)
         {
-            Log.Info($"[Menu]SwitchMenu: {menu}");
+            Log.Info($"[Menu]SwitchMenu: {menu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -117,7 +127,7 @@ namespace View.UI
 
         public void PushMenu(IMenu pushedMenu)
         {
-            Log.Info($"[Menu]PushMenu: {pushedMenu}");
+            Log.Info($"[Menu]PushMenu: {pushedMenu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -134,7 +144,7 @@ namespace View.UI
 
         public void AddMenu(IMenu addedMenu)
         {
-            Log.Info($"[Menu]AddMenu: {addedMenu}");
+            Log.Info($"[Menu]AddMenu: {addedMenu} MenuStack Count: {_menuStack.Count}");
             if (_menuStack.Count > 0)
             {
                 var previousMenu = _menuStack.Peek();
@@ -151,7 +161,7 @@ namespace View.UI
         public void PopMenu()
         {
             var poppedMenu = _menuStack.Pop();
-            Log.Info($"[Menu]PopMenu: {poppedMenu}");
+            Log.Info($"[Menu]PopMenu: {poppedMenu} MenuStack Count: {_menuStack.Count}");
             _selectedObject[poppedMenu] = EventSystem.current.currentSelectedGameObject;
             if (_menuStack.Count > 0)
             {
@@ -172,8 +182,8 @@ namespace View.UI
 
         public void TitleMenuWhenGameOver(int level, string causeOfDeath)
         {
-            SwitchMenu(_titleMenu);
             _titleMenu.SetData(level, causeOfDeath);
+            SwitchMenu(_titleMenu);
         }
 
         public void DungeonMenu()

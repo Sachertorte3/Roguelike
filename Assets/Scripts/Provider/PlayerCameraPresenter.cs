@@ -14,8 +14,9 @@ namespace Provider
             CameraFollowTarget targetCamera, CameraFlameRect rectCamera)
         {
             var disposable = new SerialDisposable();
-            world.ActiveMap.SubscribeIncludingCurrentValueIgnoreNull(map =>
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
             {
+                var map = mapChanged.Map;
                 if (map.Player.Character.IsDead)
                 {
                     targetCamera.SetPosition((Vector3Int)map.Player.Character.Entity.CurrentPosition);

@@ -11,19 +11,14 @@ namespace Domain.Service.Characters.Conditions
 {
     internal class FlagCondition : IConditionData
     {
-        [Required, SerializeField] private FlagStatType _flagStatType;
-        public string Name => _flagStatType.GetName();
-        public ParticleType ParticleType => _flagStatType.GetParticleType();
-        public Impact Impact => _flagStatType.GetImpact();
-
-        public FlagCondition(FlagStatType flagStatType)
-        {
-            _flagStatType = flagStatType;
-        }
+        [Required, SerializeField] private StringSerializableFlagStatType _flagStatType;
+        public string Name => _flagStatType.Value.GetName();
+        public ParticleType ParticleType => _flagStatType.Value.GetParticleType();
+        public Impact Impact => _flagStatType.Value.GetImpact();
 
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.GetFlagStat(_flagStatType).Add();
+            hasCondition.Status.GetFlagStat(_flagStatType.Value).Add();
         }
 
         public UniTask Persist(IHasCondition hasCondition)
@@ -33,17 +28,17 @@ namespace Domain.Service.Characters.Conditions
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            hasCondition.Status.GetFlagStat(_flagStatType).Remove();
+            hasCondition.Status.GetFlagStat(_flagStatType.Value).Remove();
         }
 
         public float Evaluate(ITargetOfEffect target)
         {
-            if (target.Status.GetFlagStat(_flagStatType).CurrentValue)
+            if (target.Status.GetFlagStat(_flagStatType.Value).CurrentValue)
             {
-                return _flagStatType.Evaluate(target);
+                return _flagStatType.Value.Evaluate(target);
             }
             return 0;
         }
-        public float EvaluatePrice() => _flagStatType.EvaluatePrice();
+        public float EvaluatePrice() => _flagStatType.Value.EvaluatePrice();
     }
 }

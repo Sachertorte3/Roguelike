@@ -7,6 +7,7 @@ namespace Domain.Model.Entity
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/Statue")]
     public class StatueData : ScriptableObject
     {
+        [field: SerializeField] public StatueType Type { get; private set; }
         [field: SerializeField] public ActorlessSkillData Skill { get; private set; }
         [field: SerializeField]
         [field: MinValue(1)]

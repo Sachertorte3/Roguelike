@@ -10,7 +10,8 @@ namespace Utilities.Table
     [Serializable]
     public class Table<T> : ITable<T>
     {
-        [RequiredListLength(1, null)] [SerializeField]
+        [RequiredListLength(1, null)]
+        [SerializeField]
         private List<WeightedItem> items = new();
 
         public int Count => items.Count;
@@ -23,9 +24,13 @@ namespace Utilities.Table
         [Serializable]
         public class WeightedItem
         {
-            [HorizontalGroup("Group 1", 0.7f)] public T Item;
+            [HorizontalGroup("Group 1", 0.7f)]
+            [HideLabel]
+            public T Item;
 
-            [HorizontalGroup("Group 1", 0.3f)] public float Weight = 1;
+            [HorizontalGroup("Group 1", 0.3f)]
+            [HideLabel]
+            public float Weight = 1;
         }
     }
 }

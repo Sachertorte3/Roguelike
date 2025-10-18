@@ -115,12 +115,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 23fea5d7d79f7ea41a3fa6e03982059a, type: 2}
       - {fileID: 11400000, guid: bb246d89a47042443aae9223593825d0, type: 2}
       - {fileID: 11400000, guid: 8618b49a8cbd0ac439fe8d78d3af0e77, type: 2}
-    StorageItems:
-      items:
-      - {fileID: 11400000, guid: 832b674185572ae458114ccd8ef75038, type: 2}
-      - {fileID: 11400000, guid: 34fbb3f82baaa804fad8cfa1a0cea626, type: 2}
-      - {fileID: 11400000, guid: cf161bf489fb7ea439d377c5ba206f0d, type: 2}
-      - {fileID: 11400000, guid: f40cdc90ff4728e48b6fab582fe5e757, type: 2}
+      - {fileID: 11400000, guid: 25374e6334bbb1445885a1795248958f, type: 2}
     Others:
       items:
       - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
@@ -200,13 +195,12 @@ MonoBehaviour:
             - {fileID: 11400000, guid: 3686947615f6f3a4092e428ed051b93f, type: 2}
         Weight: 1
   SpawnItem:
-    Potions: 10
-    Scrolls: 10
+    Potions: 20
+    Scrolls: 15
     Books: 10
     Wands: 10
     Weapons: 10
     Artifacts: 5
-    Storage: 2
     Others: 1
   Traps:
     items:

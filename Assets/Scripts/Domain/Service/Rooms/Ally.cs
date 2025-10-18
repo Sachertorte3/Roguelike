@@ -25,21 +25,21 @@ namespace Domain.Service.Rooms
                     async (gameManager, map) =>
                     {
                         var player = map.Player;
-                        var disabledItemIndexes = new List<ItemFocus>();
-                        foreach (var inventoryIndex in player.Character.Inventory.AllIndexesRecursive)
+                        var disabledItemIndexes = new List<int>();
+                        foreach (var (i, inventoryIndex) in player.Character.Inventory.AllItemsWithIndex)
                         {
-                            if (!player.Character.Inventory.CanRemove(inventoryIndex))
+                            if (!player.Character.Inventory.CanRemove(i))
                             {
                                 disabledItemIndexes.Add(inventoryIndex);
                             }
                         }
                         var focus = await player.Character.SelectItem("渡すアイテムを選択してください", disabledItemIndexes.ToArray());
-                        if (focus.IsOnItem(player.Character.Inventory, map, out var item))
+                        if (focus.HasValue && player.Character.Inventory.HasItemAt(focus.Value, out var item))
                         {
-                            if (character.Inventory.CanAddToEmpty(item) && player.Character.Inventory.CanRemove(focus))
+                            if (character.Inventory.CanAddToEmpty() && player.Character.Inventory.CanRemove(item))
                             {
+                                player.Character.Inventory.Remove(item);
                                 character.Inventory.AddToEmpty(item);
-                                player.Character.Inventory.Remove(focus);
                                 GameLog.Add(character.Entity.IsVisible,
                                     $"{character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
                             }

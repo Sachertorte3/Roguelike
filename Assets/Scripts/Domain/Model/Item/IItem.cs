@@ -30,7 +30,6 @@ namespace Domain.Model.Item
         public ItemState State { get; }
         public bool UseOnDeath { get; }
         public int Price { get; }
-        public int AllPrice => Price + ItemStorage.MapOr(0, storage => storage.AllItems.Sum(item => item.AllPrice));
         public bool HasActivatableSkillWhenUsed { get; }
         public bool HasActivatableSkillWhenThrown { get; }
         public bool CanActivateWhenUsed { get; }
@@ -39,13 +38,14 @@ namespace Domain.Model.Item
         public Option<ISkill> SkillOnThrow { get; }
         public bool HasActivatableSkill { get; }
         public bool CanActivate { get; }
-        public Option<IStorage> ItemStorage { get; }
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map);
-        public float EvaluateWhenThrown(IActor actor, Vector2Int position, Direction8 direction, IMap map);
+        public float EvaluateWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map);
         public bool IsDisabled { get; }
         public int MaxUsages { get; }
         public ReadOnlyReactiveProperty<int> RemainingUses { get; }
         public bool IsCursed { get; }
+        public bool CannotUseIfCursed { get; }
+        public bool RequiresLiteracy { get; }
         public bool CannotDropIfCursed { get; }
         public bool IdentifyIfGot { get; }
         public bool IdentifyIfUsed { get; }

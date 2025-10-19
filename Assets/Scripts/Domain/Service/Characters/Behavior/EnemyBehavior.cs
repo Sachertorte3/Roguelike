@@ -126,46 +126,45 @@ namespace Domain.Service.Characters.Behavior
                 }
             }
 
-            var actions = new List<IAction>();
+            var actions = new List<(IAction action, float evaluate)>();
             if (!result.IsDiscoveringEnemy())
             {
-                actions.AddRange(GenerateDoableMoves(character, result, map));
+                actions.AddRange(GenerateValidMoves(character, result, map));
             }
             else if (PrioritizeMovement(character, result.TargetLocation, map.Id))
             {
                 Log.Debug("[Think]Prioritize Movement.");
-                actions.AddRange(GenerateDoableMoves(character, result, map));
-                if (!actions.Any(action => action.Evaluate(character, map) > 0))
+                actions.AddRange(GenerateValidMoves(character, result, map));
+                if (!actions.Any())
                 {
-                    actions.AddRange(GenerateDoableUseSkills(character, map));
-                    actions.AddRange(GenerateDoableUseItems(character, map));
-                    actions.AddRange(GenerateDoableThrowItems(character, map));
+                    actions.AddRange(GenerateValidUseSkills(character, map));
+                    actions.AddRange(GenerateValidUseItems(character, map));
+                    actions.AddRange(GenerateValidThrowItems(character, map));
                 }
             }
             else
             {
                 Log.Debug("[Think]Not Prioritize Movement.");
-                actions.AddRange(GenerateDoableUseSkills(character, map));
-                actions.AddRange(GenerateDoableUseItems(character, map));
-                actions.AddRange(GenerateDoableThrowItems(character, map));
-                if (!actions.Any(action => action.Evaluate(character, map) > 0))
+                actions.AddRange(GenerateValidUseSkills(character, map));
+                actions.AddRange(GenerateValidUseItems(character, map));
+                actions.AddRange(GenerateValidThrowItems(character, map));
+                if (!actions.Any())
                 {
-                    actions.AddRange(GenerateDoableMoves(character, result, map));
+                    actions.AddRange(GenerateValidMoves(character, result, map));
                 }
             }
 
-            var validActions = actions.Where(action => action.Evaluate(character, map) > 0);
-            foreach (var actionTemp in validActions)
+            foreach (var actionTemp in actions)
             {
-                Log.Debug($"[Think]{actionTemp.Info()} {actionTemp.Evaluate(character, map)}");
+                Log.Debug($"[Think]{actionTemp.action.Info()} {actionTemp.evaluate}");
             }
 
-            var action = await UniTask.FromResult(validActions.MaxByOrDefault(
-                action => action.Evaluate(character, map) + Random.Range(0, behavioralRandomness),
-                new DoNothing()));
+            var action = await UniTask.FromResult(actions.MaxByOrDefault(
+                action => action.evaluate + Random.Range(0, behavioralRandomness),
+                (action: new DoNothing(), evaluate: 0)));
 
             _previousResult = result;
-            return action;
+            return action.action;
         }
 
         private BehaviorResult GenerateNextBehaviorResult(IHasBehavior character, IMap map)
@@ -316,6 +315,11 @@ namespace Domain.Service.Characters.Behavior
             return _prioritizeMovement;
         }
 
+        private IEnumerable<(IAction action, float evaluate)> GenerateValidMoves(IHasBehavior character, BehaviorResult result, IMap map)
+        {
+            return GenerateDoableMoves(character, result, map).Select(move => (action: move, evaluate: move.Evaluate(character, map)));
+        }
+
         private IEnumerable<IAction> GenerateDoableMoves(IHasBehavior character, BehaviorResult result,
             IMap map)
         {
@@ -328,7 +332,7 @@ namespace Domain.Service.Characters.Behavior
             return MoveGenerater.GenerateDoableMovesWhenUndiscoveringTarget(_wander, character, map);
         }
 
-        private IEnumerable<UseSkill> GenerateDoableUseSkills(IHasBehavior character, IMap map)
+        private IEnumerable<(IAction action, float evaluate)> GenerateValidUseSkills(IHasBehavior character, IMap map)
         {
             // スキルを優先度でグループ化（大きい順）
             var skillGroups = character.Skills
@@ -353,22 +357,25 @@ namespace Domain.Service.Characters.Behavior
                     }
                 }
 
-                var doableActions = groupActions.Where(action => action.Doable(character, map));
+                var validActions = groupActions
+                    .Where(action => action.Doable(character, map))
+                    .Select(action => (skill: (IAction)action, evaluate: action.Evaluate(character, map)))
+                    .Where(action => action.evaluate > 0);
 
-                if (doableActions.Any())
+                if (validActions.Any())
                 {
-                    return doableActions;
+                    return validActions;
                 }
             }
 
-            return Enumerable.Empty<UseSkill>();
+            return Enumerable.Empty<(IAction action, float evaluate)>();
         }
 
-        private IEnumerable<UseItem> GenerateDoableUseItems(IHasBehavior character, IMap map)
+        private IEnumerable<(IAction action, float evaluate)> GenerateValidUseItems(IHasBehavior character, IMap map)
         {
             if (!character.CanUseItem)
             {
-                return Enumerable.Empty<UseItem>();
+                return Enumerable.Empty<(IAction action, float evaluate)>();
             }
 
             var actions = new List<UseItem>();
@@ -389,14 +396,17 @@ namespace Domain.Service.Characters.Behavior
                 }
             }
 
-            return actions.Where(action => action.Doable(character, map));
+            return actions
+                .Where(action => action.Doable(character, map))
+                .Select(action => (item: (IAction)action, evaluate: action.Evaluate(character, map)))
+                .Where(action => action.evaluate > 0);
         }
 
-        private IEnumerable<ThrowItem> GenerateDoableThrowItems(IHasBehavior character, IMap map)
+        private IEnumerable<(IAction action, float evaluate)> GenerateValidThrowItems(IHasBehavior character, IMap map)
         {
             if (!character.CanUseItem)
             {
-                return Enumerable.Empty<ThrowItem>();
+                return Enumerable.Empty<(IAction action, float evaluate)>();
             }
 
             var actions = new List<ThrowItem>();
@@ -410,7 +420,10 @@ namespace Domain.Service.Characters.Behavior
                 actions.AddRange(DirectionMethods.AllDirections.Select(direction => new ThrowItem(item, direction)));
             }
 
-            return actions.Where(action => action.Doable(character, map));
+            return actions
+                .Where(action => action.Doable(character, map))
+                .Select(action => (item: (IAction)action, evaluate: action.Evaluate(character, map)))
+                .Where(action => action.evaluate > 0);
         }
 
         public void KnowLocationOf(Location location)

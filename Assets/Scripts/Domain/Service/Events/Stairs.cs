@@ -30,7 +30,7 @@ namespace Domain.Service.Events
             var entityName = Type switch
             {
                 MovementEntityType.UpStairs => "階段",
-                MovementEntityType.DownStairs => "階段", 
+                MovementEntityType.DownStairs => "階段",
                 MovementEntityType.MagicCircle => "魔法陣",
                 _ => throw new NotImplementedException(),
             };
@@ -64,7 +64,8 @@ namespace Domain.Service.Events
 
         private UniTask DoEvent(IGameManager gameManager)
         {
-            var se = Type switch {
+            var se = Type switch
+            {
                 MovementEntityType.UpStairs => SE.Stairs,
                 MovementEntityType.DownStairs => SE.Stairs,
                 MovementEntityType.MagicCircle => SE.Teleport,

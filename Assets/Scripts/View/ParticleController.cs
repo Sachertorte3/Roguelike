@@ -8,7 +8,7 @@ namespace View
     {
         private Dictionary<ParticleType, int> _particleCounter = new();
         private Dictionary<ParticleType, GameObject> _particles = new();
-        [HideInInspector] [SerializeField] private int _sortingLayerID;
+        [HideInInspector][SerializeField] private int _sortingLayerID;
 
         public void Add(ParticleType particleType)
         {
@@ -21,7 +21,7 @@ namespace View
             }
             else
             {
-                var EffectPrefab = ScriptableObjectLoader.LoadParticle(particleType.GetFileName());
+                var EffectPrefab = ObjectLoader.LoadParticle(particleType.GetFileName());
                 var particle = Instantiate(EffectPrefab, transform);
                 foreach (var particleSystem in particle.GetComponentsInChildren<ParticleSystem>())
                 {
@@ -48,6 +48,22 @@ namespace View
                 Destroy(_particles[particleType]);
                 _particles.Remove(particleType);
                 _particleCounter.Remove(particleType);
+            }
+        }
+
+        public void EnableAll()
+        {
+            foreach (var particle in _particles)
+            {
+                particle.Value.SetActive(true);
+            }
+        }
+
+        public void DisableAll()
+        {
+            foreach (var particle in _particles)
+            {
+                particle.Value.SetActive(false);
             }
         }
 

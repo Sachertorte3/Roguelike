@@ -38,38 +38,48 @@ MonoBehaviour:
   Flags: 
   IsFlying: 0
   CanThroughWalls: 0
+  CanMimic: 0
+  MimicWeights:
+    ItemRevealOnPickUp: 1
+    ItemRevealOnUse: 1
+    Money: 1
+    Stairs: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
-      <Position>k__BackingField:
-        rid: 2541219281251860495
-      <Area>k__BackingField:
-        rid: 2541219281251860492
-      <Effects>k__BackingField:
-      - rid: 2541219281251860493
-      - rid: 5486256623760965634
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 2
+      Skill:
+        <Position>k__BackingField:
+          rid: 2541219281251860495
+        <Area>k__BackingField:
+          rid: 2541219281251860492
+        <Effects>k__BackingField:
+        - rid: 2541219281251860493
+        - rid: 5486256623760965634
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u565B\u307F\u3064\u3044\u305F\u3002"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 2
+    Priority: 0
   - Skill:
-      <Position>k__BackingField:
-        rid: 5486256507571666954
-      <Area>k__BackingField:
-        rid: 5486256507571666953
-      <Effects>k__BackingField:
-      - rid: 5486256507571666952
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u5CA9\u3092\u98DB\u3070\u3057\u305F"
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 1
+      Skill:
+        <Position>k__BackingField:
+          rid: 5486256507571666954
+        <Area>k__BackingField:
+          rid: 5486256507571666953
+        <Effects>k__BackingField:
+        - rid: 5486256507571666952
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u5CA9\u3092\u98DB\u3070\u3057\u305F"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 1
+    Priority: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:

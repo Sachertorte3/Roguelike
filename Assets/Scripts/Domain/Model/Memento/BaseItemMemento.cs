@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Item;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
@@ -18,7 +20,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public string BaseName { get; private set; }
         [field: SerializeField] public Option<string> CustomName { get; private set; }
         [SerializeField] private string _iconName;
-        public Sprite Icon => ScriptableObjectLoader.LoadIcon(_iconName);
+        public Sprite Icon => ObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public int AdditionalPrice { get; private set; }
         [field: SerializeField] public float MultiplyPrice { get; private set; }
@@ -32,6 +34,8 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int UpgradeLimit { get; private set; }
         [field: SerializeField] public float UsageLossChance { get; private set; }
         [field: SerializeReference] public List<IConditionData> Conditions { get; private set; }
+        [SerializeField] private Option<ScriptableObjectSerializable<EnemyData>> _mimic;
+        public Option<EnemyData> Mimic => _mimic.Map(m => m.Value);
         public BaseItemMemento(
             Id<IItem> id,
             string baseName,
@@ -48,7 +52,8 @@ namespace Domain.Model.Memento
             bool isCurseIdentified,
             int upgradeLimit,
             float usageLossChance,
-            List<IConditionData> conditions)
+            List<IConditionData> conditions,
+            Option<EnemyData> mimic)
         {
             _id = id.ToString();
             BaseName = baseName;
@@ -66,6 +71,7 @@ namespace Domain.Model.Memento
             UpgradeLimit = upgradeLimit;
             UsageLossChance = usageLossChance;
             Conditions = conditions;
+            _mimic = mimic.Map(m => m.ToSerializable());
         }
 
         public BaseItemMemento CopyWith(
@@ -84,7 +90,8 @@ namespace Domain.Model.Memento
             bool? isCurseIdentified = null,
             int? upgradeLimit = null,
             float? usageLossChance = null,
-            List<IConditionData>? conditions = null)
+            List<IConditionData>? conditions = null,
+            Option<EnemyData>? mimic = null)
         {
             return new BaseItemMemento(
                 id ?? Id,
@@ -102,7 +109,8 @@ namespace Domain.Model.Memento
                 isCurseIdentified ?? IsCurseIdentified,
                 upgradeLimit ?? UpgradeLimit,
                 usageLossChance ?? UsageLossChance,
-                conditions ?? Conditions
+                conditions ?? Conditions,
+                mimic ?? Mimic
             );
         }
     }

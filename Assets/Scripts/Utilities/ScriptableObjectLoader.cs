@@ -3,7 +3,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Utilities
 {
-    public static class ScriptableObjectLoader
+    public static class ObjectLoader
     {
         public static T Load<T>(string name) where T : ScriptableObject
         {

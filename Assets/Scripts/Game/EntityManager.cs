@@ -49,9 +49,10 @@ namespace Game
         public IObservableCollection<IEntity> Entities => _entities;
 
         private readonly CompositeDisposable _disposables = new();
-
+        private readonly IMap _map;
         public EntityManager(EntitiesMemento entitiesMemento, PlayerMemento playerData, List<CharacterMemento> partyMembers, Vector2Int playerPosition, bool resetPertyPositions, CharacterControlInputReceiver receiver, IGameManager gameManager, IMap map)
         {
+            _map = map;
             CharacterManager = new CharacterManager(playerData, receiver, gameManager, map);
             ItemManager = new ItemManager();
             EventEntityManager = new EventEntityManager(entitiesMemento.EventEntities, map.MovementEntityLocked);
@@ -183,6 +184,8 @@ namespace Game
         {
             FireEntityManager.UpdateTurn(map);
 
+            RevealMimic(FireEntities.Positions());
+
             var characters = Characters.In(FireEntities.Positions()).ToList();
             foreach (var character in characters)
             {
@@ -220,6 +223,18 @@ namespace Game
         public IItemEntity SpawnItem(IItem item, Vector2Int position)
         {
             return ItemManager.SpawnItem(item, position);
+        }
+        public void SpawnMimicItem(MimicItemMemento item)
+        {
+            EventEntityManager.Spawn(new MimicItemEntity(item));
+        }
+        public void SpawnMimicMoney(MimicMoneyMemento money)
+        {
+            EventEntityManager.Spawn(new MimicMoney(money));
+        }
+        public void SpawnMimicStairs(MimicStairsMemento mimicStairs)
+        {
+            EventEntityManager.Spawn(new MimicStairs(mimicStairs));
         }
         public void SpawnFire(Vector2Int position)
         {
@@ -329,6 +344,25 @@ namespace Game
             foreach (var statue in EventEntityManager.Statues.In(positions).ToList())
             {
                 statue.Attacked();
+            }
+        }
+        public void RevealMimic(IEnumerable<Vector2Int> positions)
+        {
+            foreach (var item in ItemManager.Items.In(positions).ToList())
+            {
+                item.ShouldRevealMimic(_map);
+            }
+            foreach (var mimicItem in EventEntityManager.MimicItems.In(positions).ToList())
+            {
+                mimicItem.Reveal(_map);
+            }
+            foreach (var mimicMoney in EventEntityManager.MimicMoney.In(positions).ToList())
+            {
+                mimicMoney.Reveal(_map);
+            }
+            foreach (var mimicStairs in EventEntityManager.MimicStairs.In(positions).ToList())
+            {
+                mimicStairs.Reveal(_map);
             }
         }
         /// <summary>

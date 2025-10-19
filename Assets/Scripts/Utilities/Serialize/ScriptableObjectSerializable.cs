@@ -23,7 +23,7 @@ namespace Utilities.Serialize
             {
                 if (_value == null)
                 {
-                    _value = ScriptableObjectLoader.Load<T>(_name);
+                    _value = ObjectLoader.Load<T>(_name);
                 }
 
                 return _value;
@@ -45,7 +45,7 @@ namespace Utilities.Serialize
         {
             if (_value == null)
             {
-                _value = ScriptableObjectLoader.Load<T>(_name);
+                _value = ObjectLoader.Load<T>(_name);
             }
         }
     }

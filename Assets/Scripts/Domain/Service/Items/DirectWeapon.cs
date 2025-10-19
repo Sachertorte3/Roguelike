@@ -28,7 +28,6 @@ namespace Domain.Service.Items
         protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => false;
         public override bool UseOnDeath => false;
-        public override Option<IStorage> ItemStorage => Option.None<IStorage>();
         public override bool CannotUseIfCursed => false;
         public override bool RequiresLiteracy => false;
         public override bool CannotDropIfCursed => true;
@@ -155,7 +154,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.05f * abnormalConditionMultiplier;
                 var paralysis = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
                 effectsOnUse.Add(new AddConditionEffect(paralysis));
                 effectsOnThrow.Add(new AddConditionEffect(paralysis));
             }
@@ -163,7 +162,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var blind = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("盲目"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("盲目"), probability);
                 effectsOnUse.Add(new AddConditionEffect(blind));
                 effectsOnThrow.Add(new AddConditionEffect(blind));
             }
@@ -171,7 +170,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var confusion = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("混乱"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("混乱"), probability);
                 effectsOnUse.Add(new AddConditionEffect(confusion));
                 effectsOnThrow.Add(new AddConditionEffect(confusion));
             }
@@ -179,7 +178,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.05f * abnormalConditionMultiplier;
                 var sleep = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
                 effectsOnUse.Add(new AddConditionEffect(sleep));
                 effectsOnThrow.Add(new AddConditionEffect(sleep));
             }
@@ -187,7 +186,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.2f * abnormalConditionMultiplier;
                 var poison = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("毒"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("毒"), probability);
                 effectsOnUse.Add(new AddConditionEffect(poison));
                 effectsOnThrow.Add(new AddConditionEffect(poison));
             }
@@ -195,7 +194,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var slowness = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
                 effectsOnUse.Add(new AddConditionEffect(slowness));
                 effectsOnThrow.Add(new AddConditionEffect(slowness));
             }
@@ -203,7 +202,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var restraint = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("拘束"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("拘束"), probability);
                 effectsOnUse.Add(new AddConditionEffect(restraint));
                 effectsOnThrow.Add(new AddConditionEffect(restraint));
             }
@@ -235,7 +234,7 @@ namespace Domain.Service.Items
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
-        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None)
+        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.ElementPowers, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
@@ -256,7 +255,8 @@ namespace Domain.Service.Items
                     usageLossChance: usageLossChance,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
-                    conditions: data.PassiveConditions
+                    conditions: data.PassiveConditions,
+                    mimic: mimic.ToOption()
                 ),
                 prefix: prefix.ToOption(),
                 elementPowers: data.ElementPowers,

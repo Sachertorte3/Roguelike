@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 
@@ -71,11 +72,11 @@ namespace Domain.Service.Items
             );
         }
 
-        public static IItemMemento Build(this IItemData data, bool isCursed = false, ItemState state = ItemState.None)
+        public static IItemMemento Build(this IItemData data, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             return data.Match<IItemMemento>(
-                itemData => Item.Build(itemData, isCursed: isCursed, state: state),
-                directWeaponData => DirectWeapon.Build(directWeaponData, isCursed: isCursed, state: state)
+                itemData => Item.Build(itemData, isCursed: isCursed, state: state, mimic: mimic),
+                directWeaponData => DirectWeapon.Build(directWeaponData, isCursed: isCursed, state: state, mimic: mimic)
             );
         }
     }

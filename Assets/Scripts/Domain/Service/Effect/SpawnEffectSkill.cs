@@ -115,6 +115,7 @@ namespace Domain.Service.Effect
                     effect is AbsorbsEffect ||
                     effect is PercentageDamageEffect))
             {
+                map.RevealMimic(area);
                 map.AttackStatue(area);
             }
 

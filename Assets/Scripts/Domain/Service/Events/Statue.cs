@@ -41,9 +41,9 @@ namespace Domain.Service.Events
 
         public Sprite Icon => Type switch
         {
-            StatueType.Beneficial => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_923"),
-            StatueType.Harmful => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_924"),
-            StatueType.Neutral => ScriptableObjectLoader.LoadMapChip("(Base)BaseChip_pipo_908"),
+            StatueType.Beneficial => ObjectLoader.LoadMapChip("(Base)BaseChip_pipo_923"),
+            StatueType.Harmful => ObjectLoader.LoadMapChip("(Base)BaseChip_pipo_924"),
+            StatueType.Neutral => ObjectLoader.LoadMapChip("(Base)BaseChip_pipo_908"),
             _ => throw new NotImplementedException()
         };
 

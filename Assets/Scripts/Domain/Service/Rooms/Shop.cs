@@ -192,7 +192,7 @@ namespace Domain.Service.Rooms
             _clerk.Affiliation.AddForceAffiliation(map.Player.Character.Entity.Id, AffiliationType.Enemy);
             _clerk.AddCondition(
                 Id<IEntity>.Empty,
-                ScriptableObjectLoader.Load<ConditionTemplate>("店員の怒り")
+                ObjectLoader.Load<ConditionTemplate>("店員の怒り")
             );
             MarkItemsAsStolen(map);
             CanExecute = false;

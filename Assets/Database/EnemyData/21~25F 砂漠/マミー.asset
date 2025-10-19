@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 5486256464210165772
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: cb9e806fc32290147b858e69d1d5cd9b, type: 3}
   IsBoss: 0
   Hp: 12
   Aggression: 1
@@ -38,24 +38,32 @@ MonoBehaviour:
   Flags: 
   IsFlying: 0
   CanThroughWalls: 0
+  CanMimic: 0
+  MimicWeights:
+    ItemRevealOnPickUp: 1
+    ItemRevealOnUse: 1
+    Money: 1
+    Stairs: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
-      <Position>k__BackingField:
-        rid: 5486256464210165773
-      <Area>k__BackingField:
-        rid: 5486256464210165774
-      <Effects>k__BackingField:
-      - rid: 5486256464210165775
-      - rid: 5486256464210165776
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F"
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 0
+      Skill:
+        <Position>k__BackingField:
+          rid: 5486256464210165773
+        <Area>k__BackingField:
+          rid: 5486256464210165774
+        <Effects>k__BackingField:
+        - rid: 5486256464210165775
+        - rid: 5486256464210165776
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u6BB4\u308A\u304B\u304B\u3063\u305F"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 0
+    Priority: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:

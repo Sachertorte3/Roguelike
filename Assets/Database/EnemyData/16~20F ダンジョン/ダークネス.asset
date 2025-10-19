@@ -35,10 +35,15 @@ MonoBehaviour:
     PrioritizeEnemiesOverLeaders: 0
     ChaseLeader: 1
   MoveSpeed: 1
-  IsHard: 0
-  IsHeavy: 0
+  Flags: 
   IsFlying: 1
   CanThroughWalls: 0
+  CanMimic: 0
+  MimicWeights:
+    ItemRevealOnPickUp: 1
+    ItemRevealOnUse: 1
+    Money: 1
+    Stairs: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills: []

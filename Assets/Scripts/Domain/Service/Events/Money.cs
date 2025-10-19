@@ -6,6 +6,7 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Service.Items;
 using Domain.Service.Logs;
 using UnityEngine;
 using Utilities;
@@ -46,13 +47,13 @@ namespace Domain.Service.Events
 
         public Sprite Icon => Amount switch
         {
-            <= 100 => ScriptableObjectLoader.LoadIcon("icons_full_16_362"),
-            <= 300 => ScriptableObjectLoader.LoadIcon("icons_full_16_363"),
-            <= 1000 => ScriptableObjectLoader.LoadIcon("icons_full_16_360"),
-            <= 3000 => ScriptableObjectLoader.LoadIcon("icons_full_16_361"),
-            <= 10000 => ScriptableObjectLoader.LoadIcon("icons_full_16_365"),
-            <= 30000 => ScriptableObjectLoader.LoadIcon("icons_full_16_366"),
-            _ => ScriptableObjectLoader.LoadIcon("icons_full_16_358")
+            <= 100 => ObjectLoader.LoadIcon("icons_full_16_362"),
+            <= 300 => ObjectLoader.LoadIcon("icons_full_16_363"),
+            <= 1000 => ObjectLoader.LoadIcon("icons_full_16_360"),
+            <= 3000 => ObjectLoader.LoadIcon("icons_full_16_361"),
+            <= 10000 => ObjectLoader.LoadIcon("icons_full_16_365"),
+            <= 30000 => ObjectLoader.LoadIcon("icons_full_16_366"),
+            _ => ObjectLoader.LoadIcon("icons_full_16_358")
         };
 
         public ICharacterEvent Event { get; init; }
@@ -62,33 +63,9 @@ namespace Domain.Service.Events
             Entity.SetVisibility(visibility);
         }
 
-        public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)
-        {
-            var result = position;
-
-            for (var i = 0; i < distance; i++)
-            {
-                if (map.At(result + direction.Vector()).CanPlace(true, false, false, EntityLayer.Middle))
-                {
-                    result += direction.Vector();
-                }
-                else
-                {
-                    if (map.At(result + direction.Vector()).CanPlace(true, false, true, EntityLayer.Middle))
-                    {
-                        result += direction.Vector();
-                    }
-
-                    break;
-                }
-            }
-
-            return result;
-        }
-
         public async UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
-            var destination = GetThrowDestination(Entity.CurrentPosition, direction, distance, map);
+            var destination = ItemEntity.GetThrowDestination(Entity.CurrentPosition, direction, distance, map);
             if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
             {
                 Entity.SetVisibility(false);

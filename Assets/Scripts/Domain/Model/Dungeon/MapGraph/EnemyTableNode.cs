@@ -4,7 +4,7 @@ using XNode;
 
 namespace Domain.Model.Dungeon
 {
-    [CreateNodeMenu("Enemy")]
+    [CreateNodeMenu("Enemy"), NodeWidth(260)]
     class EnemyTableNode : Node
     {
         public Table<EnemyData> Enemies;

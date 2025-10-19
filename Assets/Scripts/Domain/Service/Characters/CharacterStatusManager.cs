@@ -301,7 +301,7 @@ namespace Domain.Service.Characters
 
         public static CharacterStatusMemento Build(int maxHp, float hpNaturalRecoveryAmount,
             Dictionary<Element, float> elementAttackMultiplier, Dictionary<Element, float> elementDamageRateMultiplier,
-            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, HashSet<FlagStatType> flags, float waitTime, bool isSlept)
+            Dictionary<ConditionTemplate, float> conditionResistance, float viewRange, HashSet<FlagStatType> flags, float waitTime, bool isSlept, bool doActImmediately)
         {
             var conditions = new List<(Id<IEntity> actor, ConditionMemento condition)>();
             if (isSlept)
@@ -309,7 +309,7 @@ namespace Domain.Service.Characters
                 conditions.Add(
                     (
                         Id<IEntity>.Empty,
-                        Condition.Build(ScriptableObjectLoader.Load<ConditionTemplate>("まどろみ"))
+                        Condition.Build(ObjectLoader.Load<ConditionTemplate>("まどろみ"))
                     )
                 );
             }
@@ -337,7 +337,7 @@ namespace Domain.Service.Characters
                     elementDamageRateMultiplier: elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value, minValue: 0f)),
                     conditionResistance: conditionResistance.ToDictionary(pair => pair.Key.name, pair => new StatData(pair.Value, minValue: 0f, maxValue: 1f)),
                     viewRange: new StatData(viewRange, minValue: 0f),
-                    waitTime: new ResourceData(new StatData(waitTime, minValue: 0f), 0)
+                    waitTime: new ResourceData(new StatData(waitTime, minValue: 0f), doActImmediately? waitTime : 0)
                 ),
                 flagStats,
                 conditions

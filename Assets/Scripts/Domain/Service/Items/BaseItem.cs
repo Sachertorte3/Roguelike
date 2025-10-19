@@ -44,6 +44,7 @@ namespace Domain.Service.Items
         private protected List<IConditionData> _conditions;
         private protected Subject<Unit> _onItemUpdated = new();
         private protected Subject<bool> _onCursedChanged = new();
+        private protected Subject<Unit> _onMimicRevealed = new();
         private CompositeDisposable _disposables = new();
 
         public abstract ItemCategory Category { get; }
@@ -59,7 +60,7 @@ namespace Domain.Service.Items
         public abstract bool AutoDestroyWhenDisabled { get; }
         public abstract Option<ISkill> SkillOnUse { get; }
         public abstract Option<ISkill> SkillOnThrow { get; }
-        public abstract Option<IStorage> ItemStorage { get; }
+        private Option<EnemyData> _mimic { get; init; }
 
         public string DebugName => _fullName;
         private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
@@ -77,6 +78,7 @@ namespace Domain.Service.Items
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
         public Observable<bool> OnCursedChanged => _onCursedChanged;
+        public Observable<Unit> OnMimicRevealed => _onMimicRevealed;
 
         public string UnknownName(ItemPlaceholders itemPlaceholders)
         {
@@ -107,6 +109,7 @@ namespace Domain.Service.Items
             IsCurseIdentified = baseItem.IsCurseIdentified;
             UpgradeLimit = baseItem.UpgradeLimit;
             _conditions = baseItem.Conditions;
+            _mimic = baseItem.Mimic;
         }
 
         public BaseItemMemento SerializeBase()
@@ -127,7 +130,8 @@ namespace Domain.Service.Items
                 isCursed: IsCursed,
                 isCurseIdentified: IsCurseIdentified,
                 upgradeLimit: UpgradeLimit,
-                conditions: _conditions);
+                conditions: _conditions,
+                mimic: _mimic);
         }
 
         public static BaseItemMemento BuildBase(
@@ -141,7 +145,8 @@ namespace Domain.Service.Items
             float usageLossChance,
             bool isCursed,
             int upgradeLimit,
-            List<IConditionData> conditions
+            List<IConditionData> conditions,
+            Option<EnemyData> mimic
         )
         {
             return new BaseItemMemento(
@@ -160,7 +165,8 @@ namespace Domain.Service.Items
                 isCursed: isCursed,
                 isCurseIdentified: false,
                 upgradeLimit: upgradeLimit,
-                conditions: conditions);
+                conditions: conditions,
+                mimic: mimic);
         }
 
         public void Dispose()
@@ -187,8 +193,26 @@ namespace Domain.Service.Items
             return RandUtils.IsLessThanProbability(UsageLossChance);
         }
 
+        public bool ShouldRevealMimic(IActorOfEffect actor, Vector2Int position, IMap map)
+        {
+            Debug.Log($"ShouldRevealMimic: {_mimic.IsSome()}");
+            if (_mimic.IsSome(out var mimic))
+            {
+                GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}はモンスターだった");
+                map.SpawnEnemyIgnoreMimic(mimic, position, doActImmediately: true, isSlept: false, isShiny: false);
+                _onMimicRevealed.OnNext(Unit.Default);
+                return true;
+            }
+            return false;
+        }
+
         public async UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            Debug.Log($"Use:");
+            if (ShouldRevealMimic(actor, position, map))
+            {
+                return SpawnEffectSkillResult.Failed;
+            }
             SetCurseIdentified(true);
             if (IsCursed && CannotUseIfCursed)
             {
@@ -204,17 +228,7 @@ namespace Domain.Service.Items
             var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => itemTargetSkill.Use(map.Player, this, actor, map),
-                inventoryTargetSkill =>
-                {
-                    if (ItemStorage.HasValue)
-                    {
-                        return inventoryTargetSkill.Use(ItemStorage.Expect("ItemStorage is null"), actor, map);
-                    }
-                    else
-                    {
-                        return inventoryTargetSkill.Use(actor.Inventory, actor, map);
-                    }
-                }
+                inventoryTargetSkill => inventoryTargetSkill.Use(actor.Inventory, actor, map)
             );
             if (result.Result != SkillResult.Cancelled)
             {
@@ -240,6 +254,10 @@ namespace Domain.Service.Items
         public async UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position,
             Direction8 direction, IMap map)
         {
+            if (ShouldRevealMimic(actor, position, map))
+            {
+                return SpawnEffectSkillResult.Failed;
+            }
             if (IsCursed && CannotUseIfCursed)
             {
                 GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");

@@ -71,7 +71,7 @@ namespace Provider
 
             if (entity is IPlayerEventEntity playerEventEntity)
             {
-                var eventArrowPrefab = ScriptableObjectLoader.LoadPrefab("EvArrow");
+                var eventArrowPrefab = ObjectLoader.LoadPrefab("EvArrow");
                 var eventArrow = GameObject.Instantiate(eventArrowPrefab, entityView.transform);
                 _gameManager.Turn.SubscribeIncludingCurrentValue(turn =>
                 {
@@ -79,6 +79,11 @@ namespace Provider
                     var color = canExecuteEvent ? Color.green : Color.clear;
                     eventArrow.GetComponent<SpriteRenderer>().color = color;
                 }).AddTo(entityView);
+            }
+            else if (entity is MimicStairs mimicStairs)
+            {
+                var eventArrowPrefab = ObjectLoader.LoadPrefab("EvArrow");
+                GameObject.Instantiate(eventArrowPrefab, entityView.transform);
             }
 
             var spriteView = entityView.GetComponent<SpriteView>();

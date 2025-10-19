@@ -6,9 +6,9 @@ using Domain.Model;
 using Domain.Model.Entity;
 using Domain.Model.Memento;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
 
@@ -16,6 +16,9 @@ namespace Game
 {
     public class EventEntityManager : ISerializable<EventEntitiesMemento>
     {
+        public readonly List<MimicItemEntity> MimicItems = new();
+        public readonly List<MimicMoney> MimicMoney = new();
+        public readonly List<MimicStairs> MimicStairs = new();
         public readonly List<Stairs> Stairs = new();
         private readonly List<Chest> _chests = new();
         private readonly List<Trap> _traps = new();
@@ -31,6 +34,27 @@ namespace Game
 
         public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
         {
+            foreach (var mimicItemMemento in eventEntities.MimicItems)
+            {
+                var mimicItem = new MimicItemEntity(mimicItemMemento);
+                MimicItems.Add(mimicItem);
+                Spawn(mimicItem);
+            }
+
+            foreach (var mimicMoneyMemento in eventEntities.MimicMoney)
+            {
+                var mimicMoney = new MimicMoney(mimicMoneyMemento);
+                MimicMoney.Add(mimicMoney);
+                Spawn(mimicMoney);
+            }
+
+            foreach (var mimicStairsMemento in eventEntities.MimicStairs)
+            {
+                var mimicStairs = new MimicStairs(mimicStairsMemento);
+                MimicStairs.Add(mimicStairs);
+                Spawn(mimicStairs);
+            }
+
             foreach (var stairsMemento in eventEntities.Stairs)
             {
                 var stairs = new Stairs(stairsMemento, isLockedStairs);
@@ -100,6 +124,9 @@ namespace Game
         {
             return new EventEntitiesMemento
             (
+                MimicItems.Select(mimicItem => mimicItem.Serialize()).ToList(),
+                MimicMoney.Select(mimicMoney => mimicMoney.Serialize()).ToList(),
+                MimicStairs.Select(mimicStairs => mimicStairs.Serialize()).ToList(),
                 Stairs.Select(stairs => stairs.Serialize()).ToList(),
                 _chests.Select(chest => chest.Serialize()).ToList(),
                 _traps.Select(trap => trap.Serialize()).ToList(),
@@ -113,6 +140,9 @@ namespace Game
         }
 
         public static EventEntitiesMemento Build(
+            IEnumerable<MimicItemMemento> mimicItems,
+            IEnumerable<MimicMoneyMemento> mimicMoney,
+            IEnumerable<MimicStairsMemento> mimicStairs,
             IEnumerable<StairsMemento> stairs,
             IEnumerable<ChestMemento> chests,
             IEnumerable<TrapMemento> traps,
@@ -126,6 +156,9 @@ namespace Game
         {
             return new EventEntitiesMemento
             (
+                mimicItems.ToList(),
+                mimicMoney.ToList(),
+                mimicStairs.ToList(),
                 stairs.ToList(),
                 chests.ToList(),
                 traps.ToList(),
@@ -161,7 +194,19 @@ namespace Game
         public void Remove(IEventEntity eventEntity)
         {
             _standaloneEventEntities.Remove(eventEntity);
-            if (eventEntity is Trap trap)
+            if (eventEntity is MimicItemEntity mimicItem)
+            {
+                MimicItems.Remove(mimicItem);
+            }
+            else if (eventEntity is MimicMoney mimicMoney)
+            {
+                MimicMoney.Remove(mimicMoney);
+            }
+            else if (eventEntity is MimicStairs mimicStairs)
+            {
+                MimicStairs.Remove(mimicStairs);
+            }
+            else if (eventEntity is Trap trap)
             {
                 _traps.Remove(trap);
             }

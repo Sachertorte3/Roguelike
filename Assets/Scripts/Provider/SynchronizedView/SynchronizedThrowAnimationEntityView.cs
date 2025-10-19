@@ -39,7 +39,7 @@ namespace Provider
 
         protected override EntityView ViewPrefab(ThrowAnimationEntity _)
         {
-            return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
+            return ObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
         }
 
         public void Dispose()

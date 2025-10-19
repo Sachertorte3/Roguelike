@@ -68,13 +68,17 @@ namespace Domain.Service.Characters
                     viewRange: CommonSenseParameters.PlayerVisionRange,
                     flags: flags,
                     waitTime: data.MoveSpeed.ToWaitTime(),
-                    isSlept: false
+                    isSlept: false,
+                    doActImmediately: false
                 ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
-                skills: new List<CharacterSkillMemento>
+                skills: new List<CharacterSkillWithRuleMemento>
                 {
-                    CharacterSkill.Build(defaultSkill)
+                    new CharacterSkillWithRuleMemento(
+                        CharacterSkill.Build(defaultSkill),
+                        0
+                    )
                 },
                 lastSkill: Option<SpawnEffectSkillMemento>.None,
                 inventory: Storage.Build(data.InventoryCapacity, new(), true, true),
@@ -95,7 +99,7 @@ namespace Domain.Service.Characters
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
-            IAffiliation? affiliation = null, Location? homeLocation = null)
+            IAffiliation? affiliation = null, Location? homeLocation = null, bool doActImmediately = false)
         {
             var items = new List<IItemMemento>();
             if (RandUtils.IsLessThanProbability(data.DropItemRate) && data.DropItemTable.Count > 0)
@@ -126,11 +130,12 @@ namespace Domain.Service.Characters
                     viewRange: 8,
                     flags: data.Flags.ToHashSet(),
                     waitTime: data.MoveSpeed.ToWaitTime(),
-                    isSlept: isSlept
+                    isSlept: isSlept,
+                    doActImmediately: doActImmediately
                 ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
-                skills: data.Skills.Select(x => CharacterSkill.Build(x)).ToList(),
+                skills: data.Skills.Select(x => CharacterSkillWithRule.Build(x)).ToList(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory: inventory,
                 knownItemNames: new List<string>(),
@@ -163,7 +168,7 @@ namespace Domain.Service.Characters
             value *= isShiny ? enemyData.Hp * 10 : enemyData.Hp;
             value /= EvaluateDamageRate(enemyData);
 
-            value *= isShiny ? EvaluateSkills(enemyData.Skills) * 2 : EvaluateSkills(enemyData.Skills);
+            value *= isShiny ? EvaluateSkills(enemyData.Skills.Select(x => x.Skill)) * 2 : EvaluateSkills(enemyData.Skills.Select(x => x.Skill));
 
             value *= enemyData.MoveSpeed switch
             {

@@ -43,7 +43,7 @@ namespace Domain.Service.Characters
         private readonly Inventory _inventory;
         private readonly ObservableHashSet<string> _knownItemNames = new();
         private readonly Subject<Unit> _onAttacked = new();
-        private readonly List<CharacterSkill> _skills;
+        private readonly List<CharacterSkillWithRule> _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
         public int DropExp { get; init; }
@@ -61,7 +61,7 @@ namespace Domain.Service.Characters
             Entity = new EntityBase(data.Entity);
             _direction = new ReactiveProperty<Direction8>(data.Direction);
             _statusManager = new CharacterStatusManager(data.Status, Entity.Position, this, map);
-            _skills = data.Skills.Select(x => new CharacterSkill(x)).ToList();
+            _skills = data.Skills.Select(x => new CharacterSkillWithRule(x)).ToList();
             _lastSkill = data.LastSkill.HasValue ? new SpawnEffectSkill(data.LastSkill.Value) : null;
             _inventory = new Inventory(data.Inventory, this);
             _knownItemNames = new ObservableHashSet<string>(data.KnownItemNames);
@@ -165,7 +165,7 @@ namespace Domain.Service.Characters
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
         public Observable<Unit> OnDead => _onDead;
-        public IReadOnlyList<ICharacterSkill> Skills => _skills;
+        public IReadOnlyList<ICharacterSkillWithRule> Skills => _skills;
         public IVisionRange VisionRange => _statusManager.VisionRange;
         public IEnumerable<Vector2Int> VisibleArea => _statusManager.VisionRange.VisibleArea;
 
@@ -505,6 +505,12 @@ namespace Domain.Service.Characters
                     CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
             }
 
+            if (item.ShouldRevealMimic(this, destination, map))
+            {
+                State = CharacterState.Finish;
+                return;
+            }
+
             var itemEntity = map.SpawnItem(item,
                 map.FindBlankPositionFrom(destination, position => map.At(position).IsBlank(EntityLayer.Bottom)));
 
@@ -524,9 +530,12 @@ namespace Domain.Service.Characters
             {
                 var item = Inventory.Remove(index);
                 GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を落とした");
-                map.SpawnItem(item,
-                    map.FindBlankPositionFrom(Entity.CurrentPosition,
-                        position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                if (!item.ShouldRevealMimic(this, Entity.CurrentPosition, map))
+                {
+                    map.SpawnItem(item,
+                        map.FindBlankPositionFrom(Entity.CurrentPosition,
+                            position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                }
                 State = CharacterState.Finish;
             }
         }
@@ -572,9 +581,12 @@ namespace Domain.Service.Characters
                     GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{groundItem.Item.GetName(map.Player, map.ItemPlaceholders)}を拾った");
                 }
                 GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{replacedItem.GetName(map.Player, map.ItemPlaceholders)}を捨てた");
-                map.SpawnItem(replacedItem,
-                    map.FindBlankPositionFrom(Entity.CurrentPosition,
-                        position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                if (!item.ShouldRevealMimic(this, Entity.CurrentPosition, map))
+                {
+                    map.SpawnItem(item,
+                        map.FindBlankPositionFrom(Entity.CurrentPosition,
+                            position => map.At(position).IsBlank(EntityLayer.Bottom)));
+                }
             }
             else
             {
@@ -886,7 +898,7 @@ namespace Domain.Service.Characters
 
         public void UpdateCharacterTurn()
         {
-            _skills.ForEach(x => x.CoolDown());
+            _skills.ForEach(x => x.Skill.CoolDown());
         }
 
         ~Character()
@@ -901,7 +913,7 @@ namespace Domain.Service.Characters
             info += "スキル:\n";
             foreach (var skill in Skills)
             {
-                info += $"{skill.Info()}\n";
+                info += $"{skill.Skill.Info()}\n";
             }
             if (_lastSkill != null)
             {

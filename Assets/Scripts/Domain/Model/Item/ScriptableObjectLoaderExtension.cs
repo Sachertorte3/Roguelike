@@ -7,7 +7,7 @@ namespace Domain.Model.Item
     {
         public static IItemData LoadItemData(string name)
         {
-            return (IItemData)ScriptableObjectLoader.LoadWithPath<ScriptableObject>($"Assets/Database/ItemData/{name}.asset");
+            return (IItemData)ObjectLoader.LoadWithPath<ScriptableObject>($"Assets/Database/ItemData/{name}.asset");
         }
     }
 }

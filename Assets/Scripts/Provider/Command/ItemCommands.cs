@@ -73,7 +73,7 @@ namespace Provider
                 );
                 if (prefixName != null)
                 {
-                    var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
+                    var prefixData = ObjectLoader.Load<WeaponPrefix>(prefixName);
                     item = baseItemData.Match<IItem>(
                         itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
                         directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData))

@@ -68,6 +68,13 @@ namespace Domain.Service.Items
                                 }
                             }
                         ).AddTo(_itemDisposables[itemAdded]);
+
+                        itemAdded.OnMimicRevealed.Subscribe(
+                            _ =>
+                            {
+                                ForceRemove(itemAdded);
+                            }
+                        ).AddTo(_itemDisposables[itemAdded]);
                     }
                 },
                 itemRemoved =>

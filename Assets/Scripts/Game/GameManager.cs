@@ -101,13 +101,13 @@ namespace Game
         private async UniTask<PlayerData> GetPlayerData()
         {
             var players = new List<(PlayerData data, string unlockCondition, bool usable)> {
-                (ScriptableObjectLoader.Load<PlayerData>("Adventurer"),
+                (ObjectLoader.Load<PlayerData>("Adventurer"),
                 "最初から", true),
-                (ScriptableObjectLoader.Load<PlayerData>("Witch"),
+                (ObjectLoader.Load<PlayerData>("Witch"),
                 "50種類のアイテムを発見", _globalStatistics.KnownItemNames.Count >= 50),
-                (ScriptableObjectLoader.Load<PlayerData>("Rabbit"),
+                (ObjectLoader.Load<PlayerData>("Rabbit"),
                 "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
-                (ScriptableObjectLoader.Load<PlayerData>("Fairy"),
+                (ObjectLoader.Load<PlayerData>("Fairy"),
                 "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
             };
             var index = await _characterSelectReceiver.GetCharacter(
@@ -191,7 +191,7 @@ namespace Game
             }
             else
             {
-                var playerData = ScriptableObjectLoader.Load<PlayerData>("Adventurer");
+                var playerData = ObjectLoader.Load<PlayerData>("Adventurer");
                 var map = CreateSaveData(playerData);
                 var _ = await GetChoice(null, "New Game");
                 await ChoiceDifficulty();

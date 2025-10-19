@@ -38,7 +38,7 @@ namespace Provider
 
         protected override EntityView ViewPrefab(Fire _)
         {
-            return ScriptableObjectLoader.LoadPrefab("Fire").GetComponent<EntityView>();
+            return ObjectLoader.LoadPrefab("Fire").GetComponent<EntityView>();
         }
 
         public void Dispose()

@@ -54,7 +54,7 @@ namespace Provider
                 );
                 if (prefixName != null)
                 {
-                    var prefixData = ScriptableObjectLoader.Load<WeaponPrefix>(prefixName);
+                    var prefixData = ObjectLoader.Load<WeaponPrefix>(prefixName);
                     if (baseItemData is DirectWeaponData weaponData)
                     {
                         var itemMemento = DirectWeapon.Build(weaponData, prefixData);
@@ -78,10 +78,14 @@ namespace Provider
         {
             try
             {
-                var enemyData = ScriptableObjectLoader.Load<EnemyData>(enemyName);
-                var enemy = _world.CurrentMap.SpawnEnemy(enemyData, position, isSlept: isSlept,
+                var enemyData = ObjectLoader.Load<EnemyData>(enemyName);
+                _world.CurrentMap.SpawnEnemy(
+                    enemyData,
+                    position,
+                    doActImmediately: false,
+                    isSlept: isSlept,
                     isShiny: isShiny);
-                Log.Info($"{enemy.GetNameIgnoreVisibility(_world.CurrentMap.Player)}を{position}にスポーンしました。");
+                Log.Info($"{enemyData.Name}を{position}にスポーンしました。");
             }
             catch (Exception e)
             {

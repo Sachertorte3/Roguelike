@@ -19,7 +19,7 @@ namespace Game
 
         public Dungeon(DungeonMemento memento)
         {
-            _dungeonData = ScriptableObjectLoader.Load<DungeonBluePrintData>("Dungeon");
+            _dungeonData = ObjectLoader.Load<DungeonBluePrintData>("Dungeon");
             _mapIds = memento.MapIds.ToDictionary(mapId => mapId.Key, mapId => new Id<IMap>(mapId.Value));
         }
 

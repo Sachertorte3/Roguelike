@@ -9,10 +9,11 @@ namespace Utilities.Serialize
     [Serializable]
     public class IconSerializable
     {
-        [ShowInInspector] [OnValueChanged("OnValidate")]
+        [ShowInInspector]
+        [OnValueChanged("OnValidate")]
         private Sprite _value;
 
-        [ReadOnly] [SerializeField] private string _name;
+        [ReadOnly][SerializeField] private string _name;
 
         public Sprite Value
         {
@@ -20,7 +21,7 @@ namespace Utilities.Serialize
             {
                 if (_value == null)
                 {
-                    _value = ScriptableObjectLoader.LoadIcon(_name);
+                    _value = ObjectLoader.LoadIcon(_name);
                 }
 
                 return _value;

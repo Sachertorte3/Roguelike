@@ -17,7 +17,7 @@ namespace Domain.Model.Memento
         public CharacterSkillMemento(
             SpawnEffectSkillMemento skill,
             int rushDistance,
-            int backStepDistance, 
+            int backStepDistance,
             int chargeTurn,
             int coolTime,
             int remainingTurn)

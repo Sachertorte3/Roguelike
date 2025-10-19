@@ -3,8 +3,10 @@ using System;
 using System.Linq;
 using DG.Tweening;
 using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Events;
+using Domain.Service.Items;
 using Game;
 using R3;
 using UnityEngine;
@@ -17,7 +19,7 @@ namespace Provider
     public class SynchronizedIconEntityView : SynchronizedEntityView<IEntity, EntityView>, IDisposable
     {
         private readonly SerialDisposable[] _disposable =
-            EnumerableExtension.CreateNewInstances<SerialDisposable>(3).ToArray();
+            EnumerableExtension.CreateNewInstances<SerialDisposable>(4).ToArray();
 
         protected override InputReceiver _inputReceiver { get; init; }
         protected override GameManager _gameManager { get; init; }
@@ -50,23 +52,33 @@ namespace Provider
                 mapChanged.PreviousMap?.StandaloneScheduledEventEntities.ForEach(entity => Remove(entity));
                 _disposable[2].Disposable = mapChanged.Map.StandaloneScheduledEventEntities.SubscribeIncludingCurrentItems(Add, Remove);
             });
+            world.OnActiveMapChanged.Subscribe(mapChanged =>
+            {
+                mapChanged.PreviousMap?.Items.ForEach(item => Remove(item));
+                _disposable[3].Disposable = mapChanged.Map.Items.SubscribeIncludingCurrentItems(Add, Remove);
+            });
         }
 
         protected override EntityView ViewPrefab(IEntity eventEntity)
         {
             if (eventEntity is Bonfire)
             {
-                return ScriptableObjectLoader.LoadPrefab("Bonfire").GetComponent<EntityView>();
+                return ObjectLoader.LoadPrefab("Bonfire").GetComponent<EntityView>();
             }
 
             if (eventEntity is Money)
             {
-                return ScriptableObjectLoader.LoadPrefab("Money").GetComponent<EntityView>();
+                return ObjectLoader.LoadPrefab("Money").GetComponent<EntityView>();
+            }
+
+            if (eventEntity is MimicMoney)
+            {
+                return ObjectLoader.LoadPrefab("Money").GetComponent<EntityView>();
             }
 
             if (eventEntity is Trap)
             {
-                return ScriptableObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
+                return ObjectLoader.LoadPrefab("Trap").GetComponent<EntityView>();
             }
 
             if (eventEntity is Stairs stairs)
@@ -74,23 +86,47 @@ namespace Provider
                 switch (stairs.Type)
                 {
                     case MovementEntityType.UpStairs:
-                        return ScriptableObjectLoader.LoadPrefab("UpStairs").GetComponent<EntityView>();
+                        return ObjectLoader.LoadPrefab("UpStairs").GetComponent<EntityView>();
                     case MovementEntityType.DownStairs:
-                        return ScriptableObjectLoader.LoadPrefab("DownStairs").GetComponent<EntityView>();
+                        return ObjectLoader.LoadPrefab("DownStairs").GetComponent<EntityView>();
                     case MovementEntityType.MagicCircle:
-                        return ScriptableObjectLoader.LoadPrefab("MagicCircle").GetComponent<EntityView>();
+                        return ObjectLoader.LoadPrefab("MagicCircle").GetComponent<EntityView>();
                     default:
                         throw new NotImplementedException();
                 }
             }
 
+            if (eventEntity is MimicStairs mimicStairs)
+            {
+                switch (mimicStairs.Type)
+                {
+                    case MovementEntityType.UpStairs:
+                        return ObjectLoader.LoadPrefab("UpStairs").GetComponent<EntityView>();
+                    case MovementEntityType.DownStairs:
+                        return ObjectLoader.LoadPrefab("DownStairs").GetComponent<EntityView>();
+                    case MovementEntityType.MagicCircle:
+                        return ObjectLoader.LoadPrefab("MagicCircle").GetComponent<EntityView>();
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            if (eventEntity is IItemEntity)
+            {
+                return ObjectLoader.LoadPrefab("Item").GetComponent<EntityView>();
+            }
+            else if (eventEntity is MimicItemEntity)
+            {
+                return ObjectLoader.LoadPrefab("Item").GetComponent<EntityView>();
+            }
+
             if (eventEntity.Entity.Layer == EntityLayer.Middle)
             {
-                return ScriptableObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
+                return ObjectLoader.LoadPrefab("Entity").GetComponent<EntityView>();
             }
             else if (eventEntity.Entity.Layer == EntityLayer.Bottom)
             {
-                return ScriptableObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
+                return ObjectLoader.LoadPrefab("EntityBottom").GetComponent<EntityView>();
             }
             else
             {
@@ -139,8 +175,20 @@ namespace Provider
                     .Subscribe(_ => entityView.transform.DOShakePosition(0.5f, 0.1f))
                     .AddTo(entityView);
             }
+            else if (eventEntity is IItemEntity itemEntity)
+            {
+                var itemView = entityView.GetComponent<ItemView>();
+                itemView.SetShiny(itemEntity.Item.IsShiny);
+            }
+            else if (eventEntity is MimicItemEntity mimicItemEntity)
+            {
+                var itemView = entityView.GetComponent<ItemView>();
+                itemView.SetShiny(mimicItemEntity.Item.IsShiny);
+            }
             if (eventEntity is IIconEntity iconEventEntity)
+            {
                 spriteView.GetComponent<SpriteRenderer>().sprite = iconEventEntity.Icon;
+            }
         }
 
         protected override void CleanupView(IEntity item, EntityView view)

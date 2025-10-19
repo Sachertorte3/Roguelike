@@ -346,22 +346,24 @@ namespace Game
                 statue.Attacked();
             }
         }
-        public IEnumerable<ICharacter> RevealMimic(IEnumerable<Vector2Int> positions)
+        public void RevealMimic(IEnumerable<Vector2Int> positions)
         {
-            var characters = new List<ICharacter>();
+            foreach (var item in ItemManager.Items.In(positions).ToList())
+            {
+                item.ShouldRevealMimic(_map);
+            }
             foreach (var mimicItem in EventEntityManager.MimicItems.In(positions).ToList())
             {
-                characters.Add(mimicItem.Reveal(_map));
+                mimicItem.Reveal(_map);
             }
             foreach (var mimicMoney in EventEntityManager.MimicMoney.In(positions).ToList())
             {
-                characters.Add(mimicMoney.Reveal(_map));
+                mimicMoney.Reveal(_map);
             }
             foreach (var mimicStairs in EventEntityManager.MimicStairs.In(positions).ToList())
             {
-                characters.Add(mimicStairs.Reveal(_map));
+                mimicStairs.Reveal(_map);
             }
-            return characters;
         }
         /// <summary>
         ///     Gets a character that follows the player when moving from one map to another.

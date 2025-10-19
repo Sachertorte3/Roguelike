@@ -8,6 +8,11 @@ using Utilities;
 
 namespace Domain.Model.Effect
 {
+    public interface ICharacterSkillWithRule
+    {
+        public ICharacterSkill Skill { get; }
+        public int Priority { get; }
+    }
     public interface ICharacterSkill : ISerializable<CharacterSkillMemento>, ISkill, IHasInfo
     {
         public void CoolDown();

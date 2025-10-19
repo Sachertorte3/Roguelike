@@ -7,6 +7,7 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -69,6 +70,15 @@ namespace Domain.Service.Events
             if (itemIndex == null)
                 return;
             var item = player.Character.Inventory.GetItem(itemIndex.Value);
+            if (item.ShouldRevealMimic(player.Character, player.Character.Entity.CurrentPosition, map))
+            {
+                return;
+            }
+            if (!player.Character.Inventory.CanRemove(item))
+            {
+                GameLog.AddIgnoreVisibility($"{item.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
+                return;
+            }
             item.Repair(player, player.Character, map.ItemPlaceholders);
             _remainingUsages.Value -= 1;
         }
@@ -87,6 +97,15 @@ namespace Domain.Service.Events
             if (itemIndex == null)
                 return;
             var item = player.Character.Inventory.GetItem(itemIndex.Value);
+            if (item.ShouldRevealMimic(player.Character, player.Character.Entity.CurrentPosition, map))
+            {
+                return;
+            }
+            if (!player.Character.Inventory.CanRemove(item))
+            {
+                GameLog.AddIgnoreVisibility($"{item.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
+                return;
+            }
             item.RandomUpgrade(player, player.Character, map.ItemPlaceholders);
             _remainingUsages.Value -= 1;
         }

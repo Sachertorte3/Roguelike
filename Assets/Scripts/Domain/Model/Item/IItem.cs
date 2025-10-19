@@ -57,7 +57,9 @@ namespace Domain.Model.Item
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public Observable<bool> OnCursedChanged { get; }
+        public Observable<Unit> OnMimicRevealed { get; }
         public void SetState(ItemState state);
+        public bool ShouldRevealMimic(IActorOfEffect actor, Vector2Int position, IMap map);
         public UniTask<ISkillResult> Use(IActor actor, Vector2Int position, Direction8 direction, IMap map);
 
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,

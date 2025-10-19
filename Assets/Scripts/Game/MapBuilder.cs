@@ -339,16 +339,20 @@ namespace Game
                 var enemy = data.Enemies.GetRandomItem();
                 if (enemy.CanMimic)
                 {
-                    switch (RandUtils.WeightedIndex(1, 10, 1))
+                    switch (enemy.MimicWeights.GetRandomIndex())
                     {
                         case 0:
                             var item = data.ItemDatabase.GetRandomItem(data.Progress);
                             _mimicItems.Add(MimicItemEntity.Build(ItemEntity.Build(position, item.Build()), enemy));
                             break;
                         case 1:
-                            _mimicMoney.Add(MimicMoney.Build(position, data.MoneyAmount(), enemy));
+                            item = data.ItemDatabase.GetRandomItem(data.Progress);
+                            _items.Add(ItemEntity.Build(position, item.Build(mimic: enemy)));
                             break;
                         case 2:
+                            _mimicMoney.Add(MimicMoney.Build(position, data.MoneyAmount(), enemy));
+                            break;
+                        case 3:
                             _mimicStairs.Add(MimicStairs.Build(MovementEntityType.DownStairs, position, enemy));
                             break;
                         default:

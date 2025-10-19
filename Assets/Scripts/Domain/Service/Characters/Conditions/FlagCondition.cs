@@ -33,7 +33,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float Evaluate(ITargetOfEffect target)
         {
-            if (target.Status.GetFlagStat(_flagStatType.Value).CurrentValue)
+            if (!target.Status.GetFlagStat(_flagStatType.Value).CurrentValue)
             {
                 return _flagStatType.Value.Evaluate(target);
             }

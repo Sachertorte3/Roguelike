@@ -62,6 +62,16 @@ namespace Domain.Service.Events
                 return;
             var mergeBaseItem = player.Character.Inventory.GetItem(mergeBaseItemIndex.Value);
 
+            if (mergeBaseItem.ShouldRevealMimic(player.Character, player.Character.Entity.CurrentPosition, map))
+            {
+                return;
+            }
+            if (!player.Character.Inventory.CanRemove(mergeBaseItem))
+            {
+                GameLog.AddIgnoreVisibility($"{mergeBaseItem.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
+                return;
+            }
+
             var mergedItemIndex = await player.Character.SelectItemWithCanSelect(
                 "合成するアイテムを選択してください",
                 item => ItemMergeExtension.CanSelectForMergedItem(item, mergeBaseItem));
@@ -69,9 +79,8 @@ namespace Domain.Service.Events
                 return;
             var mergedItem = player.Character.Inventory.GetItem(mergedItemIndex.Value);
 
-            if (!player.Character.Inventory.CanRemove(mergeBaseItem))
+            if (mergedItem.ShouldRevealMimic(player.Character, player.Character.Entity.CurrentPosition, map))
             {
-                GameLog.AddIgnoreVisibility($"{mergeBaseItem.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
                 return;
             }
             if (!player.Character.Inventory.CanRemove(mergedItem))

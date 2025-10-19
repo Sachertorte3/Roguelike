@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ad2ba14d6a7844c9e89791070d4735, type: 3}
-  m_Name: "\u30AF\u30E9\u30A6\u30C9"
+  m_Name: "\u30DB\u30ED\u30A6"
   m_EditorClassIdentifier: 
-  Name: "\u30AF\u30E9\u30A6\u30C9"
+  Name: "\u30DB\u30ED\u30A6"
   Group: 1
   CharacterType:
     rid: 2541219246146060288
   _sprite: {fileID: 21300000, guid: d112c495259ab114281a7e70d6d7ebb1, type: 3}
   IsBoss: 0
-  Hp: 4
+  Hp: 6
   Aggression: 4
   Behavior:
     wanderAround: 1
@@ -31,32 +31,55 @@ MonoBehaviour:
     UseBottomBound: 1
     distanceBottomBound: 3
     lessThanBottomBound: 3
-    PrioritizeMovementWhenDistanceLessThanBottomBound: 1
+    PrioritizeMovementWhenDistanceLessThanBottomBound: 0
     PrioritizeEnemiesOverLeaders: 0
     ChaseLeader: 1
   MoveSpeed: 2
   Flags: 
   IsFlying: 1
   CanThroughWalls: 0
-  CanMimic: 0
+  CanMimic: 1
+  MimicWeights:
+    ItemRevealOnPickUp: 0
+    ItemRevealOnUse: 1
+    Money: 1
+    Stairs: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
-      <Position>k__BackingField:
-        rid: 3794997675126423552
-      <Area>k__BackingField:
-        rid: 3794997675126423553
-      <Effects>k__BackingField:
-      - rid: 3794997675126423554
-      - rid: 3794997675126423555
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F"
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 3
+      Skill:
+        <Position>k__BackingField:
+          rid: 2790137640983199850
+        <Area>k__BackingField:
+          rid: 2790137640983199851
+        <Effects>k__BackingField:
+        - rid: 2790137640983199852
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u9ED2\u3044\u9727\u3092\u653E\u3063\u305F"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 30
+    Priority: 1
+  - Skill:
+      Skill:
+        <Position>k__BackingField:
+          rid: 3794997675126423552
+        <Area>k__BackingField:
+          rid: 3794997675126423553
+        <Effects>k__BackingField:
+        - rid: 3794997675126423554
+        - rid: 3794997675126423555
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u95C7\u306E\u529B\u3092\u653E\u3063\u305F"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 3
+    Priority: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:
@@ -84,6 +107,21 @@ MonoBehaviour:
       type: {class: Cloud, ns: Domain.Model.Character.Type, asm: Domain.Model}
       data:
         Type: 0
+    - rid: 2790137640983199850
+      type: {class: AtFeet, ns: Domain.Model.Effect.Position, asm: Domain.Model}
+      data: 
+    - rid: 2790137640983199851
+      type: {class: LineArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
+      data:
+        ContainsSelf: 0
+        CanIgnoreWalls: 0
+        Length: 1
+    - rid: 2790137640983199852
+      type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
+      data:
+        _condition:
+          _name: "\u9EBB\u75FA"
+        _probabilityOfSuccess: 1
     - rid: 3794997675126423552
       type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}
       data:

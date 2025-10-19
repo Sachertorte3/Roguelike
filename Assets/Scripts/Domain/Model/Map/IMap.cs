@@ -53,7 +53,7 @@ namespace Domain.Model.Map
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
 
-        public IEnumerable<ICharacter> RevealMimic(IEnumerable<Vector2Int> positions);
+        public void RevealMimic(IEnumerable<Vector2Int> positions);
         public void AttackStatue(IEnumerable<Vector2Int> positions);
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);

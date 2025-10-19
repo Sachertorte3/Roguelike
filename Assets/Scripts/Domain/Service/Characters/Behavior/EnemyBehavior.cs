@@ -330,21 +330,38 @@ namespace Domain.Service.Characters.Behavior
 
         private IEnumerable<UseSkill> GenerateDoableUseSkills(IHasBehavior character, IMap map)
         {
-            var actions = new List<UseSkill>();
-            foreach (var skill in character.Skills)
+            // スキルを優先度でグループ化（大きい順）
+            var skillGroups = character.Skills
+                .GroupBy(skill => skill.Priority)
+                .OrderByDescending(group => group.Key)
+                .Select(group => group.Select(skill => skill.Skill));
+
+            foreach (var skillGroup in skillGroups)
             {
-                if (skill.IsDirectional)
+                var groupActions = new List<UseSkill>();
+
+                foreach (var skill in skillGroup)
                 {
-                    actions.AddRange(
-                        DirectionMethods.AllDirections.Select(direction => new UseSkill(skill, direction)));
+                    if (skill.IsDirectional)
+                    {
+                        groupActions.AddRange(
+                            DirectionMethods.AllDirections.Select(direction => new UseSkill(skill, direction)));
+                    }
+                    else
+                    {
+                        groupActions.Add(new UseSkill(skill, character.CurrentDirection));
+                    }
                 }
-                else
+
+                var doableActions = groupActions.Where(action => action.Doable(character, map));
+
+                if (doableActions.Any())
                 {
-                    actions.Add(new UseSkill(skill, character.CurrentDirection));
+                    return doableActions;
                 }
             }
 
-            return actions.Where(action => action.Doable(character, map));
+            return Enumerable.Empty<UseSkill>();
         }
 
         private IEnumerable<UseItem> GenerateDoableUseItems(IHasBehavior character, IMap map)

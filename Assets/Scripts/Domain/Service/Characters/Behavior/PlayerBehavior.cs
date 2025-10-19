@@ -112,7 +112,7 @@ namespace Domain.Service.Characters.Behavior
                         IAction action;
 
                         if (focusItem == null)
-                            action = new UseSkill(character.Skills[0], character.CurrentDirection);
+                            action = new UseSkill(character.Skills[0].Skill, character.CurrentDirection);
                         else
                             action = new UseItem(focusItem, character.CurrentDirection);
 

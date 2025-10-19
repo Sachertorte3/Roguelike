@@ -10,6 +10,9 @@ using Utilities.Table;
 using Utilities.Serialize;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,9 +37,10 @@ namespace Domain.Model.Character
         public bool IsFlying;
         public bool CanThroughWalls;
         public bool CanMimic;
+        [ShowIf("@CanMimic")] public MimicWeights MimicWeights = new();
         public bool CanPickUp;
         public bool CanUseItem;
-        public CharacterSkillData[] Skills;
+        public List<CharacterSkillWithRuleData> Skills;
         public bool HasLastSkill;
         [ShowIf("@HasLastSkill")] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
@@ -48,12 +52,12 @@ namespace Domain.Model.Character
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
             Name = Path.GetFileNameWithoutExtension(assetPath);
-            
+
             Flags = Flags.Distinct().ToList();
 
             foreach (var skill in Skills)
             {
-                skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
+                skill.Skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
 
             if (LastSkill != null)
@@ -64,5 +68,11 @@ namespace Domain.Model.Character
             EditorUtility.SetDirty(this);
         }
 #endif
+    }
+    [Serializable]
+    public class CharacterSkillWithRuleData
+    {
+        [Required] public CharacterSkillData Skill;
+        [MinValue(0)] public int Priority;
     }
 }

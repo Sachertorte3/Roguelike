@@ -25,6 +25,16 @@ namespace Domain.Service.Items
 
         public Sprite Icon => Item.Icon;
 
+        public bool ShouldRevealMimic(IMap map)
+        {
+            if (Item.ShouldRevealMimic(map.Player.Character, Entity.CurrentPosition, map))
+            {
+                Entity.Destroy("モンスターが正体を表した");
+                return true;
+            }
+            return false;
+        }
+
         public void Dispose()
         {
             Entity.Dispose();

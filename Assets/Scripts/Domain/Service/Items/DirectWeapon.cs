@@ -28,7 +28,6 @@ namespace Domain.Service.Items
         protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => false;
         public override bool UseOnDeath => false;
-        public override Option<IStorage> ItemStorage => Option.None<IStorage>();
         public override bool CannotUseIfCursed => false;
         public override bool RequiresLiteracy => false;
         public override bool CannotDropIfCursed => true;
@@ -235,7 +234,7 @@ namespace Domain.Service.Items
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
-        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None)
+        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.ElementPowers, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
@@ -256,7 +255,8 @@ namespace Domain.Service.Items
                     usageLossChance: usageLossChance,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit + prefix.ToOption().MapOr(0, prefix => prefix.AdditionalUpgradeLimit),
-                    conditions: data.PassiveConditions
+                    conditions: data.PassiveConditions,
+                    mimic: mimic.ToOption()
                 ),
                 prefix: prefix.ToOption(),
                 elementPowers: data.ElementPowers,

@@ -39,25 +39,32 @@ MonoBehaviour:
   IsFlying: 0
   CanThroughWalls: 0
   CanMimic: 0
+  MimicWeights:
+    ItemRevealOnPickUp: 1
+    ItemRevealOnUse: 1
+    Money: 1
+    Stairs: 1
   CanPickUp: 0
   CanUseItem: 0
   Skills:
   - Skill:
-      <Position>k__BackingField:
-        rid: 5486256464210165773
-      <Area>k__BackingField:
-        rid: 5486256623760965637
-      <Effects>k__BackingField:
-      - rid: 5486256464210165775
-      - rid: 5486256623760965638
-      - rid: 5486256623760965639
-      <Repeats>k__BackingField: 1
-      <ProbabilityOfSuccess>k__BackingField: 0.95
-      <Log>k__BackingField: "\u306F\u8599\u304E\u6255\u3063\u305F"
-    RushDistance: 0
-    BackStepDistance: 0
-    ChargeTurn: 0
-    CoolTime: 0
+      Skill:
+        <Position>k__BackingField:
+          rid: 5486256464210165773
+        <Area>k__BackingField:
+          rid: 5486256623760965637
+        <Effects>k__BackingField:
+        - rid: 5486256464210165775
+        - rid: 5486256623760965638
+        - rid: 5486256623760965639
+        <Repeats>k__BackingField: 1
+        <ProbabilityOfSuccess>k__BackingField: 0.95
+        <Log>k__BackingField: "\u306F\u8599\u304E\u6255\u3063\u305F"
+      RushDistance: 0
+      BackStepDistance: 0
+      ChargeTurn: 0
+      CoolTime: 0
+    Priority: 0
   HasLastSkill: 0
   LastSkill:
     <Position>k__BackingField:

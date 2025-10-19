@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Item;
@@ -28,7 +29,6 @@ namespace Domain.Service.Items
         protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => _hasSameSkill;
         public override bool UseOnDeath => _useOnDeath;
-        public override Option<IStorage> ItemStorage => Option<IStorage>.None;
         public bool CanMergeUses => Category == ItemCategory.Books || Category == ItemCategory.Wands;
         public override bool CannotUseIfCursed => Category != ItemCategory.Weapons;
         public override bool RequiresLiteracy => Category == ItemCategory.Books || Category == ItemCategory.Scrolls;
@@ -118,7 +118,7 @@ namespace Domain.Service.Items
             return memento;
         }
 
-        public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None)
+        public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -147,7 +147,8 @@ namespace Domain.Service.Items
                     usageLossChance: 1,
                     isCursed: isCursed,
                     upgradeLimit: data.UpgradeLimit,
-                    conditions: data.PassiveConditions
+                    conditions: data.PassiveConditions,
+                    mimic: mimic.ToOption()
                 ),
                 category: data.Category,
                 skillOnUse: skillOnUse.ToOption(),

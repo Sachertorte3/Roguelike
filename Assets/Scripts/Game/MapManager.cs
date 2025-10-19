@@ -82,7 +82,7 @@ namespace Game
                     character.Entity.Id == map.Shop.Value.ClerkId);
                 if (clerk == null && !map.Shop.Value.IsStolen)
                 {
-                    var clerkPosition = GetAllBlankPositionsOn(EntityLayer.Middle)
+                    var clerkPosition = GetAllBlankAndStandablePositions()
                         .In(map.Shop.Value.Room.Room.RectRange())
                         .GetAtRandom();
                     clerk = EntityManager.SpawnCharacter(
@@ -162,7 +162,7 @@ namespace Game
                     character.Entity.Id == map.Shop.Value.ClerkId);
                 if (clerk == null && !map.Shop.Value.IsStolen)
                 {
-                    var clerkPosition = GetAllBlankPositionsOn(EntityLayer.Middle)
+                    var clerkPosition = GetAllBlankAndStandablePositions()
                         .In(map.Shop.Value.Room.Room.RectRange())
                         .GetAtRandom();
                     clerk = EntityManager.SpawnCharacter(
@@ -228,15 +228,18 @@ namespace Game
         {
             if (enemy.CanMimic)
             {
-                switch (RandUtils.WeightedIndex(1, 10, 1))
+                switch (enemy.MimicWeights.GetRandomIndex())
                 {
                     case 0:
-                        SpawnMimicItem(enemy, position);
+                        SpawnMimicItemRevealOnPickup(enemy, position);
                         break;
                     case 1:
-                        SpawnMimicMoney(enemy, position);
+                        SpawnMimicItemRevealOnUse(enemy, position);
                         break;
                     case 2:
+                        SpawnMimicMoney(enemy, position);
+                        break;
+                    case 3:
                         SpawnMimicStairs(enemy, position);
                         break;
                     default:
@@ -266,10 +269,25 @@ namespace Game
             );
         }
 
-        public void SpawnMimicItem(EnemyData enemy, Vector2Int position)
+        public void SpawnMimicItemRevealOnPickup(EnemyData enemy, Vector2Int position)
         {
             var dummyItem = _dungeonData.ItemDatabase.GetRandomItem(_dungeonData.Progress).Build();
             EntityManager.SpawnMimicItem(MimicItemEntity.Build(ItemEntity.Build(position, dummyItem), enemy));
+        }
+
+        public void SpawnMimicItemRevealOnUse(EnemyData enemy, Vector2Int position)
+        {
+            var category = RandUtils.WeightedIndex(1, 1, 1, 1, 1) switch
+            {
+                0 => ItemCategory.Potions,
+                1 => ItemCategory.Scrolls,
+                2 => ItemCategory.Books,
+                3 => ItemCategory.Wands,
+                4 => ItemCategory.Weapons,
+                _ => throw new NotImplementedException()
+            };
+            var dummyItem = _dungeonData.ItemDatabase.GetRandomItem(category, _dungeonData.Progress).Build(mimic: enemy);
+            EntityManager.SpawnItem(ItemEntity.Build(position, dummyItem));
         }
 
         public void SpawnMimicMoney(EnemyData enemy, Vector2Int position)
@@ -352,6 +370,7 @@ namespace Game
             return _tilemap.GetAllTiles().Select(tile => tile.position).ToHashSet();
         }
 
+        public IEnumerable<IMapPosition> GetAllBlankPositions() => GetAllBlankPositionsOn();
         public IEnumerable<IMapPosition> GetAllBlankPositionsOn(params EntityLayer[] layers)
         {
             return TilemapViewer
@@ -360,18 +379,7 @@ namespace Game
                 .Where(position => position.IsBlank(layers));
         }
 
-        public IMapPosition? GetRandomBlankPositionOn(params EntityLayer[] layers)
-        {
-            foreach (var position in TilemapViewer.GetAllPassablePositions().Shuffled())
-            {
-                var mapPosition = At(position);
-                if (mapPosition.IsBlank(layers))
-                    return mapPosition;
-            }
-
-            return null;
-        }
-
+        public IEnumerable<IMapPosition> GetAllBlankAndStandablePositions() => GetAllBlankAndStandablePositionsOn();
         public IEnumerable<IMapPosition> GetAllBlankAndStandablePositionsOn(params EntityLayer[] layers)
         {
             return TilemapViewer
@@ -416,7 +424,7 @@ namespace Game
                 KeyCharacters.Select(character => character.Entity.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetRandomBlankPositionOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).Position
+                GetAllBlankAndStandablePositions().GetAtRandom().Position
             );
         }
 
@@ -430,7 +438,7 @@ namespace Game
                 KeyCharacters.Select(character => character.Entity.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetRandomBlankPositionOn(EntityLayer.Bottom, EntityLayer.Middle, EntityLayer.Top).Position
+                GetAllBlankAndStandablePositions().GetAtRandom().Position
             );
         }
 
@@ -580,7 +588,7 @@ namespace Game
         {
             if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))
             {
-                var positions = GetAllBlankPositionsOn(EntityLayer.Bottom, EntityLayer.Middle).Values()
+                var positions = GetAllBlankAndStandablePositions().Values()
                     .Except(EntityManager.Player.Character.VisionRange.VisibleArea);
                 if (positions.Any())
                     SpawnRandomEnemy(positions.GetAtRandom());
@@ -724,7 +732,7 @@ namespace Game
         public IItem? GetItemByIdFromWorldOrInventory(Id<IItem> id) => EntityManager.GetItemByIdFromWorldOrInventory(id);
         public HashSet<Vector2Int> AllCharacterPositionsFast() => EntityManager.AllCharacterPositionsFast();
         public HashSet<Vector2Int> AllItemPositionsFast() => EntityManager.AllItemPositionsFast();
-        public IEnumerable<ICharacter> RevealMimic(IEnumerable<Vector2Int> positions) => EntityManager.RevealMimic(positions);
+        public void RevealMimic(IEnumerable<Vector2Int> positions) => EntityManager.RevealMimic(positions);
         public void AttackStatue(IEnumerable<Vector2Int> positions) => EntityManager.AttackStatue(positions);
         public void SpawnFire(IEnumerable<Vector2Int> positions)
         {

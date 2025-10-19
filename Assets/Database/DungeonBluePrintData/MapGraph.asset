@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: Cave2
   m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
   graph: {fileID: 11400000}
-  position: {x: -328, y: 88}
+  position: {x: -312, y: 88}
   ports:
     keys:
     - Output
@@ -857,9 +857,9 @@ MonoBehaviour:
     items:
     - Item: {fileID: 11400000, guid: 622befc93c7f49c48b2ac306ae37e27f, type: 2}
       Weight: 1
-    - Item: {fileID: 11400000, guid: 276ed294d4867e14799ef6e322837be5, type: 2}
-      Weight: 1
     - Item: {fileID: 11400000, guid: 3eefc4cf587b776428b3c75029dc2ca0, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 31dc3254afcbf984db6ea1f251aca18f, type: 2}
       Weight: 1
   Output:
     items: []
@@ -1650,7 +1650,7 @@ MonoBehaviour:
   m_Name: TutorialCave
   m_EditorClassIdentifier: Domain.Model.Dungeon.MapGraph::Domain.Model.Dungeon.MapGraph.SectionNode
   graph: {fileID: 11400000}
-  position: {x: -328, y: -184}
+  position: {x: -312, y: -184}
   ports:
     keys:
     - Output

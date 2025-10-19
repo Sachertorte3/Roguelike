@@ -73,9 +73,12 @@ namespace Domain.Service.Characters
                 ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: Direction8.Down,
-                skills: new List<CharacterSkillMemento>
+                skills: new List<CharacterSkillWithRuleMemento>
                 {
-                    CharacterSkill.Build(defaultSkill)
+                    new CharacterSkillWithRuleMemento(
+                        CharacterSkill.Build(defaultSkill),
+                        0
+                    )
                 },
                 lastSkill: Option<SpawnEffectSkillMemento>.None,
                 inventory: Storage.Build(data.InventoryCapacity, new(), true, true),
@@ -132,7 +135,7 @@ namespace Domain.Service.Characters
                 ),
                 entity: EntityBase.Build(spawnPosition, EntityLayer.Middle),
                 direction: direction,
-                skills: data.Skills.Select(x => CharacterSkill.Build(x)).ToList(),
+                skills: data.Skills.Select(x => CharacterSkillWithRule.Build(x)).ToList(),
                 lastSkill: (data.HasLastSkill ? SpawnEffectSkill.Build(data.LastSkill) : null).ToOption(),
                 inventory: inventory,
                 knownItemNames: new List<string>(),
@@ -165,7 +168,7 @@ namespace Domain.Service.Characters
             value *= isShiny ? enemyData.Hp * 10 : enemyData.Hp;
             value /= EvaluateDamageRate(enemyData);
 
-            value *= isShiny ? EvaluateSkills(enemyData.Skills) * 2 : EvaluateSkills(enemyData.Skills);
+            value *= isShiny ? EvaluateSkills(enemyData.Skills.Select(x => x.Skill)) * 2 : EvaluateSkills(enemyData.Skills.Select(x => x.Skill));
 
             value *= enemyData.MoveSpeed switch
             {

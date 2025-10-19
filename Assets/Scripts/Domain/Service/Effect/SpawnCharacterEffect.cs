@@ -33,12 +33,13 @@ namespace Domain.Service.Effect
             var canSpawnCount = Mathf.Min(placeablePositions.Count(), _count);
             foreach (var position in placeablePositions.GetAtRandom(canSpawnCount))
             {
-                map.SpawnEnemy(
+                map.SpawnEnemyIgnoreMimic(
                     _character.Value,
                     position,
-                    actor.Affiliation,
-                    false,
-                    _inheritsShiny ? actor.IsShiny : null
+                    doActImmediately: true,
+                    affiliation: actor.Affiliation,
+                    isSlept: false,
+                    isShiny: _inheritsShiny ? actor.IsShiny : null
                 );
             }
 
@@ -53,9 +54,10 @@ namespace Domain.Service.Effect
             {
                 foreach (var position in placeablePositions.GetAtRandom(_count))
                 {
-                    map.SpawnEnemy(
+                    map.SpawnEnemyIgnoreMimic(
                         _character.Value,
-                        position
+                        position,
+                        doActImmediately: true
                     );
                 }
             }

@@ -22,7 +22,6 @@ namespace Provider
             builder.Register<CharacterSelectReceiver>(Lifetime.Singleton);
             builder.Register<TextInputReceiver>(Lifetime.Singleton);
             builder.Register<CharacterControlInputReceiver>(Lifetime.Singleton);
-            builder.Register<SynchronizedItemView>(Lifetime.Singleton);
             builder.Register<SynchronizedCharacterView>(Lifetime.Singleton);
             builder.Register<SynchronizedIconEntityView>(Lifetime.Singleton);
             builder.Register<SynchronizedThrowAnimationEntityView>(Lifetime.Singleton);

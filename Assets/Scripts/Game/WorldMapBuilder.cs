@@ -47,6 +47,9 @@ namespace Game
                     new List<CharacterMemento>(),
                     new List<ItemEntityMemento>(),
                     EventEntityManager.Build(
+                        new List<MimicItemMemento>(),
+                        new List<MimicMoneyMemento>(),
+                        new List<MimicStairsMemento>(),
                         _stairs,
                         new List<ChestMemento>(),
                         new List<TrapMemento>(),

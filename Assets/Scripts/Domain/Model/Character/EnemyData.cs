@@ -11,8 +11,6 @@ using Utilities.Serialize;
 using System.Collections.Generic;
 using System.Linq;
 
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -35,6 +33,7 @@ namespace Domain.Model.Character
         public List<FlagStatType> Flags;
         public bool IsFlying;
         public bool CanThroughWalls;
+        public bool CanMimic;
         public bool CanPickUp;
         public bool CanUseItem;
         public CharacterSkillData[] Skills;

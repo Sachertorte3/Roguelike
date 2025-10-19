@@ -6,7 +6,7 @@ namespace View
 {
     public class EffectViewSpawner
     {
-        private readonly GameObject _effect = ScriptableObjectLoader.LoadPrefab("Effect");
+        private readonly GameObject _effect = ObjectLoader.LoadPrefab("Effect");
 
         public void Spawn(IEnumerable<Vector2Int> area, Color color, int effectDisplayMilliseconds)
         {

@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Dungeon;
@@ -16,6 +17,7 @@ using Unity.Logging;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -24,6 +26,9 @@ namespace Game
         private readonly Id<IMap> _mapId;
         private readonly TilemapBuilder _tilemap;
         private readonly List<CharacterMemento> _characters = new();
+        private readonly List<MimicItemMemento> _mimicItems = new();
+        private readonly List<MimicMoneyMemento> _mimicMoney = new();
+        private readonly List<MimicStairsMemento> _mimicStairs = new();
         private readonly List<ItemEntityMemento> _items = new();
         private readonly List<StairsMemento> _stairs = new();
         private readonly List<ChestMemento> _chests = new();
@@ -207,7 +212,7 @@ namespace Game
             foreach (var position in itemPositions)
             {
                 var item = data.ItemDatabase.GetRandomItem(data.Progress);
-                _items.Add(ItemFactory.Build(position, item.Build()));
+                _items.Add(ItemEntity.Build(position, item.Build()));
             }
 
             var itemCount = data.ItemCount();
@@ -241,7 +246,7 @@ namespace Game
             foreach (var position in rect.Value.RectRange())
             {
                 var item = shopItems.GetRandomItem(data.Progress);
-                _items.Add(ItemFactory.Build(position, Item.Build(item, state: ItemState.ShopItem)));
+                _items.Add(ItemEntity.Build(position, Item.Build(item, state: ItemState.ShopItem)));
                 GetAllBlankPositionInRoom(roomId).Remove(position);
             }
 
@@ -304,8 +309,12 @@ namespace Game
             foreach (var direction in DirectionMethods.AllDirections.GetAtRandom(Random.Range(1, 3)))
             {
                 var position = center + direction.Vector();
-                var character = CharacterFactory.BuildCharacter(data.Npcs.GetRandomItem(), position,
-                    direction.Reverse(), Random.value < data.SleepChance, Random.value < data.ShinyChance,
+                var character = CharacterFactory.BuildCharacter(
+                    data.Npcs.GetRandomItem(),
+                    position,
+                    direction.Reverse(),
+                    RandUtils.IsLessThanProbability(data.SleepChance),
+                    RandUtils.IsLessThanProbability(data.ShinyChance),
                     homeLocation: new Location(_mapId, center));
                 _characters.Add(character);
             }
@@ -327,9 +336,34 @@ namespace Game
             {
                 if (data.Enemies.Count == 0)
                     break;
-                var character = CharacterFactory.BuildCharacter(data.Enemies.GetRandomItem(), position,
-                    isSlept: Random.value < data.SleepChance, isShiny: Random.value < data.ShinyChance);
-                _characters.Add(character);
+                var enemy = data.Enemies.GetRandomItem();
+                if (enemy.CanMimic)
+                {
+                    switch (RandUtils.WeightedIndex(1, 10, 1))
+                    {
+                        case 0:
+                            var item = data.ItemDatabase.GetRandomItem(data.Progress);
+                            _mimicItems.Add(MimicItemEntity.Build(ItemEntity.Build(position, item.Build()), enemy));
+                            break;
+                        case 1:
+                            _mimicMoney.Add(MimicMoney.Build(position, data.MoneyAmount(), enemy));
+                            break;
+                        case 2:
+                            _mimicStairs.Add(MimicStairs.Build(MovementEntityType.DownStairs, position, enemy));
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                }
+                else
+                {
+                    var character = CharacterFactory.BuildCharacter(
+                        data.Enemies.GetRandomItem(),
+                        position,
+                        isSlept: RandUtils.IsLessThanProbability(data.SleepChance),
+                        isShiny: RandUtils.IsLessThanProbability(data.ShinyChance));
+                    _characters.Add(character);
+                }
             }
         }
 
@@ -338,7 +372,7 @@ namespace Game
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 var item = data.ItemDatabase.GetRandomItem(data.Progress);
-                _items.Add(ItemFactory.Build(position, item.Build()));
+                _items.Add(ItemEntity.Build(position, item.Build()));
             }
         }
 
@@ -429,6 +463,9 @@ namespace Game
                     _characters,
                     _items,
                     EventEntityManager.Build(
+                        _mimicItems,
+                        _mimicMoney,
+                        _mimicStairs,
                         _stairs,
                         _chests,
                         _traps,

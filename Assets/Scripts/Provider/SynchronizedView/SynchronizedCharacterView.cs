@@ -43,7 +43,7 @@ namespace Provider
 
         protected override CharacterView ViewPrefab(ICharacter _)
         {
-            return ScriptableObjectLoader.LoadPrefab("Character").GetComponent<CharacterView>();
+            return ObjectLoader.LoadPrefab("Character").GetComponent<CharacterView>();
         }
 
         ~SynchronizedCharacterView()

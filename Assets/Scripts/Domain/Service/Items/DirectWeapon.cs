@@ -155,7 +155,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.05f * abnormalConditionMultiplier;
                 var paralysis = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
                 effectsOnUse.Add(new AddConditionEffect(paralysis));
                 effectsOnThrow.Add(new AddConditionEffect(paralysis));
             }
@@ -163,7 +163,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var blind = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("盲目"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("盲目"), probability);
                 effectsOnUse.Add(new AddConditionEffect(blind));
                 effectsOnThrow.Add(new AddConditionEffect(blind));
             }
@@ -171,7 +171,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var confusion = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("混乱"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("混乱"), probability);
                 effectsOnUse.Add(new AddConditionEffect(confusion));
                 effectsOnThrow.Add(new AddConditionEffect(confusion));
             }
@@ -179,7 +179,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.05f * abnormalConditionMultiplier;
                 var sleep = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
                 effectsOnUse.Add(new AddConditionEffect(sleep));
                 effectsOnThrow.Add(new AddConditionEffect(sleep));
             }
@@ -187,7 +187,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.2f * abnormalConditionMultiplier;
                 var poison = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("毒"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("毒"), probability);
                 effectsOnUse.Add(new AddConditionEffect(poison));
                 effectsOnThrow.Add(new AddConditionEffect(poison));
             }
@@ -195,7 +195,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var slowness = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
                 effectsOnUse.Add(new AddConditionEffect(slowness));
                 effectsOnThrow.Add(new AddConditionEffect(slowness));
             }
@@ -203,7 +203,7 @@ namespace Domain.Service.Items
             {
                 var probability = 0.1f * abnormalConditionMultiplier;
                 var restraint = new AdditionalConditionData(
-                    ScriptableObjectLoader.Load<ConditionTemplate>("拘束"), probability);
+                    ObjectLoader.Load<ConditionTemplate>("拘束"), probability);
                 effectsOnUse.Add(new AddConditionEffect(restraint));
                 effectsOnThrow.Add(new AddConditionEffect(restraint));
             }

@@ -13,7 +13,7 @@ namespace Provider
     public class PlayerPresenter
     {
         [Inject]
-        public PlayerPresenter(World world, SynchronizedCharacterView characters, SynchronizedItemView _,
+        public PlayerPresenter(World world, SynchronizedCharacterView characters,
             StatView statView)
         {
             CompositeDisposable _disposables = new();
@@ -27,7 +27,7 @@ namespace Provider
 
                     var playerView = characters.Get(player.Character);
 
-                    var arrowPrefab = ScriptableObjectLoader.LoadPrefab("Arrow");
+                    var arrowPrefab = ObjectLoader.LoadPrefab("Arrow");
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 5486256623760965636
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: e60422814d6ee8343ba35a9fdff8ab80, type: 3}
   IsBoss: 0
   Hp: 15
   Aggression: 1
@@ -38,6 +38,7 @@ MonoBehaviour:
   Flags: 
   IsFlying: 0
   CanThroughWalls: 0
+  CanMimic: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:

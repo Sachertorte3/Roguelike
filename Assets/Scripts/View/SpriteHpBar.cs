@@ -6,6 +6,15 @@ namespace View
     public class SpriteHpBar : MonoBehaviour
     {
         [SerializeField] private Transform _statBar;
+        
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
 
         public void SetValue(float maxValue, float value)
         {

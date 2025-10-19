@@ -18,7 +18,7 @@ namespace Provider
             {
                 var map = mapChanged.Map;
                 var movementEntities = map.Stairs.Select(iconEntities.Get);
-                var lockPrefab = ScriptableObjectLoader.LoadPrefab("Lock");
+                var lockPrefab = ObjectLoader.LoadPrefab("Lock");
                 foreach (var movementEntity in movementEntities)
                 {
                     var movementLock = Object.Instantiate(lockPrefab, movementEntity.transform)
@@ -33,7 +33,7 @@ namespace Provider
 
                 foreach (var character in map.KeyCharacters.Select(character => characters.Get(character)))
                 {
-                    var keyPrefab = ScriptableObjectLoader.LoadPrefab("Key");
+                    var keyPrefab = ObjectLoader.LoadPrefab("Key");
                     var key = Object.Instantiate(keyPrefab, character.transform);
                     key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
                 }

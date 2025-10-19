@@ -18,7 +18,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public string BaseName { get; private set; }
         [field: SerializeField] public Option<string> CustomName { get; private set; }
         [SerializeField] private string _iconName;
-        public Sprite Icon => ScriptableObjectLoader.LoadIcon(_iconName);
+        public Sprite Icon => ObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
         [field: SerializeField] public int AdditionalPrice { get; private set; }
         [field: SerializeField] public float MultiplyPrice { get; private set; }

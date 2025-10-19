@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Item;
-using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Items;
-using Domain.Service.Logs;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -18,7 +16,6 @@ namespace Game
 {
     public sealed class ItemManager : IDisposable
     {
-        private readonly ItemFactory _factory = new();
         private readonly ObservableList<IItemEntity> _items = new();
         private HashSet<Vector2Int> _allItemPositions = new();
         private CompositeDisposable _disposables = new();
@@ -67,14 +64,14 @@ namespace Game
 
         public IItemEntity SpawnItem(IItem item, Vector2Int spawnPosition)
         {
-            var itemEntity = _factory.CreateItem(ItemFactory.Build(spawnPosition, item.Serialize()));
+            var itemEntity = new ItemEntity(ItemEntity.Build(spawnPosition, item.Serialize()));
             AddItem(itemEntity);
             return itemEntity;
         }
 
         public IItemEntity SpawnItem(ItemEntityMemento item)
         {
-            var itemEntity = _factory.CreateItem(item);
+            var itemEntity = new ItemEntity(item);
             AddItem(itemEntity);
             return itemEntity;
         }

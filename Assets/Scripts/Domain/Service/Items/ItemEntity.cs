@@ -6,13 +6,12 @@ using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
-using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Items
 {
-    internal class ItemEntity : IItemEntity
+    public class ItemEntity : IItemEntity
     {
         public EntityBase Entity { get; init; }
 
@@ -38,6 +37,11 @@ namespace Domain.Service.Items
                 Item.Serialize(),
                 Entity.Serialize()
             );
+        }
+
+        public static ItemEntityMemento Build(Vector2Int position, IItemMemento item)
+        {
+            return new ItemEntityMemento(item, EntityBase.Build(position, EntityLayer.Bottom));
         }
 
         public static Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, IMap map)

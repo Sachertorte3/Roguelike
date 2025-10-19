@@ -53,12 +53,16 @@ namespace Domain.Model.Map
         public void SetGrasses(IEnumerable<Vector2Int> positions, bool isGrass);
         public void SetIce(IEnumerable<Vector2Int> positions, bool isIce);
 
+        public IEnumerable<ICharacter> RevealMimic(IEnumerable<Vector2Int> positions);
         public void AttackStatue(IEnumerable<Vector2Int> positions);
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
-        public ICharacter? SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
+        public bool SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
 
-        public ICharacter SpawnEnemy(EnemyData enemy, Vector2Int position, IAffiliation? affiliation = null,
+        public void SpawnEnemy(EnemyData enemy, Vector2Int position, bool doActImmediately, IAffiliation? affiliation = null,
+            bool? isSlept = null, bool? isShiny = null);
+
+        public ICharacter SpawnEnemyIgnoreMimic(EnemyData enemy, Vector2Int position, bool doActImmediately, IAffiliation? affiliation = null,
             bool? isSlept = null, bool? isShiny = null);
 
         public void SpawnFire(IEnumerable<Vector2Int> positions);

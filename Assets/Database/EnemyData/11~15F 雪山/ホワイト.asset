@@ -16,7 +16,7 @@ MonoBehaviour:
   Group: 1
   CharacterType:
     rid: 2541219246146060288
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 51554110f03d8834594f33830f04097e, type: 3}
   IsBoss: 0
   Hp: 4
   Aggression: 4
@@ -38,6 +38,7 @@ MonoBehaviour:
   Flags: 
   IsFlying: 1
   CanThroughWalls: 0
+  CanMimic: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:
@@ -87,7 +88,7 @@ MonoBehaviour:
       data:
         _elementPowers:
         - _element: 4
-          _power: 6
+          _power: 4
         _criticalRate: 0
     - rid: 5486256560184492034
       type: {class: NearByCharacter, ns: Domain.Model.Effect.Position, asm: Domain.Model}

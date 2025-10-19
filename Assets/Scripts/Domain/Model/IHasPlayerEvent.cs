@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using R3;
 
 namespace Domain.Model
 {

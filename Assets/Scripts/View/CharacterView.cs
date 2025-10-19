@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using R3;
@@ -26,7 +27,7 @@ namespace View
 
         public void Construct(string characterTypeName, bool isEnemy, bool isAlly)
         {
-            var animation = ScriptableObjectLoader.LoadAnimation(characterTypeName);
+            var animation = ObjectLoader.LoadAnimation(characterTypeName);
 
             _animator = GetComponent<Animator>();
             _animator.runtimeAnimatorController = Instantiate(animation);

@@ -38,6 +38,7 @@ MonoBehaviour:
   Flags: 
   IsFlying: 1
   CanThroughWalls: 0
+  CanMimic: 0
   CanPickUp: 0
   CanUseItem: 0
   Skills:

@@ -69,7 +69,13 @@ namespace Domain.Service.Events
             }
             else if (_mimic.IsSome(out var mimic))
             {
-                map.SpawnEnemy(mimic, Entity.CurrentPosition, isSlept: false, isShiny: false);
+                map.SpawnEnemyIgnoreMimic(
+                    mimic,
+                    Entity.CurrentPosition,
+                    doActImmediately: true,
+                    isSlept: false,
+                    isShiny: false
+                );
             }
             else
             {

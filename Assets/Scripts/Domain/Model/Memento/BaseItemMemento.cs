@@ -25,8 +25,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int AdditionalPrice { get; private set; }
         [field: SerializeField] public float MultiplyPrice { get; private set; }
         [field: SerializeField] public ItemState State { get; private set; }
-        [SerializeField] private List<string> _upgradePaths;
-        public List<UpgradePath> UpgradePaths => _upgradePaths.Select(path => new UpgradePath(path)).ToList();
+        [field: SerializeField] public int UpgradeCount { get; private set; }
         [field: SerializeField] public int MaxUsages { get; private set; }
         [field: SerializeField] public int RemainingUsages { get; private set; }
         [field: SerializeField] public bool IsCursed { get; private set; }
@@ -45,7 +44,7 @@ namespace Domain.Model.Memento
             int additionalPrice,
             float multiplyPrice,
             ItemState state,
-            List<UpgradePath> upgradePaths,
+            int upgradeCount,
             int maxUsages,
             int remainingUsages,
             bool isCursed,
@@ -63,7 +62,7 @@ namespace Domain.Model.Memento
             AdditionalPrice = additionalPrice;
             MultiplyPrice = multiplyPrice;
             State = state;
-            _upgradePaths = upgradePaths.Select(path => path.ToString()).ToList();
+            UpgradeCount = upgradeCount;
             MaxUsages = maxUsages;
             RemainingUsages = remainingUsages;
             IsCursed = isCursed;
@@ -83,7 +82,7 @@ namespace Domain.Model.Memento
             int? additionalPrice = null,
             float? multiplyPrice = null,
             ItemState? state = null,
-            List<UpgradePath>? upgradePaths = null,
+            int? upgradeCount = null,
             int? maxUsages = null,
             int? remainingUsages = null,
             bool? isCursed = null,
@@ -102,7 +101,7 @@ namespace Domain.Model.Memento
                 additionalPrice ?? AdditionalPrice,
                 multiplyPrice ?? MultiplyPrice,
                 state ?? State,
-                upgradePaths ?? UpgradePaths,
+                upgradeCount ?? UpgradeCount,
                 maxUsages ?? MaxUsages,
                 remainingUsages ?? RemainingUsages,
                 isCursed ?? IsCursed,

@@ -110,16 +110,6 @@ namespace Domain.Service.Characters
             return _skill.EvaluatePrice() / (1 + ChargeTurn);
         }
 
-        public List<UpgradeData> GetUpgrades()
-        {
-            return _skill.GetUpgrades();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return _skill.GetChildren();
-        }
-
         public void CoolDown()
         {
             if (_remainingCoolTime > 0)

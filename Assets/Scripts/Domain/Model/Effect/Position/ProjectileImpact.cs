@@ -33,18 +33,6 @@ namespace Domain.Model.Effect.Position
             return 2;
         }
 
-        public string UpgradePathName => "着弾地点";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             return "着弾地点";

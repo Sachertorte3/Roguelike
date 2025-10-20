@@ -148,24 +148,6 @@ namespace Domain.Service.Effect
             return price * ProbabilityOfSuccess;
         }
 
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            var children = new Dictionary<string, IHasUpgrades>();
-            foreach (var effect in _effects)
-            {
-                children.Add(effect.UpgradePathName, effect);
-            }
-
-            children.Add(_position.UpgradePathName, _position);
-            children.Add(_area.UpgradePathName, _area);
-            return children;
-        }
-
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
             var info = "";

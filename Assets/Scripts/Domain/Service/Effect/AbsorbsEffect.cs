@@ -94,41 +94,6 @@ namespace Domain.Service.Effect
                          Formula.EvaluateDamage(_elementPowers, true) * _fixedCriticalRate) * (1 + _fixedRate);
         }
 
-        public override string UpgradePathName => "HP吸収";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            var upgrades = new List<UpgradeData>();
-            if (_rate < 1f)
-            {
-                upgrades.Add(
-                    new UpgradeData(
-                        "吸収割合+10%",
-                        () => _rate += 0.1f,
-                        () => _rate -= 0.1f
-                    )
-                );
-            }
-
-            if (_criticalRate > 0 && _criticalRate < 1f)
-            {
-                upgrades.Add(
-                    new UpgradeData(
-                        "クリティカル率+5%",
-                        () => _criticalRate += 0.05f,
-                        () => _criticalRate -= 0.05f
-                    )
-                );
-            }
-
-            return upgrades;
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
-        }
-
         public override string Info()
         {
             var info = string.Join(" ", _elementPowers.Select(e => e.Info()));

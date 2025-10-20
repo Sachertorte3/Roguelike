@@ -13,7 +13,7 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public BaseItemMemento BaseItem { get; private set; }
         [field: SerializeField] public Option<WeaponPrefix> Prefix { get; private set; }
-        [field: SerializeField] public List<ElementPower> ElementPowers { get; private set; }
+        [field: SerializeField] public int DefaultPower { get; private set; }
         [field: SerializeField] public List<DirectWeaponFeature> Features { get; private set; }
         [field: SerializeField] public int FeatureLimit { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
@@ -23,7 +23,7 @@ namespace Domain.Model.Memento
         public DirectWeaponMemento(
             BaseItemMemento baseItem,
             Option<WeaponPrefix> prefix,
-            List<ElementPower> elementPowers,
+            int defaultPower,
             List<DirectWeaponFeature> features,
             int featureLimit,
             SpawnEffectSkillMemento skillOnUse,
@@ -33,7 +33,7 @@ namespace Domain.Model.Memento
         {
             BaseItem = baseItem;
             Prefix = prefix;
-            ElementPowers = elementPowers;
+            DefaultPower = defaultPower;
             Features = features;
             FeatureLimit = featureLimit;
             SkillOnUse = skillOnUse;
@@ -44,7 +44,7 @@ namespace Domain.Model.Memento
         public DirectWeaponMemento CopyWith(
             BaseItemMemento? baseItem = null,
             Option<WeaponPrefix>? prefix = null,
-            List<ElementPower>? elementPowers = null,
+            int? defaultPower = null,
             List<DirectWeaponFeature>? features = null,
             int? featureLimit = null,
             SpawnEffectSkillMemento? skillOnUse = null,
@@ -55,7 +55,7 @@ namespace Domain.Model.Memento
             return new DirectWeaponMemento(
                 baseItem ?? BaseItem,
                 prefix ?? Prefix,
-                elementPowers ?? ElementPowers,
+                defaultPower ?? DefaultPower,
                 features ?? Features,
                 featureLimit ?? FeatureLimit,
                 skillOnUse ?? SkillOnUse,

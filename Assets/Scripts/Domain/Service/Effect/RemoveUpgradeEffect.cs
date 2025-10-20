@@ -31,7 +31,7 @@ namespace Domain.Service.Effect
 #endif
         public override UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
-            var upgradedItems = target.Inventory.AllItems.Where(item => item.AppliedUpgrades > 0).ToArray();
+            var upgradedItems = target.Inventory.AllItems.Where(item => item.CanDowngrade()).ToArray();
             if (upgradedItems.Any())
             {
                 var item = upgradedItems.GetAtRandom();
@@ -56,18 +56,6 @@ namespace Domain.Service.Effect
         public override float EvaluatePrice()
         {
             return 100;
-        }
-
-        public override string UpgradePathName => "強化解除";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
         }
 
         public override string Info()

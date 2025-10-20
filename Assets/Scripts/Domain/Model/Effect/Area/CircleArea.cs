@@ -42,25 +42,6 @@ namespace Domain.Model.Effect.Area
             return CommonSenseParameters.CircleAreaEvaluate(CanIgnoreWalls, Radius);
         }
 
-        public string UpgradePathName => "円";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>
-            {
-                new(
-                    "半径+1",
-                    () => Radius += 1,
-                    () => Radius -= 1
-                )
-            };
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             var info = $"半径{Radius}マスの円内部";

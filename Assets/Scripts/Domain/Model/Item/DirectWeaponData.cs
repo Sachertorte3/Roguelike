@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Condition;
-using Domain.Model.Effect;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace Domain.Model.Item
         public bool IsShiny;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
-        public List<ElementPower> ElementPowers;
+        [MinValue(1)] public int Power;
         [SerializeField] private List<StringSerializableDirectWeaponFeature> _features;
         public List<DirectWeaponFeature> Features => _features.Select(feature => feature.Value).ToList();
         [MinValue(1)] public int FeatureLimit = 3;

@@ -9,10 +9,12 @@ using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
+using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
+using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -35,12 +37,12 @@ namespace Domain.Service.Items
         public override bool IdentifyIfUsed => true;
         public override bool AutoDestroyWhenDisabled => false;
         private readonly Option<WeaponPrefix> _prefix;
-        private readonly List<ElementPower> _elementPowers;
+        private readonly int _defaultPower;
         private readonly List<DirectWeaponFeature> _features;
         public IReadOnlyList<DirectWeaponFeature> Features => _features;
         public readonly int FeatureLimit;
-        private readonly SpawnEffectSkill _skillOnUse;
-        private readonly SpawnEffectSkill _skillOnThrow;
+        private SpawnEffectSkill _skillOnUse;
+        private SpawnEffectSkill _skillOnThrow;
         public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
         public override Option<ISkill> SkillOnThrow => ((ISkill)_skillOnThrow).ToOption();
         public DirectWeapon(DirectWeaponData data) : this(Build(data))
@@ -50,7 +52,7 @@ namespace Domain.Service.Items
         public DirectWeapon(DirectWeaponMemento data) : base(data.BaseItem)
         {
             _prefix = data.Prefix;
-            _elementPowers = data.ElementPowers;
+            _defaultPower = data.DefaultPower;
             _features = data.Features;
             FeatureLimit = data.FeatureLimit;
             _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
@@ -63,7 +65,7 @@ namespace Domain.Service.Items
             (
                 baseItem: SerializeBase(),
                 prefix: _prefix,
-                elementPowers: _elementPowers,
+                defaultPower: _defaultPower,
                 features: _features,
                 featureLimit: FeatureLimit,
                 skillOnUse: _skillOnUse.Serialize(),
@@ -73,21 +75,30 @@ namespace Domain.Service.Items
             return JsonUtility.FromJson<DirectWeaponMemento>(json);
         }
 
-        public DirectWeaponMemento SerializeIgnoreUpgrades()
+        public override bool CanUpgrade() => UpgradeCount < UpgradeLimit;
+        public override bool CanDowngrade() => UpgradeCount > 0;
+        public override void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
         {
-            foreach (var upgradePath in UpgradePaths)
-            {
-                this.ApplyDowngrade(upgradePath);
-            }
-            var memento = Serialize();
-            foreach (var upgradePath in UpgradePaths)
-            {
-                this.ApplyUpgrade(upgradePath);
-            }
-            return memento;
+            GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化された");
+            UpgradeCount++;
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
+            _skillOnUse = new SpawnEffectSkill(skillOnUse);
+            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
+            _hasSameEffect = hasSameEffect;
+            _onItemUpdated.OnNext(Unit.Default);
         }
 
-        public static (SpawnEffectSkill skillOnUse, SpawnEffectSkill skillOnThrow, bool hasSameEffect) BuildSkills(List<ElementPower> elementPowers, List<DirectWeaponFeature> features, WeaponPrefix? prefix = null, bool skipMultiplyPower = false)
+        public override void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
+        {
+            GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化が解除された");
+            UpgradeCount--;
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
+            _skillOnUse = new SpawnEffectSkill(skillOnUse);
+            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
+            _hasSameEffect = hasSameEffect;
+            _onItemUpdated.OnNext(Unit.Default);
+        }
+        public static (SpawnEffectSkillMemento skillOnUse, SpawnEffectSkillMemento skillOnThrow, bool hasSameEffect) BuildSkills(int power, int upgradeCount, List<DirectWeaponFeature> features, WeaponPrefix? prefix = null)
         {
             var range = features.Contains(DirectWeaponFeature.TwoRangeAttack) ? 2 : 1;
             var area = (IArea)new LineArea(range, false, false);
@@ -102,10 +113,13 @@ namespace Domain.Service.Items
 
             var effectsOnUse = new List<IEffect>();
             var effectsOnThrow = new List<IEffect>();
-            if (prefix != null && !skipMultiplyPower)
+            var elementPowers = new List<ElementPower>();
+            if (prefix != null)
             {
-                elementPowers = elementPowers.Select(power => power.MultiplyPower(prefix.PowerMagnification)).ToList();
+                power = Mathf.RoundToInt(power * prefix.PowerMagnification);
             }
+            power += upgradeCount;
+            elementPowers.Add(new ElementPower(Element.Physical, power));
             var criticalRate = features.Count(f => f == DirectWeaponFeature.Critical) * 0.25f;
             var throwEnhance = features.Contains(DirectWeaponFeature.EnhanceThrow) ? 1.5f : 1f;
             var hasSameEffect = throwEnhance == 1f;
@@ -213,7 +227,7 @@ namespace Domain.Service.Items
 
             var skillOnThrowProbabilityOfSuccess = features.Contains(DirectWeaponFeature.GuaranteedHit) ? 1f : features.Contains(DirectWeaponFeature.Critical) ? 0.7f : CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
 
-            var skillOnUse = new SpawnEffectSkill(SpawnEffectSkill.Build(
+            var skillOnUse = SpawnEffectSkill.Build(
                 new SkillData(
                     new AtFeet(),
                     area,
@@ -221,8 +235,8 @@ namespace Domain.Service.Items
                     repeat,
                     skillOnUseProbabilityOfSuccess,
                     "")
-            ));
-            var skillOnThrow = new SpawnEffectSkill(SpawnEffectSkill.Build(
+            );
+            var skillOnThrow = SpawnEffectSkill.Build(
                 new SkillData(
                     new AtFeet(),
                     new SelfArea(),
@@ -230,13 +244,13 @@ namespace Domain.Service.Items
                     1,
                     skillOnThrowProbabilityOfSuccess,
                     "")
-            ));
+            );
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
         public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.ElementPowers, data.Features, prefix);
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.Power, 0, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var usageLossChance = 1 - data.Features.Count(f => f == DirectWeaponFeature.EnhanceDurability) * 0.2f;
             var featureLimit = data.FeatureLimit + prefix?.FeatureLimitAdditional ?? 0;
@@ -259,52 +273,41 @@ namespace Domain.Service.Items
                     mimic: mimic.ToOption()
                 ),
                 prefix: prefix.ToOption(),
-                elementPowers: data.ElementPowers,
+                defaultPower: data.Power,
                 features: data.Features,
                 featureLimit: data.FeatureLimit,
-                skillOnUse: skillOnUse.Serialize(),
-                skillOnThrow: skillOnThrow.Serialize(),
+                skillOnUse: skillOnUse,
+                skillOnThrow: skillOnThrow,
                 hasSameEffect: hasSameEffect
             ));
             var item = JsonUtility.FromJson<DirectWeaponMemento>(json); //MEMO: To break the sharing references
             return item;
         }
 
-        private DirectWeapon Merge(IEnumerable<DirectWeaponFeature> featuresToMergeWeapon, IEnumerable<UpgradePath> upgradePaths)
+        private DirectWeapon Merge(IEnumerable<DirectWeaponFeature> featuresToMergeWeapon, int additionalUpgrade)
         {
-            //MEMO: There is also a way to reload the data and regenerate it from scratch.
-            var memento = SerializeIgnoreUpgrades();
+            var memento = Serialize();
             var features = memento.Features.Merge(featuresToMergeWeapon, memento.FeatureLimit).ToList();
 
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(memento.ElementPowers, features, memento.Prefix.Value, true);
+            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(memento.DefaultPower, memento.BaseItem.UpgradeCount + additionalUpgrade, features, memento.Prefix.Value);
             var multiplyPrice = features.Contains(DirectWeaponFeature.Artistic) ? 2f : 1f;
             var usageLossChance = 1 - features.Count(f => f == DirectWeaponFeature.EnhanceDurability) * 0.2f;
             var item = new DirectWeapon(memento.CopyWith(
                 baseItem: memento.BaseItem.CopyWith(
                     multiplyPrice: multiplyPrice,
+                    upgradeCount: memento.BaseItem.UpgradeCount + additionalUpgrade,
                     usageLossChance: usageLossChance
                 ),
                 features: features,
-                skillOnUse: skillOnUse.Serialize(),
-                skillOnThrow: skillOnThrow.Serialize(),
+                skillOnUse: skillOnUse,
+                skillOnThrow: skillOnThrow,
                 hasSameEffect: hasSameEffect
             ));
-            foreach (var upgradePath in item.UpgradePaths)
-            {
-                item.ApplyUpgrade(upgradePath);
-            }
-            foreach (var upgradePath in upgradePaths.Shuffled())
-            {
-                if (item.CanUpgrade(upgradePath.ToString()))
-                {
-                    item.UpgradeNoLog(upgradePath);
-                }
-            }
             return item;
         }
 
-        public DirectWeapon Merge(DirectWeapon mergedItem) => Merge(mergedItem._features, mergedItem.UpgradePaths);
-        public DirectWeapon Merge(Item mergedItem) => Merge(mergedItem.FeaturesToMergeWeapon, mergedItem.UpgradePaths);
+        public DirectWeapon Merge(DirectWeapon mergedItem) => Merge(mergedItem._features, mergedItem.UpgradeCount);
+        public DirectWeapon Merge(Item mergedItem) => Merge(mergedItem.FeaturesToMergeWeapon, mergedItem.UpgradeCount);
         public DirectWeapon Merge(IItem mergedItem) => mergedItem switch
         {
             DirectWeapon weapon => Merge(weapon),

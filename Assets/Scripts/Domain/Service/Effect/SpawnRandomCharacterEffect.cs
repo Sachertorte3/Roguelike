@@ -48,18 +48,6 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public override string UpgradePathName => "ランダム召喚";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             return $"ランダムに{_count}体召喚する\n";

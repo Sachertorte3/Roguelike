@@ -1,8 +1,6 @@
-using Domain.Model.Item;
-
 namespace Domain.Model.Effect
 {
-    public interface ISkill : IHasUpgrades
+    public interface ISkill
     {
         public bool IsDirectional { get; }
         public float EvaluatePrice();

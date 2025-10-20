@@ -16,7 +16,7 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Model.Item
 {
-    public interface IItem : IEquatable<IItem>, IHasUpgrades
+    public interface IItem : IEquatable<IItem>
     {
         public Id<IItem> Id { get; }
         public string BaseName { get; }
@@ -52,8 +52,7 @@ namespace Domain.Model.Item
         public bool IsCurseIdentified { get; }
         public bool IsInfoIdentified(IPlayer player);
         public bool AutoDestroyWhenDisabled { get; }
-        public IReadOnlyList<UpgradePath> UpgradePaths { get; }
-        public int AppliedUpgrades { get; }
+        public int UpgradeCount { get; }
         public IReadOnlyList<IConditionData> PassiveConditions { get; }
         public Observable<Unit> OnItemUpdated { get; }
         public Observable<bool> OnCursedChanged { get; }
@@ -70,9 +69,9 @@ namespace Domain.Model.Item
         public void SetCurseIdentified(bool isCurseIdentified);
         public void Rename(string name);
         public void RevertToDefaultName();
-        public bool CanUpgrade(string filter = "");
-        public void RandomUpgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, string filter = "");
-        public void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, UpgradePath path);
+        public bool CanUpgrade();
+        public bool CanDowngrade();
+        public void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
         public void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
         public string Info(IPlayer player, ItemPlaceholders itemPlaceholders);
         public string DebugInfo();

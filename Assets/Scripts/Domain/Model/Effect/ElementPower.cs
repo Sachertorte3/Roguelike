@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Domain.Model.Effect
 {
     [Serializable]
-    public class ElementPower : IHasInfo, IHasUpgrades
+    public class ElementPower : IHasInfo
     {
         [SerializeField] private Element _element;
         [MinValue(1)] [SerializeField] private int _power;
@@ -23,30 +23,6 @@ namespace Domain.Model.Effect
         public ElementPower MultiplyPower(float multiplier)
         {
             return new ElementPower(Element, Mathf.RoundToInt(_power * multiplier));
-        }
-
-        public string UpgradePathName => $"[{Element}]威力";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>
-            {
-                new(
-                    $"[{Element}]強化[小]",
-                    () => _power += 2,
-                    () => _power -= 2
-                ),
-                new(
-                    $"[{Element}]強化[大]",
-                    () => _power += 3,
-                    () => _power -= 3
-                )
-            };
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
         }
 
         public string Info()

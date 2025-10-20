@@ -50,25 +50,6 @@ namespace Domain.Service.Effect
             return Formula.EvaluateHeal(_power);
         }
 
-        public override string UpgradePathName => "回復";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>
-            {
-                new(
-                    "回復量+3",
-                    () => _power += 3,
-                    () => _power -= 3
-                )
-            };
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             return $"威力{_power}の回復を行う\n";

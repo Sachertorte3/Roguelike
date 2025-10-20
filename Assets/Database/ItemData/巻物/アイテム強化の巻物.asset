@@ -66,5 +66,4 @@ MonoBehaviour:
         _probabilityOfSuccess: 0
     - rid: 5486256311944871958
       type: {class: UpgradeItem, ns: Domain.Service.ItemEffect, asm: Domain.Service}
-      data:
-        _filter: 
+      data: 

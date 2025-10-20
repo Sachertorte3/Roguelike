@@ -43,25 +43,6 @@ namespace Domain.Model.Effect.Position
             return 4 + 2 * NumberOfTarget;
         }
 
-        public string UpgradePathName => "近くのキャラクター";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>
-            {
-                new(
-                    "対象数+1",
-                    () => NumberOfTarget += 1,
-                    () => NumberOfTarget -= 1
-                )
-            };
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             var info = "近くの";

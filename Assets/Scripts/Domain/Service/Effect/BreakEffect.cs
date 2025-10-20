@@ -80,18 +80,6 @@ namespace Domain.Service.Effect
             return 100f;
         }
 
-        public override string UpgradePathName => "破壊";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             var targets = new List<string>();

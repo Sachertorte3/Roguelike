@@ -6,11 +6,11 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
 using Domain.Service.Effect;
 using UnityEngine;
-using Utilities;
 using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
@@ -104,20 +104,6 @@ namespace Domain.Service.Items
             return JsonUtility.FromJson<ItemMemento>(json);
         }
 
-        public ItemMemento SerializeIgnoreUpgrades()
-        {
-            foreach (var upgradePath in UpgradePaths)
-            {
-                this.ApplyDowngrade(upgradePath);
-            }
-            var memento = Serialize();
-            foreach (var upgradePath in UpgradePaths)
-            {
-                this.ApplyUpgrade(upgradePath);
-            }
-            return memento;
-        }
-
         public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var skillOnUse = data.EffectType switch
@@ -161,6 +147,13 @@ namespace Domain.Service.Items
             return JsonUtility.FromJson<ItemMemento>(json); //MEMO: To break the sharing of references
         }
 
+        public override bool CanUpgrade() => false;
+        public override bool CanDowngrade() => false;
+        public override void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders) => 
+            throw new Exception("Cannot upgrade item");
+        public override void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders) =>
+            throw new Exception("Cannot downgrade item");
+
         protected override string FullInfoImpl() => "";
 
         public Item Merge(Item mergedItem)
@@ -174,21 +167,13 @@ namespace Domain.Service.Items
                 throw new Exception("Cannot merge uses");
             }
             var memento = Serialize();
-            var mergedItemIgnoreUpgrade = new Item(mergedItem.SerializeIgnoreUpgrades());
+            var mergedMemento = mergedItem.Serialize();
             var item = new Item(memento.CopyWith(
                 baseItem: memento.BaseItem.CopyWith(
-                    maxUsages: MaxUsages + mergedItemIgnoreUpgrade.MaxUsages,
-                    remainingUsages: RemainingUses.CurrentValue + mergedItem.RemainingUses.CurrentValue
-                //MEMO: It's not wrong to use values ​​that include upgrades here.
+                    maxUsages: memento.BaseItem.MaxUsages + mergedMemento.BaseItem.MaxUsages,
+                    remainingUsages: memento.BaseItem.RemainingUsages + mergedMemento.BaseItem.RemainingUsages
                 )
             ));
-            foreach (var upgradePath in mergedItem.UpgradePaths.Shuffled())
-            {
-                if (item.CanUpgrade(upgradePath.ToString()))
-                {
-                    item.UpgradeNoLog(upgradePath);
-                }
-            }
             return item;
         }
     }

@@ -15,14 +15,12 @@ MonoBehaviour:
   Icon: {fileID: -1778536866, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 1
-  ElementPowers:
-  - _element: 0
-    _power: 5
+  Power: 5
   _features:
   - stringValue: EnhanceThrow
   FeatureLimit: 3
   UsageLimit: 24
-  UpgradeLimit: 3
+  UpgradeLimit: 30
   PassiveConditions: []
   references:
     version: 2

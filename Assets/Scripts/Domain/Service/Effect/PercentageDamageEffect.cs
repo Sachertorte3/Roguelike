@@ -44,18 +44,6 @@ namespace Domain.Service.Effect
             return Formula.EvaluateExplosionDamage(_damageRate);
         }
 
-        public override string UpgradePathName => "割合ダメージ";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             return $"HPの{_damageRate:P0}のダメージを与える\n";

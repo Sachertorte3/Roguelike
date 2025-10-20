@@ -65,18 +65,6 @@ namespace Domain.Service.Effect
             return 100;
         }
 
-        public override string UpgradePathName => "呪い";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             return "対象の持つアイテムに呪いをかける\n";

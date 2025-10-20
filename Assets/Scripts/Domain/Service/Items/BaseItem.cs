@@ -24,7 +24,7 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
-    public abstract class BaseItem : IItem, IHasUpgrades, IDisposable
+    public abstract class BaseItem : IItem, IDisposable
     {
         public Id<IItem> Id { get; private set; }
         public string BaseName { get; private set; }
@@ -34,7 +34,7 @@ namespace Domain.Service.Items
         public int _additionalPrice { get; private set; }
         public float _multiplyPrice { get; private set; }
         public ItemState State { get; private set; }
-        private readonly List<UpgradePath> _upgradePaths;
+        public int UpgradeCount { get; private protected set; }
         public int MaxUsages { get; private set; }
         private protected ReactiveProperty<int> _remainingUsages;
         public float UsageLossChance { get; private set; }
@@ -63,10 +63,17 @@ namespace Domain.Service.Items
         private Option<EnemyData> _mimic { get; init; }
 
         public string DebugName => _fullName;
-        private string _fullName => CustomName.UnwrapOr(RevealedName) + (_upgradePaths.Count > 0 ? $" +{AppliedUpgrades}" : "");
+        private string _fullName => CustomName.UnwrapOr(RevealedName) + _upgradeText();
+        private string _upgradeText()
+        {
+            if (UpgradeCount == 0)
+                return "";
+            else if (UpgradeCount > 0)
+                return $" +{UpgradeCount}";
+            else
+                return $" {UpgradeCount}";
+        }
         public int Price => Mathf.RoundToInt(EvaluatePrice());
-        public IReadOnlyList<UpgradePath> UpgradePaths => _upgradePaths;
-        public int AppliedUpgrades => _upgradePaths.Count;
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
         public bool CanActivateWhenUsed => SkillOnUse.HasValue && !IsDisabled;
@@ -101,7 +108,7 @@ namespace Domain.Service.Items
             _additionalPrice = baseItem.AdditionalPrice;
             _multiplyPrice = baseItem.MultiplyPrice;
             State = baseItem.State;
-            _upgradePaths = baseItem.UpgradePaths;
+            UpgradeCount = baseItem.UpgradeCount;
             MaxUsages = baseItem.MaxUsages;
             _remainingUsages = new ReactiveProperty<int>(baseItem.RemainingUsages);
             UsageLossChance = baseItem.UsageLossChance;
@@ -123,7 +130,7 @@ namespace Domain.Service.Items
                 additionalPrice: _additionalPrice,
                 multiplyPrice: _multiplyPrice,
                 state: State,
-                upgradePaths: _upgradePaths,
+                upgradeCount: UpgradeCount,
                 maxUsages: MaxUsages,
                 remainingUsages: _remainingUsages.CurrentValue,
                 usageLossChance: UsageLossChance,
@@ -158,7 +165,7 @@ namespace Domain.Service.Items
                 additionalPrice: additionalPrice,
                 multiplyPrice: multiplyPrice,
                 state: state,
-                upgradePaths: new List<UpgradePath>(),
+                upgradeCount: 0,
                 maxUsages: maxUsages,
                 remainingUsages: maxUsages,
                 usageLossChance: usageLossChance,
@@ -410,127 +417,10 @@ namespace Domain.Service.Items
 
         #region Upgrade
 
-        public List<UpgradeData> GetUpgrades()
-        {
-            var upgrades = new List<UpgradeData>();
-            if (MaxUsages > 1)
-            {
-                upgrades.Add(
-                    new UpgradeData("使用可能回数[小]",
-                        () =>
-                        {
-                            MaxUsages += 3;
-                            _remainingUsages.Value += 3;
-                        },
-                        () =>
-                        {
-                            MaxUsages -= 3;
-                            _remainingUsages.Value = _remainingUsages.Value - 3;
-                        })
-                );
-                upgrades.Add(
-                    new UpgradeData("使用可能回数[大]",
-                        () =>
-                        {
-                            MaxUsages += 5;
-                            _remainingUsages.Value += 5;
-                        },
-                        () =>
-                        {
-                            MaxUsages -= 5;
-                            _remainingUsages.Value = _remainingUsages.Value - 5;
-                        })
-                );
-            }
-
-            return upgrades;
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            var children = new Dictionary<string, IHasUpgrades>();
-            if (SkillOnUse.HasValue)
-            {
-                children.Add("使用時", SkillOnUse.Expect("SkillOnUse is null"));
-            }
-
-            if (SkillOnThrow.HasValue)
-            {
-                children.Add("投擲時", SkillOnThrow.Expect("SkillOnThrow is null"));
-            }
-
-            return children;
-        }
-
-        public bool CanUpgrade(string filter = "")
-        {
-            if (_upgradePaths.Count >= UpgradeLimit)
-            {
-                return false;
-            }
-
-            var upgrades = this.GetUpgradePathsRecursively();
-            if (filter == "")
-            {
-                return upgrades.Any();
-            }
-
-            return upgrades.Any(upgrade => upgrade.Contains(filter));
-        }
-
-        public void RandomUpgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, string filter = "")
-        {
-            var path = this.GetUpgradePathsRecursively().Where(upgrade => upgrade.Contains(filter)).GetAtRandom();
-            Upgrade(player, itemHolder, itemPlaceholders, path);
-        }
-
-        public void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, UpgradePath path)
-        {
-            if (player.Character.IsKnownItem(this))
-            {
-                GameLog.Add(itemHolder.IsVisible, $"{_fullName}は{path.GetUpgradeName()}の効果を得た");
-            }
-            else
-            {
-                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は何かの効果を得た");
-            }
-
-            _upgradePaths.Add(path);
-            Log.Debug($"Upgrade: {path}");
-            this.ApplyUpgrade(path);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void UpgradeNoLog(UpgradePath path)
-        {
-            _upgradePaths.Add(path);
-            Log.Debug($"Upgrade: {path}");
-            this.ApplyUpgrade(path);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
-
-        public void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)
-        {
-            if (_upgradePaths.Count == 0)
-            {
-                return;
-            }
-
-            var path = _upgradePaths.GetAtRandom();
-            if (player.Character.IsKnownItem(this))
-            {
-                GameLog.Add(itemHolder.IsVisible, $"{_fullName}の{path.GetUpgradeName()}は消えた");
-            }
-            else
-            {
-                GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}の何かの効果は消えた");
-            }
-
-            _upgradePaths.Remove(path);
-            Log.Debug($"Downgrade: {path}");
-            this.ApplyDowngrade(path);
-            _onItemUpdated.OnNext(Unit.Default);
-        }
+        public abstract bool CanUpgrade();
+        public abstract bool CanDowngrade();
+        public abstract void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
+        public abstract void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
 
         #endregion
         #region Info
@@ -655,16 +545,6 @@ namespace Domain.Service.Items
             }
 
             info += FullInfoImpl();
-
-            if (_upgradePaths.Any() || CanUpgrade())
-            {
-                info += $"アップグレード ({_upgradePaths.Count}/{UpgradeLimit})\n";
-
-                foreach (var path in _upgradePaths)
-                {
-                    info += $"{path.GetUpgradeName()}\n";
-                }
-            }
 
             return info;
         }

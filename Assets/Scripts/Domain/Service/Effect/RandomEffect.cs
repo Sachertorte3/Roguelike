@@ -83,18 +83,6 @@ namespace Domain.Service.Effect
             return Effects.Average(effect => effect.EvaluatePrice());
         }
 
-        public string UpgradePathName => "ランダム";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             return "何らかの効果を発動する\n";

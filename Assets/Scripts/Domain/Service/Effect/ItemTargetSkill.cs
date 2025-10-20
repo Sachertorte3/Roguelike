@@ -116,16 +116,6 @@ namespace Domain.Service.Effect
             return _itemEffect.EvaluatePrice();
         }
 
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             return _itemEffect.Info();

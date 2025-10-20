@@ -75,18 +75,6 @@ namespace Domain.Service.Effect
             return 50f;
         }
 
-        public override string UpgradePathName => $"{_character.Value.Name}召喚";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public override string Info()
         {
             return $"{_character.Value.Name}を{_count}体召喚する\n";

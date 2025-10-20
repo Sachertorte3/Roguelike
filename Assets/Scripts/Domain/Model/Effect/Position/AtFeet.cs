@@ -22,18 +22,6 @@ namespace Domain.Model.Effect.Position
             return 1;
         }
 
-        public string UpgradePathName => "その場";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             return "発動場所";

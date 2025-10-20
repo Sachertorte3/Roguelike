@@ -76,31 +76,6 @@ namespace Domain.Service.Effect
             return result;
         }
 
-        public override string UpgradePathName => "攻撃";
-
-        public override List<UpgradeData> GetUpgrades()
-        {
-            var upgrades = new List<UpgradeData>();
-
-            if (_criticalRate > 0 && _criticalRate < 1f)
-            {
-                upgrades.Add(
-                    new UpgradeData(
-                        "クリティカル率+5%",
-                        () => _criticalRate += 0.05f,
-                        () => _criticalRate -= 0.05f
-                    )
-                );
-            }
-
-            return upgrades;
-        }
-
-        public override Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return _elementPowers.ToDictionary(e => e.UpgradePathName, e => (IHasUpgrades)e);
-        }
-
         public override string Info()
         {
             var info = $"{string.Join(" ", _elementPowers.Select(e => e.Info()))}の攻撃を行う\n";

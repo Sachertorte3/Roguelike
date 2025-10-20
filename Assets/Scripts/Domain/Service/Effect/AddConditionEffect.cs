@@ -102,18 +102,6 @@ namespace Domain.Service.Effect
             return _condition.Value.EvaluateDamage() * _probabilityOfSuccess;
         }
 
-        public string UpgradePathName => $"{_condition.Value.name}付与";
-
-        public List<UpgradeData> GetUpgrades()
-        {
-            return new List<UpgradeData>();
-        }
-
-        public Dictionary<string, IHasUpgrades> GetChildren()
-        {
-            return new Dictionary<string, IHasUpgrades>();
-        }
-
         public string Info()
         {
             return $"{_probabilityOfSuccess:P0}の確率で{_condition.Value.name}状態を付与する\n";

@@ -26,12 +26,9 @@ namespace Domain.Service.Items
                     {
                         return true;
                     }
-                    foreach (var upgradePath in baseItem.UpgradePaths)
+                    if (baseItem.CanUpgrade() && mergeBaseItem.UpgradeCount > 0)
                     {
-                        if (mergeBaseweapon.CanUpgrade(upgradePath.ToString()))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                     return false;
                 case Item item:

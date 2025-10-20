@@ -106,7 +106,7 @@ namespace Domain.Service.Events
                 GameLog.AddIgnoreVisibility($"{item.GetName(player, map.ItemPlaceholders)}は取り出せなかった");
                 return;
             }
-            item.RandomUpgrade(player, player.Character, map.ItemPlaceholders);
+            item.Upgrade(player, player.Character, map.ItemPlaceholders);
             _remainingUsages.Value -= 1;
         }
 

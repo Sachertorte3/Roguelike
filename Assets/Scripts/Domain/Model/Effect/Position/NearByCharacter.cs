@@ -18,6 +18,15 @@ namespace Domain.Model.Effect.Position
         public bool TargetSelf;
         public bool IsDirectional => false;
 
+        public NearByCharacter(int numberOfTarget, bool targetAlly, bool targetEnemy, bool targetNeutral, bool targetSelf)
+        {
+            NumberOfTarget = numberOfTarget;
+            TargetAlly = targetAlly;
+            TargetEnemy = targetEnemy;
+            TargetNeutral = targetNeutral;
+            TargetSelf = targetSelf;
+        }
+
         public IEnumerable<Vector2Int> Get(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map)
         {

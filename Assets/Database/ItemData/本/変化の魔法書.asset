@@ -63,4 +63,5 @@ MonoBehaviour:
     - rid: 5486256561133191168
       type: {class: ChangeItem, ns: Domain.Service.ItemEffect, asm: Domain.Service}
       data:
-        _item: {fileID: 0}
+        _item:
+          _name: 

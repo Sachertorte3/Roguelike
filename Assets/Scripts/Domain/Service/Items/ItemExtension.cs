@@ -9,50 +9,59 @@ namespace Domain.Service.Items
 {
     public static class ItemExtension
     {
-        public static TResult Match<TResult>(this IItem item, Func<Item, TResult> itemFunc,
-            Func<DirectWeapon, TResult> directWeaponFunc)
+        public static TResult Match<TResult>(this IItem item,
+            Func<Item, TResult> itemFunc,
+            Func<DirectWeapon, TResult> directWeaponFunc,
+            Func<RangedWeapon, TResult> rangedWeaponFunc)
         {
             return item switch
             {
                 Item uniqueItem => itemFunc(uniqueItem),
                 DirectWeapon directWeapon => directWeaponFunc(directWeapon),
+                RangedWeapon rangedWeapon => rangedWeaponFunc(rangedWeapon),
                 _ => throw new ArgumentException("Invalid item type")
             };
         }
 
         public static async UniTask<TResult> Match<TResult>(this IItem item,
             Func<Item, UniTask<TResult>> itemFunc,
-            Func<DirectWeapon, UniTask<TResult>> directWeaponFunc)
+            Func<DirectWeapon, UniTask<TResult>> directWeaponFunc,
+            Func<RangedWeapon, UniTask<TResult>> rangedWeaponFunc)
         {
             return item switch
             {
                 Item uniqueItem => await itemFunc(uniqueItem),
                 DirectWeapon directWeapon => await directWeaponFunc(directWeapon),
+                RangedWeapon rangedWeapon => await rangedWeaponFunc(rangedWeapon),
                 _ => throw new ArgumentException("Invalid item type")
             };
         }
 
         public static TResult Match<TResult>(this IItemMemento memento,
             Func<ItemMemento, TResult> itemFunc,
-            Func<DirectWeaponMemento, TResult> directWeaponFunc)
+            Func<DirectWeaponMemento, TResult> directWeaponFunc,
+            Func<RangedWeaponMemento, TResult> rangedWeaponFunc)
         {
             return memento switch
             {
                 ItemMemento itemMemento => itemFunc(itemMemento),
                 DirectWeaponMemento directWeaponMemento => directWeaponFunc(directWeaponMemento),
+                RangedWeaponMemento rangedWeaponMemento => rangedWeaponFunc(rangedWeaponMemento),
                 _ => throw new ArgumentException("Invalid item type")
             };
         }
 
         public static TResult Match<TResult>(this IItemData data,
             Func<ItemData, TResult> itemFunc,
-            Func<DirectWeaponData, TResult> directWeaponFunc)
+            Func<DirectWeaponData, TResult> directWeaponFunc,
+            Func<RangedWeaponData, TResult> rangedWeaponFunc)
         {
             return data switch
             {
                 ItemData itemData => itemFunc(itemData),
                 DirectWeaponData directWeaponData => directWeaponFunc(directWeaponData),
-                _ => throw new ArgumentException("Invalid item type")
+                RangedWeaponData rangedWeaponData => rangedWeaponFunc(rangedWeaponData),
+                _ => throw new ArgumentException("Invalid item data type")
             };
         }
 
@@ -60,7 +69,8 @@ namespace Domain.Service.Items
         {
             return item.Match<IItemMemento>(
                 item => item.Serialize(),
-                directWeapon => directWeapon.Serialize()
+                directWeapon => directWeapon.Serialize(),
+                rangedWeapon => rangedWeapon.Serialize()
             );
         }
 
@@ -68,7 +78,8 @@ namespace Domain.Service.Items
         {
             return memento.Match<IItem>(
                 itemMemento => new Item(itemMemento),
-                directWeaponMemento => new DirectWeapon(directWeaponMemento)
+                directWeaponMemento => new DirectWeapon(directWeaponMemento),
+                rangedWeaponMemento => new RangedWeapon(rangedWeaponMemento)
             );
         }
 
@@ -76,7 +87,8 @@ namespace Domain.Service.Items
         {
             return data.Match<IItemMemento>(
                 itemData => Item.Build(itemData, isCursed: isCursed, state: state, mimic: mimic),
-                directWeaponData => DirectWeapon.Build(directWeaponData, isCursed: isCursed, state: state, mimic: mimic)
+                directWeaponData => DirectWeapon.Build(directWeaponData, isCursed: isCursed, state: state, mimic: mimic),
+                rangedWeaponData => RangedWeapon.Build(rangedWeaponData, isCursed: isCursed, state: state, mimic: mimic)
             );
         }
     }

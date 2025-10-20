@@ -315,9 +315,9 @@ namespace Game
         }
 
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
-            int distance, params EntityLayer[] canHitLayer)
+            int distance, bool isPiercing, params EntityLayer[] canHitLayer)
         {
-            return await EntityManager.ShowThrowAnimation(icon, position, direction, distance, this, canHitLayer);
+            return await EntityManager.ShowThrowAnimation(icon, position, direction, distance, isPiercing, this, canHitLayer);
         }
 
         public void SpawnEffect(IEnumerable<Vector2Int> area, Color color)
@@ -660,6 +660,28 @@ namespace Game
             }
 
             return pos;
+        }
+
+        public IEnumerable<Vector2Int> GetThrowDestinationPiercing(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer)
+        {
+            var pos = position;
+            for (var i = 0; i < distance; i++)
+            {
+                if (At(pos + direction.Vector()).IsBlank(canHitLayer))
+                {
+                    pos += direction.Vector();
+                }
+                else if (At(pos + direction.Vector()).IsPassableOnMap())
+                {
+                    pos += direction.Vector();
+                    yield return pos;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            yield return pos;
         }
 
         private Dictionary<Vector2Int, HashSet<Vector2Int>> _visionCache = new();

@@ -27,6 +27,7 @@ namespace Domain.Model.Evaluation
         public const float DestroyFireProbabilityPerTurn = 1 / 4f;
         public const float BookMasterUsageLossChance = 0.5f;
         public const float WandMasterUsageLossChance = 0.5f;
+        public const float ProjectileImpactHitProbability = 2f;
 
         public static float BlowAwayPrice(int distance)
         {

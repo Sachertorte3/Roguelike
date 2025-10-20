@@ -86,4 +86,4 @@ MonoBehaviour:
       type: {class: AddResistanceMultiplier, ns: Domain.Service.Characters.Conditions, asm: Domain.Service}
       data:
         Element: 4
-        AddedMultiplier: 0.5
+        AddedResistanceMultiplier: 0

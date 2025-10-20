@@ -70,8 +70,8 @@ namespace Domain.Model.Item
         [ShowIf("_usable")][MinValue(1)] public int UsageLimit;
         public int UpgradeLimit = 3;
         [SerializeReference] public List<IConditionData> PassiveConditions;
-        [SerializeField] private List<StringSerializableDirectWeaponFeature> _featuresToMergeWeapon;
-        public List<DirectWeaponFeature> FeaturesToMergeWeapon => _featuresToMergeWeapon.Select(feature => feature.Value).ToList();
+        [SerializeField] private List<StringSerializableItemFeature> _featuresToMergeWeapon;
+        public List<ItemFeature> FeaturesToMergeWeapon => _featuresToMergeWeapon.Select(feature => feature.Value).ToList();
 
 
         private bool _usable => EffectType switch

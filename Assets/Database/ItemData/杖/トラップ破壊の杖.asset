@@ -67,6 +67,7 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_138
         CanHitLayer: 00000000
+        IsPiercing: 0
     - rid: 5486256292201496579
       type: {class: SelfArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data: 

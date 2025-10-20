@@ -78,32 +78,27 @@ namespace Domain.Service.Effect
             if (_log != null && _log != "")
                 GameLog.Add(map.Player.Character.IsVisible(position), $"{name}{_log}");
 
-            if (Random.value > ProbabilityOfSuccess)
-            {
-                GameLog.Add(map.Player.Character.IsVisible(position), "しかし効果がなかった");
-                return SpawnEffectSkillResult.Failed;
-            }
+            var successes = RandUtils.RollSuccesses(Repeats, ProbabilityOfSuccess);
 
-            var area = GetArea(position, map);
-            if (_effects.Any(effect =>
-                effect is AttackEffect ||
-                effect is AbsorbsEffect ||
-                effect is PercentageDamageEffect ||
-                effect is BreakEffect))
+            for (var i = 0; i < successes; i++)
             {
-                map.SetGrasses(area, false);
-            }
+                var area = GetArea(position, map);
+                if (_effects.Any(effect =>
+                    effect is AttackEffect ||
+                    effect is AbsorbsEffect ||
+                    effect is PercentageDamageEffect ||
+                    effect is BreakEffect))
+                {
+                    map.SetGrasses(area, false);
+                }
 
-            if (_effects.Any(effect =>
-                effect is AttackEffect ||
-                effect is AbsorbsEffect ||
-                effect is PercentageDamageEffect))
-            {
-                map.AttackStatue(area);
-            }
-
-            for (var i = 0; i < Repeats; i++)
-            {
+                if (_effects.Any(effect =>
+                    effect is AttackEffect ||
+                    effect is AbsorbsEffect ||
+                    effect is PercentageDamageEffect))
+                {
+                    map.AttackStatue(area);
+                }
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
@@ -131,7 +126,17 @@ namespace Domain.Service.Effect
                 }
             }
 
-            return SpawnEffectSkillResult.Success(Color, area);
+            if (successes == 0)
+            {
+                GameLog.Add(map.Player.Character.IsVisible(position), "しかし効果がなかった");
+                return SpawnEffectSkillResult.Failed;
+            }
+            else if (successes < Repeats)
+            {
+                GameLog.Add(map.Player.Character.IsVisible(position), $"{successes}回成功した");
+            }
+
+            return SpawnEffectSkillResult.Success;
         }
 
         public float EvaluatePrice()

@@ -502,7 +502,7 @@ namespace Domain.Service.Characters
             if (Entity.IsVisible && destination != Entity.CurrentPosition)
             {
                 await map.ShowThrowAnimation(item.Icon, Entity.CurrentPosition, direction,
-                    CommonSenseParameters.ThrowDistance, EntityLayer.Middle);
+                    CommonSenseParameters.ThrowDistance, false, EntityLayer.Middle);
             }
 
             if (item.ShouldRevealMimic(this, destination, map))

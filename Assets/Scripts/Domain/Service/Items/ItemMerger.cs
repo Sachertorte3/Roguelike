@@ -7,44 +7,62 @@ namespace Domain.Service.Items
 {
     public static class ItemMergeExtension
     {
-        public static bool CanSelectForBaseItem(IItem baseItem) => baseItem is DirectWeapon || baseItem.MaxUsages > 0;
-        public static bool CanSelectForMergedItem(IItem baseItem, IItem mergeBaseItem)
+        public static bool CanSelectForBaseItem(IItem item) => item is DirectWeapon || item.MaxUsages > 0;
+        public static bool CanSelectForMergedItem(IItem item, IItem mergeBaseItem)
         {
             switch (mergeBaseItem)
             {
-                case DirectWeapon mergeBaseweapon:
-                    if (baseItem == mergeBaseweapon)
+                case DirectWeapon:
+                case RangedWeapon:
+                    if (item == mergeBaseItem)
                         return false;
-                    var featuresToMergeWeapon = baseItem switch
+                    var featuresToMergeWeapon = item switch
                     {
+                        RangedWeapon weapon => weapon.Features,
                         DirectWeapon weapon => weapon.Features,
-                        Item item => item.FeaturesToMergeWeapon,
+                        Item mergeditem => mergeditem.FeaturesToMergeWeapon,
                         _ => throw new Exception("Invalid item")
                     };
-                    var mergeBaseweaponFeatures = mergeBaseweapon.Features;
-                    if (!mergeBaseweaponFeatures.Merge(featuresToMergeWeapon, mergeBaseweapon.FeatureLimit).SequenceEqual(mergeBaseweaponFeatures))
+                    var mergeBaseweaponFeatures = mergeBaseItem switch
+                    {
+                        RangedWeapon weapon => weapon.Features,
+                        DirectWeapon weapon => weapon.Features,
+                        _ => throw new Exception("Invalid item")
+                    };
+                    var featureLimit = mergeBaseItem switch
+                    {
+                        RangedWeapon weapon => weapon.FeatureLimit,
+                        DirectWeapon weapon => weapon.FeatureLimit,
+                        _ => throw new Exception("Invalid item")
+                    };
+                    var applicabilityTag = mergeBaseItem switch
+                    {
+                        RangedWeapon => FeatureApplicabilityTag.RangedWeapons,
+                        DirectWeapon => FeatureApplicabilityTag.DirectWeapons,
+                        _ => throw new Exception("Invalid item")
+                    };
+                    if (!mergeBaseweaponFeatures.Merge(featuresToMergeWeapon, featureLimit, applicabilityTag).SequenceEqual(mergeBaseweaponFeatures))
                     {
                         return true;
                     }
-                    if (baseItem.CanUpgrade() && mergeBaseItem.UpgradeCount > 0)
+                    if (item.CanUpgrade() && mergeBaseItem.UpgradeCount > 0)
                     {
                         return true;
                     }
                     return false;
-                case Item item:
-                    return item.BaseName == baseItem.BaseName && item.CanMergeUses;
+                case Item baseItem:
+                    return baseItem.BaseName == item.BaseName && baseItem.CanMergeUses;
                 default:
                     throw new Exception("Invalid item");
             }
         }
         public static IItem Merge(this IItem mergeBaseItem, IItem mergedItem)
         {
-            return mergeBaseItem switch
-            {
-                DirectWeapon weapon => weapon.Merge(mergedItem),
-                Item item => item.Merge(mergedItem as Item),
-                _ => throw new Exception("Invalid item")
-            };
+            return mergeBaseItem.Match<IItem>(
+                item => item.Merge(mergedItem as Item),
+                directWeapon => directWeapon.Merge(mergedItem),
+                rangedWeapon => rangedWeapon.Merge(mergedItem)
+            );
         }
     }
 }

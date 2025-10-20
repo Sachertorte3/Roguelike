@@ -61,6 +61,7 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_138
         CanHitLayer: 01000000
+        IsPiercing: 0
     - rid: 861543420369829892
       type: {class: AddConditionEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

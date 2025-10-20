@@ -92,9 +92,6 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 58b5a647b4970804d89fb9e6bbe90642, type: 2}
       - {fileID: 11400000, guid: c6c6c83729860b24bbde54874dc2b8f4, type: 2}
       - {fileID: 11400000, guid: 2d327c82725ef014f96eeac6c385b8d4, type: 2}
-    Weapons:
-      items:
-      - {fileID: 11400000, guid: ce11181dcc5cd5f4a940c7e100fc0061, type: 2}
     DirectWeapons:
       items:
       - {fileID: 11400000, guid: 5484172c81b51a94b8ca56cfaa81b79b, type: 2}
@@ -111,6 +108,10 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a521a7f0b6e112e43aa5abd15f33e2ce, type: 2}
       - {fileID: 11400000, guid: b9f904d06d12b5341b2c06dd70f44911, type: 2}
       - {fileID: 11400000, guid: 67ab94dcf2dc98b4a8ba5b6dd2a296be, type: 2}
+    RangedWeapons:
+      items:
+      - {fileID: 11400000, guid: 0bb1b02d33cf30a498ebc3add3a8b569, type: 2}
+      - {fileID: 11400000, guid: 4f2a1d8d1c8d71943b890fede999c865, type: 2}
     Artifacts:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
@@ -180,6 +181,10 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a521a7f0b6e112e43aa5abd15f33e2ce, type: 2}
       - {fileID: 11400000, guid: b9f904d06d12b5341b2c06dd70f44911, type: 2}
       - {fileID: 11400000, guid: 67ab94dcf2dc98b4a8ba5b6dd2a296be, type: 2}
+    ChestRangedWeapons:
+      items:
+      - {fileID: 11400000, guid: 0bb1b02d33cf30a498ebc3add3a8b569, type: 2}
+      - {fileID: 11400000, guid: 4f2a1d8d1c8d71943b890fede999c865, type: 2}
     ShopItems:
       items:
       - Item:

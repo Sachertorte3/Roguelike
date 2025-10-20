@@ -23,7 +23,7 @@ namespace Domain.Service.Items
             Icon = icon;
         }
 
-        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, int distance,
+        public async UniTask<Vector2Int> Throw(Direction8 direction, IMap map, int distance, bool isPiercing,
             params EntityLayer[] canHitLayer)
         {
             for (var i = 0; i < distance; i++)
@@ -35,7 +35,8 @@ namespace Domain.Service.Items
                 else if (map.At(Entity.CurrentPosition + direction.Vector()).IsPassableOnMap())
                 {
                     await Entity.Move(direction, Settings.GlobalSettings.ThrowMilliseconds.CurrentValue, true);
-                    break;
+                    if (!isPiercing)
+                        break;
                 }
                 else
                 {

@@ -2,13 +2,13 @@
 using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Utilities.Serialize
 {
     [Serializable]
     public class IconSerializable
     {
+        [Required]
         [ShowInInspector]
         [OnValueChanged("OnValidate")]
         private Sprite _value;
@@ -34,9 +34,11 @@ namespace Utilities.Serialize
             _name = value.name;
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             _name = _value.name;
         }
+#endif
     }
 }

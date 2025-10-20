@@ -19,7 +19,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public bool HasSameEffect { get; private set; }
         [field: SerializeField] public bool HasSameSkill { get; private set; }
         [field: SerializeField] public bool UseOnDeath { get; private set; }
-        [field: SerializeField] public List<DirectWeaponFeature> FeaturesToMergeWeapon { get; private set; }
+        [field: SerializeField] public List<ItemFeature> FeaturesToMergeWeapon { get; private set; }
 
         public ItemMemento(
             BaseItemMemento baseItem,
@@ -29,7 +29,7 @@ namespace Domain.Model.Memento
             bool hasSameEffect,
             bool hasSameSkill,
             bool useOnDeath,
-            List<DirectWeaponFeature> featuresToMergeWeapon)
+            List<ItemFeature> featuresToMergeWeapon)
         {
             BaseItem = baseItem;
             Category = category;
@@ -49,7 +49,7 @@ namespace Domain.Model.Memento
             bool? hasSameEffect = null,
             bool? hasSameSkill = null,
             bool? useOnDeath = null,
-            List<DirectWeaponFeature>? featuresToMergeWeapon = null)
+            List<ItemFeature>? featuresToMergeWeapon = null)
         {
             return new ItemMemento(
                 baseItem ?? BaseItem,

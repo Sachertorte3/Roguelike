@@ -88,39 +88,34 @@ namespace Domain.Service.Effect
             if (_log != null && _log != "")
                 GameLog.Add(actor.IsVisible, $"{actor.GetName(map.Player)}{_log}");
 
-            if (Random.value > ProbabilityOfSuccess)
-            {
-                GameLog.Add(actor.IsVisible, "しかし効果がなかった");
-                return SpawnEffectSkillResult.Failed;
-            }
+            var successes = RandUtils.RollSuccesses(Repeats, ProbabilityOfSuccess);
 
-            if (_position is ProjectileImpact projectileImpact)
+            for (var i = 0; i < successes; i++)
             {
-                await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction,
-                    CommonSenseParameters.ThrowDistance, projectileImpact.CanHitLayer.ToArray());
-            }
+                if (_position is ProjectileImpact projectileImpact)
+                {
+                    await map.ShowThrowAnimation(projectileImpact.Icon.Value, position, direction,
+                        CommonSenseParameters.ThrowDistance, projectileImpact.IsPiercing, projectileImpact.CanHitLayer.ToArray());
+                }
 
-            var area = GetArea(actor, position, direction, map);
-            if (_effects.Any(effect =>
-                    effect is AttackEffect ||
-                    effect is AbsorbsEffect ||
-                    effect is PercentageDamageEffect ||
-                    effect is BreakEffect))
-            {
-                map.SetGrasses(area, false);
-            }
+                var area = GetArea(actor, position, direction, map);
+                if (_effects.Any(effect =>
+                        effect is AttackEffect ||
+                        effect is AbsorbsEffect ||
+                        effect is PercentageDamageEffect ||
+                        effect is BreakEffect))
+                {
+                    map.SetGrasses(area, false);
+                }
 
-            if (_effects.Any(effect =>
-                    effect is AttackEffect ||
-                    effect is AbsorbsEffect ||
-                    effect is PercentageDamageEffect))
-            {
-                map.RevealMimic(area);
-                map.AttackStatue(area);
-            }
-
-            for (var i = 0; i < Repeats; i++)
-            {
+                if (_effects.Any(effect =>
+                        effect is AttackEffect ||
+                        effect is AbsorbsEffect ||
+                        effect is PercentageDamageEffect))
+                {
+                    map.RevealMimic(area);
+                    map.AttackStatue(area);
+                }
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
@@ -179,7 +174,17 @@ namespace Domain.Service.Effect
                 }
             }
 
-            return SpawnEffectSkillResult.Success(Color, area);
+            if (successes == 0)
+            {
+                GameLog.Add(actor.IsVisible, "しかし効果がなかった");
+                return SpawnEffectSkillResult.Failed;
+            }
+            else if (successes < Repeats)
+            {
+                GameLog.Add(actor.IsVisible, $"{successes}回成功した");
+            }
+
+            return SpawnEffectSkillResult.Success;
         }
 
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)

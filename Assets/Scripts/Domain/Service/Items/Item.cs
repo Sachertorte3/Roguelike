@@ -36,7 +36,7 @@ namespace Domain.Service.Items
         public override bool IdentifyIfGot => Category == ItemCategory.Weapons || Category == ItemCategory.Others;
         public override bool IdentifyIfUsed => Category != ItemCategory.Wands;
         public override bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls || Category == ItemCategory.Others;
-        public readonly IReadOnlyList<DirectWeaponFeature> FeaturesToMergeWeapon;
+        public readonly IReadOnlyList<ItemFeature> FeaturesToMergeWeapon;
 
         public Item(ItemData data) : this(Build(data))
         {
@@ -149,7 +149,7 @@ namespace Domain.Service.Items
 
         public override bool CanUpgrade() => false;
         public override bool CanDowngrade() => false;
-        public override void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders) => 
+        public override void Upgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders) =>
             throw new Exception("Cannot upgrade item");
         public override void Downgrade(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders) =>
             throw new Exception("Cannot downgrade item");

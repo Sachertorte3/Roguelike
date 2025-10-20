@@ -71,7 +71,7 @@ namespace Domain.Service.Events
             if (Entity.Visibility.CurrentValue && destination != Entity.CurrentPosition)
             {
                 Entity.SetVisibility(false);
-                await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, EntityLayer.Middle);
+                await map.ShowThrowAnimation(Icon, Entity.CurrentPosition, direction, distance, false, EntityLayer.Middle);
                 Entity.Teleport(map.FindBlankPositionFrom(destination,
                     position => map.At(position).IsBlankAndStandable(EntityLayer.Bottom)));
             }

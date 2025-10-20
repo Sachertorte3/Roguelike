@@ -3,63 +3,59 @@ using System;
 using System.Collections.Generic;
 using Domain.Model.Item;
 using UnityEngine;
+using Utilities.Serialize;
 using Utilities.Serialize.Option;
 
 namespace Domain.Model.Memento
 {
     [Serializable]
-    public class DirectWeaponMemento : IItemMemento
+    public class RangedWeaponMemento : IItemMemento
     {
         [field: SerializeField] public BaseItemMemento BaseItem { get; private set; }
         [field: SerializeField] public Option<WeaponPrefix> Prefix { get; private set; }
         [field: SerializeField] public int DefaultPower { get; private set; }
+        [field: SerializeField] public IconSerializable ProjectileIcon { get; private set; }
         [field: SerializeField] public List<ItemFeature> Features { get; private set; }
         [field: SerializeField] public int FeatureLimit { get; private set; }
         [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
-        [field: SerializeField] public SpawnEffectSkillMemento SkillOnThrow { get; private set; }
-        [field: SerializeField] public bool HasSameEffect { get; private set; }
 
-        public DirectWeaponMemento(
+        public RangedWeaponMemento(
             BaseItemMemento baseItem,
             Option<WeaponPrefix> prefix,
             int defaultPower,
+            IconSerializable projectileIcon,
             List<ItemFeature> features,
             int featureLimit,
-            SpawnEffectSkillMemento skillOnUse,
-            SpawnEffectSkillMemento skillOnThrow,
-            bool hasSameEffect
+            SpawnEffectSkillMemento skillOnUse
         )
         {
             BaseItem = baseItem;
             Prefix = prefix;
             DefaultPower = defaultPower;
+            ProjectileIcon = projectileIcon;
             Features = features;
             FeatureLimit = featureLimit;
             SkillOnUse = skillOnUse;
-            SkillOnThrow = skillOnThrow;
-            HasSameEffect = hasSameEffect;
         }
 
-        public DirectWeaponMemento CopyWith(
+        public RangedWeaponMemento CopyWith(
             BaseItemMemento? baseItem = null,
             Option<WeaponPrefix>? prefix = null,
             int? defaultPower = null,
+            IconSerializable? projectileIcon = null,
             List<ItemFeature>? features = null,
             int? featureLimit = null,
-            SpawnEffectSkillMemento? skillOnUse = null,
-            SpawnEffectSkillMemento? skillOnThrow = null,
-            bool? hasSameEffect = null
+            SpawnEffectSkillMemento? skillOnUse = null
         )
         {
-            return new DirectWeaponMemento(
+            return new RangedWeaponMemento(
                 baseItem ?? BaseItem,
                 prefix ?? Prefix,
                 defaultPower ?? DefaultPower,
+                projectileIcon ?? ProjectileIcon,
                 features ?? Features,
                 featureLimit ?? FeatureLimit,
-                skillOnUse ?? SkillOnUse,
-                skillOnThrow ?? SkillOnThrow,
-                hasSameEffect ?? HasSameEffect
+                skillOnUse ?? SkillOnUse
             );
         }
     }

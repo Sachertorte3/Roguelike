@@ -56,6 +56,19 @@ namespace Utilities
             return Random.value > probability;
         }
 
+        public static int RollSuccesses(int trials, float probability)
+        {
+            int successes = 0;
+            for (int i = 0; i < trials; i++)
+            {
+                if (IsLessThanProbability(probability))
+                {
+                    successes++;
+                }
+            }
+            return successes;
+        }
+
         public static T GetAtRandom<T>(this IEnumerable<T> ie)
         {
             return GetAtRandom(ie, 1, max => Random.Range(0, max))[0];

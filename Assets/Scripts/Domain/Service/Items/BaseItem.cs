@@ -335,7 +335,7 @@ namespace Domain.Service.Items
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
-                               new ProjectileImpact().EvaluateHitProbability();
+                               CommonSenseParameters.ProjectileImpactHitProbability;
             var price = Mathf.Max(priceOnUse, priceOnThrow) * MaxUsages;
             price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
@@ -353,7 +353,7 @@ namespace Domain.Service.Items
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
-                               new ProjectileImpact().EvaluateHitProbability();
+                               CommonSenseParameters.ProjectileImpactHitProbability;
             var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2 * Mathf.Max(UsageLossChance, 0.1f);
             price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;

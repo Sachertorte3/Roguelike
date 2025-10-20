@@ -241,11 +241,11 @@ namespace Game
             FireEntityManager.Add(new Fire(Fire.Build(position)));
         }
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
-            int distance, IMap map, params EntityLayer[] canHitLayer)
+            int distance, bool isPiercing, IMap map, params EntityLayer[] canHitLayer)
         {
             var throwAnimationEntity = new ThrowAnimationEntity(position, icon);
             ThrowAnimationEntityManager.Add(throwAnimationEntity);
-            var destination = await throwAnimationEntity.Throw(direction, map, distance, canHitLayer);
+            var destination = await throwAnimationEntity.Throw(direction, map, distance, isPiercing, canHitLayer);
             throwAnimationEntity.Entity.Destroy("は演出が終わったので消えた");
             return destination;
         }

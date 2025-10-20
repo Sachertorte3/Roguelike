@@ -68,7 +68,7 @@ namespace Domain.Model.Map
         public void SpawnFire(IEnumerable<Vector2Int> positions);
 
         public UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,
-            int distance, params EntityLayer[] canHitLayer);
+            int distance, bool isPiercing, params EntityLayer[] canHitLayer);
 
         public void SpawnEffect(IEnumerable<Vector2Int> area, Color color);
 
@@ -76,6 +76,7 @@ namespace Domain.Model.Map
 
         public Vector2Int FindBlankPositionFrom(Vector2Int position, Func<Vector2Int, bool> isBlankFunc);
         public Vector2Int GetThrowDestination(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer);
+        public IEnumerable<Vector2Int> GetThrowDestinationPiercing(Vector2Int position, Direction8 direction, int distance, params EntityLayer[] canHitLayer);
 
         public bool IsVisible(Vector2Int from, Vector2Int to, float radius);
         public HashSet<Vector2Int> GetVisibleArea(Vector2Int from, float radius);

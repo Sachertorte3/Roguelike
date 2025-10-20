@@ -59,6 +59,7 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_143
         CanHitLayer: 01000000
+        IsPiercing: 0
     - rid: 4425517220030054409
       type: {class: AttackEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

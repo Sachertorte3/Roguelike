@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
@@ -18,11 +17,12 @@ using Domain.Service.Logs;
 using R3;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 using Utilities.Serialize.Option;
 
 namespace Domain.Service.Items
 {
-    public class DirectWeapon : BaseItem, ISerializable<DirectWeaponMemento>
+    public class RangedWeapon : BaseItem, ISerializable<RangedWeaponMemento>
     {
         public override string RevealedName => _prefix.MapOr("", prefix => prefix.Name) + BaseName;
         public override ItemCategory Category => ItemCategory.Weapons;
@@ -38,41 +38,40 @@ namespace Domain.Service.Items
         public override bool AutoDestroyWhenDisabled => false;
         private readonly Option<WeaponPrefix> _prefix;
         private readonly int _defaultPower;
+        private readonly IconSerializable _projectileIcon;
         private readonly List<ItemFeature> _features;
         public IReadOnlyList<ItemFeature> Features => _features;
         public readonly int FeatureLimit;
         private SpawnEffectSkill _skillOnUse;
-        private SpawnEffectSkill _skillOnThrow;
         public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
-        public override Option<ISkill> SkillOnThrow => ((ISkill)_skillOnThrow).ToOption();
-        public DirectWeapon(DirectWeaponData data) : this(Build(data))
+        public override Option<ISkill> SkillOnThrow => Option.None<ISkill>();
+        public RangedWeapon(RangedWeaponData data) : this(Build(data))
         {
         }
 
-        public DirectWeapon(DirectWeaponMemento data) : base(data.BaseItem)
+        public RangedWeapon(RangedWeaponMemento data) : base(data.BaseItem)
         {
             _prefix = data.Prefix;
             _defaultPower = data.DefaultPower;
+            _projectileIcon = data.ProjectileIcon;
             _features = data.Features;
             FeatureLimit = data.FeatureLimit;
             _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(data.SkillOnThrow);
         }
 
-        public DirectWeaponMemento Serialize()
+        public RangedWeaponMemento Serialize()
         {
-            var json = JsonUtility.ToJson(new DirectWeaponMemento
+            var json = JsonUtility.ToJson(new RangedWeaponMemento
             (
                 baseItem: SerializeBase(),
                 prefix: _prefix,
                 defaultPower: _defaultPower,
+                projectileIcon: _projectileIcon,
                 features: _features,
                 featureLimit: FeatureLimit,
-                skillOnUse: _skillOnUse.Serialize(),
-                skillOnThrow: _skillOnThrow.Serialize(),
-                hasSameEffect: _hasSameEffect
+                skillOnUse: _skillOnUse.Serialize()
             ));
-            return JsonUtility.FromJson<DirectWeaponMemento>(json);
+            return JsonUtility.FromJson<RangedWeaponMemento>(json);
         }
 
         public override bool CanUpgrade() => UpgradeCount < UpgradeLimit;
@@ -81,10 +80,14 @@ namespace Domain.Service.Items
         {
             GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化された");
             UpgradeCount++;
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
+            var skillOnUse = BuildSkills(
+                _defaultPower,
+                UpgradeCount,
+                _projectileIcon,
+                _features,
+                _prefix.Value
+            );
             _skillOnUse = new SpawnEffectSkill(skillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
-            _hasSameEffect = hasSameEffect;
             _onItemUpdated.OnNext(Unit.Default);
         }
 
@@ -92,27 +95,31 @@ namespace Domain.Service.Items
         {
             GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化が解除された");
             UpgradeCount--;
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
+            var skillOnUse = BuildSkills(
+                _defaultPower,
+                UpgradeCount,
+                _projectileIcon,
+                _features,
+                _prefix.Value
+            );
             _skillOnUse = new SpawnEffectSkill(skillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
-            _hasSameEffect = hasSameEffect;
             _onItemUpdated.OnNext(Unit.Default);
         }
-        public static (SpawnEffectSkillMemento skillOnUse, SpawnEffectSkillMemento skillOnThrow, bool hasSameEffect) BuildSkills(int power, int upgradeCount, List<ItemFeature> features, WeaponPrefix? prefix = null)
+        public static SpawnEffectSkillMemento BuildSkills(int power, int upgradeCount, IconSerializable projectileIcon, List<ItemFeature> features, WeaponPrefix? prefix = null)
         {
-            var range = features.Contains(ItemFeature.TwoRangeAttack) ? 2 : 1;
-            var area = (IArea)new LineArea(range, false, false);
-            if (features.Contains(ItemFeature.FanAttack))
+            var position = (IEffectPosition)new ProjectileImpact(projectileIcon, new List<EntityLayer> { EntityLayer.Middle }, features.Contains(ItemFeature.Piercing));
+            if (features.Contains(ItemFeature.ArcingShot))
             {
-                area = new FanArea(range, false, false);
+                position = new NearByCharacter(1, false, true, false, false);
             }
-            else if (features.Contains(ItemFeature.SpinAttack))
+
+            var area = (IArea)new SelfArea();
+            if (features.Contains(ItemFeature.Explosive))
             {
-                area = new CircleArea(range, false, false);
+                area = new CircleArea(1, true, false);
             }
 
             var effectsOnUse = new List<IEffect>();
-            var effectsOnThrow = new List<IEffect>();
             var elementPowers = new List<ElementPower>();
             if (prefix != null)
             {
@@ -121,18 +128,11 @@ namespace Domain.Service.Items
             power += upgradeCount;
             elementPowers.Add(new ElementPower(Element.Physical, power));
             var criticalRate = features.Count(f => f == ItemFeature.Critical) * 0.25f;
-            var throwEnhance = features.Contains(ItemFeature.EnhanceThrow) ? 1.5f : 1f;
-            var hasSameEffect = throwEnhance == 1f;
             if (features.Contains(ItemFeature.Absorbing))
             {
                 var absorbRate = features.Count(f => f == ItemFeature.Absorbing) * 0.25f;
                 effectsOnUse.Add(new AbsorbsEffect(
                     elementPowers,
-                    absorbRate,
-                    criticalRate
-                ));
-                effectsOnThrow.Add(new AbsorbsEffect(
-                    elementPowers.Select(power => power.MultiplyPower(throwEnhance)).ToList(),
                     absorbRate,
                     criticalRate
                 ));
@@ -143,25 +143,18 @@ namespace Domain.Service.Items
                     elementPowers,
                     criticalRate
                 ));
-                effectsOnThrow.Add(new AttackEffect(
-                    elementPowers.Select(power => power.MultiplyPower(throwEnhance)).ToList(),
-                    criticalRate
-                ));
             }
             if (features.Contains(ItemFeature.Knockback))
             {
                 effectsOnUse.Add(new BlowAwayEffect(1));
-                effectsOnThrow.Add(new BlowAwayEffect(1));
             }
             if (features.Contains(ItemFeature.Dig))
             {
                 effectsOnUse.Add(new DigEffect());
-                effectsOnThrow.Add(new DigEffect());
             }
             if (features.Contains(ItemFeature.BreakTrap))
             {
                 effectsOnUse.Add(new BreakEffect(false, false, false, true, false, false));
-                effectsOnThrow.Add(new BreakEffect(false, false, false, true, false, false));
             }
             var abnormalConditionMultiplier = features.Count(f => f == ItemFeature.EnhanceAbnormalCondition) + 1;
             if (features.Contains(ItemFeature.Paralysis))
@@ -170,7 +163,6 @@ namespace Domain.Service.Items
                 var paralysis = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
                 effectsOnUse.Add(new AddConditionEffect(paralysis));
-                effectsOnThrow.Add(new AddConditionEffect(paralysis));
             }
             if (features.Contains(ItemFeature.Blind))
             {
@@ -178,7 +170,6 @@ namespace Domain.Service.Items
                 var blind = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("盲目"), probability);
                 effectsOnUse.Add(new AddConditionEffect(blind));
-                effectsOnThrow.Add(new AddConditionEffect(blind));
             }
             if (features.Contains(ItemFeature.Confusion))
             {
@@ -186,7 +177,6 @@ namespace Domain.Service.Items
                 var confusion = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("混乱"), probability);
                 effectsOnUse.Add(new AddConditionEffect(confusion));
-                effectsOnThrow.Add(new AddConditionEffect(confusion));
             }
             if (features.Contains(ItemFeature.Sleep))
             {
@@ -194,7 +184,6 @@ namespace Domain.Service.Items
                 var sleep = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
                 effectsOnUse.Add(new AddConditionEffect(sleep));
-                effectsOnThrow.Add(new AddConditionEffect(sleep));
             }
             if (features.Contains(ItemFeature.Poison))
             {
@@ -202,7 +191,6 @@ namespace Domain.Service.Items
                 var poison = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("毒"), probability);
                 effectsOnUse.Add(new AddConditionEffect(poison));
-                effectsOnThrow.Add(new AddConditionEffect(poison));
             }
             if (features.Contains(ItemFeature.Slowness))
             {
@@ -210,7 +198,6 @@ namespace Domain.Service.Items
                 var slowness = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
                 effectsOnUse.Add(new AddConditionEffect(slowness));
-                effectsOnThrow.Add(new AddConditionEffect(slowness));
             }
             if (features.Contains(ItemFeature.Restraint))
             {
@@ -218,45 +205,32 @@ namespace Domain.Service.Items
                 var restraint = new AdditionalConditionData(
                     ObjectLoader.Load<ConditionTemplate>("拘束"), probability);
                 effectsOnUse.Add(new AddConditionEffect(restraint));
-                effectsOnThrow.Add(new AddConditionEffect(restraint));
             }
 
             var repeat = features.Contains(ItemFeature.DoubleAttack) ? 2 : 1;
 
             var skillOnUseProbabilityOfSuccess = features.Contains(ItemFeature.GuaranteedHit) ? 1f : features.Contains(ItemFeature.Critical) ? 0.75f : CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
 
-            var skillOnThrowProbabilityOfSuccess = features.Contains(ItemFeature.GuaranteedHit) ? 1f : features.Contains(ItemFeature.Critical) ? 0.7f : CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
-
-            var skillOnUse = SpawnEffectSkill.Build(
+            return SpawnEffectSkill.Build(
                 new SkillData(
-                    new AtFeet(),
+                    position,
                     area,
                     effectsOnUse,
                     repeat,
                     skillOnUseProbabilityOfSuccess,
                     "")
             );
-            var skillOnThrow = SpawnEffectSkill.Build(
-                new SkillData(
-                    new AtFeet(),
-                    new SelfArea(),
-                    effectsOnThrow,
-                    1,
-                    skillOnThrowProbabilityOfSuccess,
-                    "")
-            );
-            return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
-        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
+        public static RangedWeaponMemento Build(RangedWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.Power, 0, data.Features, prefix);
+            var skillOnUse = BuildSkills(data.Power, 0, data.ProjectileIcon, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(ItemFeature.Artistic) ? 2f : 1f;
             var usageLossChance = 1 - data.Features.Count(f => f == ItemFeature.EnhanceDurability) * 0.2f;
             var featureLimit = data.FeatureLimit + prefix?.FeatureLimitAdditional ?? 0;
             var maxUsages = Mathf.RoundToInt(data.UsageLimit * (prefix?.UsageLimitMagnification ?? 1f));
 
-            var json = JsonUtility.ToJson(new DirectWeaponMemento
+            var json = JsonUtility.ToJson(new RangedWeaponMemento
             (
                 baseItem: BuildBase(
                     baseName: data.name,
@@ -274,39 +248,42 @@ namespace Domain.Service.Items
                 ),
                 prefix: prefix.ToOption(),
                 defaultPower: data.Power,
+                projectileIcon: data.ProjectileIcon,
                 features: data.Features,
                 featureLimit: data.FeatureLimit,
-                skillOnUse: skillOnUse,
-                skillOnThrow: skillOnThrow,
-                hasSameEffect: hasSameEffect
+                skillOnUse: skillOnUse
             ));
-            var item = JsonUtility.FromJson<DirectWeaponMemento>(json); //MEMO: To break the sharing references
+            var item = JsonUtility.FromJson<RangedWeaponMemento>(json); //MEMO: To break the sharing references
             return item;
         }
 
-        private DirectWeapon Merge(IEnumerable<ItemFeature> featuresToMergeWeapon, int additionalUpgrade)
+        private RangedWeapon Merge(IEnumerable<ItemFeature> featuresToMergeWeapon, int additionalUpgrade)
         {
             var memento = Serialize();
-            var features = memento.Features.Merge(featuresToMergeWeapon, memento.FeatureLimit, FeatureApplicabilityTag.DirectWeapons).ToList();
+            var features = memento.Features.Merge(featuresToMergeWeapon, memento.FeatureLimit, FeatureApplicabilityTag.RangedWeapons).ToList();
 
-            var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(memento.DefaultPower, memento.BaseItem.UpgradeCount + additionalUpgrade, features, memento.Prefix.Value);
+            var skillOnUse = BuildSkills(
+                memento.DefaultPower,
+                memento.BaseItem.UpgradeCount + additionalUpgrade,
+                memento.ProjectileIcon,
+                features,
+                memento.Prefix.Value
+            );
             var multiplyPrice = features.Contains(ItemFeature.Artistic) ? 2f : 1f;
             var usageLossChance = 1 - features.Count(f => f == ItemFeature.EnhanceDurability) * 0.2f;
-            var item = new DirectWeapon(memento.CopyWith(
+            var item = new RangedWeapon(memento.CopyWith(
                 baseItem: memento.BaseItem.CopyWith(
                     multiplyPrice: multiplyPrice,
                     upgradeCount: memento.BaseItem.UpgradeCount + additionalUpgrade,
                     usageLossChance: usageLossChance
                 ),
                 features: features,
-                skillOnUse: skillOnUse,
-                skillOnThrow: skillOnThrow,
-                hasSameEffect: hasSameEffect
+                skillOnUse: skillOnUse
             ));
             return item;
         }
 
-        public DirectWeapon Merge(IItem mergedItem) => mergedItem.Match(
+        public RangedWeapon Merge(IItem mergedItem) => mergedItem.Match(
             item => Merge(item.FeaturesToMergeWeapon, item.UpgradeCount),
             directWeapon => Merge(directWeapon.Features, directWeapon.UpgradeCount),
             rangedWeapon => Merge(rangedWeapon.Features, rangedWeapon.UpgradeCount)

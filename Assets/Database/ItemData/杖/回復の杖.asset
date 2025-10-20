@@ -61,6 +61,7 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_132
         CanHitLayer: 01000000
+        IsPiercing: 0
     - rid: 5486256292201496577
       type: {class: HealEffect, ns: Domain.Service.Effect, asm: Domain.Service}
       data:

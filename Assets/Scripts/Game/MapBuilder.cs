@@ -63,7 +63,7 @@ namespace Game
                 }
             }
 
-            if (Random.value < data.ShopChance && roomIds.Count() > 1)
+            if (RandUtils.IsLessThanProbability(data.ShopChance) && roomIds.Count() > 1)
             {
                 var shopRoom = roomIds.GetAtRandom();
                 _shop = CreateShop(data, shopRoom);
@@ -74,7 +74,7 @@ namespace Game
                 }
             }
 
-            if (Random.value < data.MonsterHouseChance && roomIds.Count() > 1)
+            if (RandUtils.IsLessThanProbability(data.MonsterHouseChance) && roomIds.Count() > 1)
             {
                 var monsterHouseRoom = roomIds.GetAtRandom();
                 _monsterHouse = CreateMonsterHouse(data, monsterHouseRoom);
@@ -82,14 +82,14 @@ namespace Game
                     roomIds.Remove(monsterHouseRoom);
             }
 
-            if (Random.value < data.RestRoomChance && roomIds.Count() > 1)
+            if (RandUtils.IsLessThanProbability(data.RestRoomChance) && roomIds.Count() > 1)
             {
                 var restRoom = roomIds.GetAtRandom();
                 if (CreateRestRoom(data, restRoom))
                     roomIds.Remove(restRoom);
             }
 
-            if (Random.value < data.LakeChance && roomIds.Count() > 1)
+            if (RandUtils.IsLessThanProbability(data.LakeChance) && roomIds.Count() > 1)
             {
                 var lakeRoom = roomIds.GetAtRandom();
                 if (CreateLakeRoom(data, lakeRoom))
@@ -185,7 +185,9 @@ namespace Game
             AddMoneyToRoom(data, roomId, moneyCount);
             AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
-            if (Random.value < data.StatueChance)
+            if (RandUtils.IsLessThanProbability(data.ChestChance))
+                AddChestToRoom(data, roomId);
+            if (RandUtils.IsLessThanProbability(data.StatueChance))
                 AddStatueToRoom(data, roomId);
         }
 
@@ -224,7 +226,9 @@ namespace Game
             AddMoneyToRoom(data, roomId, moneyCount);
             AddCharactersToRoom(data, roomId, characterCount);
             AddTrapsToRoom(data, roomId, trapCount);
-            if (Random.value < data.StatueChance)
+            if (RandUtils.IsLessThanProbability(data.ChestChance))
+                AddChestToRoom(data, roomId);
+            if (RandUtils.IsLessThanProbability(data.StatueChance))
                 AddStatueToRoom(data, roomId);
 
             return true;
@@ -265,8 +269,9 @@ namespace Game
 
             AddItemsToRoom(data, roomId, 5);
             AddMoneyToRoom(data, roomId, 3);
-            AddChestsToRoom(data, roomId, 1);
             AddTrapsToRoom(data, roomId, 3);
+
+            AddChestToRoom(data, roomId);
 
             return MonsterHouse.Build(_tilemap.GetRoom(roomId));
         }
@@ -388,39 +393,39 @@ namespace Game
             }
         }
 
-        private void AddChestsToRoom(DungeonMapData data, Id<Room> roomId, int count)
-        {
-            foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
-            {
-                if (RandUtils.IsLessThanProbability(data.MimicChance))
-                {
-                    _chests.Add(Chest.Build(position, data.Mimic));
-                }
-                else if (RandUtils.IsLessThanProbability(data.WeaponChanceInChest))
-                {
-                    var weapon = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
-                    if (weapon is DirectWeaponData directWeapon)
-                    {
-                        _chests.Add(
-                            Chest.Build(position, DirectWeapon.Build(directWeapon, data.WeaponPrefixes.GetRandomItem(data.Progress), isCursed: false)));
-                    }
-                    else
-                    {
-                        _chests.Add(Chest.Build(position, weapon));
-                    }
-                }
-                else
-                {
-                    _chests.Add(Chest.Build(position, data.ChestItems.GetRandomItem(data.Progress)));
-                }
-            }
-        }
-
         private void AddTrapsToRoom(DungeonMapData data, Id<Room> roomId, int count)
         {
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, count))
             {
                 _traps.Add(Trap.Build(data.Traps.GetRandomItem(), position));
+            }
+        }
+
+        private void AddChestToRoom(DungeonMapData data, Id<Room> roomId)
+        {
+            var position = GetRandomBlankPositionInRoom(roomId);
+            if (RandUtils.IsLessThanProbability(data.MimicChance))
+            {
+                _chests.Add(Chest.Build(data.Mimic, position));
+                return;
+            }
+
+            if (RandUtils.IsLessThanProbability(data.WeaponChanceInChest))
+            {
+                var weaponData = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
+                if (weaponData is DirectWeaponData directWeapon)
+                {
+                    var weapon = DirectWeapon.Build(directWeapon, data.WeaponPrefixes.GetRandomItem(data.Progress), isCursed: false);
+                    _chests.Add(Chest.Build(weapon, position));
+                }
+                else
+                {
+                    _chests.Add(Chest.Build(weaponData, position));
+                }
+            }
+            else
+            {
+                _chests.Add(Chest.Build(data.ChestItems.GetRandomItem(data.Progress), position));
             }
         }
 

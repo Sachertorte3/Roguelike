@@ -19,11 +19,9 @@ MonoBehaviour:
     - _prevMap
     - _teleportIn
     - _sectionData
-    - _floorData
     - _nextMap
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -8828215430129327242}
@@ -58,18 +56,6 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: -8828215430129327242}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8325014953087687760}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
     - _fieldName: _nextMap
       _node: {fileID: -8828215430129327242}
       _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
@@ -98,22 +84,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: -8828215430129327242}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -3961507359562520991}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 1
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -123,28 +94,11 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss:
   - {fileID: 11400000, guid: 94c194319c4806244af0cddd6be62281, type: 2}
+  FloorData: {fileID: 0}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -219,13 +173,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: -8415772247081253821}
@@ -237,18 +189,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: -8415772247081253821}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -6788424184188872890}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -306,22 +246,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: -8415772247081253821}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 5
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -331,27 +256,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: df584d47a8004d54a88052bf6b1eb526, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -676,17 +584,15 @@ MonoBehaviour:
   m_Name: Map
   m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.MapNode
   graph: {fileID: 11400000}
-  position: {x: 248, y: 72}
+  position: {x: 280, y: 72}
   ports:
     keys:
     - _prevMap
     - _sectionData
-    - _floorData
     - _nextMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -5128896849670103603}
@@ -707,18 +613,6 @@ MonoBehaviour:
       connections:
       - fieldName: Output
         node: {fileID: -8704829509910598880}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: -5128896849670103603}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -6699882812533938179}
         reroutePoints: []
       _direction: 0
       _connectionType: 1
@@ -770,22 +664,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: -5128896849670103603}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 1
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -795,27 +674,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: 1205f46312e2d854d8a98b77799418e2, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -1003,11 +865,9 @@ MonoBehaviour:
     - _prevMap
     - _teleportIn
     - _sectionData
-    - _floorData
     - _nextMap
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _prevMap
       _node: {fileID: -3908742665158575060}
@@ -1042,18 +902,6 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: -3908742665158575060}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8325014953087687760}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
     - _fieldName: _nextMap
       _node: {fileID: -3908742665158575060}
       _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
@@ -1082,22 +930,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: -3908742665158575060}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -3961507359562520991}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 1
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1107,28 +940,11 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss:
   - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
+  FloorData: {fileID: 0}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -1292,14 +1108,11 @@ MonoBehaviour:
   nodes:
   - {fileID: 132433583354238991}
   - {fileID: 3664893730446323036}
-  - {fileID: 8847253103253929321}
   - {fileID: 5670028076644485680}
   - {fileID: -8704829509910598880}
-  - {fileID: -7403749162726336941}
   - {fileID: 9031898349937062684}
   - {fileID: -3161589598696151335}
   - {fileID: 5437942102726374776}
-  - {fileID: -6788424184188872890}
   - {fileID: 8353191741393840923}
   - {fileID: 9206932752471496282}
   - {fileID: 761465357129200511}
@@ -1309,7 +1122,6 @@ MonoBehaviour:
   - {fileID: -8415772247081253821}
   - {fileID: -5128896849670103603}
   - {fileID: -3908742665158575060}
-  - {fileID: 8325014953087687760}
   - {fileID: -4226967652871910454}
   - {fileID: -4355002057650542490}
   - {fileID: -1628878052222818832}
@@ -1318,10 +1130,6 @@ MonoBehaviour:
   - {fileID: -6468005376489705111}
   - {fileID: 7860269649140603457}
   - {fileID: -8828215430129327242}
-  - {fileID: -6699882812533938179}
-  - {fileID: 8777509353249933111}
-  - {fileID: -3961507359562520991}
-  - {fileID: 6032777219994288072}
 --- !u!114 &132433583354238991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1339,13 +1147,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 132433583354238991}
@@ -1357,18 +1163,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 132433583354238991}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8847253103253929321}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -1423,22 +1217,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 132433583354238991}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 3
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1448,27 +1227,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: 337619666e3027a44bf0eff1374c4166, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -1494,13 +1256,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 761465357129200511}
@@ -1512,18 +1272,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 761465357129200511}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -6788424184188872890}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -1581,22 +1329,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 761465357129200511}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 5
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1606,27 +1339,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: f84bc29bc8b3af0498c8b87cc3b6f9c5, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -1753,13 +1469,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 5670028076644485680}
@@ -1771,18 +1485,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 5670028076644485680}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -7403749162726336941}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -1840,22 +1542,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 5670028076644485680}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 1
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1865,27 +1552,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: 1205f46312e2d854d8a98b77799418e2, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -1909,13 +1579,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 5720250255583208601}
@@ -1924,18 +1592,6 @@ MonoBehaviour:
       connections: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 5720250255583208601}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -6788424184188872890}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -1993,22 +1649,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 5720250255583208601}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 5
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -2018,27 +1659,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: df584d47a8004d54a88052bf6b1eb526, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -2241,13 +1865,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 8353191741393840923}
@@ -2259,18 +1881,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 8353191741393840923}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -6788424184188872890}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -2328,22 +1938,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 8353191741393840923}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 5
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -2353,27 +1948,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: f84bc29bc8b3af0498c8b87cc3b6f9c5, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0
@@ -2582,13 +2160,11 @@ MonoBehaviour:
   ports:
     keys:
     - _nextMap
-    - _floorData
     - _sectionData
     - _prevMap
     - _teleportIn
     - _teleportOut
     - _enemies
-    - _fields
     values:
     - _fieldName: _nextMap
       _node: {fileID: 9031898349937062684}
@@ -2600,18 +2176,6 @@ MonoBehaviour:
         reroutePoints: []
       _direction: 1
       _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: _floorData
-      _node: {fileID: 9031898349937062684}
-      _typeQualifiedName: Domain.Model.Dungeon.FloorData, Domain.Model, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: -7403749162726336941}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: _sectionData
@@ -2672,22 +2236,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: _fields
-      _node: {fileID: 9031898349937062684}
-      _typeQualifiedName: Utilities.Table.Table`1[[RandomDungeonWithBluePrint.FieldBluePrint,
-        RandomDungeonWithBluePrint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        Utilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: Output
-        node: {fileID: 8777509353249933111}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 1
-      _typeConstraint: 0
-      _dynamic: 0
   Repeat: 5
-  _fields:
-    items: []
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -2697,27 +2246,10 @@ MonoBehaviour:
     WeaponChanceInChest: 0
     Mimic: {fileID: 0}
     Clerk: {fileID: 0}
-  _floorData:
-    PrefixChance: 0.1
-    ShinyChance: 0.01
-    SleepChance: 0.75
-    MimicChance: 0.1
-    ShopChance: 0.05
-    MonsterHouseChance: 0.05
-    RestRoomChance: 0.05
-    LakeChance: 0.05
-    ItemCount: 2
-    MoneyCount: 1
-    MoneyAverage: 100
-    CharacterCount: 1
-    TrapCount: 0.5
-    StatueChance: 0.1
-    BonfireWeight: 1
-    MagicPotWeight: 1
-    WorkbenchWeight: 1
   _enemies:
     items: []
   Boss: []
+  FloorData: {fileID: 11400000, guid: 1205f46312e2d854d8a98b77799418e2, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0

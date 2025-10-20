@@ -4,6 +4,7 @@ using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Map;
+using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -16,6 +17,7 @@ namespace Domain.Model.Dungeon
     {
         public string Name => name;
         [SerializeField] private MapGraph MapGraph;
+        public Table<FieldBluePrint> Fields;
         public MasterItemDataBase MasterItemDataBase;
         public ItemCategoryWeight SpawnItem;
         public Table<TrapData> Traps;
@@ -51,50 +53,49 @@ namespace Domain.Model.Dungeon
         {
             var maxDepth = MapGraph.GetMaxDepth();
             var mapNode = MapGraph.GetMapNode(mapId);
-            var fields = mapNode.Fields;
             var sectionData = mapNode.SectionData;
             var floorData = mapNode.FloorData;
             var enemies = mapNode.Enemies;
             var boss = mapNode.Boss;
             return new DungeonMapData(
-                name,
-                mapNode.Depth(mapId),
-                mapNode.Depth(mapId) / maxDepth,
-                sectionData.Type,
-                fields.GetRandomItem(),
-                new ItemDatabase(MasterItemDataBase, SpawnItem),
-                WeaponPrefixes,
-                MasterItemDataBase.AllChestItems,
-                Traps,
-                Statues,
-                MasterItemDataBase.ShopItems,
-                enemies,
-                Npcs,
-                floorData.PrefixChance,
-                floorData.ShinyChance,
-                floorData.SleepChance,
-                floorData.MimicChance,
-                sectionData.WeaponChanceInChest,
-                sectionData.RoundRoomCorner,
-                sectionData.CaveInOneRoom,
-                sectionData.WaterChance,
-                sectionData.GrassChance,
-                floorData.ShopChance,
-                floorData.MonsterHouseChance,
-                floorData.RestRoomChance,
-                floorData.LakeChance,
-                floorData.ItemCount,
-                floorData.MoneyCount,
-                floorData.MoneyAverage,
-                floorData.CharacterCount,
-                floorData.TrapCount,
-                floorData.StatueChance,
-                floorData.BonfireWeight,
-                floorData.MagicPotWeight,
-                floorData.WorkbenchWeight,
-                boss,
-                sectionData.Clerk,
-                sectionData.Mimic
+                Name: name,
+                Depth: mapNode.Depth(mapId),
+                Progress: mapNode.Depth(mapId) / maxDepth,
+                Type: sectionData.Type,
+                Field: floorData.Field ?? Fields.GetRandomItem(),
+                ItemDatabase: new ItemDatabase(MasterItemDataBase, SpawnItem),
+                WeaponPrefixes: WeaponPrefixes,
+                ChestItems: MasterItemDataBase.AllChestItems,
+                Traps: Traps,
+                Statues: Statues,
+                ShopItems: MasterItemDataBase.ShopItems,
+                Enemies: enemies,
+                Npcs: Npcs,
+                ShinyChance: floorData.ShinyChance,
+                SleepChance: floorData.SleepChance,
+                MimicChance: floorData.MimicChance,
+                WeaponChanceInChest: sectionData.WeaponChanceInChest,
+                RoundRoomCorner: sectionData.RoundRoomCorner,
+                CaveInOneRoom: sectionData.CaveInOneRoom,
+                WaterChance: sectionData.WaterChance,
+                GrassChance: sectionData.GrassChance,
+                ShopChance: floorData.ShopChance,
+                MonsterHouseChance: floorData.MonsterHouseChance,
+                RestRoomChance: floorData.RestRoomChance,
+                LakeChance: floorData.LakeChance,
+                ItemAttempt: floorData.ItemCount,
+                MoneyAttempt: floorData.MoneyCount,
+                MoneyAverage: floorData.MoneyAverage,
+                CharacterAttempt: floorData.CharacterCount,
+                TrapAttempt: floorData.TrapCount,
+                ChestChance: floorData.ChestChance,
+                StatueChance: floorData.StatueChance,
+                BonfireWeight: floorData.BonfireWeight,
+                MagicPotWeight: floorData.MagicPotWeight,
+                WorkbenchWeight: floorData.WorkbenchWeight,
+                Boss: boss,
+                Clerk: sectionData.Clerk,
+                Mimic: sectionData.Mimic
             );
         }
     }

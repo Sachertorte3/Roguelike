@@ -4,11 +4,18 @@ using Utilities;
 
 namespace View
 {
+    [RequireComponent(typeof(SpriteView))]
     public class ParticleController : MonoBehaviour
     {
         private Dictionary<ParticleType, int> _particleCounter = new();
         private Dictionary<ParticleType, GameObject> _particles = new();
         [HideInInspector][SerializeField] private int _sortingLayerID;
+        private SpriteView _spriteView;
+
+        private void Awake()
+        {
+            _spriteView = GetComponent<SpriteView>();
+        }
 
         public void Add(ParticleType particleType)
         {
@@ -32,6 +39,7 @@ namespace View
                 _particles.Add(particleType, particle);
                 _particleCounter.Add(particleType, 1);
             }
+            _spriteView.UpdateVisibility();
         }
 
         public void Remove(ParticleType particleType)
@@ -49,22 +57,7 @@ namespace View
                 _particles.Remove(particleType);
                 _particleCounter.Remove(particleType);
             }
-        }
-
-        public void EnableAll()
-        {
-            foreach (var particle in _particles)
-            {
-                particle.Value.SetActive(true);
-            }
-        }
-
-        public void DisableAll()
-        {
-            foreach (var particle in _particles)
-            {
-                particle.Value.SetActive(false);
-            }
+            _spriteView.UpdateVisibility();
         }
 
         public void Clear()

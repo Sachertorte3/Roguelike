@@ -13,6 +13,26 @@ MonoBehaviour:
   m_Name: Dungeon
   m_EditorClassIdentifier: Domain.Model:Domain.Model:DungeonBluePrintData
   MapGraph: {fileID: 11400000, guid: 889f3c233a74dc34785be383148a6a26, type: 2}
+  Fields:
+    items:
+    - Item: {fileID: 11400000, guid: 68e9de5972a77e54696183ab4d0100bf, type: 2}
+      Weight: 16
+    - Item: {fileID: 11400000, guid: d72033cc55f63624297ef81e250c107f, type: 2}
+      Weight: 4
+    - Item: {fileID: 11400000, guid: 651bcfb659ab8fa4cb823b5068e6ed53, type: 2}
+      Weight: 4
+    - Item: {fileID: 11400000, guid: 63c47df808f594c438d27c0e30c3bcad, type: 2}
+      Weight: 4
+    - Item: {fileID: 11400000, guid: 38d377018ddca994089be554c9fc6dc1, type: 2}
+      Weight: 4
+    - Item: {fileID: 11400000, guid: 86a4b3365bea4d845b0ef9c226ae20a3, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: 400686b6bdaa5e948a5d642c2e0e4b5a, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: c0475acd6289c4a4baeb3123fbe87d1a, type: 2}
+      Weight: 1
+    - Item: {fileID: 11400000, guid: ae4a4f34aa6384a4bba4ce6e4f336539, type: 2}
+      Weight: 1
   MasterItemDataBase:
     Potions:
       items:
@@ -122,19 +142,44 @@ MonoBehaviour:
     ChestItems:
       items:
       - {fileID: 11400000, guid: 70c9fea5092ee2642979611d0ca17e15, type: 2}
-      - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
       - {fileID: 11400000, guid: b5cf80076d46fb645ac12cd5898dc75f, type: 2}
-      - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
       - {fileID: 11400000, guid: 2d67a6e6f31bbda4097ea80e14e64613, type: 2}
-      - {fileID: 11400000, guid: df2cd4f4ac8b9534e9da61d73e8a81a0, type: 2}
-      - {fileID: 11400000, guid: 4798026eef4cbc047972a682dd18d20b, type: 2}
       - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
       - {fileID: 11400000, guid: de80b70acd79c8345a76525a6d06bccb, type: 2}
-      - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
+      - {fileID: 11400000, guid: 9ca0056bb78c9e9428ff34f7c8bede3e, type: 2}
+      - {fileID: 11400000, guid: 4798026eef4cbc047972a682dd18d20b, type: 2}
+      - {fileID: 11400000, guid: df2cd4f4ac8b9534e9da61d73e8a81a0, type: 2}
       - {fileID: 11400000, guid: e9f4beb14bb49df4889a67161b704120, type: 2}
+      - {fileID: 11400000, guid: d7add9f854d82fa4590138f31a3b5524, type: 2}
+      - {fileID: 11400000, guid: 76f4f53f4f2ce95478445a8604f9ba94, type: 2}
+      - {fileID: 11400000, guid: faf68274a43d09847b8dd92f1ba45895, type: 2}
+      - {fileID: 11400000, guid: d224005afeba2de4f802dcca35941fd4, type: 2}
+      - {fileID: 11400000, guid: 238aed1d273b76843b7f228374df01e7, type: 2}
+      - {fileID: 11400000, guid: 5f1734552b338ae408012ce414c8de50, type: 2}
+      - {fileID: 11400000, guid: 4917e7bf5f2f692479022206cf0139b4, type: 2}
+      - {fileID: 11400000, guid: e97798b510285744987367dde0f722db, type: 2}
+      - {fileID: 11400000, guid: d943d6945159400489b26d553e2fc5f1, type: 2}
+      - {fileID: 11400000, guid: 9a2bb90f631700f4191149a29e985959, type: 2}
+      - {fileID: 11400000, guid: 23fea5d7d79f7ea41a3fa6e03982059a, type: 2}
+      - {fileID: 11400000, guid: bb246d89a47042443aae9223593825d0, type: 2}
+      - {fileID: 11400000, guid: 8618b49a8cbd0ac439fe8d78d3af0e77, type: 2}
+      - {fileID: 11400000, guid: 25374e6334bbb1445885a1795248958f, type: 2}
     ChestDirectWeapons:
       items:
+      - {fileID: 11400000, guid: 5484172c81b51a94b8ca56cfaa81b79b, type: 2}
+      - {fileID: 11400000, guid: cc237994c27fb664f94657701968b99e, type: 2}
+      - {fileID: 11400000, guid: c6474f440a9c2764fb729eafb2cae103, type: 2}
+      - {fileID: 11400000, guid: 196ccd508d2e94945a757c0ea62925fa, type: 2}
+      - {fileID: 11400000, guid: ab1c309cd976e9a4d800c58fdec2b202, type: 2}
+      - {fileID: 11400000, guid: c155e31990bc3c340a1c8749a7e009d7, type: 2}
+      - {fileID: 11400000, guid: 28cf6e1605d85664c84a4cd73f379a7d, type: 2}
+      - {fileID: 11400000, guid: 87ac9e1351b358d4db5a3f86064704f5, type: 2}
+      - {fileID: 11400000, guid: bd5946047e937b248aaec116efba3538, type: 2}
+      - {fileID: 11400000, guid: c487a5b656261bd4bbf619e0f81bb92c, type: 2}
+      - {fileID: 11400000, guid: e554e921d09e12641b64a9d7d94e8da5, type: 2}
+      - {fileID: 11400000, guid: a521a7f0b6e112e43aa5abd15f33e2ce, type: 2}
       - {fileID: 11400000, guid: b9f904d06d12b5341b2c06dd70f44911, type: 2}
+      - {fileID: 11400000, guid: 67ab94dcf2dc98b4a8ba5b6dd2a296be, type: 2}
     ShopItems:
       items:
       - Item:
@@ -200,7 +245,7 @@ MonoBehaviour:
     Books: 10
     Wands: 10
     Weapons: 10
-    Artifacts: 5
+    Artifacts: 0
     Others: 1
   Traps:
     items:

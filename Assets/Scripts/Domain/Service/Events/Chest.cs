@@ -132,12 +132,12 @@ namespace Domain.Service.Events
             );
         }
 
-        public static ChestMemento Build(Vector2Int position, IItemData item)
+        public static ChestMemento Build(IItemData item, Vector2Int position)
         {
-            return Build(position, item.Build());
+            return Build(item.Build(), position);
         }
 
-        public static ChestMemento Build(Vector2Int position, IItemMemento item)
+        public static ChestMemento Build(IItemMemento item, Vector2Int position)
         {
             return new ChestMemento
             (
@@ -146,7 +146,7 @@ namespace Domain.Service.Events
             );
         }
 
-        public static ChestMemento Build(Vector2Int position, EnemyData mimic)
+        public static ChestMemento Build(EnemyData mimic, Vector2Int position)
         {
             return new ChestMemento
             (

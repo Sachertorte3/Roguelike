@@ -10,7 +10,6 @@ using Utilities.Table;
 using XNode;
 using System;
 using Sirenix.Utilities;
-using RandomDungeonWithBluePrint;
 
 
 
@@ -20,7 +19,7 @@ using UnityEditor;
 
 namespace Domain.Model.Dungeon
 {
-    [CreateNodeMenu("Map")]
+    [CreateNodeMenu("Map"), NodeWidth(260)]
     public class MapNode : Node
     {
         [MinValue(1)]
@@ -28,19 +27,15 @@ namespace Domain.Model.Dungeon
         [OnValueChanged(nameof(OnRepeatChanged))]
 #endif
         public int Repeat = 1;
-        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
-        [InfoBox("Connection to FieldBluePrint is required.", InfoMessageType.Error, VisibleIf = nameof(_isFieldsUnconnected))]
-        private Table<FieldBluePrint>? _fields = null;
+        
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
         [InfoBox("Connection to SectionData is required.", InfoMessageType.Error, VisibleIf = nameof(_isSectionUnconnected))]
         private SectionData? _sectionData = null;
         [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
-        [InfoBox("Connection to FloorData is required.", InfoMessageType.Error, VisibleIf = nameof(_isFloorUnconnected))]
-        private FloorData? _floorData = null;
-        [Input(ShowBackingValue.Never, connectionType: ConnectionType.Override), SerializeField]
         [InfoBox("No enemies spawn on this map.", InfoMessageType.Info, VisibleIf = nameof(_isEnemiesUnconnected))]
         private Table<EnemyData>? _enemies = null;
         public List<EnemyData> Boss;
+        public FloorData FloorData;
 
         [Input(ShowBackingValue.Never), SerializeField]
         [InfoBox("This map has no previous map.", InfoMessageType.Info, VisibleIf = nameof(_isPrevMapUnconnected))]
@@ -55,9 +50,7 @@ namespace Domain.Model.Dungeon
 
         private bool _isPrevMapUnconnected => !GetInputPort(nameof(_prevMap)).IsConnected;
         private bool _isNextMapUnconnected => !GetOutputPort(nameof(_nextMap)).IsConnected;
-        private bool _isFieldsUnconnected => !GetInputPort(nameof(_fields)).IsConnected;
         private bool _isSectionUnconnected => !GetInputPort(nameof(_sectionData)).IsConnected;
-        private bool _isFloorUnconnected => !GetInputPort(nameof(_floorData)).IsConnected;
         private bool _isEnemiesUnconnected => !GetInputPort(nameof(_enemies)).IsConnected;
 
         public int GetIndex(Id<IMap> mapId)
@@ -131,9 +124,7 @@ namespace Domain.Model.Dungeon
             return Enumerable.Empty<Id<IMap>>();
         }
 
-        public Table<FieldBluePrint> Fields => GetInputValue<Table<FieldBluePrint>>(nameof(_fields));
         public SectionData SectionData => GetInputValue<SectionData>(nameof(_sectionData));
-        public FloorData FloorData => GetInputValue<FloorData>(nameof(_floorData));
         public Table<EnemyData> Enemies => GetInputValue<Table<EnemyData>>(nameof(_enemies), new());
 
         public override object GetValue(NodePort port)
@@ -156,7 +147,6 @@ namespace Domain.Model.Dungeon
         {
             base.Init();
             _sectionData = null;
-            _floorData = null;
             _enemies = null;
             if (!_mapIds.IsNullOrEmpty())
                 return;

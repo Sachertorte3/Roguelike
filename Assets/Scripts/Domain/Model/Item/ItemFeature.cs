@@ -24,7 +24,8 @@ namespace Domain.Model.Item
     {
         None,
         AttackArea,
-        AttackPosition
+        AttackPosition,
+        AttackElement
     }
     [StringSerializable]
     public enum ItemFeature
@@ -58,6 +59,13 @@ namespace Domain.Model.Item
         Slowness,              // 鈍足
         Restraint,             // 拘束
         EnhanceAbnormalCondition,// 状態異常付与率強化
+
+        //Attack Element
+        Fire,
+        Ice,
+        Thunder,
+        Light,
+        Dark,
 
         //Other
         EnhanceDurability,   // 耐久強化
@@ -147,6 +155,12 @@ namespace Domain.Model.Item
                 ItemFeature.Piercing => FeatureExclusionGroup.AttackPosition,
 
                 ItemFeature.Explosive => FeatureExclusionGroup.AttackArea,
+
+                ItemFeature.Fire => FeatureExclusionGroup.AttackElement,
+                ItemFeature.Ice => FeatureExclusionGroup.AttackElement,
+                ItemFeature.Thunder => FeatureExclusionGroup.AttackElement,
+                ItemFeature.Light => FeatureExclusionGroup.AttackElement,
+                ItemFeature.Dark => FeatureExclusionGroup.AttackElement,
 
                 _ => FeatureExclusionGroup.None,
             };

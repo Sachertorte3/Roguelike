@@ -126,7 +126,31 @@ namespace Domain.Service.Items
                 power = Mathf.RoundToInt(power * prefix.PowerMagnification);
             }
             power += upgradeCount;
-            elementPowers.Add(new ElementPower(Element.Physical, power));
+            var elementPower = Mathf.CeilToInt(power / 2f);
+
+            // 属性フィーチャーから対応するElementを取得
+            var elementFeatureMapping = new Dictionary<ItemFeature, Element>
+            {
+                { ItemFeature.Fire, Element.Fire },
+                { ItemFeature.Ice, Element.Ice },
+                { ItemFeature.Thunder, Element.Thunder },
+                { ItemFeature.Light, Element.Light },
+                { ItemFeature.Dark, Element.Dark }
+            };
+
+            var elementFeature = elementFeatureMapping.Keys.FirstOrDefault(feature => features.Contains(feature));
+
+            if (elementFeature != default)
+            {
+                var element = elementFeatureMapping[elementFeature];
+                elementPowers.Add(new ElementPower(element, elementPower));
+                elementPowers.Add(new ElementPower(Element.Physical, power - elementPower));
+            }
+            else
+            {
+                elementPowers.Add(new ElementPower(Element.Physical, power));
+            }
+
             var criticalRate = features.Count(f => f == ItemFeature.Critical) * 0.25f;
             if (features.Contains(ItemFeature.Absorbing))
             {
@@ -157,54 +181,28 @@ namespace Domain.Service.Items
                 effectsOnUse.Add(new BreakEffect(false, false, false, true, false, false));
             }
             var abnormalConditionMultiplier = features.Count(f => f == ItemFeature.EnhanceAbnormalCondition) + 1;
-            if (features.Contains(ItemFeature.Paralysis))
+
+            // 状態異常フィーチャーから対応するデータを取得
+            var conditionFeatureMapping = new Dictionary<ItemFeature, (string templateName, float baseProbability)>
             {
-                var probability = 0.05f * abnormalConditionMultiplier;
-                var paralysis = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("麻痺"), probability);
-                effectsOnUse.Add(new AddConditionEffect(paralysis));
-            }
-            if (features.Contains(ItemFeature.Blind))
+                { ItemFeature.Paralysis, ("麻痺", 0.05f) },
+                { ItemFeature.Blind, ("盲目", 0.1f) },
+                { ItemFeature.Confusion, ("混乱", 0.1f) },
+                { ItemFeature.Sleep, ("睡眠", 0.05f) },
+                { ItemFeature.Poison, ("毒", 0.2f) },
+                { ItemFeature.Slowness, ("鈍足", 0.1f) },
+                { ItemFeature.Restraint, ("拘束", 0.1f) }
+            };
+
+            foreach (var (feature, (templateName, baseProbability)) in conditionFeatureMapping)
             {
-                var probability = 0.1f * abnormalConditionMultiplier;
-                var blind = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("盲目"), probability);
-                effectsOnUse.Add(new AddConditionEffect(blind));
-            }
-            if (features.Contains(ItemFeature.Confusion))
-            {
-                var probability = 0.1f * abnormalConditionMultiplier;
-                var confusion = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("混乱"), probability);
-                effectsOnUse.Add(new AddConditionEffect(confusion));
-            }
-            if (features.Contains(ItemFeature.Sleep))
-            {
-                var probability = 0.05f * abnormalConditionMultiplier;
-                var sleep = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("睡眠"), probability);
-                effectsOnUse.Add(new AddConditionEffect(sleep));
-            }
-            if (features.Contains(ItemFeature.Poison))
-            {
-                var probability = 0.2f * abnormalConditionMultiplier;
-                var poison = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("毒"), probability);
-                effectsOnUse.Add(new AddConditionEffect(poison));
-            }
-            if (features.Contains(ItemFeature.Slowness))
-            {
-                var probability = 0.1f * abnormalConditionMultiplier;
-                var slowness = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("鈍足"), probability);
-                effectsOnUse.Add(new AddConditionEffect(slowness));
-            }
-            if (features.Contains(ItemFeature.Restraint))
-            {
-                var probability = 0.1f * abnormalConditionMultiplier;
-                var restraint = new AdditionalConditionData(
-                    ObjectLoader.Load<ConditionTemplate>("拘束"), probability);
-                effectsOnUse.Add(new AddConditionEffect(restraint));
+                if (features.Contains(feature))
+                {
+                    var probability = baseProbability * abnormalConditionMultiplier;
+                    var conditionData = new AdditionalConditionData(
+                        ObjectLoader.Load<ConditionTemplate>(templateName), probability);
+                    effectsOnUse.Add(new AddConditionEffect(conditionData));
+                }
             }
 
             var repeat = features.Contains(ItemFeature.DoubleAttack) ? 2 : 1;

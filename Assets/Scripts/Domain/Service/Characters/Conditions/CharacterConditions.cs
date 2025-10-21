@@ -7,6 +7,7 @@ using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using Domain.Service.Logs;
 using ObservableCollections;
 using R3;
 using Utilities;
@@ -30,10 +31,32 @@ namespace Domain.Service.Characters.Conditions
             }
 
             _conditions.ObserveAdd()
-                .Subscribe(add => add.Value.Inflict(hasCondition, _inflicterMap[add.Value], map.Player))
+                .Subscribe(add =>
+                {
+                    if (!_conditions.Any(condition => condition.IsEqualCondition(add.Value)))
+                    {
+                        var inflictLog = add.Value.GetInflictLog(hasCondition, map.Player);
+                        if (inflictLog != null)
+                        {
+                            GameLog.Add(hasCondition.IsVisible, inflictLog);
+                        }
+                    }
+                    add.Value.Inflict(hasCondition, _inflicterMap[add.Value]);
+                })
                 .AddTo(_disposables);
             _conditions.ObserveRemove()
-                .Subscribe(remove => remove.Value.Delete(hasCondition, _inflicterMap[remove.Value], map.Player))
+                .Subscribe(remove =>
+                {
+                    if (!_conditions.Any(condition => condition.IsEqualCondition(remove.Value)))
+                    {
+                        var deleteLog = remove.Value.GetDeleteLog(hasCondition, map.Player);
+                        if (deleteLog != null)
+                        {
+                            GameLog.Add(hasCondition.IsVisible, deleteLog);
+                        }
+                    }
+                    remove.Value.Delete(hasCondition, _inflicterMap[remove.Value]);
+                })
                 .AddTo(_disposables);
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using Domain.Model.Character.Status;
+﻿using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
@@ -10,7 +8,6 @@ using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
-    [Serializable]
     internal class Poisoned : IConditionData
     {
         public string Name => $"毒({Power})";
@@ -21,11 +18,6 @@ namespace Domain.Service.Characters.Conditions
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Status.GetStat(StatType.HpNaturalRecovery).Remove(Power);
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

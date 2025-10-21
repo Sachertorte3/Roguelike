@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -17,11 +16,6 @@ namespace Domain.Service.Characters.Conditions
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Affiliation.AddForceAffiliation(actor, AffiliationType.Ally);
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -17,15 +16,9 @@ namespace Domain.Service.Characters.Conditions
         public ScriptableObjectSerializable<ConditionTemplate> Condition;
         [MinValue(0)] public float ResistanceRate = 0f;
 
-
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Status.GetConditionResistanceStat(Condition.Value).Add(ResistanceRate);
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

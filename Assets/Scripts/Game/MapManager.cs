@@ -681,6 +681,7 @@ namespace Game
                     break;
                 }
             }
+
             yield return pos;
         }
 

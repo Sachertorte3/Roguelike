@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
@@ -19,11 +18,6 @@ namespace Domain.Service.Characters.Conditions
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Status.GetElementDamageRateMultiplierStat(Element).Remove(AddedResistanceMultiplier);
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

@@ -3,20 +3,28 @@ using Domain.Model.Character;
 using Domain.Model.Condition;
 using Domain.Model.Entity;
 using Domain.Model.Memento;
-using Domain.Service.Logs;
 using Utilities;
 
 namespace Domain.Service.Characters.Conditions
 {
     internal class Condition : ICondition
     {
-        private readonly ConditionTemplate _condition;
+        public ConditionTemplate _condition { get; init; }
         private int _elapsedTurn;
 
         public Condition(ConditionMemento memento)
         {
             _elapsedTurn = memento.ElapsedTurns;
             _condition = memento.Condition;
+        }
+
+        public bool IsEqualCondition(ICondition condition)
+        {
+            if (condition is Condition otherCondition)
+            {
+                return _condition.name == otherCondition._condition.name;
+            }
+            return false;
         }
 
         public ParticleType ParticleType => _condition.Condition.ParticleType;
@@ -39,23 +47,31 @@ namespace Domain.Service.Characters.Conditions
             );
         }
 
-        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
+        public string? GetInflictLog(IHasCondition hasCondition, IPlayer player)
         {
-            if (!string.IsNullOrEmpty(_condition.InflictLog))
+            if (string.IsNullOrEmpty(_condition.InflictLog))
             {
-                GameLog.Add(hasCondition.IsVisible, $"{hasCondition.GetName(player)}{_condition.InflictLog}");
+                return null;
             }
+            return $"{hasCondition.GetName(player)}{_condition.InflictLog}";
+        }
 
+        public string? GetDeleteLog(IHasCondition hasCondition, IPlayer player)
+        {
+            if (string.IsNullOrEmpty(_condition.DeleteLog))
+            {
+                return null;
+            }
+            return $"{hasCondition.GetName(player)}{_condition.DeleteLog}";
+        }
+
+        public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
+        {
             _condition.Condition.Inflict(hasCondition, actor);
         }
 
-        public void Delete(IHasCondition hasCondition, Id<IEntity> actor, IPlayer player)
+        public void Delete(IHasCondition hasCondition, Id<IEntity> actor)
         {
-            if (!string.IsNullOrEmpty(_condition.DeleteLog))
-            {
-                GameLog.Add(hasCondition.IsVisible, $"{hasCondition.GetName(player)}{_condition.DeleteLog}");
-            }
-
             _condition.Condition.Delete(hasCondition, actor);
         }
 

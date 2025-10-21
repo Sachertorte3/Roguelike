@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -18,11 +17,6 @@ namespace Domain.Service.Characters.Conditions
         {
             hasCondition.Status.GetFlagStat(FlagStatType.CannotAct).Add();
             hasCondition.Status.GetFlagStat(FlagStatType.Blind).Add();
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Effect;
@@ -18,11 +17,6 @@ namespace Domain.Service.Characters.Conditions
         public void Inflict(IHasCondition hasCondition, Id<IEntity> actor)
         {
             hasCondition.Status.GetStat(StatType.HpNaturalRecovery).Add(Power);
-        }
-
-        public UniTask Persist(IHasCondition hasCondition)
-        {
-            return UniTask.CompletedTask;
         }
 
         public void Delete(IHasCondition hasCondition, Id<IEntity> actor)

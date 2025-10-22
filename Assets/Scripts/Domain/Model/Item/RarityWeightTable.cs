@@ -24,7 +24,19 @@ namespace Domain.Model.Item
 
         public T GetRandomItem(float progress)
         {
-            return items[items.Select(items => items.Rarity.GetWeight(progress)).WeightedIndex()];
+            var itemsByRarity = items.GroupBy(item => item.Rarity)
+                .Where(group => group.Any())
+                .ToList();
+
+            if (!itemsByRarity.Any())
+            {
+                throw new InvalidOperationException("Item is not found");
+            }
+
+            var rarityIndex = itemsByRarity.Select(group => group.Key.GetWeight(progress)).WeightedIndex();
+            var selectedRarity = itemsByRarity[rarityIndex].Key;
+
+            return itemsByRarity[rarityIndex].GetAtRandom();
         }
     }
 }

@@ -332,7 +332,7 @@ namespace Domain.Service.Characters
                 (
                     exp: new StatData(0, minValue: 0f),
                     hp: new ResourceData(new StatData(maxHp, minValue: 0f), maxHp),
-                    hpNaturalRecovery: new StatData(hpNaturalRecoveryAmount, minValue: 0f),
+                    hpNaturalRecovery: new StatData(hpNaturalRecoveryAmount),
                     elementAttackMultiplier: elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value, minValue: 0f)),
                     elementDamageRateMultiplier: elementDamageRateMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value, minValue: 0f)),
                     conditionResistance: conditionResistance.ToDictionary(pair => pair.Key.name, pair => new StatData(pair.Value, minValue: 0f, maxValue: 1f)),

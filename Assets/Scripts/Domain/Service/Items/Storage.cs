@@ -139,6 +139,11 @@ namespace Domain.Service.Items
             return _items.IndexOf(item) >= 0;
         }
 
+        public bool Contains(string baseName)
+        {
+            return _items.Any(x => x.BaseName == baseName);
+        }
+
         public IItem? GetItem(int index)
         {
             return index < _items.Count ? _items[index] : null;
@@ -175,6 +180,11 @@ namespace Domain.Service.Items
             return CanRemoveItem && Contains(item);
         }
 
+        public bool CanRemove(string baseName)
+        {
+            return CanRemoveItem && Contains(baseName);
+        }
+
         public bool CanReplace(int index)
         {
             return CanAddIgnoreEmptySpace() && CanRemove(index);
@@ -207,6 +217,14 @@ namespace Domain.Service.Items
         {
             if (!CanRemove(item))
                 throw new Exception("Can't remove item from storage");
+            _items.Remove(item);
+        }
+
+        public void Remove(string baseName)
+        {
+            if (!CanRemove(baseName))
+                throw new Exception("Can't remove item from storage");
+            var item = _items.First(x => x.BaseName == baseName);
             _items.Remove(item);
         }
 

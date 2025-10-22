@@ -19,7 +19,7 @@ MonoBehaviour:
   _features:
   - stringValue: EnhanceThrow
   FeatureLimit: 3
-  UsageLimit: 24
+  UsageLimit: 40
   UpgradeLimit: 30
   PassiveConditions: []
   references:

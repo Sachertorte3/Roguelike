@@ -15,7 +15,6 @@ namespace Domain.Model.Memento
         public Id<IMap> Id => new(_id);
         [field: SerializeField] public TilemapMemento Tilemap { get; private set; }
         [field: SerializeField] public EntitiesMemento Entities { get; private set; }
-        [field: SerializeField] public List<string> KeyCharacters { get; private set; }
         [field: SerializeField] public Option<RoomMemento> MonsterHouse { get; private set; }
         [field: SerializeField] public Option<ShopMemento> Shop { get; private set; }
         [field: SerializeField] public Vector2Int RandomBlankPosition { get; private set; }
@@ -24,7 +23,6 @@ namespace Domain.Model.Memento
             Id<IMap> id,
             TilemapMemento tilemap,
             EntitiesMemento entities,
-            List<string> keyCharacters,
             Option<RoomMemento> monsterHouse,
             Option<ShopMemento> shop,
             Vector2Int randomBlankPosition)
@@ -32,7 +30,6 @@ namespace Domain.Model.Memento
             _id = id.ToString();
             Tilemap = tilemap;
             Entities = entities;
-            KeyCharacters = keyCharacters;
             MonsterHouse = monsterHouse;
             Shop = shop;
             RandomBlankPosition = randomBlankPosition;

@@ -18,7 +18,7 @@ MonoBehaviour:
   Power: 8
   _features: []
   FeatureLimit: 5
-  UsageLimit: 30
+  UsageLimit: 50
   UpgradeLimit: 30
   PassiveConditions: []
   references:

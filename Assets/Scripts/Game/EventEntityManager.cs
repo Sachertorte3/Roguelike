@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Entity;
+using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Events;
 using Domain.Service.Items;
@@ -32,7 +33,7 @@ namespace Game
         private ObservableList<IPlayerEventEntity> _standalonePlayerEventEntities = new();
         private ObservableList<IScheduledEventEntity> _standaloneScheduledEventEntities = new();
 
-        public EventEntityManager(EventEntitiesMemento eventEntities, ReadOnlyReactiveProperty<bool> isLockedStairs)
+        public EventEntityManager(EventEntitiesMemento eventEntities)
         {
             foreach (var mimicItemMemento in eventEntities.MimicItems)
             {
@@ -57,7 +58,7 @@ namespace Game
 
             foreach (var stairsMemento in eventEntities.Stairs)
             {
-                var stairs = new Stairs(stairsMemento, isLockedStairs);
+                var stairs = new Stairs(stairsMemento);
                 Stairs.Add(stairs);
                 Spawn(stairs);
             }

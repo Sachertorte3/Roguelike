@@ -249,7 +249,7 @@ MonoBehaviour:
     Scrolls: 15
     Books: 10
     Wands: 10
-    Weapons: 10
+    Weapons: 5
     Artifacts: 0
     Others: 1
   Traps:

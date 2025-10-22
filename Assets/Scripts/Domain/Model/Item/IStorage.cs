@@ -22,6 +22,7 @@ namespace Domain.Model.Item
         public bool HasItemAt(int index);
         public bool HasItemAt(int index, out IItem item);
         public bool Contains(IItem item);
+        public bool Contains(string baseName);
         public IItem? GetItem(int index);
         public int? GetItemIndex(IItem item);
         public bool CanAddToEmpty();
@@ -33,6 +34,8 @@ namespace Domain.Model.Item
         public IItem Remove(int index);
         public bool CanRemove(IItem item);
         public void Remove(IItem item);
+        public bool CanRemove(string baseName);
+        public void Remove(string baseName);
         public bool CanReplace(int index);
         public IItem Replace(IItem item, int index);
         public void Replace(IItem oldItem, IItem newItem);

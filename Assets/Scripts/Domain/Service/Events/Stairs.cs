@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using Domain.Model.Memento;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -18,15 +21,17 @@ namespace Domain.Service.Events
         public Id<IMap> Destination { get; init; }
         public EntityBase Entity { get; init; }
         public Id<IEntity> DestinationId { get; init; }
-        public ReadOnlyReactiveProperty<bool> IsLocked { get; private set; }
+        public List<Id<IEntity>> KeyCharacters { get; init; }
+        private const string _keyBaseName = "黄金の鍵";
 
-        public Stairs(StairsMemento data, ReadOnlyReactiveProperty<bool> isLocked)
+        public Stairs(StairsMemento data)
         {
             Type = data.Type;
             Entity = new EntityBase(data.Entity);
             Destination = data.Destination;
             DestinationId = data.DestinationId;
-            IsLocked = isLocked;
+            KeyCharacters = data.KeyCharacters;
+            
             var entityName = Type switch
             {
                 MovementEntityType.UpStairs => "階段",
@@ -42,8 +47,13 @@ namespace Domain.Service.Events
                     {
                         new(
                             "進む",
-                            (player, map) => CanExecuteEvent(),
+                            (player, map) => CanExecuteEvent(map),
                             (gameManager, map) => DoEvent(gameManager)
+                        ),
+                        new(
+                            "鍵を使って進む",
+                            (player, map) => !CanExecuteEvent(map) && CanUseKey(player),
+                            (gameManager, map) => DoUseKeyEvent(gameManager, map)
                         )
                     }
                 )
@@ -57,9 +67,14 @@ namespace Domain.Service.Events
 
         public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
-        private bool CanExecuteEvent()
+        private bool CanExecuteEvent(IMap map)
         {
-            return !IsLocked.CurrentValue;
+            return KeyCharacters.All(keyCharacterId => map.Characters.ById(keyCharacterId) == null);
+        }
+
+        private bool CanUseKey(IPlayer player)
+        {
+            return player.Character.Inventory.Contains(_keyBaseName);
         }
 
         private UniTask DoEvent(IGameManager gameManager)
@@ -76,6 +91,13 @@ namespace Domain.Service.Events
             return UniTask.CompletedTask;
         }
 
+        private UniTask DoUseKeyEvent(IGameManager gameManager, IMap map)
+        {
+            var player = map.Player;
+            player.Character.Inventory.Remove(_keyBaseName);
+            return DoEvent(gameManager);
+        }
+
         public UniTask BlowAway(IActorOfEffect actor, Direction8 direction, int distance, IMap map)
         {
             return UniTask.CompletedTask;
@@ -88,25 +110,27 @@ namespace Domain.Service.Events
                 Type,
                 Destination,
                 entity: Entity.Serialize(),
-                destinationId: DestinationId
+                destinationId: DestinationId,
+                keyCharacters: KeyCharacters.ToList()
             );
         }
 
         public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IEntity> id,
-            Id<IMap> destination, Id<IEntity> destinationId)
+            Id<IMap> destination, Id<IEntity> destinationId, List<Id<IEntity>> keyCharacters)
         {
             return new StairsMemento
             (
                 type,
                 destination,
                 entity: EntityBase.Build(id, position, EntityLayer.Bottom),
-                destinationId: destinationId
+                destinationId: destinationId,
+                keyCharacters: keyCharacters
             );
         }
 
-        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IMap> destination)
+        public static StairsMemento Build(MovementEntityType type, Vector2Int position, Id<IMap> destination, List<Id<IEntity>> keyCharacters)
         {
-            return Build(type, position, Id<IEntity>.Generate(), destination, Id<IEntity>.Generate());
+            return Build(type, position, Id<IEntity>.Generate(), destination, Id<IEntity>.Generate(), keyCharacters);
         }
 
         ~Stairs()

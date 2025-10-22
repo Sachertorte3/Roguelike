@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Entity;
 using Domain.Model.Map;
 using UnityEngine;
@@ -15,17 +17,21 @@ namespace Domain.Model.Memento
         [SerializeField] private string _destinationId;
         public Id<IEntity> DestinationId => new(_destinationId);
         [field: SerializeField] public EntityMemento Entity { get; private set; }
+        [SerializeField] private List<string> _keyCharacters;
+        public List<Id<IEntity>> KeyCharacters => _keyCharacters.Select(keyCharacter => new Id<IEntity>(keyCharacter)).ToList();
 
         public StairsMemento(
             MovementEntityType type,
             Id<IMap> destination,
             Id<IEntity> destinationId,
-            EntityMemento entity)
+            EntityMemento entity,
+            List<Id<IEntity>> keyCharacters)
         {
             Type = type;
             _destination = destination.ToString();
             _destinationId = destinationId.ToString();
             Entity = entity;
+            _keyCharacters = keyCharacters.Select(keyCharacter => keyCharacter.ToString()).ToList();
         }
     }
 }

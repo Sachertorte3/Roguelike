@@ -47,9 +47,6 @@ namespace Game
         public IShop? Shop => _shop;
         public ReadOnlyReactiveProperty<bool>? IsStolen => _shop?.IsStolen;
         public RectInt? ShopRect => _shop?.Rect;
-        private ReactiveProperty<bool> _stairsLocked = new(true);
-        public ReadOnlyReactiveProperty<bool> MovementEntityLocked => _stairsLocked;
-        public ObservableList<ICharacter> KeyCharacters = new();
         private readonly Subject<OnEffectSpawnedMessage> _onEffectSpawned = new();
         private readonly IGameManager _gameManager;
         public EntityManager EntityManager { get; init; }
@@ -100,22 +97,6 @@ namespace Game
             }
 
             SetRules(gameManager);
-
-            KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
-                .Select(character => EntityManager.Characters.ById(new Id<IEntity>(character)))
-                .WhereNotNull()
-            );
-            if (KeyCharacters.Any())
-            {
-                KeyCharacters.ForEach(character =>
-                    character.Entity.OnDestroyed.Subscribe(_ => KeyCharacters.Remove(character)).AddTo(_disposables));
-                KeyCharacters.ObserveCountChanged().Where(count => count == 0)
-                    .Subscribe(_ => _stairsLocked.Value = false).AddTo(_disposables);
-            }
-            else
-            {
-                _stairsLocked.Value = false;
-            }
 
             var visibleArea = EntityManager.Player.Character.VisionRange.VisibleArea;
             _tilemap.UpdateChunk(EntityManager.Player.Character.Entity.CurrentPosition);
@@ -180,22 +161,6 @@ namespace Game
             }
 
             SetRules(gameManager);
-
-            KeyCharacters = new ObservableList<ICharacter>(map.KeyCharacters
-                .Select(character => EntityManager.Characters.ById(new Id<IEntity>(character)))
-                .WhereNotNull()
-            );
-            if (KeyCharacters.Any())
-            {
-                KeyCharacters.ForEach(character =>
-                    character.Entity.OnDestroyed.Subscribe(_ => KeyCharacters.Remove(character)).AddTo(_disposables));
-                KeyCharacters.ObserveCountChanged().Where(count => count == 0)
-                    .Subscribe(_ => _stairsLocked.Value = false).AddTo(_disposables);
-            }
-            else
-            {
-                _stairsLocked.Value = false;
-            }
 
             var visibleArea = EntityManager.Player.Character.VisionRange.VisibleArea;
             _tilemap.UpdateChunk(EntityManager.Player.Character.Entity.CurrentPosition);
@@ -421,7 +386,6 @@ namespace Game
                 Id,
                 _tilemap.Serialize(),
                 EntityManager.Serialize(),
-                KeyCharacters.Select(character => character.Entity.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
                 GetAllBlankAndStandablePositions().GetAtRandom().Position
@@ -435,7 +399,6 @@ namespace Game
                 Id,
                 _tilemap.Serialize(),
                 EntityManager.SerializeWithoutPartyMembers(GetFollowingCharacters()),
-                KeyCharacters.Select(character => character.Entity.Id.ToString()).ToList(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
                 GetAllBlankAndStandablePositions().GetAtRandom().Position

@@ -437,11 +437,9 @@ namespace Game
 
         private bool CreateIsolateRoom(DungeonMapData data, Id<Room> roomId)
         {
-            // テレポーターを先に配置（空白位置管理を使用）
             var teleporterPosition = GetRandomBlankPositionInRoom(roomId);
             _teleporter = Teleporter.Build(teleporterPosition);
 
-            // 残りの位置をMoneyで埋める（空白位置管理を使用）
             var walkablePositions = _tilemap.GetWalkablePositionsIn(roomId);
             var moneyPositions = walkablePositions.Where(p => p != teleporterPosition).ToList();
             foreach (var position in GetRandomBlankPositionsInRoom(roomId, moneyPositions.Count))
@@ -456,10 +454,10 @@ namespace Game
         {
             if (data.Id != null && data.DestinationId != null)
                 _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
-                    data.Destination, data.DestinationId));
+                    data.Destination, data.DestinationId, _keyCharacters));
             else
                 _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
-                    data.Destination));
+                    data.Destination, _keyCharacters));
         }
 
         public MapMemento Build()
@@ -485,7 +483,6 @@ namespace Game
                         _workbench.ToOption(),
                         _teleporter.ToOption()),
                     FireEntityManager.Build()),
-                _keyCharacters.Select(key => key.ToString()).ToList(),
                 _monsterHouse.ToOption(),
                 _shop.ToOption(),
                 _blankPositionsInRooms.Values.SelectMany(positions => positions).GetAtRandom()

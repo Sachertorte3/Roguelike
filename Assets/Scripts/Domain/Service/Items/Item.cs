@@ -127,6 +127,7 @@ namespace Domain.Service.Items
                     additionalPrice: data.AdditionalPrice,
                     multiplyPrice: data.MultiplyPrice,
                     state: state,
+                    upgradeCount: 0,
                     maxUsages: data.UsageLimit,
                     usageLossChance: 1,
                     isCursed: isCursed,

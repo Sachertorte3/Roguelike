@@ -145,6 +145,7 @@ namespace Domain.Service.Items
             int additionalPrice,
             float multiplyPrice,
             ItemState state,
+            int upgradeCount,
             int maxUsages,
             float usageLossChance,
             bool isCursed,
@@ -162,7 +163,7 @@ namespace Domain.Service.Items
                 additionalPrice: additionalPrice,
                 multiplyPrice: multiplyPrice,
                 state: state,
-                upgradeCount: 0,
+                upgradeCount: upgradeCount,
                 maxUsages: maxUsages,
                 remainingUsages: maxUsages,
                 usageLossChance: usageLossChance,
@@ -477,6 +478,8 @@ namespace Domain.Service.Items
             }
             info += "\n";
             info += $"{Price}Gの価値がある\n";
+            if (UpgradeCount > 0)
+                info += $"それは{UpgradeCount}/{UpgradeLimit}回強化されている\n";
             info += CursedInfo();
             if (HasActivatableSkill)
             {

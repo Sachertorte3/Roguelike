@@ -20,11 +20,12 @@ MonoBehaviour:
   MonsterHouseChance: 0.05
   RestRoomChance: 0.2
   LakeChance: 0.1
-  ItemCount: 2
+  ItemCount: 1.5
   MoneyCount: 1
   MoneyAverage: 100
   CharacterCount: 1
   TrapCount: 0.5
+  ChestChance: 0.1
   StatueChance: 0.1
   BonfireWeight: 1
   MagicPotWeight: 1

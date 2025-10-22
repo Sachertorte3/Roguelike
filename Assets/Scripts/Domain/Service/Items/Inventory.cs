@@ -148,6 +148,7 @@ namespace Domain.Service.Items
         public StorageMemento Serialize() => _storage.Serialize();
         public bool HasEmptySpace() => _storage.HasEmptySpace();
         public bool Contains(IItem item) => _storage.Contains(item);
+        public bool Contains(string baseName) => _storage.Contains(baseName);
         public int? GetItemIndex(IItem item) => _storage.GetItemIndex(item);
         public bool HasItem(IItem item) => _storage.HasItem(item);
         public bool HasItemAt(int index) => _storage.HasItemAt(index);
@@ -191,10 +192,12 @@ namespace Domain.Service.Items
             else
                 throw new Exception("Can't insert item to inventory");
         }
-        public bool CanRemove(IItem item) => _storage.CanRemove(item);
-        public void Remove(IItem item) => _storage.Remove(item);
         public bool CanRemove(int index) => _storage.CanRemove(index);
         public IItem Remove(int index) => _storage.Remove(index);
+        public bool CanRemove(IItem item) => _storage.CanRemove(item);
+        public void Remove(IItem item) => _storage.Remove(item);
+        public bool CanRemove(string baseName) => _storage.CanRemove(baseName);
+        public void Remove(string baseName) => _storage.Remove(baseName);
         public bool CanReplace(int index) => _storage.CanReplace(index);
         public IItem Replace(IItem item, int index)
         {

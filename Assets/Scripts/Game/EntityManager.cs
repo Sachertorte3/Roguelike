@@ -54,23 +54,6 @@ namespace Game
         {
             _map = map;
             CharacterManager = new CharacterManager(playerData, receiver, gameManager, map);
-            ItemManager = new ItemManager();
-            EventEntityManager = new EventEntityManager(entitiesMemento.EventEntities, map.MovementEntityLocked);
-            ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
-            FireEntityManager = new FireEntityManager(entitiesMemento.Fires);
-
-            _eventEntities.AddWith(StandaloneEventEntities).AddTo(_disposables);
-            _playerEventEntities.AddWith(Characters).AddTo(_disposables);
-            _playerEventEntities.AddWith(StandalonePlayerEventEntities).AddTo(_disposables);
-            _scheduledEventEntities.AddWith(StandaloneScheduledEventEntities).AddTo(_disposables);
-
-            _entities.AddWith(Characters).AddTo(_disposables);
-            _entities.AddWith(Items).AddTo(_disposables);
-            _entities.AddWith(StandaloneEventEntities).AddTo(_disposables);
-            _entities.AddWith(StandalonePlayerEventEntities).AddTo(_disposables);
-            _entities.AddWith(StandaloneScheduledEventEntities).AddTo(_disposables);
-            _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
-            _entities.AddWith(FireEntities).AddTo(_disposables);
 
             foreach (var character in entitiesMemento.Characters)
             {
@@ -98,10 +81,29 @@ namespace Game
                 }
             }
 
+            ItemManager = new ItemManager();
+
             foreach (var item in entitiesMemento.Items)
             {
                 SpawnItem(item);
             }
+
+            EventEntityManager = new EventEntityManager(entitiesMemento.EventEntities);
+            ThrowAnimationEntityManager = new ThrowAnimationEntityManager();
+            FireEntityManager = new FireEntityManager(entitiesMemento.Fires);
+
+            _eventEntities.AddWith(StandaloneEventEntities).AddTo(_disposables);
+            _playerEventEntities.AddWith(Characters).AddTo(_disposables);
+            _playerEventEntities.AddWith(StandalonePlayerEventEntities).AddTo(_disposables);
+            _scheduledEventEntities.AddWith(StandaloneScheduledEventEntities).AddTo(_disposables);
+
+            _entities.AddWith(Characters).AddTo(_disposables);
+            _entities.AddWith(Items).AddTo(_disposables);
+            _entities.AddWith(StandaloneEventEntities).AddTo(_disposables);
+            _entities.AddWith(StandalonePlayerEventEntities).AddTo(_disposables);
+            _entities.AddWith(StandaloneScheduledEventEntities).AddTo(_disposables);
+            _entities.AddWith(ThrowAnimationEntities).AddTo(_disposables);
+            _entities.AddWith(FireEntities).AddTo(_disposables);
         }
 
         public void Dispose()

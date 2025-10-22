@@ -19,7 +19,7 @@ MonoBehaviour:
   _features:
   - stringValue: EnhanceDurability
   FeatureLimit: 2
-  UsageLimit: 40
+  UsageLimit: 60
   UpgradeLimit: 10
   PassiveConditions: []
   references:

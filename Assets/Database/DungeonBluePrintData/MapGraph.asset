@@ -944,7 +944,7 @@ MonoBehaviour:
     items: []
   Boss:
   - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
-  FloorData: {fileID: 0}
+  FloorData: {fileID: 11400000, guid: 19f7e11c54a2e08499d59577a26f7f57, type: 2}
   _prevMap: 0
   _nextMap: 0
   _teleportIn: 0

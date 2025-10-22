@@ -20,7 +20,7 @@ MonoBehaviour:
     _name: icons_full_16_539
   _features: []
   FeatureLimit: 3
-  UsageLimit: 20
+  UsageLimit: 30
   UpgradeLimit: 30
   PassiveConditions: []
   references:

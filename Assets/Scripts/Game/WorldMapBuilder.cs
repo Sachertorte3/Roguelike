@@ -33,10 +33,10 @@ namespace Game
         {
             if (data.Id != null && data.DestinationId != null)
                 _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(), data.Id,
-                    data.Destination, data.DestinationId));
+                    data.Destination, data.DestinationId, new()));
             else
                 _stairs.Add(Stairs.Build(data.Type, GetRandomStairPosition(),
-                    data.Destination));
+                    data.Destination, new()));
         }
         public MapMemento Build()
         {
@@ -60,7 +60,6 @@ namespace Game
                         Option<WorkbenchMemento>.None,
                         Option<EntityMemento>.None),
                     FireEntityManager.Build()),
-                new List<string>(),
                 Option<RoomMemento>.None,
                 Option<ShopMemento>.None,
                 Vector2Int.zero

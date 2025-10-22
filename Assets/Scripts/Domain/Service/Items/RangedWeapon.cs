@@ -235,6 +235,7 @@ namespace Domain.Service.Items
                     additionalPrice: 0,
                     multiplyPrice: multiplyPrice,
                     state: state,
+                    upgradeCount: 0,
                     maxUsages: maxUsages,
                     usageLossChance: usageLossChance,
                     isCursed: isCursed,

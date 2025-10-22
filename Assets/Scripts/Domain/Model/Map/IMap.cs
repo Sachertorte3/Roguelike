@@ -25,8 +25,6 @@ namespace Domain.Model.Map
         public IObservableCollection<ICharacter> Characters { get; }
         public IObservableCollection<IItemEntity> Items { get; }
 
-        public ReadOnlyReactiveProperty<bool> MovementEntityLocked { get; }
-
         public HashSet<Vector2Int> GetAllPositions();
 
         public IEntity? GetEntityFastAt(Vector2Int position, EntityLayer layer);

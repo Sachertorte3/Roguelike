@@ -82,11 +82,7 @@ namespace Provider
                         ReplaceAllItemViews(inventoryView, map);
                     }).AddTo(_disposables);
 
-                    foreach (var (item, index) in inventory.AllItemsWithIndex)
-                    {
-                        ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, index,
-                            map.Player, map.ItemPlaceholders);
-                    }
+                    ReplaceAllItemViews(inventoryView, map);
                 },
                 _ => _disposables.Clear()
             );

@@ -471,15 +471,13 @@ namespace Domain.Service.Characters
             Log.Debug(
                 $"[Action]{_name}:ThrowItem\n{item.Info(map.Player, map.ItemPlaceholders)}\n direction:{direction}");
             Turn(direction);
-            if (item.CannotDropIfCursed)
+
+            item.SetCurseIdentified(true);
+            if (item.IsCursed)
             {
-                item.SetCurseIdentified(true);
-                if (item.IsCursed)
-                {
-                    GameLog.Add(Entity.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
-                    State = CharacterState.Finish;
-                    return;
-                }
+                GameLog.Add(Entity.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて投げられない");
+                State = CharacterState.Finish;
+                return;
             }
 
             GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を投げた");
@@ -558,17 +556,6 @@ namespace Domain.Service.Characters
         }
         public void DropItem(IItem item, IMap map)
         {
-            if (item.CannotDropIfCursed)
-            {
-                item.SetCurseIdentified(true);
-                if (item.IsCursed)
-                {
-                    GameLog.Add(Entity.IsVisible, $"{item.GetName(map.Player, map.ItemPlaceholders)}は呪われていて捨てられない");
-                    State = CharacterState.Finish;
-                    return;
-                }
-            }
-
             var groundItem = map.Items.At(Entity.CurrentPosition).FirstOrDefault();
             var index = Inventory.GetItemIndex(item).Value;
 

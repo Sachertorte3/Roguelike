@@ -8,7 +8,6 @@ using Domain.Model.Character.Status;
 using Domain.Model.Condition;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
-using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
@@ -52,9 +51,7 @@ namespace Domain.Service.Items
         protected abstract bool HasSameEffect { get; }
         protected abstract bool HasSameSkill { get; }
         public abstract bool UseOnDeath { get; }
-        public abstract bool CannotUseIfCursed { get; }
         public abstract bool RequiresLiteracy { get; }
-        public abstract bool CannotDropIfCursed { get; }
         public abstract bool IdentifyIfGot { get; }
         public abstract bool IdentifyIfUsed { get; }
         public abstract bool AutoDestroyWhenDisabled { get; }
@@ -80,7 +77,7 @@ namespace Domain.Service.Items
         public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
-        public bool IsDisabled => (IsCursed && CannotUseIfCursed) || _remainingUsages.CurrentValue <= 0;
+        public bool IsDisabled => IsCursed || _remainingUsages.CurrentValue <= 0;
         public ReadOnlyReactiveProperty<int> RemainingUses => _remainingUsages;
         public IReadOnlyList<IConditionData> PassiveConditions => _conditions;
         public Observable<Unit> OnItemUpdated => _onItemUpdated;
@@ -221,7 +218,7 @@ namespace Domain.Service.Items
                 return SpawnEffectSkillResult.Failed;
             }
             SetCurseIdentified(true);
-            if (IsCursed && CannotUseIfCursed)
+            if (IsCursed)
             {
                 GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;
@@ -265,7 +262,7 @@ namespace Domain.Service.Items
             {
                 return SpawnEffectSkillResult.Failed;
             }
-            if (IsCursed && CannotUseIfCursed)
+            if (IsCursed)
             {
                 GameLog.Add(actor.IsVisible, $"{GetName(map.Player, map.ItemPlaceholders)}は呪われているため使用できない");
                 return SpawnEffectSkillResult.Failed;

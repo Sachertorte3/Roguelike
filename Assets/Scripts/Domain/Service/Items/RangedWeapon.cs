@@ -30,9 +30,7 @@ namespace Domain.Service.Items
         protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => false;
         public override bool UseOnDeath => false;
-        public override bool CannotUseIfCursed => false;
         public override bool RequiresLiteracy => false;
-        public override bool CannotDropIfCursed => true;
         public override bool IdentifyIfGot => true;
         public override bool IdentifyIfUsed => true;
         public override bool AutoDestroyWhenDisabled => false;

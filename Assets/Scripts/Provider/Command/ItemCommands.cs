@@ -1,5 +1,7 @@
 #nullable enable
 using System;
+using System.Diagnostics;
+using Domain.Model.Character;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Game;
@@ -43,6 +45,16 @@ namespace Provider
                 "mergeItem",
                 "プレイヤーインベントリ内の指定したアイテムを指定したアイテムと統合します。",
                 "MergeItem",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "curseItem",
+                "指定したアイテムを呪われた状態にします。",
+                "CurseItem",
+                this);
+            DebugLogConsole.AddCommandInstance(
+                "sortInventory",
+                "プレイヤーのインベントリをソートします。",
+                "SortInventory",
                 this);
         }
 
@@ -125,6 +137,32 @@ namespace Provider
             {
                 Log.Error(e);
             }
+        }
+
+        private void CurseItem(int index)
+        {
+            try
+            {
+                var player = _world.CurrentMap.Player;
+                var inventory = player.Character.Inventory;
+                var item = inventory.GetItem(index);
+                if (item == null)
+                {
+                    Log.Info($"インベントリ内の指定したアイテムが見つかりません。");
+                    return;
+                }
+                item.SetCursed(player, player.Character, _world.CurrentMap.ItemPlaceholders, true);
+                Log.Info($"{item.GetName(player, _world.CurrentMap.ItemPlaceholders)}を呪われた状態にしました。");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void SortInventory(InventorySortingMode sortingMode)
+        {
+            _world.CurrentMap.Player.Character.Inventory.Sort(sortingMode);
         }
     }
 }

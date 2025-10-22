@@ -30,9 +30,7 @@ namespace Domain.Service.Items
         protected override bool HasSameSkill => _hasSameSkill;
         public override bool UseOnDeath => _useOnDeath;
         public bool CanMergeUses => Category == ItemCategory.Books || Category == ItemCategory.Wands;
-        public override bool CannotUseIfCursed => Category != ItemCategory.Weapons;
         public override bool RequiresLiteracy => Category == ItemCategory.Books || Category == ItemCategory.Scrolls;
-        public override bool CannotDropIfCursed => Category == ItemCategory.Weapons;
         public override bool IdentifyIfGot => Category == ItemCategory.Weapons || Category == ItemCategory.Others;
         public override bool IdentifyIfUsed => Category != ItemCategory.Wands;
         public override bool AutoDestroyWhenDisabled => Category == ItemCategory.Potions || Category == ItemCategory.Scrolls || Category == ItemCategory.Others;

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Message;
@@ -47,14 +48,12 @@ namespace Domain.Service.Items
                         if (isCursed)
                             foreach (var condition in item.PassiveConditions)
                             {
-                                if (item.CannotUseIfCursed)
-                                    condition.Delete(_character, Id<IEntity>.Empty);
+                                condition.Delete(_character, Id<IEntity>.Empty);
                             }
                         else
                             foreach (var condition in item.PassiveConditions)
                             {
-                                if (item.CannotUseIfCursed)
-                                    condition.Inflict(_character, Id<IEntity>.Empty);
+                                condition.Inflict(_character, Id<IEntity>.Empty);
                             }
                     }
                 ).AddTo(_itemDisposables[item]);
@@ -113,6 +112,37 @@ namespace Domain.Service.Items
             foreach (var disposable in _itemDisposables)
                 disposable.Value.Dispose();
             _itemDisposables.Clear();
+        }
+
+        public void Sort(InventorySortingMode sortingMode)
+        {
+            if (sortingMode == InventorySortingMode.None)
+                return;
+
+            var items = _storage.AllItems.ToList();
+            if (items.Count <= 1)
+                return;
+
+            var sortedItems = sortingMode switch
+            {
+                InventorySortingMode.ByCategory => items.OrderBy(item => ((BaseItem)item).Category).ThenBy(item => item.BaseName).ToList(),
+                InventorySortingMode.ByPrice => items.OrderBy(item => item.Price).ThenBy(item => ((BaseItem)item).Category).ToList(),
+                _ => items
+            };
+
+            for (int i = 0; i < sortedItems.Count; i++)
+            {
+                var targetItem = sortedItems[i];
+                var currentIndex = _storage.GetItemIndex(targetItem);
+
+                if (!currentIndex.HasValue)
+                    throw new Exception($"Item {targetItem.DebugName} not found in inventory");
+
+                if (currentIndex.Value != i)
+                {
+                    _storage.Swap(currentIndex.Value, i);
+                }
+            }
         }
 
         public StorageMemento Serialize() => _storage.Serialize();

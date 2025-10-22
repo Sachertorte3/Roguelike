@@ -250,7 +250,9 @@ namespace Domain.Service.Items
 
         public void Swap(int index1, int index2)
         {
-            var item1 = Remove(index1);
+            if (!CanSwap(index1, index2))
+                throw new Exception("Can't swap items in storage");
+            var item1 = ForceRemove(index1);
             var item2 = Replace(item1, index2);
             Insert(item2, index1);
         }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TutorialFloor
   m_EditorClassIdentifier: Domain.Model::Domain.Model.Dungeon.FloorData
   Field: {fileID: 0}
-  ShinyChance: 0
+  ShinyChance: 1
   SleepChance: 0.75
   MimicChance: 0
   ShopChance: 0

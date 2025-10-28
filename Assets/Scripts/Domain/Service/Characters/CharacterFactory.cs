@@ -12,6 +12,7 @@ using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
@@ -20,6 +21,7 @@ using Domain.Service.Items;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
+using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters
 {
@@ -98,6 +100,7 @@ namespace Domain.Service.Characters
         }
 
         public static CharacterMemento BuildCharacter(EnemyData data, Vector2Int spawnPosition,
+            IItemMemento? additionalDropItem = null,
             Direction8 direction = Direction8.Down, bool isSlept = false, bool isShiny = false,
             IAffiliation? affiliation = null, Location? homeLocation = null, bool doActImmediately = false)
         {
@@ -106,6 +109,10 @@ namespace Domain.Service.Characters
             {
                 var dropItem = data.DropItemTable.GetRandomItem();
                 items.Add(Item.Build(dropItem));
+            }
+            if (additionalDropItem != null)
+            {
+                items.Add(additionalDropItem);
             }
             var inventory = Storage.Build(20, items, true, true);
 

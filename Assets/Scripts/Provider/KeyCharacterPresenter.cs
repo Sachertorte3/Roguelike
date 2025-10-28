@@ -49,24 +49,20 @@ namespace Provider
             lockIcon.SetVisibility(lockedEntityView.GetComponent<SpriteRenderer>().enabled);
             lockIcon.SetCount(keyCharacterIds.Count);
 
-            map.Characters.ObserveRemove()
-                .Where(removed => keyCharacters.Contains(removed.Value))
-                .Subscribe(removed => keyCharacters.Remove(removed.Value))
-                .AddTo(_disposables);
-            keyCharacters.ObserveCountChanged()
-                .Subscribe(count => lockIcon.SetCount(count))
-                .AddTo(_disposables);
-            keyCharacters.ObserveCountChanged()
-                .Where(count => count == 0)
-                .Subscribe(_ => { lockIcon.UnLock(); })
-                .AddTo(_disposables);
-
-            foreach (var keyCharacterId in keyCharacterIds)
+            foreach (var keyCharacter in keyCharacters)
             {
-                var keyCharacter = map.Characters.ById(keyCharacterId);
                 var character = characters.Get(keyCharacter);
                 var key = Object.Instantiate(_keyPrefab, character.transform);
                 key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
+
+                keyCharacter.Entity.OnDestroyed.Subscribe(_ => {
+                    keyCharacters.Remove(keyCharacter);
+                    lockIcon.SetCount(keyCharacters.Count);
+                    if (keyCharacters.Count == 0)
+                    {
+                        lockIcon.UnLock();
+                    }
+                }).AddTo(_disposables);
             }
         }
     }

@@ -89,8 +89,8 @@ namespace Provider
                     var prefixData = ObjectLoader.Load<WeaponPrefix>(prefixName);
                     item = baseItemData.Match<IItem>(
                         itemData => throw new Exception($"Cannot add prefix {prefixName} to {itemName}"),
-                        directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefixData)),
-                        rangedWeaponData => new RangedWeapon(RangedWeapon.Build(rangedWeaponData, prefixData))
+                        directWeaponData => new DirectWeapon(DirectWeapon.Build(directWeaponData, prefix: prefixData)),
+                        rangedWeaponData => new RangedWeapon(RangedWeapon.Build(rangedWeaponData, prefix: prefixData))
                     );
                 }
 

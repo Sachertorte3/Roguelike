@@ -218,7 +218,7 @@ namespace Domain.Service.Items
             );
         }
 
-        public static RangedWeaponMemento Build(RangedWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
+        public static RangedWeaponMemento Build(RangedWeaponData data, int upgradeCount = 0, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var skillOnUse = BuildSkills(data.Power, 0, data.ProjectileIcon, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(ItemFeature.Artistic) ? 2f : 1f;
@@ -235,7 +235,7 @@ namespace Domain.Service.Items
                     additionalPrice: 0,
                     multiplyPrice: multiplyPrice,
                     state: state,
-                    upgradeCount: 0,
+                    upgradeCount: upgradeCount,
                     maxUsages: maxUsages,
                     usageLossChance: usageLossChance,
                     isCursed: isCursed,

@@ -54,7 +54,7 @@ namespace Domain.Service.Rooms
                 .GetAtRandom(Mathf.Min(allPositions.Count(), monsterCount));
             foreach (var position in positions)
             {
-                map.SpawnRandomEnemy(position.Position, false, false);
+                map.SpawnRandomEnemy(position.Position, false);
             }
 
             await UniTask.Delay(1000);

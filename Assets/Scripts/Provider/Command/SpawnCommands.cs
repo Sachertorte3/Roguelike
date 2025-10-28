@@ -58,7 +58,7 @@ namespace Provider
                     var prefixData = ObjectLoader.Load<WeaponPrefix>(prefixName);
                     if (baseItemData is DirectWeaponData weaponData)
                     {
-                        var itemMemento = DirectWeapon.Build(weaponData, prefixData);
+                        var itemMemento = DirectWeapon.Build(weaponData, prefix: prefixData);
                         item = new DirectWeapon(itemMemento);
                     }
                     else

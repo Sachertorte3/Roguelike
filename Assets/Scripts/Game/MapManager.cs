@@ -83,7 +83,9 @@ namespace Game
                         .In(map.Shop.Value.Room.Room.RectRange())
                         .GetAtRandom();
                     clerk = EntityManager.SpawnCharacter(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position,
+                        CharacterFactory.BuildCharacter(
+                            _dungeonData.Clerk,
+                            clerkPosition.Position,
                             homeLocation: new Location(Id, clerkPosition.Position)),
                             gameManager,
                             this);
@@ -147,7 +149,9 @@ namespace Game
                         .In(map.Shop.Value.Room.Room.RectRange())
                         .GetAtRandom();
                     clerk = EntityManager.SpawnCharacter(
-                        CharacterFactory.BuildCharacter(_dungeonData.Clerk, clerkPosition.Position,
+                        CharacterFactory.BuildCharacter(
+                            _dungeonData.Clerk,
+                            clerkPosition.Position,
                             homeLocation: new Location(Id, clerkPosition.Position)),
                             gameManager,
                             this);
@@ -225,7 +229,7 @@ namespace Game
                     enemy,
                     FindBlankPositionFrom(position, position => At(position).IsBlankAndStandable(EntityLayer.Middle)),
                     isSlept: isSlept ?? RandUtils.IsLessThanProbability(_dungeonData.SleepChance),
-                    isShiny: isShiny ?? RandUtils.IsLessThanProbability(_dungeonData.ShinyChance),
+                    isShiny: isShiny ?? false,
                     affiliation: affiliation,
                     doActImmediately: doActImmediately
                 ),
@@ -265,7 +269,7 @@ namespace Game
             EntityManager.SpawnMimicStairs(MimicStairs.Build(MovementEntityType.DownStairs, position, enemy));
         }
 
-        public bool SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null)
+        public bool SpawnRandomEnemy(Vector2Int position, bool? isSlept = null)
         {
             if (_dungeonData.Enemies.Count == 0)
                 return false;
@@ -273,10 +277,21 @@ namespace Game
                 _dungeonData.Enemies.GetRandomItem(),
                 position,
                 doActImmediately: false,
-                isSlept: isSlept,
-                isShiny: isShiny
+                isSlept: isSlept
             );
             return true;
+        }
+
+        public ICharacter? SpawnRandomEnemyIgnoreMimic(Vector2Int position, bool? isSlept = null)
+        {
+            if (_dungeonData.Enemies.Count == 0)
+                return null;
+            return SpawnEnemyIgnoreMimic(
+                _dungeonData.Enemies.GetRandomItem(),
+                position,
+                doActImmediately: false,
+                isSlept: isSlept
+            );
         }
 
         public async UniTask<Vector2Int> ShowThrowAnimation(Sprite icon, Vector2Int position, Direction8 direction,

@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -30,8 +29,7 @@ namespace Domain.Service.Effect
             {
                 map.SpawnRandomEnemy(
                     position,
-                    false,
-                    false
+                    isSlept: false
                 );
             }
 

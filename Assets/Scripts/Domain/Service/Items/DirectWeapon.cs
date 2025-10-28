@@ -238,7 +238,7 @@ namespace Domain.Service.Items
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }
 
-        public static DirectWeaponMemento Build(DirectWeaponData data, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
+        public static DirectWeaponMemento Build(DirectWeaponData data, int upgradeCount = 0, WeaponPrefix? prefix = null, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(data.Power, 0, data.Features, prefix);
             var multiplyPrice = data.Features.Contains(ItemFeature.Artistic) ? 2f : 1f;
@@ -255,7 +255,7 @@ namespace Domain.Service.Items
                     additionalPrice: 0,
                     multiplyPrice: multiplyPrice,
                     state: state,
-                    upgradeCount: 0,
+                    upgradeCount: upgradeCount,
                     maxUsages: maxUsages,
                     usageLossChance: usageLossChance,
                     isCursed: isCursed,

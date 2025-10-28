@@ -83,12 +83,27 @@ namespace Domain.Service.Items
             );
         }
 
-        public static IItemMemento Build(this IItemData data, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
+        public static IItemMemento Build(this IItemData data, int upgradeCount = 0, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             return data.Match<IItemMemento>(
-                itemData => Item.Build(itemData, isCursed: isCursed, state: state, mimic: mimic),
-                directWeaponData => DirectWeapon.Build(directWeaponData, isCursed: isCursed, state: state, mimic: mimic),
-                rangedWeaponData => RangedWeapon.Build(rangedWeaponData, isCursed: isCursed, state: state, mimic: mimic)
+                itemData => Item.Build(
+                    itemData,
+                    upgradeCount: upgradeCount,
+                    isCursed: isCursed,
+                    state: state,
+                    mimic: mimic),
+                directWeaponData => DirectWeapon.Build(
+                    directWeaponData,
+                    upgradeCount: upgradeCount,
+                    isCursed: isCursed,
+                    state: state,
+                    mimic: mimic),
+                rangedWeaponData => RangedWeapon.Build(
+                    rangedWeaponData,
+                    upgradeCount: upgradeCount,
+                    isCursed: isCursed,
+                    state: state,
+                    mimic: mimic)
             );
         }
     }

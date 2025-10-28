@@ -55,7 +55,8 @@ namespace Domain.Model.Map
         public void AttackStatue(IEnumerable<Vector2Int> positions);
 
         public IItemEntity SpawnItem(IItem item, Vector2Int position);
-        public bool SpawnRandomEnemy(Vector2Int position, bool? isSlept = null, bool? isShiny = null);
+        public bool SpawnRandomEnemy(Vector2Int position, bool? isSlept = null);
+        public ICharacter? SpawnRandomEnemyIgnoreMimic(Vector2Int position, bool? isSlept = null);
 
         public void SpawnEnemy(EnemyData enemy, Vector2Int position, bool doActImmediately, IAffiliation? affiliation = null,
             bool? isSlept = null, bool? isShiny = null);

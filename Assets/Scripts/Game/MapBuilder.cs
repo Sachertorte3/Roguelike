@@ -103,13 +103,21 @@ namespace Game
 
             _canPlaceStairRooms = roomIds.ToList();
 
+            if (RandUtils.IsLessThanProbability(data.ShinyChance))
+            {
+                AddShinyToRoom(data, roomIds.GetAtRandom());
+            }
+
             if (data.ExistBoss)
             {
                 var bossRoom = roomIds.GetAtRandom();
                 foreach (var bossData in data.Boss)
                 {
-                    var boss = CharacterFactory.BuildCharacter(bossData, GetRandomBlankPositionInRoom(bossRoom),
-                        isSlept: false, isShiny: false);
+                    var boss = CharacterFactory.BuildCharacter(
+                        bossData,
+                        GetRandomBlankPositionInRoom(bossRoom),
+                        isSlept: false,
+                        isShiny: false);
                     _characters.Add(boss);
                     _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
                 }
@@ -317,9 +325,9 @@ namespace Game
                 var character = CharacterFactory.BuildCharacter(
                     data.Npcs.GetRandomItem(),
                     position,
-                    direction.Reverse(),
-                    RandUtils.IsLessThanProbability(data.SleepChance),
-                    RandUtils.IsLessThanProbability(data.ShinyChance),
+                    direction: direction.Reverse(),
+                    isSlept: RandUtils.IsLessThanProbability(data.SleepChance),
+                    isShiny: false,
                     homeLocation: new Location(_mapId, center));
                 _characters.Add(character);
             }
@@ -370,7 +378,7 @@ namespace Game
                         data.Enemies.GetRandomItem(),
                         position,
                         isSlept: RandUtils.IsLessThanProbability(data.SleepChance),
-                        isShiny: RandUtils.IsLessThanProbability(data.ShinyChance));
+                        isShiny: false);
                     _characters.Add(character);
                 }
             }
@@ -401,6 +409,22 @@ namespace Game
             }
         }
 
+        private void AddShinyToRoom(DungeonMapData data, Id<Room> roomId)
+        {
+            var position = GetRandomBlankPositionInRoom(roomId);
+            var weaponData = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
+            var item = weaponData.Build(
+                upgradeCount: Random.Range(1, 5),
+                isCursed: false);
+            var character = CharacterFactory.BuildCharacter(
+                data.Enemies.GetRandomItem(),
+                position,
+                item,
+                isShiny: true
+            );
+            _characters.Add(character);
+        }
+
         private void AddChestToRoom(DungeonMapData data, Id<Room> roomId)
         {
             var position = GetRandomBlankPositionInRoom(roomId);
@@ -415,7 +439,18 @@ namespace Game
                 var weaponData = data.ItemDatabase.GetRandomItem(ItemCategory.Weapons, data.Progress);
                 if (weaponData is DirectWeaponData directWeapon)
                 {
-                    var weapon = DirectWeapon.Build(directWeapon, data.WeaponPrefixes.GetRandomItem(data.Progress), isCursed: false);
+                    var weapon = DirectWeapon.Build(
+                        directWeapon,
+                        prefix: data.WeaponPrefixes.GetRandomItem(data.Progress),
+                        isCursed: false);
+                    _chests.Add(Chest.Build(weapon, position));
+                }
+                else if (weaponData is RangedWeaponData rangedWeapon)
+                {
+                    var weapon = RangedWeapon.Build(
+                        rangedWeapon,
+                        prefix: data.WeaponPrefixes.GetRandomItem(data.Progress),
+                        isCursed: false);
                     _chests.Add(Chest.Build(weapon, position));
                 }
                 else

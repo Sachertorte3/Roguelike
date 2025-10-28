@@ -102,7 +102,7 @@ namespace Domain.Service.Items
             return JsonUtility.FromJson<ItemMemento>(json);
         }
 
-        public static ItemMemento Build(ItemData data, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
+        public static ItemMemento Build(ItemData data, int upgradeCount = 0, bool isCursed = false, ItemState state = ItemState.None, EnemyData? mimic = null)
         {
             var skillOnUse = data.EffectType switch
             {
@@ -127,7 +127,7 @@ namespace Domain.Service.Items
                     additionalPrice: data.AdditionalPrice,
                     multiplyPrice: data.MultiplyPrice,
                     state: state,
-                    upgradeCount: 0,
+                    upgradeCount: upgradeCount,
                     maxUsages: data.UsageLimit,
                     usageLossChance: 1,
                     isCursed: isCursed,

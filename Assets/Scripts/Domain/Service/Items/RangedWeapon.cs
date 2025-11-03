@@ -214,6 +214,10 @@ namespace Domain.Service.Items
                     effectsOnUse,
                     repeat,
                     skillOnUseProbabilityOfSuccess,
+                    0,
+                    0,
+                    0,
+                    0,
                     "")
             );
         }

@@ -33,6 +33,10 @@ MonoBehaviour:
     - rid: 5486256292201496577
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ChargeTurn>k__BackingField: 0
+    <CoolTime>k__BackingField: 0
   SkillOnThrow:
     <Area>k__BackingField:
       rid: -2

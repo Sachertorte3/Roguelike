@@ -33,7 +33,7 @@ namespace View.UI
             SetCount(itemData.count, itemData.isCountIdentified);
             SetCursed(itemData.isCursed, itemData.isCurseIdentified);
             SetShiny(itemData.isShiny);
-            SetName(itemData.name);
+            SetName(itemData.name, itemData.isUsable);
         }
 
         private void SetIcon(Sprite? icon)
@@ -72,9 +72,10 @@ namespace View.UI
                 _count.text = "";
         }
 
-        private void SetName(string name)
+        private void SetName(string name, bool isUsable)
         {
             _name.text = name;
+            _name.color = isUsable ? Color.white : Color.lightGray;
         }
 
         public void UpdateInteractable(bool interactable)

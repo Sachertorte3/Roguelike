@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Effect;
 using Domain.Model.Entity;
+using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Service.Characters;
@@ -77,7 +78,12 @@ namespace Domain.Service.Effect
 
         public override float EvaluatePrice()
         {
-            return 100f;
+            if (ApplyToCharacter)
+            {
+                return CommonSenseParameters.MonsterMaxHealth;
+            }
+            else
+                return 5f;
         }
 
         public override string Info()

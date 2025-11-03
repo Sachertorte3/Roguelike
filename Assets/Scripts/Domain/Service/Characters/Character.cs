@@ -50,7 +50,8 @@ namespace Domain.Service.Characters
         private readonly ObservableList<IPlayerEvent> _events = new();
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
-        private Option<UseSkill> _chargeAction = Option.None<UseSkill>();
+        private Option<IAction> _chargeAction = Option.None<IAction>();
+        private Option<ICharacterSkill> _chargeSkill = Option.None<ICharacterSkill>();
         private ReactiveProperty<int> _chargeTurn = new(0);
 
         internal Character(CharacterMemento data, ICharacterBehavior behavior, IGameManager gameManager, IMap map, bool isPlayer)
@@ -151,10 +152,10 @@ namespace Domain.Service.Characters
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated =>
             _chargeTurn.Select(x => new OnChargeActionUpdatedMessage(
                 x,
-                _chargeAction.Map(
+                _chargeSkill.Map(
                     skill => new ChargedActionPreviewEffectData(
-                        skill.Skill.GetArea(this, Entity.CurrentPosition, skill.Direction, _map, true),
-                        skill.Skill.Color
+                        skill.GetArea(this, Entity.CurrentPosition, CurrentDirection, _map, true),
+                        skill.Color
                     )
                 ).Value
             ));
@@ -246,9 +247,10 @@ namespace Domain.Service.Characters
 
         #region Action
 
-        public void CancelChargeAction()
+        public void ResetChargeAction()
         {
-            _chargeAction = Option.None<UseSkill>();
+            _chargeAction = Option.None<IAction>();
+            _chargeSkill = Option.None<ICharacterSkill>();
             _chargeTurn.Value = 0;
         }
 
@@ -264,7 +266,7 @@ namespace Domain.Service.Characters
             {
                 State = CharacterState.Act;
                 await _chargeAction.Value.Do(this, map, input);
-                _chargeAction = Option.None<UseSkill>();
+                ResetChargeAction();
             }
             else if (_chargeTurn.Value > 0)
             {
@@ -280,8 +282,20 @@ namespace Domain.Service.Characters
 
                 if (action is UseSkill useSkill && useSkill.Skill.ChargeTurn > 0)
                 {
-                    _chargeAction = Option.Some(useSkill);
+                    _chargeAction = Option.Some((IAction)useSkill);
+                    _chargeSkill = Option.Some(useSkill.Skill);
                     _chargeTurn.Value = useSkill.Skill.ChargeTurn;
+                    DoNothing();
+                    return;
+                }
+                else if (action is UseItem useItem
+                    && useItem.Item.SkillOnUse.HasValue
+                    && useItem.Item.SkillOnUse.Value is ICharacterSkill skill
+                    && skill.ChargeTurn > 0)
+                {
+                    _chargeAction = Option.Some((IAction)useItem);
+                    _chargeSkill = Option.Some(skill);
+                    _chargeTurn.Value = skill.ChargeTurn;
                     DoNothing();
                     return;
                 }
@@ -433,10 +447,22 @@ namespace Domain.Service.Characters
                 var result = await item.SkillOnUse.Expect("skill on use is null").Match(
                     async spawnEffect =>
                     {
+                        for (var i = 0; i < spawnEffect.RushDistance; i++)
+                        {
+                            if (CanMove(direction, map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
+                                await Entity.Move(direction, Settings.GlobalSettings.ThrowMilliseconds.CurrentValue, true);
+                        }
+
                         var result = await item.Use(this, Entity.CurrentPosition, direction, map);
                         if (result.Result == SkillResult.Success)
                         {
                             _onAttacked.OnNext(Unit.Default);
+                        }
+
+                        for (var i = 0; i < spawnEffect.BackStepDistance; i++)
+                        {
+                            if (CanMove(direction.Reverse(), map) && !_statusManager.IsFlagStat(FlagStatType.CannotMove))
+                                await Entity.Move(direction.Reverse(), Settings.GlobalSettings.ThrowMilliseconds.CurrentValue, true);
                         }
 
                         return result;
@@ -839,48 +865,43 @@ namespace Domain.Service.Characters
             _affiliationManager.UpdateTurn(visibleCharacters.Select(x => x.Affiliation));
             if (_statusManager.IsFlagStat(FlagStatType.RandomTeleport) && RandUtils.IsLessThanProbability(CommonSenseParameters.RandomTeleportProbability))
             {
-                var skill = new CharacterSkill(
-                    CharacterSkill.Build(
-                        new SpawnEffectSkillMemento(
-                            new AtFeet(),
-                            new SelfArea(),
-                            new List<IEffect> { new TeleportEffect() },
-                            1,
-                            1,
-                            "はテレポートした"
-                        ),
-                        0,
-                        0,
-                        0,
-                        0
+                var memento = SpawnEffectSkill.Build(
+                    new SkillData(
+                        position: new AtFeet(),
+                        area: new SelfArea(),
+                        effects: new List<IEffect> { new TeleportEffect() },
+                        repeats: 1,
+                        probabilityOfSuccess: 1,
+                        rushDistance: 0,
+                        backStepDistance: 0,
+                        chargeTurn: 0,
+                        coolTime: 0,
+                        log: "はテレポートした"
                     )
                 );
+                var skill = new SpawnEffectSkill(memento);
                 await UseSkill(skill, CurrentDirection, _map);
             }
             if (_statusManager.IsFlagStat(FlagStatType.RandomExplosion) && RandUtils.IsLessThanProbability(CommonSenseParameters.RandomExplosionProbability))
             {
-                var skill = new CharacterSkill(
-                    CharacterSkill.Build(
-                        new SpawnEffectSkillMemento(
-                            new AtFeet(),
-                            new CircleArea(2, true, false),
-                            new List<IEffect>
-                            {
-                                new PercentageDamageEffect(0.25f),
-                                new BreakEffect(false, true, true, true, true, true)
-                            },
-                            1,
-                            1,
-                            "は爆発した"
-                        ),
-                        0,
-                        0,
-                        0,
-                        0
+                var memento = SpawnEffectSkill.Build(
+                    new SkillData(
+                        position: new AtFeet(),
+                        area: new CircleArea(2, true, false),
+                        effects: new List<IEffect> { new PercentageDamageEffect(0.25f), new BreakEffect(false, true, true, true, true, true) },
+                        repeats: 1,
+                        probabilityOfSuccess: 1,
+                        rushDistance: 0,
+                        backStepDistance: 0,
+                        chargeTurn: 0,
+                        coolTime: 0,
+                        log: "は爆発した"
                     )
                 );
+                var skill = new SpawnEffectSkill(memento);
                 await UseSkill(skill, CurrentDirection, _map);
             }
+            _inventory.UpdateTurn();
         }
 
         public void UpdateCharacterTurn()

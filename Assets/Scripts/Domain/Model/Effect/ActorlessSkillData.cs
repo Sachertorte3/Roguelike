@@ -30,6 +30,7 @@ namespace Domain.Model.Effect
         public int ChargeTurn => 0;
         public int RushDistance => 0;
         public int BackStepDistance => 0;
+        public int CoolTime => 0;
 
         [field: SerializeField]
         [field: Range(0, 1)]

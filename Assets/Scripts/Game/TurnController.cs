@@ -146,7 +146,7 @@ namespace Game
         {
             if (character.Status.IsFlagStat(FlagStatType.CannotAct) || character.IsDead)
             {
-                character.CancelChargeAction();
+                character.ResetChargeAction();
                 Log.Debug($"[Turn]{character.GetName(map.Player)} cannot act.");
                 if (character.IsPlayer)
                 {

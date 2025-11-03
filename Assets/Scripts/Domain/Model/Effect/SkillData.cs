@@ -33,16 +33,46 @@ namespace Domain.Model.Effect
         public float ProbabilityOfSuccess { get; private set; } = CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
 
         [field: SerializeField]
+        [field: MinValue(0)]
+        public int RushDistance { get; private set; }
+
+        [field: SerializeField]
+        [field: MinValue(0)]
+        public int BackStepDistance { get; private set; }
+
+        [field: SerializeField]
+        [field: MinValue(0)]
+        public int ChargeTurn { get; private set; }
+
+        [field: SerializeField]
+        [field: MinValue(0)]
+        public int CoolTime { get; private set; }
+
+        [field: SerializeField]
         [field: Required]
         public string Log { get; private set; } = "は行動した";
 
-        public SkillData(IEffectPosition position, IArea area, List<IEffect> effects, int repeats, float probabilityOfSuccess, string log)
+        public SkillData(
+            IEffectPosition position,
+            IArea area,
+            List<IEffect> effects,
+            int repeats,
+            float probabilityOfSuccess,
+            int rushDistance,
+            int backStepDistance,
+            int chargeTurn,
+            int coolTime,
+            string log)
         {
             Position = position;
             Area = area;
             Effects = effects;
             Repeats = repeats;
             ProbabilityOfSuccess = probabilityOfSuccess;
+            RushDistance = rushDistance;
+            BackStepDistance = backStepDistance;
+            ChargeTurn = chargeTurn;
+            CoolTime = coolTime;
             Log = log;
         }
 
@@ -64,6 +94,10 @@ namespace Domain.Model.Effect
         public string Info()
         {
             var info = "";
+
+            if (RushDistance > 0)
+                info += $"最初に{RushDistance}マス前に進む\n";
+
             if (Repeats > 1)
                 info += $"効果は{Repeats}回発動する\n";
             info += $"{Position.Info()}の{Area.Info()}を対象に\n";
@@ -72,6 +106,15 @@ namespace Domain.Model.Effect
                 info += effect.Info();
             }
             info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
+
+            if (BackStepDistance > 0)
+                info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+
+            if (ChargeTurn > 0)
+                info += $"発動には{ChargeTurn}ターンかかる\n";
+
+            if (CoolTime > 0)
+                info += $"発動後に{CoolTime}ターンは再使用不能\n";
             return info;
         }
     }

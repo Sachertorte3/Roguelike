@@ -57,6 +57,10 @@ MonoBehaviour:
     - rid: 2541219246146060296
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ChargeTurn>k__BackingField: 0
+    <CoolTime>k__BackingField: 0
     <Log>k__BackingField: "\u306F\u7206\u767A\u3057\u305F\u3002"
   ElementDamageRateMultiplier:
     data: []

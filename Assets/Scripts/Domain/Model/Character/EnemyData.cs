@@ -12,8 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -57,7 +55,7 @@ namespace Domain.Model.Character
 
             foreach (var skill in Skills)
             {
-                skill.Skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
+                skill.Skill.OnValidate(CommonSenseParameters.SkillOnUseProbabilityOfSuccess);
             }
 
             if (LastSkill != null)
@@ -72,7 +70,7 @@ namespace Domain.Model.Character
     [Serializable]
     public class CharacterSkillWithRuleData
     {
-        [Required] public CharacterSkillData Skill;
+        [Required] public SkillData Skill;
         [MinValue(0)] public int Priority;
     }
 }

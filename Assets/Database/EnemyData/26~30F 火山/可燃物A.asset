@@ -48,19 +48,18 @@ MonoBehaviour:
   CanUseItem: 0
   Skills:
   - Skill:
-      Skill:
-        <Position>k__BackingField:
-          rid: -2
-        <Area>k__BackingField:
-          rid: -2
-        <Effects>k__BackingField: []
-        <Repeats>k__BackingField: 1
-        <ProbabilityOfSuccess>k__BackingField: 0.95
-        <Log>k__BackingField: 
-      RushDistance: 0
-      BackStepDistance: 0
-      ChargeTurn: 0
-      CoolTime: 0
+      <Position>k__BackingField:
+        rid: -2
+      <Area>k__BackingField:
+        rid: -2
+      <Effects>k__BackingField: []
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ChargeTurn>k__BackingField: 0
+      <CoolTime>k__BackingField: 0
+      <Log>k__BackingField: 
     Priority: 0
   HasLastSkill: 1
   LastSkill:
@@ -72,6 +71,10 @@ MonoBehaviour:
     - rid: 2541219246146060296
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ChargeTurn>k__BackingField: 0
+    <CoolTime>k__BackingField: 0
     <Log>k__BackingField: "\u306F\u7206\u767A\u3057\u305F\u3002"
   ElementDamageRateMultiplier:
     data: []

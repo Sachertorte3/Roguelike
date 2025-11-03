@@ -73,8 +73,12 @@ namespace Domain.Service.Items
         public int Price => Mathf.RoundToInt(EvaluatePrice());
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
-        public bool CanActivateWhenUsed => SkillOnUse.HasValue && !IsDisabled;
-        public bool CanActivateWhenThrown => SkillOnThrow.HasValue && !IsDisabled;
+        public bool CanActivateWhenUsed => SkillOnUse.HasValue
+            && SkillOnUse.Value.IsUsable()
+            && !IsDisabled;
+        public bool CanActivateWhenThrown => SkillOnThrow.HasValue
+            && SkillOnThrow.Value.IsUsable()
+            && !IsDisabled;
         public bool HasActivatableSkill => HasActivatableSkillWhenUsed || HasActivatableSkillWhenThrown;
         public bool CanActivate => CanActivateWhenUsed || CanActivateWhenThrown;
         public bool IsDisabled => IsCursed || _remainingUsages.CurrentValue <= 0;
@@ -363,6 +367,26 @@ namespace Domain.Service.Items
             price *= _multiplyPrice;
 
             return price;
+        }
+
+        public void UpdateTurn()
+        {
+            if (SkillOnUse.HasValue && SkillOnUse.Value is ICharacterSkill skill && !skill.IsUsable())
+            {
+                skill.CoolDown();
+                if (skill.IsUsable())
+                {
+                    _onItemUpdated.OnNext(Unit.Default);
+                }
+            }
+            if (SkillOnThrow.HasValue && SkillOnThrow.Value is ICharacterSkill skill2 && !skill2.IsUsable())
+            {
+                skill2.CoolDown();
+                if (skill2.IsUsable())
+                {
+                    _onItemUpdated.OnNext(Unit.Default);
+                }
+            }
         }
 
         public void Repair(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders)

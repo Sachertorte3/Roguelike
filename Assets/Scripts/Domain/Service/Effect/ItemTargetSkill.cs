@@ -18,6 +18,7 @@ namespace Domain.Service.Effect
     {
         private readonly IItemEffect _itemEffect;
         public bool IsDirectional => false;
+        public bool IsUsable() => true;
 
         public ItemTargetSkill(ItemTargetSkillMemento memento)
         {

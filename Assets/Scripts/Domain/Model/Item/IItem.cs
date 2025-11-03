@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Condition;
@@ -61,6 +60,8 @@ namespace Domain.Model.Item
 
         public UniTask<ISkillResult> UseWhenThrown(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map);
+
+        public void UpdateTurn();
 
         public void Repair(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders);
         public void SetCursed(IPlayer player, IEntity itemHolder, ItemPlaceholders itemPlaceholders, bool isCursed);

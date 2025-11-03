@@ -6,11 +6,11 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Logs;
+using R3;
 using UnityEngine;
 using Utilities;
 
@@ -37,6 +37,7 @@ namespace Domain.Service.Effect
 
         public Color Color => _effects.First().Color;
         public bool IsDirectional => _area.IsDirectional || _position.IsDirectional;
+        public bool IsUsable() => true;
 
         public SpawnActorlessEffectSkillMemento Serialize()
         {

@@ -29,6 +29,11 @@ namespace Domain.Model.Effect
         public float ProbabilityOfSuccess { get; private set; } =
             CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
 
+        public int RushDistance => 0;
+        public int BackStepDistance => 0;
+        public int ChargeTurn => 0;
+        public int CoolTime => 0;
+
         public string Log => "";
 
         public SkillDataOnThrow(IArea area, List<IEffect> effect, float probabilityOfSuccess)

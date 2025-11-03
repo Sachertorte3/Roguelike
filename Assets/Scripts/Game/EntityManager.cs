@@ -188,18 +188,23 @@ namespace Game
 
             RevealMimic(FireEntities.Positions());
 
-            var characters = Characters.In(FireEntities.Positions()).ToList();
-            foreach (var character in characters)
+            var burningCharacters = Characters.In(FireEntities.Positions()).ToList();
+            foreach (var character in burningCharacters)
             {
                 await character.LoseHp(1, "は火に焼かれた");
                 GameLog.Add(character.Entity.IsVisible, $"{character.GetName(Player)}は火に焼かれた");
             }
 
-            var items = Items.In(FireEntities.Positions()).ToList();
-            foreach (var item in items)
+            var burningItems = Items.In(FireEntities.Positions()).ToList();
+            foreach (var item in burningItems)
             {
                 item.Entity.Destroy($"は灰になった");
                 GameLog.Add(item.IsVisible, $"{item.Item.GetName(Player, map.ItemPlaceholders)}は灰になった");
+            }
+
+            foreach (var item in Items)
+            {
+                item.Item.UpdateTurn();
             }
 
             foreach (var scheduledEventEntity in ScheduledEventEntities)

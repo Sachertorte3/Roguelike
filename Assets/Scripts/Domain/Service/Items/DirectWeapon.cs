@@ -224,6 +224,10 @@ namespace Domain.Service.Items
                     effectsOnUse,
                     repeat,
                     skillOnUseProbabilityOfSuccess,
+                    0,
+                    0,
+                    0,
+                    0,
                     "")
             );
             var skillOnThrow = SpawnEffectSkill.Build(
@@ -233,6 +237,10 @@ namespace Domain.Service.Items
                     effectsOnThrow,
                     1,
                     skillOnThrowProbabilityOfSuccess,
+                    0,
+                    0,
+                    0,
+                    0,
                     "")
             );
             return (skillOnUse, skillOnThrow, hasSameEffect);

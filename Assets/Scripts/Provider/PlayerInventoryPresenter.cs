@@ -31,6 +31,7 @@ namespace Provider
                         inventory.AllItems.Select(
                             item => new ItemViewData(
                                 item.GetName(map.Player, map.ItemPlaceholders),
+                                item.CanActivateWhenUsed,
                                 item.Icon,
                                 true,
                                 item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
@@ -105,6 +106,7 @@ namespace Provider
                 index,
                 new ItemViewData(
                     item.GetName(player, itemPlaceholders),
+                    item.CanActivateWhenUsed,
                     item.Icon,
                     canSelect,
                     item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
@@ -129,6 +131,7 @@ namespace Provider
                 index,
                 new ItemViewData(
                     item.GetName(player, itemPlaceholders),
+                    item.CanActivateWhenUsed,
                     item.Icon,
                     canSelect,
                     item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
@@ -154,6 +157,7 @@ namespace Provider
             else
                 inventoryView.UpdateGroundItem(new ItemViewData(
                     item.GetName(map.Player, map.ItemPlaceholders),
+                    item.CanActivateWhenUsed,
                     item.Icon,
                     true,
                     item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,

@@ -2,7 +2,6 @@
 using System.Linq;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;

@@ -43,7 +43,7 @@ namespace View.UI
             foreach (var itemData in sortedItems)
             {
                 var view = Instantiate(_itemViewPrefab, _content.transform);
-                var itemViewData = new ItemViewData("", itemData.Icon, false, null, false, itemData.IsShiny, true, true, itemData.Info);
+                var itemViewData = new ItemViewData("", true, itemData.Icon, false, null, false, itemData.IsShiny, true, true, itemData.Info);
                 view.Set(itemViewData);
                 _itemViews.Add(view);
             }

@@ -1,5 +1,4 @@
 #nullable enable
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Effect;
@@ -14,6 +13,7 @@ namespace Domain.Service.Effect
     {
         private readonly IInventoryEffect _inventoryEffect;
         public bool IsDirectional => false;
+        public bool IsUsable() => true;
 
         public InventoryTargetSkill(InventoryTargetSkillMemento memento)
         {

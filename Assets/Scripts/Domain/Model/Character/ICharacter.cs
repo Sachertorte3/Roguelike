@@ -46,7 +46,7 @@ namespace Domain.Model.Character
         public void OnAttackedBy(IActorOfEffect actor, float impact);
         public void OnHealedBy(IActorOfEffect actor, float impact);
         public UniTask DoNextAction(IGameManager gameManager, IMap map, IInput input);
-        public void CancelChargeAction();
+        public void ResetChargeAction();
         public bool CanPickUpItem();
         public void AddEvent(IPlayerEvent ev);
         public UniTask UpdateTurn();

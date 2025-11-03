@@ -145,6 +145,14 @@ namespace Domain.Service.Items
             }
         }
 
+        public void UpdateTurn()
+        {
+            foreach (var item in AllItems)
+            {
+                item.UpdateTurn();
+            }
+        }
+
         public StorageMemento Serialize() => _storage.Serialize();
         public bool HasEmptySpace() => _storage.HasEmptySpace();
         public bool Contains(IItem item) => _storage.Contains(item);

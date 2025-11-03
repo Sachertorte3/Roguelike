@@ -5,14 +5,12 @@ using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Character.Status;
-using Domain.Model.Character.Type;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Entity;
 using Domain.Model.Evaluation;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
@@ -21,7 +19,6 @@ using Domain.Service.Items;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
-using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters
 {
@@ -32,28 +29,26 @@ namespace Domain.Service.Characters
             var flags = data.Flags.ToHashSet();
             flags.Add(FlagStatType.IsAffectedByTrap);
 
-            var defaultSkill = new CharacterSkillData(
-                skill: new SkillData(
-                    position: new AtFeet(),
-                    area: new LineArea(1, false, false),
-                    effects: new List<IEffect>
-                    {
-                        new AttackEffect(
-                            new List<ElementPower>
-                            {
-                                new ElementPower(Element.Physical, 1)
-                            },
-                            0
-                        )
-                    },
-                    repeats: 1,
-                    probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
-                    log: "は殴りかかった"
-                ),
+            var defaultSkill = new SkillData(
+                position: new AtFeet(),
+                area: new LineArea(1, false, false),
+                effects: new List<IEffect>
+                {
+                    new AttackEffect(
+                        new List<ElementPower>
+                        {
+                            new ElementPower(Element.Physical, 1)
+                        },
+                        0
+                    )
+                },
+                repeats: 1,
+                probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
                 rushDistance: 0,
                 backStepDistance: 0,
                 chargeTurn: 0,
-                coolTime: 0
+                coolTime: 0,
+                log: "は殴りかかった"
             );
 
             var character = new CharacterMemento
@@ -78,7 +73,7 @@ namespace Domain.Service.Characters
                 skills: new List<CharacterSkillWithRuleMemento>
                 {
                     new CharacterSkillWithRuleMemento(
-                        CharacterSkill.Build(defaultSkill),
+                        SpawnEffectSkill.Build(defaultSkill),
                         0
                     )
                 },
@@ -235,7 +230,7 @@ namespace Domain.Service.Characters
             }
             return sum / Enum.GetValues(typeof(Element)).Length;
         }
-        public static float EvaluateSkills(IEnumerable<CharacterSkillData> skills)
+        public static float EvaluateSkills(IEnumerable<SkillData> skills)
         {
             var virtualSkills = skills.Select(x => new VirtualSkill(x)).ToList();
             var sum = 0f;
@@ -274,9 +269,9 @@ namespace Domain.Service.Characters
             public int ChargeTurn;
             public int CoolTime;
             private int _remainingCoolTime;
-            public VirtualSkill(CharacterSkillData skill)
+            public VirtualSkill(SkillData skill)
             {
-                Value = new CharacterSkill(CharacterSkill.Build(skill)).EvaluatePrice();
+                Value = new SpawnEffectSkill(SpawnEffectSkill.Build(skill)).EvaluatePrice();
                 ChargeTurn = skill.ChargeTurn;
                 CoolTime = skill.CoolTime;
                 _remainingCoolTime = 0;

@@ -30,7 +30,7 @@ namespace Domain.Service.Characters.Conditions
 
         public float EvaluatePrice()
         {
-            return 20f;
+            return CommonSenseParameters.AttacksPerTurn * CommonSenseParameters.DamagePerAttack;
         }
     }
 }

@@ -48,52 +48,49 @@ MonoBehaviour:
   CanUseItem: 1
   Skills:
   - Skill:
-      Skill:
-        <Position>k__BackingField:
-          rid: 5486256464210165777
-        <Area>k__BackingField:
-          rid: 5486256464210165778
-        <Effects>k__BackingField:
-        - rid: 5486256464210165779
-        <Repeats>k__BackingField: 2
-        <ProbabilityOfSuccess>k__BackingField: 0.95
-        <Log>k__BackingField: "\u306F\u9023\u6483\u3092\u653E\u3063\u305F"
-      RushDistance: 0
-      BackStepDistance: 0
-      ChargeTurn: 0
-      CoolTime: 1
+      <Position>k__BackingField:
+        rid: 5486256464210165777
+      <Area>k__BackingField:
+        rid: 5486256464210165778
+      <Effects>k__BackingField:
+      - rid: 5486256464210165779
+      <Repeats>k__BackingField: 2
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ChargeTurn>k__BackingField: 0
+      <CoolTime>k__BackingField: 1
+      <Log>k__BackingField: "\u306F\u9023\u6483\u3092\u653E\u3063\u305F"
     Priority: 0
   - Skill:
-      Skill:
-        <Position>k__BackingField:
-          rid: 5486256287083921410
-        <Area>k__BackingField:
-          rid: 5486256287083921411
-        <Effects>k__BackingField:
-        - rid: 5486256287083921409
-        <Repeats>k__BackingField: 1
-        <ProbabilityOfSuccess>k__BackingField: 0.95
-        <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F"
-      RushDistance: 0
-      BackStepDistance: 0
-      ChargeTurn: 0
-      CoolTime: 3
+      <Position>k__BackingField:
+        rid: 5486256287083921410
+      <Area>k__BackingField:
+        rid: 5486256287083921411
+      <Effects>k__BackingField:
+      - rid: 5486256287083921409
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ChargeTurn>k__BackingField: 0
+      <CoolTime>k__BackingField: 3
+      <Log>k__BackingField: "\u306F\u7A81\u9032\u3057\u305F"
     Priority: 0
   - Skill:
-      Skill:
-        <Position>k__BackingField:
-          rid: 5486256464210165780
-        <Area>k__BackingField:
-          rid: 5486256464210165781
-        <Effects>k__BackingField:
-        - rid: 5486256464210165782
-        <Repeats>k__BackingField: 1
-        <ProbabilityOfSuccess>k__BackingField: 0.95
-        <Log>k__BackingField: "\u306F\u4E0B\u304C\u308A\u653B\u6483\u3057\u305F"
-      RushDistance: 0
-      BackStepDistance: 0
-      ChargeTurn: 0
-      CoolTime: 0
+      <Position>k__BackingField:
+        rid: 5486256464210165780
+      <Area>k__BackingField:
+        rid: 5486256464210165781
+      <Effects>k__BackingField:
+      - rid: 5486256464210165782
+      <Repeats>k__BackingField: 1
+      <ProbabilityOfSuccess>k__BackingField: 0.95
+      <RushDistance>k__BackingField: 0
+      <BackStepDistance>k__BackingField: 0
+      <ChargeTurn>k__BackingField: 0
+      <CoolTime>k__BackingField: 0
+      <Log>k__BackingField: "\u306F\u4E0B\u304C\u308A\u653B\u6483\u3057\u305F"
     Priority: 0
   HasLastSkill: 0
   LastSkill:
@@ -105,6 +102,10 @@ MonoBehaviour:
     - rid: -2
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ChargeTurn>k__BackingField: 0
+    <CoolTime>k__BackingField: 0
     <Log>k__BackingField: 
   ElementDamageRateMultiplier:
     data: []

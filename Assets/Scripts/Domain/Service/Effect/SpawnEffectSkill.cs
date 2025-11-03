@@ -4,21 +4,22 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Effect;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
-using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Model.Setting;
 using Domain.Service.Logs;
+using R3;
 using UnityEngine;
 using Utilities;
 
 namespace Domain.Service.Effect
 {
-    public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
+    public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ICharacterSkill
     {
         private readonly IEffectPosition _position;
         private readonly IArea _area;
@@ -26,6 +27,8 @@ namespace Domain.Service.Effect
         public int Repeats { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
+        private readonly int _coolTime;
+        private ReactiveProperty<int> _remainingCoolTime;
 
         public SpawnEffectSkill(SpawnEffectSkillMemento data)
         {
@@ -34,11 +37,21 @@ namespace Domain.Service.Effect
             _effects = data.Effects;
             Repeats = data.Repeats;
             ProbabilityOfSuccess = data.ProbabilityOfSuccess;
+            RushDistance = data.RushDistance;
+            BackStepDistance = data.BackStepDistance;
+            ChargeTurn = data.ChargeTurn;
+            _coolTime = data.CoolTime;
+            _remainingCoolTime = new ReactiveProperty<int>(data.RemainingTurn);
             _log = data.Log;
         }
 
         public Color Color => _effects.First().Color;
         public bool IsDirectional => _area.IsDirectional || _position.IsDirectional;
+        public bool IsUsable() => _remainingCoolTime.CurrentValue <= 0;
+
+        public int ChargeTurn { get; private set; }
+        public int RushDistance { get; private set; }
+        public int BackStepDistance { get; private set; }
 
         public SpawnEffectSkillMemento Serialize()
         {
@@ -49,6 +62,11 @@ namespace Domain.Service.Effect
                 _effects,
                 Repeats,
                 ProbabilityOfSuccess,
+                RushDistance,
+                BackStepDistance,
+                ChargeTurn,
+                _coolTime,
+                _remainingCoolTime.CurrentValue,
                 _log
             );
         }
@@ -62,11 +80,30 @@ namespace Domain.Service.Effect
                 data.Effects,
                 data.Repeats,
                 data.ProbabilityOfSuccess,
+                data.RushDistance,
+                data.BackStepDistance,
+                data.ChargeTurn,
+                data.CoolTime,
+                0,
                 data.Log
             );
         }
 
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IMap map, bool onlyVisible = false)
+        {
+            for (var i = 0; i < RushDistance; i++)
+            {
+                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
+                    position += direction.Vector();
+                else
+                    break;
+            }
+
+            return GetAreaIgnoreRush(actor, position, direction, map, onlyVisible);
+        }
+
+        private IEnumerable<Vector2Int> GetAreaIgnoreRush(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map, bool onlyVisible = false)
         {
             var spawnPositions = _position.Get(actor, position, direction, map);
@@ -81,10 +118,11 @@ namespace Domain.Service.Effect
             return spawnPositions
                 .SelectMany(spawnPosition => _area.Get(spawnPosition, direction, map));
         }
-
         public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map)
         {
+            _remainingCoolTime.Value = _coolTime + 1;
+
             if (_log != null && _log != "")
                 GameLog.Add(actor.IsVisible, $"{actor.GetName(map.Player)}{_log}");
 
@@ -98,7 +136,7 @@ namespace Domain.Service.Effect
                         CommonSenseParameters.ThrowDistance, projectileImpact.IsPiercing, projectileImpact.CanHitLayer.ToArray());
                 }
 
-                var area = GetArea(actor, position, direction, map);
+                var area = GetAreaIgnoreRush(actor, position, direction, map);
                 if (_effects.Any(effect =>
                         effect is AttackEffect ||
                         effect is AbsorbsEffect ||
@@ -189,6 +227,12 @@ namespace Domain.Service.Effect
 
         public float Evaluate(IActorOfEffect actor, Vector2Int position, Direction8 direction, IMap map)
         {
+            for (var i = 0; i < RushDistance; i++)
+            {
+                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
+                    position += direction.Vector();
+            }
+
             var area = GetArea(actor, position, direction, map, true);
             var characters = map.Characters.In(area);
             var totalEvaluation = 0f;
@@ -230,7 +274,7 @@ namespace Domain.Service.Effect
                 totalEvaluation += effect.Evaluate(actor, area);
             }
 
-            return totalEvaluation * Repeats * ProbabilityOfSuccess;
+            return totalEvaluation * Repeats * ProbabilityOfSuccess / (1 + ChargeTurn);
         }
 
         public float EvaluatePrice()
@@ -244,12 +288,27 @@ namespace Domain.Service.Effect
 
             price *= _area.EvaluateArea();
             price *= _position.EvaluateHitProbability();
-            return price * ProbabilityOfSuccess;
+            return price * ProbabilityOfSuccess / (1 + ChargeTurn);
+        }
+
+        public void CoolDown()
+        {
+            if (_remainingCoolTime.CurrentValue > 0)
+            {
+                _remainingCoolTime.Value--;
+            }
+        }
+
+        public string Info()
+        {
+            return InfoOnUse();
         }
 
         public string InfoOnUse(bool omitProbabilityOfSuccess = false)
         {
             var info = "";
+            if (RushDistance > 0)
+                info += $"最初に{RushDistance}マス前に進む\n";
             if (Repeats > 1)
                 info += $"効果は{Repeats}回発動する\n";
             info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
@@ -259,12 +318,23 @@ namespace Domain.Service.Effect
             }
             if (!omitProbabilityOfSuccess)
                 info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
+
+            if (BackStepDistance > 0)
+                info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+
+            if (ChargeTurn > 0)
+                info += $"発動には{ChargeTurn}ターンかかる\n";
+
+            if (_coolTime > 0)
+                info += $"発動後に{_coolTime}ターンは再使用不能\n";
             return info;
         }
 
         public string InfoOnThrow(bool omitEffects = false)
         {
             var info = "";
+            if (RushDistance > 0)
+                info += $"最初に{RushDistance}マス前に進む\n";
             if (Repeats > 1)
                 info += $"効果は{Repeats}回発動する\n";
             info += $"{_position.Info()}の{_area.Info()}を対象にして\n";
@@ -281,6 +351,15 @@ namespace Domain.Service.Effect
             }
 
             info += $"発動は{ProbabilityOfSuccess:P0}の確率で成功する\n";
+
+            if (BackStepDistance > 0)
+                info += $"最後に{BackStepDistance}マス後ろに下がる\n";
+
+            if (ChargeTurn > 0)
+                info += $"発動には{ChargeTurn}ターンかかる\n";
+
+            if (_coolTime > 0)
+                info += $"発動後に{_coolTime}ターンは再使用不能\n";
             return info;
         }
     }

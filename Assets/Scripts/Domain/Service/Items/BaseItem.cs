@@ -234,7 +234,15 @@ namespace Domain.Service.Items
                 return SpawnEffectSkillResult.Failed;
             }
 
-            var result = await SkillOnUse.Expect("SkillOnUse is null").Match(
+            var skill = SkillOnUse.Expect("SkillOnUse is null");
+
+            if (!skill.IsUsable())
+            {
+                GameLog.Add(actor.IsVisible, $"しかしうまくいかなかった");
+                return SpawnEffectSkillResult.Failed;
+            }
+
+            var result = await skill.Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => itemTargetSkill.Use(map.Player, this, actor, map),
                 inventoryTargetSkill => inventoryTargetSkill.Use(actor.Inventory, actor, map)
@@ -278,7 +286,14 @@ namespace Domain.Service.Items
                 return SpawnEffectSkillResult.Failed;
             }
 
-            var result = await SkillOnThrow.Expect("SkillOnThrow is null").Match(
+            var skill = SkillOnThrow.Expect("SkillOnThrow is null");
+
+            if (!skill.IsUsable())
+            {
+                return SpawnEffectSkillResult.Failed;
+            }
+
+            var result = await skill.Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown."),
                 inventoryTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown.")

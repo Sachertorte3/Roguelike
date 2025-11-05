@@ -119,14 +119,18 @@ namespace Domain.Service.Items
 
             var effectsOnUse = new List<IEffect>();
             var elementPowers = new List<ElementPower>();
+            var powerMagnification = 1f;
             if (prefix != null)
             {
-                power = Mathf.RoundToInt(power * prefix.PowerMagnification);
+                powerMagnification *= prefix.PowerMagnification;
             }
+            if (features.Contains(ItemFeature.ChargeAttack))
+            {
+                powerMagnification *= 1.8f;
+            }
+            power = Mathf.RoundToInt(power * powerMagnification);
             power += upgradeCount;
-            var elementPower = Mathf.CeilToInt(power / 2f);
 
-            // 属性フィーチャーから対応するElementを取得
             var elementFeatureMapping = new Dictionary<ItemFeature, Element>
             {
                 { ItemFeature.Fire, Element.Fire },
@@ -138,16 +142,24 @@ namespace Domain.Service.Items
 
             var elementFeature = elementFeatureMapping.Keys.FirstOrDefault(feature => features.Contains(feature));
 
-            if (elementFeature != default)
+            List<ElementPower> CreateElementPowers(int powerValue)
             {
-                var element = elementFeatureMapping[elementFeature];
-                elementPowers.Add(new ElementPower(element, elementPower));
-                elementPowers.Add(new ElementPower(Element.Physical, power - elementPower));
+                var elementPowers = new List<ElementPower>();
+                if (elementFeature != default)
+                {
+                    var element = elementFeatureMapping[elementFeature];
+                    var elementPower = Mathf.CeilToInt(powerValue / 2f);
+                    elementPowers.Add(new ElementPower(element, elementPower));
+                    elementPowers.Add(new ElementPower(Element.Physical, powerValue - elementPower));
+                }
+                else
+                {
+                    elementPowers.Add(new ElementPower(Element.Physical, powerValue));
+                }
+                return elementPowers;
             }
-            else
-            {
-                elementPowers.Add(new ElementPower(Element.Physical, power));
-            }
+
+            elementPowers = CreateElementPowers(power);
 
             var criticalRate = features.Count(f => f == ItemFeature.Critical) * 0.25f;
             if (features.Contains(ItemFeature.Absorbing))
@@ -207,6 +219,8 @@ namespace Domain.Service.Items
 
             var skillOnUseProbabilityOfSuccess = features.Contains(ItemFeature.GuaranteedHit) ? 1f : features.Contains(ItemFeature.Critical) ? 0.75f : CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
 
+            var chargeTurn = features.Contains(ItemFeature.ChargeAttack) ? 1 : 0;
+
             return SpawnEffectSkill.Build(
                 new SkillData(
                     position,
@@ -216,7 +230,7 @@ namespace Domain.Service.Items
                     skillOnUseProbabilityOfSuccess,
                     0,
                     0,
-                    0,
+                    chargeTurn,
                     0,
                     "")
             );

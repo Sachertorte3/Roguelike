@@ -31,34 +31,37 @@ namespace Domain.Model.Item
     public enum ItemFeature
     {
         //DirectWeapon AttackArea
-        TwoRangeAttack,      // 2マス攻撃
-        FanAttack,           // 扇型攻撃
-        SpinAttack,          // 回転攻撃
+        TwoRangeAttack,
+        FanAttack,
+        SpinAttack,
+        
+        Lunge,
+        ChargeAttack,
 
         //RangedWeapon AttackPosition
-        ArcingShot,         // 曲射
-        Piercing,           // 貫通
+        ArcingShot,
+        Piercing,
 
         //RangedWeapon AttackArea
-        Explosive,          // 爆発
+        Explosive,
 
         //Attack Additional
-        DoubleAttack,        // 2回攻撃
-        Knockback,            // 吹き飛ばし
-        Critical,             // クリティカル
-        Dig,                  // 掘る
-        BreakTrap,            // トラップを破壊
-        Absorbing,            // 吸収
-        GuaranteedHit,        // 必中
-        EnhanceThrow,         // 投擲強化
-        Paralysis,             // 麻痺
-        Blind,                 // 盲目
-        Confusion,             // 混乱
-        Sleep,                 // 眠り
-        Poison,                // 毒
-        Slowness,              // 鈍足
-        Restraint,             // 拘束
-        EnhanceAbnormalCondition,// 状態異常付与率強化
+        DoubleAttack,
+        Knockback,
+        Critical,
+        Dig,
+        BreakTrap,
+        Absorbing,
+        GuaranteedHit,
+        EnhanceThrow,
+        Paralysis,
+        Blind,
+        Confusion,
+        Sleep,
+        Poison,
+        Slowness,
+        Restraint,
+        EnhanceAbnormalCondition,
 
         //Attack Element
         Fire,
@@ -68,8 +71,8 @@ namespace Domain.Model.Item
         Dark,
 
         //Other
-        EnhanceDurability,   // 耐久強化
-        Artistic,            // 芸術
+        EnhanceDurability,
+        Artistic,
     }
     public static class DirectWeaponFeatureExtensions
     {
@@ -80,6 +83,9 @@ namespace Domain.Model.Item
                 ItemFeature.TwoRangeAttack => "2マス攻撃",
                 ItemFeature.FanAttack => "扇型攻撃",
                 ItemFeature.SpinAttack => "回転攻撃",
+                
+                ItemFeature.Lunge => "突進",
+                ItemFeature.ChargeAttack => "溜め攻撃",
 
                 ItemFeature.ArcingShot => "曲射",
                 ItemFeature.Piercing => "貫通",
@@ -115,6 +121,9 @@ namespace Domain.Model.Item
                 ItemFeature.TwoRangeAttack => ApplicabilityTag.DirectWeapons,
                 ItemFeature.FanAttack => ApplicabilityTag.DirectWeapons,
                 ItemFeature.SpinAttack => ApplicabilityTag.DirectWeapons,
+
+                ItemFeature.Lunge => ApplicabilityTag.DirectWeapons,
+                ItemFeature.ChargeAttack => ApplicabilityTag.Weapons,
 
                 ItemFeature.ArcingShot => ApplicabilityTag.RangedWeapons,
                 ItemFeature.Piercing => ApplicabilityTag.RangedWeapons,
@@ -184,6 +193,7 @@ namespace Domain.Model.Item
             var sameCount = features.Count(f => f == feature);
             var maxOverlap = feature switch
             {
+                ItemFeature.Lunge => CANNOT_OVERLAP,
                 ItemFeature.DoubleAttack => CANNOT_OVERLAP,
                 ItemFeature.Knockback => CANNOT_OVERLAP,
                 ItemFeature.Critical => 4,
@@ -211,7 +221,6 @@ namespace Domain.Model.Item
         {
             var allFeatures = features.ToList();
 
-            // 追加可能かチェック
             if (allFeatures.CanAdd(otherFeatures, targetApplicability))
             {
                 allFeatures.Add(otherFeatures);
@@ -226,7 +235,6 @@ namespace Domain.Model.Item
             {
                 if (result.Count() >= maxFeatureCount)
                     break;
-                // 追加可能なものだけ追加
                 if (result.CanAdd(feature, targetApplicability))
                 {
                     result = result.Merge(feature, targetApplicability);

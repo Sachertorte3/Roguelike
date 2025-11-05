@@ -54,6 +54,7 @@ namespace Domain.Model.Effect
             IEffectPosition position,
             IArea area,
             List<IEffect> effects,
+            int repeats,
             float probabilityOfSuccess,
             int rushDistance,
             int backStepDistance,
@@ -63,6 +64,7 @@ namespace Domain.Model.Effect
             Position = position;
             Area = area;
             Effects = effects;
+            Repeats = repeats;
             ProbabilityOfSuccess = probabilityOfSuccess;
             RushDistance = rushDistance;
             BackStepDistance = backStepDistance;

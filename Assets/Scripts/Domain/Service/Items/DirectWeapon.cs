@@ -111,13 +111,27 @@ namespace Domain.Service.Items
 
             var effectsOnUse = new List<IEffect>();
             var effectsOnThrow = new List<IEffect>();
-            var elementPowers = new List<ElementPower>();
+            var powerMagnification = 1f;
             if (prefix != null)
             {
-                power = Mathf.RoundToInt(power * prefix.PowerMagnification);
+                powerMagnification *= prefix.PowerMagnification;
             }
-            power += upgradeCount;
-            var elementPower = Mathf.CeilToInt(power / 2f);
+
+            var usePowerMagnification = powerMagnification;
+            if (features.Contains(ItemFeature.ChargeAttack))
+            {
+                usePowerMagnification *= 1.8f;
+            }
+            var usePower = Mathf.RoundToInt(power * usePowerMagnification);
+            usePower += upgradeCount;
+
+            var throwPowerMagnification = powerMagnification;
+            if (features.Contains(ItemFeature.EnhanceThrow))
+            {
+                throwPowerMagnification *= 1.5f;
+            }
+            var throwPower = Mathf.RoundToInt(power * throwPowerMagnification);
+            throwPower += upgradeCount;
 
             var elementFeatureMapping = new Dictionary<ItemFeature, Element>
             {
@@ -130,30 +144,38 @@ namespace Domain.Service.Items
 
             var elementFeature = elementFeatureMapping.Keys.FirstOrDefault(feature => features.Contains(feature));
 
-            if (elementFeature != default)
+            List<ElementPower> CreateElementPowers(int powerValue)
             {
-                var element = elementFeatureMapping[elementFeature];
-                elementPowers.Add(new ElementPower(element, elementPower));
-                elementPowers.Add(new ElementPower(Element.Physical, power - elementPower));
-            }
-            else
-            {
-                elementPowers.Add(new ElementPower(Element.Physical, power));
+                var elementPowers = new List<ElementPower>();
+                if (elementFeature != default)
+                {
+                    var element = elementFeatureMapping[elementFeature];
+                    var elementPower = Mathf.CeilToInt(powerValue / 2f);
+                    elementPowers.Add(new ElementPower(element, elementPower));
+                    elementPowers.Add(new ElementPower(Element.Physical, powerValue - elementPower));
+                }
+                else
+                {
+                    elementPowers.Add(new ElementPower(Element.Physical, powerValue));
+                }
+                return elementPowers;
             }
 
+            var elementPowersOnUse = CreateElementPowers(usePower);
+            var elementPowersOnThrow = CreateElementPowers(throwPower);
+
             var criticalRate = features.Count(f => f == ItemFeature.Critical) * 0.25f;
-            var throwEnhance = features.Contains(ItemFeature.EnhanceThrow) ? 1.5f : 1f;
-            var hasSameEffect = throwEnhance == 1f;
+            var hasSameEffect = usePower == throwPower;
             if (features.Contains(ItemFeature.Absorbing))
             {
                 var absorbRate = features.Count(f => f == ItemFeature.Absorbing) * 0.25f;
                 effectsOnUse.Add(new AbsorbsEffect(
-                    elementPowers,
+                    elementPowersOnUse,
                     absorbRate,
                     criticalRate
                 ));
                 effectsOnThrow.Add(new AbsorbsEffect(
-                    elementPowers.Select(power => power.MultiplyPower(throwEnhance)).ToList(),
+                    elementPowersOnThrow,
                     absorbRate,
                     criticalRate
                 ));
@@ -161,11 +183,11 @@ namespace Domain.Service.Items
             else
             {
                 effectsOnUse.Add(new AttackEffect(
-                    elementPowers,
+                    elementPowersOnUse,
                     criticalRate
                 ));
                 effectsOnThrow.Add(new AttackEffect(
-                    elementPowers.Select(power => power.MultiplyPower(throwEnhance)).ToList(),
+                    elementPowersOnThrow,
                     criticalRate
                 ));
             }
@@ -217,31 +239,26 @@ namespace Domain.Service.Items
 
             var skillOnThrowProbabilityOfSuccess = features.Contains(ItemFeature.GuaranteedHit) ? 1f : features.Contains(ItemFeature.Critical) ? 0.7f : CommonSenseParameters.SkillOnThrowProbabilityOfSuccess;
 
+            var rushDistance = features.Contains(ItemFeature.Lunge) ? 1 : 0;
+            var chargeTurn = features.Contains(ItemFeature.ChargeAttack) ? 1 : 0;
+
             var skillOnUse = SpawnEffectSkill.Build(
-                new SkillData(
+                new SkillDataOnUse(
                     new AtFeet(),
                     area,
                     effectsOnUse,
                     repeat,
                     skillOnUseProbabilityOfSuccess,
+                    rushDistance,
                     0,
-                    0,
-                    0,
-                    0,
-                    "")
+                    chargeTurn,
+                    0)
             );
             var skillOnThrow = SpawnEffectSkill.Build(
-                new SkillData(
-                    new AtFeet(),
+                new SkillDataOnThrow(
                     new SelfArea(),
                     effectsOnThrow,
-                    1,
-                    skillOnThrowProbabilityOfSuccess,
-                    0,
-                    0,
-                    0,
-                    0,
-                    "")
+                    skillOnThrowProbabilityOfSuccess)
             );
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }

@@ -51,11 +51,6 @@ namespace Domain.Service.Events
             _money.Dispose();
         }
 
-        ~MimicMoney()
-        {
-            Dispose();
-        }
-
         public Sprite Icon => _money.Icon;
 
         public ICharacterEvent Event { get; init; }

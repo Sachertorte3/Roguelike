@@ -17,7 +17,7 @@ namespace Domain.Model.Memento
         [field: SerializeField] public IconSerializable ProjectileIcon { get; private set; }
         [field: SerializeField] public List<ItemFeature> Features { get; private set; }
         [field: SerializeField] public int FeatureLimit { get; private set; }
-        [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
+        [field: SerializeField] public SkillWithCostMemento SkillOnUse { get; private set; }
 
         public RangedWeaponMemento(
             BaseItemMemento baseItem,
@@ -26,7 +26,7 @@ namespace Domain.Model.Memento
             IconSerializable projectileIcon,
             List<ItemFeature> features,
             int featureLimit,
-            SpawnEffectSkillMemento skillOnUse
+            SkillWithCostMemento skillOnUse
         )
         {
             BaseItem = baseItem;
@@ -45,7 +45,7 @@ namespace Domain.Model.Memento
             IconSerializable? projectileIcon = null,
             List<ItemFeature>? features = null,
             int? featureLimit = null,
-            SpawnEffectSkillMemento? skillOnUse = null
+            SkillWithCostMemento? skillOnUse = null
         )
         {
             return new RangedWeaponMemento(

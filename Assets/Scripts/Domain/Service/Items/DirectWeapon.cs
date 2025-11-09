@@ -1,8 +1,6 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
@@ -13,6 +11,7 @@ using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Memento;
+using Domain.Service.Characters;
 using Domain.Service.Effect;
 using Domain.Service.Logs;
 using R3;
@@ -39,10 +38,10 @@ namespace Domain.Service.Items
         private readonly List<ItemFeature> _features;
         public IReadOnlyList<ItemFeature> Features => _features;
         public readonly int FeatureLimit;
-        private SpawnEffectSkill _skillOnUse;
-        private SpawnEffectSkill _skillOnThrow;
-        public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
-        public override Option<ISkill> SkillOnThrow => ((ISkill)_skillOnThrow).ToOption();
+        private ISkillWithCost _skillOnUse;
+        private ISkillWithCost _skillOnThrow;
+        public override Option<ISkillWithCost> SkillOnUse => _skillOnUse.ToOption();
+        public override Option<ISkillWithCost> SkillOnThrow => _skillOnThrow.ToOption();
         public DirectWeapon(DirectWeaponData data) : this(Build(data))
         {
         }
@@ -53,8 +52,8 @@ namespace Domain.Service.Items
             _defaultPower = data.DefaultPower;
             _features = data.Features;
             FeatureLimit = data.FeatureLimit;
-            _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(data.SkillOnThrow);
+            _skillOnUse = new SkillWithCost(data.SkillOnUse);
+            _skillOnThrow = new SkillWithCost(data.SkillOnThrow);
         }
 
         public DirectWeaponMemento Serialize()
@@ -80,8 +79,8 @@ namespace Domain.Service.Items
             GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化された");
             UpgradeCount++;
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
-            _skillOnUse = new SpawnEffectSkill(skillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
+            _skillOnUse = new SkillWithCost(skillOnUse);
+            _skillOnThrow = new SkillWithCost(skillOnThrow);
             _hasSameEffect = hasSameEffect;
             _onItemUpdated.OnNext(Unit.Default);
         }
@@ -91,12 +90,12 @@ namespace Domain.Service.Items
             GameLog.Add(itemHolder.IsVisible, $"{GetName(player, itemPlaceholders)}は強化が解除された");
             UpgradeCount--;
             var (skillOnUse, skillOnThrow, hasSameEffect) = BuildSkills(_defaultPower, UpgradeCount, _features, _prefix.Value);
-            _skillOnUse = new SpawnEffectSkill(skillOnUse);
-            _skillOnThrow = new SpawnEffectSkill(skillOnThrow);
+            _skillOnUse = new SkillWithCost(skillOnUse);
+            _skillOnThrow = new SkillWithCost(skillOnThrow);
             _hasSameEffect = hasSameEffect;
             _onItemUpdated.OnNext(Unit.Default);
         }
-        public static (SpawnEffectSkillMemento skillOnUse, SpawnEffectSkillMemento skillOnThrow, bool hasSameEffect) BuildSkills(int power, int upgradeCount, List<ItemFeature> features, WeaponPrefix? prefix = null)
+        public static (SkillWithCostMemento skillOnUse, SkillWithCostMemento skillOnThrow, bool hasSameEffect) BuildSkills(int power, int upgradeCount, List<ItemFeature> features, WeaponPrefix? prefix = null)
         {
             var range = features.Contains(ItemFeature.TwoRangeAttack) ? 2 : 1;
             var area = (IArea)new LineArea(range, false, false);
@@ -242,23 +241,26 @@ namespace Domain.Service.Items
             var rushDistance = features.Contains(ItemFeature.Lunge) ? 1 : 0;
             var chargeTurn = features.Contains(ItemFeature.ChargeAttack) ? 1 : 0;
 
-            var skillOnUse = SpawnEffectSkill.Build(
+            var skillOnUse = SkillWithCost.Build(
                 new SkillDataOnUse(
                     new AtFeet(),
                     area,
                     effectsOnUse,
                     repeat,
                     skillOnUseProbabilityOfSuccess,
+                    0,
                     rushDistance,
                     0,
                     chargeTurn,
-                    0)
+                    0
+                )
             );
-            var skillOnThrow = SpawnEffectSkill.Build(
+            var skillOnThrow = SkillWithCost.Build(
                 new SkillDataOnThrow(
                     new SelfArea(),
                     effectsOnThrow,
-                    skillOnThrowProbabilityOfSuccess)
+                    skillOnThrowProbabilityOfSuccess
+                )
             );
             return (skillOnUse, skillOnThrow, hasSameEffect);
         }

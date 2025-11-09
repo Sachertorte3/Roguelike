@@ -124,10 +124,5 @@ namespace Domain.Service.Events
         {
             return new WorkbenchMemento(3, EntityBase.Build(position, EntityLayer.Middle));
         }
-
-        ~Workbench()
-        {
-            Dispose();
-        }
     }
 }

@@ -13,7 +13,7 @@ namespace Domain.Model.Character
         public bool CanSwap(Direction8 direction, IMap map);
         public UniTask Move(Direction8 direction, IInput input);
         public void Turn(Direction8 direction);
-        public UniTask UseSkill(ICharacterSkill skill, Direction8 direction, IMap map);
+        public UniTask UseSkill(ISkillWithCost skill, Direction8 direction, IMap map);
         public UniTask UseItem(IItem item, Direction8 direction, IMap map);
         public UniTask ThrowItem(IItem item, Direction8 direction, IMap map);
         public void DropItem(IItem item, IMap map);

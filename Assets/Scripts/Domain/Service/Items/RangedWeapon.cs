@@ -12,6 +12,7 @@ using Domain.Model.Entity;
 using Domain.Model.Evaluation;
 using Domain.Model.Item;
 using Domain.Model.Memento;
+using Domain.Service.Characters;
 using Domain.Service.Effect;
 using Domain.Service.Logs;
 using R3;
@@ -40,9 +41,9 @@ namespace Domain.Service.Items
         private readonly List<ItemFeature> _features;
         public IReadOnlyList<ItemFeature> Features => _features;
         public readonly int FeatureLimit;
-        private SpawnEffectSkill _skillOnUse;
-        public override Option<ISkill> SkillOnUse => ((ISkill)_skillOnUse).ToOption();
-        public override Option<ISkill> SkillOnThrow => Option.None<ISkill>();
+        private ISkillWithCost _skillOnUse;
+        public override Option<ISkillWithCost> SkillOnUse => _skillOnUse.ToOption();
+        public override Option<ISkillWithCost> SkillOnThrow => Option.None<ISkillWithCost>();
         public RangedWeapon(RangedWeaponData data) : this(Build(data))
         {
         }
@@ -54,7 +55,7 @@ namespace Domain.Service.Items
             _projectileIcon = data.ProjectileIcon;
             _features = data.Features;
             FeatureLimit = data.FeatureLimit;
-            _skillOnUse = new SpawnEffectSkill(data.SkillOnUse);
+            _skillOnUse = new SkillWithCost(data.SkillOnUse);
         }
 
         public RangedWeaponMemento Serialize()
@@ -85,7 +86,7 @@ namespace Domain.Service.Items
                 _features,
                 _prefix.Value
             );
-            _skillOnUse = new SpawnEffectSkill(skillOnUse);
+            _skillOnUse = new SkillWithCost(skillOnUse);
             _onItemUpdated.OnNext(Unit.Default);
         }
 
@@ -100,10 +101,10 @@ namespace Domain.Service.Items
                 _features,
                 _prefix.Value
             );
-            _skillOnUse = new SpawnEffectSkill(skillOnUse);
+            _skillOnUse = new SkillWithCost(skillOnUse);
             _onItemUpdated.OnNext(Unit.Default);
         }
-        public static SpawnEffectSkillMemento BuildSkills(int power, int upgradeCount, IconSerializable projectileIcon, List<ItemFeature> features, WeaponPrefix? prefix = null)
+        public static SkillWithCostMemento BuildSkills(int power, int upgradeCount, IconSerializable projectileIcon, List<ItemFeature> features, WeaponPrefix? prefix = null)
         {
             var position = (IEffectPosition)new ProjectileImpact(projectileIcon, new List<EntityLayer> { EntityLayer.Middle }, features.Contains(ItemFeature.Piercing));
             if (features.Contains(ItemFeature.ArcingShot))
@@ -221,7 +222,7 @@ namespace Domain.Service.Items
 
             var chargeTurn = features.Contains(ItemFeature.ChargeAttack) ? 1 : 0;
 
-            return SpawnEffectSkill.Build(
+            return SkillWithCost.Build(
                 new SkillData(
                     position,
                     area,
@@ -230,9 +231,11 @@ namespace Domain.Service.Items
                     skillOnUseProbabilityOfSuccess,
                     0,
                     0,
+                    0,
                     chargeTurn,
                     0,
-                    "")
+                    ""
+                )
             );
         }
 

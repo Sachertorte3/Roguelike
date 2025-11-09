@@ -40,11 +40,6 @@ namespace Domain.Service.Events
             Entity.Dispose();
         }
 
-        ~Money()
-        {
-            Dispose();
-        }
-
         public Sprite Icon => Amount switch
         {
             <= 100 => ObjectLoader.LoadIcon("icons_full_16_362"),

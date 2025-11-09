@@ -190,11 +190,6 @@ namespace Domain.Service.Map
             return new HashSet<Vector2Int>(_allLightPassablePositionsSet);
         }
 
-        ~Tilemap()
-        {
-            Dispose();
-        }
-
         public bool IsPositionInsideMap(Vector2Int position)
         {
             return _tiles.ContainsKey(position);

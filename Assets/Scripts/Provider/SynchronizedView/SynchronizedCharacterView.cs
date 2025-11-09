@@ -46,11 +46,6 @@ namespace Provider
             return ObjectLoader.LoadPrefab("Character").GetComponent<CharacterView>();
         }
 
-        ~SynchronizedCharacterView()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
             _disposable.Dispose();

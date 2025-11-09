@@ -346,7 +346,7 @@ namespace Domain.Service.Characters.Behavior
 
                 foreach (var skill in skillGroup)
                 {
-                    if (skill.IsDirectional)
+                    if (skill.Skill.IsDirectional)
                     {
                         groupActions.AddRange(
                             DirectionMethods.AllDirections.Select(direction => new UseSkill(skill, direction)));
@@ -386,7 +386,7 @@ namespace Domain.Service.Characters.Behavior
                 if (!character.CanReadItem && item.RequiresLiteracy)
                     continue;
 
-                if (item.SkillOnUse.MapOr(false, skill => skill.IsDirectional))
+                if (item.SkillOnUse.Expect("SkillOnUse is null").Skill.IsDirectional)
                 {
                     actions.AddRange(DirectionMethods.AllDirections.Select(direction => new UseItem(item, direction)));
                 }

@@ -142,11 +142,6 @@ namespace Provider
             }
         }
 
-        ~SynchronizedIconEntityView()
-        {
-            Dispose();
-        }
-
         protected override void InitializeView(IEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();

@@ -40,11 +40,6 @@ namespace View
             _disposables.Dispose();
         }
 
-        ~InputReceiver()
-        {
-            Dispose();
-        }
-
         public void Enable()
         {
             _actions.Enable();

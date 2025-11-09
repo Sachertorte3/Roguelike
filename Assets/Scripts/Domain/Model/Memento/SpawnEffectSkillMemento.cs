@@ -17,9 +17,6 @@ namespace Domain.Model.Memento
         [field: SerializeField] public float ProbabilityOfSuccess { get; private set; }
         [field: SerializeField] public int RushDistance { get; private set; }
         [field: SerializeField] public int BackStepDistance { get; private set; }
-        [field: SerializeField] public int ChargeTurn { get; private set; }
-        [field: SerializeField] public int CoolTime { get; private set; }
-        [field: SerializeField] public int RemainingTurn { get; private set; }
         [field: SerializeField] public string Log { get; private set; }
 
 
@@ -31,9 +28,6 @@ namespace Domain.Model.Memento
             float probabilityOfSuccess,
             int rushDistance,
             int backStepDistance,
-            int chargeTurn,
-            int coolTime,
-            int remainingTurn,
             string log)
         {
             Position = position;
@@ -43,9 +37,6 @@ namespace Domain.Model.Memento
             ProbabilityOfSuccess = probabilityOfSuccess;
             RushDistance = rushDistance;
             BackStepDistance = backStepDistance;
-            ChargeTurn = chargeTurn;
-            CoolTime = coolTime;
-            RemainingTurn = remainingTurn;
             Log = log;
         }
 
@@ -57,9 +48,6 @@ namespace Domain.Model.Memento
             float? probabilityOfSuccess = null,
             int? rushDistance = null,
             int? backStepDistance = null,
-            int? chargeTurn = null,
-            int? coolTime = null,
-            int? remainingTurn = null,
             string? log = null)
         {
             return new SpawnEffectSkillMemento(
@@ -70,9 +58,6 @@ namespace Domain.Model.Memento
                 probabilityOfSuccess ?? ProbabilityOfSuccess,
                 rushDistance ?? RushDistance,
                 backStepDistance ?? BackStepDistance,
-                chargeTurn ?? ChargeTurn,
-                coolTime ?? CoolTime,
-                remainingTurn ?? RemainingTurn,
                 log ?? Log
             );
         }

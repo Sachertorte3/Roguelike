@@ -44,6 +44,7 @@ namespace Domain.Service.Characters
                 },
                 repeats: 1,
                 probabilityOfSuccess: CommonSenseParameters.SkillOnUseProbabilityOfSuccess,
+                cost: 0,
                 rushDistance: 0,
                 backStepDistance: 0,
                 chargeTurn: 0,
@@ -73,7 +74,7 @@ namespace Domain.Service.Characters
                 skills: new List<CharacterSkillWithRuleMemento>
                 {
                     new CharacterSkillWithRuleMemento(
-                        SpawnEffectSkill.Build(defaultSkill),
+                        SkillWithCost.Build(defaultSkill),
                         0
                     )
                 },

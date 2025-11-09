@@ -9,6 +9,7 @@ using Domain.Model.Effect;
 using Domain.Model.Entity;
 using Domain.Model.Item;
 using Domain.Model.Memento;
+using Domain.Service.Characters;
 using Domain.Service.Effect;
 using UnityEngine;
 using Utilities.Serialize.Option;
@@ -18,14 +19,14 @@ namespace Domain.Service.Items
     public class Item : BaseItem, ISerializable<ItemMemento>
     {
         private readonly ItemCategory _category;
-        private readonly Option<ISkill> _skillOnUse;
-        private readonly Option<ISkill> _skillOnThrow;
+        private readonly Option<ISkillWithCost> _skillOnUse;
+        private readonly Option<ISkillWithCost> _skillOnThrow;
         private readonly bool _useOnDeath;
 
         public override string RevealedName => BaseName;
         public override ItemCategory Category => _category;
-        public override Option<ISkill> SkillOnUse => _skillOnUse;
-        public override Option<ISkill> SkillOnThrow => _skillOnThrow;
+        public override Option<ISkillWithCost> SkillOnUse => _skillOnUse;
+        public override Option<ISkillWithCost> SkillOnThrow => _skillOnThrow;
         protected override bool HasSameEffect => _hasSameEffect;
         protected override bool HasSameSkill => _hasSameSkill;
         public override bool UseOnDeath => _useOnDeath;
@@ -44,41 +45,64 @@ namespace Domain.Service.Items
             data.BaseItem)
         {
             _category = data.Category;
-            _skillOnUse = data.SkillOnUse.Map(skill => skill.Deserialize());
-            _skillOnThrow = data.SkillOnThrow.Map(skill => skill.Match(
-                spawnEffectSkillMemento =>
+            _skillOnUse = data.SkillOnUse.Map(skill => (ISkillWithCost)new SkillWithCost(skill));
+            if (data.HasSameEffect)
+            {
+                var skillOnUse = _skillOnUse.Expect("SkillOnUse is null").Serialize();
+                if (skillOnUse.Skill is not SpawnEffectSkillMemento spawnEffectSkillOnUse)
                 {
-                    if (data.HasSameEffect)
-                    {
-                        return _skillOnUse.Expect("SkillOnUse is null").Serialize().Match(
-                            spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                spawnEffectSkillMemento.Position,
-                                spawnEffectSkillMemento.Area,
-                                probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess,
-                                log: spawnEffectSkillMemento.Log
+                    throw new Exception("SkillOnUse is not SpawnEffectSkill");
+                }
+                var skillOnThrow = data.SkillOnThrow.Expect("SkillOnThrow is null");
+                if (skillOnThrow.Skill is not SpawnEffectSkillMemento spawnEffectSkillOnThrow)
+                {
+                    throw new Exception("SkillOnThrow is not SpawnEffectSkill");
+                }
+                _skillOnThrow = Option.Some<ISkillWithCost>(
+                    new SkillWithCost(
+                        SkillWithCost.Build(
+                            spawnEffectSkillOnThrow.CopyWith(
+                                effect: spawnEffectSkillOnUse.Effects
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
-                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                        ).Deserialize();
-                    }
-                    else if (data.HasSameSkill)
-                    {
-                        return _skillOnUse.Expect("SkillOnUse is null").Serialize().Match(
-                            spawnEffectSkillOnUse => spawnEffectSkillOnUse.CopyWith(
-                                probabilityOfSuccess: spawnEffectSkillMemento.ProbabilityOfSuccess
+                            skillOnThrow.Cost,
+                            skillOnThrow.ChargeTurn,
+                            skillOnThrow.CoolTime
+                        )
+                    )
+                );
+            }
+            else if (data.HasSameSkill)
+            {
+                var skillOnUse = _skillOnUse.Expect("SkillOnUse is null").Serialize();
+                if (skillOnUse.Skill is not SpawnEffectSkillMemento spawnEffectSkillOnUse)
+                {
+                    throw new Exception("SkillOnUse is not SpawnEffectSkill");
+                }
+                var skillOnThrow = data.SkillOnThrow.Expect("SkillOnThrow is null");
+                if (skillOnThrow.Skill is not SpawnEffectSkillMemento spawnEffectSkillOnThrow)
+                {
+                    throw new Exception("SkillOnThrow is not SpawnEffectSkill");
+                }
+                _skillOnThrow = Option.Some<ISkillWithCost>(
+                    new SkillWithCost(
+                        SkillWithCost.Build(
+                            spawnEffectSkillOnThrow.CopyWith(
+                                position: spawnEffectSkillOnUse.Position,
+                                area: spawnEffectSkillOnUse.Area,
+                                effect: spawnEffectSkillOnUse.Effects
                             ),
-                            itemTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill"),
-                            inventoryTargetSkill => throw new Exception("SkillOnUse is not SpawnEffectSkill")
-                        ).Deserialize();
-                    }
-                    else
-                    {
-                        return new SpawnEffectSkill(spawnEffectSkillMemento);
-                    }
-                },
-                itemTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill"),
-                inventoryTargetSkillMemento => throw new Exception("SkillOnThrow is not SpawnEffectSkill")
-            ));
+                            skillOnThrow.Cost,
+                            skillOnThrow.ChargeTurn,
+                            skillOnThrow.CoolTime
+                        )
+                    )
+                );
+            }
+            else
+            {
+                _skillOnThrow = data.SkillOnThrow.Map(skill => (ISkillWithCost)new SkillWithCost(skill));
+            }
+
             _useOnDeath = data.UseOnDeath;
             FeaturesToMergeWeapon = data.FeaturesToMergeWeapon;
         }
@@ -107,15 +131,15 @@ namespace Domain.Service.Items
             var skillOnUse = data.EffectType switch
             {
                 ItemEffectType.SpawnEffect => data.SpawnEffectsOnUse
-                    ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnUse)
+                    ? SkillWithCost.Build(data.SkillOnUse)
                     : null,
-                ItemEffectType.ItemTarget => new ItemTargetSkill(ItemTargetSkill.Build(data.ItemEffect)).Serialize(),
-                ItemEffectType.InventoryTarget => new InventoryTargetSkill(InventoryTargetSkill.Build(data.InventoryEffect)).Serialize(),
+                ItemEffectType.ItemTarget => SkillWithCost.Build(ItemTargetSkill.Build(data.ItemEffect), 0, 0, 0),
+                ItemEffectType.InventoryTarget => SkillWithCost.Build(InventoryTargetSkill.Build(data.InventoryEffect), 0, 0, 0),
                 ItemEffectType.None => null,
                 _ => throw new Exception("Invalid item effect type")
             };
             var skillOnThrow = data.SpawnEffectsOnThrow
-                ? (ISkillMemento)SpawnEffectSkill.Build(data.SkillOnThrow)
+                ? SkillWithCost.Build(data.SkillOnThrow)
                 : null;
 
             var json = JsonUtility.ToJson(new ItemMemento

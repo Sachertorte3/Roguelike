@@ -46,11 +46,6 @@ namespace Provider
             _disposable.Dispose();
         }
 
-        ~SynchronizedFireEntityView()
-        {
-            Dispose();
-        }
-
         protected override void InitializeView(Fire eventEntity, EntityView entityView)
         {
         }

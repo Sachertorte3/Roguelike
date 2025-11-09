@@ -113,10 +113,5 @@ namespace Domain.Service.Events
         {
             return new MagicPotMemento(3, EntityBase.Build(position, EntityLayer.Middle));
         }
-
-        ~MagicPot()
-        {
-            Dispose();
-        }
     }
 }

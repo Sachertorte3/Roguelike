@@ -14,8 +14,8 @@ namespace Domain.Model.Memento
     {
         [field: SerializeField] public BaseItemMemento BaseItem { get; private set; }
         [field: SerializeField] public ItemCategory Category { get; private set; }
-        [field: SerializeField] public Option<ISkillMemento> SkillOnUse { get; private set; }
-        [field: SerializeField] public Option<ISkillMemento> SkillOnThrow { get; private set; }
+        [field: SerializeField] public Option<SkillWithCostMemento> SkillOnUse { get; private set; }
+        [field: SerializeField] public Option<SkillWithCostMemento> SkillOnThrow { get; private set; }
         [field: SerializeField] public bool HasSameEffect { get; private set; }
         [field: SerializeField] public bool HasSameSkill { get; private set; }
         [field: SerializeField] public bool UseOnDeath { get; private set; }
@@ -24,8 +24,8 @@ namespace Domain.Model.Memento
         public ItemMemento(
             BaseItemMemento baseItem,
             ItemCategory category,
-            Option<ISkillMemento> skillOnUse,
-            Option<ISkillMemento> skillOnThrow,
+            Option<SkillWithCostMemento> skillOnUse,
+            Option<SkillWithCostMemento> skillOnThrow,
             bool hasSameEffect,
             bool hasSameSkill,
             bool useOnDeath,
@@ -44,8 +44,8 @@ namespace Domain.Model.Memento
         public ItemMemento CopyWith(
             BaseItemMemento? baseItem = null,
             ItemCategory? category = null,
-            Option<ISkillMemento>? skillOnUse = null,
-            Option<ISkillMemento>? skillOnThrow = null,
+            Option<SkillWithCostMemento>? skillOnUse = null,
+            Option<SkillWithCostMemento>? skillOnThrow = null,
             bool? hasSameEffect = null,
             bool? hasSameSkill = null,
             bool? useOnDeath = null,

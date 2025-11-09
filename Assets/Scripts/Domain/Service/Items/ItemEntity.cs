@@ -88,10 +88,5 @@ namespace Domain.Service.Items
                 var result = await Item.UseWhenThrown(actor, destination, direction, map);
             }
         }
-
-        ~ItemEntity()
-        {
-            Dispose();
-        }
     }
 }

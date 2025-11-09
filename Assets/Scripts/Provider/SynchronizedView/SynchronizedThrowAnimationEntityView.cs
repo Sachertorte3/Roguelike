@@ -47,11 +47,6 @@ namespace Provider
             _disposable.Dispose();
         }
 
-        ~SynchronizedThrowAnimationEntityView()
-        {
-            Dispose();
-        }
-
         protected override void InitializeView(ThrowAnimationEntity eventEntity, EntityView entityView)
         {
             var spriteView = entityView.GetComponent<SpriteView>();

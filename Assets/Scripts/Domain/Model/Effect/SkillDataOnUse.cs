@@ -33,6 +33,10 @@ namespace Domain.Model.Effect
 
         [field: SerializeField]
         [field: MinValue(0)]
+        public int Cost { get; private set; } = 0;
+
+        [field: SerializeField]
+        [field: MinValue(0)]
         public int RushDistance { get; private set; } = 0;
 
         [field: SerializeField]
@@ -56,6 +60,7 @@ namespace Domain.Model.Effect
             List<IEffect> effects,
             int repeats,
             float probabilityOfSuccess,
+            int cost,
             int rushDistance,
             int backStepDistance,
             int chargeTurn,
@@ -66,6 +71,7 @@ namespace Domain.Model.Effect
             Effects = effects;
             Repeats = repeats;
             ProbabilityOfSuccess = probabilityOfSuccess;
+            Cost = cost;
             RushDistance = rushDistance;
             BackStepDistance = backStepDistance;
             ChargeTurn = chargeTurn;
@@ -90,6 +96,8 @@ namespace Domain.Model.Effect
         public string Info()
         {
             var info = "";
+            if (Cost > 0)
+                info += $"消費HP: {Cost}\n";
             if (Repeats > 1)
                 info += $"発動回数: {Repeats}回\n";
             foreach (var (effect, index) in Effects.Index())

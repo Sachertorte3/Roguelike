@@ -30,11 +30,6 @@ namespace Utilities.Stats
             _stat.Dispose();
         }
 
-        ~IntStat()
-        {
-            Dispose();
-        }
-
         public StatData GetData()
         {
             return _stat.GetData();

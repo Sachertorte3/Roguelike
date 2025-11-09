@@ -38,11 +38,6 @@ namespace Utilities.Stats
             _value.Dispose();
         }
 
-        ~Resource()
-        {
-            Dispose();
-        }
-
         public ResourceData GetData()
         {
             return new ResourceData(_max.GetData(), _value.Value);

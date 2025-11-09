@@ -33,8 +33,8 @@ namespace Domain.Model.Item
         public bool HasActivatableSkillWhenThrown { get; }
         public bool CanActivateWhenUsed { get; }
         public bool CanActivateWhenThrown { get; }
-        public Option<ISkill> SkillOnUse { get; }
-        public Option<ISkill> SkillOnThrow { get; }
+        public Option<ISkillWithCost> SkillOnUse { get; }
+        public Option<ISkillWithCost> SkillOnThrow { get; }
         public bool HasActivatableSkill { get; }
         public bool CanActivate { get; }
         public float EvaluateWhenUsed(IActor actor, Vector2Int position, Direction8 direction, IMap map);

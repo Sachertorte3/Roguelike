@@ -19,7 +19,7 @@ using Utilities;
 
 namespace Domain.Service.Effect
 {
-    public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ICharacterSkill
+    public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
     {
         private readonly IEffectPosition _position;
         private readonly IArea _area;
@@ -27,8 +27,6 @@ namespace Domain.Service.Effect
         public int Repeats { get; private set; }
         public float ProbabilityOfSuccess { get; private set; }
         private readonly string? _log;
-        private readonly int _coolTime;
-        private ReactiveProperty<int> _remainingCoolTime;
 
         public SpawnEffectSkill(SpawnEffectSkillMemento data)
         {
@@ -39,17 +37,12 @@ namespace Domain.Service.Effect
             ProbabilityOfSuccess = data.ProbabilityOfSuccess;
             RushDistance = data.RushDistance;
             BackStepDistance = data.BackStepDistance;
-            ChargeTurn = data.ChargeTurn;
-            _coolTime = data.CoolTime;
-            _remainingCoolTime = new ReactiveProperty<int>(data.RemainingTurn);
             _log = data.Log;
         }
 
         public Color Color => _effects.First().Color;
         public bool IsDirectional => _area.IsDirectional || _position.IsDirectional;
-        public bool IsUsable() => _remainingCoolTime.CurrentValue <= 0;
 
-        public int ChargeTurn { get; private set; }
         public int RushDistance { get; private set; }
         public int BackStepDistance { get; private set; }
 
@@ -64,9 +57,6 @@ namespace Domain.Service.Effect
                 ProbabilityOfSuccess,
                 RushDistance,
                 BackStepDistance,
-                ChargeTurn,
-                _coolTime,
-                _remainingCoolTime.CurrentValue,
                 _log
             );
         }
@@ -82,9 +72,6 @@ namespace Domain.Service.Effect
                 data.ProbabilityOfSuccess,
                 data.RushDistance,
                 data.BackStepDistance,
-                data.ChargeTurn,
-                data.CoolTime,
-                0,
                 data.Log
             );
         }
@@ -121,8 +108,6 @@ namespace Domain.Service.Effect
         public async UniTask<ISkillResult> Use(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map)
         {
-            _remainingCoolTime.Value = _coolTime + 1;
-
             if (_log != null && _log != "")
                 GameLog.Add(actor.IsVisible, $"{actor.GetName(map.Player)}{_log}");
 
@@ -274,7 +259,7 @@ namespace Domain.Service.Effect
                 totalEvaluation += effect.Evaluate(actor, area);
             }
 
-            return totalEvaluation * Repeats * ProbabilityOfSuccess / (1 + ChargeTurn);
+            return totalEvaluation * Repeats * ProbabilityOfSuccess;
         }
 
         public float EvaluatePrice()
@@ -288,15 +273,7 @@ namespace Domain.Service.Effect
 
             price *= _area.EvaluateArea();
             price *= _position.EvaluateHitProbability();
-            return price * ProbabilityOfSuccess / (1 + ChargeTurn);
-        }
-
-        public void CoolDown()
-        {
-            if (_remainingCoolTime.CurrentValue > 0)
-            {
-                _remainingCoolTime.Value--;
-            }
+            return price * ProbabilityOfSuccess;
         }
 
         public string Info()
@@ -321,12 +298,6 @@ namespace Domain.Service.Effect
 
             if (BackStepDistance > 0)
                 info += $"最後に{BackStepDistance}マス後ろに下がる\n";
-
-            if (ChargeTurn > 0)
-                info += $"発動には{ChargeTurn}ターンかかる\n";
-
-            if (_coolTime > 0)
-                info += $"発動後に{_coolTime}ターンは再使用不能\n";
             return info;
         }
 
@@ -354,12 +325,6 @@ namespace Domain.Service.Effect
 
             if (BackStepDistance > 0)
                 info += $"最後に{BackStepDistance}マス後ろに下がる\n";
-
-            if (ChargeTurn > 0)
-                info += $"発動には{ChargeTurn}ターンかかる\n";
-
-            if (_coolTime > 0)
-                info += $"発動後に{_coolTime}ターンは再使用不能\n";
             return info;
         }
     }

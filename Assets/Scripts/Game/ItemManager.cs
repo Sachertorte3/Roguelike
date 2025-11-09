@@ -52,11 +52,6 @@ namespace Game
             _disposables.Dispose();
         }
 
-        ~ItemManager()
-        {
-            Dispose();
-        }
-
         public void AddItem(IItemEntity item)
         {
             _items.Add(item);

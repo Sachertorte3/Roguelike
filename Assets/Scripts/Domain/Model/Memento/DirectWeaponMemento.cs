@@ -15,8 +15,8 @@ namespace Domain.Model.Memento
         [field: SerializeField] public int DefaultPower { get; private set; }
         [field: SerializeField] public List<ItemFeature> Features { get; private set; }
         [field: SerializeField] public int FeatureLimit { get; private set; }
-        [field: SerializeField] public SpawnEffectSkillMemento SkillOnUse { get; private set; }
-        [field: SerializeField] public SpawnEffectSkillMemento SkillOnThrow { get; private set; }
+        [field: SerializeField] public SkillWithCostMemento SkillOnUse { get; private set; }
+        [field: SerializeField] public SkillWithCostMemento SkillOnThrow { get; private set; }
         [field: SerializeField] public bool HasSameEffect { get; private set; }
 
         public DirectWeaponMemento(
@@ -25,8 +25,8 @@ namespace Domain.Model.Memento
             int defaultPower,
             List<ItemFeature> features,
             int featureLimit,
-            SpawnEffectSkillMemento skillOnUse,
-            SpawnEffectSkillMemento skillOnThrow,
+            SkillWithCostMemento skillOnUse,
+            SkillWithCostMemento skillOnThrow,
             bool hasSameEffect
         )
         {
@@ -46,8 +46,8 @@ namespace Domain.Model.Memento
             int? defaultPower = null,
             List<ItemFeature>? features = null,
             int? featureLimit = null,
-            SpawnEffectSkillMemento? skillOnUse = null,
-            SpawnEffectSkillMemento? skillOnThrow = null,
+            SkillWithCostMemento? skillOnUse = null,
+            SkillWithCostMemento? skillOnThrow = null,
             bool? hasSameEffect = null
         )
         {

@@ -58,11 +58,6 @@ namespace Game
             _characters.ForEach(character => character.Dispose());
         }
 
-        ~CharacterManager()
-        {
-            Dispose();
-        }
-
         public void AddCharacter(ICharacter character)
         {
             _characters.Add(character);

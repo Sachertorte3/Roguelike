@@ -10,6 +10,7 @@ namespace Domain.Model.Effect
         public List<IEffect> Effects { get; }
         public int Repeats { get; }
         public float ProbabilityOfSuccess { get; }
+        public int Cost { get; }
         public int RushDistance { get; }
         public int BackStepDistance { get; }
         public int ChargeTurn { get; }

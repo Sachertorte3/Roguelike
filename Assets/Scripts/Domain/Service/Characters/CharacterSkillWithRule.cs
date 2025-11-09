@@ -8,12 +8,12 @@ namespace Domain.Service.Characters
 {
     public class CharacterSkillWithRule : ICharacterSkillWithRule
     {
-        private readonly SpawnEffectSkill _skill;
-        public ICharacterSkill Skill => _skill;
+        private readonly SkillWithCost _skill;
+        public ISkillWithCost Skill => _skill;
         public int Priority { get; }
         public CharacterSkillWithRule(CharacterSkillWithRuleMemento data)
         {
-            _skill = new SpawnEffectSkill(data.Skill);
+            _skill = new SkillWithCost(data.Skill);
             Priority = data.Priority;
         }
         public CharacterSkillWithRuleMemento Serialize()
@@ -26,7 +26,7 @@ namespace Domain.Service.Characters
         public static CharacterSkillWithRuleMemento Build(CharacterSkillWithRuleData data)
         {
             return new CharacterSkillWithRuleMemento(
-                SpawnEffectSkill.Build(data.Skill),
+                SkillWithCost.Build(data.Skill),
                 data.Priority
             );
         }

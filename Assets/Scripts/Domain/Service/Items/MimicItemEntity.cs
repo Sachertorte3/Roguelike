@@ -80,10 +80,5 @@ namespace Domain.Service.Items
 
             await map.ExecuteTrapAt(destination, actor as ICharacter);
         }
-
-        ~MimicItemEntity()
-        {
-            Dispose();
-        }
     }
 }

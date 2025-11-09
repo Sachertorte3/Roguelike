@@ -557,11 +557,6 @@ namespace Game
             }).AddTo(_disposables);
         }
 
-        ~MapManager()
-        {
-            Dispose();
-        }
-
         public async UniTask UpdateTurn(int turn)
         {
             if (RandUtils.IsLessThanProbability(CommonSenseParameters.SpawnEnemyProbabilityPerTurn))

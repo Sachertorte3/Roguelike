@@ -27,6 +27,7 @@ namespace Domain.Model.Effect
         [field: MinValue(1)]
         public int Repeats { get; private set; } = 1;
 
+        public int Cost => 0;
         public int ChargeTurn => 0;
         public int RushDistance => 0;
         public int BackStepDistance => 0;

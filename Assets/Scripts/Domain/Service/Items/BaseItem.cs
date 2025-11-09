@@ -55,8 +55,8 @@ namespace Domain.Service.Items
         public abstract bool IdentifyIfGot { get; }
         public abstract bool IdentifyIfUsed { get; }
         public abstract bool AutoDestroyWhenDisabled { get; }
-        public abstract Option<ISkill> SkillOnUse { get; }
-        public abstract Option<ISkill> SkillOnThrow { get; }
+        public abstract Option<ISkillWithCost> SkillOnUse { get; }
+        public abstract Option<ISkillWithCost> SkillOnThrow { get; }
         private Option<EnemyData> _mimic { get; init; }
 
         public string DebugName => _fullName;
@@ -242,11 +242,7 @@ namespace Domain.Service.Items
                 return SpawnEffectSkillResult.Failed;
             }
 
-            var result = await skill.Match(
-                spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
-                itemTargetSkill => itemTargetSkill.Use(map.Player, this, actor, map),
-                inventoryTargetSkill => inventoryTargetSkill.Use(actor.Inventory, actor, map)
-            );
+            var result = await skill.Use(actor, this, position, direction, map);
             if (result.Result != SkillResult.Cancelled)
             {
                 if (ShouldDecreaseUsage(actor))
@@ -293,7 +289,7 @@ namespace Domain.Service.Items
                 return SpawnEffectSkillResult.Failed;
             }
 
-            var result = await skill.Match(
+            var result = await skill.Skill.Match(
                 spawnEffectSkill => spawnEffectSkill.Use(actor, position, direction, map),
                 itemTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown."),
                 inventoryTargetSkill => throw new Exception("The item is not configured to activate this type of skill when thrown.")
@@ -328,11 +324,7 @@ namespace Domain.Service.Items
 
             return SkillOnUse.MapOr(
                 0,
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(),
-                    inventoryTargetSkill => inventoryTargetSkill.Evaluate()
-                )
+                skill => skill.Evaluate(actor, position, direction, map)
             );
         }
 
@@ -340,11 +332,7 @@ namespace Domain.Service.Items
         {
             return SkillOnThrow.MapOr(
                 0,
-                skill => skill.Match(
-                    spawnEffectSkill => spawnEffectSkill.Evaluate(actor, position, direction, map),
-                    itemTargetSkill => itemTargetSkill.Evaluate(),
-                    inventoryTargetSkill => inventoryTargetSkill.Evaluate()
-                )
+                skill => skill.Evaluate(actor, position, direction, map)
             );
         }
 
@@ -386,18 +374,18 @@ namespace Domain.Service.Items
 
         public void UpdateTurn()
         {
-            if (SkillOnUse.HasValue && SkillOnUse.Value is ICharacterSkill skill && !skill.IsUsable())
+            if (SkillOnUse.HasValue && !SkillOnUse.Value.IsUsable())
             {
-                skill.CoolDown();
-                if (skill.IsUsable())
+                SkillOnUse.Value.CoolDown();
+                if (SkillOnUse.Value.IsUsable())
                 {
                     _onItemUpdated.OnNext(Unit.Default);
                 }
             }
-            if (SkillOnThrow.HasValue && SkillOnThrow.Value is ICharacterSkill skill2 && !skill2.IsUsable())
+            if (SkillOnThrow.HasValue && !SkillOnThrow.Value.IsUsable())
             {
-                skill2.CoolDown();
-                if (skill2.IsUsable())
+                SkillOnThrow.Value.CoolDown();
+                if (SkillOnThrow.Value.IsUsable())
                 {
                     _onItemUpdated.OnNext(Unit.Default);
                 }
@@ -524,17 +512,17 @@ namespace Domain.Service.Items
             {
                 if (HasSameSkill)
                 {
-                    info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Match(
+                    info += "\n使用または投擲したときの効果...\n" + SkillOnUse.Expect("SkillOnUse is null").Skill.Match(
                         spawnEffectSkill => spawnEffectSkill.InfoOnUse(true) + "\n",
                         itemTargetSkill => throw new Exception("SkillOnUse can not be ItemTargetSkill"),
                         inventoryTargetSkill => throw new Exception("SkillOnUse can not be InventoryTargetSkill")
                     );
-                    var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Match(
+                    var skillOnUseSuccessProbability = SkillOnUse.Expect("SkillOnUse is null").Skill.Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
                         itemTargetSkill => throw new Exception("SkillOnUse can not be ItemTargetSkill"),
                         inventoryTargetSkill => throw new Exception("SkillOnUse can not be InventoryTargetSkill")
                     );
-                    var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Match(
+                    var skillOnThrowSuccessProbability = SkillOnThrow.Expect("SkillOnThrow is null").Skill.Match(
                         spawnEffectSkill => spawnEffectSkill.ProbabilityOfSuccess,
                         itemTargetSkill => throw new Exception("SkillOnThrow can not be ItemTargetSkill"),
                         inventoryTargetSkill => throw new Exception("SkillOnThrow can not be InventoryTargetSkill")
@@ -546,19 +534,17 @@ namespace Domain.Service.Items
                 {
                     info += SkillOnUse.MapOr(
                         "",
-                        skill => "\n使用したときの効果...\n" + skill.Match(
-                            spawnEffectSkill => spawnEffectSkill.InfoOnUse(),
-                            itemTargetSkill => itemTargetSkill.Info(),
-                            inventoryTargetSkill => inventoryTargetSkill.Info()
-                        ));
+                        skill => "\n使用したときの効果...\n" + skill.Info()
+                    );
 
                     info += SkillOnThrow.MapOr(
                         "",
-                        skill => "\n投擲したときの効果...\n" + skill.Match(
+                        skill => "\n投擲したときの効果...\n" + skill.Skill.Match(
                             spawnEffectSkill => spawnEffectSkill.InfoOnThrow(HasSameEffect),
                             itemTargetSkill => throw new Exception("SkillOnThrow can not be ItemTargetSkill"),
                             inventoryTargetSkill => throw new Exception("SkillOnThrow can not be InventoryTargetSkill")
-                        ));
+                        )
+                    );
                 }
             }
 

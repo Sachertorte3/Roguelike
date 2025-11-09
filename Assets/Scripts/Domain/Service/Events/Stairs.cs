@@ -132,10 +132,5 @@ namespace Domain.Service.Events
         {
             return Build(type, position, Id<IEntity>.Generate(), destination, Id<IEntity>.Generate(), keyCharacters);
         }
-
-        ~Stairs()
-        {
-            Dispose();
-        }
     }
 }

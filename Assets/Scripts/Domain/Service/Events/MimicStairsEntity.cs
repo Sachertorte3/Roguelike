@@ -74,10 +74,5 @@ namespace Domain.Service.Events
         {
             return new MimicStairsMemento(type, EntityBase.Build(position, EntityLayer.Bottom), mimic);
         }
-
-        ~MimicStairs()
-        {
-            Dispose();
-        }
     }
 }

@@ -119,11 +119,6 @@ namespace Provider
                 _ => _disposables.Clear());
         }
 
-        ~TilemapPresenter()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
             _disposables.Dispose();

@@ -56,11 +56,6 @@ namespace Utilities.Stats
             _value.Dispose();
         }
 
-        ~Stat()
-        {
-            Dispose();
-        }
-
         public StatData GetData()
         {
             return new StatData(

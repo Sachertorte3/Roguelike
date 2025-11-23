@@ -56,6 +56,7 @@ MonoBehaviour:
       - rid: 3119344396326407490
       <Repeats>k__BackingField: 1
       <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Cost>k__BackingField: 0
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ChargeTurn>k__BackingField: 0
@@ -71,6 +72,7 @@ MonoBehaviour:
       - rid: 3794997872339714063
       <Repeats>k__BackingField: 1
       <ProbabilityOfSuccess>k__BackingField: 0.95
+      <Cost>k__BackingField: 0
       <RushDistance>k__BackingField: 0
       <BackStepDistance>k__BackingField: 0
       <ChargeTurn>k__BackingField: 0
@@ -87,6 +89,7 @@ MonoBehaviour:
     - rid: -2
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 1
+    <Cost>k__BackingField: 0
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ChargeTurn>k__BackingField: 0

@@ -350,5 +350,20 @@ namespace Game
                 throw new Exception($"EventId {eventId} not found");
             _eventExecutionIds.Remove(eventId);
         }
+
+        public float GetScore()
+        {
+            var score = 0f;
+
+            score += Mathf.Pow(_globalStatistics.MaxMapLevel - 1, 2) * 100;
+
+            var player = _world.CurrentMap.Player;
+            score += player.Money.CurrentValue;
+            foreach (var item in player.Character.Inventory.AllItems)
+            {
+                score += item.Price;
+            }
+            return score;
+        }
     }
 }

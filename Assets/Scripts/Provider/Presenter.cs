@@ -27,9 +27,11 @@ namespace Provider
                         if (destroyLog != null && gameManager.ActiveStatistics.CurrentValue != null)
                         {
                             var maxMapLevel = gameManager.ActiveStatistics.CurrentValue.MaxMapLevel;
+                            var score = gameManager.GetScore();
                             var causeOfDeathLog = player.Character.GetNameIgnoreVisibility(player) + destroyLog;
                             menuController.TitleMenuWhenGameOver(
                                 maxMapLevel,
+                                score,
                                 causeOfDeathLog);
                         }
                         else

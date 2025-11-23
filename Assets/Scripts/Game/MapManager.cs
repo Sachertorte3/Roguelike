@@ -426,7 +426,11 @@ namespace Game
 
             EntityManager.Characters.SubscribeIncludingCurrentObservables(
                 character => character.OnDead,
-                (character, _) => { DropAllItem(character); }
+                (character, _) =>
+                {
+                    if (!character.IsPlayer)
+                        DropAllItem(character);
+                }
             ).AddTo(_disposables);
 
             EntityManager.Player.Character.VisionRange.OnVisibleAreaChanged.Subscribe(areaChanged =>

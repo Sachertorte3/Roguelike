@@ -180,9 +180,9 @@ namespace View.UI
             SwitchMenu(_titleMenu);
         }
 
-        public void TitleMenuWhenGameOver(int level, string causeOfDeath)
+        public void TitleMenuWhenGameOver(int level, float score, string causeOfDeath)
         {
-            _titleMenu.SetData(level, causeOfDeath);
+            _titleMenu.SetData(level, score, causeOfDeath);
             SwitchMenu(_titleMenu);
         }
 

@@ -26,7 +26,7 @@ namespace Domain.Model.Setting
             Value.Value = _defaultValue;
         }
 
-        public ReactiveProperty<int> Value { get; init; }
+        public readonly ReactiveProperty<int> Value;
         public int CurrentValue => Value.CurrentValue;
     }
 }

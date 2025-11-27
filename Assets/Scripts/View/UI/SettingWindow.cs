@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace View.UI
@@ -8,6 +9,7 @@ namespace View.UI
         public bool CanClose => true;
         [SerializeField] private Transform _content;
         [SerializeField] private SliderOption _sliderItem;
+        [SerializeField] private LabeledSliderOption _labeledSliderItem;
         [SerializeField] private CheckBoxOption _checkBoxItem;
 
         private ISettingOption firstOption;
@@ -17,6 +19,13 @@ namespace View.UI
         {
             var option = Instantiate(_sliderItem, _content);
             option.SetData(itemName, min, max, value, isEnabled);
+            UpdateNavigation(option);
+        }
+
+        public void AddLabeledIntOption(string itemName, IReadOnlyList<(int Value, string Label)> options, ReactiveProperty<int> index, ReadOnlyReactiveProperty<bool> isEnabled)
+        {
+            var option = Instantiate(_labeledSliderItem, _content);
+            option.SetData(itemName, options, index, isEnabled);
             UpdateNavigation(option);
         }
 

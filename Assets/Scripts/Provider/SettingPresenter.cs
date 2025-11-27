@@ -28,6 +28,9 @@ namespace Provider
                     case Slider slider:
                         settingWindow.AddIntOption(slider.Name, slider.Min, slider.Max, slider.Value, slider.IsEnabled);
                         break;
+                    case LabeledSlider labeledSlider:
+                        settingWindow.AddLabeledIntOption(labeledSlider.Name, labeledSlider.Options, labeledSlider.Index, labeledSlider.IsEnabled);
+                        break;
                     case CheckBox checkbox:
                         settingWindow.AddBoolOption(checkbox.Name, checkbox.Value, checkbox.IsEnabled);
                         break;

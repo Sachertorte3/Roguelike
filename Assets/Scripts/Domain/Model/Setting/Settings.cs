@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace Domain.Model.Setting
 {
@@ -51,6 +52,9 @@ namespace Domain.Model.Setting
                         case Slider slider:
                             slider.Value.Value = intValue;
                             break;
+                        case LabeledSlider labeledSlider:
+                            labeledSlider.Index.Value = intValue;
+                            break;
                         case CheckBox checkBox:
                             checkBox.Value.Value = intValue == 1;
                             break;
@@ -70,6 +74,7 @@ namespace Domain.Model.Setting
                     var option = (IOptionInput)value switch
                     {
                         Slider slider => slider.CurrentValue,
+                        LabeledSlider labeledSlider => labeledSlider.CurrentIndex,
                         CheckBox checkBox => checkBox.CurrentValue ? 1 : 0,
                         _ => throw new InvalidOperationException(""),
                     };
@@ -127,11 +132,13 @@ namespace Domain.Model.Setting
                 var value = field.GetValue(this);
                 if (values.TryGetValue(field.Name, out var intValue))
                 {
-
                     switch (value)
                     {
                         case Slider slider:
                             slider.Value.Value = intValue;
+                            break;
+                        case LabeledSlider labeledSlider:
+                            labeledSlider.Index.Value = intValue;
                             break;
                         case CheckBox checkBox:
                             checkBox.Value.Value = intValue == 1;
@@ -152,6 +159,7 @@ namespace Domain.Model.Setting
                     var option = (IOptionInput)value switch
                     {
                         Slider slider => slider.CurrentValue,
+                        LabeledSlider labeledSlider => labeledSlider.CurrentIndex,
                         CheckBox checkBox => checkBox.CurrentValue ? 1 : 0,
                         _ => throw new InvalidOperationException(""),
                     };

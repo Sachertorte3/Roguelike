@@ -64,7 +64,7 @@ namespace Provider
                             if (item != null && player.IsKnownItem(item))
                             {
                                 if (item.SkillOnUse.HasValue &&
-                                    item.SkillOnUse.Value is SpawnEffectSkill spawnEffectSkill)
+                                    item.SkillOnUse.Value.Skill is SpawnEffectSkill spawnEffectSkill)
                                 {
                                     var area = spawnEffectSkill.GetArea(player,
                                         player.Entity.CurrentPosition,

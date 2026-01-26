@@ -47,6 +47,8 @@ namespace Domain.Model.Dungeon
         private int _teleportIn;
         [Output, SerializeField]
         private int _teleportOut;
+        [SerializeField]
+        private bool _isGoal = false;
 
         private bool _isPrevMapUnconnected => !GetInputPort(nameof(_prevMap)).IsConnected;
         private bool _isNextMapUnconnected => !GetOutputPort(nameof(_nextMap)).IsConnected;

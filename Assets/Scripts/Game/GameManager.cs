@@ -108,7 +108,7 @@ namespace Game
                 (ObjectLoader.Load<PlayerData>("Rabbit"),
                 "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
                 (ObjectLoader.Load<PlayerData>("Fairy"),
-                "10Fまで踏破", _globalStatistics.MaxMapLevel >= 10),
+                "20Fまで踏破", _globalStatistics.MaxMapLevel >= 20),
             };
             var index = await _characterSelectReceiver.GetCharacter(
                 players.Select(player => (

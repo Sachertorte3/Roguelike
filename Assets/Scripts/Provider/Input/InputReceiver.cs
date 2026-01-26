@@ -2,6 +2,9 @@ using System;
 using R3;
 using Unity.Logging;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using Utilities;
 
 namespace View
@@ -10,6 +13,8 @@ namespace View
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
+        private InputActionReference _fieldNavigateRef;
+        private InputActionReference _uiNavigateRef;
 
         public Observable<Vector2> OnMovePerformed =>
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
@@ -55,6 +60,7 @@ namespace View
             Log.Info("[Input] Switch input to Menu");
             _actions.Menu.Enable();
             _actions.Field.Disable();
+            SetMove(_actions.UI.Navigate, ref _uiNavigateRef);
         }
 
         public void SwitchField()
@@ -62,6 +68,24 @@ namespace View
             Log.Info("[Input] Switch input to Field");
             _actions.Field.Enable();
             _actions.Menu.Disable();
+            SetMove(_actions.Field.Navigate, ref _fieldNavigateRef);
+        }
+
+        private void SetMove(InputAction moveAction, ref InputActionReference cache)
+        {
+            if (cache == null)
+                cache = InputActionReference.Create(moveAction);
+
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+                return;
+
+            var uiModule = eventSystem.currentInputModule as InputSystemUIInputModule
+                           ?? eventSystem.GetComponent<InputSystemUIInputModule>();
+            if (uiModule == null)
+                return;
+
+            uiModule.move = cache;
         }
     }
 }

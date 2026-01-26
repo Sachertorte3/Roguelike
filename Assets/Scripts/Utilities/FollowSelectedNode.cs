@@ -24,7 +24,6 @@ namespace Utilities
             _viewportRectransform = _scrollRect.viewport;
             _contentTransform = _scrollRect.content;
             Observable.EveryUpdate()
-                .Select(_ => this.enabled)
                 .Select(_ => EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null)
                 .DistinctUntilChanged()
                 .Select(go => GetNodeIndex(go != null ? go.transform : null))

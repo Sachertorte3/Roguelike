@@ -33,6 +33,11 @@ MonoBehaviour:
     - rid: 3794997484628475906
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
+    <Cost>k__BackingField: 0
+    <RushDistance>k__BackingField: 0
+    <BackStepDistance>k__BackingField: 0
+    <ChargeTurn>k__BackingField: 0
+    <CoolTime>k__BackingField: 0
   SkillOnThrow:
     <Area>k__BackingField:
       rid: 2541219281251860483
@@ -76,6 +81,7 @@ MonoBehaviour:
         Icon:
           _name: icons_full_16_129
         CanHitLayer: 01000000
+        IsPiercing: 0
     - rid: 3794997484628475911
       type: {class: CircleArea, ns: Domain.Model.Effect.Area, asm: Domain.Model}
       data:

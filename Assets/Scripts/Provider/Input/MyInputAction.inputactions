@@ -176,61 +176,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Joystick",
-                    "id": "1c544f59-bf39-4651-93de-4d8b8768d130",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Navigate",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "9d59a64a-6df4-46aa-9898-f7c8b7e9a550",
-                    "path": "<Joystick>/stick/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "465ee6ee-85ba-42ec-8fc8-98b153011f1c",
-                    "path": "<Joystick>/stick/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "7b52f3ee-a167-40c7-ba45-17b6eb10c05a",
-                    "path": "<Joystick>/stick/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "103645e7-b929-4891-a3f9-e7bc734b8e9a",
-                    "path": "<Joystick>/stick/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Navigate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "Keyboard",
                     "id": "9c2becb0-9fc6-4a8e-8fc8-acd93e66c163",
                     "path": "2DVector",
@@ -310,7 +255,7 @@
                 {
                     "name": "",
                     "id": "014c81f4-09a1-45f8-a45e-60d2d50469b4",
-                    "path": "<Gamepad>/select",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -332,7 +277,7 @@
                 {
                     "name": "",
                     "id": "5d6c0793-3c46-4eb2-a749-2323bbe3e6fb",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<XInputController>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -354,7 +299,7 @@
                 {
                     "name": "",
                     "id": "da4086cf-d000-4d43-acc5-e75daa773b76",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -376,7 +321,7 @@
                 {
                     "name": "",
                     "id": "bc1c0815-1507-4e08-91db-812cb7d53b3f",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<XInputController>/buttonNorth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -398,7 +343,7 @@
                 {
                     "name": "",
                     "id": "8c1f11d6-5f65-49a7-a20e-71c1438c7caf",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<XInputController>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -442,7 +387,7 @@
                 {
                     "name": "",
                     "id": "9973b480-b439-4783-96b0-4e06de830aa1",
-                    "path": "<Gamepad>/start",
+                    "path": "<Gamepad>/select",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -475,7 +420,7 @@
                 {
                     "name": "modifier",
                     "id": "7a55299c-aae6-43ba-9952-bd3a17679260",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<XInputController>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -486,7 +431,7 @@
                 {
                     "name": "binding",
                     "id": "4848b0d2-7bba-4001-9877-7b082366d8bc",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

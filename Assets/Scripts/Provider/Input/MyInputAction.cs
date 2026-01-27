@@ -587,7 +587,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""622e942f-5cf6-41fb-b1e8-12d754651a64"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<XInputController>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -614,7 +614,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""name"": ""Submit"",
                     ""type"": ""Button"",
                     ""id"": ""eb89a854-f5cb-49bf-ad4d-dc9d4fa4decf"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -623,7 +623,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""737eb53d-df03-4a0a-b585-fce60ad98772"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -851,6 +851,17 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""1d7f1ad1-1fec-4d57-8d1e-2cac9d223026"",
                     ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c7ad8b9b-168a-4b1c-bb0a-50a6d046c0a2"",
+                    ""path"": ""<XInputController>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

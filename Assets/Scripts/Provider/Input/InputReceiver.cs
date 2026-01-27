@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Domain.Model.Setting;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -15,6 +17,28 @@ namespace View
         private readonly CompositeDisposable _disposables = new();
         private InputActionReference _fieldNavigateRef;
         private InputActionReference _uiNavigateRef;
+
+        private static readonly Dictionary<string, string> FaceButtonSwapMap = new()
+        {
+            // XInputController (主にWindows/Xbox系)
+            { "<XInputController>/buttonSouth", "<XInputController>/buttonEast" },
+            { "<XInputController>/buttonEast", "<XInputController>/buttonSouth" },
+            { "<XInputController>/buttonWest", "<XInputController>/buttonNorth" },
+            { "<XInputController>/buttonNorth", "<XInputController>/buttonWest" },
+
+            // Gamepad (Menu等で使われている)
+            { "<Gamepad>/buttonSouth", "<Gamepad>/buttonEast" },
+            { "<Gamepad>/buttonEast", "<Gamepad>/buttonSouth" },
+            { "<Gamepad>/buttonWest", "<Gamepad>/buttonNorth" },
+            { "<Gamepad>/buttonNorth", "<Gamepad>/buttonWest" },
+        };
+
+        public InputReceiver()
+        {
+            Settings.GlobalSettings.SwapABXY.Value
+                .SubscribeIncludingCurrentValue(ApplyFaceButtonSwap)
+                .AddTo(_disposables);
+        }
 
         public Observable<Vector2> OnMovePerformed =>
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
@@ -87,6 +111,28 @@ namespace View
                 return;
 
             uiModule.move = cache;
+        }
+
+        private void ApplyFaceButtonSwap(bool enabled)
+        {
+            foreach (var action in _actions)
+            {
+                for (var i = 0; i < action.bindings.Count; i++)
+                {
+                    var binding = action.bindings[i];
+                    if (!FaceButtonSwapMap.TryGetValue(binding.path, out var swappedPath))
+                        continue;
+
+                    if (enabled)
+                    {
+                        action.ApplyBindingOverride(i, new InputBinding { overridePath = swappedPath });
+                    }
+                    else
+                    {
+                        action.RemoveBindingOverride(i);
+                    }
+                }
+            }
         }
     }
 }

@@ -1,41 +1,26 @@
 using Domain.Model;
+using R3;
 
 namespace Game
 {
     public class GameInput : IInput
     {
-        private bool _isDash;
-        private bool _isNoMove;
-        private bool _isDiagonalOnly;
+        private ReadOnlyReactiveProperty<bool> _isDash;
+        private ReadOnlyReactiveProperty<bool> _isNoMove;
+        private ReadOnlyReactiveProperty<bool> _isDiagonalOnly;
 
-        public bool IsDash()
-        {
-            return _isDash;
-        }
-
-        public bool IsNoMove()
-        {
-            return _isNoMove;
-        }
-
-        public bool IsDiagonalOnly()
-        {
-            return _isDiagonalOnly;
-        }
-
-        public void SetDash(bool isDash)
+        public void Bind(ReadOnlyReactiveProperty<bool> isDash, ReadOnlyReactiveProperty<bool> isNoMove, ReadOnlyReactiveProperty<bool> isDiagonalOnly)
         {
             _isDash = isDash;
-        }
-
-        public void SetNoMove(bool isNoMove)
-        {
             _isNoMove = isNoMove;
-        }
-
-        public void SetDiagonalOnly(bool isDiagonalOnly)
-        {
             _isDiagonalOnly = isDiagonalOnly;
         }
+
+
+        public bool IsDash() => _isDash.CurrentValue    ;
+
+        public bool IsNoMove() => _isNoMove.CurrentValue;
+
+        public bool IsDiagonalOnly() => _isDiagonalOnly.CurrentValue;
     }
 }

@@ -53,10 +53,12 @@ namespace Provider
                 .Subscribe(_ => actionReceiver.SetDoNothingInput());
             receiver.OnRenamePerformed.Subscribe(_ => actionReceiver.SetRenameInput());
 
-            receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
-            receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
-            receiver.IsDiagonalOnly.Subscribe(isDiagonalOnly => input.SetDiagonalOnly(isDiagonalOnly));
-
+            input.Bind(
+                isDash: receiver.IsDash,
+                isNoMove: receiver.IsNoMove,
+                isDiagonalOnly: receiver.IsDiagonalOnly
+            );
+            
             receiver.IsNoMove
                 .DistinctUntilChanged()
                 .Where(isNoMove => isNoMove)

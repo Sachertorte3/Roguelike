@@ -1,6 +1,6 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
-using Domain.Model.Setting;
 using R3;
 using Unity.Logging;
 using UnityEngine;
@@ -33,13 +33,6 @@ namespace View
             { "<Gamepad>/buttonNorth", "<Gamepad>/buttonWest" },
         };
 
-        public InputReceiver()
-        {
-            Settings.GlobalSettings.SwapABXY.Value
-                .SubscribeIncludingCurrentValue(ApplyFaceButtonSwap)
-                .AddTo(_disposables);
-        }
-
         public Observable<Vector2> OnMovePerformed =>
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
 
@@ -63,6 +56,7 @@ namespace View
             _actions.Field.Rename.AsObservable().Select(context => Unit.Default);
 
         public Observable<Unit> OnMainMenuOpening => _actions.Field.OpenMainMenu.AsObservable().Select(context => Unit.Default);
+        public Observable<Unit> OnMenuCanceling => _actions.Menu.Cancel.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnMenuClosing => _actions.Menu.Close.AsObservable().Select(context => Unit.Default);
 
         public void Dispose()
@@ -113,9 +107,28 @@ namespace View
             uiModule.move = cache;
         }
 
-        private void ApplyFaceButtonSwap(bool enabled)
+        public void ApplyFaceButtonSwap(bool enabled)
         {
-            foreach (var action in _actions)
+            ApplyFaceButtonSwapToAsset(_actions.asset, enabled);
+
+            var uiAsset = GetUIModuleActionsAssetOrNull();
+            if (enabled && uiAsset == null)
+                throw new InvalidOperationException(
+                    "[Input] SwapABXY is enabled, but EventSystem/InputSystemUIInputModule (or its ActionsAsset) was not found.");
+            if (uiAsset != null && !ReferenceEquals(uiAsset, _actions.asset))
+                ApplyFaceButtonSwapToAsset(uiAsset, enabled);
+        }
+
+        private InputActionAsset? GetUIModuleActionsAssetOrNull()
+        {
+            var es = EventSystem.current;
+            var uiModule = es?.GetComponent<InputSystemUIInputModule>();
+            return uiModule?.actionsAsset;
+        }
+
+        private void ApplyFaceButtonSwapToAsset(InputActionAsset asset, bool enabled)
+        {
+            foreach (var action in asset)
             {
                 for (var i = 0; i < action.bindings.Count; i++)
                 {
@@ -124,13 +137,9 @@ namespace View
                         continue;
 
                     if (enabled)
-                    {
                         action.ApplyBindingOverride(i, new InputBinding { overridePath = swappedPath });
-                    }
                     else
-                    {
                         action.RemoveBindingOverride(i);
-                    }
                 }
             }
         }

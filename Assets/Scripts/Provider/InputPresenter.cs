@@ -1,4 +1,6 @@
 #nullable enable
+using Cysharp.Threading.Tasks;
+using Domain.Model.Setting;
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
@@ -62,7 +64,11 @@ namespace Provider
                 .Subscribe(_ => actionReceiver.SetFaceNearestCharacterInput());
 
             receiver.OnMainMenuOpening.Subscribe(_ => menuController.OpenMeinMenu());
-            receiver.OnMenuClosing.Subscribe(_ => menuController.CloseMenu());
+            receiver.OnMenuCanceling.Subscribe(_ => menuController.CloseMenu());
+            receiver.OnMenuClosing.Subscribe(_ => menuController.CloseAllMenus());
+
+            ApplySwapAfterEventSystemInitialized(receiver);
+    
             menuController.MenuState.Subscribe(menuState =>
             {
                 switch (menuState)
@@ -75,7 +81,6 @@ namespace Provider
                         break;
                 }
             });
-
 
             choiceReceiver.OnShownChoiceWithInfo.Subscribe(async message =>
             {
@@ -102,6 +107,14 @@ namespace Provider
                 textInputReceiver.SetTextInput(text);
                 textInputShown.Value = false;
             });
+        }
+
+        private async UniTaskVoid ApplySwapAfterEventSystemInitialized(InputReceiver receiver)
+        {
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+
+            Settings.GlobalSettings.SwapABXY.Value
+                .SubscribeIncludingCurrentValue(receiver.ApplyFaceButtonSwap);
         }
     }
 }

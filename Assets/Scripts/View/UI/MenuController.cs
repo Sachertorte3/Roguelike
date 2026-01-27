@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +53,17 @@ namespace View.UI
         public void CloseMenu()
         {
             if (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
+            {
+                PopMenu();
+            }
+        }
+
+        public void CloseAllMenus()
+        {
+            if (!_menuStack.Contains(_mainMenu))
+                return;
+
+            while (_menuStack.Count > 0 && _menuStack.Peek().CanClose)
             {
                 PopMenu();
             }

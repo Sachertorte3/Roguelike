@@ -6,6 +6,7 @@ namespace Game
     {
         private bool _isDash;
         private bool _isNoMove;
+        private bool _isDiagonalOnly;
 
         public bool IsDash()
         {
@@ -17,6 +18,11 @@ namespace Game
             return _isNoMove;
         }
 
+        public bool IsDiagonalOnly()
+        {
+            return _isDiagonalOnly;
+        }
+
         public void SetDash(bool isDash)
         {
             _isDash = isDash;
@@ -25,6 +31,11 @@ namespace Game
         public void SetNoMove(bool isNoMove)
         {
             _isNoMove = isNoMove;
+        }
+
+        public void SetDiagonalOnly(bool isDiagonalOnly)
+        {
+            _isDiagonalOnly = isDiagonalOnly;
         }
     }
 }

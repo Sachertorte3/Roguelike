@@ -1,9 +1,10 @@
-﻿#nullable enable
+#nullable enable
 using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
 using IngameDebugConsole;
 using R3;
+using UnityEngine;
 using Utilities;
 using VContainer;
 using View;
@@ -52,6 +53,13 @@ namespace Provider
 
             receiver.IsDash.Subscribe(isDash => input.SetDash(isDash));
             receiver.IsNoMove.Subscribe(isNoMove => input.SetNoMove(isNoMove));
+            receiver.IsDiagonalOnly.Subscribe(isDiagonalOnly => input.SetDiagonalOnly(isDiagonalOnly));
+
+            receiver.IsNoMove
+                .DistinctUntilChanged()
+                .Where(isNoMove => isNoMove)
+                .Where(_ => receiver.MoveVector == Vector2.zero)
+                .Subscribe(_ => actionReceiver.SetFaceNearestCharacterInput());
 
             receiver.OnMainMenuOpening.Subscribe(_ => menuController.OpenMeinMenu());
             receiver.OnMenuClosing.Subscribe(_ => menuController.CloseMenu());
@@ -68,15 +76,6 @@ namespace Provider
                 }
             });
 
-            var disposable = new SerialDisposable();
-            world.OnActiveMapChanged.Subscribe(mapChanged =>
-                disposable.Disposable = receiver.IsNoMove.Subscribe(isNoMove =>
-                {
-                    if (isNoMove)
-                    {
-                        mapChanged.Map.Player.Character.FaceNearestCharacter(mapChanged.Map);
-                    }
-                }));
 
             choiceReceiver.OnShownChoiceWithInfo.Subscribe(async message =>
             {

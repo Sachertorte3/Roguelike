@@ -38,7 +38,6 @@ namespace Domain.Model.Character
             IPassableChecker map);
 
         public bool CanMoveIgnoreEntity(Vector2Int position, Direction8 direction, IPassableChecker map);
-        public void FaceNearestCharacter(IMap map);
         public UniTask ForceMove(Direction8 direction, IInput input);
         public UniTask UseItemOnDeath();
         public UniTask UseLastSkill();

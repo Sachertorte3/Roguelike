@@ -1,4 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Domain.Model.Item;
 using Domain.Service.Action;
 using R3;
@@ -26,6 +26,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<ItemFocus> _onRenameItemActionReceived =
             new(new(0));
 
+        private readonly AsyncReactiveProperty<Unit> _onFaceNearestCharacterActionReceived = new(Unit.Default);
+
         private readonly ReactiveProperty<bool> _enable = new(false);
 
         internal IReadOnlyAsyncReactiveProperty<(Move action, bool isStarted)> OnMoveInputReceived =>
@@ -36,6 +38,7 @@ namespace Domain.Service.Characters.Behavior
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnSwapItemActionReceived => _onSwapItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnRenameItemActionReceived => _onRenameItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<Unit> OnFaceNearestCharacterActionReceived => _onFaceNearestCharacterActionReceived;
         public Observable<Unit> OnActionRead => _onActionRead;
         public ReadOnlyReactiveProperty<bool> IsEnabled => _enable;
 
@@ -73,6 +76,12 @@ namespace Domain.Service.Characters.Behavior
         {
             if (_enable.CurrentValue)
                 _onRenameItemActionReceived.Value = _focus;
+        }
+
+        public void SetFaceNearestCharacterInput()
+        {
+            if (_enable.CurrentValue)
+                _onFaceNearestCharacterActionReceived.Value = Unit.Default;
         }
 
         public void SetItemFocus(ItemFocus focus)

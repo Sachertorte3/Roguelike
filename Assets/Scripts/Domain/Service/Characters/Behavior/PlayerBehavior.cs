@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +36,7 @@ namespace Domain.Service.Characters.Behavior
         private enum InputType
         {
             Move,
+            FaceNearestCharacter,
             UseItem,
             ThrowItem,
             SwapItem,
@@ -79,7 +80,9 @@ namespace Domain.Service.Characters.Behavior
 
                         var destination = character.Entity.CurrentPosition + move.Direction.Vector();
                         var playerEventEntity = map.GetPlayerEventEntityFastAt(destination, EntityLayer.Middle);
-                        if (input.IsNoMove() || character.Status.IsFlagStat(FlagStatType.CannotMove))
+                        if (input.IsNoMove() ||
+                            (input.IsDiagonalOnly() && !move.Direction.IsDiagonal()) ||
+                            character.Status.IsFlagStat(FlagStatType.CannotMove))
                         {
                             character.Turn(move.Direction);
                             var (eventAction, _) = await TryGetPlayerEventAction(character, gameManager, map, playerEventEntity, new Swap(move.Direction));
@@ -105,6 +108,9 @@ namespace Domain.Service.Characters.Behavior
                             if (!anyEventCanExecute && swap.Doable(character, map))
                                 return swap;
                         }
+                        break;
+                    case InputType.FaceNearestCharacter:
+                        character.FaceNearestCharacter(map);
                         break;
                     case InputType.UseItem:
                         var focus = result.focus!;
@@ -229,23 +235,25 @@ namespace Domain.Service.Characters.Behavior
             var cancellationToken = new CancellationTokenSource();
             UniTask<(Move action, bool isStarted)> moveTask =
                 _receiver.OnMoveInputReceived.WaitAsync(cancellationToken.Token);
+            var faceNearestTask = _receiver.OnFaceNearestCharacterActionReceived.WaitAsync(cancellationToken.Token);
             var useItemTask = _receiver.OnUseItemActionReceived.WaitAsync(cancellationToken.Token);
             var throwItemTask = _receiver.OnThrowItemActionReceived.WaitAsync(cancellationToken.Token);
             var swapItemTask = _receiver.OnSwapItemActionReceived.WaitAsync(cancellationToken.Token);
             var doNothingTask = _receiver.OnDoNothingActionReceived.WaitAsync(cancellationToken.Token);
             var renameItemTask = _receiver.OnRenameItemActionReceived.WaitAsync(cancellationToken.Token);
 
-            var tasks = await UniTask.WhenAny(moveTask, useItemTask, throwItemTask, swapItemTask, doNothingTask,
+            var tasks = await UniTask.WhenAny(moveTask, faceNearestTask, useItemTask, throwItemTask, swapItemTask, doNothingTask,
                 renameItemTask);
             cancellationToken.Cancel();
             return tasks.winArgumentIndex switch
             {
                 0 => (InputType.Move, tasks.result1, null),
-                1 => (InputType.UseItem, null, tasks.result2),
-                2 => (InputType.ThrowItem, null, tasks.result3),
-                3 => (InputType.SwapItem, null, tasks.result4),
-                4 => (InputType.DoNothing, null, null),
-                5 => (InputType.RenameItem, null, tasks.result6),
+                1 => (InputType.FaceNearestCharacter, null, null),
+                2 => (InputType.UseItem, null, tasks.result3),
+                3 => (InputType.ThrowItem, null, tasks.result4),
+                4 => (InputType.SwapItem, null, tasks.result5),
+                5 => (InputType.DoNothing, null, null),
+                6 => (InputType.RenameItem, null, tasks.result7),
                 _ => throw new IndexOutOfRangeException()
             };
         }

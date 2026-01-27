@@ -11,7 +11,7 @@
                     "type": "Value",
                     "id": "d010d7ca-dc09-4388-893b-34d631db1407",
                     "expectedControlType": "Vector2",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "interactions": "",
                     "initialStateCheck": true
                 },
@@ -47,6 +47,15 @@
                     "type": "Button",
                     "id": "32ed6e46-825b-4aba-894c-540cb67cd453",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DiagonalOnly",
+                    "type": "Button",
+                    "id": "3b716a0f-6d3d-4325-a5e2-432e2cd90a0e",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -92,7 +101,7 @@
                     "type": "PassThrough",
                     "id": "32bbba20-f3ac-4a57-a03f-87ec521ce02a",
                     "expectedControlType": "Vector2",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "interactions": "",
                     "initialStateCheck": false
                 }
@@ -365,7 +374,7 @@
                 {
                     "name": "",
                     "id": "5c025491-35a7-4e17-9670-087a67bb92a5",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -438,6 +447,28 @@
                     "action": "DoNothing",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "2a63dca8-59e1-4f81-a342-9d8af397d923",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DiagonalOnly",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0ba835c-2b1e-4ddd-92fe-502b26f59fb2",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DiagonalOnly",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

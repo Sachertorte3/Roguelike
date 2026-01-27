@@ -24,8 +24,6 @@ namespace Game
         private readonly World _world;
         private readonly TurnController _turnController;
         private readonly SaveDataManager _saveDataManager;
-        public Func<bool>? IsDash;
-        public Func<bool>? IsNoMove;
         private readonly ChoiceReceiver _choiceReceiver;
         private readonly CharacterSelectReceiver _characterSelectReceiver;
         private readonly TextInputReceiver _textInputReceiver;

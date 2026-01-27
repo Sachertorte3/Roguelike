@@ -97,7 +97,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""d010d7ca-dc09-4388-893b-34d631db1407"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
@@ -133,6 +133,15 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""32ed6e46-825b-4aba-894c-540cb67cd453"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DiagonalOnly"",
+                    ""type"": ""Button"",
+                    ""id"": ""3b716a0f-6d3d-4325-a5e2-432e2cd90a0e"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -178,7 +187,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""type"": ""PassThrough"",
                     ""id"": ""32bbba20-f3ac-4a57-a03f-87ec521ce02a"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 }
@@ -451,7 +460,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5c025491-35a7-4e17-9670-087a67bb92a5"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -524,6 +533,28 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""DoNothing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a63dca8-59e1-4f81-a342-9d8af397d923"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DiagonalOnly"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0ba835c-2b1e-4ddd-92fe-502b26f59fb2"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DiagonalOnly"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -982,6 +1013,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         m_Field_Attack = m_Field.FindAction("Attack", throwIfNotFound: true);
         m_Field_Dash = m_Field.FindAction("Dash", throwIfNotFound: true);
         m_Field_TurnOnly = m_Field.FindAction("TurnOnly", throwIfNotFound: true);
+        m_Field_DiagonalOnly = m_Field.FindAction("DiagonalOnly", throwIfNotFound: true);
         m_Field_SwapItem = m_Field.FindAction("SwapItem", throwIfNotFound: true);
         m_Field_Throw = m_Field.FindAction("Throw", throwIfNotFound: true);
         m_Field_Rename = m_Field.FindAction("Rename", throwIfNotFound: true);
@@ -1089,6 +1121,7 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Field_Attack;
     private readonly InputAction m_Field_Dash;
     private readonly InputAction m_Field_TurnOnly;
+    private readonly InputAction m_Field_DiagonalOnly;
     private readonly InputAction m_Field_SwapItem;
     private readonly InputAction m_Field_Throw;
     private readonly InputAction m_Field_Rename;
@@ -1125,6 +1158,10 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Field/TurnOnly".
         /// </summary>
         public InputAction @TurnOnly => m_Wrapper.m_Field_TurnOnly;
+        /// <summary>
+        /// Provides access to the underlying input action "Field/DiagonalOnly".
+        /// </summary>
+        public InputAction @DiagonalOnly => m_Wrapper.m_Field_DiagonalOnly;
         /// <summary>
         /// Provides access to the underlying input action "Field/SwapItem".
         /// </summary>
@@ -1186,6 +1223,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @TurnOnly.started += instance.OnTurnOnly;
             @TurnOnly.performed += instance.OnTurnOnly;
             @TurnOnly.canceled += instance.OnTurnOnly;
+            @DiagonalOnly.started += instance.OnDiagonalOnly;
+            @DiagonalOnly.performed += instance.OnDiagonalOnly;
+            @DiagonalOnly.canceled += instance.OnDiagonalOnly;
             @SwapItem.started += instance.OnSwapItem;
             @SwapItem.performed += instance.OnSwapItem;
             @SwapItem.canceled += instance.OnSwapItem;
@@ -1227,6 +1267,9 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
             @TurnOnly.started -= instance.OnTurnOnly;
             @TurnOnly.performed -= instance.OnTurnOnly;
             @TurnOnly.canceled -= instance.OnTurnOnly;
+            @DiagonalOnly.started -= instance.OnDiagonalOnly;
+            @DiagonalOnly.performed -= instance.OnDiagonalOnly;
+            @DiagonalOnly.canceled -= instance.OnDiagonalOnly;
             @SwapItem.started -= instance.OnSwapItem;
             @SwapItem.performed -= instance.OnSwapItem;
             @SwapItem.canceled -= instance.OnSwapItem;
@@ -1608,6 +1651,13 @@ public partial class @MyInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTurnOnly(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DiagonalOnly" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDiagonalOnly(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "SwapItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

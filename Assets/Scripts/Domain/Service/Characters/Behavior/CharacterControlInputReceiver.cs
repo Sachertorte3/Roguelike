@@ -15,6 +15,8 @@ namespace Domain.Service.Characters.Behavior
         private readonly AsyncReactiveProperty<ItemFocus>
             _onUseItemActionReceived = new(new(0));
 
+        private readonly AsyncReactiveProperty<ItemFocus> _onItemSelectConfirmReceived = new(new(0));
+
         private readonly AsyncReactiveProperty<ItemFocus> _onThrowItemActionReceived =
             new(new(0));
 
@@ -34,6 +36,7 @@ namespace Domain.Service.Characters.Behavior
             _onMoveInputReceived;
 
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnUseItemActionReceived => _onUseItemActionReceived;
+        internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnItemSelectConfirmReceived => _onItemSelectConfirmReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnThrowItemActionReceived => _onThrowItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<ItemFocus> OnSwapItemActionReceived => _onSwapItemActionReceived;
         internal IReadOnlyAsyncReactiveProperty<Unit> OnDoNothingActionReceived => _onDoNothingActionReceived;
@@ -52,6 +55,12 @@ namespace Domain.Service.Characters.Behavior
         {
             if (_enable.CurrentValue)
                 _onUseItemActionReceived.Value = _focus;
+        }
+
+        public void SetItemSelectConfirmInput()
+        {
+            if (_enable.CurrentValue)
+                _onItemSelectConfirmReceived.Value = _focus;
         }
 
         public void SetThrowInput()

@@ -269,7 +269,7 @@ namespace Domain.Service.Characters.Behavior
             ItemFocus? focus;
             do
             {
-                focus = await _receiver.OnUseItemActionReceived.WaitAsync();
+                focus = await _receiver.OnItemSelectConfirmReceived.WaitAsync();
             } while (!focus.IsOnEmpty && disabledItemIndexes.Contains(focus));
 
             _onSelectedItemSelect.OnNext(Unit.Default);

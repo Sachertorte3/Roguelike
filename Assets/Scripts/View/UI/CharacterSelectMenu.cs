@@ -42,6 +42,10 @@ namespace View.UI
                     {
                         _selectedIndex.Value = index;
                         _characterDemoDisplay.SetTexture(characters[index].textureName);
+                        if (characters[index].usable)
+                            _characterDemoDisplay.SetColor(Color.white);
+                        else
+                            _characterDemoDisplay.SetColor(Color.gray);
                         _infoText.text = characters[index].info;
                     },
                     () => _choicedIndex.Value = index);

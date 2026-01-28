@@ -271,7 +271,10 @@ namespace Domain.Service.Items
             if (!CanSwap(index1, index2))
                 throw new Exception("Can't swap items in storage");
             var item1 = ForceRemove(index1);
-            var item2 = Replace(item1, index2);
+            var adjustedIndex2 = index2;
+            if (index2 > index1)
+                adjustedIndex2--;
+            var item2 = Replace(item1, adjustedIndex2);
             Insert(item2, index1);
         }
 

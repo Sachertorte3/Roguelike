@@ -18,5 +18,10 @@ namespace Provider
             GameLog.OnLogOutput.Subscribe(logView.AddLog).AddTo(_disposables);
             GameLog.OnClear.Subscribe(_ => logView.Clear()).AddTo(_disposables);
         }
+
+        ~LogPresenter()
+        {
+            _disposables.Dispose();
+        }
     }
 }

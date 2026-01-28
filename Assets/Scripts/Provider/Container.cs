@@ -1,6 +1,7 @@
 ﻿using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
+using Provider.Input;
 using Utilities;
 using VContainer;
 using VContainer.Unity;

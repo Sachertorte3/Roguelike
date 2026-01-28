@@ -8,6 +8,7 @@ using Domain.Model.Map;
 using Domain.Service.Events;
 using Domain.Service.Items;
 using Game;
+using Provider.Input;
 using R3;
 using UnityEngine;
 using Utilities;

@@ -4,6 +4,7 @@ using Domain.Model.Entity;
 using Domain.Model.Setting;
 using Domain.Service.Events;
 using Game;
+using Provider.Input;
 using R3;
 using UnityEngine;
 using Utilities;

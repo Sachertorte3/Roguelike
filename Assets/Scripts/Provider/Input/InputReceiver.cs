@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Utilities;
 
-namespace View
+namespace Provider.Input
 {
     public class InputReceiver : IDisposable
     {
@@ -43,6 +43,9 @@ namespace View
 
         public Observable<Unit> OnAttackPerformed =>
             _actions.Field.Attack.AsObservable().Select(context => Unit.Default);
+
+        public Observable<Unit> OnSubmitPerformed =>
+            _actions.UI.Submit.AsObservable().Select(_ => Unit.Default);
 
         public Observable<Unit> OnThrowPerformed => _actions.Field.Throw.AsObservable().Select(context => Unit.Default);
         public Observable<Unit> OnSwapItemPerformed => _actions.Field.SwapItem.AsObservable().Select(context => Unit.Default);
@@ -79,6 +82,7 @@ namespace View
             Log.Info("[Input] Switch input to Menu");
             _actions.Menu.Enable();
             _actions.Field.Disable();
+            _actions.UI.Enable();
             SetMove(_actions.UI.Navigate, ref _uiNavigateRef);
         }
 
@@ -87,6 +91,7 @@ namespace View
             Log.Info("[Input] Switch input to Field");
             _actions.Field.Enable();
             _actions.Menu.Disable();
+            _actions.UI.Disable();
             SetMove(_actions.Field.Navigate, ref _fieldNavigateRef);
         }
 

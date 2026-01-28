@@ -5,6 +5,7 @@ using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
 using IngameDebugConsole;
+using Provider.Input;
 using R3;
 using UnityEngine;
 using Utilities;
@@ -45,6 +46,8 @@ namespace Provider
             inventoryView.Focus.Subscribe(focus =>
                 actionReceiver.SetItemFocus(focus.ToItemFocus()));
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
+            receiver.OnSubmitPerformed
+                .Subscribe(_ => actionReceiver.SetItemSelectConfirmInput());
             receiver.OnThrowPerformed.Subscribe(_ => actionReceiver.SetThrowInput());
             receiver.OnSwapItemPerformed.Subscribe(_ => actionReceiver.SetDropInput());
             receiver.OnDoNothingPerformed.Subscribe(_ => actionReceiver.SetDoNothingInput());

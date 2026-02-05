@@ -16,6 +16,10 @@ namespace Domain.Model.Item
         public bool IsShiny;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
+        public bool UseCustomBasePrice = false;
+        [ShowIf(nameof(UseCustomBasePrice))]
+        [MinValue(0)]
+        public int CustomBasePrice = 0;
         [MinValue(1)] public int Power;
         [Required] public IconSerializable ProjectileIcon;
         [SerializeField] private List<StringSerializableItemFeature> _features;

@@ -2,12 +2,14 @@
 using System.Linq;
 using Domain.Model;
 using Domain.Model.Character;
+using Domain.Model.Character.Status;
 using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Model.Map;
 using Game;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using Utilities;
 using VContainer;
 using View.UI;
@@ -27,27 +29,24 @@ namespace Provider
                 {
                     var map = mapChanged.Map;
                     var inventory = map.Player.Character.Inventory;
+
+                    if (map.Shop != null)
+                    {
+                        map.Shop.IsInside
+                            .DistinctUntilChanged()
+                            .Subscribe(_ => ReplaceAllItemViews(inventoryView, map))
+                            .AddTo(_disposables);
+                    }
+
                     inventoryView.Reset(
                         inventory.AllItems.Select(
-                            item => new ItemViewData(
-                                item.GetName(map.Player, map.ItemPlaceholders),
-                                item.CanActivateWhenUsed,
-                                item.Icon,
-                                true,
-                                item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                                item.IsCursed,
-                                item.IsShiny,
-                                map.Player.Character.IsKnownItem(item),
-                                item.IsCurseIdentified,
-                                item.Info(map.Player, map.ItemPlaceholders)
-                            )
+                            item => BuildItemViewData(map, item, canSelect: true)
                         ).ToList(),
                         mapChanged.IsNewWorld);
 
                     inventory.OnItemInserted.Subscribe(inserted =>
                     {
-                        InsertItemView(inventoryView, inserted.NewItem, inventory.CanRemoveItem, inserted.Index,
-                            map.Player, map.ItemPlaceholders);
+                        InsertItemView(inventoryView, map, inserted.NewItem, inventory.CanRemoveItem, inserted.Index);
                     }).AddTo(_disposables);
 
                     inventory.OnItemRemoved.Subscribe(removed =>
@@ -57,8 +56,7 @@ namespace Provider
 
                     inventory.OnItemReplaced.Subscribe(replaced =>
                     {
-                        ReplaceItemView(inventoryView, replaced.NewItem, inventory.CanRemoveItem, replaced.Index,
-                            map.Player, map.ItemPlaceholders);
+                        ReplaceItemView(inventoryView, map, replaced.NewItem, inventory.CanRemoveItem, replaced.Index);
                     }).AddTo(_disposables);
 
                     inventory.OnItemUpdated.Subscribe(itemUpdated =>
@@ -66,8 +64,7 @@ namespace Provider
                         var index = inventory.GetItemIndex(itemUpdated.Item);
                         if (index == null)
                             return;
-                        ReplaceItemView(inventoryView, itemUpdated.Item, inventory.CanRemoveItem, index.Value,
-                            map.Player, map.ItemPlaceholders);
+                        ReplaceItemView(inventoryView, map, itemUpdated.Item, inventory.CanRemoveItem, index.Value);
                     }).AddTo(_disposables);
 
                     gameManager.OnTurnChanged.Subscribe(_ =>
@@ -94,28 +91,16 @@ namespace Provider
             var inventory = map.Player.Character.Inventory;
             foreach (var (item, index) in inventory.AllItemsWithIndex)
             {
-                ReplaceItemView(inventoryView, item, inventory.CanRemoveItem, index, map.Player, map.ItemPlaceholders);
+                ReplaceItemView(inventoryView, map, item, inventory.CanRemoveItem, index);
             }
             UpdateGroundItemView(inventoryView, map);
         }
 
-        private void InsertItemView(InventoryView inventoryView, IItem item, bool canSelect,
-            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void InsertItemView(InventoryView inventoryView, IMap map, IItem item, bool canSelect, int index)
         {
             inventoryView.Insert(
                 index,
-                new ItemViewData(
-                    item.GetName(player, itemPlaceholders),
-                    item.CanActivateWhenUsed,
-                    item.Icon,
-                    canSelect,
-                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                    item.IsCursed,
-                    item.IsShiny,
-                    player.Character.IsKnownItem(item),
-                    item.IsCurseIdentified,
-                    item.Info(player, itemPlaceholders)
-                )
+                BuildItemViewData(map, item, canSelect)
             );
         }
 
@@ -124,23 +109,11 @@ namespace Provider
             inventoryView.Remove(index);
         }
 
-        private void ReplaceItemView(InventoryView inventoryView, IItem item, bool canSelect,
-            int index, IPlayer player, ItemPlaceholders itemPlaceholders)
+        private void ReplaceItemView(InventoryView inventoryView, IMap map, IItem item, bool canSelect, int index)
         {
             inventoryView.Replace(
                 index,
-                new ItemViewData(
-                    item.GetName(player, itemPlaceholders),
-                    item.CanActivateWhenUsed,
-                    item.Icon,
-                    canSelect,
-                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                    item.IsCursed,
-                    item.IsShiny,
-                    player.Character.IsKnownItem(item),
-                    item.IsCurseIdentified,
-                    item.Info(player, itemPlaceholders)
-                )
+                BuildItemViewData(map, item, canSelect)
             );
         }
 
@@ -155,18 +128,45 @@ namespace Provider
             if (item == null)
                 inventoryView.UpdateGroundItem(null);
             else
-                inventoryView.UpdateGroundItem(new ItemViewData(
-                    item.GetName(map.Player, map.ItemPlaceholders),
-                    item.CanActivateWhenUsed,
-                    item.Icon,
-                    true,
-                    item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
-                    item.IsCursed,
-                    item.IsShiny,
-                    map.Player.Character.IsKnownItem(item),
-                    item.IsCurseIdentified,
-                    item.Info(map.Player, map.ItemPlaceholders)
-                ));
+                inventoryView.UpdateGroundItem(BuildItemViewData(map, item, canSelect: true));
+        }
+
+        private ItemViewData BuildItemViewData(IMap map, IItem item, bool canSelect)
+        {
+            var baseName = item.GetName(map.Player, map.ItemPlaceholders);
+            var name = baseName + GetShopPriceSuffix(map, item);
+            return new ItemViewData(
+                name,
+                item.CanActivateWhenUsed,
+                item.Icon,
+                canSelect,
+                item.HasActivatableSkill ? item.RemainingUses.CurrentValue : null,
+                item.IsCursed,
+                item.IsShiny,
+                map.Player.Character.IsKnownItem(item),
+                item.IsCurseIdentified,
+                item.Info(map.Player, map.ItemPlaceholders)
+            );
+        }
+
+        private string GetShopPriceSuffix(IMap map, IItem item)
+        {
+            if (map.Shop == null || !map.Shop.IsInside.CurrentValue)
+                return "";
+
+            var basePrice = item.GetPrice(map.MarketPriceTable);
+            if (item.State == ItemState.ShopItem)
+            {
+                var purchasePrice = map.Player.Character.Status.IsFlagStat(FlagStatType.Negotiator)
+                    ? Mathf.RoundToInt(basePrice / 2f)
+                    : basePrice;
+                return $"\n<color=green>{purchasePrice}G</color>";
+            }
+            else
+            {
+                var salePrice = Mathf.RoundToInt(basePrice / 2f);
+                return $"\n<color=blue>{salePrice}G</color>";
+            }
         }
     }
 }

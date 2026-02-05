@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +38,7 @@ namespace Game
         public MapType Type => _dungeonData.Type;
         public ItemDatabase ItemDatabase => _dungeonData.ItemDatabase;
         public ItemPlaceholders ItemPlaceholders { get; init; }
+        public ItemMarketPriceTable MarketPriceTable { get; init; }
         private readonly CompositeDisposable _disposables = new();
         private readonly ITilemap _tilemap;
         private DungeonMapData _dungeonData;
@@ -51,10 +52,11 @@ namespace Game
         private readonly IGameManager _gameManager;
         public EntityManager EntityManager { get; init; }
 
-        public MapManager(MapMemento map, DungeonMapData data, PlayerData playerData, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
+        public MapManager(MapMemento map, DungeonMapData data, PlayerData playerData, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders, ItemMarketPriceTable marketPriceTable)
         {
             Id = map.Id;
             ItemPlaceholders = itemPlaceholders;
+            MarketPriceTable = marketPriceTable;
             _gameManager = gameManager;
 
             var playerPosition = map.RandomBlankPosition;
@@ -114,10 +116,11 @@ namespace Game
 
         public MapManager(MapMemento map, DungeonMapData data, PlayerMemento playerMemento,
             List<CharacterMemento> partyMembers,
-            Vector2Int? playerPosition, bool resetPertyPositions, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders)
+            Vector2Int? playerPosition, bool resetPertyPositions, IGameManager gameManager, CharacterControlInputReceiver receiver, ItemPlaceholders itemPlaceholders, ItemMarketPriceTable marketPriceTable)
         {
             Id = map.Id;
             ItemPlaceholders = itemPlaceholders;
+            MarketPriceTable = marketPriceTable;
             _gameManager = gameManager;
 
             if (playerPosition == null)

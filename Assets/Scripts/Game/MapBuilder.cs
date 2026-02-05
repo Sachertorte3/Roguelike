@@ -15,6 +15,7 @@ using Domain.Service.Rooms;
 using RandomDungeonWithBluePrint;
 using Unity.Logging;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Utilities;
 using Utilities.Serialize.Option;
 using Random = UnityEngine.Random;
@@ -23,6 +24,7 @@ namespace Game
 {
     public class MapBuilder
     {
+        private readonly ItemMarketPriceTable _marketPriceTable;
         private readonly Id<IMap> _mapId;
         private readonly TilemapBuilder _tilemap;
         private readonly List<CharacterMemento> _characters = new();
@@ -47,6 +49,8 @@ namespace Game
 
         public MapBuilder(FieldBluePrint bluePrint, float waterChance, DungeonMapData data, Id<IMap> mapId)
         {
+            _marketPriceTable = Addressables.LoadAssetAsync<ItemMarketPriceTable>("Assets/Database/ItemData/ItemMarketPriceTable.asset")
+                .WaitForCompletion();
             _tilemap = new TilemapBuilder(data.Type, bluePrint, waterChance);
             _mapId = mapId;
             _blankPositionsInRooms = new Dictionary<Id<Room>, HashSet<Vector2Int>>();
@@ -267,7 +271,7 @@ namespace Game
                 homeLocation: new Location(_mapId, clerkPosition));
             _characters.Add(clerk);
 
-            return Shop.Build(_tilemap.GetRoom(roomId), new Id<IEntity>(clerk.Entity.Id), _items.ToList());
+            return Shop.Build(_tilemap.GetRoom(roomId), new Id<IEntity>(clerk.Entity.Id), _items.ToList(), _marketPriceTable);
         }
 
         private RoomMemento? CreateMonsterHouse(DungeonMapData data, Id<Room> roomId)

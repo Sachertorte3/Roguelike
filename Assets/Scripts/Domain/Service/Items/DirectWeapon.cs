@@ -279,6 +279,8 @@ namespace Domain.Service.Items
                     baseName: data.name,
                     icon: data.Icon,
                     isShiny: data.IsShiny,
+                    rarity: data.Rarity,
+                    customBasePrice: data.UseCustomBasePrice ? data.CustomBasePrice : null,
                     additionalPrice: 0,
                     multiplyPrice: multiplyPrice,
                     state: state,

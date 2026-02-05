@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,7 @@ using Domain.Model;
 using Domain.Model.Character;
 using Domain.Model.Dungeon;
 using Domain.Model.Entity;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Domain.Model.Memento;
 using Domain.Service.Characters.Behavior;
@@ -29,6 +30,7 @@ namespace Game
         private Dungeon _dungeon;
         private ItemPlaceholders _itemPlaceholders;
         private Placeholders _placeholders;
+        private ItemMarketPriceTable _marketPriceTable;
         private CharacterControlInputReceiver _receiver;
 
         [Inject]
@@ -36,6 +38,8 @@ namespace Game
         {
             _receiver = receiver;
             _placeholders = Addressables.LoadAssetAsync<Placeholders>("Assets/Database/ItemData/Placeholders.asset")
+                .WaitForCompletion();
+            _marketPriceTable = Addressables.LoadAssetAsync<ItemMarketPriceTable>("Assets/Database/ItemData/ItemMarketPriceTable.asset")
                 .WaitForCompletion();
             _activeMap.SkipLatestValueOnSubscribe().Pairwise().Subscribe(map =>
             {
@@ -149,7 +153,7 @@ namespace Game
             var mapMemento = GetMapMemento(memento.CurrentMapId);
 
             MapManager map = new(mapMemento,
-                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders);
+                GetDungeonMapData(memento.CurrentMapId), memento.Player, memento.PartyMembers, memento.Player.Character.Entity.Position, false, gameManager, _receiver, _itemPlaceholders, _marketPriceTable);
 
             SetActiveMap(map, isNewWorld);
 
@@ -166,7 +170,7 @@ namespace Game
             Log.Debug($"LoadMap mapId:{mapId}");
             var mapMemento = GetMapMemento(mapId);
 
-            var map = new MapManager(mapMemento, _dungeon.CreateMapData(mapId), playerData, gameManager, _receiver, _itemPlaceholders);
+            var map = new MapManager(mapMemento, _dungeon.CreateMapData(mapId), playerData, gameManager, _receiver, _itemPlaceholders, _marketPriceTable);
 
             SetActiveMap(map, true);
 
@@ -193,7 +197,7 @@ namespace Game
             }
 
             var map = new MapManager(mapMemento, _dungeon.CreateMapData(mapId), playerData,
-                partyMembers, initialPosition, true, gameManager, _receiver, _itemPlaceholders);
+                partyMembers, initialPosition, true, gameManager, _receiver, _itemPlaceholders, _marketPriceTable);
 
             SetActiveMap(map, false);
 

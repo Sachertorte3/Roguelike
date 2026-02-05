@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Sirenix.OdinInspector;
 using Utilities;
@@ -9,16 +9,16 @@ namespace Domain.Model.Condition
     public class RemovalConditionData
     {
         public bool RemoveByElapsedTurn;
-        [ShowIf("@RemoveByElapsedTurn")] public int Duration;
+        [ShowIf("@" + nameof(RemoveByElapsedTurn))] public int Duration;
         public bool RemoveByDamage;
 
-        [ShowIf("@RemoveByDamage")]
+        [ShowIf("@" + nameof(RemoveByDamage))]
         [Range(0, 1)]
         public float Probability;
 
         public bool RemoveByCharacterNearby;
 
-        [ShowIf("@RemoveByCharacterNearby")]
+        [ShowIf("@" + nameof(RemoveByCharacterNearby))]
         [Range(0, 1)]
         public float CharacterNearbyProbability;
 

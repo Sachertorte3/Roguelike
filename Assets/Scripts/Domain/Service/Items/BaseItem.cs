@@ -28,8 +28,10 @@ namespace Domain.Service.Items
         public Id<IItem> Id { get; private set; }
         public string BaseName { get; private set; }
         public Option<string> CustomName { get; private set; }
+        public Rarity Rarity { get; private set; }
         public Sprite Icon { get; private set; }
         public bool IsShiny { get; private set; }
+        private Option<int> _customBasePrice { get; init; }
         public int _additionalPrice { get; private set; }
         public float _multiplyPrice { get; private set; }
         public ItemState State { get; private set; }
@@ -70,7 +72,7 @@ namespace Domain.Service.Items
             else
                 return $" {UpgradeCount}";
         }
-        public int Price => Mathf.RoundToInt(EvaluatePrice());
+        public int GetPrice(ItemMarketPriceTable market) => Mathf.RoundToInt(EvaluatePrice(market));
         public bool HasActivatableSkillWhenUsed => SkillOnUse.HasValue;
         public bool HasActivatableSkillWhenThrown => SkillOnThrow.HasValue;
         public bool CanActivateWhenUsed => SkillOnUse.HasValue
@@ -104,8 +106,10 @@ namespace Domain.Service.Items
             Id = baseItem.Id;
             BaseName = baseItem.BaseName;
             CustomName = baseItem.CustomName;
+            Rarity = baseItem.Rarity;
             Icon = baseItem.Icon;
             IsShiny = baseItem.IsShiny;
+            _customBasePrice = baseItem.CustomBasePrice;
             _additionalPrice = baseItem.AdditionalPrice;
             _multiplyPrice = baseItem.MultiplyPrice;
             State = baseItem.State;
@@ -126,6 +130,8 @@ namespace Domain.Service.Items
                 id: Id,
                 baseName: BaseName,
                 customName: CustomName,
+                rarity: Rarity,
+                customBasePrice: _customBasePrice,
                 icon: Icon,
                 isShiny: IsShiny,
                 additionalPrice: _additionalPrice,
@@ -146,6 +152,8 @@ namespace Domain.Service.Items
             string baseName,
             Sprite icon,
             bool isShiny,
+            Rarity rarity,
+            int? customBasePrice,
             int additionalPrice,
             float multiplyPrice,
             ItemState state,
@@ -162,6 +170,8 @@ namespace Domain.Service.Items
                 id: Id<IItem>.Generate(),
                 baseName: baseName,
                 customName: Option<string>.None,
+                rarity: rarity,
+                customBasePrice: customBasePrice.ToOption(),
                 icon: icon,
                 isShiny: isShiny,
                 additionalPrice: additionalPrice,
@@ -354,14 +364,38 @@ namespace Domain.Service.Items
             return price;
         }
 
-        public float EvaluatePrice()
+        public float EvaluateEvaluatedPrice()
         {
             var priceOnUse = SkillOnUse.MapOr(0, skill => skill.EvaluatePrice()) * (UseOnDeath ? 5 : 1);
             var priceOnThrow = SkillOnThrow.MapOr(0, skill => skill.EvaluatePrice()) *
                                CommonSenseParameters.ProjectileImpactHitProbability;
-            var price = Mathf.Max(priceOnUse, priceOnThrow) * (_remainingUsages.CurrentValue + MaxUsages) / 2 * Mathf.Max(UsageLossChance, 0.1f);
+            var basePrice = Mathf.Max(priceOnUse, priceOnThrow);
+            
+            var usageMultiplier = (_remainingUsages.CurrentValue + MaxUsages) / 2 / Mathf.Max(UsageLossChance, 0.1f);
+            
+            var price = basePrice * usageMultiplier;
             price += _additionalPrice;
             price += _conditions.Sum(condition => condition.EvaluatePrice()) * 100;
+            if (IsCursed)
+            {
+                price *= 0.8f;
+            }
+
+            price *= _multiplyPrice;
+
+            return price;
+        }
+
+        public float EvaluatePrice(ItemMarketPriceTable market)
+        {
+            var basePrice = _customBasePrice
+                .Map(customBasePrice => (float)customBasePrice)
+                .UnwrapOr(() => market.GetBasePrice(Category, Rarity));
+
+            var usagesMultiplier = (_remainingUsages.CurrentValue + MaxUsages) / Mathf.Max(1, MaxUsages) / 2;
+
+            var price = basePrice * usagesMultiplier;
+            price += _additionalPrice;
             if (IsCursed)
             {
                 price *= 0.8f;
@@ -504,7 +538,6 @@ namespace Domain.Service.Items
                 info += $" ({_remainingUsages.CurrentValue}/{MaxUsages})";
             }
             info += "\n";
-            info += $"{Price}Gの価値がある\n";
             if (UpgradeCount > 0)
                 info += $"それは{UpgradeCount}/{UpgradeLimit}回強化されている\n";
             info += CursedInfo();

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Domain.Model.Item;
 
 namespace Domain.Model.Character
@@ -15,6 +15,6 @@ namespace Domain.Model.Character
         public void AddOrNot(IItem? item);
         public bool CanReplaceOrRemove(IItem? item, int index);
         public IItem ReplaceOrRemove(IItem? item, int index);
-        public void Sort(InventorySortingMode sortingMode);
+        public void Sort(InventorySortingMode sortingMode, ItemMarketPriceTable market);
     }
 }

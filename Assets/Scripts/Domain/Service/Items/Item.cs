@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,6 +148,8 @@ namespace Domain.Service.Items
                     baseName: data.name,
                     icon: data.Icon,
                     isShiny: data.IsShiny,
+                    rarity: data.Rarity,
+                    customBasePrice: data.UseCustomBasePrice ? data.CustomBasePrice : null,
                     additionalPrice: data.AdditionalPrice,
                     multiplyPrice: data.MultiplyPrice,
                     state: state,

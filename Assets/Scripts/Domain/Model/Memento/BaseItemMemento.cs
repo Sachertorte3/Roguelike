@@ -19,6 +19,8 @@ namespace Domain.Model.Memento
         public Id<IItem> Id => new Id<IItem>(_id);
         [field: SerializeField] public string BaseName { get; private set; }
         [field: SerializeField] public Option<string> CustomName { get; private set; }
+        [field: SerializeField] public Rarity Rarity { get; private set; }
+        [field: SerializeField] public Option<int> CustomBasePrice { get; private set; }
         [SerializeField] private string _iconName;
         public Sprite Icon => ObjectLoader.LoadIcon(_iconName);
         [field: SerializeField] public bool IsShiny { get; private set; }
@@ -39,6 +41,8 @@ namespace Domain.Model.Memento
             Id<IItem> id,
             string baseName,
             Option<string> customName,
+            Rarity rarity,
+            Option<int> customBasePrice,
             Sprite icon,
             bool isShiny,
             int additionalPrice,
@@ -57,6 +61,8 @@ namespace Domain.Model.Memento
             _id = id.ToString();
             BaseName = baseName;
             CustomName = customName;
+            Rarity = rarity;
+            CustomBasePrice = customBasePrice;
             _iconName = icon.name;
             IsShiny = isShiny;
             AdditionalPrice = additionalPrice;
@@ -77,6 +83,8 @@ namespace Domain.Model.Memento
             Id<IItem>? id = null,
             string? baseName = null,
             Option<string>? customName = null,
+            Rarity? rarity = null,
+            Option<int>? customBasePrice = null,
             Sprite? icon = null,
             bool? isShiny = null,
             int? additionalPrice = null,
@@ -96,6 +104,8 @@ namespace Domain.Model.Memento
                 id ?? Id,
                 baseName ?? BaseName,
                 customName ?? CustomName,
+                rarity ?? Rarity,
+                customBasePrice ?? CustomBasePrice,
                 icon ?? Icon,
                 isShiny ?? IsShiny,
                 additionalPrice ?? AdditionalPrice,

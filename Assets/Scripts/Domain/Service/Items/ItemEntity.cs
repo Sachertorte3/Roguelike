@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Cysharp.Threading.Tasks;
 using Domain.Model.Character;
 using Domain.Model.Effect;

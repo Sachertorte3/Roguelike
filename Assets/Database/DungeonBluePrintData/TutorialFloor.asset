@@ -16,7 +16,7 @@ MonoBehaviour:
   ShinyChance: 0
   SleepChance: 0.75
   MimicChance: 0
-  ShopChance: 0
+  ShopChance: 1
   MonsterHouseChance: 0
   RestRoomChance: 0
   LakeChance: 0

@@ -162,7 +162,7 @@ namespace Provider
 
         private void SortInventory(InventorySortingMode sortingMode)
         {
-            _world.CurrentMap.Player.Character.Inventory.Sort(sortingMode);
+            _world.CurrentMap.Player.Character.Inventory.Sort(sortingMode, _world.CurrentMap.MarketPriceTable);
         }
     }
 }

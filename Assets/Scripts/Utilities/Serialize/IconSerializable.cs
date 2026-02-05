@@ -10,7 +10,7 @@ namespace Utilities.Serialize
     {
         [Required]
         [ShowInInspector]
-        [OnValueChanged("OnValidate")]
+        [OnValueChanged(nameof(OnValidate))]
         private Sprite _value;
 
         [ReadOnly][SerializeField] private string _name;

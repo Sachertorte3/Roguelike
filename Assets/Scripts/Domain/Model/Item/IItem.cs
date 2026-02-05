@@ -12,6 +12,7 @@ using R3;
 using UnityEngine;
 using Utilities;
 using Utilities.Serialize.Option;
+using Domain.Model.Item;
 
 namespace Domain.Model.Item
 {
@@ -28,7 +29,7 @@ namespace Domain.Model.Item
         public bool IsShiny { get; }
         public ItemState State { get; }
         public bool UseOnDeath { get; }
-        public int Price { get; }
+        public int GetPrice(ItemMarketPriceTable market);
         public bool HasActivatableSkillWhenUsed { get; }
         public bool HasActivatableSkillWhenThrown { get; }
         public bool CanActivateWhenUsed { get; }

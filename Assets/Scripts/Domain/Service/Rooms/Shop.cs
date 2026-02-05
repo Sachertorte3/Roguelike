@@ -55,7 +55,7 @@ namespace Domain.Service.Rooms
             _shopItems = data.Items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
         }
 
-        public static ShopMemento Build(RectInt rect, Id<IEntity> clerkId, List<ItemEntityMemento> items)
+        public static ShopMemento Build(RectInt rect, Id<IEntity> clerkId, List<ItemEntityMemento> items, ItemMarketPriceTable market)
         {
             return new ShopMemento
             (
@@ -72,7 +72,7 @@ namespace Domain.Service.Rooms
                     return new ShopItemMemento
                     (
                         item.Id,
-                        item.Price
+                        item.GetPrice(market)
                     );
                 }).ToList(),
                 false
@@ -104,9 +104,9 @@ namespace Domain.Service.Rooms
             return map.Items.In(Rect.RectRange()).Select(item => item.Item);
         }
 
-        private void SetShopItems(IEnumerable<IItem> items)
+        private void SetShopItems(IMap map, IEnumerable<IItem> items)
         {
-            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.Price)).ToHashSet();
+            _shopItems = items.Select(item => new ShopItemCache(item.Id, item.GetPrice(map.MarketPriceTable))).ToHashSet();
             foreach (var item in items)
             {
                 item.SetState(ItemState.ShopItem);
@@ -132,7 +132,7 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetMissingItems(IMap map)
         {
             var itemsInRoom = GetItemsInRoom(map).Where(item => item.State == ItemState.ShopItem);
-            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.Price)));
+            var purchaseItems = _shopItems.Except(itemsInRoom.Select(item => new ShopItemCache(item.Id, item.GetPrice(map.MarketPriceTable))));
             return purchaseItems;
         }
 
@@ -150,7 +150,7 @@ namespace Domain.Service.Rooms
         private IEnumerable<ShopItemCache> GetAddedItems(IMap map)
         {
             var saleItems = GetItemsInRoom(map).Where(item => item.State != ItemState.ShopItem);
-            return saleItems.Select(item => new ShopItemCache(item.Id, item.Price));
+            return saleItems.Select(item => new ShopItemCache(item.Id, item.GetPrice(map.MarketPriceTable)));
         }
 
         public int GetSalePrice(IMap map)
@@ -177,7 +177,7 @@ namespace Domain.Service.Rooms
                 }
                 var purchaseItems = GetMissingItems(map);
                 RemoveMark(map, purchaseItems);
-                SetShopItems(GetItemsInRoom(map));
+                SetShopItems(map, GetItemsInRoom(map));
             }
             else
             {

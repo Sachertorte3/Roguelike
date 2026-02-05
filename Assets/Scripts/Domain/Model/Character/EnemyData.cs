@@ -35,16 +35,16 @@ namespace Domain.Model.Character
         public bool IsFlying;
         public bool CanThroughWalls;
         public bool CanMimic;
-        [ShowIf("@CanMimic")] public MimicWeights MimicWeights = new();
+        [ShowIf("@" + nameof(CanMimic))] public MimicWeights MimicWeights = new();
         public bool CanPickUp;
         public bool CanUseItem;
         public List<CharacterSkillWithRuleData> Skills;
         public bool HasLastSkill;
-        [ShowIf("@HasLastSkill")] public SkillData LastSkill;
+        [ShowIf("@" + nameof(HasLastSkill))] public SkillData LastSkill;
         public SerializableDictionary<Element, float> ElementDamageRateMultiplier;
         public SerializableDictionary<ConditionTemplate, float> ConditionResistance;
         [Range(0, 1)] public float DropItemRate;
-        [ShowIf("@DropItemRate > 0")] public Table<ItemData> DropItemTable;
+        [ShowIf("@" + nameof(DropItemRate) + " > 0")] public Table<ItemData> DropItemTable;
 #if UNITY_EDITOR
         private void OnValidate()
         {

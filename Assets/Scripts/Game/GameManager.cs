@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -359,7 +359,7 @@ namespace Game
             score += player.Money.CurrentValue;
             foreach (var item in player.Character.Inventory.AllItems)
             {
-                score += item.Price;
+                score += item.GetPrice(_world.CurrentMap.MarketPriceTable);
             }
             return score;
         }

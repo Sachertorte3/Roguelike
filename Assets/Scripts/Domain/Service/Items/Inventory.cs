@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +114,7 @@ namespace Domain.Service.Items
             _itemDisposables.Clear();
         }
 
-        public void Sort(InventorySortingMode sortingMode)
+        public void Sort(InventorySortingMode sortingMode, ItemMarketPriceTable market)
         {
             if (sortingMode == InventorySortingMode.None)
                 return;
@@ -126,7 +126,7 @@ namespace Domain.Service.Items
             var sortedItems = sortingMode switch
             {
                 InventorySortingMode.ByCategory => items.OrderBy(item => ((BaseItem)item).Category).ThenBy(item => item.BaseName).ToList(),
-                InventorySortingMode.ByPrice => items.OrderBy(item => item.Price).ThenBy(item => ((BaseItem)item).Category).ToList(),
+                InventorySortingMode.ByPrice => items.OrderBy(item => item.GetPrice(market)).ThenBy(item => ((BaseItem)item).Category).ToList(),
                 _ => items
             };
 

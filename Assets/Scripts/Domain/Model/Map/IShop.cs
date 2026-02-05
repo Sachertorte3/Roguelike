@@ -1,8 +1,7 @@
 #nullable enable
-using Domain.Model.Map;
 using R3;
 
-namespace Domain.Service.Rooms
+namespace Domain.Model.Map
 {
     public interface IShop
     {

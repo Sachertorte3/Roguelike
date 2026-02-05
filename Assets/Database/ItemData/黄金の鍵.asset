@@ -16,6 +16,8 @@ MonoBehaviour:
   Icon: {fileID: 93650901, guid: 8194dc449c9e43f4abb1876681ab2524, type: 3}
   IsShiny: 0
   _rarity: 2
+  _useCustomBasePrice: 0
+  CustomBasePrice: 0
   AdditionalPrice: 1000
   MultiplyPrice: 1
   EffectType: 0
@@ -32,6 +34,7 @@ MonoBehaviour:
     <Effects>k__BackingField: []
     <Repeats>k__BackingField: 1
     <ProbabilityOfSuccess>k__BackingField: 0.95
+    <Cost>k__BackingField: 0
     <RushDistance>k__BackingField: 0
     <BackStepDistance>k__BackingField: 0
     <ChargeTurn>k__BackingField: 0

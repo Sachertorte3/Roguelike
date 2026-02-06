@@ -22,7 +22,7 @@ MonoBehaviour:
   LakeChance: 0.1
   ItemCount: 1.5
   MoneyCount: 1
-  MoneyAverage: 400
+  MoneyAverage: 100
   CharacterCount: 1
   TrapCount: 1
   ChestChance: 0.1

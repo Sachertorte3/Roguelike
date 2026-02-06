@@ -16,7 +16,6 @@ namespace Domain.Model.Item
         [MinValue(0)] public float Wands = 200f;
         [MinValue(0)] public float Weapons = 160f;
         [MinValue(0)] public float Artifacts = 220f;
-        [MinValue(0)] public float Others = 120f;
 
         [Title("Rarity multiplier")]
         [MinValue(0)] public float Common = 1.0f;
@@ -35,7 +34,6 @@ namespace Domain.Model.Item
                 ItemCategory.Wands => Wands,
                 ItemCategory.Weapons => Weapons,
                 ItemCategory.Artifacts => Artifacts,
-                ItemCategory.Others => Others,
                 _ => 0f
             };
         }

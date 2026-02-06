@@ -17,10 +17,9 @@ MonoBehaviour:
   Books: 180
   Wands: 200
   Weapons: 160
-  Artifacts: 220
-  Others: 120
+  Artifacts: 500
   Common: 1
-  Uncommon: 1.4
+  Uncommon: 1.2
   Rare: 2
-  Epic: 2.8
-  Legendary: 4
+  Epic: 3
+  Legendary: 5

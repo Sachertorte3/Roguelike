@@ -232,7 +232,13 @@ namespace Domain.Service.Items
                 }
             }
 
-            var repeat = features.Contains(ItemFeature.DoubleAttack) ? 2 : 1;
+            int repeat;
+            if (features.Contains(ItemFeature.TripleAttack))
+                repeat = 3;
+            else if (features.Contains(ItemFeature.DoubleAttack))
+                repeat = 2;
+            else
+                repeat = 1;
 
             var skillOnUseProbabilityOfSuccess = features.Contains(ItemFeature.GuaranteedHit) ? 1f : features.Contains(ItemFeature.Critical) ? 0.75f : CommonSenseParameters.SkillOnUseProbabilityOfSuccess;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StringSerializableEnum;
+using Utilities;
 using ApplicabilityTag = Domain.Model.Item.FeatureApplicabilityTag;
 
 namespace Domain.Model.Item
@@ -19,13 +20,6 @@ namespace Domain.Model.Item
         Books = 1 << 5,
         Others = 1 << 6,
         All = ~0
-    }
-    public enum FeatureExclusionGroup
-    {
-        None,
-        AttackArea,
-        AttackPosition,
-        AttackElement
     }
     [StringSerializable]
     public enum ItemFeature
@@ -47,6 +41,7 @@ namespace Domain.Model.Item
 
         //Attack Additional
         DoubleAttack,
+        TripleAttack,
         Knockback,
         Critical,
         Dig,
@@ -76,6 +71,36 @@ namespace Domain.Model.Item
     }
     public static class DirectWeaponFeatureExtensions
     {
+        /// <summary> 順序なし。各グループ内のどれか1つしか付けられない。 </summary>
+        private static readonly IReadOnlyList<IReadOnlyList<ItemFeature>> ExclusionGroups = new[]
+        {
+            new[] { ItemFeature.TwoRangeAttack, ItemFeature.FanAttack, ItemFeature.SpinAttack, ItemFeature.Explosive },
+            new[] { ItemFeature.ArcingShot, ItemFeature.Piercing },
+            new[] { ItemFeature.Fire, ItemFeature.Ice, ItemFeature.Thunder, ItemFeature.Light, ItemFeature.Dark },
+        };
+
+        /// <summary> 順序あり（リストの後ろほど上位）。上位を付けると下位は上書きされる。 </summary>
+        private static readonly IReadOnlyList<IReadOnlyList<ItemFeature>> SupersededFeatureGroups = new[]
+        {
+            new[] { ItemFeature.DoubleAttack, ItemFeature.TripleAttack },
+        };
+
+        private static IReadOnlyList<ItemFeature>? GetExclusionGroup(this ItemFeature feature)
+        {
+            return ExclusionGroups.FirstOrDefault(g => g.Contains(feature));
+        }
+
+        private static (IReadOnlyList<ItemFeature> group, int rank)? GetSupersededGroupAndRank(this ItemFeature feature)
+        {
+            foreach (var group in SupersededFeatureGroups)
+            {
+                var idx = group.IndexOf(feature);
+                if (idx >= 0)
+                    return (group, idx);
+            }
+            return null;
+        }
+
         public static string GetName(this ItemFeature feature)
         {
             return feature switch
@@ -93,6 +118,7 @@ namespace Domain.Model.Item
                 ItemFeature.Explosive => "爆発",
 
                 ItemFeature.DoubleAttack => "2回攻撃",
+                ItemFeature.TripleAttack => "3回攻撃",
                 ItemFeature.Knockback => "吹き飛ばし",
                 ItemFeature.Critical => "クリティカル",
                 ItemFeature.Dig => "掘る",
@@ -131,6 +157,7 @@ namespace Domain.Model.Item
                 ItemFeature.Explosive => ApplicabilityTag.RangedWeapons,
 
                 ItemFeature.DoubleAttack => ApplicabilityTag.Weapons,
+                ItemFeature.TripleAttack => ApplicabilityTag.Weapons,
                 ItemFeature.Knockback => ApplicabilityTag.Weapons,
                 ItemFeature.Critical => ApplicabilityTag.Weapons,
                 ItemFeature.Dig => ApplicabilityTag.Weapons,
@@ -152,29 +179,6 @@ namespace Domain.Model.Item
                 _ => throw new Exception("Invalid DirectWeaponFeature")
             };
         }
-        public static FeatureExclusionGroup GetExclusionGroup(this ItemFeature feature)
-        {
-            return feature switch
-            {
-                ItemFeature.TwoRangeAttack => FeatureExclusionGroup.AttackArea,
-                ItemFeature.FanAttack => FeatureExclusionGroup.AttackArea,
-                ItemFeature.SpinAttack => FeatureExclusionGroup.AttackArea,
-
-                ItemFeature.ArcingShot => FeatureExclusionGroup.AttackPosition,
-                ItemFeature.Piercing => FeatureExclusionGroup.AttackPosition,
-
-                ItemFeature.Explosive => FeatureExclusionGroup.AttackArea,
-
-                ItemFeature.Fire => FeatureExclusionGroup.AttackElement,
-                ItemFeature.Ice => FeatureExclusionGroup.AttackElement,
-                ItemFeature.Thunder => FeatureExclusionGroup.AttackElement,
-                ItemFeature.Light => FeatureExclusionGroup.AttackElement,
-                ItemFeature.Dark => FeatureExclusionGroup.AttackElement,
-
-                _ => FeatureExclusionGroup.None,
-            };
-        }
-
         public static bool CanAdd(this IEnumerable<ItemFeature> features, ItemFeature feature, ApplicabilityTag targetApplicability)
         {
             var featureApplicability = feature.GetApplicability();
@@ -183,10 +187,16 @@ namespace Domain.Model.Item
                 return false;
             }
 
-            var group = feature.GetExclusionGroup();
-            if (group != FeatureExclusionGroup.None)
+            var exclusionGroup = feature.GetExclusionGroup();
+            if (exclusionGroup != null)
+                return !features.Any(f => exclusionGroup.Contains(f));
+
+            var superseded = feature.GetSupersededGroupAndRank();
+            if (superseded != null)
             {
-                return !features.Any(f => f.GetExclusionGroup() == group);
+                var (group, myRank) = superseded.Value;
+                var hasHigher = features.Any(f => group.IndexOf(f) is var r && r >= 0 && r > myRank);
+                return !hasHigher;
             }
 
             const int CANNOT_OVERLAP = 1;
@@ -194,7 +204,6 @@ namespace Domain.Model.Item
             var maxOverlap = feature switch
             {
                 ItemFeature.Lunge => CANNOT_OVERLAP,
-                ItemFeature.DoubleAttack => CANNOT_OVERLAP,
                 ItemFeature.Knockback => CANNOT_OVERLAP,
                 ItemFeature.Critical => 4,
                 ItemFeature.Dig => CANNOT_OVERLAP,
@@ -213,17 +222,23 @@ namespace Domain.Model.Item
 
                 ItemFeature.EnhanceDurability => 5,
                 ItemFeature.Artistic => CANNOT_OVERLAP,
-                _ => throw new Exception($"ItemFeature {feature} should have exclusion group or valid overlap count")
+                _ => throw new Exception($"ItemFeature {feature} should belong to ExclusionGroup, SupersededFeatureGroup, or have valid overlap count")
             };
             return sameCount < maxOverlap;
         }
-        private static IOrderedEnumerable<ItemFeature> Merge(this IEnumerable<ItemFeature> features, ItemFeature otherFeatures, ApplicabilityTag targetApplicability)
+        private static IOrderedEnumerable<ItemFeature> Merge(this IEnumerable<ItemFeature> features, ItemFeature otherFeature, ApplicabilityTag targetApplicability)
         {
             var allFeatures = features.ToList();
 
-            if (allFeatures.CanAdd(otherFeatures, targetApplicability))
+            if (allFeatures.CanAdd(otherFeature, targetApplicability))
             {
-                allFeatures.Add(otherFeatures);
+                var superseded = otherFeature.GetSupersededGroupAndRank();
+                if (superseded != null)
+                {
+                    var (group, myRank) = superseded.Value;
+                    allFeatures.RemoveAll(f => group.IndexOf(f) is var r && r >= 0 && r < myRank);
+                }
+                allFeatures.Add(otherFeature);
             }
 
             return allFeatures.OrderBy(f => f);

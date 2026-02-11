@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using Cysharp.Threading.Tasks;
 using Domain.Model.Memento;

@@ -12,7 +12,6 @@ namespace View
     [RequireComponent(typeof(EntityView), typeof(Animator), typeof(ParticleController))]
     public class CharacterView : MonoBehaviour, IDirectional
     {
-        private float _fadeOutMilliseconds = 100;
         private readonly ReactiveProperty<Direction8> _direction = new();
         private Animator _animator;
         [SerializeField] private SpriteRenderer _groupMarker;
@@ -38,11 +37,6 @@ namespace View
         public void SetScale(float value)
         {
             transform.localScale = new Vector3(value, value, 1);
-        }
-
-        public void SetFadeOutMilliseconds(float value)
-        {
-            _fadeOutMilliseconds = value;
         }
 
         public void Turn(Direction8 direction)
@@ -88,12 +82,6 @@ namespace View
             await UniTask.WaitUntil(() => !entityView.IsMoving, cancellationToken: destroyCancellationToken);
             _animator.SetBool("Walk", false);
             _animator.speed = 1;
-        }
-
-        public void FadeOut()
-        {
-            GetComponent<SpriteRenderer>().DOFade(0, _fadeOutMilliseconds / 1000f).SetEase(Ease.InQuad);
-            _groupMarker.DOFade(0, _fadeOutMilliseconds / 1000f).SetEase(Ease.InQuad);
         }
     }
 }

@@ -29,41 +29,50 @@ namespace Provider
                 _disposables.Clear();
 
                 var map = mapChanged.Map;
-                foreach (var stairs in map.Stairs)
+                foreach (var lockedEntity in map.LockedEntities)
                 {
-                    SetLockIcon(characters, iconEntities, map, stairs, stairs.KeyCharacters);
+                    SetLockIcon(characters, iconEntities, map, lockedEntity);
                 }
             });
         }
 
-        private void SetLockIcon(SynchronizedCharacterView characters, SynchronizedIconEntityView iconEntities, MapManager map, IEntity lockedEntity, List<Id<IEntity>> keyCharacterIds)
+        private void SetLockIcon(SynchronizedCharacterView characters, SynchronizedIconEntityView iconEntities, MapManager map, ILockedEntity lockedEntity)
         {
-            var keyCharacters = new ObservableList<ICharacter>(keyCharacterIds
-                                    .Select(keyCharacterId => map.Characters.ById(keyCharacterId))
-                                    .OfType<ICharacter>());
-            if (!keyCharacterIds.Any())
+            if (!lockedEntity.KeyCharacters.Any())
                 return;
             var lockedEntityView = iconEntities.Get(lockedEntity);
             var lockIcon = Object.Instantiate(_lockPrefab, lockedEntityView.transform)
                 .GetComponent<StairsLock>();
             lockIcon.SetVisibility(lockedEntityView.GetComponent<SpriteRenderer>().enabled);
-            lockIcon.SetCount(keyCharacterIds.Count);
+            lockIcon.SetCount(lockedEntity.KeyCharacters.Count);
 
-            foreach (var keyCharacter in keyCharacters)
+            var lockIconDisposables = new CompositeDisposable();
+
+            lockedEntity.Entity.OnDestroyed.Subscribe(_ =>
             {
+                lockIcon.UnLock();
+                lockIconDisposables.Dispose();
+            }).AddTo(lockIconDisposables);
+
+            foreach (var keyCharacterId in lockedEntity.KeyCharacters.ToList())
+            {
+                var keyCharacter = map.Characters.ById(keyCharacterId);
                 var character = characters.Get(keyCharacter);
                 var key = Object.Instantiate(_keyPrefab, character.transform);
                 key.GetComponent<SpriteRenderer>().enabled = character.GetComponent<SpriteRenderer>().enabled;
 
                 keyCharacter.Entity.OnDestroyed.Subscribe(_ => {
-                    keyCharacters.Remove(keyCharacter);
-                    lockIcon.SetCount(keyCharacters.Count);
-                    if (keyCharacters.Count == 0)
+                    lockedEntity.KeyCharacters.Remove(keyCharacterId);
+                    lockIcon.SetCount(lockedEntity.KeyCharacters.Count);
+                    if (lockedEntity.KeyCharacters.Count == 0)
                     {
                         lockIcon.UnLock();
+                        lockIconDisposables.Dispose();
                     }
-                }).AddTo(_disposables);
+                }).AddTo(lockIconDisposables);
             }
+
+            lockIconDisposables.AddTo(_disposables);
         }
     }
 }

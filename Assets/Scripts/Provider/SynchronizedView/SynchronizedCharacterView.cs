@@ -107,12 +107,6 @@ namespace Provider
                 conditionAdded => particleController.Add(conditionAdded.ParticleType),
                 conditionRemoved => particleController.Remove(conditionRemoved.ParticleType)
             ).AddTo(particleController);
-
-            character.Entity.OnDestroyed.Subscribe(_ =>
-            {
-                characterView.FadeOut();
-            }).AddTo(characterView);
-            Settings.GlobalSettings.CharacterFadeOutTime.Value.Subscribe(value => characterView.SetFadeOutMilliseconds(value)).AddTo(characterView);
         }
 
         protected override void CleanupView(ICharacter character, CharacterView characterView)

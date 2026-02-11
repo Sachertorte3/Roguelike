@@ -125,6 +125,14 @@ namespace Game
                     _characters.Add(boss);
                     _keyCharacters.Add(new Id<IEntity>(boss.Entity.Id));
                 }
+                
+                if (data.BossReward.Any())
+                {
+                    var chestPosition = GetRandomBlankPositionInRoom(bossRoom);
+                    var bossItems = data.BossReward.Select(itemData => itemData.Build()).ToList();
+                    
+                    _chests.Add(Chest.Build(bossItems, chestPosition, _keyCharacters));
+                }
             }
 
             foreach (var room in grassRoomIds)

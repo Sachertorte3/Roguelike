@@ -32,12 +32,9 @@ namespace Game
             );
             _characters.SubscribeIncludingCurrentObservables(
                 character => character.Entity.OnDestroyed,
-                async (character, _) =>
+                (character, _) =>
                 {
-                    var eventId = gameManager.StartEvent();
-                    await UniTask.Delay(Settings.GlobalSettings.CharacterFadeOutTime.CurrentValue);
                     RemoveCharacter(character);
-                    gameManager.EndEvent(eventId);
                 }
             );
 

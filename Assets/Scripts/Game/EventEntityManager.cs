@@ -32,6 +32,23 @@ namespace Game
         private ObservableList<IEventEntity> _standaloneEventEntities = new();
         private ObservableList<IPlayerEventEntity> _standalonePlayerEventEntities = new();
         private ObservableList<IScheduledEventEntity> _standaloneScheduledEventEntities = new();
+        
+        public IEnumerable<ILockedEntity> LockedEntities
+        {
+            get
+            {
+                foreach (var stairs in Stairs)
+                {
+                    if (stairs.KeyCharacters.Count > 0)
+                        yield return stairs;
+                }
+                foreach (var chest in _chests)
+                {
+                    if (chest.KeyCharacters.Count > 0)
+                        yield return chest;
+                }
+            }
+        }
 
         public EventEntityManager(EventEntitiesMemento eventEntities)
         {

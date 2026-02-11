@@ -40,6 +40,7 @@ namespace Game
         public IObservableCollection<IPlayerEventEntity> StandalonePlayerEventEntities => EventEntityManager.StandalonePlayerEventEntities;
         public IObservableCollection<IScheduledEventEntity> StandaloneScheduledEventEntities => EventEntityManager.StandaloneScheduledEventEntities;
         public List<Stairs> Stairs => EventEntityManager.Stairs;
+        public IEnumerable<ILockedEntity> LockedEntities => EventEntityManager.LockedEntities;
         public IObservableCollection<ThrowAnimationEntity> ThrowAnimationEntities =>
             ThrowAnimationEntityManager.ThrowAnimationEntities;
         public IObservableCollection<Fire> FireEntities => FireEntityManager.FireEntities;

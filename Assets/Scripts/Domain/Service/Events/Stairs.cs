@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -15,7 +15,7 @@ using Utilities;
 
 namespace Domain.Service.Events
 {
-    public class Stairs : IDisposable, ISerializable<StairsMemento>, IPlayerEventEntity, IMovementEntity
+    public class Stairs : IDisposable, ISerializable<StairsMemento>, IPlayerEventEntity, IMovementEntity, ILockedEntity
     {
         public MovementEntityType Type { get; init; }
         public Id<IMap> Destination { get; init; }

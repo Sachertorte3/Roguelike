@@ -1,5 +1,6 @@
-﻿#nullable enable
+#nullable enable
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Item;
@@ -8,6 +9,7 @@ using RandomDungeonWithBluePrint;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Utilities.Serialize;
 using Utilities.Table;
 
 namespace Domain.Model.Dungeon
@@ -57,6 +59,7 @@ namespace Domain.Model.Dungeon
             var floorData = mapNode.FloorData;
             var enemies = mapNode.Enemies;
             var boss = mapNode.Boss;
+            var bossReward = mapNode.BossReward;
             return new DungeonMapData(
                 Name: name,
                 Depth: mapNode.Depth(mapId),
@@ -94,6 +97,7 @@ namespace Domain.Model.Dungeon
                 MagicPotWeight: floorData.MagicPotWeight,
                 WorkbenchWeight: floorData.WorkbenchWeight,
                 Boss: boss,
+                BossReward: bossReward,
                 Clerk: sectionData.Clerk,
                 Mimic: sectionData.Mimic
             );

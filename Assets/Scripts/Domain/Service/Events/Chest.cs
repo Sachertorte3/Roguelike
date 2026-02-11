@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
 using Domain.Model.Character;
@@ -18,17 +19,19 @@ using Utilities.Serialize.Option;
 
 namespace Domain.Service.Events
 {
-    public class Chest : ISerializable<ChestMemento>, IPlayerEventEntity, IIconEntity
+    public class Chest : ISerializable<ChestMemento>, IPlayerEventEntity, IIconEntity, ILockedEntity
     {
         public EntityBase Entity { get; init; }
-        private Option<IItem> _item;
+        private List<IItem> _items;
         private Option<EnemyData> _mimic;
+        public List<Id<IEntity>> KeyCharacters { get; init; }
 
         public Chest(ChestMemento memento)
         {
-            _item = memento.Item.Map(i => i.Deserialize());
+            _items = memento.Items.Select(i => i.Deserialize()).ToList();
             _mimic = memento.Mimic;
             Entity = new EntityBase(memento.Entity);
+            KeyCharacters = memento.KeyCharacters;
             Events = new List<IPlayerEvent>
             {
                 new PlayerEvent(
@@ -37,8 +40,8 @@ namespace Domain.Service.Events
                     {
                         new(
                             "開ける",
-                            (player, map) => true,
-                            async (gameManager, map) => { await DoEvent(map); }
+                            (player, map) => CanExecuteEvent(map),
+                            async (gameManager, map) => { await DoEvent(gameManager, map); }
                         )
                     }
                 )
@@ -50,21 +53,42 @@ namespace Domain.Service.Events
 
         public IReadOnlyList<IPlayerEvent> Events { get; init; }
 
-        private UniTask DoEvent(IMap map)
+        private bool CanExecuteEvent(IMap map)
+        {
+            return KeyCharacters.All(keyCharacterId => map.Characters.ById(keyCharacterId) == null);
+        }
+
+        private async UniTask DoEvent(IGameManager gameManager, IMap map)
         {
             Entity.Destroy($"は{map.Player.Character.GetName(map.Player)}に開かれた");
-            if (_item.IsSome(out var item))
+
+            IItem? selectedItem = null;
+
+            if (_items.Count > 1)
+            {
+                var choices = _items.Select(item => item.GetName(map.Player, map.ItemPlaceholders)).ToArray();
+                var selectedIndex = await gameManager.GetChoice("報酬を選択してください", choices);
+                if (selectedIndex < 0 || selectedIndex >= _items.Count)
+                    return;
+                selectedItem = _items[selectedIndex];
+            }
+            else if (_items.Count == 1)
+            {
+                selectedItem = _items[0];
+            }
+
+            if (selectedItem != null)
             {
                 if (map.Player.Character.Inventory.CanAddToEmpty())
                 {
-                    map.Player.Character.Inventory.AddToEmpty(item);
+                    map.Player.Character.Inventory.AddToEmpty(selectedItem);
                     GameLog.AddIgnoreVisibility(
-                        $"{map.Player.Character.GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
+                        $"{map.Player.Character.GetName(map.Player)}は{selectedItem.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }
                 else
                 {
-                    GameLog.AddIgnoreVisibility($"{item.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
-                    map.SpawnItem(item, Entity.CurrentPosition);
+                    GameLog.AddIgnoreVisibility($"{selectedItem.GetName(map.Player, map.ItemPlaceholders)}を拾えなかった");
+                    map.SpawnItem(selectedItem, Entity.CurrentPosition);
                 }
             }
             else if (_mimic.IsSome(out var mimic))
@@ -81,8 +105,6 @@ namespace Domain.Service.Events
             {
                 throw new Exception("Chest has no item and mimic");
             }
-
-            return UniTask.CompletedTask;
         }
 
         public void Dispose()
@@ -126,9 +148,10 @@ namespace Domain.Service.Events
         {
             return new ChestMemento
             (
-                _item.Map(i => i.Serialize()),
+                _items.Select(i => i.Serialize()).ToList(),
                 _mimic,
-                Entity.Serialize()
+                Entity.Serialize(),
+                KeyCharacters
             );
         }
 
@@ -152,6 +175,17 @@ namespace Domain.Service.Events
             (
                 mimic,
                 EntityBase.Build(position, EntityLayer.Middle)
+            );
+        }
+
+        public static ChestMemento Build(List<IItemMemento> items, Vector2Int position, List<Id<IEntity>> keyCharacters)
+        {
+            return new ChestMemento
+            (
+                items,
+                Option.None<EnemyData>(),
+                EntityBase.Build(position, EntityLayer.Middle),
+                keyCharacters
             );
         }
     }

@@ -47,6 +47,7 @@ namespace Domain.Model.Dungeon
         float MagicPotWeight,
         float WorkbenchWeight,
         List<EnemyData> Boss,
+        List<IItemData> BossReward,
         EnemyData Clerk,
         EnemyData Mimic
     )

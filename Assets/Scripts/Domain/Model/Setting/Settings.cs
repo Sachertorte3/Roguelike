@@ -92,7 +92,6 @@ namespace Domain.Model.Setting
         public readonly Slider DashMilliseconds = new("ダッシュ時移動時間[ms]", 1, 1000, 20);
         public readonly Slider ThrowMilliseconds = new("吹き飛ばし時間[ms]", 1, 1000, 50);
         public readonly Slider EffectDisplayTime = new("エフェクト表示時間[ms]", 10, 1000, 100);
-        public readonly Slider CharacterFadeOutTime = new("キャラクター消滅時間[ms]", 10, 1000, 100);
         public readonly Slider LogShownMilliSeconds = new("ログ表示時間[ms]", 10, 10000, 5000);
         public readonly Slider DamageTextDisplayTime = new("ダメージテキスト表示時間[ms]", 10, 3000, 500);
         public readonly Slider FlushDuration = new("フラッシュ時間[ms]", 10, 5000, 1000);

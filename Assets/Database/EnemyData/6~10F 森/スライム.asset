@@ -85,9 +85,7 @@ MonoBehaviour:
     data: []
   DropItemRate: 0
   DropItemTable:
-    items:
-    - Item: {fileID: 11400000, guid: fdda1c29a2f3717488d5fad384da5f8f, type: 2}
-      Weight: 1
+    items: []
   references:
     version: 2
     RefIds:

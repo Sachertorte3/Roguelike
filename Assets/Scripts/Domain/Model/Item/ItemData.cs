@@ -26,7 +26,8 @@ namespace Domain.Model.Item
         public bool IsShiny;
         [SerializeField] private Rarity _rarity;
         public Rarity Rarity => _rarity;
-        [ShowIf("@" + nameof(Category) + " != " + nameof(ItemCategory.Others))]
+        private bool IsNotOthersCategory() => Category != ItemCategory.Others;
+        [ShowIf(nameof(IsNotOthersCategory))]
         [SerializeField] private bool _useCustomBasePrice = false;
         public bool UseCustomBasePrice => Category == ItemCategory.Others || _useCustomBasePrice;
         [ShowIf(nameof(UseCustomBasePrice))]
@@ -38,14 +39,17 @@ namespace Domain.Model.Item
         public float MultiplyPrice = 1f;
         public ItemEffectType EffectType = ItemEffectType.SpawnEffect;
 
-        #region spawn effect
+        private bool IsSpawnEffect() => EffectType == ItemEffectType.SpawnEffect;
+        private bool IsItemTarget() => EffectType == ItemEffectType.ItemTarget;
+        private bool IsInventoryTarget() => EffectType == ItemEffectType.InventoryTarget;
 
+        #region spawn effect
         [ShowIf(nameof(SpawnEffectsOnUse))] public bool UseOnDeath;
 
-        [ShowIf("@" + nameof(EffectType) + " == " + nameof(ItemEffectType.SpawnEffect))]
+        [ShowIf(nameof(IsSpawnEffect))]
         public bool SpawnEffectsOnUse = true;
 
-        [ShowIf("@" + nameof(EffectType) + " == " + nameof(ItemEffectType.SpawnEffect))]
+        [ShowIf(nameof(IsSpawnEffect))]
         public bool SpawnEffectsOnThrow;
 
         [ShowIf("@" + nameof(SpawnEffectsOnUse) + " && " + nameof(SpawnEffectsOnThrow) + " && !" + nameof(IsSameSkill))]
@@ -56,20 +60,17 @@ namespace Domain.Model.Item
 
         [ShowIf(nameof(SpawnEffectsOnUse))] public SkillDataOnUse? SkillOnUse;
         [ShowIf(nameof(SpawnEffectsOnThrow))] public SkillDataOnThrow? SkillOnThrow;
-
         #endregion
 
         #region item target
-
-        [ShowIf("@" + nameof(EffectType) + " == " + nameof(ItemEffectType.ItemTarget))]
+        [ShowIf(nameof(IsItemTarget))]
         [SerializeReference]
         [Required]
         public IItemEffect? ItemEffect;
-
         #endregion
 
         #region inventory target
-        [ShowIf("@" + nameof(EffectType) + " == " + nameof(ItemEffectType.InventoryTarget))]
+        [ShowIf(nameof(IsInventoryTarget))]
         [SerializeReference]
         [Required]
         public IInventoryEffect? InventoryEffect;

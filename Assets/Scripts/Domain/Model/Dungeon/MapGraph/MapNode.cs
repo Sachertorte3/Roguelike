@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Model.Character;
+using Domain.Model.Item;
 using Domain.Model.Map;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,8 +11,6 @@ using Utilities.Table;
 using XNode;
 using System;
 using Sirenix.Utilities;
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -35,6 +34,10 @@ namespace Domain.Model.Dungeon
         [InfoBox("No enemies spawn on this map.", InfoMessageType.Info, VisibleIf = nameof(_isEnemiesUnconnected))]
         private Table<EnemyData>? _enemies = null;
         public List<EnemyData> Boss;
+        private bool HasBoss => Boss.Count > 0;
+        [ShowIf(nameof(HasBoss))]
+        [SerializeField] private List<ItemDataSerializable> _bossReward;
+        public List<IItemData> BossReward => _bossReward.Select(r => r.Value).ToList();
         public FloorData FloorData;
 
         [Input(ShowBackingValue.Never), SerializeField]
@@ -150,14 +153,22 @@ namespace Domain.Model.Dungeon
             base.Init();
             _sectionData = null;
             _enemies = null;
-            if (!_mapIds.IsNullOrEmpty())
-                return;
-            _mapIds = new string[Repeat];
-            for (int i = 0; i < Repeat; i++)
+            
+            var mapGraph = graph as MapGraph;
+            var existingIds = mapGraph.nodes.OfType<MapNode>()
+                .Where(node => node != this)
+                .SelectMany(node => node._mapIds)
+                .ToHashSet();
+            
+            if (_mapIds.IsNullOrEmpty() || _mapIds.Any(id => existingIds.Contains(id)))
             {
-                _mapIds[i] = Id<IMap>.Generate().ToString();
+                _mapIds = new string[Repeat];
+                for (int i = 0; i < Repeat; i++)
+                {
+                    _mapIds[i] = Id<IMap>.Generate().ToString();
+                }
+                EditorUtility.SetDirty(this);
             }
-            EditorUtility.SetDirty(this);
         }
         private void OnRepeatChanged()
         {

@@ -98,7 +98,16 @@ MonoBehaviour:
     items: []
   Boss:
   - {fileID: 11400000, guid: 94c194319c4806244af0cddd6be62281, type: 2}
-  _bossReward: []
+  _bossReward:
+  - _item: {fileID: 0}
+    _directWeapon: {fileID: 0}
+    _rangedWeapon: {fileID: 11400000, guid: 4f2a1d8d1c8d71943b890fede999c865, type: 2}
+  - _item: {fileID: 11400000, guid: bb246d89a47042443aae9223593825d0, type: 2}
+    _directWeapon: {fileID: 0}
+    _rangedWeapon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: 6d1c3aefd2797974983b12f0273cf0fa, type: 2}
+    _directWeapon: {fileID: 0}
+    _rangedWeapon: {fileID: 0}
   FloorData: {fileID: 11400000, guid: 19f7e11c54a2e08499d59577a26f7f57, type: 2}
   _prevMap: 0
   _nextMap: 0
@@ -1065,7 +1074,16 @@ MonoBehaviour:
     items: []
   Boss:
   - {fileID: 11400000, guid: 9d685bfd79326a549be4c3ac21d101f7, type: 2}
-  _bossReward: []
+  _bossReward:
+  - _item: {fileID: 0}
+    _directWeapon: {fileID: 11400000, guid: e554e921d09e12641b64a9d7d94e8da5, type: 2}
+    _rangedWeapon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: faf68274a43d09847b8dd92f1ba45895, type: 2}
+    _directWeapon: {fileID: 0}
+    _rangedWeapon: {fileID: 0}
+  - _item: {fileID: 11400000, guid: b1e2f102e80ab044e9cd44e032bb9151, type: 2}
+    _directWeapon: {fileID: 0}
+    _rangedWeapon: {fileID: 0}
   FloorData: {fileID: 11400000, guid: 19f7e11c54a2e08499d59577a26f7f57, type: 2}
   _prevMap: 0
   _nextMap: 0
@@ -1584,7 +1602,7 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-  Repeat: 1
+  Repeat: 3
   _sectionData:
     Type: 0
     RoundRoomCorner: 0
@@ -1606,6 +1624,8 @@ MonoBehaviour:
   _isGoal: 0
   _mapIds:
   - 26ec2ad2-5697-4ca4-8e0d-145c5532c1cb
+  - 2a54f96f-4ccd-4489-9547-af905e76e600
+  - d72c1620-6e8c-44e7-a57f-89a95ea04986
 --- !u!114 &761465357129200511
 MonoBehaviour:
   m_ObjectHideFlags: 0

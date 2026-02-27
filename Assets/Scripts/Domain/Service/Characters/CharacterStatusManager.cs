@@ -25,7 +25,6 @@ namespace Domain.Service.Characters
         private readonly CharacterConditions _conditions;
         private readonly Subject<OnDamageReceivedMessage> _onDamageReceived = new();
         private readonly Subject<int> _onHealReceived = new();
-        public IntStat Exp { get; init; }
         public IntResource Hp { get; init; }
         public Stat HpNaturalRecoveryAmount { get; init; }
         public Stat ViewRange { get; init; }
@@ -40,7 +39,6 @@ namespace Domain.Service.Characters
         public CharacterStatusManager(CharacterStatusMemento data, ReadOnlyReactiveProperty<Vector2Int> position,
             ICharacter character, IMap map)
         {
-            Exp = new IntStat(data.Stats.Exp);
             Hp = new IntResource(data.Stats.Hp);
             HpNaturalRecoveryAmount = new Stat(data.Stats.HpNaturalRecoveryAmount);
             ElementAttackMultiplier =
@@ -61,7 +59,6 @@ namespace Domain.Service.Characters
 
         public void Dispose()
         {
-            Exp.Dispose();
             Hp.Dispose();
             HpNaturalRecoveryAmount.Dispose();
             ViewRange.Dispose();
@@ -89,7 +86,6 @@ namespace Domain.Service.Characters
             (
                 new CharacterStatsMemento
                 (
-                    Exp.GetData(),
                     Hp.GetData(),
                     HpNaturalRecoveryAmount.GetData(),
                     ElementAttackMultiplier.ToDictionary(pair => pair.Key, pair => pair.Value.GetData()),
@@ -103,7 +99,6 @@ namespace Domain.Service.Characters
             );
         }
 
-        public ReadOnlyReactiveProperty<int> Level => Exp.IntValue.Select(exp => Mathf.FloorToInt(Mathf.Sqrt(exp / 10)) + 1).DistinctUntilChanged().ToReadOnlyReactiveProperty();
         public ReadOnlyReactiveProperty<int> MaxHp => Hp.Max.IntValue;
         public ReadOnlyReactiveProperty<int> HpValue => Hp.Value;
         public ReadOnlyReactiveProperty<float> WaitTimeValue => WaitTime.Value;
@@ -115,7 +110,6 @@ namespace Domain.Service.Characters
         {
             return type switch
             {
-                StatType.Exp => Exp,
                 StatType.MaxHp => Hp.Max,
                 StatType.HpNaturalRecovery => HpNaturalRecoveryAmount,
                 StatType.ViewRange => ViewRange,
@@ -204,16 +198,6 @@ namespace Domain.Service.Characters
         public Observable<OnDamageReceivedMessage> OnDamageReceived => _onDamageReceived;
         public Observable<int> OnHealReceived => _onHealReceived;
 
-        public void GainExp(int value)
-        {
-            Exp.Add(value);
-        }
-
-        public void LevelUp(int value)
-        {
-            Hp.Max.Add(CommonSenseParameters.AdditionalHpPerLevel * value);
-        }
-
         public int GainHp(float value, bool notifyOnlyActualGain = false)
         {
             var gainValue = Hp.Gain(value);
@@ -232,19 +216,19 @@ namespace Domain.Service.Characters
             return gainValue;
         }
 
-        public async UniTask<int> LoseHp(float value, string causeOfDeathLog, bool notifyOnlyActualLoss = false)
+        public async UniTask<int> LoseHp(float value, string causeOfDeathLog, ICharacter? attacker, bool notifyOnlyActualLoss = false)
         {
             var loseValue = Hp.Lose(value);
             if (notifyOnlyActualLoss)
             {
                 if (loseValue > 0)
                 {
-                    _onDamageReceived.OnNext(new OnDamageReceivedMessage(loseValue, causeOfDeathLog));
+                    _onDamageReceived.OnNext(new OnDamageReceivedMessage(loseValue, causeOfDeathLog, attacker));
                 }
             }
             else
             {
-                _onDamageReceived.OnNext(new OnDamageReceivedMessage(Mathf.RoundToInt(value), causeOfDeathLog));
+                _onDamageReceived.OnNext(new OnDamageReceivedMessage(Mathf.RoundToInt(value), causeOfDeathLog, attacker));
             }
 
             if (loseValue == 0)
@@ -275,7 +259,7 @@ namespace Domain.Service.Characters
             if (HpNaturalRecoveryAmount.CurrentValue > 0)
                 GainHp(HpNaturalRecoveryAmount.CurrentValue, true);
             else
-                await LoseHp(-HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", true);
+                await LoseHp(-HpNaturalRecoveryAmount.CurrentValue, "は毒で死んだ", null, true);
             _conditions.UpdateTurn(characterVisible);
         }
 
@@ -330,7 +314,6 @@ namespace Domain.Service.Characters
             (
                 new CharacterStatsMemento
                 (
-                    exp: new StatData(0, minValue: 0f),
                     hp: new ResourceData(new StatData(maxHp, minValue: 0f), maxHp),
                     hpNaturalRecovery: new StatData(hpNaturalRecoveryAmount),
                     elementAttackMultiplier: elementAttackMultiplier.ToDictionary(pair => pair.Key, pair => new StatData(pair.Value, minValue: 0f)),
@@ -362,7 +345,6 @@ namespace Domain.Service.Characters
         public string Info()
         {
             var info = "";
-            info += $"Lv{Level.CurrentValue} Exp{Exp.Value}\n";
             info += $"Hp:{Hp.Value}/{Hp.Max.CurrentValue}\n";
             info += $"Hp自然回復量:{HpNaturalRecoveryAmount.CurrentValue}\n";
             info += $"視界範囲:{ViewRange.CurrentValue}\n";

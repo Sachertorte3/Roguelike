@@ -5,14 +5,9 @@ namespace View.UI
 {
     public class StatView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _level;
         [SerializeField] private StatLine _hp;
         [SerializeField] private TMP_Text _money;
         [SerializeField] private TMP_Text _inventory;
-        public void SetLevel(int level)
-        {
-            _level.text = $"Lv.{level}";
-        }
         public void SetHp(float maxValue, float value)
         {
             _hp.SetValue(maxValue, value);

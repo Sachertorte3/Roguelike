@@ -19,6 +19,7 @@ namespace Domain.Model.Character
         IHasCondition, IPlayerEventEntity
     {
         public ICharacterType CharacterType { get; init; }
+        public string Name { get; }
         public bool IsPlayer { get; }
         public bool IsLeader { get; }
         public bool IsBoss { get; }
@@ -34,6 +35,7 @@ namespace Domain.Model.Character
         public Observable<Unit> OnSelectedItemSelect { get; }
         public IObservableCollection<string> KnownItemNames { get; }
         public Observable<OnChargeActionUpdatedMessage> OnChargeActionUpdated { get; }
+        public Observable<string> OnItemUsed { get; }
         public bool CanMove(Vector2Int position, Direction8 direction, bool isFlying, bool canThroughWalls,
             IPassableChecker map);
 

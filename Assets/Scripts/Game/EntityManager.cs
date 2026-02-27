@@ -192,7 +192,7 @@ namespace Game
             var burningCharacters = Characters.In(FireEntities.Positions()).ToList();
             foreach (var character in burningCharacters)
             {
-                await character.LoseHp(1, "は火に焼かれた");
+                await character.LoseHp(1, "は火に焼かれた", null);
                 GameLog.Add(character.Entity.IsVisible, $"{character.GetName(Player)}は火に焼かれた");
             }
 

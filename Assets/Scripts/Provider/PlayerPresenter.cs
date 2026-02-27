@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Domain.Model.Setting;
 using Game;
 using R3;
@@ -30,11 +30,6 @@ namespace Provider
                     var arrowPrefab = ObjectLoader.LoadPrefab("Arrow");
                     var arrow = Object.Instantiate(arrowPrefab, playerView.transform);
                     arrow.GetComponent<CharacterArrow>().SetCharacter(playerView);
-
-                    _disposables.Add(player.Character.Status.Level.Subscribe(level =>
-                    {
-                        statView.SetLevel(level);
-                    }));
 
                     _disposables.Add(player.Money.Subscribe(money =>
                     {

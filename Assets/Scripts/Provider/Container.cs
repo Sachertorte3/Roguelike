@@ -1,4 +1,4 @@
-﻿using Domain.Service.Characters.Behavior;
+using Domain.Service.Characters.Behavior;
 using Domain.Service.Events;
 using Game;
 using Provider.Input;
@@ -7,11 +7,24 @@ using VContainer;
 using VContainer.Unity;
 using View;
 using View.UI;
+#if UNITY_EDITOR
+using System.Text;
+using Sirenix.OdinInspector;
+using Unity.Logging;
+using UnityEngine;
+using UnityEditor;
+#endif
 
 namespace Provider
 {
     internal class Container : LifetimeScope
     {
+#if UNITY_EDITOR
+        [ShowInInspector, ReadOnly, TextArea(20, 50)]
+        private string _statisticsText = "";
+
+        private GameManager? _gameManager;
+#endif
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<GameManager>(Lifetime.Singleton);
@@ -75,5 +88,26 @@ namespace Provider
             builder.RegisterPlainEntryPoint<SpawnCommands>();
             builder.RegisterPlainEntryPoint<MapCommands>();
         }
+#if UNITY_EDITOR
+        protected override void Awake()
+        {
+            base.Awake();
+            _gameManager = Container.Resolve<GameManager>();
+        }
+
+        private void Update()
+        {
+            if (_gameManager == null) return;
+
+            var sb = new StringBuilder();
+            if (_gameManager.ActiveStatistics.CurrentValue != null)
+            {
+                sb.AppendLine(_gameManager.ActiveStatistics.CurrentValue.GetStatisticsText());
+            }
+            sb.AppendLine(_gameManager.GlobalStatistics.GetStatisticsText());
+            _statisticsText = sb.ToString();
+            EditorUtility.SetDirty(this);
+        }
     }
+#endif
 }

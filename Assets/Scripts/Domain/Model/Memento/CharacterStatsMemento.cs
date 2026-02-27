@@ -11,7 +11,6 @@ namespace Domain.Model.Memento
     [Serializable]
     public class CharacterStatsMemento
     {
-        [field: SerializeField] public StatData Exp { get; private set; }
         [field: SerializeField] public ResourceData Hp { get; private set; }
         [field: SerializeField] public StatData HpNaturalRecoveryAmount { get; private set; }
         [SerializeField] private SerializableDictionary<Element, StatData> _elementAttackMultiplier;
@@ -24,7 +23,6 @@ namespace Domain.Model.Memento
         [field: SerializeField] public ResourceData WaitTime { get; private set; }
 
         public CharacterStatsMemento(
-            StatData exp,
             ResourceData hp,
             StatData hpNaturalRecovery,
             Dictionary<Element, StatData> elementAttackMultiplier,
@@ -33,7 +31,6 @@ namespace Domain.Model.Memento
             StatData viewRange,
             ResourceData waitTime)
         {
-            Exp = exp;
             Hp = hp;
             HpNaturalRecoveryAmount = hpNaturalRecovery;
             _elementAttackMultiplier = elementAttackMultiplier.ToSerializable();
@@ -44,7 +41,6 @@ namespace Domain.Model.Memento
         }
 
         public CharacterStatsMemento CopyWith(
-            StatData? exp = null,
             ResourceData? hp = null,
             StatData? hpNaturalRecovery = null,
             Dictionary<Element, StatData>? elementAttackMultiplier = null,
@@ -53,7 +49,7 @@ namespace Domain.Model.Memento
             StatData? viewRange = null,
             ResourceData? waitTime = null)
         {
-            return new CharacterStatsMemento(exp ?? Exp, hp ?? Hp, hpNaturalRecovery ?? HpNaturalRecoveryAmount,
+            return new CharacterStatsMemento(hp ?? Hp, hpNaturalRecovery ?? HpNaturalRecoveryAmount,
                 elementAttackMultiplier ?? ElementAttackMultiplier,
                 elementDamageRateMultiplier ?? ElementDamageRateMultiplier, conditionResistance ?? ConditionResistance,
                 viewRange ?? ViewRange, waitTime ?? WaitTime);

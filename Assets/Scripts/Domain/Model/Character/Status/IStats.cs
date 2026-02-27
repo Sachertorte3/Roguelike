@@ -1,11 +1,10 @@
-﻿using Domain.Model.Effect;
+using Domain.Model.Effect;
 using R3;
 
 namespace Domain.Model.Character.Status
 {
     public interface IStats
     {
-        public ReadOnlyReactiveProperty<int> Level { get; }
         public ReadOnlyReactiveProperty<int> MaxHp { get; }
         public ReadOnlyReactiveProperty<int> HpValue { get; }
         public ReadOnlyReactiveProperty<float> WaitTimeValue { get; }

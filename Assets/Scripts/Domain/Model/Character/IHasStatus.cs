@@ -13,8 +13,10 @@ namespace Domain.Model.Character
         /// Takes damage
         /// </summary>
         /// <param name="value">The amount of damage to take</param>
+        /// <param name="causeOfDamageLog">Log message for cause of damage</param>
+        /// <param name="attacker">The character that caused the damage, or null if not applicable (e.g. trap, poison).</param>
         /// <returns>The actual amount of HP reduced</returns>
-        public UniTask<int> LoseHp(int value, string causeOfDamageLog);
+        public UniTask<int> LoseHp(int value, string causeOfDamageLog, ICharacter? attacker);
 
         /// <summary>
         /// Recovers HP

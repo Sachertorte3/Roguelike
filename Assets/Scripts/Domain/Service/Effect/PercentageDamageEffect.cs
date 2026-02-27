@@ -28,7 +28,7 @@ namespace Domain.Service.Effect
         {
             var damage = Formula.CalcExplosionDamage(_damageRate, target);
             GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ");
-            await target.LoseHp(damage, $"は爆発に巻き込まれた");
+            await target.LoseHp(damage, $"は爆発に巻き込まれた", null);
         }
 
         public override float Evaluate(IActorOfEffect actor, ITargetOfEffect target)

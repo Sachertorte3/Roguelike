@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Domain.Model.Character;
 using Domain.Model.Entity;
 using UnityEngine;
@@ -18,6 +18,5 @@ namespace Domain.Model.Effect
         public bool CanMove(Direction8 direction, IPassableChecker map);
         public bool CanMoveIgnoreEntity(Direction8 direction, IPassableChecker map);
         public Aggression Aggression { get; }
-        public void OnEnemyDefeated(ITargetOfEffect target);
     }
 }

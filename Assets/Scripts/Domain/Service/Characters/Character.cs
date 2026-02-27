@@ -46,10 +46,10 @@ namespace Domain.Service.Characters
         private readonly List<CharacterSkillWithRule> _skills;
         private readonly SpawnEffectSkill? _lastSkill;
         private readonly CharacterStatusManager _statusManager;
-        public int DropExp { get; init; }
         private readonly ObservableList<IPlayerEvent> _events = new();
         private IMap _map;
         private readonly Subject<Unit> _onDead = new();
+        private readonly Subject<string> _onItemUsed = new();
         private Option<IAction> _chargeAction = Option.None<IAction>();
         private Option<ISkillWithCost> _chargeSkill = Option.None<ISkillWithCost>();
         private ReactiveProperty<int> _chargeTurn = new(0);
@@ -70,7 +70,6 @@ namespace Domain.Service.Characters
             _canThroughWalls = data.CanThroughWalls;
             _affiliationManager = new CharacterAffiliationManager(Entity.Id, data.Affiliation, map.Player);
             _aggression = data.Aggression;
-            DropExp = data.DropExp;
             IsLeader = data.IsLeader;
             IsShiny = data.IsShiny;
             IsBoss = data.IsBoss;
@@ -94,6 +93,7 @@ namespace Domain.Service.Characters
         public Location CurrentLocation => new(_map.Id, Entity.CurrentPosition);
         public bool IsDead => _statusManager.IsDead || Entity.IsDestroyed;
         private ICharacterBehavior _behavior { get; }
+        public string Name => _name;
         public bool IsPlayer { get; init; }
         public bool IsLeader { get; init; }
         public bool IsShiny { get; init; }
@@ -171,6 +171,7 @@ namespace Domain.Service.Characters
         public Direction8 CurrentDirection => Direction.CurrentValue;
         public IInventory Inventory => _inventory;
         public Observable<Unit> OnDead => _onDead;
+        public Observable<string> OnItemUsed => _onItemUsed;
         public IReadOnlyList<ICharacterSkillWithRule> Skills => _skills;
         public IVisionRange VisionRange => _statusManager.VisionRange;
         public IEnumerable<Vector2Int> VisibleArea => _statusManager.VisionRange.VisibleArea;
@@ -289,7 +290,7 @@ namespace Domain.Service.Characters
                 {
                     if (useSkill.Skill.Cost > 0)
                     {
-                        await LoseHp(useSkill.Skill.Cost, "はアイテムに命を吸われた");
+                        await LoseHp(useSkill.Skill.Cost, "はアイテムに命を吸われた", null);
                         if (IsDead)
                         {
                             DoNothing();
@@ -310,7 +311,7 @@ namespace Domain.Service.Characters
                 {
                     if (skillOnUse.Cost > 0)
                     {
-                        await LoseHp(skillOnUse.Cost, "はアイテムに命を吸われた");
+                        await LoseHp(skillOnUse.Cost, "はアイテムに命を吸われた", null);
                         if (IsDead)
                         {
                             DoNothing();
@@ -467,6 +468,7 @@ namespace Domain.Service.Characters
         {
             Log.Debug($"[Action]{_name}:UseItem\n{item.Info(map.Player, map.ItemPlaceholders)}\ndirection:{direction}");
             Turn(direction);
+            _onItemUsed.OnNext(item.BaseName);
 
             GameLog.Add(Entity.IsVisible, $"{GetName(map.Player)}は{item.GetName(map.Player, map.ItemPlaceholders)}を使った");
             if (item.CanActivateWhenUsed)
@@ -667,7 +669,6 @@ namespace Domain.Service.Characters
                 _knownItemNames.ToList(),
                 _affiliationManager.Serialize(),
                 Aggression,
-                DropExp,
                 IsLeader,
                 IsShiny,
                 IsBoss,
@@ -711,9 +712,9 @@ namespace Domain.Service.Characters
             return _statusManager.GainHp(value);
         }
 
-        public async UniTask<int> LoseHp(int value, string causeOfDamageLog)
+        public async UniTask<int> LoseHp(int value, string causeOfDamageLog, ICharacter? attacker)
         {
-            return await _statusManager.LoseHp(value, causeOfDamageLog);
+            return await _statusManager.LoseHp(value, causeOfDamageLog, attacker, false);
         }
 
         public void RestoreToFullHealth()
@@ -785,22 +786,6 @@ namespace Domain.Service.Characters
             _affiliationManager.OnCharacterHealed(actor.Affiliation, Affiliation, impact);
         }
 
-        public void OnEnemyDefeated(ITargetOfEffect target)
-        {
-            GainExp(target.DropExp);
-        }
-
-        public void GainExp(int value)
-        {
-            var level = _statusManager.Level.CurrentValue;
-            GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}は{value}の経験値を得た");
-            _statusManager.GainExp(value);
-            if (level < _statusManager.Level.CurrentValue)
-            {
-                GameLog.Add(Entity.IsVisible, $"{GetName(_map.Player)}はレベルアップした");
-                _statusManager.LevelUp(_statusManager.Level.CurrentValue - level);
-            }
-        }
 
         public void ClearAffiliation(IMap map)
         {

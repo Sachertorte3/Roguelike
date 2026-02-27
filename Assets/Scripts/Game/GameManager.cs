@@ -71,7 +71,7 @@ namespace Game
             });
 
             var globalSaveData = _saveDataManager.LoadGlobal() ?? new GlobalSaveData(GlobalStatistics.Build(), new());
-            _globalStatistics = new GlobalStatistics(globalSaveData.GlobalStatistics, _world);
+            _globalStatistics = new GlobalStatistics(globalSaveData.GlobalStatistics, this, _world);
             Settings.GlobalSettings.SetValues(globalSaveData.GlobalSettings);
 
             var disposable = new SerialDisposable();

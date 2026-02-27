@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Domain.Model.Character;
 using Domain.Model.Effect;
 using Domain.Model.Item;
 using Domain.Model.Map;
@@ -46,14 +47,14 @@ namespace Domain.Service.Effect
             {
                 var value = Formula.Calc(actor, target, _elementPowers, true);
                 GameLog.Add(target.IsVisible, $"<color=red>クリティカル！{target.GetName(map.Player)}に{value}のダメージ</color>");
-                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
+                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された", actor as ICharacter);
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate * 2));
             }
             else
             {
                 var value = Formula.Calc(actor, target, _elementPowers);
                 GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{value}のダメージ");
-                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された");
+                var loseValue = await target.LoseHp(value, $"は{actor.GetName(map.Player)}の攻撃で殺された", actor as ICharacter);
                 actor.GainHp(Mathf.RoundToInt(loseValue * _fixedRate));
             }
         }

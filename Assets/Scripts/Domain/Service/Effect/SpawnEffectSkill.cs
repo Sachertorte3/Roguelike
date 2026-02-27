@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -162,10 +162,6 @@ namespace Domain.Service.Effect
                                             impactValue);
                                     }
 
-                                    if (character.IsDead && effect is not BreakEffect)
-                                    {
-                                        actor.OnEnemyDefeated(character);
-                                    }
                                 }
                                 else if (effect.Impact == Impact.Beneficial)
                                 {

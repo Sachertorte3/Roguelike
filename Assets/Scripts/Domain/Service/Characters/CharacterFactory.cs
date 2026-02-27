@@ -83,7 +83,6 @@ namespace Domain.Service.Characters
                 knownItemNames: new List<string>(),
                 affiliation: CharacterAffiliationManager.Build(CharacterGroup.Human),
                 aggression: Aggression.AttackAnyone,
-                dropExp: 0,
                 isLeader: true,
                 isShiny: false,
                 isBoss: data.IsBoss,
@@ -144,7 +143,6 @@ namespace Domain.Service.Characters
                 knownItemNames: new List<string>(),
                 affiliation: CharacterAffiliationManager.Build(data.Group, affiliation),
                 aggression: data.Aggression,
-                dropExp: EvaluateExp(data, isShiny),
                 isLeader: false,
                 isShiny: isShiny,
                 isBoss: data.IsBoss,
@@ -165,56 +163,6 @@ namespace Domain.Service.Characters
             return new Character(data, behavior, gameManager, map, false);
         }
 
-        public static int EvaluateExp(EnemyData enemyData, bool isShiny)
-        {
-            var value = 1.0f;
-            value *= isShiny ? enemyData.Hp * 10 : enemyData.Hp;
-            value /= EvaluateDamageRate(enemyData);
-
-            value *= isShiny ? EvaluateSkills(enemyData.Skills.Select(x => x.Skill)) * 2 : EvaluateSkills(enemyData.Skills.Select(x => x.Skill));
-
-            value *= enemyData.MoveSpeed switch
-            {
-                MoveSpeed.Quarter => 0.25f,
-                MoveSpeed.Half => 0.5f,
-                MoveSpeed.Normal => 1.0f,
-                MoveSpeed.Double => 2.0f,
-                MoveSpeed.Quadruple => 4.0f,
-                _ => throw new ArgumentException($"Invalid MoveSpeed: {enemyData.MoveSpeed}"),
-            };
-            if (enemyData.Behavior.Default == MoveTypeWhenDiscoveringTarget.NoMove)
-            {
-                value *= 0.5f;
-            }
-            if (enemyData.Flags.Contains(FlagStatType.Hard))
-            {
-                value *= 5.0f;
-            }
-            if (enemyData.Flags.Contains(FlagStatType.Heavy))
-            {
-                value *= 1.2f;
-            }
-            if (enemyData.IsFlying)
-            {
-                if (enemyData.CanThroughWalls)
-                {
-                    value *= 1.5f;
-                }
-                else
-                {
-                    value *= 1.2f;
-                }
-            }
-            if (enemyData.CanPickUp)
-            {
-                value *= 1.1f;
-            }
-            if (enemyData.CanUseItem)
-            {
-                value *= 1.5f;
-            }
-            return Mathf.RoundToInt(value);
-        }
         public static float EvaluateDamageRate(EnemyData enemyData)
         {
             var sum = 0f;

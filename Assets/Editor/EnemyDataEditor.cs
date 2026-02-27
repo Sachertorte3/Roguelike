@@ -11,12 +11,10 @@ namespace Editor
     [CustomEditor(typeof(EnemyData))]
     public class EnemyDataEditor : OdinEditor
     {
-        private float _evaluatedExp;
         protected override void OnEnable()
         {
             base.OnEnable();
             UpdateSprite();
-            UpdateEvaluatedExp();
         }
         public override void OnInspectorGUI()
         {
@@ -26,9 +24,7 @@ namespace Editor
             if (EditorGUI.EndChangeCheck())
             {
                 UpdateSprite();
-                UpdateEvaluatedExp();
             }
-            EditorGUILayout.LabelField($"Evaluated Exp: {_evaluatedExp}Exp");
         }
 
         private void UpdateSprite()
@@ -50,11 +46,6 @@ namespace Editor
                     .WaitForCompletion();
                 ((EnemyData)target)._sprite = sprite;
             }
-        }
-
-        private void UpdateEvaluatedExp()
-        {
-            _evaluatedExp = CharacterFactory.EvaluateExp((EnemyData)target, false);
         }
     }
 }

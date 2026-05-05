@@ -27,7 +27,7 @@ namespace Domain.Service.Effect
         public override async UniTask Apply(ITargetOfEffect target, Vector2Int position, IMap map)
         {
             var damage = Formula.CalcExplosionDamage(_damageRate, target);
-            GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ");
+            GameLog.AddAppend(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ。");
             await target.LoseHp(damage, $"は爆発に巻き込まれた", null);
         }
 

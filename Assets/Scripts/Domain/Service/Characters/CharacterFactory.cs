@@ -49,7 +49,7 @@ namespace Domain.Service.Characters
                 backStepDistance: 0,
                 chargeTurn: 0,
                 coolTime: 0,
-                log: "は殴りかかった"
+                log: "は殴りかかった。"
             );
 
             var character = new CharacterMemento

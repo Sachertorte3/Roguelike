@@ -47,13 +47,13 @@ namespace Domain.Service.Effect
             if (RandUtils.IsLessThanProbability(_fixedCriticalRate))
             {
                 var damage = Formula.Calc(actor, target, _elementPowers, true);
-                GameLog.Add(target.IsVisible, $"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ</color>");
+                GameLog.AddAppend(target.IsVisible, $"<color=red>クリティカル！{target.GetName(map.Player)}に{damage}のダメージ。</color>");
                 await target.LoseHp(damage, $"は{actor.GetName(map.Player)}の攻撃で殺された", actor as ICharacter);
             }
             else
             {
                 var damage = Formula.Calc(actor, target, _elementPowers);
-                GameLog.Add(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ");
+                GameLog.AddAppend(target.IsVisible, $"{target.GetName(map.Player)}に{damage}のダメージ。");
                 await target.LoseHp(damage, $"は{actor.GetName(map.Player)}の攻撃で殺された", actor as ICharacter);
             }
         }

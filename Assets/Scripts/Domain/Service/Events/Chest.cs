@@ -82,6 +82,7 @@ namespace Domain.Service.Events
                 if (map.Player.Character.Inventory.CanAddToEmpty())
                 {
                     map.Player.Character.Inventory.AddToEmpty(selectedItem);
+                    gameManager.RequestWorldIconPopup(selectedItem.Icon, Entity.CurrentPosition);
                     GameLog.AddIgnoreVisibility(
                         $"{map.Player.Character.GetName(map.Player)}は{selectedItem.GetName(map.Player, map.ItemPlaceholders)}を手に入れた");
                 }

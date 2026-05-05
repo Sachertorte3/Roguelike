@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Domain.Model;
+using Domain.Model.Character.Message;
 using Domain.Model.Character;
 using Domain.Model.Entity;
 using Domain.Model.Map;
@@ -38,6 +39,8 @@ namespace Game
         public Observable<BGM> OnPlayBGM => _onPlayBGM;
         private readonly Subject<SE> _onPlaySE = new();
         public Observable<SE> OnPlaySE => _onPlaySE;
+        private readonly Subject<OnWorldIconPopupRequestedMessage> _onWorldIconPopupRequested = new();
+        public Observable<OnWorldIconPopupRequestedMessage> OnWorldIconPopupRequested => _onWorldIconPopupRequested;
         private readonly ReactiveProperty<GameState> _state = new();
         public ReadOnlyReactiveProperty<GameState> State => _state;
         private readonly SerialDisposable _disposable = new();
@@ -297,6 +300,11 @@ namespace Game
         public void PlaySE(SE se)
         {
             _onPlaySE.OnNext(se);
+        }
+
+        public void RequestWorldIconPopup(Sprite icon, Vector2Int position)
+        {
+            _onWorldIconPopupRequested.OnNext(new OnWorldIconPopupRequestedMessage(icon, position));
         }
 
         public void SaveLight()

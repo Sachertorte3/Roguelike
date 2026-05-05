@@ -70,6 +70,7 @@ namespace Provider
             builder.RegisterPlainEntryPoint<PlayerCameraPresenter>();
             builder.RegisterPlainEntryPoint<EffectPreviewPresenter>();
             builder.RegisterPlainEntryPoint<DamagePresenter>();
+            builder.RegisterPlainEntryPoint<PickupEmphasisPresenter>();
             builder.RegisterPlainEntryPoint<SoundPresenter>();
             builder.RegisterPlainEntryPoint<GroupMarkerPresenter>();
             builder.RegisterPlainEntryPoint<KeyCharacterPresenter>();

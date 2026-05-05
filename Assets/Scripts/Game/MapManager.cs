@@ -480,6 +480,7 @@ namespace Game
                             if (character.Inventory.CanAddToEmpty())
                             {
                                 character.Inventory.AddToEmpty(item.Item);
+                                _gameManager.RequestWorldIconPopup(item.Icon, positionChanged);
                                 if (EntityManager.Player.Character.IsVisible(positionChanged))
                                 {
                                     GameLog.Add(character.Entity.IsVisible,
@@ -749,7 +750,12 @@ namespace Game
         public IItemEntity? TryPickUpAt(Vector2Int position, bool canPickUpShopItem)
         {
             _gameManager.PlaySE(SE.Pickup);
-            return EntityManager.TryPickUpAt(position, canPickUpShopItem);
+            var item = EntityManager.TryPickUpAt(position, canPickUpShopItem);
+            if (item != null)
+            {
+                _gameManager.RequestWorldIconPopup(item.Icon, position);
+            }
+            return item;
         }
         public IEnumerable<ICharacter> GetFollowingCharacters() => EntityManager.GetFollowingCharacters();
     }

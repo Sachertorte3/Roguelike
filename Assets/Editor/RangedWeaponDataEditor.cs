@@ -1,5 +1,4 @@
 using System;
-using Domain.Model.Dungeon;
 using Domain.Model.Item;
 using Domain.Service.Items;
 using Sirenix.OdinInspector.Editor;
@@ -9,13 +8,13 @@ using UnityEngine.AddressableAssets;
 
 namespace Editor
 {
-    [CustomEditor(typeof(ItemData))]
-    public class ItemDataEditor : OdinEditor
+    [CustomEditor(typeof(RangedWeaponData))]
+    public class RangedWeaponDataEditor : OdinEditor
     {
         private float _evaluatedPrice;
         private float _marketPrice;
         private static ItemMarketPriceTable? _cachedMarketPriceTable;
-        
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -24,20 +23,15 @@ namespace Editor
                 _cachedMarketPriceTable = Addressables.LoadAssetAsync<ItemMarketPriceTable>("Assets/Database/ItemData/ItemMarketPriceTable.asset")
                     .WaitForCompletion();
             }
+
             _evaluatedPrice = EvaluateEvaluatedPrice();
             _marketPrice = EvaluateMarketPrice();
         }
+
         public override void OnInspectorGUI()
         {
-            var itemData = (ItemData)target;
-            if (itemData.Category == ItemCategory.Potions)
-            {
-                DrawPotionDescriptionTemplateSection(itemData);
-                EditorGUILayout.Space();
-            }
-            DrawGenericItemDescriptionPreview(itemData);
+            DrawDescriptionTemplateSection();
             EditorGUILayout.Space();
-
             EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
             EditorGUILayout.Space();
@@ -46,47 +40,47 @@ namespace Editor
                 _evaluatedPrice = EvaluateEvaluatedPrice();
                 _marketPrice = EvaluateMarketPrice();
             }
+
             EditorGUILayout.LabelField($"Evaluated Price: {_evaluatedPrice}G");
             EditorGUILayout.LabelField($"Market Price: {_marketPrice}G");
         }
 
         private float EvaluateEvaluatedPrice()
         {
-            ItemData itemData = (ItemData)target;
-            Item item = new Item(itemData);
+            var weaponData = (RangedWeaponData)target;
+            var item = new RangedWeapon(weaponData);
             return item.EvaluateEvaluatedPrice();
         }
 
         private float EvaluateMarketPrice()
         {
-            ItemData itemData = (ItemData)target;
-            Item item = new Item(itemData);
+            var weaponData = (RangedWeaponData)target;
+            var item = new RangedWeapon(weaponData);
             return item.EvaluatePrice(_cachedMarketPriceTable!);
         }
 
-        private static void DrawPotionDescriptionTemplateSection(ItemData itemData)
+        private void DrawDescriptionTemplateSection()
         {
-            EditorGUILayout.LabelField("説明文テンプレート（ポーション）", EditorStyles.boldLabel);
-            var errors = ItemDescriptionTemplate.ValidatePotionItemData(itemData);
+            var data = (RangedWeaponData)target;
+            EditorGUILayout.LabelField("説明文テンプレート（射撃武器）", EditorStyles.boldLabel);
+            var errors = ItemDescriptionTemplate.ValidateRangedWeapon(data);
             foreach (var message in errors)
                 EditorGUILayout.HelpBox(message, MessageType.Error);
             if (errors.Count == 0)
                 EditorGUILayout.HelpBox("テンプレート整合性: 問題なし", MessageType.Info);
 
             EditorGUILayout.LabelField("ゲーム内プレビュー（識別済み・効果要約・色付き）");
-            var preview = new Item(itemData).PreviewTemplatedSkillSection();
+            var preview = new RangedWeapon(data).PreviewTemplatedSkillSection();
             ItemDescriptionPreviewEditor.DrawIdentifiedLikeInventory(
-                string.IsNullOrEmpty(preview) ? "（要約なし・詳細表示にフォールバック）" : preview,
+                string.IsNullOrEmpty(preview) ? "（要約なし）" : preview,
                 80f);
-        }
 
-        private static void DrawGenericItemDescriptionPreview(ItemData itemData)
-        {
-            EditorGUILayout.LabelField("ゲーム内プレビュー（識別済み・汎用説明・効果はテンプレート不使用・色付き）", EditorStyles.boldLabel);
+            EditorGUILayout.Space(4f);
+            EditorGUILayout.LabelField("識別済み・汎用説明（効果はテンプレート不使用・色付き）");
             try
             {
-                var item = new Item(itemData);
-                ItemDescriptionPreviewEditor.DrawIdentifiedLikeInventory(item.FullInfoGenericSkillDescription(), 120f);
+                var generic = new RangedWeapon(data).FullInfoGenericSkillDescription();
+                ItemDescriptionPreviewEditor.DrawIdentifiedLikeInventory(generic, 120f);
             }
             catch (Exception ex)
             {

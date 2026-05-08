@@ -291,7 +291,7 @@ namespace Domain.Service.Effect
         {
             var info = "";
             if (RushDistance > 0)
-                info += $"最初に{ItemDescriptionRichText.RichSpatial(RushDistance)}マス前に進む\n";
+                info += $"最初に{ItemDescriptionRichText.RichSpatialCells(RushDistance)}前に進む\n";
             var positionInfo = _position.Info();
             var areaInfo = _area.Info();
             info += EffectTargetDescription.OnUse(positionInfo, areaInfo, useOrThrowCombinedTargets) + "\n";
@@ -305,7 +305,7 @@ namespace Domain.Service.Effect
                 info += ItemDescriptionRichText.ColorPercentagesInPlainText($"成功率：{ProbabilityOfSuccess:P0}\n");
 
             if (BackStepDistance > 0)
-                info += $"最後に{ItemDescriptionRichText.RichSpatial(BackStepDistance)}マス後ろに下がる\n";
+                info += $"最後に{ItemDescriptionRichText.RichSpatialCells(BackStepDistance)}後ろに下がる\n";
             return info;
         }
 
@@ -313,7 +313,7 @@ namespace Domain.Service.Effect
         {
             var info = "";
             if (RushDistance > 0)
-                info += $"最初に{ItemDescriptionRichText.RichSpatial(RushDistance)}マス前に進む\n";
+                info += $"最初に{ItemDescriptionRichText.RichSpatialCells(RushDistance)}前に進む\n";
             var positionInfo = _position.Info();
             var areaInfo = _area.Info();
             var targetLine = EffectTargetDescription.OnThrow(positionInfo, areaInfo);
@@ -337,7 +337,7 @@ namespace Domain.Service.Effect
             info += ItemDescriptionRichText.ColorPercentagesInPlainText($"成功率：{ProbabilityOfSuccess:P0}\n");
 
             if (BackStepDistance > 0)
-                info += $"最後に{ItemDescriptionRichText.RichSpatial(BackStepDistance)}マス後ろに下がる\n";
+                info += $"最後に{ItemDescriptionRichText.RichSpatialCells(BackStepDistance)}後ろに下がる\n";
             return info;
         }
     }

@@ -6,7 +6,7 @@ using Utilities;
 
 namespace Domain.Model.Item
 {
-    /// <summary>TMP 向け色タグの定数・ルール・ヘルパー。文言そのものは <see cref="ItemDescriptionPhrases"/> 等で持つ。</summary>
+    /// <summary>TMP 向け色タグの定数・ルール・ヘルパー。</summary>
     public static class ItemDescriptionRichText
     {
         /// <summary>確率・％表記。</summary>

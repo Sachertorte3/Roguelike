@@ -59,6 +59,8 @@ namespace Domain.Model.Item
 
         public static string RichMeta(int value) => Wrap(MetaColor, value.ToString());
 
+        public static string RichMeta(string value) => Wrap(MetaColor, value);
+
         private static readonly Regex ColorTag = new(@"</?color[^>]*>");
 
         /// <summary>半角・全角の括弧付き数値ブロック（Split だと括弧が落ちる環境があるため Matches で走査）。</summary>

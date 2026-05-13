@@ -11199,6 +11199,7 @@ MonoBehaviour:
   _itemSelectConfirmSE: {fileID: 8300000, guid: 923d903f7ebed5948a27cfc50270f6d2, type: 3}
   _openChestSE: {fileID: 8300000, guid: fc92a4b4ae0fbca45a5b2f95d2104824, type: 3}
   _shopCheckoutSE: {fileID: 8300000, guid: b65341da08857fe46aa1bbd1d0394ffc, type: 3}
+  _trapStepSE: {fileID: 0}
   _itemUsePotionSE: {fileID: 0}
   _itemUseScrollSE: {fileID: 0}
   _itemUseBookSE: {fileID: 0}

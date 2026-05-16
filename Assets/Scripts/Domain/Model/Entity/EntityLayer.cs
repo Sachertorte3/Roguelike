@@ -4,6 +4,8 @@ namespace Domain.Model.Entity
     {
         Bottom,
         Middle,
-        Top
+        Top,
+        /// <summary>床の固定オブジェクト（罠・階段・テレポーター等）。<see cref="Bottom"/> の上に重ねられる。</summary>
+        Floor
     }
 }

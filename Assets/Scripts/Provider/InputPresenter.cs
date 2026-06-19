@@ -37,26 +37,25 @@ namespace Provider
                         receiver.Disable();
                     else
                         receiver.Enable();
-
-                    var asset = EventSystem.current?.GetComponent<InputSystemUIInputModule>()?.actionsAsset;
-                    if (isInputBlocked)
-                        asset?.Disable();
-                    else
-                        asset?.Enable();
                 });
 
+            // L（SelectItemModifier）押下中は移動入力をアイテム選択に使うため、キャラ移動は抑制する。
             receiver.OnMovePerformed
+                .Where(_ => !receiver.IsSelectItemModifier)
                 .Select(vector => DirectionMethods.NearestDirectionFromVector(vector))
                 .WhereNotNull()
                 .Subscribe(direction => actionReceiver.SetMoveInput(direction, true));
             actionReceiver.OnActionRead
+                .Where(_ => !receiver.IsSelectItemModifier)
                 .Select(_ => receiver.MoveVector)
                 .Select(vector => DirectionMethods.NearestDirectionFromVector(vector))
                 .WhereNotNull()
                 .Subscribe(direction => actionReceiver.SetMoveInput(direction, false));
 
-            inventoryView.Focus.Subscribe(focus =>
-                actionReceiver.SetItemFocus(focus.ToItemFocus()));
+            // フィールド中のアイテム選択（SelectItem）とメニューのナビゲーションを、インベントリのカーソル移動へ。
+            inventoryView.ConfigureNavigation(() => receiver.InventoryNavigateVector);
+            // フォーカスは InventoryView が単一所有。行動時に現在値を都度読む（コピー/ミラーを持たない）。
+            actionReceiver.SetItemFocusProvider(() => inventoryView.CurrentFocus.ToItemFocus());
             receiver.OnAttackPerformed.Subscribe(_ => actionReceiver.SetAttackInput());
             receiver.OnSubmitPerformed
                 .Subscribe(_ => actionReceiver.SetItemSelectConfirmInput());
@@ -80,7 +79,12 @@ namespace Provider
                 .Subscribe(_ => actionReceiver.SetFaceNearestCharacterInput());
 
             receiver.OnMainMenuOpening.Subscribe(_ => menuController.OpenMeinMenu());
-            receiver.OnMenuCanceling.Subscribe(_ => menuController.CloseMenu());
+            receiver.OnMenuCanceling.Subscribe(_ =>
+            {
+                // アイテム選択中はキャンセルを Empty 選択として扱う（待受中でなければ無害）。
+                actionReceiver.SetItemSelectCancelInput();
+                menuController.CloseMenu();
+            });
             receiver.OnMenuClosing.Subscribe(_ => menuController.CloseAllMenus());
 
             ApplySwapAfterEventSystemInitialized(receiver);
@@ -132,6 +136,9 @@ namespace Provider
         private async UniTaskVoid ApplySwapAfterEventSystemInitialized(InputReceiver receiver)
         {
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+
+            // UIモジュールを InputReceiver と同一アセットへ束ねてから Swap を適用する。
+            receiver.BindToUIModule();
 
             Settings.GlobalSettings.SwapABXY.Value
                 .SubscribeIncludingCurrentValue(receiver.ApplyFaceButtonSwap);

@@ -515,6 +515,9 @@ namespace Game
                         foreach (var playerEventEntity in EntityManager.GetPlayerEventEntitiesFastAt(positionChanged,
                                      EntityLayer.Floor, EntityLayer.Bottom))
                         {
+                            // 初めて魔法陣に乗ったとき、移動の選択肢を出す前にチュートリアルを表示する。
+                            if (playerEventEntity is IMovementEntity { Type: MovementEntityType.MagicCircle })
+                                await _gameManager.ShowTutorialIfNeeded(TutorialType.MagicCircle);
                             await playerEventEntity.Events.DoEvent(EntityManager.Player, _gameManager, this);
                         }
                     }

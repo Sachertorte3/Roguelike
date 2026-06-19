@@ -204,10 +204,11 @@ namespace Domain.Service.Rooms
             gameManager.PlayBGM(BGM.Stolen);
         }
 
-        protected override UniTask EveryTimeEnter(IGameManager gameManager, IMap map)
+        protected override async UniTask EveryTimeEnter(IGameManager gameManager, IMap map)
         {
             gameManager.PlayBGM(BGM.Shop);
-            return UniTask.CompletedTask;
+            // 初めて店に入ったときにチュートリアルを表示する。
+            await gameManager.ShowTutorialIfNeeded(TutorialType.Shop);
         }
 
         protected override UniTask EveryTimeExit(IGameManager gameManager, IMap map)

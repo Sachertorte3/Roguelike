@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,10 @@ namespace View.UI
     {
         [SerializeField] private Transform _content;
         [SerializeField] private TMP_Text _logTextPrefab;
+        [Header("Slide-in")]
+        [SerializeField] private float _slideInDistance = 60f;
+        [SerializeField] private float _slideInDuration = 0.2f;
+        [SerializeField] private Ease _slideInEase = Ease.OutCubic;
         private int _logShownMilliSeconds = 3000;
 
         public void SetLogShownMilliSeconds(int milliSeconds)
@@ -24,8 +29,19 @@ namespace View.UI
 
             var logText = Instantiate(_logTextPrefab, _content);
             logText.text = message;
+            // TMPのpreferred width確定前にレイアウトを読むと位置がずれるため先に確定させる。
+            logText.ForceMeshUpdate();
             logText.gameObject.AddComponent<LifeTimer>().LifeTimeMilliseconds = _logShownMilliSeconds;
-            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)logText.transform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_content as RectTransform);
+            PlaySlideIn(logText.rectTransform);
+        }
+
+        // 新規ログをレイアウト確定位置の左からスライドインさせる。
+        private void PlaySlideIn(RectTransform rectTransform)
+        {
+            var position = rectTransform.anchoredPosition;
+            rectTransform.anchoredPosition = new Vector2(position.x - _slideInDistance, position.y);
+            rectTransform.DOAnchorPosX(position.x, _slideInDuration).SetEase(_slideInEase);
         }
 
         public void Clear()

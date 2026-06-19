@@ -52,7 +52,11 @@ namespace Domain.Model.Character
         private void OnValidate()
         {
             var assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
-            Name = Path.GetFileNameWithoutExtension(assetPath);
+            var fileName = Path.GetFileNameWithoutExtension(assetPath);
+            // assetPath は Play 中や Addressables ロード時などに空を返すことがある。
+            // その際に Name を空文字で上書きしてしまう（敵名が消える）ため、空ならガードする。
+            if (!string.IsNullOrEmpty(fileName))
+                Name = fileName;
 
             Flags = Flags.Distinct().ToList();
 

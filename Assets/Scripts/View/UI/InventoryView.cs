@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using R3;
 using TMPro;
@@ -20,6 +21,8 @@ namespace View.UI
         private List<InventoryViewIndex> _lockedItemIndexes = new();
         private bool _enabled = true;
         public ReadOnlyReactiveProperty<InventoryViewIndex> Focus => _focusIndex.Select(index => GetFocus(index)).ToReadOnlyReactiveProperty();
+        // 現在のフォーカス（単一所有者）。ReactiveProperty を生成せず即値で返す。
+        public InventoryViewIndex CurrentFocus => GetFocus(_focusIndex.CurrentValue);
         public void Initialize()
         {
             Log.Debug($"[View]InventoryView Initialize");
@@ -128,6 +131,11 @@ namespace View.UI
         public void SetCanSkip(bool canSkip)
         {
             _storageView.UpdateItemSkip(canSkip);
+        }
+
+        public void ConfigureNavigation(Func<Vector2> readNavigate)
+        {
+            _storageView.ConfigureNavigation(readNavigate);
         }
 
         public void UpdateAllItemInteractable()

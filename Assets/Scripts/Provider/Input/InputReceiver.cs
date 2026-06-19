@@ -15,6 +15,26 @@ namespace Provider.Input
     {
         private readonly MyInputAction _actions = new();
         private readonly CompositeDisposable _disposables = new();
+        private readonly ReactiveProperty<bool> _isUsingKeyboard = new(Gamepad.current == null);
+
+        /// <summary>直近に操作されたデバイスがキーボード/マウスなら true、ゲームパッドなら false。</summary>
+        public ReadOnlyReactiveProperty<bool> IsUsingKeyboard => _isUsingKeyboard;
+
+        public InputReceiver()
+        {
+            InputSystem.onActionChange += OnActionChange;
+        }
+
+        private void OnActionChange(object obj, InputActionChange change)
+        {
+            if (change != InputActionChange.ActionPerformed || obj is not InputAction action)
+                return;
+            var device = action.activeControl?.device;
+            if (device is Keyboard or Mouse)
+                _isUsingKeyboard.Value = true;
+            else if (device is Gamepad)
+                _isUsingKeyboard.Value = false;
+        }
 
         private static readonly Dictionary<string, string> FaceButtonSwapMap = new()
         {
@@ -35,6 +55,29 @@ namespace Provider.Input
             _actions.Field.Move.AsObservable().Select(context => context.ReadValue<Vector2>());
 
         public Vector2 MoveVector => _actions.Field.Move.ReadValue<Vector2>();
+
+        // UIモジュールは BindToUIModule で _actions と同一アセットを使うため、直接読める。
+        public Vector2 NavigateVector => _actions.UI.Navigate.ReadValue<Vector2>();
+
+        // フィールド中のアイテム選択入力（Field マップの SelectItem アクション：右スティック/矢印など）。
+        public Vector2 SelectItemVector => _actions.Field.SelectItem.ReadValue<Vector2>();
+
+        // アイテム選択修飾（L）。Field マップの SelectItemModifier アクション。
+        // 押下中は移動入力をインベントリのカーソル移動に転用する（L+移動でアイテム選択）。
+        public bool IsSelectItemModifier => _actions.Field.SelectItemModifier.IsPressed();
+
+        // インベントリのカーソル移動に使う入力。
+        // メニュー等（Field 無効）では UI ナビゲーション。
+        // フィールドでは、L 押下中は移動入力を、そうでなければ SelectItem（右スティック/矢印）をカーソルに使う。
+        public Vector2 InventoryNavigateVector
+        {
+            get
+            {
+                if (!_actions.Field.SelectItem.enabled)
+                    return NavigateVector;
+                return IsSelectItemModifier ? MoveVector : SelectItemVector;
+            }
+        }
         public ReadOnlyReactiveProperty<bool> IsDash => _actions.Field.Dash.AsEnabledPressedReactiveProperty();
         public ReadOnlyReactiveProperty<bool> IsNoMove => _actions.Field.TurnOnly.AsEnabledPressedReactiveProperty();
         public ReadOnlyReactiveProperty<bool> IsDiagonalOnly => _actions.Field.DiagonalOnly.AsEnabledPressedReactiveProperty();
@@ -66,12 +109,19 @@ namespace Provider.Input
 
         public void Dispose()
         {
+            InputSystem.onActionChange -= OnActionChange;
+            _isUsingKeyboard.Dispose();
             _disposables.Dispose();
         }
 
+        private enum InputMode { Field, Menu }
+        private InputMode _mode = InputMode.Field;
+
         public void Enable()
         {
-            _actions.Enable();
+            // 全マップを無条件に有効化すると、フィールドでも UI が有効になり
+            // UI.Navigate(矢印) が SelectItem(矢印) と競合する。現在モードを復元する。
+            ApplyMode();
         }
 
         public void Disable()
@@ -82,38 +132,64 @@ namespace Provider.Input
         public void SwitchMenu()
         {
             Log.Info("[Input] Switch input to Menu");
-            _actions.Menu.Enable();
-            _actions.Field.Disable();
-            _actions.UI.Enable();
+            _mode = InputMode.Menu;
+            ApplyMode();
         }
 
         public void SwitchField()
         {
             Log.Info("[Input] Switch input to Field");
-            _actions.Field.Enable();
-            _actions.Menu.Disable();
-            _actions.UI.Disable();
+            _mode = InputMode.Field;
+            ApplyMode();
+        }
+
+        private void ApplyMode()
+        {
+            if (_mode == InputMode.Menu)
+            {
+                _actions.Menu.Enable();
+                _actions.Field.Disable();
+                _actions.UI.Enable();
+            }
+            else
+            {
+                _actions.Field.Enable();
+                _actions.Menu.Disable();
+                // フィールドでは UI を無効化（UI.Navigate の矢印が SelectItem と競合しないように）。
+                _actions.UI.Disable();
+            }
         }
 
         public void ApplyFaceButtonSwap(bool enabled)
         {
+            // UIモジュールも同一アセット（BindToUIModule）なので、このアセットへの適用だけで足りる。
             ApplyFaceButtonSwapToAsset(_actions.asset, enabled);
-
-            var uiAsset = GetUIModuleActionsAssetOrNull();
-            if (enabled && uiAsset == null)
-                throw new InvalidOperationException(
-                    "[Input] SwapABXY is enabled, but EventSystem/InputSystemUIInputModule (or its ActionsAsset) was not found.");
-            if (uiAsset != null && !ReferenceEquals(uiAsset, _actions.asset))
-                ApplyFaceButtonSwapToAsset(uiAsset, enabled);
         }
 
         private static bool IsPressed(InputAction action) => action.enabled && action.IsPressed();
 
-        private InputActionAsset? GetUIModuleActionsAssetOrNull()
+        // EventSystem の UIモジュールを、この InputReceiver と同一のアクションアセットへ束ねる。
+        // これで「ゲームプレイ用」と「UIモジュール用」が1インスタンスに統一され、有効/無効や
+        // SwapABXY の二重管理、NavigateVector の特殊対応が不要になる。
+        public void BindToUIModule()
         {
-            var es = EventSystem.current;
-            var uiModule = es?.GetComponent<InputSystemUIInputModule>();
-            return uiModule?.actionsAsset;
+            var uiModule = EventSystem.current != null
+                ? EventSystem.current.GetComponent<InputSystemUIInputModule>()
+                : null;
+            if (uiModule == null)
+                return;
+
+            uiModule.actionsAsset = _actions.asset;
+            uiModule.move = InputActionReference.Create(_actions.UI.Navigate);
+            uiModule.submit = InputActionReference.Create(_actions.UI.Submit);
+            uiModule.cancel = InputActionReference.Create(_actions.UI.Cancel);
+            uiModule.point = InputActionReference.Create(_actions.UI.Point);
+            uiModule.leftClick = InputActionReference.Create(_actions.UI.Click);
+            uiModule.middleClick = InputActionReference.Create(_actions.UI.MiddleClick);
+            uiModule.rightClick = InputActionReference.Create(_actions.UI.RightClick);
+            uiModule.scrollWheel = InputActionReference.Create(_actions.UI.ScrollWheel);
+            uiModule.trackedDevicePosition = InputActionReference.Create(_actions.UI.TrackedDevicePosition);
+            uiModule.trackedDeviceOrientation = InputActionReference.Create(_actions.UI.TrackedDeviceOrientation);
         }
 
         private void ApplyFaceButtonSwapToAsset(InputActionAsset asset, bool enabled)

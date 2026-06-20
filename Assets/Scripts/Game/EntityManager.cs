@@ -441,10 +441,9 @@ namespace Game
             }
         }
         /// <summary>
-        ///     Gets a character that follows the player when moving from one map to another.
-        ///     Does not include the player themselves.
+        ///     マップ間を移動する際に、プレイヤーに追従するキャラクターを取得する。
+        ///     プレイヤー自身は含まない。
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ICharacter> GetFollowingCharacters()
         {
             return Characters

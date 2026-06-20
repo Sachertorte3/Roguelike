@@ -7,6 +7,7 @@ using Domain.Model.Character;
 using Domain.Model.Character.Status;
 using Domain.Model.Dungeon;
 using Domain.Model.Effect;
+using Domain.Model.Entity;
 using Domain.Model.Effect.Area;
 using Domain.Model.Effect.Position;
 using Domain.Model.Evaluation;
@@ -21,6 +22,12 @@ using Utilities;
 
 namespace Domain.Service.Effect
 {
+    /// <summary>
+    /// スキル / アイテム効果の中核。効果を「発生位置(_position) × 範囲(_area) × 効果リスト(_effects)」の
+    /// 組み合わせで表現する。位置（足元・前方の着弾点など）から範囲（円・扇形など）を展開し、
+    /// その範囲内の対象へ効果リスト（ダメージ・回復・状態異常・生成・破壊など）を順に適用する。
+    /// この合成により、攻撃・回復・移動・武器の付与効果などを少ない部品で組み立てられる。
+    /// </summary>
     public class SpawnEffectSkill : ISerializable<SpawnEffectSkillMemento>, ISkill
     {
         private readonly IEffectPosition _position;
@@ -90,6 +97,15 @@ namespace Domain.Service.Effect
         public IEnumerable<Vector2Int> GetArea(IActorOfEffect actor, Vector2Int position, Direction8 direction,
             IMap map, bool onlyVisible = false)
         {
+            position = AdvanceByRushDistance(actor, position, direction, map);
+            return GetAreaIgnoreRush(actor, position, direction, map, onlyVisible);
+        }
+
+        // 突進斬りなどを表現するため、RushDistance 分だけ前方へ突進した着地点を返す。
+        // 壁や移動不可状態に阻まれた時点で止まる。
+        private Vector2Int AdvanceByRushDistance(IActorOfEffect actor, Vector2Int position, Direction8 direction,
+            IMap map)
+        {
             for (var i = 0; i < RushDistance; i++)
             {
                 if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
@@ -98,7 +114,7 @@ namespace Domain.Service.Effect
                     break;
             }
 
-            return GetAreaIgnoreRush(actor, position, direction, map, onlyVisible);
+            return position;
         }
 
         private IEnumerable<Vector2Int> GetAreaIgnoreRush(IActorOfEffect actor, Vector2Int position, Direction8 direction,
@@ -151,50 +167,17 @@ namespace Domain.Service.Effect
                     map.RevealMimic(area);
                     map.AttackStatue(area);
                 }
+                // 各エフェクトを「範囲内の対象（遠い順）」と「範囲そのもの」の両方に適用する。
                 foreach (var effect in _effects)
                 {
                     foreach (var target in map.Entities.In(area)
                                  .OrderBy(target => Vector2.Distance(target.Entity.CurrentPosition, position))
                                  .Reverse())
                     {
-                        switch (target)
-                        {
-                            case ICharacter character:
-                                await effect.Apply(actor, character, position, map);
-
-                                if (effect.Impact == Impact.Harmful)
-                                {
-                                    var impactValue = effect.Evaluate(actor, character);
-                                    character.OnAttackedBy(actor, impactValue);
-
-                                    foreach (var c in map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
-                                                            .Where(target => target != actor && target != actor))
-                                    {
-                                        c.Affiliation.OnCharacterAttacked(actor.Affiliation, character.Affiliation,
-                                            impactValue);
-                                    }
-
-                                }
-                                else if (effect.Impact == Impact.Beneficial)
-                                {
-                                    var impactValue = effect.Evaluate(actor, character);
-                                    character.OnHealedBy(actor, impactValue);
-
-                                    foreach (var c in map.GetCharactersCanSeePosition(character.Entity.CurrentPosition)
-                                                            .Where(target => target != actor && target != actor))
-                                    {
-                                        c.Affiliation.OnCharacterHealed(actor.Affiliation, character.Affiliation,
-                                            impactValue);
-                                    }
-                                }
-
-                                break;
-                            default:
-                                await effect.Apply(actor, target, position, map);
-                                break;
-                        }
+                        await ApplyEffectToTarget(effect, actor, target, position, map);
                     }
 
+                    // 対象個別ではなく範囲に作用する効果（草・罠の生成、地形変化など）
                     await effect.Apply(actor, area, map);
                 }
 
@@ -218,17 +201,62 @@ namespace Domain.Service.Effect
             return SpawnEffectSkillResult.Success;
         }
 
+        private async UniTask ApplyEffectToTarget(IEffect effect, IActorOfEffect actor, IEntity target,
+            Vector2Int position, IMap map)
+        {
+            switch (target)
+            {
+                case ICharacter character:
+                    await effect.Apply(actor, character, position, map);
+
+                    if (effect.Impact == Impact.Harmful)
+                    {
+                        var impactValue = effect.Evaluate(actor, character);
+                        character.OnAttackedBy(actor, impactValue);
+                        ReflectAttackToNearbyAffiliations(map, actor, character, impactValue);
+                    }
+                    else if (effect.Impact == Impact.Beneficial)
+                    {
+                        var impactValue = effect.Evaluate(actor, character);
+                        character.OnHealedBy(actor, impactValue);
+                        ReflectHealToNearbyAffiliations(map, actor, character, impactValue);
+                    }
+
+                    break;
+                default:
+                    await effect.Apply(actor, target, position, map);
+                    break;
+            }
+        }
+
+        private void ReflectAttackToNearbyAffiliations(IMap map, IActorOfEffect actor, ICharacter target,
+            float impactValue)
+        {
+            foreach (var witness in CharactersWhoCanSee(map, target, actor))
+                witness.Affiliation.OnCharacterAttacked(actor.Affiliation, target.Affiliation, impactValue);
+        }
+
+        private void ReflectHealToNearbyAffiliations(IMap map, IActorOfEffect actor, ICharacter target,
+            float impactValue)
+        {
+            foreach (var witness in CharactersWhoCanSee(map, target, actor))
+                witness.Affiliation.OnCharacterHealed(actor.Affiliation, target.Affiliation, impactValue);
+        }
+
+        // 副作用のない純粋なクエリのため static。対象を視認できる、行為者以外のキャラを返す。
+        private static IEnumerable<ICharacter> CharactersWhoCanSee(IMap map, ICharacter target, IActorOfEffect actor)
+            => map.GetCharactersCanSeePosition(target.Entity.CurrentPosition).Where(c => c != actor);
+
+        // 敵AIがこのスキルを「今使う価値があるか」を見積もる。盤面への影響を符号付きの評価値にし、
+        // 各行動候補の評価値を比較して最も効果の大きい行動を選ばせる（敵AIの行動評価の一部）。
         public float Evaluate(IActorOfEffect actor, IItem? sourceItem, Vector2Int position, Direction8 direction,
             IMap map)
         {
-            for (var i = 0; i < RushDistance; i++)
-            {
-                if (actor.CanMove(position, direction, map) && !actor.Status.IsFlagStat(FlagStatType.CannotMove))
-                    position += direction.Vector();
-            }
+            position = AdvanceByRushDistance(actor, position, direction, map);
 
             var area = GetArea(actor, position, direction, map, true);
             var characters = map.Characters.In(area);
+            // 対象が必要な効果なのに範囲内にキャラがいなければ、無駄撃ちなので評価を下げる。
             if (_effects.Any(ContainsEntityTargetEffect) && !characters.Any())
                 return -1;
 
@@ -241,11 +269,14 @@ namespace Domain.Service.Effect
                     switch (effect.Impact)
                     {
                         case Impact.Harmful:
+                            // 攻撃系：相手との敵対度（Aggression）が高いほど価値が上がる。
                             var affiliationType = actor.Affiliation.GetAffiliationType(target.Affiliation);
                             totalEvaluation += actor.Aggression.GetAggression(affiliationType) *
                                                effect.Evaluate(actor, target);
                             break;
                         case Impact.Beneficial:
+                            // 回復・支援系：味方には加点。敵に当ててしまう構図は -∞ で確実に避け、
+                            // 中立には影響なし（0）として扱う。
                             if (actor.IsAlly(target))
                             {
                                 totalEvaluation += 1 * effect.Evaluate(actor, target);

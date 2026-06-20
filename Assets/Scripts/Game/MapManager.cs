@@ -64,7 +64,7 @@ namespace Game
             MarketPriceTable = marketPriceTable;
             _gameManager = gameManager;
 
-            var playerPosition = map.RandomBlankPosition;
+            var playerPosition = map.InitialPlayerPosition;
 
             _tilemap = new Tilemap(map.Tilemap);
 
@@ -90,7 +90,7 @@ namespace Game
 
             if (playerPosition == null)
             {
-                playerPosition = map.RandomBlankPosition;
+                playerPosition = map.InitialPlayerPosition;
             }
 
             _tilemap = new Tilemap(map.Tilemap);
@@ -319,6 +319,37 @@ namespace Game
             return TilemapViewer.IsGrass(position);
         }
 
+        // キャラがアイテムの上に乗ったとき、拾える条件を満たせば自動で拾う。拾えない場合は「乗った」ログのみ。
+        private void TryAutoPickUpOnMove(ICharacter character, Vector2Int positionChanged)
+        {
+            var item = EntityManager.GetItemAt(positionChanged);
+            if (item == null)
+                return;
+
+            var autoPickUpShopItem = character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue;
+            var canPickUp = character.CanPickUp
+                            && character.CanPickUpItem()
+                            && EntityManager.CanPickUpAt(positionChanged, autoPickUpShopItem);
+            if (!canPickUp)
+            {
+                if (EntityManager.Player.Character.IsVisible(positionChanged))
+                    GameLog.Add(character.Entity.IsVisible,
+                        $"{character.GetName(EntityManager.Player)}は<color=yellow>{item.Item.GetName(EntityManager.Player, ItemPlaceholders)}</color>の上に乗った");
+                return;
+            }
+
+            EntityManager.PickUpAt(positionChanged, autoPickUpShopItem);
+            if (!character.Inventory.CanAddToEmpty())
+                throw new Exception("Unexpected error. Unable to pick up item.");
+
+            character.Inventory.AddToEmpty(item.Item);
+            _gameManager.PlaySE(SE.Pickup);
+            _gameManager.RequestWorldIconPopup(item.Icon, positionChanged);
+            if (EntityManager.Player.Character.IsVisible(positionChanged))
+                GameLog.Add(character.Entity.IsVisible,
+                    $"{character.GetName(EntityManager.Player)}は<color=yellow>{item.Item.GetName(EntityManager.Player, ItemPlaceholders)}</color>を拾った");
+        }
+
         public async UniTask ExecuteEntityTouchEventsAt(Vector2Int position, IEntity triggerEntity)
         {
             foreach (var entityEventEntity in EntityManager.GetEntityEventEntitiesFastAt(position,
@@ -387,8 +418,6 @@ namespace Game
 
         public MapMemento Serialize()
         {
-            var characters = EntityManager.Characters.ToList();
-            characters.Remove(EntityManager.Player.Character);
             return new MapMemento
             (
                 Id,
@@ -396,7 +425,9 @@ namespace Game
                 EntityManager.Serialize(),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetAllBlankAndStandablePositions().GetAtRandom().Position
+                // InitialPlayerPosition は新ゲームの初期スポーン用で、生成時(MapBuilder)にだけ埋める。
+                // 2回目以降のセーブでは読まれないので空(zero)にしておく。
+                Vector2Int.zero
             );
         }
 
@@ -409,7 +440,9 @@ namespace Game
                 EntityManager.SerializeWithoutPartyMembers(GetFollowingCharacters()),
                 _monsterHouse.ToOption().Map(x => x.Serialize()),
                 _shop.ToOption().Map(x => x.Serialize()),
-                GetAllBlankAndStandablePositions().GetAtRandom().Position
+                // InitialPlayerPosition は新ゲームの初期スポーン用で、生成時(MapBuilder)にだけ埋める。
+                // 2回目以降のセーブでは読まれないので空(zero)にしておく。
+                Vector2Int.zero
             );
         }
 
@@ -437,7 +470,6 @@ namespace Game
                 _tilemap.UpdateChunk(positionChanged);
                 if (IsGrass(positionChanged))
                 {
-                    Log.Debug($"SetGrasses: {EntityManager.Player.Character.Entity.CurrentPosition}");
                     SetGrasses(new[] { EntityManager.Player.Character.Entity.CurrentPosition }, false);
                     _gameManager.PlaySE(SE.GrassWalk);
                 }
@@ -454,41 +486,7 @@ namespace Game
                 character => character.Entity.Position.SkipLatestValueOnSubscribe(),
                 async (character, positionChanged) =>
                 {
-                    var item = EntityManager.GetItemAt(positionChanged);
-                    if (item != null)
-                    {
-                        Log.Debug($"CanPickUp: {character.CanPickUp}");
-                        Log.Debug($"CanPickUpItem: {character.CanPickUpItem()}");
-                        Log.Debug($"CanPickUpAt: {EntityManager.CanPickUpAt(positionChanged, character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue)}");
-                        if (character.CanPickUp
-                            && character.CanPickUpItem()
-                            && EntityManager.CanPickUpAt(positionChanged,
-                                character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue))
-                        {
-                            EntityManager.PickUpAt(positionChanged,
-                                character.IsPlayer && Settings.GlobalSettings.AutoPickUpShopItem.CurrentValue);
-                            if (character.Inventory.CanAddToEmpty())
-                            {
-                                character.Inventory.AddToEmpty(item.Item);
-                                _gameManager.PlaySE(SE.Pickup);
-                                _gameManager.RequestWorldIconPopup(item.Icon, positionChanged);
-                                if (EntityManager.Player.Character.IsVisible(positionChanged))
-                                {
-                                    GameLog.Add(character.Entity.IsVisible,
-                                        $"{character.GetName(EntityManager.Player)}は<color=yellow>{item.Item.GetName(EntityManager.Player, ItemPlaceholders)}</color>を拾った");
-                                }
-                            }
-                            else
-                            {
-                                throw new Exception("Unexpected error. Unable to pick up item.");
-                            }
-                        }
-                        else if (EntityManager.Player.Character.IsVisible(positionChanged))
-                        {
-                            GameLog.Add(character.Entity.IsVisible,
-                                $"{character.GetName(EntityManager.Player)}は<color=yellow>{item.Item.GetName(EntityManager.Player, ItemPlaceholders)}</color>の上に乗った");
-                        }
-                    }
+                    TryAutoPickUpOnMove(character, positionChanged);
                 }
             ).AddTo(_disposables);
 
@@ -559,6 +557,8 @@ namespace Game
                 }
             }).AddTo(_disposables);
 
+            // 壁の破壊などでタイルが変わると、その地点を見通せる範囲の視界キャッシュが古くなる。
+            // 変化マスから見えるマスのキャッシュを破棄し、その範囲のキャラの視界を再計算させる。
             _tilemap.OnTilesChanged.Subscribe(tileChanged =>
             {
                 _fullVisibleArea = null;
@@ -677,6 +677,9 @@ namespace Game
             yield return pos;
         }
 
+        // 視界計算（ViewCalculator）はターン進行中に敵AIの判断や表示更新から何度も呼ばれ、
+        // 素朴に毎回計算すると処理が数百msに達していた。そこで原点ごとの可視マス集合をキャッシュし、
+        // 同一ターン内の再計算を避ける。タイル変化時に該当範囲だけ無効化する（OnTilesChanged 参照）。
         private Dictionary<Vector2Int, HashSet<Vector2Int>> _visionCache = new();
         private HashSet<Vector2Int>? _fullVisibleArea;
 
@@ -684,6 +687,8 @@ namespace Game
         {
             if ((from - to).sqrMagnitude > radius * radius)
                 return false;
+            // 視界は相互対称（from から to が見えるなら逆も成立）なので、
+            // どちらかの可視集合がキャッシュ済みならそれを再利用し、計算回数を半減させる。
             if (_visionCache.TryGetValue(from, out var area))
                 return area.Contains(to);
             if (_visionCache.TryGetValue(to, out area))
@@ -712,6 +717,7 @@ namespace Game
             return _fullVisibleArea;
         }
 
+        // 指定地点の可視マスを計算してキャッシュに格納する。光を通さないタイル（壁など）を遮蔽として扱う。
         private void UpdateVisibleAreaCache(Vector2Int from)
         {
             _visionCache[from] = ViewCalculator.FieldOfView(from, 20, pos => !At(pos).IsLightPassable());

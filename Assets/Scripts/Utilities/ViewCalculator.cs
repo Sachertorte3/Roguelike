@@ -5,8 +5,22 @@ using UnityEngine;
 
 namespace Utilities
 {
+    /// <summary>
+    /// 視界（Field of View）計算。ある地点から、壁などの遮蔽を考慮して「見えるマス」の集合を求める。
+    /// 敵の発見、視界外の非表示、範囲効果が壁を越えるかの判定などに使う。
+    ///
+    /// アルゴリズムは Precise Permissive Field of View の移植。原点から4象限に分け、
+    /// 各象限を斜めの走査線で進めながら「視線(__View)」を浅い線/急な線(__Line)と
+    /// 突起(__ViewBump)で管理し、遮蔽物に当たるたびに視線を分割・縮小していく。
+    /// __ 接頭辞の型・メソッド群はこの原典アルゴリズムの内部簿記であり、
+    /// 1行ずつ読み解く想定ではない。利用側は下の公開メソッドだけを使えばよい。
+    ///
+    /// 結果は List ではなく HashSet で返す。視界判定は何度も Contains を呼ぶため、
+    /// O(1) 参照にすることがターン進行時の処理速度に効く（最適化の経緯は MapManager 側を参照）。
+    /// </summary>
     public static class ViewCalculator
     {
+        /// <summary>通行可能マスとその周囲1マスをすべて可視とする。遮蔽を無視した全可視マップ用。</summary>
         public static HashSet<Vector2Int> ComputeFullVisibility(HashSet<Vector2Int> passables)
         {
             HashSet<Vector2Int> result = new(passables);
@@ -24,6 +38,7 @@ namespace Utilities
             return result;
         }
 
+        /// <summary>マップ全体（mapSize の端まで）を見通す視界。距離制限なしで遮蔽だけを考慮する。</summary>
         public static HashSet<Vector2Int> FieldOfView(Vector2Int position, Vector2Int mapSize,
             Func<Vector2Int, bool> funcTileBlocked)
         {
@@ -46,6 +61,7 @@ namespace Utilities
             return visited;
         }
 
+        /// <summary>viewDistance マスを上限とする視界。遮蔽に加えて視程の制限を持つ場合に使う。</summary>
         public static HashSet<Vector2Int> FieldOfView(Vector2Int position, int viewDistance,
             Func<Vector2Int, bool> funcTileBlocked)
         {

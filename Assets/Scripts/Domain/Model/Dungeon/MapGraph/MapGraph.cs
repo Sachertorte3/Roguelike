@@ -11,6 +11,13 @@ using UnityEditor;
 
 namespace Domain.Model.Dungeon
 {
+    /// <summary>
+    /// ダンジョン全体の構造を表すグラフ（xNode ベース、専用エディタで視覚的に編集する）。
+    /// 各ノードはマップや無限区間を表し、ノード間の接続で階層の流れ・分岐・ボス階層・テレポート接続などを
+    /// 定義する。これにより「1階→2階→…」の直線進行に限らず、分岐・再訪・特殊接続・無限区間を扱える。
+    /// 1フロアの中身（部屋・敵・アイテムなど）の生成は MapBuilder / TilemapBuilder 側が担当する。
+    /// OnValidate はエディタ専用で、開始ノードの一意性や MapNode のID重複といった編集ミスを検出する。
+    /// </summary>
     [CreateAssetMenu]
     public class MapGraph : NodeGraph
     {

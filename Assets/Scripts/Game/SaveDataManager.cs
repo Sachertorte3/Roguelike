@@ -50,19 +50,22 @@ namespace Game
 
         public void SaveFull(GlobalSaveData globalSaveData, SaveData saveData)
         {
-            Log.Debug("[Save]Start Save"); 
-            db.SaveGlobalStatistics(JsonUtility.ToJson(globalSaveData.GlobalStatistics));
-            db.SaveGlobalSettings(globalSaveData.GlobalSettings);
-
-            db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime, (int)saveData.Bgm);
-            db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
-            foreach (var map in saveData.Maps)
+            Log.Debug("[Save]Start Save");
+            // 全書き込みを1トランザクションにまとめ、コミット（fsync）を1回に抑える。
+            db.Transaction(nameof(SaveFull), () =>
             {
-                db.SaveMap(_saveDataSlot, map.Key.ToString(), JsonUtility.ToJson(map.Value));
-            }
-            db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
-            db.SaveSettings(_saveDataSlot, saveData.Settings);
+                db.SaveGlobalStatistics(JsonUtility.ToJson(globalSaveData.GlobalStatistics));
+                db.SaveGlobalSettings(globalSaveData.GlobalSettings);
 
+                db.Save(_saveDataSlot, JsonUtility.ToJson(saveData.World), saveData.TurnWaitTime, (int)saveData.Bgm);
+                db.SaveTurn(_saveDataSlot, saveData.Statistics.Turn);
+                foreach (var map in saveData.Maps)
+                {
+                    db.SaveMap(_saveDataSlot, map.Key.ToString(), JsonUtility.ToJson(map.Value));
+                }
+                db.SaveStatistics(_saveDataSlot, JsonUtility.ToJson(saveData.Statistics));
+                db.SaveSettings(_saveDataSlot, saveData.Settings);
+            });
             Log.Debug("[Save]End Save");
         }
 

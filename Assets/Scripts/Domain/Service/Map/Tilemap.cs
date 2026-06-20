@@ -156,6 +156,7 @@ namespace Domain.Service.Map
             return _overlayTiles.ContainsKey(position) && _overlayTiles[position] == OverlayTileCategory.FloatingIce;
         }
 
+        // 地形が歩行可能、または浮氷(FloatingIce)が張ったマス。浮氷は水の上でも立てるようにするオーバーレイ。
         public bool IsWalkable(Vector2Int position)
         {
             if (GetTile(position).MapOr(false, tile => tile.IsWalkable()))
@@ -204,7 +205,8 @@ namespace Domain.Service.Map
         {
             if (!IsPositionInsideMap(position))
             {
-                Log.Info($"position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
+                // 視界・経路探索などがマップ端を探る際に通常発生する。Info だと多発するため Verbose。
+                Log.Verbose($"[Map]position {position} is out of map (MapSize Width:{Width}, Height:{Height})");
                 return Option<TileData>.None;
             }
 

@@ -44,40 +44,36 @@ namespace Provider
                         gameManager.OnTurnChanged
                     ).Subscribe(_ =>
                     {
+                        // 直前のプレビューを消してから、選択中アイテムの効果範囲を半透明で描き直す。
+                        // 表示すべきでない条件はガード節で早期に抜け、ネストを浅く保つ。
                         previews.ForEach(preview => Object.Destroy(preview));
                         previews.Clear();
                         if (player.IsDead)
-                        {
                             return;
-                        }
 
                         var focus = inventoryView.Focus.CurrentValue;
-                        if (!focus.IsOnEmpty)
-                        {
-                            IItem? item = null;
-                            if (focus.IsOnGroundItem)
-                            {
-                                item = map.Items.At(player.Entity.CurrentPosition).FirstOrDefault()?.Item;
-                            }
-                            else
-                            {
-                                item = player.Inventory.GetItem(focus.Index);
-                            }
+                        if (focus.IsOnEmpty)
+                            return;
 
-                            if (item != null && player.IsKnownItem(item))
-                            {
-                                if (item.SkillOnUse.HasValue &&
-                                    item.SkillOnUse.Value.Skill is SpawnEffectSkill spawnEffectSkill)
-                                {
-                                    var area = spawnEffectSkill.GetArea(player,
-                                        player.Entity.CurrentPosition,
-                                        player.CurrentDirection, map, true);
-                                    var color = spawnEffectSkill.Color;
-                                    color.a = 0.25f;
-                                    previews = effectViewSpawner.SpawnPreview(area, color);
-                                }
-                            }
-                        }
+                        // 足元のアイテムか、インベントリで選択中のアイテムかを取り出す。
+                        var item = focus.IsOnGroundItem
+                            ? map.Items.At(player.Entity.CurrentPosition).FirstOrDefault()?.Item
+                            : player.Inventory.GetItem(focus.Index);
+                        // 未識別アイテムは効果が分からないのでプレビューしない。
+                        if (item == null || !player.IsKnownItem(item))
+                            return;
+
+                        // 効果範囲を持つスキル（SpawnEffectSkill）だけがプレビュー対象。
+                        if (!item.SkillOnUse.HasValue)
+                            return;
+                        if (item.SkillOnUse.Value.Skill is not SpawnEffectSkill spawnEffectSkill)
+                            return;
+
+                        var area = spawnEffectSkill.GetArea(player, player.Entity.CurrentPosition,
+                            player.CurrentDirection, map, true);
+                        var color = spawnEffectSkill.Color;
+                        color.a = 0.25f;
+                        previews = effectViewSpawner.SpawnPreview(area, color);
                     }));
                 }
             );

@@ -19,6 +19,14 @@ using Random = UnityEngine.Random;
 
 namespace Domain.Service.Characters.Behavior
 {
+    /// <summary>
+    /// 敵キャラクターの思考。行動は「状態機械」と「行動評価」の2段で決める。
+    /// 1) GenerateNextBehaviorResult が、視界内の情報だけから今の状態（敵/味方を発見、最後に見た位置へ移動、
+    ///    帰巣、徘徊など）と狙う位置を決める。見失ってもすぐ諦めず最後に見た位置へ向かう、といった粘りはここ。
+    /// 2) その状態をもとに移動・スキル・アイテム使用/投擲などの行動候補を列挙し、それぞれの評価値を計算して
+    ///    最も効果の大きい候補を選ぶ（GenerateNextAction）。
+    /// 盤面全体ではなく視界内の情報のみで判断するため、敵の動きがプレイヤーに理不尽になりにくい。
+    /// </summary>
     public sealed class EnemyBehavior : ICharacterBehavior
     {
         public Observable<OnStartItemSelectMessage> OnStartItemSelect { get; init; } = new Subject<OnStartItemSelectMessage>();
@@ -126,41 +134,15 @@ namespace Domain.Service.Characters.Behavior
                 }
             }
 
-            var actions = new List<(IAction action, float evaluate)>();
-            if (result.IsDiscoveringCharacter())
-            {
-                if (PrioritizeMovement(character, result.TargetLocation, map.Id))
-                {
-                    Log.Debug("[Think]Prioritize Movement.");
-                    actions.AddRange(GenerateValidMoves(character, result, map));
-                    if (!actions.Any())
-                    {
-                        actions.AddRange(GenerateValidUseSkills(character, map));
-                        actions.AddRange(GenerateValidUseItems(character, map));
-                        actions.AddRange(GenerateValidThrowItems(character, map));
-                    }
-                }
-                else
-                {
-                    actions.AddRange(GenerateValidUseSkills(character, map));
-                    actions.AddRange(GenerateValidUseItems(character, map));
-                    actions.AddRange(GenerateValidThrowItems(character, map));
-                    if (!actions.Any())
-                    {
-                        actions.AddRange(GenerateValidMoves(character, result, map));
-                    }
-                }
-            }
-            else
-            {
-                actions.AddRange(GenerateValidMoves(character, result, map));
-            }
+            var actions = CollectActionCandidates(character, result, map);
 
             foreach (var actionTemp in actions)
             {
                 Log.Debug($"[Think]{actionTemp.action.Info()} {actionTemp.evaluate}");
             }
 
+            // わずかな乱数を足すのは、同点の候補が毎ターン同じ動きに偏るのを防ぐため。
+            // 候補が無ければ何もしない（DoNothing）。
             var action = await UniTask.FromResult(actions.MaxByOrDefault(
                 action => action.evaluate + Random.Range(0, behavioralRandomness),
                 (action: new DoNothing(), evaluate: 0)));
@@ -169,6 +151,48 @@ namespace Domain.Service.Characters.Behavior
             return action.action;
         }
 
+        private List<(IAction action, float evaluate)> CollectActionCandidates(IHasBehavior character,
+            BehaviorResult result, IMap map)
+        {
+            var actions = new List<(IAction action, float evaluate)>();
+
+            // 対象を見ていないときは、移動（追跡・徘徊）だけを候補にする。
+            if (!result.IsDiscoveringCharacter())
+            {
+                actions.AddRange(GenerateValidMoves(character, result, map));
+                return actions;
+            }
+
+            // 対象発見時は、敵ごとの方針で「移動」と「スキル/アイテム」のどちらを先に試すかを変え、
+            // 先に試した側が空なら他方で補う。
+            if (PrioritizeMovement(character, result.TargetLocation, map.Id))
+            {
+                Log.Debug("[Think]Prioritize Movement.");
+                actions.AddRange(GenerateValidMoves(character, result, map));
+                if (!actions.Any())
+                    actions.AddRange(GenerateValidUseActions(character, map));
+            }
+            else
+            {
+                actions.AddRange(GenerateValidUseActions(character, map));
+                if (!actions.Any())
+                    actions.AddRange(GenerateValidMoves(character, result, map));
+            }
+
+            return actions;
+        }
+
+        // スキル使用・アイテム使用・アイテム投擲の有効な候補をまとめて返す。
+        private IEnumerable<(IAction action, float evaluate)> GenerateValidUseActions(IHasBehavior character, IMap map)
+        {
+            return GenerateValidUseSkills(character, map)
+                .Concat(GenerateValidUseItems(character, map))
+                .Concat(GenerateValidThrowItems(character, map));
+        }
+
+        // 今ターンの状態と狙う位置を決める。視界内に対象がいればそれを採用し、いなければ
+        // 直前の状態を引き継いで「最後に見た位置」へ向かい続ける（下のif連鎖が優先順位）。
+        // どの条件にも当てはまらなければ徘徊(Wandering)に落ちる。
         private BehaviorResult GenerateNextBehaviorResult(IHasBehavior character, IMap map)
         {
             var visibleEnemies = map.Characters.ByAffiliation(character, AffiliationType.Enemy)

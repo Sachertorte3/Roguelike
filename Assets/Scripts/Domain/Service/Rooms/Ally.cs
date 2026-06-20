@@ -22,38 +22,7 @@ namespace Domain.Service.Rooms
                 new(
                     "渡す",
                     (player, map) => CanGiveItem(character, player.Character),
-                    async (gameManager, map) =>
-                    {
-                        var player = map.Player;
-                        var disabledItemIndexes = new List<int>();
-                        foreach (var (i, inventoryIndex) in player.Character.Inventory.AllItemsWithIndex)
-                        {
-                            if (!player.Character.Inventory.CanRemove(i) || i.IsDiscardBlocked)
-                            {
-                                disabledItemIndexes.Add(inventoryIndex);
-                            }
-                        }
-                        var focus = await player.Character.SelectItem("渡すアイテムを選択してください", disabledItemIndexes.ToArray());
-                        if (focus.HasValue && player.Character.Inventory.HasItemAt(focus.Value, out var item))
-                        {
-                            if (character.Inventory.CanAddToEmpty()
-                                && player.Character.Inventory.CanRemove(item)
-                                && !item.IsDiscardBlocked)
-                            {
-                                player.Character.Inventory.Remove(item);
-                                character.Inventory.AddToEmpty(item);
-                                GameLog.Add(character.Entity.IsVisible,
-                                    $"{character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
-                                TryEquipGiftedItem(character, item, map);
-                                var affectionGain = item.GetPrice(map.MarketPriceTable) * GiftAffectionPerPrice;
-                                character.Affiliation.ModifyAffection(player.Character.Entity.Id, affectionGain);
-                            }
-                            else
-                            {
-                                GameLog.Add(character.Entity.IsVisible, $"{item.GetName(player, map.ItemPlaceholders)}を渡せなかった。");
-                            }
-                        }
-                    }
+                    (gameManager, map) => GiveItemToAlly(character, map)
                 ),
                 new(
                     "一緒に行動",
@@ -85,6 +54,39 @@ namespace Domain.Service.Rooms
             }
         )
         { }
+
+        // プレイヤーが選んだアイテムを仲間に渡す。base(...) 初期化子から使うため static。
+        // 渡せる条件（空き・取り出し可・呪い無し）を満たせば移動し、好感度を上げる。満たさなければログのみ。
+        private static async UniTask GiveItemToAlly(ICharacter character, IMap map)
+        {
+            var player = map.Player;
+            var disabledItemIndexes = new List<int>();
+            foreach (var (i, inventoryIndex) in player.Character.Inventory.AllItemsWithIndex)
+            {
+                if (!player.Character.Inventory.CanRemove(i) || i.IsDiscardBlocked)
+                    disabledItemIndexes.Add(inventoryIndex);
+            }
+
+            var focus = await player.Character.SelectItem("渡すアイテムを選択してください", disabledItemIndexes.ToArray());
+            if (!focus.HasValue || !player.Character.Inventory.HasItemAt(focus.Value, out var item))
+                return;
+
+            if (!(character.Inventory.CanAddToEmpty()
+                  && player.Character.Inventory.CanRemove(item)
+                  && !item.IsDiscardBlocked))
+            {
+                GameLog.Add(character.Entity.IsVisible, $"{item.GetName(player, map.ItemPlaceholders)}を渡せなかった。");
+                return;
+            }
+
+            player.Character.Inventory.Remove(item);
+            character.Inventory.AddToEmpty(item);
+            GameLog.Add(character.Entity.IsVisible,
+                $"{character.GetName(player)}に{item.GetName(player, map.ItemPlaceholders)}を渡した。");
+            TryEquipGiftedItem(character, item, map);
+            var affectionGain = item.GetPrice(map.MarketPriceTable) * GiftAffectionPerPrice;
+            character.Affiliation.ModifyAffection(player.Character.Entity.Id, affectionGain);
+        }
 
         private static bool CanGiveItem(ICharacter character, ICharacter player)
         {

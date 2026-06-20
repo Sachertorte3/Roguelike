@@ -220,10 +220,13 @@ namespace Domain.Service.Characters
 
         #region CanMove
 
+        // CanMove 系は「そのマスへ進めるか」を判定する。引数を省いた版は、現在地（position）や
+        // このキャラの能力（isFlying / canThroughWalls）を既定値として埋めて下の本体へ委譲するだけ。
+        // CanMove と CanMoveIgnoreEntity の違いは、移動先のエンティティを通行の妨げと見なすか否か。
+
         /// <summary>
-        ///     Returns whether movement is possible in that direction. If it is possible to pass through walls, this is true even
-        ///     if the destination is not passable.
-        ///     If you want to check whether the destination is passable, please use World.IsPassable.
+        /// その方向へ移動できるかを判定する。壁抜け能力がある場合は、移動先が通過不可でも true を返す。
+        /// 「移動先の地形そのものが通過可能か」を知りたいだけなら World.IsPassable を使う。
         /// </summary>
         public bool CanMove(Vector2Int position, Direction8 direction, IPassableChecker map)
         {
@@ -249,6 +252,7 @@ namespace Domain.Service.Characters
                     .CanPlace(isFlying, canThroughWalls, false, EntityLayer.Middle);
             }
 
+            // 斜め移動は、両隣のマスがどちらも通過可能なときだけ許可する（壁の角を斜めにすり抜けさせない）。
             return map.At(position + direction.Vector()).CanPlace(isFlying, canThroughWalls, false, EntityLayer.Middle)
                    && (!direction.IsDiagonal() ||
                        (map.At(position + direction.Rotate45Clockwise().Vector()).IsPassableOnMap() &&

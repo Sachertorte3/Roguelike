@@ -82,7 +82,9 @@ namespace Domain.Service.Characters
 
             return totalAffection switch
             {
-                > AffectionAllyThreshold => AffiliationType.Ally,
+                // Neutralグループは好感度を上げても味方化しない。
+                // 敵対には従来どおり転じる。
+                > AffectionAllyThreshold when Group != CharacterGroup.Neutral => AffiliationType.Ally,
                 < AffectionEnemyThreshold => AffiliationType.Enemy,
                 _ => AffiliationType.Neutral
             };

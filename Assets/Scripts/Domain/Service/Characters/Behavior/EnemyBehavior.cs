@@ -389,6 +389,10 @@ namespace Domain.Service.Characters.Behavior
                     continue;
                 if (!character.CanReadItem && item.RequiresLiteracy)
                     continue;
+                // 装備品の「使用」はトグル装備。装備済みのものを候補に入れると毎ターン外して→着てを
+                // 繰り返す（付け外しループ）うえ、移動より優先され追従しなくなる。装備済みは除外する。
+                if (item is IEquipmentToggleTarget && item.IsEquipped.UnwrapOr(false))
+                    continue;
 
                 if (item.SkillOnUse.Expect("SkillOnUse is null").Skill.IsDirectional)
                 {

@@ -287,6 +287,9 @@ namespace Domain.Service.Characters.Behavior
             var focus = await WaitItemSelectOrCancel(disabledItemIndexes);
 
             _gameManager.PlaySE(SE.ItemSelectConfirm);
+            // 確定は Submit 入力の配信中（同期継続）に到達する。配信中に OnNext を発火すると、購読側の
+            // 入力マップ切替が配信中のアクションを壊して IndexOutOfRange になるため、配信後（フレーム末）に発火する。
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
             _onSelectedItemSelect.OnNext(Unit.Default);
             return focus;
         }
@@ -303,6 +306,9 @@ namespace Domain.Service.Characters.Behavior
             var focus = await WaitItemSelectOrCancel(disabledItemIndexes);
 
             _gameManager.PlaySE(SE.ItemSelectConfirm);
+            // 確定は Submit 入力の配信中（同期継続）に到達する。配信中に OnNext を発火すると、購読側の
+            // 入力マップ切替が配信中のアクションを壊して IndexOutOfRange になるため、配信後（フレーム末）に発火する。
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
             _onSelectedItemSelect.OnNext(Unit.Default);
             return focus;
         }

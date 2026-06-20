@@ -55,10 +55,20 @@ namespace Domain.Model.Character
             var fileName = Path.GetFileNameWithoutExtension(assetPath);
             // assetPath は Play 中や Addressables ロード時などに空を返すことがある。
             // その際に Name を空文字で上書きしてしまう（敵名が消える）ため、空ならガードする。
-            if (!string.IsNullOrEmpty(fileName))
-                Name = fileName;
+            var newName = !string.IsNullOrEmpty(fileName) ? fileName : Name;
+            var newFlags = Flags.Distinct().ToList();
+            var newCanReceivePlayerGift = newName != "店員" && CanUseItem;
 
-            Flags = Flags.Distinct().ToList();
+            // 値が変わっていないのに SetDirty すると、インポート順の都合で未解決の _sprite 参照が
+            // 再シリアライズで {fileID: 0} に消える（プレビュー消失・PPtr 破損エラー）。
+            // 実際に変化があるときだけ Dirty にして、不要な書き換えを防ぐ。
+            var changed = Name != newName
+                          || CanReceivePlayerGift != newCanReceivePlayerGift
+                          || !Flags.SequenceEqual(newFlags);
+
+            Name = newName;
+            Flags = newFlags;
+            CanReceivePlayerGift = newCanReceivePlayerGift;
 
             foreach (var skill in Skills)
             {
@@ -70,9 +80,8 @@ namespace Domain.Model.Character
                 LastSkill.OnValidate(1);
             }
 
-            CanReceivePlayerGift = Name != "店員" && CanUseItem;
-
-            EditorUtility.SetDirty(this);
+            if (changed)
+                EditorUtility.SetDirty(this);
         }
 #endif
     }
